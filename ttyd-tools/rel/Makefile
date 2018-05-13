@@ -60,12 +60,15 @@ LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections 
 ifeq ($(VERSION),us)
 	CFLAGS += -DTTYD_US
 	GAMECODE = "G8ME"
+	PRINTVER = "US"
 else ifeq ($(VERSION),jp)
 	CFLAGS += -DTTYD_JP
 	GAMECODE = "G8MJ"
+	PRINTVER = "JP"
 else ifeq ($(VERSION),eu)
 	CFLAGS += -DTTYD_EU
 	GAMECODE = "G8MP"
+	PRINTVER = "EU"
 endif
 
 
@@ -121,7 +124,14 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/include/ttyd.$(VERSION).lst
-export BANNERFILE	:= $(CURDIR)/banner.raw
+# export BANNERFILE	:= $(CURDIR)/banner.raw
+ifeq ($(VERSION),us)
+	export BANNERFILE	:= $(CURDIR)/banner_us.raw
+else ifeq ($(VERSION),jp)
+	export BANNERFILE	:= $(CURDIR)/banner_jp.raw
+else ifeq ($(VERSION),eu)
+	export BANNERFILE	:= $(CURDIR)/banner_us.raw
+endif
 export ICONFILE		:= $(CURDIR)/icon.raw
 
 #---------------------------------------------------------------------------------
@@ -172,7 +182,7 @@ $(OFILES_SOURCES) : $(HFILES)
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Paper Mario" "TTYD Practice Codes ($(VERSION))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@$(GCIPACK) $< "rel" "Paper Mario" "TTYD Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension

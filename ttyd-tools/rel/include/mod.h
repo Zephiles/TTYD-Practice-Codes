@@ -14,8 +14,16 @@ public:
 	
 private:
 	void updateEarly();
-	void drawPS();
-	void drawYS();
+	
+	//Palace Skip
+	void updateEarlyPalaceSkip();
+	void drawPalaceSkip();
+	
+	//Yoshi Skip
+	void updateEarlyYoshiSkip();
+	void drawYoshiSkip();
+	
+	//Button Display
 	void drawButtonsDisplay();
 	
 private:
