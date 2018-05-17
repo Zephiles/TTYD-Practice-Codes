@@ -49,8 +49,6 @@ void Mod::init()
 
 void Mod::updateEarly()
 {
-	//uint32_t *SequencePosition = *reinterpret_cast<uint32_t **>(r13 + -0x6F50) + 93;
-	
 	if ((ttyd::string::strcmp(CurrentRoom,las_25) == 0) && (ttyd::swdrv::swByteGet(0) < 390))
 	{
 		Mod::updateEarlyPalaceSkip();

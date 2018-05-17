@@ -15,8 +15,8 @@ namespace mod {
 
 void Mod::updateEarlyYoshiSkip()
 {
-	uint32_t MarioControl = *reinterpret_cast<uint32_t *>(ttyd::mario::marioGetPtr());
-	MarioControl = MarioControl & (1 << 0); //Check if first bit is active
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	uint32_t MarioControl = player->flags1 & (1 << 0); //Check if first bit is active
 	
 	// Check for font load
 	ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, [](ttyd::dispdrv::DisplayLayer layerId, void *user)
@@ -75,7 +75,7 @@ float getStickValue(float Stick)
 
 void Mod::drawYoshiSkip()
 {
-	float *marioPos = (float *) ttyd::mario::marioGetPtr() + 35;
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	float StickX = getStickValue(ttyd::system::keyGetStickX(0));
 	float StickY = getStickValue(ttyd::system::keyGetStickY(0));
 	
@@ -89,7 +89,7 @@ void Mod::drawYoshiSkip()
 		"YST: %lu\r\nStickAngle: %.2f\r\nMarPos: %.2f %.2f %.2f",
 		mPalaceSkipTimer.getValue(),
 		stickAngle,
-		marioPos[0], marioPos[1], marioPos[2]);
+		player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
 	
 	ttyd::fontmgr::FontDrawStart();
 	uint32_t color = 0xFFFFFFFF;

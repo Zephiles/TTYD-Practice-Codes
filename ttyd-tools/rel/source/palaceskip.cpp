@@ -15,6 +15,8 @@ namespace mod {
 
 void Mod::updateEarlyPalaceSkip()
 {
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
+	
 	// Check for font load
 	ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, [](ttyd::dispdrv::DisplayLayer layerId, void *user)
 	{
@@ -22,14 +24,13 @@ void Mod::updateEarlyPalaceSkip()
 	}, this);
 	
 	// Palace skip timing code
-	if (ttyd::mariost::marioStGetSystemLevel() == 0xF)
+	if (SystemLevel == 0xF)
 	{
 	// Stop upon pausing
 	mPalaceSkipTimer.stop();
-	//mPalaceSkipTimer.setValue(0);
 	mPaused = true;
 	}
-	else if (ttyd::mariost::marioStGetSystemLevel() == 0 && mPaused)
+	else if (SystemLevel == 0 && mPaused)
 	{
 		// Reset and Start when unpausing
 		mPalaceSkipTimer.setValue(0);
@@ -79,12 +80,9 @@ void Mod::drawPalaceSkip()
 	uint32_t *ItemArrayPointer = *reinterpret_cast<uint32_t **>(0x803E82F4);
 	#endif
 	
-	//float *marioPos = *reinterpret_cast<float **>(r13 + 0x19E0) + 35;
-	float *marioPos = (float *) ttyd::mario::marioGetPtr() + 35;
+  ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
 	float *partnerPos = &NoPointer;
-	//float *phantomEmberPos = *reinterpret_cast<float **>(r13 + 0x19A0) + 243;
-	//uint32_t *ItemArrayPointer = *reinterpret_cast<uint32_t **>(0x803DC294);
 	uint32_t *Item = *reinterpret_cast<uint32_t **>(ItemArrayPointer + 1);
 	bool FoundItem = false;
 	
@@ -144,7 +142,7 @@ void Mod::drawPalaceSkip()
 		Item,
 		phantomEmberPos[1],
 		partnerPos[0],
-		marioPos[0], marioPos[1], marioPos[2]);
+		player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
 	
 	ttyd::fontmgr::FontDrawStart();
 	uint32_t color = 0xFFFFFFFF;
