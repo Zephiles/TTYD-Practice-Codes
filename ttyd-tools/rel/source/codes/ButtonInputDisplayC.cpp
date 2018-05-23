@@ -25,7 +25,7 @@ void Mod::buttonInputDisplay()
 	
 	if (mButtonInputDisplayCounter > 360)
 	{
-		// Enable/Disable the Palace Skip info when button is held for 6 seconds
+		// Enable/Disable the Button Input Display when button is held for 6 seconds
 		mButtonInputDisplayEnabled = !mButtonInputDisplayEnabled;
 		mButtonInputDisplayCounter = 0;
 	}

@@ -44,7 +44,7 @@ void Mod::yoshiSkip()
 		
 		if (mEnabledOrDisabledCounter > 360)
 		{
-			// Enable/Disable the Palace Skip info when button is held for 6 seconds
+			// Enable/Disable the Yoshi Skip info when button is held for 6 seconds
 			mYoshiSkipInfoEnabled = !mYoshiSkipInfoEnabled;
 			mEnabledOrDisabledCounter = 0;
 		}
