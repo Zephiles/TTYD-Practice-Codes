@@ -5,7 +5,7 @@
 
 #include <cstdio>
 
-extern uint32_t r13;
+extern uint32_t BattleAddressesStart;
 extern uint16_t LockMarioHPToggleCombo;
 
 namespace mod {
@@ -36,16 +36,7 @@ void Mod::lockMarioHPToggle()
 		// Lock HP
 		uint32_t PouchPointer = ttyd::mario_pouch::pouchGetPtr();
 		*reinterpret_cast<int16_t *>(PouchPointer + 0x70) = *reinterpret_cast<int16_t *>(PouchPointer + 0x72); // Copy Max HP to Current HP
-		
-		#ifdef TTYD_US
-		uint32_t BattleAddress  = r13 + 0x1BE0;
-		#elif defined TTYD_JP
-		uint32_t BattleAddress  = r13 + 0x1710;
-		#elif defined TTYD_EU
-		uint32_t BattleAddress  = r13 + 0x1CC0;
-		#endif
-		
-		BattleAddress = *reinterpret_cast<uint32_t *>(BattleAddress);
+		uint32_t BattleAddress = *reinterpret_cast<uint32_t *>(BattleAddressesStart);
 		if (BattleAddress != 0)
 		{
 			// Currently in a battle

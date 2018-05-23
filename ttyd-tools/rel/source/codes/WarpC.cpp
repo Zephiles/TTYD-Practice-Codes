@@ -9,7 +9,7 @@
 
 #include <cstdio>
 
-extern uint32_t r13;
+extern uint32_t PauseMenuAddressesStart;
 extern uint16_t WarpCombo;
 extern char *NextBero;
 extern char *NextMap;
@@ -31,17 +31,14 @@ void Mod::warp()
 		{
 			// Currently in the pause menu
 			#ifdef TTYD_US
-			uint32_t PauseMenuAddress = r13 + 0x1D10;
 			char *minnnanokoe = reinterpret_cast<char *>(0x802ECF74);
 			#elif defined TTYD_JP
-			uint32_t PauseMenuAddress = r13 + 0x17B0;
 			char *minnnanokoe = reinterpret_cast<char *>(0x802ECB70);
 			#elif defined TTYD_EU
-			uint32_t PauseMenuAddress = r13 + 0x1DF0;
 			char *minnnanokoe = reinterpret_cast<char *>(0x802F8BD4);
 			#endif
 			
-			PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddress);
+			uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
 			uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
 			int16_t CoinCount = *reinterpret_cast<int16_t *>(ttyd::mario_pouch::pouchGetPtr() + 0x78);
 			

@@ -12,7 +12,6 @@
 #include <cstdio>
 #include <cmath>
 
-extern uint32_t r13;
 extern uint16_t YoshiSkipEnableCombo;
 extern char *NextMap;
 

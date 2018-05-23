@@ -13,7 +13,7 @@
 
 #include <cstdio>
 
-extern uint32_t r13;
+extern uint32_t NPCAddressesStart;
 extern uint16_t PalaceSkipEnableCombo;
 extern char *NextMap;
 
@@ -45,13 +45,10 @@ void Mod::palaceSkip()
 		if (mPalaceSkipInfoEnabled)
 		{
 			#ifdef TTYD_US
-			uint32_t NPCAddress = r13 + 0x19A0;
 			uint32_t FieldItemsAddress = 0x803DC294;
 			#elif defined TTYD_JP
-			uint32_t NPCAddress = r13 + 0x1448;
 			uint32_t FieldItemsAddress = 0x803D8714;
 			#elif defined TTYD_EU
-			uint32_t NPCAddress = r13 + 0x1A80;
 			uint32_t FieldItemsAddress = 0x803E82F4;
 			#endif
 			
@@ -61,8 +58,8 @@ void Mod::palaceSkip()
 			uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
 			float partnerCoordinateY;
 			
-      uint32_t NPCAddressesStart = *reinterpret_cast<uint32_t *>(NPCAddress);
-			uint32_t NPCActive = *reinterpret_cast<uint32_t *>(NPCAddressesStart + 0x340); // NPC 2
+      uint32_t NPCAddresses = *reinterpret_cast<uint32_t *>(NPCAddressesStart);
+			uint32_t NPCActive = *reinterpret_cast<uint32_t *>(NPCAddresses + 0x340); // NPC 2
 			float phantomEmberCoordinateY;
 			
       uint32_t FieldItemsAddressesStart = *reinterpret_cast<uint32_t *>(FieldItemsAddress);
@@ -126,7 +123,7 @@ void Mod::palaceSkip()
 			if (NPCActive)
 			{
 				// NPC 2 is active, so set phantomEmberCoordinateY
-				phantomEmberCoordinateY = *reinterpret_cast<float *>(NPCAddressesStart + 0x340 + 0x90); // NPC 2 Coordinate Y
+				phantomEmberCoordinateY = *reinterpret_cast<float *>(NPCAddresses + 0x340 + 0x90); // NPC 2 Coordinate Y
 			}
 			else
 			{

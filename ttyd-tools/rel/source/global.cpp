@@ -7,21 +7,31 @@ extern "C" {
 // --Global Variables--
 #ifdef TTYD_US
 uint32_t r13 = 0x8041CF20;
+uint32_t NPCAddressesStart = r13 + 0x19A0;
+uint32_t PauseMenuAddressesStart = r13 + 0x1D10;
+uint32_t BattleAddressesStart = r13 + 0x1BE0;
 char *NextBero = reinterpret_cast<char *>(r13 + 0x1688);
 char *NextMap = reinterpret_cast<char *>(r13 + 0x16A8);
 char *NextArea = reinterpret_cast<char *>(r13 + 0x16C8);
 #elif defined TTYD_JP
 uint32_t r13 = 0x80417260;
+uint32_t NPCAddressesStart = r13 + 0x1448;
+uint32_t PauseMenuAddressesStart  = r13 + 0x17B0;
+uint32_t BattleAddressesStart  = r13 + 0x1710;
 char *NextBero = reinterpret_cast<char *>(r13 + 0x1128);
 char *NextMap = reinterpret_cast<char *>(r13 + 0x1148);
 char *NextArea = reinterpret_cast<char *>(r13 + 0x1168);
 #elif defined TTYD_EU
 uint32_t r13 = 0x80429760;
+uint32_t NPCAddressesStart = r13 + 0x1A80;
+uint32_t PauseMenuAddressesStart  = r13 + 0x1DF0;
+uint32_t BattleAddressesStart  = r13 + 0x1CC0;
 char *NextBero = reinterpret_cast<char *>(r13 + 0x1768);
 char *NextMap = reinterpret_cast<char *>(r13 + 0x1788);
 char *NextArea = reinterpret_cast<char *>(r13 + 0x17A8);
 #endif
 
+uint32_t GSWAddressesStart = r13 - 0x6F50;
 bool ArtAttackHitboxesEnabled = false;
 bool ArtAttackHitboxesDenyInputs = false;
 
@@ -106,7 +116,7 @@ uint16_t ButtonInputDisplayEnableCombo = PAD_B | PAD_X;
 // Infinite Item Usage
 uint16_t InfiniteItemsUsageCombo = PAD_Y;
 
-// Art Attack hitboxes
+// Art Attack Hitboxes
 uint16_t ArtAttackHitboxesCombo = PAD_R | PAD_A;
 
 }

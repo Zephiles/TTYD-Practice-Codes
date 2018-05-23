@@ -6,7 +6,7 @@
 
 #include <cstdio>
 
-extern uint32_t r13;
+extern uint32_t PauseMenuAddressesStart;
 extern uint16_t InventoryAddItemOrBadgeCombo;
 extern uint16_t InventoryRemoveItemOrBadgeCombo;
 extern uint16_t InventoryPreviousValueCombo;
@@ -104,19 +104,11 @@ void Mod::changeInventory()
 	if (ttyd::mariost::marioStGetSystemLevel() == 15)
 	{
 		// Currently in the pause menu
-		#ifdef TTYD_US
-		uint32_t PauseMenuAddress = r13 + 0x1D10;
-		#elif defined TTYD_JP
-		uint32_t PauseMenuAddress = r13 + 0x17B0;
-		#elif defined TTYD_EU
-		uint32_t PauseMenuAddress = r13 + 0x1DF0;
-		#endif
-		
 		uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 		uint8_t PressedOrHeldButtonCount = 0;
 		uint16_t ButtonHoldFrames = 45; // 0.75 Seconds
 		
-		PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddress);
+		uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
 		uint32_t CursorItem = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x138);
 		uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
 		uint32_t SubMenuImportantItems = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x210);

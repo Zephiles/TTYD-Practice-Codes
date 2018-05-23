@@ -7,7 +7,7 @@
 
 #include <cstdio>
 
-extern uint32_t r13;
+extern uint32_t PauseMenuAddressesStart;
 extern uint16_t AddPartnersCombo;
 extern uint16_t RemovePartnersCombo;
 
@@ -17,17 +17,8 @@ void Mod::addOrRemovePartners()
 {
 	if (ttyd::mariost::marioStGetSystemLevel() == 15)
 	{
-		// Currently in the pause menu
-		
-		#ifdef TTYD_US
-		uint32_t PauseMenuAddress  = r13 + 0x1D10;
-		#elif defined TTYD_JP
-		uint32_t PauseMenuAddress  = r13 + 0x17B0;
-		#elif defined TTYD_EU
-		uint32_t PauseMenuAddress  = r13 + 0x1DF0;
-		#endif
-		
-		PauseMenuAddress  = *reinterpret_cast<uint32_t *>(PauseMenuAddress);
+		// Currently in the pause menu	
+		uint32_t PauseMenuAddress  = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
 		uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress  + 0x40);
 		
 		if (CurrentTab == 1)
