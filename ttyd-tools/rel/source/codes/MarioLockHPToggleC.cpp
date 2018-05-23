@@ -1,6 +1,7 @@
 #include "mod.h"
 
 #include <ttyd/system.h>
+#include <ttyd/mariost.h>
 #include <ttyd/mario_pouch.h>
 
 #include <cstdio>
@@ -13,12 +14,14 @@ namespace mod {
 void Mod::lockMarioHPToggle()
 {
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	
 	if (!MarioHPCurrentlyLocked)
 	{
 		// HP not currently locked
-		if ((ButtonInput & LockMarioHPToggleCombo) == LockMarioHPToggleCombo)
+		if (((ButtonInput & LockMarioHPToggleCombo) == LockMarioHPToggleCombo) && (SystemLevel != 15))
 		{
+			// Not in pause menu
 			if (!lockMarioHPToggleDisable)
 			{
 				MarioHPCurrentlyLocked = true;
@@ -48,8 +51,9 @@ void Mod::lockMarioHPToggle()
 			}
 		}
 		
-		if ((ButtonInput & LockMarioHPToggleCombo) == LockMarioHPToggleCombo)
+		if (((ButtonInput & LockMarioHPToggleCombo) == LockMarioHPToggleCombo) && (SystemLevel != 15))
 		{
+			// Not in pause menu
 			if (!lockMarioHPToggleDisable)
 			{
 				MarioHPCurrentlyLocked = false;

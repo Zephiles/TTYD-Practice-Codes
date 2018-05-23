@@ -95,7 +95,7 @@ uint16_t RemovePartnersCombo = PAD_R | PAD_Y;
 uint16_t ResetGSWFFlagsCombo = PAD_R | PAD_B | PAD_X;
 
 // Lock Mario's HP; Toggle
-uint16_t LockMarioHPToggleCombo = PAD_R | PAD_DPAD_DOWN;
+uint16_t LockMarioHPToggleCombo = PAD_R | PAD_Y | PAD_X;
 
 // Save Anywhere
 uint16_t SaveAnywhereCombo = PAD_Y | PAD_B;
