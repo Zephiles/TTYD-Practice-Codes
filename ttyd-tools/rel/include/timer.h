@@ -12,10 +12,12 @@ public:
 	{
 		mRunning = true;
 	}
+	
 	void stop()
 	{
 		mRunning = false;
 	}
+	
 	void tick()
 	{
 		if (mRunning)
@@ -23,10 +25,12 @@ public:
 			++mValue;
 		}
 	}
+	
 	void setValue(const ValueType &value)
 	{
 		mValue = value;
 	}
+	
 	ValueType getValue()
 	{
 		return mValue;

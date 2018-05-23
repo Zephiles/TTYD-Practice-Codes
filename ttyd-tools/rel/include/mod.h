@@ -15,20 +15,107 @@ public:
 private:
 	void updateEarly();
 	
-	//Palace Skip
-	void updateEarlyPalaceSkip();
-	void drawPalaceSkip();
+private:
+	// --Tricks--
+	// Palace Skip
+	void palaceSkip();
+	Timer<uint32_t> mPalaceSkipTimer;
+	bool mPalaceSkipTimerPaused = false;
+	bool mPalaceSkipInfoEnabled = false;
 	
-	//Yoshi Skip
-	void updateEarlyYoshiSkip();
-	void drawYoshiSkip();
+	// Yoshi Skip
+	void yoshiSkip();
+	Timer<uint32_t> mYoshiSkipTimer;
+	bool mYoshiSkipTimerPaused = false;
+	bool mYoshiSkipInfoEnabled = false;
 	
-	//Button Display
-	void drawButtonsDisplay();
+	// --Codes--
+	// Force Phantom Ember Drop
+	void forcePhantomEmberDrop();
+	
+	// Text Storage
+	void textStorage();
+	
+	// Levitate
+	void levitate();
+	
+	// Speed Up Mario
+	void speedUpMario();
+	
+	// Disable Battles
+	void disableBattles();
+	
+	// Save/Load Mario/Partner Positions
+	void saveLoadPositions();
+	float MarioSavePositions[4];
+	float PartnerSavePositions[4];
+	
+	// Reload Screen
+	void reloadScreen();
+	
+	// On-Screen Timer
+	void onScreenTimer();
+	Timer<uint32_t> mOnScreenTimer;
+	bool mOnScreenTimerEnabled = false;
+	
+	// Auto Action Commands
+	void autoActionCommands();
+	
+	// Game Over
+	void gameOver();
+	
+	// Save Anywhere
+	void saveAnywhere();
+	bool mSaveAnywhereScriptRunning = false;
+	uint32_t mSaveAnywhereThreadID;
+	
+	// Adjust Coin Count + Set Sequence
+	void adjustCoinCountSetSequence();
+	uint32_t CoinCountButtonHoldCounter;
+	
+	// Warp
+	void warp();
+	
+	// Bobbery Early
+	void bobberyEarly();
+	
+	// Add/Remove Partners
+	void addOrRemovePartners();
+	bool addOrRemovePartnersDisable = false;
+	
+	// Reset GSWF Flags
+	void resetGSWFFlags();
+	
+	// Lock Mario's HP, Toggle
+	void lockMarioHPToggle();
+	bool MarioHPCurrentlyLocked = false;
+	bool lockMarioHPToggleDisable = false;
+	
+	// Change Inventory
+	void changeInventory();
+	uint16_t FirstButtonPressed;
+	uint32_t ChangeInventoryButtonHoldCounter;
+	
+	// Allow running from any fight
+	void allowRunAway();
+	
+	// Infinite item usage
+	void infiniteItemUsage();
+	
+	// Art Attack hitboxes
+	void artAttackHitboxes();
+	
+	// Enable Debug Mode
+	void enableDebugMode();
+	
+	// Button Input Display
+	void buttonInputDisplay();
+	uint32_t mButtonInputDisplayCounter;
+	bool mButtonInputDisplayEnabled = false;
 	
 private:
-	Timer<uint32_t> mPalaceSkipTimer;
-	bool mPaused = false;
+	uint32_t mResetCounter;
+	uint32_t mEnabledOrDisabledCounter;
 	
 	void (*mPFN_makeKey_trampoline)() = nullptr;
 	char mDisplayBuffer[256];

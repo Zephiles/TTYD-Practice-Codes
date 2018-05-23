@@ -7,10 +7,10 @@ extern "C" {
 // strstr
 // strchr
 // strncmp
-uint32_t strcmp(const char *string1, const char *string2);
+int32_t strcmp(const char *String1, const char *String2);
 // strcat
-// strncpy
-// strcpy
+void strncpy(char *Destination, const char *SourceString, uint32_t AmountOfBytesToCopy);
+void strcpy(char *Destination, const char *SourceString);
 // strlen
 
 }

@@ -1,8 +1,6 @@
-#pragma once
+#include <cstdio>
 
-#include <cstdint>
-
-//Enumerations
+// Enumerations
 enum PAD_INPUTS : uint16_t
 {
 	PAD_DPAD_LEFT = 0x0001,
@@ -18,11 +16,3 @@ enum PAD_INPUTS : uint16_t
 	PAD_Y = 0x0800,
 	PAD_START = 0x1000,
 };
-
-//Global Variables
-extern uint32_t r13;
-extern char *las_25;
-extern char *tik_07;
-extern char *CurrentRoom;
-extern float NoPointer;
-extern uint32_t mResetCounter;

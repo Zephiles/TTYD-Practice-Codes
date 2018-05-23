@@ -1,6 +1,6 @@
 #pragma once
 
-#include "seqdrv.h"
+#include <ttyd/seqdrv.h>
 
 #include <cstdint>
 

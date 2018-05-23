@@ -3,12 +3,8 @@
 
 #include <ttyd/system.h>
 #include <ttyd/fontmgr.h>
-#include <ttyd/dispdrv.h>
-#include <ttyd/seqdrv.h>
 #include <ttyd/seq_logo.h>
-#include <ttyd/string.h>
-#include <ttyd/swdrv.h>
-#include <ttyd/global.h>
+#include <ttyd/dispdrv.h>
 
 #include <cstdio>
 
@@ -45,31 +41,47 @@ void Mod::init()
 	{
 		ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kTitle, nullptr, nullptr);
 	});*/
+	
+	// --Codes (Only run once)--
+	Mod::allowRunAway();
+	Mod::enableDebugMode();
+	
+	//--Codes (Only run once - Assembly)--
+	Mod::forcePhantomEmberDrop();
+	Mod::autoActionCommands();
+	Mod::disableBattles();
+	Mod::infiniteItemUsage();
+	Mod::artAttackHitboxes();
 }
 
 void Mod::updateEarly()
 {
-	if ((ttyd::string::strcmp(CurrentRoom,las_25) == 0) && (ttyd::swdrv::swByteGet(0) < 390))
-	{
-		Mod::updateEarlyPalaceSkip();
-	}
-	
-	else if (ttyd::string::strcmp(CurrentRoom,tik_07) == 0)
-	{
-		Mod::updateEarlyYoshiSkip();
-	}
-	
-	else
-	{
-		mPalaceSkipTimer.stop();
-		mPalaceSkipTimer.setValue(0);
-		mResetCounter = 0;
-	}
+	// --Codes (No Display)--
+	Mod::textStorage();
+	Mod::levitate();
+	Mod::speedUpMario();
+	Mod::saveLoadPositions();
+	Mod::reloadScreen();
+	Mod::gameOver();
+	Mod::adjustCoinCountSetSequence();
+	Mod::warp();
+	Mod::bobberyEarly();
+	Mod::addOrRemovePartners();
+	Mod::resetGSWFFlags();
+	Mod::lockMarioHPToggle();
+	Mod::saveAnywhere();
+	Mod::changeInventory();
 	
 	// Check for font load
 	ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, [](ttyd::dispdrv::DisplayLayer layerId, void *user)
 	{
-		reinterpret_cast<Mod *>(user)->drawButtonsDisplay();
+		// --Tricks (With Display)--
+		reinterpret_cast<Mod *>(user)->palaceSkip();
+		reinterpret_cast<Mod *>(user)->yoshiSkip();
+	
+		// --Codes (With Display)--
+		reinterpret_cast<Mod *>(user)->onScreenTimer();
+		reinterpret_cast<Mod *>(user)->buttonInputDisplay();
 	}, this);
 	
 	// Call original function

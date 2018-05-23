@@ -41,8 +41,8 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR)).$(VERSION)
 BUILD		:=	build.$(VERSION)
-SOURCES		:=	source
-DATA		:=	data  
+SOURCES		:=	source $(wildcard source/*)
+DATA		:=	data
 INCLUDES	:=	include
 
 #---------------------------------------------------------------------------------
@@ -59,14 +59,17 @@ LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections 
 # Platform options
 ifeq ($(VERSION),us)
 	CFLAGS += -DTTYD_US
+	ASFLAGS += -DTTYD_US
 	GAMECODE = "G8ME"
 	PRINTVER = "US"
 else ifeq ($(VERSION),jp)
 	CFLAGS += -DTTYD_JP
+	ASFLAGS += -DTTYD_JP
 	GAMECODE = "G8MJ"
 	PRINTVER = "JP"
 else ifeq ($(VERSION),eu)
 	CFLAGS += -DTTYD_EU
+	ASFLAGS += -DTTYD_EU
 	GAMECODE = "G8MP"
 	PRINTVER = "EU"
 endif
@@ -124,7 +127,6 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/include/ttyd.$(VERSION).lst
-# export BANNERFILE	:= $(CURDIR)/banner.raw
 ifeq ($(VERSION),us)
 	export BANNERFILE	:= $(CURDIR)/banner_us.raw
 else ifeq ($(VERSION),jp)

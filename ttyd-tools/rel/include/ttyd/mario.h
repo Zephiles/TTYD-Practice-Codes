@@ -60,7 +60,7 @@ struct Player
 	float wCamZoom;
 	float wCamPan;
 	uint8_t gap_150[48];
-	float wPlayerTarget;
+	float wPlayerBaseSpeed;
 	float unk_184;
 	float unk_188;
 	float wPlayerEffectiveSpeed;
@@ -157,8 +157,8 @@ extern "C" {
 // marioBgmodeOn
 // marioBgmodeChk
 // marioSetMutekiTime
-// marioKeyOn
-// marioKeyOff
+void marioKeyOn();
+void marioKeyOff();
 // marioCtrlOn2
 // marioCtrlOff2
 // marioCtrlOn
