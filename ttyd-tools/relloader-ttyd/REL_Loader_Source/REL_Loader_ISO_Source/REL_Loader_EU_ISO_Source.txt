@@ -1,16 +1,17 @@
 # Code created by PistonMiner and Zephiles
 
-# 800710F4 ## Address to hook for this code - Use the following line to branch to this code
-# b -0x6CB6C ## 0x710F4-0x4588
+# 800710F4 -- Address to hook for this code - Use the following line to branch to this code
+# b -0x6CB6C -- 0x710F4-0x4588
 
 # Static values used for addresses/pointers
+li r16,0 # Used to check if a REL file is loaded or not
 lis r20,0x8000
 
 # Check if a Memory Card is present
 li r3,0 # Memory Card Slot A
 li r4,0 # Memory Size (Not needed, so NULL)
 li r5,0 # Sector Size (Not needed, so NULL)
-bl 0x2AF078 # CARDProbeEx ## 0x4598
+bl 0x2AF074 # CARDProbeEx -- 0x459C
 cmpwi r3,0 # Make sure nothing is wrong with the card
 bne- Exit
 
@@ -20,7 +21,7 @@ lwz r4,0x1C78(r13)
 lwz r4,0x4(r4) # Pointer to Work Area
 li r5,0 # Detach Callback Function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback Function (Want to avoid using, so NULL)
-bl 0x2AF760 # CARDMountAsync ## 0x45B8
+bl 0x2AF75C # CARDMountAsync -- 0x45BC
 cmpwi r3,0 # Check if Mounting failed or not
 bne- Exit
 bl CallCARDGetResultCode
@@ -31,7 +32,7 @@ bne- Exit
 li r3,0 # Memory Card Slot A
 ori r4,r20,0x40DC # File Name
 addi r5,r4,0x10 # Card File Structure Output Area
-bl 0x2B067C # CARDOpen ## 0x45DC
+bl 0x2B0678 # CARDOpen -- 0x45E0
 cmpwi r3,0 # Check For Exception
 bne- UnmountCard
 
@@ -76,7 +77,7 @@ bl AllocateMemory
 mr r4,r3 # Address of allocated bytes
 mr r15,r3 # Backup of the Address to use for later
 mr r3,r14 # File Buffer
-bl 0x29A2E8 # OSLink ## 0x4648
+bl 0x29A2E4 # OSLink -- 0x464C
 cmpwi r3,1 # Check if something went wrong
 bne- FreeRemainingRAM
 
@@ -84,21 +85,19 @@ bne- FreeRemainingRAM
 stw r15,0x414C(r20) # BSS Buffer
 stw r14,0x4150(r20) # File Buffer
 
-# Run REL Prolog
-lwz r3,0x34(r14) # Prolog
-mtlr r3
-blrl
+# Load REL Prolog Address
+lwz r16,0x34(r14) # Prolog
 
 # Done, so Close Card and Unmount
 b CloseCard
 
 AllocateMemory:
 li r3,0 # Heap to use
-b 0x2BB68 # __memAlloc ## 0x4670
+b 0x2BB6C # __memAlloc -- 0x466C
 
 FreeMemory:
 li r3,0 # Heap to use
-b 0x2BB34 # __memFree ## 0x4678
+b 0x2BB38 # __memFree -- 0x4674
 
 # CARDGetResultCode needs to be called every time an Async function runs
 CallCARDGetResultCode:
@@ -106,7 +105,7 @@ mflr r17
 
 CallCARDGetResultCodeMain:
 li r3,0 # Memory Card Slot A
-bl 0x2AC13C # CARDGetResultCode ## 0x4684
+bl 0x2AC140 # CARDGetResultCode -- 0x4680
 cmpwi r3,-1 # Still working
 beq+ CallCARDGetResultCodeMain
 mtlr r17
@@ -118,7 +117,7 @@ mr r4,r3 # Address of allocated bytes
 mr r14,r3 # Backup of the Address to use for later
 ori r3,r20,0x40EC # Output Area from CARDOpen
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
-bl 0x2B0D5C # CARDReadAsync ## 0x46AC
+bl 0x2B0D60 # CARDReadAsync -- 0x46A8
 cmpwi r3,0 # Check if something went wrong
 bne- Free512OrBSSArea
 b CallCARDGetResultCodeMain
@@ -130,7 +129,7 @@ b CloseCard
 
 FreeRemainingRAM:
 mr r3,r14 # File Buffer
-bl 0x29A4C0 # OSUnlink ## 0x46CC
+bl 0x29A4C4 # OSUnlink -- 0x46C8
 
 mr r4,r15 # BSS Buffer
 bl FreeMemory
@@ -139,15 +138,21 @@ bl FreeMemory
 
 CloseCard:
 ori r3,r20,0x40EC # Output Area from CARDOpen
-bl 0x2B0690 # CARDClose ## 0x46E4
+bl 0x2B0694 # CARDClose -- 0x46E0
 
 UnmountCard:
 li r3,0 # Memory Card Slot A
-bl 0x2AF868 # CARDUnmount ## 0x46EC
+bl 0x2AF86C # CARDUnmount -- 0x46E8
+
+# Run REL Prolog if loaded
+cmpwi r16,0
+beq- Exit
+mtlr r16
+blrl
 
 Exit:
 # Add back in overwritten instruction
 li r3,0
 
 # Branch back to hooked function
-b 0x6CA04 # 800710F8 ## 0x46F4
+b 0x6C9F8 # 800710F8 -- 0x4700

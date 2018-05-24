@@ -3,6 +3,7 @@
 # 800710F4 - Address to hook for this code
 
 # Static values used for addresses/pointers
+li r16,0 # Used to check if a REL file is loaded or not
 lis r21,0x802B
 lis r22,0x8000
 lis r23,0x8003
@@ -94,10 +95,8 @@ bne- FreeRemainingRAM
 stw r15,0x414C(r22) # BSS Buffer
 stw r14,0x4150(r22) # File Buffer
 
-# Run REL Prolog
-lwz r3,0x34(r14) # Prolog
-mtlr r3
-blrl
+# Load REL Prolog Address
+lwz r16,0x34(r14) # Prolog
 
 # Done, so Close Card and Unmount
 b CloseCard
@@ -167,6 +166,12 @@ UnmountCard:
 ori r3,r21,0x3F54 # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
+blrl
+
+# Run REL Prolog if loaded
+cmpwi r16,0
+beq- Exit
+mtlr r16
 blrl
 
 Exit:
