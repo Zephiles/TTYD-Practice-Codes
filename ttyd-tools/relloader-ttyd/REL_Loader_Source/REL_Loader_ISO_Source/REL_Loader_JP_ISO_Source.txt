@@ -144,7 +144,7 @@ UnmountCard:
 li r3,0 # Memory Card Slot A
 bl 0x2A59EC # CARDUnmount -- 0x46E8
 
-# Run REL Prolog if loaded
+# Run REL Prolog if load was successful
 cmpwi r16,0
 beq- Exit
 mtlr r16

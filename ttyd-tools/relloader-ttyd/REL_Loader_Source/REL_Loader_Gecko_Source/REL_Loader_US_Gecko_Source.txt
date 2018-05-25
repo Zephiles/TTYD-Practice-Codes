@@ -169,7 +169,7 @@ mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
 
-# Run REL Prolog if loaded
+# Run REL Prolog if load was successful
 cmpwi r16,0
 beq- Exit
 mtlr r16
