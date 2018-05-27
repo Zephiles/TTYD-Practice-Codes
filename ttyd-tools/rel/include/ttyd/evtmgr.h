@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::evtmgr {
-	
+
 extern "C" {
 
 // evtGetPtrID

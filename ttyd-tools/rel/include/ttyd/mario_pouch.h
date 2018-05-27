@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::mario_pouch {
-	
+
 extern "C" {
 
 // pouchGetYoshiName

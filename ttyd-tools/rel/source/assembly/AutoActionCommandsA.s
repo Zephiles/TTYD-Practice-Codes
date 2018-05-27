@@ -2,17 +2,17 @@
 .global BranchBackActionCommands
 
 #ifdef TTYD_US
-button_input_high = 0x803D
-button_input_low = -0x5C68
-store_byte = 0x307
+  button_input_high = 0x803D
+  button_input_low = -0x5C68
+  store_byte = 0x307
 #elif defined TTYD_JP
-button_input_high = 0x803C
-button_input_low = 0x6818
-store_byte = 0x303
+  button_input_high = 0x803C
+  button_input_low = 0x6818
+  store_byte = 0x303
 #elif defined TTYD_EU
-button_input_high = 0x803D
-button_input_low = 0x63F8
-store_byte = 0x30B
+  button_input_high = 0x803D
+  button_input_low = 0x63F8
+  store_byte = 0x30B
 #endif
 
 StartActionCommands:

@@ -2,14 +2,14 @@
 .global BranchBackPhantomEmberDrop
 
 #ifdef TTYD_US
-map_las_25_low = 0x0A84
-next_map_offset = 0x16A8
+  map_las_25_low = 0x0A84
+  next_map_offset = 0x16A8
 #elif defined TTYD_JP
-map_las_25_low = 0x2804
-next_map_offset = 0x1148
+  map_las_25_low = 0x2804
+  next_map_offset = 0x1148
 #elif defined TTYD_EU
-map_las_25_low = 0xC604
-next_map_offset = 0x1788
+  map_las_25_low = 0xC604
+  next_map_offset = 0x1788
 #endif
 
 StartPhantomEmberDrop:

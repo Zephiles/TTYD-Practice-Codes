@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::win_party {
-	
+
 extern "C" {
 
 // winPartyDisp

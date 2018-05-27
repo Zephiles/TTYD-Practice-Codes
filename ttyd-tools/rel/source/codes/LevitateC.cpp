@@ -11,11 +11,11 @@ namespace mod {
 
 void Mod::levitate()
 {
-	if ((ttyd::system::keyGetButton(0) & LevitateCombo) == (LevitateCombo))
-	{
-		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		player->wJumpVelocityY = 4.540000915527344; // This ends up writing the exact same value as the Gecko code
-	}
+  if ((ttyd::system::keyGetButton(0) & LevitateCombo) == (LevitateCombo))
+  {
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    player->wJumpVelocityY = 4.540000915527344; // This ends up writing the exact same value as the Gecko code
+  }
 }
 
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::mario_party {
-	
+
 extern "C" {
 
 // partyGetTechLv

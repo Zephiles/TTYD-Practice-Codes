@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::party {
-	
+
 extern "C" {
 
 // partySetFamicomMode

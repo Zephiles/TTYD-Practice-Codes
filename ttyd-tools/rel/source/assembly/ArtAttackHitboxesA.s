@@ -2,32 +2,32 @@
 .global BranchArtAttackHitboxes
 
 #ifdef TTYD_US
-button_input_high = 0x803D
-button_input_low = -0x5C68
-battle_address = 0x1C70
-unk_offset_1 = 0x0844
-unk_offset_2 = 0x0870
-unk_offset_3 = 0x0874
-unk_offset_4 = 0x0868
-unk_offset_5 = 0x0854
+  button_input_high = 0x803D
+  button_input_low = -0x5C68
+  battle_address = 0x1C70
+  unk_offset_1 = 0x0844
+  unk_offset_2 = 0x0870
+  unk_offset_3 = 0x0874
+  unk_offset_4 = 0x0868
+  unk_offset_5 = 0x0854
 #elif defined TTYD_JP
-button_input_high = 0x803C
-button_input_low = 0x6818
-battle_address = 0x1710
-unk_offset_1 = 0x03A4
-unk_offset_2 = 0x03D0
-unk_offset_3 = 0x03D4
-unk_offset_4 = 0x03C8
-unk_offset_5 = 0x03B4
+  button_input_high = 0x803C
+  button_input_low = 0x6818
+  battle_address = 0x1710
+  unk_offset_1 = 0x03A4
+  unk_offset_2 = 0x03D0
+  unk_offset_3 = 0x03D4
+  unk_offset_4 = 0x03C8
+  unk_offset_5 = 0x03B4
 #elif defined TTYD_EU
-button_input_high = 0x803D
-button_input_low = 0x63F8
-battle_address = 0x1D50
-unk_offset_1 = 0x08CC
-unk_offset_2 = 0x08F8
-unk_offset_3 = 0x08FC
-unk_offset_4 = 0x08F0
-unk_offset_5 = 0x08DC
+  button_input_high = 0x803D
+  button_input_low = 0x63F8
+  battle_address = 0x1D50
+  unk_offset_1 = 0x08CC
+  unk_offset_2 = 0x08F8
+  unk_offset_3 = 0x08FC
+  unk_offset_4 = 0x08F0
+  unk_offset_5 = 0x08DC
 #endif
 
 StartArtAttackHitboxes:

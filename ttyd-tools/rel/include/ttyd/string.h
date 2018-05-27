@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::string {
-	
+
 extern "C" {
 
 // strstr

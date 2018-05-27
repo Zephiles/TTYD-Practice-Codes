@@ -16,21 +16,21 @@ void Mod::textStorage()
   uint32_t ButtonInput = ttyd::system::keyGetButton(0);
   uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
   
-	if ((ButtonInput & TextStorageCombo) == (TextStorageCombo))
-	{
-		if (PartnerPointer != 0)
-		{
-			// A Partner is currently out
-			*reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 0;
-		}
-	}
+  if ((ButtonInput & TextStorageCombo) == (TextStorageCombo))
+  {
+    if (PartnerPointer != 0)
+    {
+      // A Partner is currently out
+      *reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 0;
+    }
+  }
   else if ((ButtonInput & TimeStopTextStorageCombo) == (TimeStopTextStorageCombo))
   {
-		if (PartnerPointer != 0)
-		{
-			// A Partner is currently out
-			*reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 21;
-		}
+    if (PartnerPointer != 0)
+    {
+      // A Partner is currently out
+      *reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 21;
+    }
   }
 }
 

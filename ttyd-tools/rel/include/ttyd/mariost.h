@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::mariost {
-	
+
 extern "C" {
 
 void marioStInit();

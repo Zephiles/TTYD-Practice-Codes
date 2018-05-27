@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ttyd::swdrv {
-	
+
 extern "C" {
 
 // _swByteGet
