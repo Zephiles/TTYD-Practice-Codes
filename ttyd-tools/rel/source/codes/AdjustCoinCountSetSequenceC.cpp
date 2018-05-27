@@ -27,96 +27,92 @@ void adjustCoinCount(uint32_t tempCoinCountAddress, int16_t tempCoinCount, int16
 
 void Mod::adjustCoinCountSetSequence()
 {
-  if (ttyd::mariost::marioStGetSystemLevel() == 15)
+  uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
+  uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
+  
+  if ((ttyd::mariost::marioStGetSystemLevel() == 15) && (CurrentTab == 0))
   {
-    // Currently in the pause menu	
-    uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
-    uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
-    
+    // Currently in the pause menu and Current Tab is Mario's stats
     uint32_t CoinCountAddress = ttyd::mario_pouch::pouchGetPtr() + 0x78;
     int16_t CoinCount = *reinterpret_cast<int16_t *>(CoinCountAddress);
     
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
     uint16_t ButtonHoldFrames = 45; // 0.75 Seconds
     
-    if (CurrentTab == 0)
+    if ((ButtonInput & CoinsSetToZeroCombo) == CoinsSetToZeroCombo)
     {
-      // Current Tab is Mario's stats
-      if ((ButtonInput & CoinsSetToZeroCombo) == CoinsSetToZeroCombo)
+      // Set Coin Count to 0
+      *reinterpret_cast<int16_t *>(CoinCountAddress) = 0;
+    }
+    else if ((ButtonInput & CoinsSetSequenceCombo) == CoinsSetSequenceCombo)
+    {
+      // Set Sequence Position to Coin Count
+      ttyd::swdrv::swByteSet(0, CoinCount);
+    }
+    else if ((ButtonInput & CoinsIncrement1Combo) == CoinsIncrement1Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        // Set Coin Count to 0
-        *reinterpret_cast<int16_t *>(CoinCountAddress) = 0;
+        // Increment Coin Count by 1
+        adjustCoinCount(CoinCountAddress, CoinCount, 1);
       }
-      else if ((ButtonInput & CoinsSetSequenceCombo) == CoinsSetSequenceCombo)
+      CoinCountButtonHoldCounter++;
+    }
+    else if ((ButtonInput & CoinsIncrement10Combo) == CoinsIncrement10Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        // Set Sequence Position to Coin Count
-        ttyd::swdrv::swByteSet(0, CoinCount);
+        // Increment Coin Count by 10
+        adjustCoinCount(CoinCountAddress, CoinCount, 10);
       }
-      else if ((ButtonInput & CoinsIncrement1Combo) == CoinsIncrement1Combo)
+      CoinCountButtonHoldCounter++;
+    }
+    else if ((ButtonInput & CoinsIncrement100Combo) == CoinsIncrement100Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Increment Coin Count by 1
-          adjustCoinCount(CoinCountAddress, CoinCount, 1);
-        }
-        CoinCountButtonHoldCounter++;
+        // Increment Coin Count by 100
+        adjustCoinCount(CoinCountAddress, CoinCount, 100);
       }
-      else if ((ButtonInput & CoinsIncrement10Combo) == CoinsIncrement10Combo)
+      CoinCountButtonHoldCounter++;
+    }
+    else if ((ButtonInput & CoinsDecrement1Combo) == CoinsDecrement1Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Increment Coin Count by 10
-          adjustCoinCount(CoinCountAddress, CoinCount, 10);
-        }
-        CoinCountButtonHoldCounter++;
+        // Decrement Coin Count by 1
+        adjustCoinCount(CoinCountAddress, CoinCount, -1);
       }
-      else if ((ButtonInput & CoinsIncrement100Combo) == CoinsIncrement100Combo)
+      CoinCountButtonHoldCounter++;
+    }
+    else if ((ButtonInput & CoinsDecrement10Combo) == CoinsDecrement10Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Increment Coin Count by 100
-          adjustCoinCount(CoinCountAddress, CoinCount, 100);
-        }
-        CoinCountButtonHoldCounter++;
+        // Decrement Coin Count by 10
+        adjustCoinCount(CoinCountAddress, CoinCount, -10);
       }
-      else if ((ButtonInput & CoinsDecrement1Combo) == CoinsDecrement1Combo)
+      CoinCountButtonHoldCounter++;
+    }
+    else if ((ButtonInput & CoinsDecrement100Combo) == CoinsDecrement100Combo)
+    {
+      if (CoinCountButtonHoldCounter == 0)
       {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Decrement Coin Count by 1
-          adjustCoinCount(CoinCountAddress, CoinCount, -1);
-        }
-        CoinCountButtonHoldCounter++;
+        // Decrement Coin Count by 100
+        adjustCoinCount(CoinCountAddress, CoinCount, -100);
       }
-      else if ((ButtonInput & CoinsDecrement10Combo) == CoinsDecrement10Combo)
-      {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Decrement Coin Count by 10
-          adjustCoinCount(CoinCountAddress, CoinCount, -10);
-        }
-        CoinCountButtonHoldCounter++;
-      }
-      else if ((ButtonInput & CoinsDecrement100Combo) == CoinsDecrement100Combo)
-      {
-        if (CoinCountButtonHoldCounter == 0)
-        {
-          // Decrement Coin Count by 100
-          adjustCoinCount(CoinCountAddress, CoinCount, -100);
-        }
-        CoinCountButtonHoldCounter++;
-      }
-      else
-      {
-        // Reset counter if no button combo is pressed/held
-        CoinCountButtonHoldCounter = 0;
-      }
-      
-      if (CoinCountButtonHoldCounter > ButtonHoldFrames)
-      {
-        // Reset if counter exceeds ButtonHoldFrames
-        CoinCountButtonHoldCounter = 0;
-      }
+      CoinCountButtonHoldCounter++;
+    }
+    else
+    {
+      // Reset counter if no button combo is pressed/held
+      CoinCountButtonHoldCounter = 0;
+    }
+    
+    if (CoinCountButtonHoldCounter > ButtonHoldFrames)
+    {
+      // Reset if counter exceeds ButtonHoldFrames
+      CoinCountButtonHoldCounter = 0;
     }
   }
 }

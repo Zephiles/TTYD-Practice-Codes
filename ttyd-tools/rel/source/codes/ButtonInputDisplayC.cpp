@@ -51,8 +51,7 @@ void Mod::buttonInputDisplay()
           ttyd::fontmgr::FontDrawEdge();
           ttyd::fontmgr::FontDrawMessage(DrawX, -140, mDisplayBuffer);
         }
-        
-      DrawX += 20;
+        DrawX += 20;
       }
     }
   }
