@@ -52,6 +52,7 @@ void Mod::init()
   Mod::disableBattles();
   Mod::infiniteItemUsage();
   Mod::artAttackHitboxes();
+  Mod::spawnItemPreventCrash();
 }
 
 void Mod::updateEarly()

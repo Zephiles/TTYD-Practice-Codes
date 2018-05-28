@@ -109,6 +109,7 @@ private:
   void spawnItem();
   uint8_t spawnItemNameCounter;
   bool spawnItemDisable = false;
+  void spawnItemPreventCrash();
   
   // Enable Debug Mode
   void enableDebugMode();
