@@ -119,4 +119,6 @@ uint16_t InfiniteItemsUsageCombo = PAD_Y;
 // Art Attack Hitboxes
 uint16_t ArtAttackHitboxesCombo = PAD_R | PAD_A;
 
+// Spawn Item
+uint16_t SpawnItemCombo = PAD_L | PAD_DPAD_DOWN;
 }

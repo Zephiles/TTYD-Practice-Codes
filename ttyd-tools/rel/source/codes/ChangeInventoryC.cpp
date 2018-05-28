@@ -16,7 +16,7 @@ extern uint16_t InventoryRemoveItemOrBadgeFirstButtonCombo;
 extern uint16_t InventoryPreviousValueFirstButtonCombo;
 extern uint16_t InventoryNextValueFirstButtonCombo;
 
-void addItemOrBadge(uint32_t PouchAddress, uint16_t ItemOrBadge, uint8_t LoopCounter, uint32_t SubMenu)
+void addItemOrBadge(uint32_t PouchAddress, uint16_t ItemOrBadge, int16_t LoopCounter, uint32_t SubMenu)
 {
   if (SubMenu != 1)
   {
@@ -39,7 +39,7 @@ void addItemOrBadge(uint32_t PouchAddress, uint16_t ItemOrBadge, uint8_t LoopCou
   }
 }
 
-void removeItemOrBadge(uint32_t PouchAddress, uint32_t Index, uint8_t LoopCounter, bool BadgeFlag, uint32_t SubMenu)
+void removeItemOrBadge(uint32_t PouchAddress, int32_t Index, int16_t LoopCounter, bool BadgeFlag, uint32_t SubMenu)
 {
   if (SubMenu != 1)
   {
@@ -105,16 +105,16 @@ void Mod::changeInventory()
   {
     // Currently in the pause menu
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-    uint8_t PressedOrHeldButtonCount = 0;
+    int16_t PressedOrHeldButtonCount = 0;
     uint16_t ButtonHoldFrames = 45; // 0.75 Seconds
     
     uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
     uint32_t CursorItem = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x138);
     uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
     uint32_t SubMenuImportantItems = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x210);
-    uint32_t InventoryCurrentIndex = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x214);
+    int32_t InventoryCurrentIndex = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x214);
     uint32_t SubMenuEquippedBadges = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x3E0);
-    uint32_t BadgesCurrentIndex = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x3E4);
+    int32_t BadgesCurrentIndex = *reinterpret_cast<int32_t *>(PauseMenuAddress + 0x3E4);
     
     uint32_t PouchAddress = ttyd::mario_pouch::pouchGetPtr();
     uint32_t PouchStandardInventoryAddress = PouchAddress + 0x192;
@@ -122,8 +122,8 @@ void Mod::changeInventory()
     
     uint16_t GoldBar = 126;
     uint16_t PowerJump = 240;
-    uint8_t StandardItemsLoopCounter = 20;
-    uint8_t BadgesLoopCounter = 200;
+    int16_t StandardItemsLoopCounter = 20;
+    int16_t BadgesLoopCounter = 200;
     
     uint16_t StandardItemsUpperBound = 235;
     uint16_t StandardItemsLowerBound = GoldBar;

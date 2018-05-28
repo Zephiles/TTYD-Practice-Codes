@@ -55,7 +55,7 @@ void Mod::palaceSkip()
       uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
       ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
       
-      uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
+      uint32_t PartnerPointer = reinterpret_cast<uint32_t>(ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId()));
       float partnerCoordinateY;
       
       uint32_t NPCAddresses = *reinterpret_cast<uint32_t *>(NPCAddressesStart);
@@ -185,7 +185,7 @@ void Mod::palaceSkip()
       }
       
       sprintf(mDisplayBuffer,
-        "PST: %lu\r\nItemTimer: %d\r\nPhaEmY: %.2f\r\nParY: %.2f\r\nMarPos: %.2f %.2f %.2f",
+        "PST: %lu\r\nItemTimer: %ld\r\nPhaEmY: %.2f\r\nParY: %.2f\r\nMarPos: %.2f %.2f %.2f",
         mPalaceSkipTimer.getValue(),
         ItemTimer,
         phantomEmberCoordinateY,

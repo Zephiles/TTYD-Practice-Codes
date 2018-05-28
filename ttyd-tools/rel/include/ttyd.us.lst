@@ -277,6 +277,38 @@
 8008746C:seq_logoExit
 800874B0:seq_logoInit
 
+// itemdrv.o
+// 800AA4FC:itemPickUp
+// 800AA530:itemStatus
+// 800AA53C:itemStatusOn
+// 800AA54C:itemFlag
+// 800AA55C:itemFlagOff
+// 800AA56C:itemFlagOn
+// 800AA57C:itemNokoForceGet
+// 800AA62C:itemForceGet
+// 800AA660:itemHitCheckSide
+// 800AAB24:itemSetPosition
+// 800AAB34:itemseq_Bound
+// 800AB930:itemseq_GetItem
+// 800ACC54:winFullDisp
+// 800ACD5C:winHelpDisp
+// 800ACDC8:winHelpMain
+// 800ACDE8:winNameDisp2
+// 800ACF34:winNameDisp
+// 800AD0E8:itemNearDistCheck
+// 800AD2AC:itemHitCheck
+// 800AD658:itemNameToPtr
+// 800AD6F4:itemDelete
+800AD7F0:itemEntry
+// 800ADFD0:itemModeChange
+// 800ADFE0:itemMain
+// 800AE67C:unk_JP_US_PAL_023_800ae67c
+// 800AE6DC:itemGetNokoCheck
+// 800AE870:itemGetCheck
+// 800AEAAC:itemCoinDrop
+// 800AEB20:itemReInit
+// 800AEC18:itemInit
+
 // party.o
 // 800B713C:partySetFamicomMode
 // 800B7530:partyShadowOff
@@ -686,7 +718,7 @@
 // 8026D3F4:strchr
 // 8026D424:strncmp
 8026D464:strcmp
-// 8026D58C:strcat
+8026D58C:strcat
 8026D5B8:strncpy
 8026D5FC:strcpy
 // 8026D6B4:strlen

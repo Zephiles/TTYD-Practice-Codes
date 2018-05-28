@@ -105,6 +105,11 @@ private:
   // Art Attack hitboxes
   void artAttackHitboxes();
   
+  // Spawn Item
+  void spawnItem();
+  uint8_t spawnItemNameCounter;
+  bool spawnItemDisable = false;
+  
   // Enable Debug Mode
   void enableDebugMode();
   

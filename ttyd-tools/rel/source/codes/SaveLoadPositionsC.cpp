@@ -16,7 +16,7 @@ void Mod::saveLoadPositions()
 {
   uint32_t ButtonInput = ttyd::system::keyGetButton(0);
   ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-  uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
+  uint32_t PartnerPointer = reinterpret_cast<uint32_t>(ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId()));
   
   if ((ButtonInput & SavePositions) == (SavePositions))
   {

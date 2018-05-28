@@ -14,7 +14,7 @@ namespace mod {
 void Mod::textStorage()
 {
   uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-  uint32_t PartnerPointer = ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId());
+  uint32_t PartnerPointer = reinterpret_cast<uint32_t>(ttyd::party::partyGetPtr(ttyd::mario_party::marioGetPartyId()));
   
   if ((ButtonInput & TextStorageCombo) == (TextStorageCombo))
   {

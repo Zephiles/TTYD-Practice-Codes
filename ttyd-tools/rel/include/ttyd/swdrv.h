@@ -9,8 +9,8 @@ extern "C" {
 // _swClear
 // _swGet
 // _swSet
-uint32_t swByteGet(uint32_t GSWOffset);
-void swByteSet(uint32_t GSWOffset, uint32_t Value);
+uint32_t swByteGet(uint32_t gswOffset);
+void swByteSet(uint32_t gswOffset, uint32_t value);
 // swClear
 // swGet
 // swSet

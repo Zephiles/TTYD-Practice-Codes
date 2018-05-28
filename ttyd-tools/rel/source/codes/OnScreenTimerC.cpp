@@ -50,7 +50,7 @@ void Mod::onScreenTimer()
     uint32_t hour = timerCount / (60 * 60 * 60);
     
     sprintf(mDisplayBuffer,
-      "%.2d:%.2d:%.2d.%.2d",
+      "%.2ld:%.2ld:%.2ld.%.2ld",
       hour,
       minute,
       second,

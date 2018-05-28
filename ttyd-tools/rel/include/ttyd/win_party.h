@@ -7,9 +7,9 @@ extern "C" {
 // winPartyDisp
 // winPartyMain2
 // winPartyMain
-void winPartyExit(uint32_t *PauseMenuPointer);
+void winPartyExit(void *pauseMenuPointer);
 // winPartyInit2
-void winPartyInit(uint32_t *PauseMenuPointer);
+void winPartyInit(void *pauseMenuPointer);
 
 }
 

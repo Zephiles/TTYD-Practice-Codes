@@ -71,6 +71,7 @@ void Mod::updateEarly()
   Mod::lockMarioHPToggle();
   Mod::saveAnywhere();
   Mod::changeInventory();
+  Mod::spawnItem();
   
   // Check for font load
   ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, [](ttyd::dispdrv::DisplayLayer layerId, void *user)
