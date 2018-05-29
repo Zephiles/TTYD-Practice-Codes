@@ -29,10 +29,10 @@ void Mod::spawnItem()
         if ((CoinCount >= 1) && (CoinCount <= 338))
         {
           // Coin count is a valid item ID
-          char *ItemName = new char[8]; // 6 bytes for C_Item, 1 byte for spawnItemNameCounter, 1 byte for NULL
+          char *ItemName = new char[9]; // 6 bytes for C_Item, 2 bytes for spawnItemNameCounter, 1 byte for NULL
           ttyd::string::strcpy(ItemName, "C_Item");
           ttyd::string::strcat(ItemName, reinterpret_cast<char *>(&spawnItemNameCounter));
-          spawnItemNameCounter++;
+          spawnItemNameCounter--;
           
           ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
           float ItemCoordinateX = player->playerPosition[0];
@@ -42,10 +42,12 @@ void Mod::spawnItem()
           // Move item 30 units in front of Mario
           if (player->wPlayerDirection <= 0)
           {
+            // Mario is facing left
             ItemCoordinateX -= 30;
           }
           else
           {
+            // Mario is facing right
             ItemCoordinateX += 30;
           }
           
