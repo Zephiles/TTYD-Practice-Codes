@@ -9,8 +9,8 @@ lis r20,0x8000
 
 # Check if a Memory Card is present
 li r3,0 # Memory Card Slot A
-li r4,0 # Memory Size (Not needed, so NULL)
-li r5,0 # Sector Size (Not needed, so NULL)
+li r4,0 # Pointer to Memory Size (Not needed, so NULL)
+li r5,0 # Pointer to Sector Size (Not needed, so NULL)
 bl 0x2AF074 # CARDProbeEx -- 0x459C
 cmpwi r3,0 # Make sure nothing is wrong with the card
 bne- Exit
@@ -30,8 +30,8 @@ bne- Exit
 
 # Open the file
 li r3,0 # Memory Card Slot A
-ori r4,r20,0x40DC # File Name
-addi r5,r4,0x10 # Card File Structure Output Area
+ori r4,r20,0x40DC # Pointer to File Name
+addi r5,r4,0x10 # Pointer to Card File Info
 bl 0x2B0678 # CARDOpen -- 0x45E0
 cmpwi r3,0 # Check For Exception
 bne- UnmountCard
@@ -45,7 +45,7 @@ li r5,512 # Amount of bytes to read
 li r6,0x2000 # Offset in file to start reading from
 bl CallCARDReadAsync
 cmpwi r3,0 # Check if something went wrong
-bne- Free512OrBSSArea
+bne- FreeCurrentArea
 
 # Get File Size, and adjust to be in multiples of 512 bytes
 lwz r15,0x40(r14) # File Size
@@ -65,7 +65,7 @@ mr r5,r15 # Adjusted File Size
 li r6,0x2200 # Offset in file to start reading from
 bl CallCARDReadAsync
 cmpwi r3,0 # Check if something went wrong
-bne- Free512OrBSSArea
+bne- FreeCurrentArea
 
 # Get BSS Size
 lwz r4,0x20(r14) # BSS Size
@@ -74,9 +74,9 @@ lwz r4,0x20(r14) # BSS Size
 bl AllocateMemory
 
 # Link the functions in the REL
-mr r4,r3 # Address of allocated bytes
+mr r4,r3 # Pointer to BSS Area (Address of allocated bytes)
 mr r15,r3 # Backup of the Address to use for later
-mr r3,r14 # File Buffer
+mr r3,r14 # Pointer to Module (File Buffer)
 bl 0x29A2E4 # OSLink -- 0x464C
 cmpwi r3,1 # Check if something went wrong
 bne- FreeRemainingRAM
@@ -85,8 +85,8 @@ bne- FreeRemainingRAM
 stw r15,0x414C(r20) # BSS Buffer
 stw r14,0x4150(r20) # File Buffer
 
-# Load REL Prolog Address
-lwz r16,0x34(r14) # Prolog
+# Load REL Prolog Pointer
+lwz r16,0x34(r14) # Prolog Pointer
 
 # Done, so Close Card and Unmount
 b CloseCard
@@ -106,43 +106,41 @@ mflr r17
 CallCARDGetResultCodeMain:
 li r3,0 # Memory Card Slot A
 bl 0x2AC140 # CARDGetResultCode -- 0x4680
-cmpwi r3,-1 # Still working
+cmpwi r3,-1 # CARD_ERROR_BUSY
 beq+ CallCARDGetResultCodeMain
 mtlr r17
 blr
 
 CallCARDReadAsync:
 mflr r17
-mr r4,r3 # Address of allocated bytes
+mr r4,r3 # Pointer to Buffer Address (Address of allocated bytes)
 mr r14,r3 # Backup of the Address to use for later
-ori r3,r20,0x40EC # Output Area from CARDOpen
+ori r3,r20,0x40EC # Pointer to Card File Info
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
 bl 0x2B0D60 # CARDReadAsync -- 0x46A8
 cmpwi r3,0 # Check if something went wrong
-bne- Free512OrBSSArea
+bne- FreeCurrentArea
 b CallCARDGetResultCodeMain
 
-Free512OrBSSArea:
-mr r4,r14 # Address of allocated bytes
-bl FreeMemory
-b CloseCard
-
 FreeRemainingRAM:
-mr r3,r14 # File Buffer
-bl 0x29A4C4 # OSUnlink -- 0x46C8
+mr r3,r14 # Pointer to Module (File Buffer)
+bl 0x29A4D0 # OSUnlink -- 0x46BC
 
+# Free BSS Buffer and File Buffer
 mr r4,r15 # BSS Buffer
 bl FreeMemory
-mr r4,r14 # File Buffer
+
+FreeCurrentArea:
+mr r4,r14 # File Buffer (512 Area or BSS Area if branched to)
 bl FreeMemory
 
 CloseCard:
-ori r3,r20,0x40EC # Output Area from CARDOpen
-bl 0x2B0694 # CARDClose -- 0x46E0
+ori r3,r20,0x40EC # Pointer to Card File Info
+bl 0x2B06A0 # CARDClose -- 0x46D4
 
 UnmountCard:
 li r3,0 # Memory Card Slot A
-bl 0x2AF86C # CARDUnmount -- 0x46E8
+bl 0x2AF878 # CARDUnmount -- 0x46DC
 
 # Run REL Prolog if load was successful
 cmpwi r16,0
@@ -155,4 +153,4 @@ Exit:
 li r3,0
 
 # Branch back to hooked function
-b 0x6C9F8 # 800710F8 -- 0x4700
+b 0x6CA04 # 800710F8 -- 0x46F4
