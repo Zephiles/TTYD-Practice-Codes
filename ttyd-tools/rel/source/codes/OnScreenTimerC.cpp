@@ -56,11 +56,16 @@ void Mod::onScreenTimer()
       second,
       modframe);
     
+    int FontDrawX = 75;
+    #ifdef TTYD_JP
+      FontDrawX += 25;
+    #endif
+    
     ttyd::fontmgr::FontDrawStart();
     uint32_t color = 0xFFFFFFFF;
     ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
     ttyd::fontmgr::FontDrawEdge();
-    ttyd::fontmgr::FontDrawMessage(100, -153, mDisplayBuffer);
+    ttyd::fontmgr::FontDrawMessage(FontDrawX, -153, mDisplayBuffer);
     
     mOnScreenTimer.tick();
   }
