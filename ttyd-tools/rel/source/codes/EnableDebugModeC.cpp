@@ -13,7 +13,7 @@ void Mod::enableDebugMode()
     uint32_t DebugModeInitialzeAddress = 0x8000999C;
     uint32_t DebugModeShowBuildDateAddress = 0x80008EB8;
   #elif defined TTYD_EU
-    uint32_t DebugModeInitialzeAddress = 0x80009CFC;
+    uint32_t DebugModeInitialzeAddress = 0x80009CF0;
     uint32_t DebugModeShowBuildDateAddress = 0x800091B4;
   #endif
   
