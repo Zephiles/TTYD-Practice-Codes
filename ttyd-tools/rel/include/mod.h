@@ -35,6 +35,7 @@ private:
   
   // Text Storage
   void textStorage();
+  bool textStorageDisable = false;
   
   // Levitate
   void levitate();

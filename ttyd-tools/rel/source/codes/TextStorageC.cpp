@@ -18,19 +18,26 @@ void Mod::textStorage()
   
   if ((ButtonInput & TextStorageCombo) == (TextStorageCombo))
   {
-    if (PartnerPointer != 0)
+    if ((!textStorageDisable) && (PartnerPointer != 0))
     {
       // A Partner is currently out
       *reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 0;
     }
+    textStorageDisable = true;
   }
   else if ((ButtonInput & TimeStopTextStorageCombo) == (TimeStopTextStorageCombo))
   {
-    if (PartnerPointer != 0)
+    if ((!textStorageDisable) && (PartnerPointer != 0))
     {
       // A Partner is currently out
       *reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 21;
     }
+    textStorageDisable = true;
+  }
+  else
+  {
+    // Reset flag if no button combo is pressed/held
+    textStorageDisable = false;
   }
 }
 

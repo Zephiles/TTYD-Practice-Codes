@@ -17,12 +17,6 @@ extern char *NextArea;
 
 namespace mod {
 
-void writeMap(uint32_t Source)
-{
-  ttyd::string::strcpy(NextMap, reinterpret_cast<char *>(Source));
-  ttyd::string::strncpy(NextArea, reinterpret_cast<char *>(Source), 3);
-}
-
 void Mod::warp()
 {
   if ((ttyd::system::keyGetButton(0) & WarpCombo) == WarpCombo)
@@ -34,108 +28,52 @@ void Mod::warp()
     {
       // Currently in the pause menu, and Current Tab is Mario's stats
       int16_t CoinCount = *reinterpret_cast<int16_t *>(ttyd::mario_pouch::pouchGetPtr() + 0x78);
+      uint32_t WarpToMap = 0;
       
-      if (CoinCount == 0)
+      switch (CoinCount)
       {
-        writeMap(gor_01);
+        case 0: WarpToMap = gor_01; break;
+        case 1: WarpToMap = tik_00; break;
+        case 2: WarpToMap = hei_00; break;
+        case 3: WarpToMap = gon_00; break;
+        case 4: WarpToMap = win_06; break;
+        case 5: WarpToMap = mri_01; break;
+        case 6: WarpToMap = tou_02; break;
+        case 7: WarpToMap = tou_05; break;
+        case 8: WarpToMap = usu_00; break;
+        case 9: WarpToMap = jin_00; break;
+        case 10: WarpToMap = muj_01; break;
+        case 11: WarpToMap = dou_00; break;
+        case 12: WarpToMap = rsh_02_a; break;
+        case 13: WarpToMap = eki_00; break;
+        case 14: WarpToMap = pik_00; break;
+        case 15: WarpToMap = bom_00; break;
+        case 16: WarpToMap = moo_00; break;
+        case 17: WarpToMap = aji_00; break;
+        case 18: WarpToMap = aji_13; break;
+        case 19: WarpToMap = las_00; break;
+        case 20: WarpToMap = las_09; break;
+        case 21: WarpToMap = las_27; break;
+        case 22:
+          #ifdef TTYD_US
+            uint32_t minnnanokoe = 0x802ECF74;
+          #elif defined TTYD_JP
+            uint32_t minnnanokoe = 0x802ECB70;
+          #elif defined TTYD_EU
+            uint32_t minnnanokoe = 0x802F8BD4;
+          #endif
+          
+          ttyd::string::strcpy(NextBero, reinterpret_cast<char *>(minnnanokoe));
+          WarpToMap = las_29;
+          ttyd::swdrv::swByteSet(0, 400);
+          break;
       }
-      else if (CoinCount == 1)
+      
+      if (WarpToMap != 0)
       {
-        writeMap(tik_00);
-      }
-      else if (CoinCount == 2)
-      {
-        writeMap(hei_00);
-      }
-      else if (CoinCount == 3)
-      {
-        writeMap(gon_00);
-      }
-      else if (CoinCount == 4)
-      {
-        writeMap(win_06);
-      }
-      else if (CoinCount == 5)
-      {
-        writeMap(mri_01);
-      }
-      else if (CoinCount == 6)
-      {
-        writeMap(tou_02);
-      }
-      else if (CoinCount == 7)
-      {
-        writeMap(tou_05);
-      }
-      else if (CoinCount == 8)
-      {
-        writeMap(usu_00);
-      }
-      else if (CoinCount == 9)
-      {
-        writeMap(jin_00);
-      }
-      else if (CoinCount == 10)
-      {
-        writeMap(muj_01);
-      }
-      else if (CoinCount == 11)
-      {
-        writeMap(dou_00);
-      }
-      else if (CoinCount == 12)
-      {
-        writeMap(rsh_02_a);
-      }
-      else if (CoinCount == 13)
-      {
-        writeMap(eki_00);
-      }
-      else if (CoinCount == 14)
-      {
-        writeMap(pik_00);
-      }
-      else if (CoinCount == 15)
-      {
-        writeMap(bom_00);
-      }
-      else if (CoinCount == 16)
-      {
-        writeMap(moo_00);
-      }
-      else if (CoinCount == 17)
-      {
-        writeMap(aji_00);
-      }
-      else if (CoinCount == 18)
-      {
-        writeMap(aji_13);
-      }
-      else if (CoinCount == 19)
-      {
-        writeMap(las_00);
-      }
-      else if (CoinCount == 20)
-      {
-        writeMap(las_09);
-      }
-      else if (CoinCount == 21)
-      {
-        writeMap(las_27);
-      }
-      else if (CoinCount == 22)
-      {
-        #ifdef TTYD_US
-          uint32_t minnnanokoe = 0x802ECF74;
-        #elif defined TTYD_JP
-          uint32_t minnnanokoe = 0x802ECB70;
-        #elif defined TTYD_EU
-          uint32_t minnnanokoe = 0x802F8BD4;
-        #endif
-        
-        ttyd::string::strcpy(NextBero, reinterpret_cast<char *>(minnnanokoe));
-        writeMap(las_29);
-        ttyd::swdrv::swByteSet(0, 400);
+        // WarpToMap is set
+        ttyd::string::strcpy(NextMap, reinterpret_cast<char *>(WarpToMap));
+        ttyd::string::strncpy(NextArea, reinterpret_cast<char *>(WarpToMap), 3);
       }
     }
   }

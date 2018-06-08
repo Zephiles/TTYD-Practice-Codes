@@ -51,40 +51,22 @@ void Mod::addOrRemovePartners()
           // Currently inside partners menu
           uint32_t PartnerOnCursor = *reinterpret_cast<uint32_t *>(PauseMenuAddress  + 0x1D8);
           
-          if (PartnerOnCursor == 0)
+          switch (PartnerOnCursor)
           {
-            // Goombella
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0xF) = 0;
-          }
-          else if (PartnerOnCursor == 1)
-          {
-            // Koops
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x1D) = 0;
-          }
-          else if (PartnerOnCursor == 2)
-          {
-            // Flurrie
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x47) = 0;
-          }
-          else if (PartnerOnCursor == 3)
-          {
-            // Yoshi
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x39) = 0;
-          }
-          else if (PartnerOnCursor == 4)
-          {
-            // Vivian
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x55) = 0;
-          }
-          else if (PartnerOnCursor == 5)
-          {
-            // Bobbery
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x2B) = 0;
-          }
-          else // if (PartnerOnCursor == 6)
-          {
-            // Mowz
-            *reinterpret_cast<uint8_t *>(PouchAddress + 0x63) = 0;
+            case 0: // Goombella
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0xF) = 0; break;
+            case 1: // Koops
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x1D) = 0; break;
+            case 2: // Flurrie
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x47) = 0; break;
+            case 3: // Yoshi
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x39) = 0; break;
+            case 4: // Vivian
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x55) = 0; break;
+            case 5: // Bobbery
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x2B) = 0; break;
+            case 6: // Mowz
+              *reinterpret_cast<uint8_t *>(PouchAddress + 0x63) = 0; break;
           }
           
           // Reload party menu
