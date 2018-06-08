@@ -16,7 +16,7 @@ extern uint16_t InventoryRemoveItemOrBadgeFirstButtonCombo;
 extern uint16_t InventoryPreviousValueFirstButtonCombo;
 extern uint16_t InventoryNextValueFirstButtonCombo;
 
-void addItemOrBadge(uint32_t PouchAddress, uint16_t ItemOrBadge, int16_t LoopCounter, uint32_t SubMenu)
+void addItemOrBadge(uint32_t PouchAddress, uint32_t CursorCurrentItem, uint16_t ItemOrBadge, int16_t LoopCounter, uint32_t SubMenu)
 {
   if (SubMenu != 1)
   {
@@ -32,6 +32,12 @@ void addItemOrBadge(uint32_t PouchAddress, uint16_t ItemOrBadge, int16_t LoopCou
       else
       {
         // Slot is empty, so add item
+        if ((CursorCurrentItem >= 1) && (CursorCurrentItem <= 338))
+        {
+          // Add selected item/badge
+          ItemOrBadge = CursorCurrentItem;
+        }
+        
         *reinterpret_cast<uint16_t *>(PouchAddress) = ItemOrBadge;
         break;
       }
@@ -156,12 +162,12 @@ void Mod::changeInventory()
         if (CurrentTab == 2)
         {
           // Standard items menu
-          addItemOrBadge(PouchStandardInventoryAddress, GoldBar, StandardItemsLoopCounter, SubMenuImportantItems);
+          addItemOrBadge(PouchStandardInventoryAddress, CursorItem, GoldBar, StandardItemsLoopCounter, SubMenuImportantItems);
         }
         else if (CurrentTab == 3)
         {
           // Badges menu
-          addItemOrBadge(PouchBadgeInventoryAddress, PowerJump, BadgesLoopCounter, SubMenuEquippedBadges);
+          addItemOrBadge(PouchBadgeInventoryAddress, CursorItem, PowerJump, BadgesLoopCounter, SubMenuEquippedBadges);
         }
       }
       ChangeInventoryButtonHoldCounter++;
