@@ -115,6 +115,9 @@ private:
   // Enable Debug Mode
   void enableDebugMode();
   
+  // Display all menus inside of the Pause Menu
+  void pauseMenuDisplayAllMenus();
+  
   // Button Input Display
   void buttonInputDisplay();
   uint32_t mButtonInputDisplayCounter;

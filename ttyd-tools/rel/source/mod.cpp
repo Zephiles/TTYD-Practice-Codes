@@ -53,6 +53,7 @@ void Mod::init()
   Mod::infiniteItemUsage();
   Mod::artAttackHitboxes();
   Mod::spawnItemPreventCrash();
+  Mod::pauseMenuDisplayAllMenus();
 }
 
 void Mod::updateEarly()
