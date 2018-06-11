@@ -17,7 +17,7 @@ void Mod::gameOver()
     if (ttyd::seqdrv::seqGetNextSeq() != Logo)
     {
       // The game will crash if the following code runs during the Logo
-      ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kGameOver, 0, 0);
+      ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kGameOver, nullptr, nullptr);
     }
   }
 }

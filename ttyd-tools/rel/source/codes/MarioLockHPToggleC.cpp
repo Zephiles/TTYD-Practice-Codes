@@ -37,8 +37,8 @@ void Mod::lockMarioHPToggle()
   else
   {
     // Lock HP
-    uint32_t PouchPointer = ttyd::mario_pouch::pouchGetPtr();
-    *reinterpret_cast<int16_t *>(PouchPointer + 0x70) = *reinterpret_cast<int16_t *>(PouchPointer + 0x72); // Copy Max HP to Current HP
+    uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    *reinterpret_cast<int16_t *>(PouchAddress + 0x70) = *reinterpret_cast<int16_t *>(PouchAddress + 0x72); // Copy Max HP to Current HP
     uint32_t BattleAddress = *reinterpret_cast<uint32_t *>(BattleAddressesStart);
     if (BattleAddress != 0)
     {

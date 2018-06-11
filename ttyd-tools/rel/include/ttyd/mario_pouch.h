@@ -78,7 +78,7 @@ void pouchReviseMarioParam();
 // pouchHaveItem
 // pouchKeyItem
 // pouchInit
-uint32_t pouchGetPtr();
+void *pouchGetPtr();
 
 }
 

@@ -122,7 +122,7 @@ void Mod::changeInventory()
     uint32_t SubMenuEquippedBadges = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x3E0);
     int32_t BadgesCurrentIndex = *reinterpret_cast<int32_t *>(PauseMenuAddress + 0x3E4);
     
-    uint32_t PouchAddress = ttyd::mario_pouch::pouchGetPtr();
+    uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
     uint32_t PouchStandardInventoryAddress = PouchAddress + 0x192;
     uint32_t PouchBadgeInventoryAddress = PouchAddress + 0x1FA;
     

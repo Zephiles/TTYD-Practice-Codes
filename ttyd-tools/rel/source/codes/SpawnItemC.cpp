@@ -24,7 +24,8 @@ void Mod::spawnItem()
       if ((ttyd::seqdrv::seqGetNextSeq() == Game) && (ttyd::mariost::marioStGetSystemLevel() != 15))
       {
         // Not in pause menu
-        int16_t CoinCount = *reinterpret_cast<int16_t *>(ttyd::mario_pouch::pouchGetPtr() + 0x78);
+        uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+        int16_t CoinCount = *reinterpret_cast<int16_t *>(PouchAddress + 0x78);
         
         if ((CoinCount >= 1) && (CoinCount <= 338))
         {
@@ -51,7 +52,7 @@ void Mod::spawnItem()
             ItemCoordinateX += 30;
           }
           
-          ttyd::itemdrv::itemEntry(ItemName, CoinCount, 16, -1, 0, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
+          ttyd::itemdrv::itemEntry(ItemName, CoinCount, 16, -1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
           delete[] (ItemName);
         }
       }

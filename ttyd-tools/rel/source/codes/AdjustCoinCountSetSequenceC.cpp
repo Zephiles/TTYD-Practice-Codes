@@ -33,7 +33,8 @@ void Mod::adjustCoinCountSetSequence()
   if ((ttyd::mariost::marioStGetSystemLevel() == 15) && (CurrentTab == 0))
   {
     // Currently in the pause menu and Current Tab is Mario's stats
-    uint32_t CoinCountAddress = ttyd::mario_pouch::pouchGetPtr() + 0x78;
+    uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    uint32_t CoinCountAddress = PouchAddress + 0x78;
     int16_t CoinCount = *reinterpret_cast<int16_t *>(CoinCountAddress);
     
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);

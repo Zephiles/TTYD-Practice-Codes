@@ -27,7 +27,8 @@ void Mod::warp()
     if ((ttyd::mariost::marioStGetSystemLevel() == 15) && (CurrentTab == 0))
     {
       // Currently in the pause menu, and Current Tab is Mario's stats
-      int16_t CoinCount = *reinterpret_cast<int16_t *>(ttyd::mario_pouch::pouchGetPtr() + 0x78);
+      uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+      int16_t CoinCount = *reinterpret_cast<int16_t *>(PouchAddress + 0x78);
       uint32_t WarpToMap = 0;
       
       switch (CoinCount)

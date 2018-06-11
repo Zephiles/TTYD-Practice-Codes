@@ -22,7 +22,7 @@ void Mod::addOrRemovePartners()
   {
     // Currently in the partners menu
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-    uint32_t PouchAddress = ttyd::mario_pouch::pouchGetPtr();
+    uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
     
     if ((ButtonInput & AddPartnersCombo) == AddPartnersCombo)
     {
