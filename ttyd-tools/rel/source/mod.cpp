@@ -85,6 +85,9 @@ void Mod::updateEarly()
     // --Codes (With Display)--
     reinterpret_cast<Mod *>(user)->onScreenTimer();
     reinterpret_cast<Mod *>(user)->buttonInputDisplay();
+    
+    // --Misc--
+    reinterpret_cast<Mod *>(user)->pauseMenuDisplaySequence();
   }, this);
   
   // Call original function

@@ -118,6 +118,9 @@ private:
   // Display all menus inside of the Pause Menu
   void pauseMenuDisplayAllMenus();
   
+  // Display Sequence Position in the Pause Menu
+  void pauseMenuDisplaySequence();
+  
   // Button Input Display
   void buttonInputDisplay();
   uint32_t mButtonInputDisplayCounter;
