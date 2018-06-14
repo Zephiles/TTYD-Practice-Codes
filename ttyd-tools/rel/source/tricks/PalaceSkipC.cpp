@@ -66,7 +66,6 @@ void Mod::palaceSkip()
       int32_t ItemTimer;
       bool FoundItem = false;
       
-      
       // Palace skip timing code
       if (SystemLevel == 15)
       {

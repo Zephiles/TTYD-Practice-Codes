@@ -19,7 +19,7 @@ extern "C" {
 // pouchGetKpaCoin
 // pouchMajinaiInit
 // pouchArriveBadge
-// unk_JP_US_PAL_049_800cf0e8
+// unk_JP_US_PAL_049
 // pouchEquipBadgeID
 // pouchEquipCheckBadgeIndex
 // pouchEquipCheckBadge
@@ -62,7 +62,7 @@ void pouchReviseMarioParam();
 // comp_aiueo_r
 // comp_kind
 // comp_aiueo
-// unk_JP_US_PAL_050_800d06b4
+// unk_JP_US_PAL_050
 // pouchRemoveItemIndex
 // pouchRemoveItem
 // pouchCheckItem

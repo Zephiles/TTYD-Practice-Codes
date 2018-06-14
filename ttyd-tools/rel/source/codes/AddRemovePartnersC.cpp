@@ -16,7 +16,7 @@ namespace mod {
 void Mod::addOrRemovePartners()
 {
   uint32_t PauseMenuAddress  = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
-  uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress  + 0x40);
+  uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
   
   if ((ttyd::mariost::marioStGetSystemLevel() == 15) && (CurrentTab == 1))
   {

@@ -65,7 +65,7 @@ void removeItemOrBadge(uint32_t PouchAddress, int32_t Index, int16_t LoopCounter
       PouchAddress += 2;
     }
     
-    *reinterpret_cast<uint16_t *>(PouchAddress)= 0;
+    *reinterpret_cast<uint16_t *>(PouchAddress) = 0;
   }
 }
 

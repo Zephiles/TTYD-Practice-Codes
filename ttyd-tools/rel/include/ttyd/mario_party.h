@@ -16,7 +16,7 @@ uint32_t marioGetPartyId();
 // marioPartyGoodbye
 // marioPartyHello
 // marioPartyEntry
-// unk_JP_US_PAL_062_8013be14
+// unk_JP_US_PAL_062
 // marioUseParty
 
 }

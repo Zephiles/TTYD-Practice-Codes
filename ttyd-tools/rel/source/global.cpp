@@ -32,8 +32,6 @@ extern "C" {
 #endif
 
 uint32_t GSWAddressesStart = r13 - 0x6F50;
-bool ArtAttackHitboxesEnabled = false;
-bool ArtAttackHitboxesDenyInputs = false;
 
 // --Button Combinations--
 // Palace Skip
@@ -61,6 +59,8 @@ uint16_t LoadPositions = PAD_L | PAD_START;
 
 // Reload Screen
 uint16_t ReloadScreenCombo = PAD_L | PAD_B;
+char *NewBero = new char[32]; // 31 bytes for NextBero, 1 byte for NULL
+char *NewMap = new char[9]; // 8 bytes for NextMap, 1 byte for NULL
 
 // On-Screen Timer
 uint16_t EnableOrResetTimerCombo = PAD_L | PAD_DPAD_RIGHT;
@@ -118,6 +118,8 @@ uint16_t InfiniteItemsUsageCombo = PAD_Y;
 
 // Art Attack Hitboxes
 uint16_t ArtAttackHitboxesCombo = PAD_R | PAD_A;
+bool ArtAttackHitboxesEnabled = false;
+bool ArtAttackHitboxesDenyInputs = false;
 
 // Spawn Item
 uint16_t SpawnItemCombo = PAD_L | PAD_DPAD_DOWN;

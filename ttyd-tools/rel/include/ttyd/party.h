@@ -23,7 +23,7 @@ extern "C" {
 // partyRideChk
 // allPartyRideOff2
 // allPartyRideOff
-// unk_JP_US_PAL_029_800b7bcc
+// unk_JP_US_PAL_029
 // allPartyForceRideOn
 // getRidePos
 // allPartyRideShip
@@ -38,9 +38,9 @@ extern "C" {
 // partyDoWork
 // driveParty
 // partyMain
-// unk_JP_US_PAL_030_800ba2dc
-// unk_JP_US_PAL_031_800ba72c
-// unk_JP_US_PAL_032_800ba7a8
+// unk_JP_US_PAL_030
+// unk_JP_US_PAL_031
+// unk_JP_US_PAL_032
 // partyChgRunMode
 // partyUsePost
 // partyReInit
