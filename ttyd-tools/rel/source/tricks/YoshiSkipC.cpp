@@ -5,12 +5,11 @@
 #include <ttyd/string.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
-#include <ttyd/e_atan2.h>
+#include <ttyd/w_atan2.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/fontmgr.h>
 
 #include <cstdio>
-#include <cmath>
 
 extern uint16_t YoshiSkipEnableCombo;
 extern char *NextMap;
@@ -53,9 +52,11 @@ void Mod::yoshiSkip()
     {
       ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
       bool MarioControl = player->flags1 & (1 << 0); // Check if 0 bit is active
+      
       double StickX = getStickValue(ttyd::system::keyGetStickX(0));
       double StickY = getStickValue(ttyd::system::keyGetStickY(0));
-      double stickAngle = (ttyd::e_atan2::__ieee754_atan2(StickX,StickY)) * (180 / M_PI);
+      double PI = 3.14159265358979323846;
+      double stickAngle = (ttyd::w_atan2::atan2(StickX,StickY)) * (180 / PI);
       
       if (stickAngle < 0)
       {

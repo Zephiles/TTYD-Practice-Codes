@@ -20,10 +20,7 @@ lis %r5,button_input_high
 lhz %r5,button_input_low(%r5)
 and %r5,%r5,%r12
 cmpw %r5,%r12
-bne+ Exit
-blr
-
-Exit:
+beqlr-
 stwu %sp,-0x20(%sp)
 
 BranchInfiniteItemUsage:

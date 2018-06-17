@@ -564,7 +564,7 @@
 // 800F86B4:BattlePartyAnimeLoad
 // 800F86F4:BattleGetPartnerPtr
 // 800F8728:BattleGetPartyPtr
-// 800F87A8:BattleGetMarioPtr
+800F87A8:BattleGetMarioPtr
 // 800F8814:BattleGetSystemPtr
 // 800F8874:BattleGetUnitPartsPtr
 // 800F88B4:BattleSetUnitPtr
@@ -824,8 +824,8 @@
 8026D5FC:strcpy
 // 8026D6B4:strlen
 
-// e_atan2.c
-8026F42C:__ieee754_atan2
+// w_atan2.c
+802725A0:atan2
 
 // GXGeometry.c
 // 802B59EC:__GXSetDirtyState

@@ -25,7 +25,7 @@ extern "C" {
 // itemHitCheck
 // itemNameToPtr
 // itemDelete
-void *itemEntry(const char *name, uint32_t id, uint32_t mode, int32_t wasCollectedExpr, uint32_t *pickupScript, float coordinateX, float coordinateY, float coordinateZ);
+void *itemEntry(const char *name, uint32_t id, uint32_t mode, int32_t wasCollectedExpr, void *pickupScript, float coordinateX, float coordinateY, float coordinateZ);
 // itemModeChange
 // itemMain
 // unk_JP_US_PAL_023

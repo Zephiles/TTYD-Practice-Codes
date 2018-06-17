@@ -3,6 +3,7 @@
 #include <ttyd/system.h>
 #include <ttyd/mariost.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/battle.h>
 
 #include <cstdio>
 
@@ -38,16 +39,23 @@ void Mod::lockMarioHPToggle()
   {
     // Lock HP
     uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-    *reinterpret_cast<int16_t *>(PouchAddress + 0x70) = *reinterpret_cast<int16_t *>(PouchAddress + 0x72); // Copy Max HP to Current HP
+    
+    uint32_t MarioHPAddress = PouchAddress + 0x70;
+    int16_t MarioMaxHP = *reinterpret_cast<int16_t *>(PouchAddress + 0x72);
+    *reinterpret_cast<int16_t *>(MarioHPAddress) = MarioMaxHP; // Copy Max HP to Current HP
+    
     uint32_t BattleAddress = *reinterpret_cast<uint32_t *>(BattleAddressesStart);
     if (BattleAddress != 0)
     {
       // Currently in a battle
-      BattleAddress = *reinterpret_cast<uint32_t *>(BattleAddress + 0x24);
-      if (BattleAddress != 0)
+      uint32_t *BattleAddressPointer = reinterpret_cast<uint32_t *>(BattleAddress);
+      uint32_t MarioBattleAddress = reinterpret_cast<uint32_t>(ttyd::battle::BattleGetMarioPtr(BattleAddressPointer));
+      if (MarioBattleAddress != 0)
       {
-        // Make sure enemy info is there
-        *reinterpret_cast<int16_t *>(BattleAddress + 0x10C) = *reinterpret_cast<int16_t *>(BattleAddress + 0x108); // Copy Battle Max HP to Current Battle HP
+        // Make sure Mario's info is there
+        uint32_t BattleMarioHPAddress = MarioBattleAddress + 0x10C;
+        int16_t BattleMarioMaxHP = *reinterpret_cast<int16_t *>(MarioBattleAddress + 0x108);
+        *reinterpret_cast<int16_t *>(BattleMarioHPAddress) = BattleMarioMaxHP; // Copy Battle Max HP to Current Battle HP
       }
     }
     
