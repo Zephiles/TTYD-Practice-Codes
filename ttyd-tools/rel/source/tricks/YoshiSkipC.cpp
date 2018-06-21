@@ -43,12 +43,12 @@ void Mod::yoshiSkip()
     
     if (mEnabledOrDisabledCounter > 360)
     {
-      // Enable/Disable the Yoshi Skip info when button is held for 6 seconds
-      mYoshiSkipInfoEnabled = !mYoshiSkipInfoEnabled;
+      // Enable/Disable the Yoshi Skip info when button combo is held for 6 seconds
+      yoshiSkipInfoEnabled = !yoshiSkipInfoEnabled;
       mEnabledOrDisabledCounter = 0;
     }
     
-    if (mYoshiSkipInfoEnabled)
+    if (yoshiSkipInfoEnabled)
     {
       ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
       bool MarioControl = player->flags1 & (1 << 0); // Check if 0 bit is active
@@ -68,14 +68,14 @@ void Mod::yoshiSkip()
       {
       // Pause in battle
       mYoshiSkipTimer.stop();
-      mYoshiSkipTimerPaused = true;
+      yoshiSkipTimerPaused = true;
       }
-      else if (MarioControl && mYoshiSkipTimerPaused)
+      else if (MarioControl && yoshiSkipTimerPaused)
       {
         // Reset and Start when leaving battle
         mYoshiSkipTimer.setValue(0);
         mYoshiSkipTimer.start();
-        mYoshiSkipTimerPaused = false;
+        yoshiSkipTimerPaused = false;
       }
       
       if (ttyd::system::keyGetButtonTrg(0) & PAD_A)
@@ -108,7 +108,7 @@ void Mod::yoshiSkip()
         player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
       
       int FontDrawY = -98;
-      if (mButtonInputDisplayEnabled)
+      if (buttonInputDisplayEnabled)
       {
         FontDrawY += 35;
       }

@@ -20,17 +20,17 @@ void Mod::onScreenTimer()
   if ((ButtonInput & EnableOrResetTimerCombo) == (EnableOrResetTimerCombo))
   {
     // Enable/Reset Timer
-    mOnScreenTimerEnabled = true;
+    onScreenTimerEnabled = true;
     mOnScreenTimer.stop();
     mOnScreenTimer.setValue(0);
   }
   
-  if (mOnScreenTimerEnabled)
+  if (onScreenTimerEnabled)
   {
     if ((ButtonInput & DisableTimerCombo) == (DisableTimerCombo))
     {
       // Disable Timer
-      mOnScreenTimerEnabled = false;
+      onScreenTimerEnabled = false;
       mOnScreenTimer.stop();
     }
     else if ((ButtonInput & StartOrResumeTimerCombo) == (StartOrResumeTimerCombo))

@@ -85,6 +85,7 @@ void Mod::updateEarly()
     // --Codes (With Display)--
     reinterpret_cast<Mod *>(user)->onScreenTimer();
     reinterpret_cast<Mod *>(user)->buttonInputDisplay();
+    reinterpret_cast<Mod *>(user)->jumpStorageDisplay();
     
     // --Misc--
     reinterpret_cast<Mod *>(user)->pauseMenuDisplaySequence();

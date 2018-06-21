@@ -123,4 +123,7 @@ bool ArtAttackHitboxesDenyInputs = false;
 
 // Spawn Item
 uint16_t SpawnItemCombo = PAD_L | PAD_DPAD_DOWN;
+
+// Jump Storage Display
+uint16_t JumpStorageDisplayEnableCombo = PAD_A | PAD_X;
 }

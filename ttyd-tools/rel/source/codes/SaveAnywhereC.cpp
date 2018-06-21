@@ -14,7 +14,7 @@ namespace mod {
 
 void Mod::saveAnywhere()
 {
-  if (!mSaveAnywhereScriptRunning)
+  if (!saveAnywhereScriptRunning)
   {
     // Save Script is not running
     if ((ttyd::system::keyGetButton(0) & SaveAnywhereCombo) == (SaveAnywhereCombo))
@@ -34,15 +34,15 @@ void Mod::saveAnywhere()
         // Take away control from the player and start the Save script
         ttyd::mario::marioKeyOff();
         ttyd::mariost::marioStSystemLevel(1);
-        mSaveAnywhereThreadID = *reinterpret_cast<uint32_t *>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0) + 0x15C);
-        mSaveAnywhereScriptRunning = true;
+        saveAnywhereThreadID = *reinterpret_cast<uint32_t *>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0) + 0x15C);
+        saveAnywhereScriptRunning = true;
       }
     }
   }
-  else if (!ttyd::evtmgr::evtCheckID(mSaveAnywhereThreadID))
+  else if (!ttyd::evtmgr::evtCheckID(saveAnywhereThreadID))
   {
     // Save Script is no longer running, so give back control to the player
-    mSaveAnywhereScriptRunning = false;
+    saveAnywhereScriptRunning = false;
     ttyd::mariost::marioStSystemLevel(0);
     ttyd::mario::marioKeyOn();
   }

@@ -111,7 +111,7 @@ void Mod::changeInventory()
   {
     // Currently in the pause menu
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-    int16_t PressedOrHeldButtonCount = 0;
+    uint8_t PressedOrHeldButtonCount = 0;
     uint16_t ButtonHoldFrames = 45; // 0.75 Seconds
     
     uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuAddressesStart);
@@ -149,14 +149,14 @@ void Mod::changeInventory()
     
     if (PressedOrHeldButtonCount < 2)
     {
-      // Zero or one button(s) are pressed/held, so set FirstButtonPressed to 0 or currently-pressed/held button
-      FirstButtonPressed = ButtonInput;
+      // Zero or one button(s) are pressed/held, so set firstButtonPressed to 0 or currently-pressed/held button
+      firstButtonPressed = ButtonInput;
     }
 
     // Add item/badge
-    if (((ButtonInput & InventoryAddItemOrBadgeCombo) == InventoryAddItemOrBadgeCombo) && (FirstButtonPressed == InventoryAddItemOrBadgeFirstButtonCombo))
+    if (((ButtonInput & InventoryAddItemOrBadgeCombo) == InventoryAddItemOrBadgeCombo) && (firstButtonPressed == InventoryAddItemOrBadgeFirstButtonCombo))
     {
-      if (ChangeInventoryButtonHoldCounter == 0)
+      if (changeInventoryButtonHoldCounter == 0)
       {
         // Add item/badge
         if (CurrentTab == 2)
@@ -170,11 +170,11 @@ void Mod::changeInventory()
           addItemOrBadge(PouchBadgeInventoryAddress, CursorItem, PowerJump, BadgesLoopCounter, SubMenuEquippedBadges);
         }
       }
-      ChangeInventoryButtonHoldCounter++;
+      changeInventoryButtonHoldCounter++;
     }
-    else if (((ButtonInput & InventoryRemoveItemOrBadgeCombo) == InventoryRemoveItemOrBadgeCombo) && (FirstButtonPressed == InventoryRemoveItemOrBadgeFirstButtonCombo))
+    else if (((ButtonInput & InventoryRemoveItemOrBadgeCombo) == InventoryRemoveItemOrBadgeCombo) && (firstButtonPressed == InventoryRemoveItemOrBadgeFirstButtonCombo))
     {
-      if (ChangeInventoryButtonHoldCounter == 0)
+      if (changeInventoryButtonHoldCounter == 0)
       {
         // Remove item/badge
         if ((CurrentTab == 2) && (CursorItem != 0))
@@ -189,11 +189,11 @@ void Mod::changeInventory()
           ttyd::mario_pouch::pouchReviseMarioParam(); // Check equipped badges and adjust BP used
         }
       }
-      ChangeInventoryButtonHoldCounter++;
+      changeInventoryButtonHoldCounter++;
     }
-    else if (((ButtonInput & InventoryPreviousValueCombo) == InventoryPreviousValueCombo) && (FirstButtonPressed == InventoryPreviousValueFirstButtonCombo))
+    else if (((ButtonInput & InventoryPreviousValueCombo) == InventoryPreviousValueCombo) && (firstButtonPressed == InventoryPreviousValueFirstButtonCombo))
     {
-      if (ChangeInventoryButtonHoldCounter == 0)
+      if (changeInventoryButtonHoldCounter == 0)
       {
         if ((CursorItem > 0) && (CursorItem < 236))
         {
@@ -207,11 +207,11 @@ void Mod::changeInventory()
           ttyd::mario_pouch::pouchReviseMarioParam(); // Check equipped badges and adjust BP used
         }
       }
-      ChangeInventoryButtonHoldCounter++;
+      changeInventoryButtonHoldCounter++;
     }
-    else if (((ButtonInput & InventoryNextValueCombo) == InventoryNextValueCombo) && (FirstButtonPressed == InventoryNextValueFirstButtonCombo))
+    else if (((ButtonInput & InventoryNextValueCombo) == InventoryNextValueCombo) && (firstButtonPressed == InventoryNextValueFirstButtonCombo))
     {
-      if (ChangeInventoryButtonHoldCounter == 0)
+      if (changeInventoryButtonHoldCounter == 0)
       {
         if ((CursorItem > 0) && (CursorItem < 236))
         {
@@ -225,18 +225,18 @@ void Mod::changeInventory()
           ttyd::mario_pouch::pouchReviseMarioParam(); // Check equipped badges and adjust BP used
         }
       }
-      ChangeInventoryButtonHoldCounter++;
+      changeInventoryButtonHoldCounter++;
     }
     else
     {
       // Reset counter if no button combo is pressed/held
-      ChangeInventoryButtonHoldCounter = 0;
+      changeInventoryButtonHoldCounter = 0;
     }
     
-    if (ChangeInventoryButtonHoldCounter > ButtonHoldFrames)
+    if (changeInventoryButtonHoldCounter > ButtonHoldFrames)
     {
       // Reset if counter exceeds ButtonHoldFrames
-      ChangeInventoryButtonHoldCounter = 0;
+      changeInventoryButtonHoldCounter = 0;
     }
   }
 }

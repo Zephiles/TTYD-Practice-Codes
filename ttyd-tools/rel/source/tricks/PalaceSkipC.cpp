@@ -37,12 +37,12 @@ void Mod::palaceSkip()
     
     if (mEnabledOrDisabledCounter > 360)
     {
-      // Enable/Disable the Palace Skip info when button is held for 6 seconds
-      mPalaceSkipInfoEnabled = !mPalaceSkipInfoEnabled;
+      // Enable/Disable the Palace Skip info when button combo is held for 6 seconds
+      palaceSkipInfoEnabled = !palaceSkipInfoEnabled;
       mEnabledOrDisabledCounter = 0;
     }
     
-    if (mPalaceSkipInfoEnabled)
+    if (palaceSkipInfoEnabled)
     {
       #ifdef TTYD_US
         uint32_t FieldItemsAddress = 0x803DC294;
@@ -71,14 +71,14 @@ void Mod::palaceSkip()
       {
       // Stop upon pausing
       mPalaceSkipTimer.stop();
-      mPalaceSkipTimerPaused = true;
+      palaceSkipTimerPaused = true;
       }
-      else if (SystemLevel == 0 && mPalaceSkipTimerPaused)
+      else if (SystemLevel == 0 && palaceSkipTimerPaused)
       {
         // Reset and Start when unpausing
         mPalaceSkipTimer.setValue(0);
         mPalaceSkipTimer.start();
-        mPalaceSkipTimerPaused = false;
+        palaceSkipTimerPaused = false;
       }
       
       if (ttyd::system::keyGetButtonTrg(0) & PAD_X)
@@ -192,7 +192,7 @@ void Mod::palaceSkip()
         player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
       
       int FontDrawY = -40;
-      if (mButtonInputDisplayEnabled)
+      if (buttonInputDisplayEnabled)
       {
         FontDrawY += 35;
       }

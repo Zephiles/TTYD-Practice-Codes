@@ -17,7 +17,7 @@ void Mod::lockMarioHPToggle()
   uint32_t ButtonInput = ttyd::system::keyGetButton(0);
   uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
   
-  if (!MarioHPCurrentlyLocked)
+  if (!marioHPCurrentlyLocked)
   {
     // HP not currently locked
     if (((ButtonInput & LockMarioHPToggleCombo) == LockMarioHPToggleCombo) && (SystemLevel != 15))
@@ -25,7 +25,7 @@ void Mod::lockMarioHPToggle()
       // Not in pause menu
       if (!lockMarioHPToggleDisable)
       {
-        MarioHPCurrentlyLocked = true;
+        marioHPCurrentlyLocked = true;
       }
       lockMarioHPToggleDisable = true;
     }
@@ -64,7 +64,7 @@ void Mod::lockMarioHPToggle()
       // Not in pause menu
       if (!lockMarioHPToggleDisable)
       {
-        MarioHPCurrentlyLocked = false;
+        marioHPCurrentlyLocked = false;
       }
       lockMarioHPToggleDisable = true;
     }

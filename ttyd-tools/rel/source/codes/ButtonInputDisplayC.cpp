@@ -15,22 +15,22 @@ void Mod::buttonInputDisplay()
   
   if ((ButtonInput & ButtonInputDisplayEnableCombo) == ButtonInputDisplayEnableCombo)
   {
-    // Hold button to increment counter
-    ++mButtonInputDisplayCounter;
+    // Hold button combo to increment counter
+    ++buttonInputDisplayCounter;
   }
   else
   {
-    mButtonInputDisplayCounter = 0;
+    buttonInputDisplayCounter = 0;
   }
   
-  if (mButtonInputDisplayCounter > 360)
+  if (buttonInputDisplayCounter > 360)
   {
-    // Enable/Disable the Button Input Display when button is held for 6 seconds
-    mButtonInputDisplayEnabled = !mButtonInputDisplayEnabled;
-    mButtonInputDisplayCounter = 0;
+    // Enable/Disable the Button Input Display when button combo is held for 6 seconds
+    buttonInputDisplayEnabled = !buttonInputDisplayEnabled;
+    buttonInputDisplayCounter = 0;
   }
   
-  if (mButtonInputDisplayEnabled)
+  if (buttonInputDisplayEnabled)
   {
     char ButtonArray[] = {'(', ')', 'v', '^', 'Z', 'R', 'L', ' ', 'A', 'B', 'X', 'Y', 'S'};
     int32_t DrawX = -252;

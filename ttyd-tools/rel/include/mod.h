@@ -20,14 +20,14 @@ private:
   // Palace Skip
   void palaceSkip();
   Timer<uint32_t> mPalaceSkipTimer;
-  bool mPalaceSkipTimerPaused = false;
-  bool mPalaceSkipInfoEnabled = false;
+  bool palaceSkipTimerPaused = false;
+  bool palaceSkipInfoEnabled = false;
   
   // Yoshi Skip
   void yoshiSkip();
   Timer<uint32_t> mYoshiSkipTimer;
-  bool mYoshiSkipTimerPaused = false;
-  bool mYoshiSkipInfoEnabled = false;
+  bool yoshiSkipTimerPaused = false;
+  bool yoshiSkipInfoEnabled = false;
   
   // --Codes--
   // Force Phantom Ember Drop
@@ -48,8 +48,8 @@ private:
   
   // Save/Load Mario/Partner Positions
   void saveLoadPositions();
-  float MarioSavePositions[4];
-  float PartnerSavePositions[4];
+  float marioSavePositions[4];
+  float partnerSavePositions[4];
   
   // Reload Screen
   void reloadScreen();
@@ -57,7 +57,7 @@ private:
   // On-Screen Timer
   void onScreenTimer();
   Timer<uint32_t> mOnScreenTimer;
-  bool mOnScreenTimerEnabled = false;
+  bool onScreenTimerEnabled = false;
   
   // Auto Action Commands
   void autoActionCommands();
@@ -67,12 +67,12 @@ private:
   
   // Save Anywhere
   void saveAnywhere();
-  bool mSaveAnywhereScriptRunning = false;
-  uint32_t mSaveAnywhereThreadID;
+  bool saveAnywhereScriptRunning = false;
+  uint32_t saveAnywhereThreadID;
   
   // Adjust Coin Count + Set Sequence
   void adjustCoinCountSetSequence();
-  uint32_t CoinCountButtonHoldCounter;
+  uint16_t CoinCountButtonHoldCounter;
   
   // Warp
   void warp();
@@ -89,13 +89,13 @@ private:
   
   // Lock Mario's HP, Toggle
   void lockMarioHPToggle();
-  bool MarioHPCurrentlyLocked = false;
+  bool marioHPCurrentlyLocked = false;
   bool lockMarioHPToggleDisable = false;
   
   // Change Inventory
   void changeInventory();
-  uint16_t FirstButtonPressed;
-  uint32_t ChangeInventoryButtonHoldCounter;
+  uint16_t firstButtonPressed;
+  uint16_t changeInventoryButtonHoldCounter;
   
   // Allow running from any fight
   void allowRunAway();
@@ -123,12 +123,18 @@ private:
   
   // Button Input Display
   void buttonInputDisplay();
-  uint32_t mButtonInputDisplayCounter;
-  bool mButtonInputDisplayEnabled = false;
+  uint16_t buttonInputDisplayCounter;
+  bool buttonInputDisplayEnabled = false;
+  
+  // Jump Storage Display
+  void jumpStorageDisplay();
+  uint16_t jumpStorageDisplayCounter;
+  uint8_t jumpStorageButtonCounter;
+  bool jumpStorageDisplayEnabled = false;
   
 private:
-  uint32_t mResetCounter;
-  uint32_t mEnabledOrDisabledCounter;
+  uint16_t mResetCounter;
+  uint16_t mEnabledOrDisabledCounter;
   
   void (*mPFN_makeKey_trampoline)() = nullptr;
   char mDisplayBuffer[256];
