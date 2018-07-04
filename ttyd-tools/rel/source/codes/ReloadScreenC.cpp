@@ -25,7 +25,6 @@ void Mod::reloadScreen()
     uint32_t NextSeq = ttyd::seqdrv::seqGetNextSeq();
     uint32_t Game = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kGame);
     uint32_t MapChange = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kMapChange);
-    uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
     
     if ((NextSeq >= Game) && (NextSeq <= MapChange))
     {
@@ -37,6 +36,7 @@ void Mod::reloadScreen()
       ttyd::string::strcpy(NewMap, NextMap);
       ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kMapChange, NewMap, NewBero);
       
+      uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
       if (SystemLevel != 0)
       {
         if (SystemLevel == 15)

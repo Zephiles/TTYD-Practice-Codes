@@ -824,6 +824,27 @@
 // w_atan2.c
 8026C588:atan2
 
+// OSCache.c
+// 802909FC:DCEnable
+// 80290A10:DCInvalidateRange
+80290A3C:DCFlushRange
+// 80290A6C:DCStoreRange
+// 80290A9C:DCFlushRangeNoSync
+// 80290AC8:DCStoreRangeNoSync
+// 80290AF4:DCZeroRange
+80290B20:ICInvalidateRange
+// 80290B54:ICFlashInvalidate
+// 80290B64:ICEnable
+// 80290B78:__LCEnable
+// 80290C44:LCEnable
+// 80290C7C:LCDisable
+// 80290CA4:LCStoreBlocks
+// 80290CC8:LCStoreData
+// 80290D74:LCQueueWait
+// 80290D88:L2GlobalInvalidate
+// 80290E20:DMAErrorHandler
+// 80290F80:__OSCacheInit
+
 // GXGeometry.c
 // 802AFBE8:__GXSetDirtyState
 802AFC68:GXBegin

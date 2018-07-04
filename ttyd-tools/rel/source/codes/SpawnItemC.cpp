@@ -20,7 +20,7 @@ void Mod::spawnItem()
   {
     if (!spawnItemDisable)
     {
-      uint32_t Game = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kGame);
+      int32_t Game = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kGame);
       if ((ttyd::seqdrv::seqGetNextSeq() == Game) && (ttyd::mariost::marioStGetSystemLevel() != 15))
       {
         // Not in pause menu

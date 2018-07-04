@@ -4,7 +4,7 @@
 
 namespace ttyd::seqdrv {
 
-enum class SeqIndex : uint32_t
+enum class SeqIndex : int32_t
 {
   kLogo = 0,
   kTitle,
@@ -19,7 +19,7 @@ enum class SeqIndex : uint32_t
 struct SeqInfo
 {
   SeqIndex seq;
-  uint32_t state;
+  int32_t state;
   const char *mapName;
   const char *beroName;
   uint32_t counter;
@@ -33,9 +33,9 @@ extern "C" {
 void seqInit_MARIOSTORY();
 void seqMain();
 void seqSetSeq(SeqIndex seq, const char *mapName, const char *beroName);
-uint32_t seqGetSeq();
-uint32_t seqGetPrevSeq();
-uint32_t seqGetNextSeq();
+int32_t seqGetSeq();
+int32_t seqGetPrevSeq();
+int32_t seqGetNextSeq();
 bool seqCheckSeq();
 
 }

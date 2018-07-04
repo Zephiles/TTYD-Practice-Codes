@@ -13,7 +13,7 @@ void Mod::gameOver()
 {
   if ((ttyd::system::keyGetButton(0) & GameOverCombo) == (GameOverCombo))
   {
-    uint32_t Logo = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kLogo);
+    int32_t Logo = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kLogo);
     if (ttyd::seqdrv::seqGetNextSeq() != Logo)
     {
       // The game will crash if the following code runs during the Logo

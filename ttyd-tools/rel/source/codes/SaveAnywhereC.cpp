@@ -19,7 +19,7 @@ void Mod::saveAnywhere()
     // Save Script is not running
     if ((ttyd::system::keyGetButton(0) & SaveAnywhereCombo) == (SaveAnywhereCombo))
     {
-      uint32_t Game = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kGame);
+      int32_t Game = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kGame);
       if ((ttyd::seqdrv::seqGetNextSeq() == Game) && (ttyd::mariost::marioStGetSystemLevel() != 15))
       {
         // Not in the Pause Menu
