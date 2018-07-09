@@ -2,8 +2,8 @@
 
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
-#include <ttyd/mariost.h>
 #include <ttyd/string.h>
+#include <ttyd/mariost.h>
 #include <ttyd/camdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>

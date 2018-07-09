@@ -7,8 +7,8 @@ extern "C" {
 // partyGetTechLv
 // partyGetHp
 // partyChkJoin
-// partyLeft
-// partyJoin
+void partyLeft(uint32_t id);
+void partyJoin(uint32_t id);
 // marioGetExtraPartyId
 uint32_t marioGetPartyId();
 // marioGetParty

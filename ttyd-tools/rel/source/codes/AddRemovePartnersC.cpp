@@ -2,7 +2,7 @@
 
 #include <ttyd/mariost.h>
 #include <ttyd/system.h>
-#include <ttyd/mario_pouch.h>
+#include <ttyd/mario_party.h>
 #include <ttyd/win_party.h>
 
 #include <cstdio>
@@ -22,16 +22,16 @@ void Mod::addOrRemovePartners()
   {
     // Currently in the partners menu
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-    uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
     
     if ((ButtonInput & AddPartnersCombo) == AddPartnersCombo)
     {
       if (!addOrRemovePartnersDisable)
       {
-        for (int i = 0; i < 7; i++)
+        
+        // Add all partners
+        for (int i = 1; i <= 7; i++)
         {
-          PouchAddress += 0xE;
-          *reinterpret_cast<uint8_t *>(PouchAddress + 0x1) = 1;
+          ttyd::mario_party::partyJoin(i);
         }
         
         // Reload party menu
@@ -50,24 +50,29 @@ void Mod::addOrRemovePartners()
         {
           // Currently inside partners menu
           uint32_t PartnerOnCursor = *reinterpret_cast<uint32_t *>(PauseMenuAddress  + 0x1D8);
+          uint8_t PartnerToRemove;
           
+          // Get proper partner value
           switch (PartnerOnCursor)
           {
             case 0: // Goombella
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0xF) = 0; break;
+              PartnerToRemove = 1; break;
             case 1: // Koops
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x1D) = 0; break;
+              PartnerToRemove = 2; break;
             case 2: // Flurrie
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x47) = 0; break;
+              PartnerToRemove = 5; break;
             case 3: // Yoshi
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x39) = 0; break;
+              PartnerToRemove = 4; break;
             case 4: // Vivian
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x55) = 0; break;
+              PartnerToRemove = 6; break;
             case 5: // Bobbery
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x2B) = 0; break;
-            case 6: // Mowz
-              *reinterpret_cast<uint8_t *>(PouchAddress + 0x63) = 0; break;
+              PartnerToRemove = 3; break;
+            default: // case 6: Mowz
+              PartnerToRemove = 7; break;
           }
+          
+          // Remove partner
+          ttyd::mario_party::partyLeft(PartnerToRemove);
           
           // Reload party menu
           uint32_t *PauseMenuPointer = reinterpret_cast<uint32_t *>(PauseMenuAddress);
