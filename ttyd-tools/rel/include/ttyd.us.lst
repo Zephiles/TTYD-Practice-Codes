@@ -1,3 +1,8 @@
+// __mem.c
+800050B4:memset
+// 800050E4:__fill_mem
+// 8000519C:memcpy
+
 // system.o
 // unused:memcmp_as4
 // unused:memset_as4
@@ -822,7 +827,7 @@
 8026D58C:strcat
 8026D5B8:strncpy
 8026D5FC:strcpy
-// 8026D6B4:strlen
+8026D6B4:strlen
 
 // w_atan2.c
 802725A0:atan2

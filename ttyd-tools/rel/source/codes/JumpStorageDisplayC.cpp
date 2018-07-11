@@ -1,4 +1,5 @@
 #include "mod.h"
+#include "drawstring.h"
 #include "buttons.h"
 
 #include <ttyd/system.h>
@@ -53,7 +54,7 @@ void Mod::jumpStorageDisplay()
     }
     
     sprintf(mDisplayBuffer,
-      "JS: %ld\r\nSpdY: %.2f",
+      "JS: %ld\nSpdY: %.2f",
       (player->flags3 & (1 << 16)) >> 16, // Get only the 16 bit
       player->wJumpVelocityY);
     
@@ -61,7 +62,8 @@ void Mod::jumpStorageDisplay()
     uint32_t color = 0xFFFFFFFF;
     ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
     ttyd::fontmgr::FontDrawEdge();
-    ttyd::fontmgr::FontDrawMessage(87, 120, mDisplayBuffer);
+    ttyd::fontmgr::FontDrawScale(0.75);
+    drawstring::drawStringMultiline(110, 120, mDisplayBuffer);
   }
 }
 

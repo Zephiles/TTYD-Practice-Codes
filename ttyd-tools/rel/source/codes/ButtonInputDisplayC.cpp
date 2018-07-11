@@ -35,6 +35,12 @@ void Mod::buttonInputDisplay()
     char ButtonArray[] = {'(', ')', 'v', '^', 'Z', 'R', 'L', ' ', 'A', 'B', 'X', 'Y', 'S'};
     int32_t DrawX = -252;
     
+    ttyd::fontmgr::FontDrawStart();
+    uint32_t color = 0xFFFFFFFF;
+    ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
+    ttyd::fontmgr::FontDrawEdge();
+    ttyd::fontmgr::FontDrawScale(0.75);
+    
     for (int i = 0; i < 13; i++)
     {
       if (i != 7) // Skip unused input value
@@ -45,11 +51,7 @@ void Mod::buttonInputDisplay()
             "%c",
             ButtonArray[i]);
           
-          ttyd::fontmgr::FontDrawStart();
-          uint32_t color = 0xFFFFFFFF;
-          ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
-          ttyd::fontmgr::FontDrawEdge();
-          ttyd::fontmgr::FontDrawMessage(DrawX, -140, mDisplayBuffer);
+          ttyd::fontmgr::FontDrawString(DrawX, -160, mDisplayBuffer);
         }
         DrawX += 20;
       }

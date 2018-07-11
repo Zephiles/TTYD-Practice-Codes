@@ -1,6 +1,7 @@
 #include "mod.h"
 
 #include <ttyd/system.h>
+#include <ttyd/__mem.h>
 
 #include <cstdio>
 
@@ -16,11 +17,7 @@ void Mod::resetGSWFFlags()
     uint32_t GSWFFlagsAddressesStart = *reinterpret_cast<uint32_t *>(GSWAddressesStart);
     GSWFFlagsAddressesStart += 0x178;
     
-    for (int i = 0; i < 178; i++)
-    {
-      *reinterpret_cast<uint32_t *>(GSWFFlagsAddressesStart) = 0;
-      GSWFFlagsAddressesStart += 0x4;
-    }
+    ttyd::__mem::memset(reinterpret_cast<uint32_t *>(GSWFFlagsAddressesStart), 0, 0x2C8);
   }
 }
 

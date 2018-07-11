@@ -1,4 +1,5 @@
 #include "mod.h"
+#include "drawstring.h"
 #include "buttons.h"
 #include "maps.h"
 
@@ -184,24 +185,25 @@ void Mod::palaceSkip()
       }
       
       sprintf(mDisplayBuffer,
-        "PST: %lu\r\nItemTimer: %ld\r\nPhaEmY: %.2f\r\nParY: %.2f\r\nMarPos: %.2f %.2f %.2f",
+        "PST: %lu\nItemTimer: %ld\nPhaEmY: %.2f\nParY: %.2f\nMarPos: %.2f %.2f %.2f",
         mPalaceSkipTimer.getValue(),
         ItemTimer,
         phantomEmberCoordinateY,
         partnerCoordinateY,
         player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
       
-      int FontDrawY = -40;
+      int32_t FontDrawY = -80;
       if (buttonInputDisplayEnabled)
       {
-        FontDrawY += 35;
+        FontDrawY += 20;
       }
       
       ttyd::fontmgr::FontDrawStart();
       uint32_t color = 0xFFFFFFFF;
       ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
       ttyd::fontmgr::FontDrawEdge();
-      ttyd::fontmgr::FontDrawMessage(-252, FontDrawY, mDisplayBuffer);
+      ttyd::fontmgr::FontDrawScale(0.75);
+      drawstring::drawStringMultiline(-252, FontDrawY, mDisplayBuffer);
       
       mPalaceSkipTimer.tick();
     }
