@@ -15,8 +15,8 @@ void writeBranch(void *ptr, void *destination)
   uint32_t *p = reinterpret_cast<uint32_t *>(ptr);
   *p = value;
   
-  ttyd::OSCache::DCFlushRange(destination, sizeof(uint32_t));
-  ttyd::OSCache::ICInvalidateRange(destination, sizeof(uint32_t));
+  ttyd::OSCache::DCFlushRange(ptr, sizeof(uint32_t));
+  ttyd::OSCache::ICInvalidateRange(ptr, sizeof(uint32_t));
 }
 
 }
