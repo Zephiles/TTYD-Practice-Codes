@@ -28,27 +28,34 @@ void Mod::reloadScreen()
     
     if ((NextSeq >= Game) && (NextSeq <= MapChange))
     {
-      // Not in the pause menu
-      // A separate address for NextBero is needed, as the original value will be cleared during the reloading process
-      // The game will crash if NextMap is used directly in seqSetSeq, so a separate address must be used instead
+      uint32_t Seq = ttyd::seqdrv::seqGetSeq();
+      uint32_t Battle = static_cast<uint32_t>(ttyd::seqdrv::SeqIndex::kBattle);
       
-      ttyd::string::strcpy(NewBero, NextBero);
-      ttyd::string::strcpy(NewMap, NextMap);
-      ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kMapChange, NewMap, NewBero);
-      
-      uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-      if (SystemLevel != 0)
+      // Reloading the room with the Seq set to Battle will cause the game to crash, so don't allow it
+      if (Seq != Battle)
       {
-        if (SystemLevel == 15)
-        {
-          // Currently in pause menu, so re-enable the camera
-          ttyd::camdrv::camDispOn(4);
-        }
+        // Not in the pause menu
+        // A separate address for NextBero is needed, as the original value will be cleared during the reloading process
+        // The game will crash if NextMap is used directly in seqSetSeq, so a separate address must be used instead
         
-        // Enable sound effects, set the default camera id for Mario, and give back control to the player
-        ttyd::pmario_sound::psndClearFlag(0x80);
-        ttyd::mario_cam::marioSetCamId(4);
-        ttyd::mariost::marioStSystemLevel(0);
+        ttyd::string::strcpy(NewBero, NextBero);
+        ttyd::string::strcpy(NewMap, NextMap);
+        ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kMapChange, NewMap, NewBero);
+        
+        uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
+        if (SystemLevel != 0)
+        {
+          if (SystemLevel == 15)
+          {
+            // Currently in pause menu, so re-enable the camera
+            ttyd::camdrv::camDispOn(4);
+          }
+          
+          // Enable sound effects, set the default camera id for Mario, and give back control to the player
+          ttyd::pmario_sound::psndClearFlag(0x80);
+          ttyd::mario_cam::marioSetCamId(4);
+          ttyd::mariost::marioStSystemLevel(0);
+        }
       }
     }
   }
