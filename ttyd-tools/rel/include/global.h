@@ -349,7 +349,7 @@ struct Menus
 		TotalMenuColumns 	= 1;
 		ColumnSplitAmount 	= 1;
 	}
-} __attribute__((__packed__));
+};
 
 struct Cheats
 {
@@ -360,44 +360,44 @@ struct Cheats
 	{
 		Active = true;
 	}
-} __attribute__((__packed__));
+};
 
 struct AutoIncrement
 {
 	uint16_t WaitFramesToBeginIncrement;
 	uint16_t WaitFramesToPerformIncrement;
-} __attribute__((__packed__));
+};
 
 struct CheatsHandleDisplayButtons
 {
 	uint8_t CheatsBButtonCounter;
 	uint8_t CheatsPreviousButtonsHeld[14]; // Extra spot for a 0 at the end of the array
 	uint8_t CheatsCurrentButtonsHeld[14]; // Extra spot for a 0 at the end of the array
-} __attribute__((__packed__));
+};
 
 struct MarioPartnerPositionsStruct
 {
 	float MarioPosition[4];
 	float PartnerPosition[4];
-} __attribute__((__packed__));
+};
 
 struct SaveAnywhereStruct
 {
 	uint32_t ThreadID;
 	bool ScriptIsRunning;
-} __attribute__((__packed__));
+};
 
 struct ReloadRoomStruct
 {
 	char NewBero[32]; // 31 bytes for NextBero, 1 byte for NULL
 	char NewMap[9]; // 8 bytes for NextMap, 1 byte for NULL
-} __attribute__((__packed__));
+};
 
 struct SpawnItems
 {
 	uint16_t SpawnItemCounter;
 	bool InAdjustableValueMenu;
-} __attribute__((__packed__));
+};
 
 struct TrickDisplay
 {
@@ -410,7 +410,7 @@ struct TrickDisplay
 	{
 		TimerStopped = true;
 	}
-} __attribute__((__packed__));
+};
 
 struct OnScreenTimerDisplay
 {
@@ -422,7 +422,7 @@ struct OnScreenTimerDisplay
 	{
 		TimerPaused = true;
 	}
-} __attribute__((__packed__));
+};
 
 extern Menus Menu[20];
 extern Cheats Cheat[17];
