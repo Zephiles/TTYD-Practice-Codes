@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/party.h>
+
 namespace ttyd::mario_party {
 
 extern "C" {
@@ -7,16 +9,15 @@ extern "C" {
 // partyGetTechLv
 // partyGetHp
 // partyChkJoin
-void partyLeft(uint32_t id);
-void partyJoin(uint32_t id);
-// marioGetExtraPartyId
-uint32_t marioGetPartyId();
+void partyLeft(party::PartyMembers id);
+void partyJoin(party::PartyMembers id);
+int32_t marioGetExtraPartyId();
+int32_t marioGetPartyId();
 // marioGetParty
 // marioPartyKill
-// marioPartyGoodbye
-// marioPartyHello
-// marioPartyEntry
-// unk_JP_US_PAL_062
+int32_t marioPartyGoodbye();
+int32_t marioPartyHello(party::PartyMembers id);
+int32_t marioPartyEntry(party::PartyMembers id);
 // marioUseParty
 
 }

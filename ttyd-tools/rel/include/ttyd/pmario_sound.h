@@ -35,11 +35,9 @@ extern "C" {
 // psndBGMOff_f_d
 // psndBGMOff
 // psndBGMOn_f_d
-// unk_JP_US_PAL_051
 // psndBGMOn
 // psndBGMMain
 // psndBGM_rate
-// unk_JP_US_PAL_052
 // psndSFXAllOff
 // psndMapChange
 // psndGetFlag

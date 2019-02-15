@@ -1,12 +1,26 @@
-This contains the practice codes that I have made for Paper Mario: The Thousand-Year Door. The initial code for this project came from PistonMiner's work. https://github.com/PistonMiner/ttyd-tools
+## Credits
+* **PistonMiner** for their work on the TTYD scripting disassembly, the initial code for the rel framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
+* **Jdaster64** for their work on the Shufflizer. (GitHub repo for the Shufflizer [here](https://github.com/jdaster64/shufflizer).)
 
-The codes are stored on the save files (gci files) listed on the releases page. You must use the proper file for your version of the game.  
-G8ME = US, G8MJ = JP, G8MP = EU  
-https://github.com/Zephiles/ttyd-tools/releases
+## Overview
+These are practice codes that I have made for Paper Mario: The Thousand-Year Door. 
 
-To use them on console, you need to use a homebrew app to move the save file onto your memory card, and then use the provided gct files with your prefered homebrew app.  
-https://github.com/Zephiles/ttyd-tools/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/GCT
+## Download
+The latest release can be found on the [releases page](https://github.com/Zephiles/TTYD-Practice-Codes/releases).
 
-To use them on an emulator such as Dolphin, you need to either import the save file onto the virtual memory card used by the emulator, or move the file into the GCI folder (this is a Dolphin thing). You must then use either the provided Action Replay code or the provided Gecko code. The Gecko code is shorter, so that is the prefered code to use. The Action Replay code is provided mainly for people who happen to be using the old Action Replay discs, or for people who are having issues applying Gecko codes in Dolphin.  
-https://github.com/Zephiles/ttyd-tools/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/Action_Replay  
-https://github.com/Zephiles/ttyd-tools/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/Gecko  
+## Usage
+See the [user manual](https://github.com/Zephiles/TTYD-Practice-Codes/blob/master/USER_MANUAL.md).
+
+## Prerequisites
+To build this, you need to have devkitPPC installed. Instructions for doing so can be found [here](https://devkitpro.org/wiki/Getting_Started). You also need to place **elf2rel.exe** in the **bin** folder. This file can either be compiled manually, or downloaded from [here](https://github.com/PistonMiner/ttyd-tools/releases/download/v2.4/elf2rel.exe).
+
+## Building
+To build, navigate to the root directory of the repository (the folder with the makefile in it) and run `make`. Any combination of rules can be applied to this.
+`make us`
+`make jp eu`
+`make us eu`
+
+## Special Thanks
+* **PistonMiner** for helping me with many C++ questions, and overall providing a ton of in-depth technical assistance.
+* **Jdaster64** for helping me with various formulas, providing logic about guard/superguard timing, and other C++ related help.
+* **Gibstack** for testing out the menu, and for confirming many battle actor names.

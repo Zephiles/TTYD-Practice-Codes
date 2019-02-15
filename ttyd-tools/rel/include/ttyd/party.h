@@ -1,6 +1,31 @@
 #pragma once
 
+#include <cstdint>
+
 namespace ttyd::party {
+
+enum class PartyMembers : uint8_t
+{
+	Goombella = 1,
+	Koops,
+	Bobbery,
+	Yoshi,
+	Flurrie,
+	Vivian,
+	MsMowz,
+	Egg,
+	Flavio,
+	Punio,
+	Frankly,
+	Gus,
+	GoombellaFollower,
+	KoopsFollower,
+	BobberyFollower,
+	YoshiFollower,
+	FlurrieFollower,
+	VivianFollower,
+	MsMowzFollower,
+};
 
 extern "C" {
 
@@ -23,7 +48,6 @@ extern "C" {
 // partyRideChk
 // allPartyRideOff2
 // allPartyRideOff
-// unk_JP_US_PAL_029
 // allPartyForceRideOn
 // getRidePos
 // allPartyRideShip
@@ -38,20 +62,17 @@ extern "C" {
 // partyDoWork
 // driveParty
 // partyMain
-// unk_JP_US_PAL_030
-// unk_JP_US_PAL_031
-// unk_JP_US_PAL_032
 // partyChgRunMode
 // partyUsePost
 // partyReInit
 // partyInit
 // partyEntry2Pos
-// partyEntry2Hello
+int32_t partyEntry2Hello(PartyMembers id);
 // partyEntry2
 // partyEntryMain
 // partyGetHeight
 // yoshiSetColor
-// partyKill2
+int32_t partyKill2(int32_t partyId);
 // partyKill
 // partyGoodbye
 // partyEntryPos

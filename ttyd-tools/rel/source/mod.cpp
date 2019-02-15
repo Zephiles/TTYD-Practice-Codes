@@ -1,10 +1,17 @@
 #include "mod.h"
+#include "global.h"
 #include "patch.h"
 
 #include <ttyd/system.h>
+#include <ttyd/battle_pad.h>
+#include <ttyd/win_root.h>
+#include <ttyd/mario_pouch.h>
+#include <ttyd/seq_battle.h>
+#include <ttyd/sound.h>
+#include <ttyd/msgdrv.h>
 #include <ttyd/fontmgr.h>
+#include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
-#include <ttyd/dispdrv.h>
 
 #include <cstdio>
 
@@ -14,85 +21,77 @@ Mod *gMod = nullptr;
 
 void main()
 {
-  Mod *mod = new Mod();
-  mod->init();
+	Mod *mod = new Mod();
+	mod->init();
 }
 
 Mod::Mod()
 {
-  
+	
 }
 
 void Mod::init()
 {
-  gMod = this;
-  
-  mPFN_makeKey_trampoline = patch::hookFunction(ttyd::system::makeKey, []()
-  {
-    gMod->updateEarly();
-  });
+	gMod = this;
+	initMenuVars();
+	initArtAttackAssemblyOverwrites();
+	initAssemblyOverwrites();
+	
+	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::system::makeKey, []()
+	{
+		gMod->run();
+	});
+	
+	mPFN_BattlePadManager_trampoline = patch::hookFunction(
+		ttyd::battle_pad::BattlePadManager, []()
+	{
+		gMod->preventButtonInputInBattle();
+	});
+	
+	mPFN_winRootMain_trampoline = patch::hookFunction(
+		ttyd::win_root::winRootMain, [](void *pauseMenuPointer)
+	{
+		return gMod->pauseMenuPreventUnpause(pauseMenuPointer);
+	});
+	
+	mPFN_pouchRemoveItemIndex_trampoline = patch::hookFunction(
+		ttyd::mario_pouch::pouchRemoveItemIndex, [](int16_t item, uint32_t index)
+	{
+		return gMod->infiniteItemUsage(item, index);
+	});
+	
+	mPFN_battle_init_trampoline = patch::hookFunction(
+		ttyd::seq_battle::battle_init, []()
+	{
+		return gMod->recheckBattleJumpAndHammerLevels();
+	});
+	
+	mPFN_SoundEfxPlayEx_trampoline = patch::hookFunction(
+		ttyd::sound::SoundEfxPlayEx, [](int32_t soundId, uint32_t unk1, 
+			uint32_t unk2, uint32_t unk3)
+	{
+		return gMod->preventMenuSounds(soundId, unk1, unk2, unk3);
+	});
+	
+	mPFN_msgSearch_trampoline = patch::hookFunction(
+		ttyd::msgdrv::msgSearch, [](const char *msgKey)
+	{
+		return gMod->getCustomMessage(msgKey);
+	});
 
-  // Initialize typesetting early
-  ttyd::fontmgr::fontmgrTexSetup();
-  patch::hookFunction(ttyd::fontmgr::fontmgrTexSetup, [](){});
+	// Initialize typesetting early
+	ttyd::fontmgr::fontmgrTexSetup();
+	patch::hookFunction(ttyd::fontmgr::fontmgrTexSetup, [](){});
+	
+	// Initialize typesetting early
+	ttyd::windowdrv::windowTexSetup();
+	patch::hookFunction(ttyd::windowdrv::windowTexSetup, [](){});
 
-  // Skip the logo
-  /*patch::hookFunction(ttyd::seq_logo::seq_logoMain, [](ttyd::seqdrv::SeqInfo *)
-  {
-    ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kTitle, nullptr, nullptr);
-  });*/
-  
-  // --Codes (Only run once)--
-  Mod::allowRunAway();
-  Mod::enableDebugMode();
-  
-  //--Codes (Only run once - Assembly)--
-  Mod::forcePhantomEmberDrop();
-  Mod::autoActionCommands();
-  Mod::disableBattles();
-  Mod::infiniteItemUsage();
-  Mod::artAttackHitboxes();
-  Mod::spawnItemPreventCrash();
-  Mod::pauseMenuDisplayAllMenus();
-}
-
-void Mod::updateEarly()
-{
-  // --Codes (No Display)--
-  Mod::textStorage();
-  Mod::levitate();
-  Mod::speedUpMario();
-  Mod::saveLoadPositions();
-  Mod::reloadScreen();
-  Mod::gameOver();
-  Mod::adjustCoinCountSetSequence();
-  Mod::warp();
-  Mod::bobberyEarly();
-  Mod::addOrRemovePartners();
-  Mod::resetGSWFFlags();
-  Mod::lockMarioHPToggle();
-  Mod::saveAnywhere();
-  Mod::changeInventory();
-  Mod::spawnItem();
-  
-  // Check for font load
-  ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, [](ttyd::dispdrv::DisplayLayer layerId, void *user)
-  {
-    // --Tricks (With Display)--
-    reinterpret_cast<Mod *>(user)->palaceSkip();
-    reinterpret_cast<Mod *>(user)->yoshiSkip();
-  
-    // --Codes (With Display)--
-    reinterpret_cast<Mod *>(user)->onScreenTimer();
-    reinterpret_cast<Mod *>(user)->buttonInputDisplay();
-    reinterpret_cast<Mod *>(user)->jumpStorageDisplay();
-    
-    // --Misc--
-    reinterpret_cast<Mod *>(user)->pauseMenuDisplaySequence();
-  }, this);
-  
-  // Call original function
-  mPFN_makeKey_trampoline();
+	// Skip the logo
+	/*patch::hookFunction(ttyd::seq_logo::seq_logoMain, [](ttyd::seqdrv::SeqInfo *)
+	{
+		ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kTitle, nullptr, nullptr);
+	});*/
 }
 
 }

@@ -1,7 +1,7 @@
 // __mem.c
 800050B4:memset
 // 800050E4:__fill_mem
-// 8000519C:memcpy
+8000519C:memcpy
 
 // system.o
 // unused:memcmp_as4
@@ -79,7 +79,7 @@
 // 8000F498:camSetCurNo
 // 8000F4A0:camGetCurNo
 // 8000F4A8:camGetCurPtr
-// 8000F4C0:camGetPtr
+8000F4C0:camGetPtr
 // 8000F4D4:camUnLoadRoad
 // 8000F530:camLoadRoad
 // 8000F618:camDraw
@@ -98,6 +98,63 @@
 80010D88:dispEntry
 80010E28:dispReInit
 80010E34:dispInit
+
+// fadedrv.o
+// 80010E98:fadeSetNarrowFast
+// 80010EAC:fadeGetTpl
+// 80010EB8:fadeReset
+// 80010F58:fadeIsFinish
+// 80010F84:disp_dummy_black
+// 8001117C:disp_tec
+// 80011580:disp_maku
+// 800118B8:zFill
+// 80011B50:z
+// 80011C40:disp_texture
+// 8001221C:fadeMain
+// 800133E4:fadeSetOffscreenCallback
+// 800133F4:fadeSetAnimVirtualPos
+// 80013454:fadeSetAnimOfsPos
+// 80013464:fadeSetSpotPos
+// 80013474:fadeWhiteOutOff
+// 80013488:fadeWhiteOutOn
+// 8001349C:fadeSoftFocusOff
+// 800134B0:fadeSoftFocusOn
+// 800134C4:fadeTecSoftOff
+// 800134E4:fadeTecSoftOn
+// 80013504:fadeTecOff
+// 80013518:fadeTecOn
+8001352C:fadeEntry
+// 80013C68:fadeTexSetup
+// 80013D54:fadeInit
+// 80013E68:_callback
+
+// icondrv.o
+// 80019060:iconNumberDispGx3D
+// 800192E4:iconNumberDispGx
+// 80019568:iconSetAlpha
+// 80019610:iconSetScale
+// 800196C8:iconFlagOff
+// 80019768:iconFlagOn
+// 80019808:iconSetPos
+// 80019918:iconNameToPtr
+// 800199BC:iconGX
+// 8001A360:iconGetWidthHight
+// 8001A460:iconGetTexObj
+// 8001A680:iconDispGxCol
+// 8001A8A4:iconDispGx2
+8001AADC:iconDispGx
+8001AB00:iconDispGxAlpha
+// 8001ADB4:iconDisp
+// 8001AE6C:iconChange
+// 8001AFCC:iconDelete
+// 8001B074:iconEntry2D
+// 8001B258:iconEntry
+// 8001B49C:iconMain
+// 8001B810:iconReInit
+// 8001B858:iconTexSetup
+// 8001B85C:iconInit
+// 8001B9D4:_callback_bin
+// 8001BA00:_callback_tpl
 
 // seqdrv.o
 8002E2CC:seqCheckSeq
@@ -156,6 +213,61 @@
 // 80037904:evtmgrInit
 // 80037A1C:make_pri_table
 // 80037B48:evtGetWork
+
+// evt_sub.o
+// 80053830:mail_evt_gor_04_keyoff_check
+// 80053890:irai_mail_check
+80053D18:evt_sub_check_intersect
+// 80053FDC:unk_US_PAL_02
+// 800540A4:bgm_start_wait
+// 800540DC:get_stop
+// 8005410C:set_stop
+// 8005413C:stageclear_wait
+// 8005417C:stone_bg_open
+// 800541B4:stone_bg
+// 80054288:stone_ry
+// 8005434C:evt_sub_get_coin
+// 80054844:coingetDisp
+// 80054970:evt_sub_countdown_set_restart_time
+// 800549A0:evt_sub_countdown_flag_onoff
+// 80054A0C:evt_sub_countdown_end
+// 80054A30:evt_sub_countdown_get_status
+// 80054A7C:evt_sub_countdown_start
+// 80054ADC:zz_80054ADC_
+// 80054B10:evt_sub_animgroup_async
+// 80054B68:evt_sub_get_language
+// 80054B9C:evt_sub_load_progresstime
+// 80054CDC:evt_sub_save_playtime
+// 80054DA0:evt_sub_status_gauge_force_update
+// 80054DC4:evt_sub_status_gauge_check_update
+// 80054E2C:evt_sub_status_gauge_force_close
+// 80054E50:evt_sub_status_gauge_force_open
+// 80054E74:evt_sub_get_areaname
+// 80054EA8:evt_sub_get_mapname
+// 80054EDC:evt_key_get_buttontrg
+// 80054F30:evt_key_get_button
+// 80054F84:evt_key_get_dir
+// 80054FD8:evt_sub_system_flag_onoff
+// 8005503C:evt_sub_get_system_flag
+// 80055070:evt_sub_get_dir
+// 800551AC:evt_sub_get_dist
+// 800552E8:evt_sub_area_check
+// 800554F8:evt_sub_get_stopwatch
+// 8005558C:evt_sub_random
+// 800555F8:evt_sub_rumble_onoff
+// 80055680:evt_sub_get_sincos
+// 80055748:evt_sub_spline_free
+// 80055798:evt_sub_spline_get_value_manual
+// 800558E4:evt_sub_spline_get_value
+// 80055B20:evt_sub_spline_init
+// 80055C24:evt_sub_intpl_msec_get_value_para
+// 80055D40:evt_sub_intpl_msec_get_value
+// 80055E1C:evt_sub_intpl_msec_init
+// 80055EBC:evt_sub_intpl_get_float
+// 80055FAC:evt_sub_intpl_init_float
+// 80056090:evt_sub_intpl_get_value_para
+// 80056164:evt_sub_intpl_get_value
+// 80056220:evt_sub_intpl_init
 
 // mario.o
 800562B8:toFrontPose
@@ -238,6 +350,13 @@
 80070AE0:marioStMain
 80070D18:marioStInit
 
+// seq_battle.o
+// 800749A8:battle_exit
+80074B68:battle_init
+// 80074DE0:seq_battleMain
+// 800751BC:seq_battleExit
+// 800751DC:seq_battleInit
+
 // fontmgr.o
 // unused:JUTFont_Draw
 // unused:JUTFont_DrawPos
@@ -284,6 +403,50 @@
 80078E98:fontmgrTexSetup
 80078EC4:fontmgrInit
 
+// windowdrv.o
+// 8007BFEC:getWakuTexObj
+// 8007BFFC:windowGetPointer
+// 8007C00C:windowCheckID
+// 8007C024:windowDispGX2_Waku_col
+8007C708:windowDispGX_Waku_col
+// 8007CD94:windowDispGX_Message
+// 8007D064:_windowDispGX_Message
+// 8007EC50:windowDispGX_System
+// 8007FCAC:windowDispGX_Kanban
+// 80080CA8:windowMain
+// 80080D10:windowDeleteID
+// 80080D7C:windowDelete
+// 80080DC8:windowEntry
+// 80080E50:windowReInit
+80080E94:windowTexSetup
+// 80080FAC:unk_JP_US_PAL_008
+// 80081040:windowInit
+
+// msgdrv.o
+// 800810B0:selectWindow_Disp
+// 800811F8:selectWindow_Main
+// 8008151C:msgWindow_Disp
+// 80081BF8:msgWindow_Clear_Main
+// 80081EDC:msgWindow_Main
+// 800826E0:msgWindow_ForceClose
+// 800827B0:msgWindow_Repeat
+// 80082828:msgWindow_Continue
+// 80082878:msgWindow_Add
+// 800828EC:msgWindow_Delete
+// 80082944:msgWindow_Entry
+// 80082CD8:msgIconStr2ID
+// 80082D5C:msgGetCommand
+// 80082DFC:_ismbblead
+80082E48:msgSearch
+// 80082F28:msg_compare
+// 80082F70:msgGetWork
+// 80082F78:msgAnalize
+// 800846B4:msgDispKeyWait_render
+// 80084734:msgDisp
+// 80085288:msgMain
+// 800859B0:msgLoad
+// 80085C8C:msgInit
+
 // swdrv.o
 // 80086A98:_swByteGet
 // 80086AA8:_swByteSet
@@ -292,9 +455,9 @@
 // 80086B40:_swSet
 80086B80:swByteGet
 80086BA4:swByteSet
-// 80086BC8:swClear
-// 80086C08:swGet
-// 80086C50:swSet
+80086BC8:swClear
+80086C08:swGet
+80086C50:swSet
 // 80086C90:swReInit
 // 80086CD4:swInit
 
@@ -383,12 +546,12 @@
 // 800BDCC4:partyReInit
 // 800BE3E0:partyInit
 // 800BE40C:partyEntry2Pos
-// 800BE7DC:partyEntry2Hello
+800BE7DC:partyEntry2Hello
 // 800BEB04:partyEntry2
 // 800BEE78:partyEntryMain
 // 800BF1F8:partyGetHeight
 // 800BF228:yoshiSetColor
-// 800BF2C8:partyKill2
+800BF2C8:partyKill2
 // 800BF3D0:partyKill
 // 800BF530:partyGoodbye
 // 800BF580:partyEntryPos
@@ -417,31 +580,31 @@
 // 800D3CAC:pouchOpenMail
 // 800D3CEC:pouchReceiveMail
 // 800D3E04:pouchReceiveMailCount
-// 800D3ED8:pouchGetStarStone
+800D3ED8:pouchGetStarStone
 // 800D3F4C:pouchAddKpaScore
 // 800D3F7C:pouchGetKpaScore
 // 800D3F88:pouchAddKpaCoin
 // 800D3FC0:pouchGetKpaCoin
 // 800D3FCC:pouchMajinaiInit
 // 800D3FFC:pouchArriveBadge
-// 800D402C:unk_JP_US_PAL_049
+// 800D402C:pouchUnEquipBadgeID
 // 800D4084:pouchEquipBadgeID
 // 800D40D8:pouchEquipCheckBadgeIndex
-// 800D40F8:pouchEquipCheckBadge
+800D40F8:pouchEquipCheckBadge
 // 800D41C0:pouchUnEquipBadgeIndex
 // 800D41F0:pouchEquipBadgeIndex
 // 800D421C:pouchGetStarPoint
-// 800D4228:pouchRevisePartyParam
+800D4228:pouchRevisePartyParam
 800D43A0:pouchReviseMarioParam
 // 800D4628:pouchRemoveKeepItem
 // 800D475C:pouchAddKeepItem
-// 800D4884:pouchGetPartyAttackLv
-// 800D4898:pouchGetHammerLv
-// 800D4918:pouchGetJumpLv
+800D4884:pouchGetPartyAttackLv
+800D4898:pouchGetHammerLv
+800D4918:pouchGetJumpLv
 // 800D4998:pouchSetAudienceNum
 // 800D49A4:pouchGetAudienceNum
-// 800D49B0:pouchGetMaxAP
-// 800D49BC:pouchSetAP
+800D49B0:pouchGetMaxAP
+800D49BC:pouchSetAP
 // 800D49F8:pouchAddAP
 // 800D4A3C:pouchGetAP
 // 800D4A48:pouchSetMaxFP
@@ -456,26 +619,26 @@
 // 800D4B28:pouchGetHP
 // 800D4B34:pouchAddHP
 // 800D4B84:pouchAddStarPiece
-// 800D4BA0:pouchGetStarPiece
+800D4BA0:pouchGetStarPiece
 // 800D4BAC:pouchSetSuperCoin
 // 800D4BC0:pouchGetSuperCoin
 // 800D4BCC:pouchSetCoin
 // 800D4C10:pouchAddCoin
-// 800D4C5C:pouchGetCoin
+800D4C5C:pouchGetCoin
 // 800D4C68:pouchSortItem
 // 800D532C:comp_kind_r
 // 800D5374:comp_aiueo_r
 // 800D53E8:comp_kind
 // 800D5430:comp_aiueo
-// 800D54A4:unk_JP_US_PAL_050
-// 800D577C:pouchRemoveItemIndex
+// 800D54A4:unk_JP_US_PAL_035
+800D577C:pouchRemoveItemIndex
 // 800D5A40:pouchRemoveItem
-// 800D5CDC:pouchCheckItem
-// 800D5ED4:pouchGetItem
+800D5CDC:pouchCheckItem
+800D5ED4:pouchGetItem
 // 800D6378:pouchGetEmptyKeepItemCnt
 // 800D641C:pouchGetEmptyHaveItemCnt
 // 800D647C:pouchGetEquipBadgeCnt
-// 800D6540:pouchGetHaveBadgeCnt
+800D6540:pouchGetHaveBadgeCnt
 // 800D6604:pouchGetKeepItemCnt
 // 800D66A8:pouchGetHaveItemCnt
 // 800D676C:pouchEquipBadge
@@ -538,6 +701,66 @@
 // 800DD4D0:calc3D
 // 800DD9C4:angleABf
 
+// sound.o
+// 800DDB78:SoundAIDMACallback
+// 800DDC8C:SoundSSMainInt
+// 800DE0DC:SoundSSMain
+// 800DE714:SoundSSMuteOff
+// 800DE73C:SoundSSMuteOn
+// 800DE764:SoundSSCheck
+// 800DE77C:SoundSSSetPlayFreqCh
+// 800DE850:SoundSSSetSrndPanCh
+// 800DE9D4:SoundSSGetVolCh
+// 800DEA18:SoundSSSetVolCh
+// 800DEBB0:SoundSSSetPanCh
+// 800DED10:SoundSSContinueCh
+// 800DED50:SoundSSFadeoutCh
+// 800DEDF4:SoundSSStopCh
+// 800DEF00:SoundSSPlayChEx_main
+// 800DF8CC:SoundSSPlayChEx
+// 800DFB78:SoundSSPlayCh
+// 800DFB9C:_sscallback
+// 800E03C0:ssDecodeDPCM
+// 800E05D0:_ssDVDReadAsync_cache_next
+// 800E06DC:_ssDVDReadAsync_cache_aram
+// 800E0A60:cache_flush
+// 800E0A94:_ssDVDReadAsync_activeChk
+// 800E0EAC:SoundDVDMain
+// 800E1278:SoundEfxMain
+// 800E15BC:SoundEfxCheck
+// 800E1658:SoundEfxSetLPF
+// 800E1700:SoundEfxSetSrndPan
+// 800E17D8:SoundEfxSetPan
+// 800E1860:SoundEfxSetAux1
+// 800E18D8:SoundEfxGetVolume
+// 800E18F8:SoundEfxSetVolume
+// 800E19B8:SoundEfxSetPitch
+// 800E1A34:SoundEfxStop
+800E1A9C:SoundEfxPlayEx
+// 800E1D90:SoundSongCheck
+// 800E1DD0:SoundSongGetVolCh
+// 800E1E28:SoundSongSetVolCh
+// 800E1EAC:SoundSongFadeinCh
+// 800E1F14:SoundSongFadeoutCh
+// 800E1F84:SoundSongStopCh
+// 800E1FE0:SoundSongContinueCh
+// 800E2048:SoundSongPlayCh
+// 800E2150:SoundCloseCover
+// 800E2270:SoundOpenCover
+// 800E2290:SoundSetOutputMode
+// 800E22C8:SoundDropData
+// 800E27F4:SoundSLibLoadDVD
+// 800E2B84:SoundLoadDVD2Free
+// 800E2BCC:SoundLoadDVD2PushGroup
+// 800E2CE8:SoundLoadDVD2
+// 800E3028:loadDVD_callback
+// 800E30BC:SoundSetFadeTime
+// 800E30D0:SoundMainInt
+// 800E30F0:SoundMain
+// 800E3198:SoundInit
+// 800E36CC:sndFree
+// 800E36F4:sndMalloc
+
 // battle.o
 // 800F8320:BattleConsumeReserveItem
 // 800F8380:BattleStatusWindowCheck
@@ -567,7 +790,7 @@
 // 800F92B0:BattleTransPartyId
 // 800F93A4:BattleChangeParty
 // 800F9520:BattlePartyAnimeLoad
-// 800F9560:BattleGetPartnerPtr
+800F9560:BattleGetPartnerPtr
 // 800F9594:BattleGetPartyPtr
 800F9614:BattleGetMarioPtr
 // 800F9680:BattleGetSystemPtr
@@ -630,6 +853,24 @@
 // 801049B4:btlDispGXInit2DRasta
 // 80104AA8:btlDispGXInit2DSub
 // 80104B3C:searchPoseTbl
+
+// battle_pad.o
+// 8011AE3C:BattlePadMultiCheckRepeat
+// 8011AE54:BattlePadCheckRepeat
+// 8011AE7C:BattlePadMultiCheckUp
+// 8011AE94:BattlePadCheckUp
+// 8011AEBC:BattlePadMultiCheckNow
+// 8011AED4:BattlePadCheckNow
+// 8011AEFC:BattlePadMultiCheckRecordTrigger
+// 8011AF1C:BattlePadCheckRecordTrigger
+// 8011AF48:BattlePadMultiCheckTrigger
+// 8011AF60:BattlePadCheckTrigger
+// 8011AF88:BattlePadGetNow
+// 8011AF94:BattlePadGetTrigger
+// 8011AFA0:BtlPad_WorkUpdate
+// 8011B280:BtlPad_WorkInit
+8011B330:BattlePadManager
+// 8011B380:BattlePadInit
 
 // battle_unit.o
 // 801277F0:BtlUnit_CheckShadowGuard
@@ -759,15 +1000,82 @@
 // 801429D0:partyChkJoin
 80142A18:partyLeft
 80142A5C:partyJoin
-// 80142AA0:marioGetExtraPartyId
+80142AA0:marioGetExtraPartyId
 80142B38:marioGetPartyId
 // 80142BD0:marioGetParty
 // 80142C80:marioPartyKill
-// 80142CEC:marioPartyGoodbye
-// 80142D34:marioPartyHello
-// 80142DE4:marioPartyEntry
+80142CEC:marioPartyGoodbye
+80142D34:marioPartyHello
+80142DE4:marioPartyEntry
 // 80142EF4:unk_JP_US_PAL_062
 // 80142F88:marioUseParty
+
+// win_root.o
+// 80154690:unk_JP_US_PAL_52
+// 80154934:unk_JP_US_PAL_53
+// 801549E4:winMailDisp
+// 801558B8:winZClear
+// 80155A68:winKageGX
+// 80155E88:winSortWait
+// 80155E9C:winSortEntry
+// 80155EF8:winSortGX
+// 80156EC8:winSortMain
+// 80157154:sort_8_2_func
+// 801571F0:compare_func5_r
+// 80157214:compare_func5
+// 80157238:sort_8_1_func
+// 801572D4:compare_func4_r
+// 8015733C:compare_func4
+// 801573AC:sort_7_3_func
+// 80157468:compare_func3_r
+// 801575A0:compare_func3
+// 801576D8:sort_7_2_func
+// 80157794:compare_func2_r
+// 801578A8:compare_func2
+// 801579BC:sort_7_1_func
+// 80157A48:compare_func1_r
+// 80157A6C:compare_func1
+// 80157A90:sort_6_2_func
+// 80157B30:sort_6_1_func
+// 80157BD0:compare_func6_2_r
+// 80157C28:compare_func6_2
+// 80157C80:compare_func6_1_r
+// 80157D04:compare_func6_1
+// 80157D88:sort_5_3_func
+// 80157F74:sort_5_2_func
+// 80158014:sort_5_1_func
+// 801580B4:compare_func5_2_r
+// 8015810C:compare_func5_2
+// 80158164:compare_func5_1_r
+// 801581E8:compare_func5_1
+// 8015826C:sort_4_3_func
+// 8015848C:sort_4_2_func
+// 80158518:sort_4_1_func
+// 801585A4:compare_func4_2_r
+// 801585F4:compare_func4_2
+// 80158644:compare_func4_1_r
+// 801586C0:compare_func4_1
+// 8015873C:sort_3_3_func
+// 801587D8:sort_3_2_func
+// 8015885C:sort_3_1_func
+// 801588E0:sort_2_2_func
+// 8015895C:sort_2_1_func
+// 801589D8:sort_1_2_func
+// 80158A6C:sort_1_1_func
+// 80158B00:winWazaGX
+// 80159EE4:winHakoGX
+// 8015BEBC:winMailGX
+// 8015E00C:winHalfBookGX
+// 8015FB70:winBookGX
+// 80161860:winNameGX
+// 80162430:winKirinukiGX
+// 801649C0:winMsgEntry
+// 80164A7C:winMsgDisp
+// 801652B8:winMsgMain
+// 80165500:winBgGX
+// 80165CA8:winBgMain
+// 801660C0:winRootDisp
+801663D8:winRootMain
 
 // win_party.o
 // 80167660:winPartyDisp
@@ -776,6 +1084,62 @@
 80169224:winPartyExit
 // 8016928C:winPartyInit2
 80169338:winPartyInit
+
+// win_item.o
+// 8016B7E0:itemUseDisp2
+// 8016B9B0:itemUseDisp
+// 8016CEF0:item_disp
+// 8016D6C0:winItemDisp
+// 8016D9E4:winItemMain2
+// 8016DB04:winItemMain
+8016ED78:winItemExit
+// 8016EDB0:winItemInit2
+8016EEDC:winItemInit
+// 8016F140:winMakeSkipList
+
+// win_main.o
+// 8017CB64:unk_JP_US_PAL_58
+// 8017CD50:unk_JP_US_PAL_59
+// 8017CDD0:unk_JP_US_PAL_60
+// 8017CDF0:unk_JP_US_PAL_61
+// 8017D050:winLectureCheck
+// 8017D0AC:winLectureOn
+// 8017D110:winLectureKeyMask
+// 8017D2EC:unk_JP_US_PAL_62
+// 8017D304:unk_JP_US_PAL_63
+// 8017D378:winIconSet
+// 8017D66C:winIconGrayInit
+// 8017DA7C:winIconInit
+// 8017DBF8:winTexSet_x2
+// 8017DE98:winTexInit_x2
+// 8017E170:winTexSetRot
+// 8017E45C:unk_JP_US_PAL_64
+// 8017E6CC:winTexSet
+// 8017E990:winTexInit
+// 8017EB08:winFontSetLabel
+// 8017EBAC:unk_US_PAL_12
+// 8017ED2C:winFontSetEdge
+// 8017EE58:zz_8017ee58_
+// 8017F0CC:winFontSetR
+// 8017F240:winFontSetPitch
+// 8017F3C0:winFontSet
+// 8017F4E4:winFontInit
+// 8017F504:winGhostDiaryChk
+// 8017F548:cam_r
+// 8017F60C:unk_JP_US_PAL_65
+// 8017F630:party_color
+// 8017F680:famicom_check
+// 8017F6D0:itemUseFunc2
+// 8017F6F4:itemUseFunc
+// 8017FA28:winDispKoopa
+// 8017FC14:winDisp
+// 8017FC38:winMain
+801807BC:winOpenDisable
+801807D8:winOpenEnable
+// 801807F4:winCheck
+// 80180840:winReInit
+// 8018086C:winInit
+// 801808A4:winGetPtr
 
 // mario_cam.o
 // 801AA3CC:marioCamZoomUpLevelMain
@@ -860,7 +1224,7 @@
 // string.c
 // 80271180:strstr
 // 802711E8:strchr
-// 80271218:strncmp
+80271218:strncmp
 80271258:strcmp
 80271380:strcat
 802713AC:strncpy

@@ -4,9 +4,9 @@ namespace ttyd::__mem {
 
 extern "C" {
 
-void *memset(void *pointer, uint32_t value, uint32_t amountOfBytesToSet);
+void *memset(void *destination, uint32_t value, uint32_t amountOfBytesToSet);
 // __fill_mem
-// memcpy
+void *memcpy(void *destination, const void *source, uint32_t amountOfBytesToCopy);
 
 }
 

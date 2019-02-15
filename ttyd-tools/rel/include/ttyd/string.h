@@ -8,12 +8,12 @@ extern "C" {
 
 // strstr
 // strchr
-// strncmp
-int32_t strcmp(const char *string1, const char *string2);
-char *strcat(char *destination, const char *sourceString);
-char *strncpy(char *destination, const char *sourceString, uint32_t amountOfBytesToCopy);
-char *strcpy(char *destination, const char *sourceString);
-int32_t strlen(const char *string);
+int32_t strncmp(const char *str1, const char *str2, uint32_t amountOfBytesToCompare);
+int32_t strcmp(const char *str1, const char *str2);
+char *strcat(char *dest, const char *source);
+char *strncpy(char *dest, const char *source, uint32_t amountOfBytesToCopy);
+char *strcpy(char *dest, const char *source);
+int32_t strlen(const char *str);
 
 }
 

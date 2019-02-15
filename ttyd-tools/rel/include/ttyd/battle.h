@@ -34,13 +34,13 @@ extern "C" {
 // BattleTransPartyId
 // BattleChangeParty
 // BattlePartyAnimeLoad
-// BattleGetPartnerPtr
+void *BattleGetPartnerPtr(void *battleAddressesPointer, void *battleMarioPointer);
 // BattleGetPartyPtr
 void *BattleGetMarioPtr(void *battleAddressesPointer);
 // BattleGetSystemPtr
 // BattleGetUnitPartsPtr
 // BattleSetUnitPtr
-// BattleGetUnitPtr
+void *BattleGetUnitPtr(void *battleAddressesPointer, uint32_t slot);
 // BattleFree
 // BattleAlloc
 // BattleIncSeq
