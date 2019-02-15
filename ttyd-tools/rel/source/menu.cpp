@@ -1869,93 +1869,89 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					if ((tempCurrentMenuOption == 0) && 
+						(tempSelectedOption == 0))
 					{
-						case 0:
+						// Go back to the previous menu
+						CurrentMenu = tempPreviousMenu;
+						resetMenu();
+					}
+					else
+					{
+						switch (tempSelectedOption)
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-							break;
-						}
-						default:
-						{
-							switch (tempSelectedOption)
+							case 0:
 							{
-								case 0:
-								{
-									SelectedOption = tempCurrentMenuOption;
-									Timer = 0;
-									CurrentMenuOption = 0;
-									break;
-								}
-								default:
-								{
-									switch (tempCurrentMenuOption)
-									{
-										case PIT_OF_100_TRIALS:
-										{
-											switch (tempMenuSelectedOption)
-											{
-												case 0:
-												{
-													if (checkIfInGame())
-													{
-														Timer = 0;
-														MenuSelectedOption = SELECTING_VALUE;
-														
-														SecondaryMenuOption = getHighestAdjustableValueDigit(
-															tempCurrentMenu) - 1;
-															
-														MenuSecondaryValue = getCurrentPitFloor();
-													}
-													else
-													{
-														FunctionReturnCode 	= NOT_IN_GAME;
-														Timer 				= secondsToFrames(3);
-													}
-													break;
-												}
-												default:
-												{
-													break;
-												}
-											}
-											break;
-										}
-										default:
-										{
-											// Warp to the currently selected map and close the menu
-											int32_t ReturnCode = warpToMap(tempCurrentMenuOption);
-											switch (ReturnCode)
-											{
-												case UNKNOWN_BEHAVIOR:
-												{
-													break;
-												}
-												case SUCCESS:
-												{
-													closeMenu();
-													return;
-												}
-												case NOT_IN_GAME:
-												{
-													FunctionReturnCode 	= ReturnCode;
-													Timer 				= secondsToFrames(3);
-													break;
-												}
-												default:
-												{
-													break;
-												}
-											}
-											break;
-										}
-									}
-									break;
-								}
+								SelectedOption = tempCurrentMenuOption;
+								Timer = 0;
+								CurrentMenuOption = 0;
+								break;
 							}
-							break;
+							default:
+							{
+								switch (tempCurrentMenuOption)
+								{
+									case PIT_OF_100_TRIALS:
+									{
+										switch (tempMenuSelectedOption)
+										{
+											case 0:
+											{
+												if (checkIfInGame())
+												{
+													Timer = 0;
+													MenuSelectedOption = SELECTING_VALUE;
+													
+													SecondaryMenuOption = getHighestAdjustableValueDigit(
+														tempCurrentMenu) - 1;
+														
+													MenuSecondaryValue = getCurrentPitFloor();
+												}
+												else
+												{
+													FunctionReturnCode 	= NOT_IN_GAME;
+													Timer 				= secondsToFrames(3);
+												}
+												break;
+											}
+											default:
+											{
+												break;
+											}
+										}
+										break;
+									}
+									default:
+									{
+										// Warp to the currently selected map and close the menu
+										int32_t ReturnCode = warpToMap(tempCurrentMenuOption);
+										switch (ReturnCode)
+										{
+											case UNKNOWN_BEHAVIOR:
+											{
+												break;
+											}
+											case SUCCESS:
+											{
+												closeMenu();
+												return;
+											}
+											case NOT_IN_GAME:
+											{
+												FunctionReturnCode 	= ReturnCode;
+												Timer 				= secondsToFrames(3);
+												break;
+											}
+											default:
+											{
+												break;
+											}
+										}
+										break;
+									}
+								}
+								break;
+							}
 						}
 					}
 					break;

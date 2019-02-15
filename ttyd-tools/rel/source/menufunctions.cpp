@@ -1591,13 +1591,8 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 	{
 		case BP:
 		{
-			// Force the game to recalculate the BP left to use if the pause menu is open
-			uint32_t SystemLevel = getSystemLevel();
-			
-			if (SystemLevel == 15)
-			{
-				ttyd::mario_pouch::pouchReviseMarioParam();
-			}
+			// Force the game to recalculate how much BP is left
+			ttyd::mario_pouch::pouchReviseMarioParam();
 			break;
 		}
 		case MARIO_MAX_HP:

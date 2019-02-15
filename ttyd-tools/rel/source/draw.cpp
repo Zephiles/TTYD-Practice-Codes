@@ -2513,10 +2513,10 @@ void drawTitleScreenInfo()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	float Scale 			= 0.75;
-	PosX 					+= 117;
+	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.1\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 

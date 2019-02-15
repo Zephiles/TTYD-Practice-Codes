@@ -462,7 +462,7 @@ const char *BattlesActorsLines[] =
 	"Unknown 177",
 	"Unknown 178",
 	"Unknown 179",
-	"Unknown 180",
+	"Frankly - Goomba Trio Fight",
 	"Unknown 181",
 	"Unknown 182",
 	"Unknown 183",
