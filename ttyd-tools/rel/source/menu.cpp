@@ -852,7 +852,8 @@ void menuCheckButton()
 										case 0:
 										{
 											// Selected yes
-											cheatClearAreaFlags();
+											ClearAreaFlags.CurrentOption = MenuSecondaryValue;
+											ClearAreaFlags.FlagsShouldBeCleared = true;
 											SelectedOption = 0;
 											break;
 										}
@@ -2230,7 +2231,7 @@ void drawMenu()
 			// Draw the window asking for confirmation to clear the flags
 			if (tempSelectedOption == CLEAR_FLAGS)
 			{
-				const char *ConfirmationMessage = "This will clear all of the GSWF's for the\nselected area. Are you sure you want\nto do this?";
+				const char *ConfirmationMessage = "This will clear all of the GSWF's for the\nselected area when the area is reloaded.\nAre you sure you want to do this?";
 				drawConfirmationWindow(ConfirmationMessage);
 			}
 			break;

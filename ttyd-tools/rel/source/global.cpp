@@ -459,9 +459,9 @@ const char *BattlesActorsLines[] =
 	"Unknown 174",
 	"Unknown 175",
 	"Unknown 176",
-	"Unknown 177",
-	"Unknown 178",
-	"Unknown 179",
+	"Goombella - Action Commands Tutorial",
+	"Frankly - Action Commands Tutorial",
+	"Frankly - Special Moves Tutorial",
 	"Frankly - Goomba Trio Fight",
 	"Unknown 181",
 	"Unknown 182",
@@ -503,7 +503,7 @@ const char *BattlesActorsLines[] =
 	"Unknown 218",
 	"Bomb Squad - Bomb",
 	"System",
-	"Unknown 221",
+	"Goombella - Prologue - Lord Crump Fight",
 	"Mario",
 	"Shell Shield",
 	"Goombella",
@@ -735,8 +735,9 @@ struct AutoIncrement AdjustableValueMenu;
 struct CheatsHandleDisplayButtons CheatsDisplayButtons;
 struct MarioPartnerPositionsStruct MarioPartnerPositions;
 struct SaveAnywhereStruct SaveAnywhere;
-struct SpawnItems SpawnItem;
 struct ReloadRoomStruct ReloadRoom;
+struct SpawnItems SpawnItem;
+struct ClearAreaFlagsStruct ClearAreaFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;

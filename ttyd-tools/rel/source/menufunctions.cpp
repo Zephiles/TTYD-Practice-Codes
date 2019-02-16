@@ -1980,12 +1980,12 @@ int32_t changeItem()
 	return 0;
 }
 
-void cheatClearAreaFlags()
+void cheatClearAreaFlags(uint32_t currentMenuOption)
 {
 	uint32_t LowerBound;
 	uint32_t UpperBound;
 	
-	switch (MenuSecondaryValue)
+	switch (currentMenuOption)
 	{
 		case AREA_GOR:
 		{

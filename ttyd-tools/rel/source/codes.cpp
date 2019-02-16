@@ -587,6 +587,42 @@ void spawnItem()
 	}
 }
 
+void checkIfAreaFlagsShouldBeCleared()
+{
+	// Only run when the player has chosen to clear some flags
+	if (!ClearAreaFlags.FlagsShouldBeCleared)
+	{
+		return;
+	}
+	
+	// Check to see if currently in the process of clearing flags or not
+	if (!ClearAreaFlags.StartClearingFlags)
+	{
+		// Only run if currently in a screen transition
+		if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kMapChange))
+		{
+			return;
+		}
+		
+		// Set up the flags to be cleared
+		ClearAreaFlags.StartClearingFlags = true;
+	}
+	else
+	{
+		// Keep resetting the flags until the seq changes to Game
+		if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kGame))
+		{
+			// Clear the currently-selected flags
+			cheatClearAreaFlags(ClearAreaFlags.CurrentOption);
+		}
+		else
+		{
+			ClearAreaFlags.FlagsShouldBeCleared = false;
+			ClearAreaFlags.StartClearingFlags = false;
+		}
+	}
+}
+
 void displaySequenceInPauseMenu()
 {
 	uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuStartAddress);

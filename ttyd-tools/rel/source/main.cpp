@@ -550,6 +550,7 @@ void Mod::run()
 	saveAnywhere(); // Needs to always run due to the script taking more than one frame
 	reloadRoom(); // Needs to always run due to the extra code that always does some failsafe checking
 	bobberyEarly();
+	checkIfAreaFlagsShouldBeCleared();
 	
 	// Run each display function
 	// Only run if the mod menu isn't currently open
