@@ -4,6 +4,7 @@
 
 namespace mod {
 
+void walkThroughMostObjects();
 void saveMarioAndPartnerPositions();
 void loadMarioAndPartnerPositions();
 void saveAnywhere();
@@ -16,6 +17,7 @@ void levitate();
 void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();
+void checkIfAreaFlagsShouldBeCleared();
 
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
@@ -24,6 +26,8 @@ void displayJumpStorageDetails();
 void displayButtonInputs();
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
+void actionCommandsTimingsInit();
+void displayActionCommandsTiming();
 
 int32_t warpToMap(uint32_t value);
 

@@ -55,6 +55,7 @@ enum INVENTORY_SELECTION_ERRORS
 enum CHEATS_OPTIONS
 {
 	CHANGE_SEQUENCE = 0,
+	WALK_THROUGH_WALLS,
 	SAVE_COORDINATES,
 	LOAD_COORDINATES,
 	SPAWN_ITEM,
@@ -211,6 +212,7 @@ enum DISPLAYS_OPTIONS
 	MARIO_COORDINATES,
 	JUMP_STORAGE,
 	BUTTON_INPUT_DISPLAY,
+	GUARD_SUPERGUARD_TIMINGS,
 	ART_ATTACK_HITBOXES,
 	YOSHI_SKIP,
 	PALACE_SKIP,
@@ -399,6 +401,13 @@ struct SpawnItems
 	bool InAdjustableValueMenu;
 };
 
+struct ClearAreaFlagsStruct
+{
+	uint8_t CurrentOption;
+	bool FlagsShouldBeCleared;
+	bool StartClearingFlags;
+};
+
 struct TrickDisplay
 {
 	uint32_t MainTimer;
@@ -424,9 +433,18 @@ struct OnScreenTimerDisplay
 	}
 };
 
+struct DisplayActionCommandTiming
+{
+	int32_t (*Trampoline)(void *, void *);
+	uint16_t DisplayTimer;
+	int8_t TypeToDraw;
+	int8_t Last_A_Frame;
+	int8_t Last_B_Frame;
+};
+
 extern Menus Menu[20];
-extern Cheats Cheat[17];
-extern bool Displays[7];
+extern Cheats Cheat[18];
+extern bool Displays[8];
 extern char DisplayBuffer[256];
 
 extern AutoIncrement AdjustableValueMenu;
@@ -435,9 +453,11 @@ extern MarioPartnerPositionsStruct MarioPartnerPositions;
 extern SaveAnywhereStruct SaveAnywhere;
 extern ReloadRoomStruct ReloadRoom;
 extern SpawnItems SpawnItem;
+extern ClearAreaFlagsStruct ClearAreaFlags;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
+extern DisplayActionCommandTiming DisplayActionCommands;
 
 extern const char *CheatsLines[];
 extern const char *CheatsForceItemDropAreas[];
@@ -487,6 +507,8 @@ extern char *NextBero;
 extern char *NextMap;
 extern char *NextArea;
 extern ItemData *ItemDataTable;
+extern int8_t *GuardFrames;
+extern int8_t *SuperguardFrames;
 extern uint32_t PauseMenuStartAddress;
 extern uint32_t wp_fadedrv_Address;
 extern uint32_t _mapEntAddress;
@@ -499,6 +521,7 @@ extern uint32_t FieldItemsAddressesStart;
 extern uint32_t GlobalWorkPointer;
 extern uint32_t titleMainAddress;
 
+extern bool ResetMarioProperties;
 extern int16_t ForcedNPCItemDrop;
 extern bool MarioFreeze;
 extern uint16_t JumpStorageSetCounter;

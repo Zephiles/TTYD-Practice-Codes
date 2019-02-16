@@ -1,5 +1,6 @@
 #include "mod.h"
 #include "global.h"
+#include "codes.h"
 #include "patch.h"
 
 #include <ttyd/system.h>
@@ -36,6 +37,7 @@ void Mod::init()
 	initMenuVars();
 	initArtAttackAssemblyOverwrites();
 	initAssemblyOverwrites();
+	actionCommandsTimingsInit();
 	
 	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::system::makeKey, []()
 	{

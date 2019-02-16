@@ -40,6 +40,7 @@ const char *CheatsLines[] =
 {
 	"Return",
 	"Change Sequence",
+	"Walk Through Most Objects",
 	"Save Coordinates",
 	"Load Coordinates",
 	"Spawn Item",
@@ -634,6 +635,7 @@ const char *DisplaysLines[] =
 	"Mario's Coordinates",
 	"Jump Storage",
 	"Button Input Display",
+	"Guard/Superguard Timings",
 	"Art Attack Hitboxes",
 	"Yoshi Skip",
 	"Palace Skip",
@@ -727,8 +729,8 @@ const char *ReturnPlaceholder[] =
 char ButtonInputDisplay[] = {'(', ')', 'v', '^', 'Z', 'R', 'L', 'A', 'B', 'X', 'Y', 'S'};
 
 struct Menus Menu[20];
-struct Cheats Cheat[17];
-bool Displays[7];
+struct Cheats Cheat[18];
+bool Displays[8];
 char DisplayBuffer[256];
 
 struct AutoIncrement AdjustableValueMenu;
@@ -741,6 +743,7 @@ struct ClearAreaFlagsStruct ClearAreaFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
+struct DisplayActionCommandTiming DisplayActionCommands;
 
 bool MenuIsDisplayed 					= false;
 bool PreventClosingMenu 				= false;
@@ -764,6 +767,8 @@ char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1688);
 char *NextMap 							= reinterpret_cast<char *>(r13 + 0x16A8);
 char *NextArea 							= reinterpret_cast<char *>(r13 + 0x16C8);
 ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x803108A8);
+int8_t *GuardFrames 					= reinterpret_cast<int8_t *>(0x802EE018);
+int8_t *SuperguardFrames 				= reinterpret_cast<int8_t *>(0x802EE020);
 uint32_t PauseMenuStartAddress 			= r13 + 0x1D10;
 uint32_t wp_fadedrv_Address 			= r13 + 0x1700;
 uint32_t _mapEntAddress 				= r13 + 0x1740;
@@ -778,6 +783,8 @@ char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1128);
 char *NextMap 							= reinterpret_cast<char *>(r13 + 0x1148);
 char *NextArea 							= reinterpret_cast<char *>(r13 + 0x1168);
 ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x8030EE58);
+int8_t *GuardFrames 					= reinterpret_cast<int8_t *>(0x802EDA48);
+int8_t *SuperguardFrames 				= reinterpret_cast<int8_t *>(0x802EDA50);
 uint32_t PauseMenuStartAddress 			= r13 + 0x17B0;
 uint32_t wp_fadedrv_Address 			= r13 + 0x11A0;
 uint32_t _mapEntAddress 				= r13 + 0x11E0;
@@ -792,6 +799,8 @@ char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1768);
 char *NextMap 							= reinterpret_cast<char *>(r13 + 0x1788);
 char *NextArea 							= reinterpret_cast<char *>(r13 + 0x17A8);
 ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x8031C638);
+int8_t *GuardFrames 					= reinterpret_cast<int8_t *>(0x802F9C78);
+int8_t *SuperguardFrames 				= reinterpret_cast<int8_t *>(0x802F9C80);
 uint32_t PauseMenuStartAddress 			= r13 + 0x1DF0;
 uint32_t wp_fadedrv_Address 			= r13 + 0x17E0;
 uint32_t _mapEntAddress 				= r13 + 0x1820;
@@ -806,6 +815,7 @@ uint32_t GlobalWorkPointer 				= r13 - 0x6F50;
 uint32_t titleMainAddress 				= r13 - 0x7F80;
 
 // Variables used by cheats
+bool ResetMarioProperties 				= false;
 int16_t ForcedNPCItemDrop 				= SleepySheep;
 bool MarioFreeze 						= false;
 uint16_t JumpStorageSetCounter 			= 0;
@@ -911,12 +921,14 @@ void initMenuVars()
 	Menu[DISPLAYS_NO_BUTTON_COMBO].PreviousMenu 		= DISPLAYS;
 	Menu[DISPLAYS_NO_BUTTON_COMBO].Line 				= CheatsNoButtonComboOptionsLines;
 	
+	Cheat[WALK_THROUGH_WALLS].Active 					= false;
 	Cheat[SAVE_ANYWHERE].Active 						= false;
 	Cheat[LOCK_MARIO_HP_TO_MAX].Active 					= false;
 	Cheat[RUN_FROM_BATTLES].Active 						= false;
 	Cheat[SPAWN_ITEM].Active 							= false;
 	Cheat[FORCE_ITEM_DROP].Active 						= false;
 	
+	Cheat[WALK_THROUGH_WALLS].ButtonCombo 				= PAD_Z;
 	Cheat[SAVE_COORDINATES].ButtonCombo 				= PAD_L | PAD_DPAD_LEFT;
 	Cheat[LOAD_COORDINATES].ButtonCombo 				= PAD_L | PAD_DPAD_UP;
 	Cheat[SAVE_ANYWHERE].ButtonCombo 					= PAD_Y | PAD_B;
@@ -929,6 +941,8 @@ void initMenuVars()
 	Cheat[RELOAD_ROOM].ButtonCombo 						= PAD_L | PAD_B;
 	Cheat[LEVITATE].ButtonCombo 						= PAD_L | PAD_A;
 	Cheat[SPAWN_ITEM].ButtonCombo 						= PAD_L | PAD_DPAD_DOWN;
+	
+	Displays[GUARD_SUPERGUARD_TIMINGS] 					= true;
 	
 	OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 		= PAD_L | PAD_Z;
 	OnScreenTimer.ButtonCombo[RESET] 					= PAD_L | PAD_DPAD_RIGHT;

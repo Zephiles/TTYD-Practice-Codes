@@ -14,6 +14,7 @@
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
 #include <ttyd/w_atan2.h>
+#include <ttyd/battle_ac.h>
 
 #include <cstdio>
 
@@ -1962,10 +1963,10 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	// Get the proper FPS for the timer
 	uint32_t FPS = *reinterpret_cast<uint32_t *>(
 		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x4);
-    
+	
 	uint32_t tempTimer = Timer;
-    uint32_t second = (tempTimer / FPS) % 60;
-    uint32_t frame = tempTimer % FPS;
+	uint32_t second = (tempTimer / FPS) % 60;
+	uint32_t frame = tempTimer % FPS;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
@@ -2492,6 +2493,147 @@ void drawPalaceSkipDetails()
 	}
 }
 
+void drawActionCommandsTiming()
+{
+	if (!Displays[GUARD_SUPERGUARD_TIMINGS])
+	{
+		DisplayActionCommands.DisplayTimer = 0;
+		return;
+	}
+	
+	// const int8_t CommandDifficulty = ttyd::battle_ac::BattleActionCommandGetDifficulty(getBattlePointer());
+	#ifdef TTYD_US
+	uint32_t SimplifierOffset 		= 0x305;
+	uint32_t UnsimplifierOffset 	= 0x306;
+	#elif defined TTYD_JP
+	uint32_t SimplifierOffset 		= 0x301;
+	uint32_t UnsimplifierOffset 	= 0x302;
+	#elif defined TTYD_EU
+	uint32_t SimplifierOffset 		= 0x309;
+	uint32_t UnsimplifierOffset 	= 0x30A;
+	#endif
+	
+	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+	uint8_t SimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + SimplifierOffset);
+	uint8_t UnsimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + UnsimplifierOffset);
+	
+	int32_t CommandDifficulty = UnsimplifiersEquipped - SimplifiersEquipped + 3;
+	if (CommandDifficulty < 0)
+	{
+		CommandDifficulty = 0;
+	}
+	else if (CommandDifficulty > 6)
+	{
+		CommandDifficulty = 6;
+	}
+	
+	int8_t temp_Last_A_Frame = DisplayActionCommands.Last_A_Frame;
+	int8_t temp_Last_B_Frame = DisplayActionCommands.Last_B_Frame;
+	
+	uint8_t TypeToDraw = DisplayActionCommands.TypeToDraw;
+	const char *TextToDraw;
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	const int8_t SuccessfulTiming 			= 0;
+	const int8_t PressedTooManyButtons 		= 1;
+	const int8_t PressedTooEarly 			= 2;
+	
+	// Check to see which text should be displayed
+	switch (TypeToDraw)
+	{
+		case SuccessfulTiming:
+		{
+			int8_t CurrentDifficultyFrames;
+			int8_t FramePressed;
+			const char *String;
+			
+			if (temp_Last_B_Frame > -1)
+			{
+				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				FramePressed = CurrentDifficultyFrames - temp_Last_B_Frame;
+				String = "B";
+			}
+			else
+			{
+				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
+				FramePressed = CurrentDifficultyFrames - temp_Last_A_Frame;
+				String = "A";
+			}
+			
+			sprintf(tempDisplayBuffer,
+				"Pressed %s on frame %d of %d",
+				String,
+				FramePressed,
+				CurrentDifficultyFrames);
+			
+			TextToDraw = tempDisplayBuffer;
+			break;
+		}
+		case PressedTooManyButtons:
+		{
+			TextToDraw = "Pressed too many buttons";
+			break;
+		}
+		case PressedTooEarly:
+		{
+			int8_t CurrentDifficultyFrames;
+			int8_t FramesEarly;
+			const char *String;
+			
+			if (temp_Last_B_Frame > -1)
+			{
+				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				FramesEarly = temp_Last_B_Frame - CurrentDifficultyFrames + 1;
+				String = "B";
+			}
+			else
+			{
+				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
+				FramesEarly = temp_Last_A_Frame - CurrentDifficultyFrames + 1;
+				String = "A";
+			}
+			
+			const char *CheckForPlural;
+			if (FramesEarly > 1)
+			{
+				CheckForPlural = "s";
+			}
+			else
+			{
+				CheckForPlural = "";
+			}
+			
+			sprintf(tempDisplayBuffer,
+				"Pressed %s %d frame%s early",
+				String,
+				FramesEarly,
+				CheckForPlural);
+			
+			TextToDraw = tempDisplayBuffer;
+			break;
+		}
+		default:
+		{
+			DisplayActionCommands.DisplayTimer = 0;
+			return;
+		}
+	}
+	
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint32_t WindowColor 	= 0x000000D0;
+	uint8_t Alpha  			= 0xFF;
+	int32_t TextPosX 		= -232;
+	int32_t TextPosY 		= -105;
+	int32_t WindowWidth 	= 320;
+	int32_t WindowCurve 	= 10;
+	float Scale 			= 0.75;
+	
+	drawTextWithWindow(TextToDraw, TextPosX, TextPosY, Alpha, TextColor, 
+		Scale, WindowWidth, WindowColor, WindowCurve);
+	
+	DisplayActionCommands.DisplayTimer--;
+}
+
 void drawTitleScreenInfo()
 {
 	// Draw the window for the text
@@ -2516,7 +2658,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.2\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.3\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 

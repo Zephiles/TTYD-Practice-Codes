@@ -2,6 +2,7 @@
 #include "codes.h"
 #include "commonfunctions.h"
 #include "draw.h"
+#include "patch.h"
 #include "menufunctions.h"
 #include "global.h"
 #include "maps.h"
@@ -17,8 +18,7 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
-#include <ttyd/dispdrv.h>
-#include <ttyd/fontmgr.h>
+#include <ttyd/battle_ac.h>
 
 #include <cstdio>
 
@@ -98,6 +98,29 @@ bool checkForArtAttackHitboxesBool()
 {
 	return Displays[ART_ATTACK_HITBOXES];
 }
+}
+
+void walkThroughMostObjects()
+{
+	if (!Cheat[WALK_THROUGH_WALLS].Active || 
+		!checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo))
+	{
+		// Check to see if Mario's properties should be reset
+		if (ResetMarioProperties)
+		{
+			ResetMarioProperties = false;
+			
+			ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+			player->flags1 &= ~(1 << 10); // Turn off the 10 bit
+		}
+		return;
+	}
+	
+	// Set Mario;s properties to be able to walk through most objects
+	ResetMarioProperties = true;
+	
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	player->flags1 |= (1 << 10); // Turn on the 10 bit
 }
 
 void saveMarioAndPartnerPositions()
@@ -429,7 +452,7 @@ void lockMarioHPToMax()
 		int16_t BattleMarioMaxHP = *reinterpret_cast<int16_t *>(
 			MarioBattleAddress + 0x108);
 		
-        *reinterpret_cast<int16_t *>(BattleMarioHPAddress) = BattleMarioMaxHP; // Copy Battle Max HP to Current Battle HP
+		*reinterpret_cast<int16_t *>(BattleMarioHPAddress) = BattleMarioMaxHP; // Copy Battle Max HP to Current Battle HP
 	}
 }
 
@@ -714,6 +737,12 @@ void displayYoshiSkipDetails()
 		return;
 	}
 	
+	// Don't display if the Guard/Superguard timings display is active
+	if (DisplayActionCommands.DisplayTimer > 0)
+	{
+		return;
+	}
+	
 	if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle)) // In battle
 	{
 		// Pause in battle
@@ -764,6 +793,12 @@ void displayYoshiSkipDetails()
 void displayPalaceSkipDetails()
 {
 	if (!Displays[PALACE_SKIP])
+	{
+		return;
+	}
+	
+	// Don't display if the Guard/Superguard timings display is active
+	if (DisplayActionCommands.DisplayTimer > 0)
 	{
 		return;
 	}
@@ -824,6 +859,97 @@ int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1,
 	{
 		// Call original function
 		return mPFN_SoundEfxPlayEx_trampoline(soundId, unk1, unk2, unk3);
+	}
+}
+
+void actionCommandsTimingsInit()
+{
+	// Credits to Jdaster64 for writing the original code for this
+	DisplayActionCommands.Trampoline = patch::hookFunction(
+	ttyd::battle_ac::BattleActionCommandCheckDefence, [](
+		void *battle_unit, void *attack_params)
+	{
+		if (!Displays[GUARD_SUPERGUARD_TIMINGS])
+		{
+			return DisplayActionCommands.Trampoline(battle_unit, attack_params);
+		}
+		
+		// Reset the values checked when drawing the text
+		DisplayActionCommands.Last_A_Frame 	= -1;
+		DisplayActionCommands.Last_B_Frame 	= -1;
+		DisplayActionCommands.TypeToDraw 	= -1;
+		
+		int8_t Last_A_Frame 	= -1;
+		int8_t Last_B_Frame 	= -1;
+		int8_t ButtonPresses 	= 0;
+		
+		for (int32_t Frame = 0; Frame < 15; ++Frame)
+		{
+			if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_A))
+			{
+				Last_A_Frame = Frame;
+				++ButtonPresses;
+			}
+			
+			if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_B))
+			{
+				Last_B_Frame = Frame;
+				++ButtonPresses;
+			}
+		}
+		
+		const int32_t DefenseResult = DisplayActionCommands.Trampoline(
+			battle_unit, attack_params);
+		
+		const int8_t SuccessfulTiming 		= 0;
+		const int8_t PressedTooManyButtons 	= 1;
+		const int8_t PressedTooEarly 		= 2;
+		
+		if (DefenseResult == 5)
+		{
+			// Successful Superguard; print Last_B_Frame
+			DisplayActionCommands.Last_B_Frame 		= Last_B_Frame;
+			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
+			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+		}
+		else if (DefenseResult == 4)
+		{
+			// Successful Guard; print Last_A_Frame
+			DisplayActionCommands.Last_A_Frame 		= Last_A_Frame;
+			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
+			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+		}
+		else if (ButtonPresses > 1) // Unsuccessful, otherwise...
+		{
+			// Hit too many buttons in last 15 frames
+			DisplayActionCommands.TypeToDraw 		= PressedTooManyButtons;
+			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+		}
+		else if (Last_B_Frame > -1)
+		{
+			// Print how many frames early the player pressed A
+			DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
+			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
+			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+		}
+		else if (Last_A_Frame > -1)
+		{
+			// Print how many frames early the player pressed B
+			DisplayActionCommands.Last_A_Frame 	= Last_A_Frame;
+			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
+			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+		}
+		
+		return DefenseResult;
+	});
+}
+
+void displayActionCommandsTiming()
+{
+	// Only display if the timer is not at 0
+	if (DisplayActionCommands.DisplayTimer > 0)
+	{
+		drawFunctionOnDebugLayer(drawActionCommandsTiming);
 	}
 }
 

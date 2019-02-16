@@ -810,6 +810,27 @@
 // 800F9EA8:battleSeqEndCheck
 // 800F9EB8:battleMain
 
+// battle_ac.o
+// 800F9F00:BattleAcGaugeSeDelete
+// 800F9F44:BattleAcGaugeSeUpdate
+// 800F9FBC:BattleAcGaugeSeInit
+// 800F9FFC:BattleAcDrawGauge
+// 800FAD10:BattleACGetButtonIcon
+// 800FAF54:BattleActionCommandGetPrizeLv
+// 800FAF98:BattleActionCommandSetDifficulty
+800FAFC8:BattleActionCommandGetDifficulty
+// 800FAFD0:BattleActionCommandResetDefenceResult
+// 800FB000:BattleActionCommandGetDefenceResult
+800FB00C:BattleACPadCheckRecordTrigger
+800FB024:BattleActionCommandCheckDefence
+// 800FB28C:BattleActionCommandStop
+// 800FB2BC:BattleActionCommandStart
+// 800FB2C8:BattleActionCommandSetup
+// 800FB35C:BattleActionCommandDeclareACResult
+// 800FB3E0:BattleActionCommandResult
+// 800FB41C:BattleActionCommandManager
+// 800FB498:BattleActionCommandManagerInit
+
 // battle_disp.o
 // 801010C4:_btlStockExpDisp
 // 801012C8:BattleStockExpDisp

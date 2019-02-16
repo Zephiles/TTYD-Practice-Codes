@@ -89,6 +89,7 @@ void drawJumpStorageDetails();
 void drawButtonInputs();
 void drawYoshiSkipDetails();
 void drawPalaceSkipDetails();
+void drawActionCommandsTiming();
 
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();

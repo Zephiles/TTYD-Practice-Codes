@@ -537,6 +537,7 @@ void Mod::run()
 	bool tempChangingCheatButtonCombo = ChangingCheatButtonCombo;
 	if (!tempChangingCheatButtonCombo)
 	{
+		walkThroughMostObjects();
 		saveMarioAndPartnerPositions();
 		loadMarioAndPartnerPositions();
 		setTextStorage();
@@ -570,6 +571,7 @@ void Mod::run()
 		spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
 		displaySequenceInPauseMenu();
 		displayMarioCoordinatesBoolCheck();
+		displayActionCommandsTiming();
 	}
 	
 	uint32_t tempFrameCounter = FrameCounter;

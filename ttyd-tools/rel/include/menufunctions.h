@@ -49,7 +49,7 @@ void setAddByIconValue(void *address);
 void duplicateCurrentItem(void *address);
 void deleteItem();
 int32_t changeItem();
-void cheatClearAreaFlags();
+void cheatClearAreaFlags(uint32_t currentMenuOption);
 
 // uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo);
 uint8_t *getButtonsPressed(uint8_t *buttonArray, uint16_t currentButtonCombo);
