@@ -1478,8 +1478,29 @@ void menuCheckButton()
 						{
 							if (tempSelectedOption == 0)
 							{
+								uint32_t ActorAddress = reinterpret_cast<uint32_t>(
+									getActorPointer(tempMenuSelectedOption));
+								
 								switch (tempCurrentMenuOption)
 								{
+									case CLEAR_HELD_ITEM:
+									{
+										if (ActorAddress == 0)
+										{
+											break;
+										}
+										
+										#ifdef TTYD_US
+										uint32_t offset = 0x308;
+										#elif defined TTYD_JP
+										uint32_t offset = 0x304;
+										#elif defined TTYD_EU
+										uint32_t offset = 0x30C;
+										#endif
+										
+										*reinterpret_cast<uint32_t *>(ActorAddress + offset) = 0;
+										break;
+									}
 									case CHANGE_ACTOR_STATUSES:
 									{
 										// Go to the next menu
@@ -1492,8 +1513,6 @@ void menuCheckButton()
 										SelectedOption = tempCurrentMenuOption;
 										SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 										
-										uint32_t ActorAddress = reinterpret_cast<uint32_t>(
-											getActorPointer(tempMenuSelectedOption));
 										if (ActorAddress == 0)
 										{
 											break;
@@ -1523,6 +1542,20 @@ void menuCheckButton()
 											{
 												MenuSecondaryValue = *reinterpret_cast<int16_t *>(
 													ActorAddress + 0x10E);
+												break;
+											}
+											case CHANGE_HELD_ITEM:
+											{
+												#ifdef TTYD_US
+												uint32_t offset = 0x308;
+												#elif defined TTYD_JP
+												uint32_t offset = 0x304;
+												#elif defined TTYD_EU
+												uint32_t offset = 0x30C;
+												#endif
+												
+												MenuSecondaryValue = *reinterpret_cast<int32_t *>(
+													ActorAddress + offset);
 												break;
 											}
 											default:
@@ -2347,9 +2380,22 @@ void drawMenu()
 				// Draw the HP/FP values
 				drawBattlesActorStats();
 				
+				// Draw the current held item
+				drawBattlesActorsHeldItem();
+				
 				if (tempSelectedOption > 0)
 				{
-					drawAdjustableValue(false, tempCurrentMenu);
+					bool ChangingItem;
+					if (tempSelectedOption == CHANGE_HELD_ITEM)
+					{
+						ChangingItem = true;
+					}
+					else
+					{
+						ChangingItem = false;
+					}
+					
+					drawAdjustableValue(ChangingItem, tempCurrentMenu);
 				}
 			}
 			

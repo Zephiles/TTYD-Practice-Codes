@@ -374,6 +374,12 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 					UpperBound = *reinterpret_cast<int16_t *>(ActorAddress + 0x10E); // Max FP
 					break;
 				}
+				case CHANGE_HELD_ITEM:
+				{
+					LowerBound = ThunderBolt;
+					UpperBound = Cake;
+					break;
+				}
 				default:
 				{
 					UpperBound = 999;
@@ -1429,22 +1435,48 @@ void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_
 
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 {
-	if (currentMenu == CHEATS_NPC_FORCE_DROP)
+	int32_t tempMenuSecondaryValue = MenuSecondaryValue + valueChangedBy;
+	switch (currentMenu)
 	{
-		int32_t tempMenuSecondaryValue = MenuSecondaryValue + valueChangedBy;
-		
-		if ((tempMenuSecondaryValue > FreshJuice) && 
-			(tempMenuSecondaryValue < PowerJump))
+		case CHEATS_NPC_FORCE_DROP:
 		{
-			if (valueChangedBy > 0)
+			if ((tempMenuSecondaryValue > FreshJuice) && 
+				(tempMenuSecondaryValue < PowerJump))
 			{
-				MenuSecondaryValue = PowerJump;
+				if (valueChangedBy > 0)
+				{
+					MenuSecondaryValue = PowerJump;
+				}
+				else
+				{
+					MenuSecondaryValue = FreshJuice;
+				}
+				return;
 			}
-			else
+			break;
+		}
+		case BATTLES_CURRENT_ACTOR:
+		{
+			if (SelectedOption == CHANGE_HELD_ITEM)
 			{
-				MenuSecondaryValue = FreshJuice;
+				if (tempMenuSecondaryValue == TradeOff)
+				{
+					if (valueChangedBy > 0)
+					{
+						MenuSecondaryValue = tempMenuSecondaryValue + 1;
+					}
+					else
+					{
+						MenuSecondaryValue = tempMenuSecondaryValue - 1;
+					}
+					return;
+				}
 			}
-			return;
+			break;
+		}
+		default:
+		{
+			break;
 		}
 	}
 	
@@ -1730,6 +1762,19 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 		{
 			*reinterpret_cast<int16_t *>(ActorAddress + 0x10E) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
+			break;
+		}
+		case CHANGE_HELD_ITEM:
+		{
+			#ifdef TTYD_US
+			uint32_t offset = 0x308;
+			#elif defined TTYD_JP
+			uint32_t offset = 0x304;
+			#elif defined TTYD_EU
+			uint32_t offset = 0x30C;
+			#endif
+			
+			*reinterpret_cast<int32_t *>(ActorAddress + offset) = tempMenuSecondaryValue;
 			break;
 		}
 		default:

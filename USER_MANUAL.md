@@ -16,7 +16,7 @@
 * Copy the GCI containing the Practice Codes to the memory card. (This file contains only code required to run the Practice codes. It has no relation to the standard TTYD save file.)
   * For **Dolphin** users:
     * Use the memcard manager located in **Tools > Memcard Manager (GC)** to import the GCI into the file Dolphin is using for a memory card.
-    * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located by default at **{Dolphin directory}/GC/<Region>/Card A**. *<Region>* will either be USA, JAP, or EUR depending on the region of the game that you're using.
+    * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located by default at **{Dolphin directory}/GC/{Region}/Card A**. **{Region}** will either be USA, JAP, or EUR depending on the region of the game that you're using.
   * For **Nintendont** or other console users:
     * Use the appropriate homebrew apps / folders, etc. to copy the file from your SD card to your GC memory card or virtual memory card.
 * Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Practice Codes GCI.
@@ -59,8 +59,9 @@ This menu allows you to modify your entire inventory, including standard items, 
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
 
 ### Battles
-This menu allows you to change the HP, Max HP, FP, Max FP, and statuses of anyone in a battle (refered to as Actors).
+This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statuses of anyone in a battle (refered to as Actors).
 * Note: This menu can only be used while in a battle. 
+* Note 2: Under certain circumstances, it is possible that having an actor recover using a Life Shroom can cause the game to softlock. It is believed that this only occurs when a textbox is supposed to occur, but the Life Shroom interrupts it. One example of where this happens is with Bowser in Chapter 8.
 
 ### Displays
 1. **On-Screen Timer** displays a timer at the bottom-right of the screen. This timer is set to run at the current FPS, and therefore will count from 0 to 59 (0 to 49 for EU at 50hz) before reaching one second.

@@ -523,6 +523,8 @@ const char *BattlesCurrentActorLines[] =
 	"Change Max HP",
 	"Change FP",
 	"Change Max FP",
+	"Change Held Item",
+	"Clear Held Item",
 	"Change Statuses",
 };
 

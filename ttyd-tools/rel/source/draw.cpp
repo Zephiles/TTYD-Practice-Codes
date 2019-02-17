@@ -1099,6 +1099,79 @@ void drawBattlesActorStats()
 	}
 }
 
+void drawBattlesActorsHeldItem()
+{
+	// Get the starting address for the current actor
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	if (ActorAddress == 0)
+	{
+		return;
+	}
+	
+	// Only run when not displaying for Mario or the partners
+	/*uint32_t CurrentActorId = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
+	const uint32_t MarioId 		= 222;
+	const uint32_t GoombellaId 	= 224;
+	const uint32_t MowzId 		= 230;
+	
+	if ((CurrentActorId == MarioId) || 
+		((CurrentActorId >= GoombellaId) && 
+			(CurrentActorId <= MowzId)))
+	{
+		return;
+	}*/
+	
+	uint8_t Alpha 	= 0xFF;
+	uint32_t Color 	= 0xFFFFFFFF;
+	int32_t PosX 	= -50;
+	int32_t PosY 	= 80;
+	float Scale 	= 0.6;
+	
+	// Draw the text for showing what the current item is
+	const char *CurrentLine = "Current Held Item";
+	drawText(CurrentLine, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the current item icon
+	// Make sure the actor is actually holding an item
+	#ifdef TTYD_US
+	uint32_t offset = 0x308;
+	#elif defined TTYD_JP
+	uint32_t offset = 0x304;
+	#elif defined TTYD_EU
+	uint32_t offset = 0x30C;
+	#endif
+	
+	int32_t tempitem = *reinterpret_cast<uint32_t *>(ActorAddress + offset);
+	if (tempitem > 0)
+	{
+		PosX += 10;
+		PosY -= 45;
+		
+		// Set up array to use for displaying icons
+		int32_t IconPosition[3];
+		const int32_t IconPositionX 	= 0;
+		const int32_t IconPositionY 	= 1;
+		IconPosition[IconPositionX] 	= PosX;
+		IconPosition[IconPositionY] 	= PosY;
+		IconPosition[2] 				= 0;
+		
+		drawIconFromItem(IconPosition, tempitem, Scale);
+		
+		// Draw the text for the item
+		PosX += 17;
+		PosY += 18;
+		const char *ItemName = getItemName(tempitem);
+		
+		drawText(ItemName, PosX, PosY, Alpha, Color, Scale);
+	}
+	else
+	{
+		PosY -= 20;
+		
+		drawText("None", PosX, PosY, Alpha, Color, Scale);
+	}
+}
+
 void drawCurrentFollowerOut()
 {
 	// Draw the text for the current follower out
@@ -2658,7 +2731,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.3\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.4\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 

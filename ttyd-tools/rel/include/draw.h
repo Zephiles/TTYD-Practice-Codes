@@ -44,6 +44,7 @@ void drawFollowersOptions();
 void drawMarioStats();
 void drawPartnerStats();
 void drawBattlesActorStats();
+void drawBattlesActorsHeldItem();
 void drawCurrentFollowerOut();
 void drawBattlesActorsList();
 void drawBattlesStatusesList();
