@@ -486,7 +486,12 @@ extern uint8_t OnScreenTimerOptionsSize;
 extern const char *WarpDestinations[];
 extern uint8_t WarpDestinationsSize;
 extern const char *WarpDescriptions[];
-extern char ButtonInputDisplay[];
+
+#ifndef TTYD_JP
+extern const char ButtonInputDisplay[];
+#else
+extern const char *ButtonInputDisplay[];
+#endif
 
 extern bool MenuIsDisplayed;
 extern bool PreventClosingMenu;

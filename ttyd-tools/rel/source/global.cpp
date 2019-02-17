@@ -728,7 +728,44 @@ const char *ReturnPlaceholder[] =
 	"Return",
 };
 
-char ButtonInputDisplay[] = {'(', ')', 'v', '^', 'Z', 'R', 'L', 'A', 'B', 'X', 'Y', 'S'};
+#ifndef TTYD_JP
+const char ButtonInputDisplay[] = 
+{
+	static_cast<char>(171), // Left
+	static_cast<char>(187), // Right
+	static_cast<char>(179), // Down
+	static_cast<char>(178), // Up
+	'Z',
+	'R',
+	'L',
+	'A',
+	'B',
+	'X',
+	'Y',
+	'S',
+};
+#else	
+uint8_t ButtonLeft[] 	= {0x81, 0xA9, 0};
+uint8_t ButtonRight[] 	= {0x81, 0xA8, 0};
+uint8_t ButtonDown[] 	= {0x81, 0xAB, 0};
+uint8_t ButtonUp[] 		= {0x81, 0xAA, 0};
+
+const char *ButtonInputDisplay[] = 
+{
+	reinterpret_cast<const char *>(&ButtonLeft),
+	reinterpret_cast<const char *>(&ButtonRight),
+	reinterpret_cast<const char *>(&ButtonDown),
+	reinterpret_cast<const char *>(&ButtonUp),
+	"Z",
+	"R",
+	"L",
+	"A",
+	"B",
+	"X",
+	"Y",
+	"S",
+};
+#endif
 
 struct Menus Menu[20];
 struct Cheats Cheat[18];
@@ -948,13 +985,6 @@ void initMenuVars()
 	
 	OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 		= PAD_L | PAD_Z;
 	OnScreenTimer.ButtonCombo[RESET] 					= PAD_L | PAD_DPAD_RIGHT;
-	
-	#ifndef TTYD_JP
-	*reinterpret_cast<uint8_t *>(&ButtonInputDisplay[0]) = 171; // Left
-	*reinterpret_cast<uint8_t *>(&ButtonInputDisplay[1]) = 187; // Right
-	*reinterpret_cast<uint8_t *>(&ButtonInputDisplay[2]) = 179; // Down
-	*reinterpret_cast<uint8_t *>(&ButtonInputDisplay[3]) = 178; // Up
-	#endif
 }
 
 }

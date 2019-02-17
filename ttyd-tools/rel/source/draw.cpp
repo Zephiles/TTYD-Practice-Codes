@@ -2352,9 +2352,15 @@ void drawButtonInputs()
 		
 		if (ButtonInput & (1 << i))
 		{
+			#ifndef TTYD_JP
 			sprintf(tempDisplayBuffer,
 				"%c",
 				ButtonInputDisplay[Counter]);
+			#else
+			sprintf(tempDisplayBuffer,
+				"%s",
+				ButtonInputDisplay[Counter]);
+			#endif
 			
 			ttyd::fontmgr::FontDrawString(PosX, PosY, tempDisplayBuffer);
 		}
@@ -2731,7 +2737,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.4\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.5\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 
