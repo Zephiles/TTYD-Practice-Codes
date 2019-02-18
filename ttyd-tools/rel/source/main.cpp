@@ -552,6 +552,7 @@ void Mod::run()
 	reloadRoom(); // Needs to always run due to the extra code that always does some failsafe checking
 	bobberyEarly();
 	checkIfAreaFlagsShouldBeCleared();
+	checkIfSystemLevelShouldBeLowered();
 	
 	// Run each display function
 	// Only run if the mod menu isn't currently open

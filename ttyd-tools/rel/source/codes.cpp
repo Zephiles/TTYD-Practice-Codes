@@ -315,6 +315,30 @@ bool Mod::infiniteItemUsage(int16_t item, uint32_t index)
 	return mPFN_pouchRemoveItemIndex_trampoline(item, index);
 }
 
+void checkIfSystemLevelShouldBeLowered()
+{
+	// Only run when the player has either reloaded the room or warped
+	if (!ReloadRoom.SystemLevelShouldBeLowered)
+	{
+		return;
+	}
+	
+	// Keep lowering the system level until the seq changes to Game
+	if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kGame))
+	{
+		// Only lower the system level if it's not currently at 0
+		uint32_t SystemLevel = getSystemLevel();
+		if (SystemLevel > 0)
+		{
+			setSystemLevel(0);
+		}
+	}
+	else
+	{
+		ReloadRoom.SystemLevelShouldBeLowered = false;
+	}
+}
+
 void reloadRoomMain()
 {
 	ttyd::seqdrv::SeqIndex NextSeq 		= ttyd::seqdrv::seqGetNextSeq();
@@ -374,6 +398,7 @@ void reloadRoomMain()
 	ttyd::pmario_sound::psndClearFlag(0x80);
 	ttyd::mario_cam::marioSetCamId(4);
 	setSystemLevel(0);
+	ReloadRoom.SystemLevelShouldBeLowered = true;
 }
 
 void reloadRoom()
@@ -401,12 +426,7 @@ void reloadRoom()
 	if ((player->currentMotionId == ReceivingItem) && (NextSeq == MapChange))
 	{
 		// Reset the System Level
-		// Only lower the system level if it's not currently at 0
-		uint32_t SystemLevel = getSystemLevel();
-		if (SystemLevel > 0)
-		{
-			setSystemLevel(0);
-		}
+		ReloadRoom.SystemLevelShouldBeLowered = true;
 		
 		// Reset the camera - mainly for the black bars at the top and bottom of the screen
 		uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));

@@ -11,6 +11,7 @@ void saveAnywhere();
 void setTextStorage();
 void setTimeStopTextStorage();
 void speedUpMario();
+void checkIfSystemLevelShouldBeLowered();
 void reloadRoomMain();
 void reloadRoom();
 void levitate();
