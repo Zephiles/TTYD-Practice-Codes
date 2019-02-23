@@ -515,7 +515,7 @@ void bobberyEarly()
 	// Turn off GSWF(3137)
 	ttyd::swdrv::swClear(3137);
 	
-	if (compareStrings(NextMap, reinterpret_cast<const char *>(muj_05)))
+	if (compareStringToNextMap(reinterpret_cast<const char *>(muj_05)))
 	{
 		uint32_t NPC_6_Addresses_Start = (*reinterpret_cast<uint32_t *>(
 			NPCAddressesStart)) + 0x1040;
@@ -899,9 +899,9 @@ void actionCommandsTimingsInit()
 		DisplayActionCommands.Last_B_Frame 	= -1;
 		DisplayActionCommands.TypeToDraw 	= -1;
 		
-		int8_t Last_A_Frame 	= -1;
-		int8_t Last_B_Frame 	= -1;
-		int8_t ButtonPresses 	= 0;
+		int32_t Last_A_Frame 	= -1;
+		int32_t Last_B_Frame 	= -1;
+		int32_t ButtonPresses 	= 0;
 		
 		for (int32_t Frame = 0; Frame < 15; ++Frame)
 		{
@@ -921,21 +921,21 @@ void actionCommandsTimingsInit()
 		const int32_t DefenseResult = DisplayActionCommands.Trampoline(
 			battle_unit, attack_params);
 		
-		const int8_t SuccessfulTiming 		= 0;
-		const int8_t PressedTooManyButtons 	= 1;
-		const int8_t PressedTooEarly 		= 2;
+		const int32_t SuccessfulTiming 			= 0;
+		const int32_t PressedTooManyButtons 	= 1;
+		const int32_t PressedTooEarly 			= 2;
 		
-		if (DefenseResult == 5)
-		{
-			// Successful Superguard; print Last_B_Frame
-			DisplayActionCommands.Last_B_Frame 		= Last_B_Frame;
-			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
-			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
-		}
-		else if (DefenseResult == 4)
+		if (DefenseResult == 4)
 		{
 			// Successful Guard; print Last_A_Frame
 			DisplayActionCommands.Last_A_Frame 		= Last_A_Frame;
+			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
+			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+		}
+		else if (DefenseResult == 5)
+		{
+			// Successful Superguard; print Last_B_Frame
+			DisplayActionCommands.Last_B_Frame 		= Last_B_Frame;
 			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
 			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
 		}
@@ -945,17 +945,17 @@ void actionCommandsTimingsInit()
 			DisplayActionCommands.TypeToDraw 		= PressedTooManyButtons;
 			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
 		}
-		else if (Last_B_Frame > -1)
+		else if (Last_A_Frame > -1)
 		{
 			// Print how many frames early the player pressed A
-			DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
+			DisplayActionCommands.Last_A_Frame 	= Last_A_Frame;
 			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
 			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
 		}
-		else if (Last_A_Frame > -1)
+		else if (Last_B_Frame > -1)
 		{
 			// Print how many frames early the player pressed B
-			DisplayActionCommands.Last_A_Frame 	= Last_A_Frame;
+			DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
 			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
 			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
 		}

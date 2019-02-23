@@ -168,6 +168,11 @@ bool compareStringsSize(const char *str1, const char *str2, uint32_t size)
 	return ttyd::string::strncmp(str1, str2, size) == 0;
 }
 
+bool compareStringToNextMap(const char *str)
+{
+	return ttyd::string::strcmp(NextMap, str) == 0;
+}
+
 uint32_t getSystemLevel()
 {
 	return ttyd::mariost::marioStGetSystemLevel();

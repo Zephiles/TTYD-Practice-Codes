@@ -11,6 +11,7 @@
 #include <ttyd/party.h>
 #include <ttyd/mario.h>
 #include <ttyd/swdrv.h>
+#include <ttyd/battle.h>
 #include <ttyd/string.h>
 #include <ttyd/system.h>
 #include <ttyd/__mem.h>
@@ -377,7 +378,7 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				case CHANGE_HELD_ITEM:
 				{
 					LowerBound = ThunderBolt;
-					UpperBound = Cake;
+					UpperBound = SuperChargeP;
 					break;
 				}
 				default:
@@ -1471,6 +1472,19 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 					}
 					return;
 				}
+				else if ((tempMenuSecondaryValue > Cake) && 
+					(tempMenuSecondaryValue < PowerJump))
+				{
+					if (valueChangedBy > 0)
+					{
+						MenuSecondaryValue = PowerJump;
+					}
+					else
+					{
+						MenuSecondaryValue = Cake;
+					}
+					return;
+				}
 			}
 			break;
 		}
@@ -1767,14 +1781,42 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 		case CHANGE_HELD_ITEM:
 		{
 			#ifdef TTYD_US
-			uint32_t offset = 0x308;
+			uint32_t HeldItemOffset = 0x308;
+			uint32_t BadgeFlagOffsetStart = 0x2E0;
 			#elif defined TTYD_JP
-			uint32_t offset = 0x304;
+			uint32_t HeldItemOffset = 0x304;
+			uint32_t BadgeFlagOffsetStart = 0x2DC;
 			#elif defined TTYD_EU
-			uint32_t offset = 0x30C;
+			uint32_t HeldItemOffset = 0x30C;
+			uint32_t BadgeFlagOffsetStart = 0x2E4;
 			#endif
 			
-			*reinterpret_cast<int32_t *>(ActorAddress + offset) = tempMenuSecondaryValue;
+			// Set the current item/badge
+			*reinterpret_cast<int32_t *>(ActorAddress + HeldItemOffset) = tempMenuSecondaryValue;
+			
+			// If the new item is a badge, then unequip all current badges and equip the new badge
+			if (tempMenuSecondaryValue < PowerJump)
+			{
+				break;
+			}
+			
+			// Do not modify for Mario or the partners
+			uint32_t CurrentActorId = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
+			const uint32_t MarioId 	= 222;
+			const uint32_t MowzId 	= 230;
+			
+			if ((CurrentActorId >= MarioId) && 
+				(CurrentActorId <= MowzId))
+			{
+				break;
+			}
+			
+			// Clear all of the currently equipped badges
+			clearMemory(reinterpret_cast<void *>(ActorAddress + BadgeFlagOffsetStart), 0x28);
+			
+			// Equip the new badge
+			ttyd::battle::_EquipItem(reinterpret_cast<void *>(ActorAddress), 
+				1, static_cast<int16_t>(tempMenuSecondaryValue));
 			break;
 		}
 		default:

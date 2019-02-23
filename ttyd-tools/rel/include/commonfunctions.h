@@ -21,6 +21,7 @@ void setNextMap(const char *map);
 void setNextBero(const char *bero);
 bool compareStrings(const char *str1, const char *str2);
 bool compareStringsSize(const char *str1, const char *str2, uint32_t size);
+bool compareStringToNextMap(const char *str);
 uint32_t getSystemLevel();
 void setSystemLevel(uint32_t value);
 void setSeq(const char *map, const char *bero);

@@ -784,7 +784,7 @@
 // 800F8A68:BattleStoreExp
 // 800F8A78:BattleStoreCoin
 // 800F8A8C:BattlePartyInfoWorkInit
-// 800F8B10:_EquipItem
+800F8B10:_EquipItem
 // 800F9188:BtlUnit_EquipItem
 // 800F9250:BattleTransPartyIdToUnitKind
 // 800F92B0:BattleTransPartyId

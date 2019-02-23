@@ -7,6 +7,7 @@
 #include "draw.h"
 #include "patch.h"
 
+#include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
@@ -50,6 +51,8 @@ extern "C"
 	void BranchBackPreventTextboxSelection();
 	void StartPreventJumpAndHammer();
 	void BranchBackPreventJumpAndHammer();
+	void StartFixRoomProblems();
+	void BranchBackFixRoomProblems();
 }
 
 // Additional function used by assembly overwrites
@@ -185,11 +188,31 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress,
 		reinterpret_cast<uint32_t>(storeAddress) + 0x9C) = NewOption;
 }
 
+void fixRoomProblems()
+{
+	// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
+	if (compareStringToNextMap("las_08"))
+	{
+		// Check if the Sequence is currently at 385
+		uint32_t SequencePosition = getSequencePosition();
+		if (SequencePosition == 385)
+		{
+			// Check if GSW(1121) is currently at 7
+			uint32_t GSW_1121 = ttyd::swdrv::swByteGet(1121);
+			if (GSW_1121 == 7)
+			{
+				// Lower the value to 6 to prevent the game from crashing
+				ttyd::swdrv::swByteSet(1121, 6);
+			}
+		}
+	}
+}
+
 const char *replaceJumpFallAnim(char *jumpFallString)
 {
 	if (compareStringsSize(jumpFallString, "M_J_", 4))
 	{
-		if (compareStrings(NextMap, "gor_01"))
+		if (compareStringToNextMap("gor_01"))
 		{
 			// Return an arbitrary string
 			const char *newString = "gor_01";
@@ -423,6 +446,7 @@ void initAssemblyOverwrites()
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80428BC0);
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8025E4A4);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x8025E4A8);
+	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
@@ -442,6 +466,7 @@ void initAssemblyOverwrites()
 	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010A79C);
 	void *FixMarioKeyOnAddress 					= reinterpret_cast<void *>(0x8005B370);
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800CE01C);
+	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
@@ -464,6 +489,7 @@ void initAssemblyOverwrites()
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x804356C8);
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8026207C);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x80262080);
+	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
 	#endif
 	
 	writeStandardBranch(PreventPreBattleSoftlockAddress, 
@@ -501,6 +527,9 @@ void initAssemblyOverwrites()
 	
 	writeStandardBranch(PreventTextboxSelectionAddress, 
 		StartPreventTextboxSelection, BranchBackPreventTextboxSelection);
+	
+	writeStandardBranch(FixRoomProblemsAddress, 
+		StartFixRoomProblems, BranchBackFixRoomProblems);
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

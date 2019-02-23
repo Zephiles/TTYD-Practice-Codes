@@ -1428,7 +1428,7 @@ void drawErrorMessage(const char *line)
 		
 		int32_t TextPosX 			= -130;
 		// int32_t WindowWidth 		= 305;
-		uint16_t LineLength 		= ttyd::fontmgr::FontGetMessageWidth(line);
+		uint32_t LineLength 		= ttyd::fontmgr::FontGetMessageWidth(line);
 		int32_t WindowWidth 		= 80 + (LineLength >> 1) - (LineLength % 10);
 		drawErrorWindow(line, TextPosX, WindowWidth);
 	}
@@ -2551,7 +2551,7 @@ void drawPalaceSkipDetails()
 		PhantomEmberPosY,
 		PartnerPosY);
 	
-	// uint16_t LineLength = ttyd::fontmgr::FontGetMessageWidth(tempDisplayBuffer);
+	// uint32_t LineLength = ttyd::fontmgr::FontGetMessageWidth(tempDisplayBuffer);
 	// int32_t WindowWidth = 245 + (LineLength >> 1) - (LineLength % 10);
 	
 	/*drawTextWithWindow(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, 
@@ -2593,8 +2593,8 @@ void drawActionCommandsTiming()
 	#endif
 	
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-	uint8_t SimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + SimplifierOffset);
-	uint8_t UnsimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + UnsimplifierOffset);
+	uint32_t SimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + SimplifierOffset);
+	uint32_t UnsimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + UnsimplifierOffset);
 	
 	int32_t CommandDifficulty = UnsimplifiersEquipped - SimplifiersEquipped + 3;
 	if (CommandDifficulty < 0)
@@ -2606,42 +2606,42 @@ void drawActionCommandsTiming()
 		CommandDifficulty = 6;
 	}
 	
-	int8_t temp_Last_A_Frame = DisplayActionCommands.Last_A_Frame;
-	int8_t temp_Last_B_Frame = DisplayActionCommands.Last_B_Frame;
+	int32_t temp_Last_A_Frame = DisplayActionCommands.Last_A_Frame;
+	int32_t temp_Last_B_Frame = DisplayActionCommands.Last_B_Frame;
 	
-	uint8_t TypeToDraw = DisplayActionCommands.TypeToDraw;
+	int32_t TypeToDraw = DisplayActionCommands.TypeToDraw;
 	const char *TextToDraw;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
-	const int8_t SuccessfulTiming 			= 0;
-	const int8_t PressedTooManyButtons 		= 1;
-	const int8_t PressedTooEarly 			= 2;
+	const int32_t SuccessfulTiming 			= 0;
+	const int32_t PressedTooManyButtons 	= 1;
+	const int32_t PressedTooEarly 			= 2;
 	
 	// Check to see which text should be displayed
 	switch (TypeToDraw)
 	{
 		case SuccessfulTiming:
 		{
-			int8_t CurrentDifficultyFrames;
-			int8_t FramePressed;
-			const char *String;
+			int32_t CurrentDifficultyFrames;
+			int32_t FramePressed;
+			char Button;
 			
-			if (temp_Last_B_Frame > -1)
-			{
-				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
-				FramePressed = CurrentDifficultyFrames - temp_Last_B_Frame;
-				String = "B";
-			}
-			else
+			if (temp_Last_A_Frame > -1)
 			{
 				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
 				FramePressed = CurrentDifficultyFrames - temp_Last_A_Frame;
-				String = "A";
+				Button = 'A';
+			}
+			else
+			{
+				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				FramePressed = CurrentDifficultyFrames - temp_Last_B_Frame;
+				Button = 'B';
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %s on frame %d of %d",
-				String,
+				"Pressed %c on frame %ld of %ld",
+				Button,
 				FramePressed,
 				CurrentDifficultyFrames);
 			
@@ -2655,21 +2655,21 @@ void drawActionCommandsTiming()
 		}
 		case PressedTooEarly:
 		{
-			int8_t CurrentDifficultyFrames;
-			int8_t FramesEarly;
-			const char *String;
+			int32_t CurrentDifficultyFrames;
+			int32_t FramesEarly;
+			char Button;
 			
-			if (temp_Last_B_Frame > -1)
-			{
-				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
-				FramesEarly = temp_Last_B_Frame - CurrentDifficultyFrames + 1;
-				String = "B";
-			}
-			else
+			if (temp_Last_A_Frame > -1)
 			{
 				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
 				FramesEarly = temp_Last_A_Frame - CurrentDifficultyFrames + 1;
-				String = "A";
+				Button = 'A';
+			}
+			else
+			{
+				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				FramesEarly = temp_Last_B_Frame - CurrentDifficultyFrames + 1;
+				Button = 'B';
 			}
 			
 			const char *CheckForPlural;
@@ -2683,8 +2683,8 @@ void drawActionCommandsTiming()
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %s %d frame%s early",
-				String,
+				"Pressed %c %ld frame%s early",
+				Button,
 				FramesEarly,
 				CheckForPlural);
 			
@@ -2703,9 +2703,12 @@ void drawActionCommandsTiming()
 	uint8_t Alpha  			= 0xFF;
 	int32_t TextPosX 		= -232;
 	int32_t TextPosY 		= -105;
-	int32_t WindowWidth 	= 320;
+	// int32_t WindowWidth 	= 320;
 	int32_t WindowCurve 	= 10;
 	float Scale 			= 0.75;
+	
+	uint32_t LineLength 	= ttyd::fontmgr::FontGetMessageWidth(TextToDraw);
+	int32_t WindowWidth 	= 129 + (LineLength >> 1) - (LineLength % 10);
 	
 	drawTextWithWindow(TextToDraw, TextPosX, TextPosY, Alpha, TextColor, 
 		Scale, WindowWidth, WindowColor, WindowCurve);
@@ -2737,7 +2740,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.6\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.7\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 
