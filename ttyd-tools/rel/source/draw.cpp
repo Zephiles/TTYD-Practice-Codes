@@ -1639,10 +1639,18 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	if (currentMenu != SPAWN_ITEM_MENU_VALUE)
 	{
 		uint32_t ReturnCode = adjustableValueButtonControls(currentMenu);
-		if (ReturnCode == 0x1000)
+		switch (ReturnCode)
 		{
-			// There are no numbers to display, so exit
-			return;
+			case A: // Confirmed a value, so close the menu; Don't close if currently adding multiple items/badges
+			case B: // Canceled, so close the menu
+			case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
+			{
+				return;
+			}
+			default:
+			{
+				break;
+			}
 		}
 	}
 	
@@ -1792,14 +1800,8 @@ void drawAddByIconMain(uint32_t currentMenu)
 	addByIconButtonControls(currentMenu);
 	
 	// Draw the main window
-	int32_t Address_and_Size[2];
-	int32_t *tempArray 			= getUpperAndLowerBounds(Address_and_Size, MenuSelectedOption);
-	
-	if (tempArray == nullptr)
-	{
-		return;
-	}
-	
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray 			= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
 	int32_t LowerBound 			= tempArray[0];
 	int32_t UpperBound 			= tempArray[1];
 	
@@ -2740,7 +2742,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.7\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.8\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 

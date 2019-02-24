@@ -607,8 +607,8 @@ void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage)
 
 uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu)
 {
-	int32_t Address_and_Size[2];
-	int32_t *tempArray = getUpperAndLowerBounds(Address_and_Size, currentMenu);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	int32_t LowerBound = tempArray[0];
 	int32_t UpperBound = tempArray[1];
 	
@@ -666,8 +666,8 @@ int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy)
 
 void setAdjustableValueToMax(uint32_t currentMenu)
 {
-	int32_t Address_and_Size[2];
-	int32_t *tempArray = getUpperAndLowerBounds(Address_and_Size, currentMenu);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	int32_t UpperBound = tempArray[1];
 	
 	MenuSecondaryValue = UpperBound;
@@ -675,8 +675,8 @@ void setAdjustableValueToMax(uint32_t currentMenu)
 
 void setAdjustableValueToMin(uint32_t currentMenu)
 {
-	int32_t Address_and_Size[2];
-	int32_t *tempArray = getUpperAndLowerBounds(Address_and_Size, currentMenu);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	int32_t LowerBound = tempArray[0];
 	
 	MenuSecondaryValue = LowerBound;
@@ -844,7 +844,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 								setAddByIdValue(tempAddress);
 								
 								FrameCounter = 1;
-								return Button;
+								return ADDING_BY_ID;
 							}
 							else
 							{
@@ -993,7 +993,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 						else
 						{
-							return 0x1000;
+							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
 					case CHEATS_CHANGE_SEQUENCE:
@@ -1009,7 +1009,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 						else
 						{
-							return 0x1000;
+							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
 					case STATS_MARIO:
@@ -1026,7 +1026,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 						else
 						{
-							return 0x1000;
+							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
 					case BATTLES_CURRENT_ACTOR:
@@ -1042,7 +1042,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 						else
 						{
-							return 0x1000;
+							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
 					default:
@@ -1085,8 +1085,8 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 		case DPADDOWN:
 		case DPADUP:
 		{
-			int32_t Address_and_Size[2];
-			int32_t *tempArray 				= getUpperAndLowerBounds(Address_and_Size, currentMenu);
+			int32_t UpperAndLowerBounds[2];
+			int32_t *tempArray 				= getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 			int32_t LowerBound 				= tempArray[0];
 			int32_t UpperBound 				= tempArray[1];
 			
@@ -1494,8 +1494,8 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 		}
 	}
 	
-	int32_t Address_and_Size[2];
-	int32_t *tempArray = getUpperAndLowerBounds(Address_and_Size, currentMenu);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	int32_t LowerBound = tempArray[0];
 	int32_t UpperBound = tempArray[1];
 	
@@ -1965,11 +1965,11 @@ void setAddByIdValue(void *address)
 
 void setAddByIconValue(void *address)
 {
-	int32_t Address_and_Size[2];
-	int32_t *tempArray 	= getUpperAndLowerBounds(Address_and_Size, MenuSelectedOption);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray 	= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
 	int32_t LowerBound 					= tempArray[0];
 	uint32_t tempSecondaryMenuOption 	= SecondaryMenuOption;
-	int32_t NewItem = LowerBound +  tempSecondaryMenuOption;
+	int32_t NewItem = LowerBound + tempSecondaryMenuOption;
 	
 	*reinterpret_cast<int16_t *>(
 		reinterpret_cast<uint32_t>(address)) = NewItem;
@@ -2825,8 +2825,8 @@ void adjustMenuSelectionInventory(uint32_t button)
 
 /*void adjustAddByIconCurrentOption(uint32_t button)
 {
-	int32_t Address_and_Size[2];
-	int32_t *tempArray 				= getUpperAndLowerBounds(Address_and_Size, MenuSelectedOption);
+	int32_t UpperAndLowerBounds[2];
+	int32_t *tempArray 				= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
 	int32_t LowerBound 				= tempArray[0];
 	int32_t UpperBound 				= tempArray[1];
 	

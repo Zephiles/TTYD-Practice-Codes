@@ -379,6 +379,21 @@ void menuCheckButton()
 						{
 							if (getTotalItems() > 0)
 							{
+								uint32_t Address_and_Size[2];
+								uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
+								
+								if (tempArray != nullptr)
+								{
+									uint32_t tempAddress = tempArray[0];
+									uint32_t CurrentItemAddress = tempAddress + (tempCurrentMenuOption * 0x2);
+									int16_t CurrentItem = *reinterpret_cast<int16_t *>(CurrentItemAddress);
+									MenuSecondaryValue = CurrentItem;
+								}
+								else
+								{
+									MenuSecondaryValue = 0;
+								}
+								
 								Timer = 0;
 								if (tempMenuSelectionStates == 0)
 								{
@@ -399,11 +414,38 @@ void menuCheckButton()
 						{
 							if (getTotalItems() > 0)
 							{
+								uint32_t Address_and_Size[2];
+								uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
+								
+								if (tempArray != nullptr)
+								{
+									uint32_t tempAddress = tempArray[0];
+									uint32_t CurrentItemAddress = tempAddress + (tempCurrentMenuOption * 0x2);
+									int16_t CurrentItem = *reinterpret_cast<int16_t *>(CurrentItemAddress);
+									
+									if (CurrentItem != 0)
+									{
+										int32_t UpperAndLowerBounds[2];
+										int32_t *tempArray2 = getUpperAndLowerBounds(
+											UpperAndLowerBounds, tempMenuSelectedOption);
+										
+										int32_t LowerBound = tempArray2[0];
+										SecondaryMenuOption = CurrentItem - LowerBound;
+									}
+									else
+									{
+										SecondaryMenuOption = 0;
+									}
+								}
+								else
+								{
+									SecondaryMenuOption = 0;
+								}
+								
 								Timer = 0;
 								if (tempMenuSelectionStates == 0)
 								{
 									MenuSelectionStates = tempSelectedOption;
-									SecondaryMenuOption = 0;
 								}
 							}
 							else

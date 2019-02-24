@@ -601,7 +601,7 @@ void spawnItem()
 						lowerSystemLevel();
 						return;
 					}
-					case 0x1000:
+					case NO_NUMBERS_TO_DISPLAY:
 					{
 						// There are no digits of the number to display
 						SpawnItem.InAdjustableValueMenu = false;
