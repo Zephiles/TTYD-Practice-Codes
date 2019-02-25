@@ -1635,6 +1635,15 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 	// Perform adjustments on certain addresses
 	switch (currentMenuOption)
 	{
+		case MARIO_HP:
+		case MARIO_FP:
+		case MARIO_RANK:
+		case SPECIAL_MOVES:
+		case STAR_POWER:
+		{
+			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			break;
+		}
 		case BP:
 		{
 			// Force the game to recalculate how much BP is left
@@ -1653,6 +1662,8 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 			{
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x70) = MaxHP;
 			}
+			
+			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 			break;
 		}
 		case MARIO_MAX_FP:
@@ -1667,12 +1678,14 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 			{
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x74) = MaxFP;
 			}
+			
+			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 			break;
 		}
-		/*case MARIO_LEVEL:
+		case MARIO_LEVEL:
 		{
 			// Adjust Mario's rank with the level
-			int16_t MarioLevel = *reinterpret_cast<int16_t *>(PouchPtr + 0x8A);
+			/*int16_t MarioLevel = *reinterpret_cast<int16_t *>(PouchPtr + 0x8A);
 			int16_t NewRank = MarioLevel / 10;
 			
 			if (NewRank > 3)
@@ -1680,9 +1693,10 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 				NewRank = 3;
 			}
 			
-			*reinterpret_cast<int16_t *>(PouchPtr + 0x88) = NewRank;
+			*reinterpret_cast<int16_t *>(PouchPtr + 0x88) = NewRank;*/
+			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 			break;
-		}*/
+		}
 		case MAX_STAR_POWER:
 		{
 			// Prevent the current value from exceeding the max value
@@ -1693,6 +1707,8 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 			{
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x7A) = MaxSP;
 			}
+			
+			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 			break;
 		}
 		default:
@@ -1714,6 +1730,8 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 		{
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x6) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
+			
+			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 			break;
 		}
 		case PARTNER_MAX_HP:
@@ -1724,6 +1742,8 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 			// Set the Max HP entering battle
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x4) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
+			
+			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 			break;
 		}
 		case PARTNER_RANK:
@@ -1734,6 +1754,8 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 			// Set the rank for battles
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0xC) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
+			
+			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 			break;
 		}
 		default:

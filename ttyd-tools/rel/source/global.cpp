@@ -779,6 +779,7 @@ struct SaveAnywhereStruct SaveAnywhere;
 struct ReloadRoomStruct ReloadRoom;
 struct SpawnItems SpawnItem;
 struct ClearAreaFlagsStruct ClearAreaFlags;
+struct ClearCacheForBattlesStruct ClearCacheForBattles;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;

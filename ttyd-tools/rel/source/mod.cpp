@@ -65,7 +65,7 @@ void Mod::init()
 	mPFN_battle_init_trampoline = patch::hookFunction(
 		ttyd::seq_battle::battle_init, []()
 	{
-		return gMod->recheckBattleJumpAndHammerLevels();
+		return gMod->performPreBattleActions();
 	});
 	
 	mPFN_SoundEfxPlayEx_trampoline = patch::hookFunction(

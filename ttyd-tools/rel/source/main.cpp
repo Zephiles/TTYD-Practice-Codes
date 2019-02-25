@@ -11,6 +11,7 @@
 #include <ttyd/mario.h>
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/OSCache.h>
 
 #include <cstdio>
 
@@ -325,10 +326,30 @@ void Mod::preventButtonInputInBattle()
 	mPFN_BattlePadManager_trampoline();
 }
 
-bool Mod::recheckBattleJumpAndHammerLevels()
+bool Mod::performPreBattleActions()
 {
 	// Make sure the Jump and Hammer upgrades have been properly checked
 	recheckJumpAndHammerLevels();
+	
+	// Clear the cache for Mario if his stats were changed manually
+	if (ClearCacheForBattles.MarioStatsShouldBeCleared)
+	{
+		ClearCacheForBattles.MarioStatsShouldBeCleared = false;
+		
+		uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+		void *AddressesToClearStart = reinterpret_cast<void *>(PouchPtr + 0x70);
+		ttyd::OSCache::DCFlushRange(AddressesToClearStart, 0x21);
+	}
+	
+	// Clear the cache for the partners if their stats were changed manually
+	if (ClearCacheForBattles.PartnerStatsShouldBeCleared)
+	{
+		ClearCacheForBattles.PartnerStatsShouldBeCleared = false;
+		
+		uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+		void *AddressesToClearStart = reinterpret_cast<void *>(PouchPtr + 0xE);
+		ttyd::OSCache::DCFlushRange(AddressesToClearStart, 0x61);
+	}
 	
 	// Call original function
 	return mPFN_battle_init_trampoline();

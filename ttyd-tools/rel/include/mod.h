@@ -15,7 +15,7 @@ private:
 	void preventButtonInputInBattle();
 	int32_t pauseMenuPreventUnpause(void *);
 	bool infiniteItemUsage(int16_t, uint32_t);
-	bool recheckBattleJumpAndHammerLevels();
+	bool performPreBattleActions();
 	int32_t preventMenuSounds(int32_t, uint32_t, uint32_t, uint32_t);
 	const char *getCustomMessage(const char *);
 

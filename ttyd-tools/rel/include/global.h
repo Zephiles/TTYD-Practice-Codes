@@ -417,6 +417,12 @@ struct ClearAreaFlagsStruct
 	bool StartClearingFlags;
 };
 
+struct ClearCacheForBattlesStruct
+{
+	bool MarioStatsShouldBeCleared;
+	bool PartnerStatsShouldBeCleared;
+};
+
 struct TrickDisplay
 {
 	uint32_t MainTimer;
@@ -463,6 +469,7 @@ extern SaveAnywhereStruct SaveAnywhere;
 extern ReloadRoomStruct ReloadRoom;
 extern SpawnItems SpawnItem;
 extern ClearAreaFlagsStruct ClearAreaFlags;
+extern ClearCacheForBattlesStruct ClearCacheForBattles;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
