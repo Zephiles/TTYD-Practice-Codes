@@ -281,45 +281,60 @@ void setTimeStopTextStorage()
 void speedUpMario()
 {
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-	const uint16_t TubeMode = 22;
+	float SpeedValueToSet 	= 16;
+	
+	float current_unk_184 	= SpeedUpMario.MarioVar[0];
+	float current_unk_188 	= SpeedUpMario.MarioVar[1];
+	float new_unk_184 		= player->unk_184;
+	float new_unk_188 		= player->unk_188;
+	
+	const uint8_t NoChanges 				= 0;
+	const uint8_t ValuesModified 			= 1;
+	const uint8_t ValuesShouldBeRestored 	= 2;
 	
 	if (!Cheat[SPEED_UP_MARIO].Active || ChangingCheatButtonCombo)
 	{
-		// Check to see if Mario is currently in Tube Mode or not
-		if (player->currentMotionId == TubeMode)
+		// Check if the values should be restored
+		if (SpeedUpMario.ValuesChangedState > NoChanges)
 		{
-			// marioSetSpec does not set the values for Tube Mode 
-			player->unk_184 = 1;
-			player->unk_188 = 3;
-		}
-		else
-		{
-			// Set the values to their default for the current character
-			ttyd::mario::marioSetSpec();
+			SpeedUpMario.ValuesChangedState = 0;
+			player->unk_184 = current_unk_184;
+			player->unk_188 = current_unk_188;
 		}
 		return;
 	}
 	
+	// Check to see if the current values have changed
+	if (((current_unk_184 != new_unk_184)) || 
+		(current_unk_188 != new_unk_188))
+	{
+		// Don't update if the new value is what was just set by this function
+		if (new_unk_188 != SpeedValueToSet)
+		{
+			// Set the current values to the new values
+			SpeedUpMario.MarioVar[0] = new_unk_184;
+			SpeedUpMario.MarioVar[1] = new_unk_188;
+		}
+	}
+	
 	if (checkButtonComboEveryFrame(Cheat[SPEED_UP_MARIO].ButtonCombo))
 	{
-		player->wPlayerBaseSpeed = 16;
-		player->unk_184 = 16;
-		player->unk_188 = 16;
+		SpeedUpMario.ValuesChangedState = ValuesModified;
+		player->wPlayerBaseSpeed = SpeedValueToSet;
+		player->unk_184 = SpeedValueToSet;
+		player->unk_188 = SpeedValueToSet;
 	}
-	else
+	else if (SpeedUpMario.ValuesChangedState == ValuesModified)
 	{
-		// Check to see if Mario is currently in Tube Mode or not
-		if (player->currentMotionId == TubeMode)
-		{
-			// marioSetSpec does not set the values for Tube Mode 
-			player->unk_184 = 1;
-			player->unk_188 = 3;
-		}
-		else
-		{
-			// Set the values to their default for the current character
-			ttyd::mario::marioSetSpec();
-		}
+		SpeedUpMario.ValuesChangedState = ValuesShouldBeRestored;
+	}
+	
+	// Check if the values should be restored
+	if (SpeedUpMario.ValuesChangedState == ValuesShouldBeRestored)
+	{
+		SpeedUpMario.ValuesChangedState = 0;
+		player->unk_184 = SpeedUpMario.MarioVar[0];
+		player->unk_188 = SpeedUpMario.MarioVar[1];
 	}
 }
 

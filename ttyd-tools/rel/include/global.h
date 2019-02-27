@@ -397,6 +397,12 @@ struct SaveAnywhereStruct
 	bool ScriptIsRunning;
 };
 
+struct SpeedUpMarioStruct
+{
+	float MarioVar[2];
+	uint8_t ValuesChangedState;
+};
+
 struct ReloadRoomStruct
 {
 	bool SystemLevelShouldBeLowered;
@@ -466,6 +472,7 @@ extern AutoIncrement AdjustableValueMenu;
 extern CheatsHandleDisplayButtons CheatsDisplayButtons;
 extern MarioPartnerPositionsStruct MarioPartnerPositions;
 extern SaveAnywhereStruct SaveAnywhere;
+extern SpeedUpMarioStruct SpeedUpMario;
 extern ReloadRoomStruct ReloadRoom;
 extern SpawnItems SpawnItem;
 extern ClearAreaFlagsStruct ClearAreaFlags;

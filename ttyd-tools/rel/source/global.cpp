@@ -776,6 +776,7 @@ struct AutoIncrement AdjustableValueMenu;
 struct CheatsHandleDisplayButtons CheatsDisplayButtons;
 struct MarioPartnerPositionsStruct MarioPartnerPositions;
 struct SaveAnywhereStruct SaveAnywhere;
+struct SpeedUpMarioStruct SpeedUpMario;
 struct ReloadRoomStruct ReloadRoom;
 struct SpawnItems SpawnItem;
 struct ClearAreaFlagsStruct ClearAreaFlags;
