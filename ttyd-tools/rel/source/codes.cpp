@@ -280,12 +280,25 @@ void setTimeStopTextStorage()
 
 void speedUpMario()
 {
-	if (!Cheat[SPEED_UP_MARIO].Active)
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	const uint16_t TubeMode = 22;
+	
+	if (!Cheat[SPEED_UP_MARIO].Active || ChangingCheatButtonCombo)
 	{
+		// Check to see if Mario is currently in Tube Mode or not
+		if (player->currentMotionId == TubeMode)
+		{
+			// marioSetSpec does not set the values for Tube Mode 
+			player->unk_184 = 1;
+			player->unk_188 = 3;
+		}
+		else
+		{
+			// Set the values to their default for the current character
+			ttyd::mario::marioSetSpec();
+		}
 		return;
 	}
-	
-	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	
 	if (checkButtonComboEveryFrame(Cheat[SPEED_UP_MARIO].ButtonCombo))
 	{
@@ -295,8 +308,18 @@ void speedUpMario()
 	}
 	else
 	{
-		player->unk_184 = 1;
-		player->unk_188 = 2.25;
+		// Check to see if Mario is currently in Tube Mode or not
+		if (player->currentMotionId == TubeMode)
+		{
+			// marioSetSpec does not set the values for Tube Mode 
+			player->unk_184 = 1;
+			player->unk_188 = 3;
+		}
+		else
+		{
+			// Set the values to their default for the current character
+			ttyd::mario::marioSetSpec();
+		}
 	}
 }
 
@@ -895,9 +918,9 @@ void actionCommandsTimingsInit()
 		}
 		
 		// Reset the values checked when drawing the text
+		DisplayActionCommands.TypeToDraw 	= 0;
 		DisplayActionCommands.Last_A_Frame 	= -1;
 		DisplayActionCommands.Last_B_Frame 	= -1;
-		DisplayActionCommands.TypeToDraw 	= -1;
 		
 		int32_t Last_A_Frame 	= -1;
 		int32_t Last_B_Frame 	= -1;
@@ -921,9 +944,9 @@ void actionCommandsTimingsInit()
 		const int32_t DefenseResult = DisplayActionCommands.Trampoline(
 			battle_unit, attack_params);
 		
-		const int32_t SuccessfulTiming 			= 0;
-		const int32_t PressedTooManyButtons 	= 1;
-		const int32_t PressedTooEarly 			= 2;
+		const uint32_t SuccessfulTiming 		= 1;
+		const uint32_t PressedTooManyButtons 	= 2;
+		const uint32_t PressedTooEarly 			= 3;
 		
 		if (DefenseResult == 4)
 		{

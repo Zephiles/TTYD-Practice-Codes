@@ -452,7 +452,7 @@ struct DisplayActionCommandTiming
 {
 	int32_t (*Trampoline)(void *, void *);
 	uint16_t DisplayTimer;
-	int8_t TypeToDraw;
+	uint8_t TypeToDraw;
 	int8_t Last_A_Frame;
 	int8_t Last_B_Frame;
 };
@@ -528,8 +528,8 @@ extern char *NextBero;
 extern char *NextMap;
 extern char *NextArea;
 extern ItemData *ItemDataTable;
-extern int8_t *GuardFrames;
-extern int8_t *SuperguardFrames;
+extern uint8_t *GuardFrames;
+extern uint8_t *SuperguardFrames;
 extern uint32_t PauseMenuStartAddress;
 extern uint32_t wp_fadedrv_Address;
 extern uint32_t _mapEntAddress;

@@ -176,7 +176,7 @@ bool marioChkKey();
 // marioItemGetChk
 // marioItemGetDisable
 // marioEntry
-// marioSetSpec
+void marioSetSpec();
 // marioSetFamicomMode
 void marioSetCharMode(uint32_t mode);
 int8_t marioGetColor();

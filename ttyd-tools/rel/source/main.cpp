@@ -487,6 +487,7 @@ void initAssemblyOverwrites()
 	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010A79C);
 	void *FixMarioKeyOnAddress 					= reinterpret_cast<void *>(0x8005B370);
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800CE01C);
+	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80422618);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
@@ -562,9 +563,10 @@ void initAssemblyOverwrites()
 	
 	*reinterpret_cast<uint32_t *>(msgWindowMrAddress) 						= 0x38830001; // addi r4,r3,1
 	
+	*reinterpret_cast<float *>(BacktraceScreenFontSizeAddress) 				= 0.66;
+	
 	#ifndef TTYD_JP
-	// The backtrace screen does not need to be modified in JP
-	*reinterpret_cast<float *>(BacktraceScreenFontSizeAddress) 				= 0.65;
+	// This part of the backtrace screen does not need to be modified in JP
 	*reinterpret_cast<uint32_t *>(BacktraceScreenPPCHaltBranchAddress) 		= 0x3B400000; // li r26,0
 	*reinterpret_cast<uint32_t *>(BacktraceScreenEndBranchAddress) 			= 0x4BFFFDD4; // b -0x22C
 	#endif
@@ -592,13 +594,13 @@ void Mod::run()
 		loadMarioAndPartnerPositions();
 		setTextStorage();
 		setTimeStopTextStorage();
-		speedUpMario();
 		lockMarioHPToMax();
 		levitate();
 	}
 	
 	// Run each cheat function that isn't button-based
 	saveAnywhere(); // Needs to always run due to the script taking more than one frame
+	speedUpMario(); // Needs to always run due to Mario's base speed constantly being set
 	reloadRoom(); // Needs to always run due to the extra code that always does some failsafe checking
 	bobberyEarly();
 	checkIfAreaFlagsShouldBeCleared();

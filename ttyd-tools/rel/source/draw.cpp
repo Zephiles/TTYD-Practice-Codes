@@ -2611,21 +2611,21 @@ void drawActionCommandsTiming()
 	int32_t temp_Last_A_Frame = DisplayActionCommands.Last_A_Frame;
 	int32_t temp_Last_B_Frame = DisplayActionCommands.Last_B_Frame;
 	
-	int32_t TypeToDraw = DisplayActionCommands.TypeToDraw;
+	uint32_t TypeToDraw = DisplayActionCommands.TypeToDraw;
 	const char *TextToDraw;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
-	const int32_t SuccessfulTiming 			= 0;
-	const int32_t PressedTooManyButtons 	= 1;
-	const int32_t PressedTooEarly 			= 2;
+	const uint32_t SuccessfulTiming 		= 1;
+	const uint32_t PressedTooManyButtons 	= 2;
+	const uint32_t PressedTooEarly 			= 3;
 	
 	// Check to see which text should be displayed
 	switch (TypeToDraw)
 	{
 		case SuccessfulTiming:
 		{
-			int32_t CurrentDifficultyFrames;
-			int32_t FramePressed;
+			uint32_t CurrentDifficultyFrames;
+			uint32_t FramePressed;
 			char Button;
 			
 			if (temp_Last_A_Frame > -1)
@@ -2657,8 +2657,8 @@ void drawActionCommandsTiming()
 		}
 		case PressedTooEarly:
 		{
-			int32_t CurrentDifficultyFrames;
-			int32_t FramesEarly;
+			uint32_t CurrentDifficultyFrames;
+			uint32_t FramesEarly;
 			char Button;
 			
 			if (temp_Last_A_Frame > -1)
@@ -2742,7 +2742,7 @@ void drawTitleScreenInfo()
 	PosX 					+= 113;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.8\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.9\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 
