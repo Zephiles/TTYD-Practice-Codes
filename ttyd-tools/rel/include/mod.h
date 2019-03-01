@@ -12,7 +12,7 @@ public:
 	
 private:
 	void run();
-	void preventButtonInputInBattle();
+	void performBattleChecks();
 	int32_t pauseMenuPreventUnpause(void *);
 	bool infiniteItemUsage(int16_t, uint32_t);
 	bool performPreBattleActions();

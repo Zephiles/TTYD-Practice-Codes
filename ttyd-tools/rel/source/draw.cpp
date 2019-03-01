@@ -2612,12 +2612,14 @@ void drawActionCommandsTiming()
 	int32_t temp_Last_B_Frame = DisplayActionCommands.Last_B_Frame;
 	
 	uint32_t TypeToDraw = DisplayActionCommands.TypeToDraw;
-	const char *TextToDraw;
 	char *tempDisplayBuffer = DisplayBuffer;
+	uint32_t IncrementWindowWidth = 129;
+	const char *TextToDraw;
 	
 	const uint32_t SuccessfulTiming 		= 1;
 	const uint32_t PressedTooManyButtons 	= 2;
 	const uint32_t PressedTooEarly 			= 3;
+	const uint32_t CannotBeSuperguarded 	= 4;
 	
 	// Check to see which text should be displayed
 	switch (TypeToDraw)
@@ -2675,7 +2677,7 @@ void drawActionCommandsTiming()
 			}
 			
 			const char *CheckForPlural;
-			if (FramesEarly > 1)
+			if (FramesEarly != 1)
 			{
 				CheckForPlural = "s";
 			}
@@ -2691,6 +2693,12 @@ void drawActionCommandsTiming()
 				CheckForPlural);
 			
 			TextToDraw = tempDisplayBuffer;
+			break;
+		}
+		case CannotBeSuperguarded:
+		{
+			TextToDraw = "Cannot superguard this attack";
+			IncrementWindowWidth += 7;
 			break;
 		}
 		default:
@@ -2710,7 +2718,7 @@ void drawActionCommandsTiming()
 	float Scale 			= 0.75;
 	
 	uint32_t LineLength 	= ttyd::fontmgr::FontGetMessageWidth(TextToDraw);
-	int32_t WindowWidth 	= 129 + (LineLength >> 1) - (LineLength % 10);
+	int32_t WindowWidth 	= IncrementWindowWidth + (LineLength >> 1) - (LineLength % 10);
 	
 	drawTextWithWindow(TextToDraw, TextPosX, TextPosY, Alpha, TextColor, 
 		Scale, WindowWidth, WindowColor, WindowCurve);
@@ -2739,10 +2747,10 @@ void drawTitleScreenInfo()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	float Scale 			= 0.75;
-	PosX 					+= 113;
+	PosX 					+= 108;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.9\nCreated by Zephiles";
+	const char *String = "Practice Codes v3.0.10\nCreated by Zephiles";
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 

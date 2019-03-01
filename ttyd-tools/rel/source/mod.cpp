@@ -47,7 +47,7 @@ void Mod::init()
 	mPFN_BattlePadManager_trampoline = patch::hookFunction(
 		ttyd::battle_pad::BattlePadManager, []()
 	{
-		gMod->preventButtonInputInBattle();
+		gMod->performBattleChecks();
 	});
 	
 	mPFN_winRootMain_trampoline = patch::hookFunction(

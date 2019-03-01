@@ -26,8 +26,6 @@ extern "C"
 	void BranchBackPreventPreBattleSoftlock();
 	void StartDisableBattles();
 	void BranchBackDisableBattles();
-	void StartAutoActionCommands();
-	void BranchBackAutoActionCommands();
 	void StartInfiniteItemUsage();
 	void BranchBackInfiniteItemUsage();
 	void StartReplaceJumpFallAnim();
@@ -310,22 +308,6 @@ int32_t Mod::pauseMenuPreventUnpause(void *pauseMenuPointer)
 	}
 }
 
-void Mod::preventButtonInputInBattle()
-{
-	if (MenuIsDisplayed)
-	{
-		if (!checkButtonComboEveryFrame(PAD_R) && 
-			!checkButtonComboEveryFrame(PAD_X))
-		{
-			// The menu is open and neither R nor X are being pressed, so prevent the function from running
-			return;
-		}
-	}
-
-	// Call original function
-	mPFN_BattlePadManager_trampoline();
-}
-
 bool Mod::performPreBattleActions()
 {
 	// Make sure the Jump and Hammer upgrades have been properly checked
@@ -448,7 +430,6 @@ void initAssemblyOverwrites()
 	#ifdef TTYD_US
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800465CC);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800448CC);
-	void *AutoActionCommandsAddress 			= reinterpret_cast<void *>(0x800F78F0);
 	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004EC10);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009B2C);
@@ -471,7 +452,6 @@ void initAssemblyOverwrites()
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
-	void *AutoActionCommandsAddress 			= reinterpret_cast<void *>(0x800F29A4);
 	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004DFB0);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x8000999C);
@@ -492,7 +472,6 @@ void initAssemblyOverwrites()
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
-	void *AutoActionCommandsAddress 			= reinterpret_cast<void *>(0x800F875C);
 	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004ECDC);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009CF0);
@@ -519,9 +498,6 @@ void initAssemblyOverwrites()
 	
 	writeStandardBranch(DisableBattlesAddress, 
 		StartDisableBattles, BranchBackDisableBattles);
-		
-	writeStandardBranch(AutoActionCommandsAddress, 
-		StartAutoActionCommands, BranchBackAutoActionCommands);
 	
 	writeStandardBranch(AllowRunningFromBattles, 
 		StartAllowRunningFromBattles, BranchBackAllowRunningFromBattles);

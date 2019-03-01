@@ -5,6 +5,7 @@
 #include "patch.h"
 #include "menufunctions.h"
 #include "global.h"
+#include "items.h"
 #include "maps.h"
 
 #include <ttyd/system.h>
@@ -40,37 +41,6 @@ uint32_t disableBattles(void *ptr)
 		reinterpret_cast<uint32_t>(ptr) + 0x4);
 }
 
-void *autoActionCommands(void *ptr)
-{
-	uint32_t tempPtr = reinterpret_cast<uint32_t>(ptr);
-	
-	if (Cheat[AUTO_ACTION_COMMANDS].Active)
-	{
-		#ifdef TTYD_US
-		const uint32_t StoreByteOffset = 0x307;
-		#elif defined TTYD_JP
-		const uint32_t StoreByteOffset = 0x303;
-		#elif defined TTYD_EU
-		const uint32_t StoreByteOffset = 0x30B;
-		#endif
-		
-		uint32_t tempStoreAddress = *reinterpret_cast<uint32_t *>(tempPtr + 0x1C90);
-		if (tempStoreAddress)
-		{
-			if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo))
-			{
-				*reinterpret_cast<bool *>(tempStoreAddress + StoreByteOffset) = true;
-			}
-			else
-			{
-				*reinterpret_cast<bool *>(tempStoreAddress + StoreByteOffset) = false;
-			}
-		}
-	}
-	
-	return *reinterpret_cast<uint32_t **>(tempPtr + 0xEF4);
-}
-
 uint32_t allowRunningFromBattles(void *ptr)
 {
 	if (Cheat[RUN_FROM_BATTLES].Active)
@@ -98,6 +68,62 @@ bool checkForArtAttackHitboxesBool()
 {
 	return Displays[ART_ATTACK_HITBOXES];
 }
+}
+
+void Mod::performBattleChecks()
+{
+	// Check to see if the Auto Action Commands cheat is active or not
+	if (Cheat[AUTO_ACTION_COMMANDS].Active)
+	{
+		uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+		
+		if (MarioBattlePointer != 0)
+		{
+			#ifdef TTYD_US
+			const uint32_t DebugBadgeAddressOffset = 0x307;
+			#elif defined TTYD_JP
+			const uint32_t DebugBadgeAddressOffset = 0x303;
+			#elif defined TTYD_EU
+			const uint32_t DebugBadgeAddressOffset = 0x30B;
+			#endif
+			
+			uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
+			
+			if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo) || 
+				checkIfBadgeEquipped(DebugBadge))
+			{
+				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
+				
+				if (PartnerBattlePointer != 0)
+				{
+					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
+				}
+			}
+			else
+			{
+				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
+				
+				if (PartnerBattlePointer != 0)
+				{
+					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
+				}
+			}
+		}
+	}
+	
+	// Prevent all buttons from being pressed when the menu is open, exccept for R and X
+	if (MenuIsDisplayed)
+	{
+		if (!checkButtonComboEveryFrame(PAD_R) && 
+			!checkButtonComboEveryFrame(PAD_X))
+		{
+			// The menu is open and neither R nor X are being pressed, so prevent the function from running
+			return;
+		}
+	}
+
+	// Call original function
+	mPFN_BattlePadManager_trampoline();
 }
 
 void walkThroughMostObjects()
@@ -932,6 +958,26 @@ void actionCommandsTimingsInit()
 			return DisplayActionCommands.Trampoline(battle_unit, attack_params);
 		}
 		
+		// Check to see if the attack will be automatically guarded/superguarded or not
+		uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+		if (MarioBattlePointer != 0)
+		{
+			#ifdef TTYD_US
+			const uint32_t DebugBadgeAddressOffset = 0x307;
+			#elif defined TTYD_JP
+			const uint32_t DebugBadgeAddressOffset = 0x303;
+			#elif defined TTYD_EU
+			const uint32_t DebugBadgeAddressOffset = 0x30B;
+			#endif
+			
+			uint8_t DebugBadgeCheck = *reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset);
+			if (DebugBadgeCheck > 0)
+			{
+				// The attack will be automatically guarded/superguarded
+				return DisplayActionCommands.Trampoline(battle_unit, attack_params);
+			}
+		}
+		
 		// Reset the values checked when drawing the text
 		DisplayActionCommands.TypeToDraw 	= 0;
 		DisplayActionCommands.Last_A_Frame 	= -1;
@@ -962,6 +1008,7 @@ void actionCommandsTimingsInit()
 		const uint32_t SuccessfulTiming 		= 1;
 		const uint32_t PressedTooManyButtons 	= 2;
 		const uint32_t PressedTooEarly 			= 3;
+		const uint32_t CannotBeSuperguarded 	= 4;
 		
 		if (DefenseResult == 4)
 		{
@@ -992,10 +1039,23 @@ void actionCommandsTimingsInit()
 		}
 		else if (Last_B_Frame > -1)
 		{
-			// Print how many frames early the player pressed B
-			DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
-			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
-			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+			// Check if the attack can be superguarded or not
+			uint8_t SuperguardCheck = *reinterpret_cast<uint8_t *>(
+				reinterpret_cast<uint32_t>(attack_params) + 0x13);
+			
+			if (SuperguardCheck > 0)
+			{
+				// Print how many frames early the player pressed B
+				DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
+				DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
+				DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+			}
+			else
+			{
+				// The attack cannot be superguarded, so print the text saying so
+				DisplayActionCommands.TypeToDraw 	= CannotBeSuperguarded;
+				DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+			}
 		}
 		
 		return DefenseResult;
