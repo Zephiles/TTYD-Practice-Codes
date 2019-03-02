@@ -45,7 +45,7 @@ This menu allows you to modify your entire inventory, including standard items, 
 8. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
 9. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
 10. **Disable Non-Cutscene Battles** disables any battles in the field that are started by a cutscene. The button combination must be held for this code to work.
-11. **Auto Action Commands** automatically performs action commands for you, similar to how the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
+11. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
 12. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
 13. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen.
 14. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
@@ -72,6 +72,7 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
    * The frame that you guarded/superguarded an attack out of the total amount of possible frames.
    * How many frames early you pressed A or B. It should be noted that nothing will be displayed if the button was pressed very early (more than 6 or so frames for guards, and more than 12 or so frames for superguards).
    * Whether you pressed too many buttons in a short period of time for the guard/superguard to be accepted.
+   * Whether the attack can be superguarded or not (will only be displayed if you tried to superguard it).
 6. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack.
 7. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
 8. **Palace Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. *PhaEmy* keeps track of the Y coordinate for the phantom ember, *ItemTimer* keeps track of the timer for the current item in the field, and *ParY* keeps track of your partner's Y coordinate.

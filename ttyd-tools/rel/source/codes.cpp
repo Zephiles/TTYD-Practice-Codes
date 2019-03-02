@@ -72,25 +72,46 @@ bool checkForArtAttackHitboxesBool()
 
 void Mod::performBattleChecks()
 {
-	// Check to see if the Auto Action Commands cheat is active or not
-	if (Cheat[AUTO_ACTION_COMMANDS].Active)
+	#ifdef TTYD_US
+	const uint32_t DebugBadgeAddressOffset = 0x307;
+	#elif defined TTYD_JP
+	const uint32_t DebugBadgeAddressOffset = 0x303;
+	#elif defined TTYD_EU
+	const uint32_t DebugBadgeAddressOffset = 0x30B;
+	#endif
+	
+	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+	uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
+	
+	if (MarioBattlePointer != 0)
 	{
-		uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-		
-		if (MarioBattlePointer != 0)
+		// Check to see if the Auto Action Commands cheat is active or not
+		if (Cheat[AUTO_ACTION_COMMANDS].Active)
 		{
-			#ifdef TTYD_US
-			const uint32_t DebugBadgeAddressOffset = 0x307;
-			#elif defined TTYD_JP
-			const uint32_t DebugBadgeAddressOffset = 0x303;
-			#elif defined TTYD_EU
-			const uint32_t DebugBadgeAddressOffset = 0x30B;
-			#endif
-			
-			uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
-			
 			if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo) || 
 				checkIfBadgeEquipped(DebugBadge))
+			{
+				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
+				
+				if (PartnerBattlePointer != 0)
+				{
+					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
+				}
+			}
+			else
+			{
+				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
+				
+				if (PartnerBattlePointer != 0)
+				{
+					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
+				}
+			}
+		}
+		else
+		{
+			// Check if the Debug Badge is equipped or not
+			if (checkIfBadgeEquipped(DebugBadge))
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
 				
