@@ -264,4 +264,12 @@ uint32_t getCurrentPitFloor()
 	return ttyd::swdrv::swByteGet(1321) + 1; // GSW(1321);
 }
 
+void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
+{
+	for (uint32_t i = lowerBound; i <= upperBound; i++)
+	{
+		ttyd::swdrv::swClear(i);
+	}
+}
+
 }

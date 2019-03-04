@@ -55,6 +55,7 @@ const char *CheatsLines[] =
 	"Levitate",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
+	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
 	"Force NPC Item Drop",
 	"Clear Area Flags",
@@ -768,7 +769,7 @@ const char *ButtonInputDisplay[] =
 #endif
 
 struct Menus Menu[20];
-struct Cheats Cheat[18];
+struct Cheats Cheat[19];
 bool Displays[8];
 char DisplayBuffer[256];
 
@@ -963,10 +964,22 @@ void initMenuVars()
 	Menu[DISPLAYS_NO_BUTTON_COMBO].Line 				= CheatsNoButtonComboOptionsLines;
 	
 	Cheat[WALK_THROUGH_WALLS].Active 					= false;
+	// Cheat[SAVE_COORDINATES].Active 					= false;
+	// Cheat[LOAD_COORDINATES].Active 					= false;
 	Cheat[SAVE_ANYWHERE].Active 						= false;
+	// Cheat[TEXT_STORAGE].Active 						= false;
+	// Cheat[TIME_STOP_TEXT_STORAGE].Active 			= false;
+	// Cheat[SPEED_UP_MARIO].Active 					= false;
+	// Cheat[DISABLE_BATTLES].Active 					= false;
+	// Cheat[AUTO_ACTION_COMMANDS].Active 				= false;
+	// Cheat[INFINITE_ITEM_USAGE].Active 				= false;
+	// Cheat[RELOAD_ROOM].Active 						= false;
+	// Cheat[LEVITATE].Active 							= false;
 	Cheat[LOCK_MARIO_HP_TO_MAX].Active 					= false;
 	Cheat[RUN_FROM_BATTLES].Active 						= false;
 	Cheat[SPAWN_ITEM].Active 							= false;
+	// Cheat[DISABLE_MENU_SOUNDS].Active 				= false;
+	// Cheat[BOBBERY_EARLY].Active 						= false;
 	Cheat[FORCE_ITEM_DROP].Active 						= false;
 	
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 				= PAD_Z;

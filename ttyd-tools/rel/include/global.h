@@ -70,6 +70,7 @@ enum CHEATS_OPTIONS
 	LEVITATE,
 	LOCK_MARIO_HP_TO_MAX,
 	RUN_FROM_BATTLES,
+	DISABLE_MENU_SOUNDS,
 	BOBBERY_EARLY,
 	FORCE_ITEM_DROP,
 	CLEAR_AREA_FLAGS,
@@ -464,7 +465,7 @@ struct DisplayActionCommandTiming
 };
 
 extern Menus Menu[20];
-extern Cheats Cheat[18];
+extern Cheats Cheat[19];
 extern bool Displays[8];
 extern char DisplayBuffer[256];
 

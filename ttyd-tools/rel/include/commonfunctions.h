@@ -36,5 +36,6 @@ void removeFollowerFromOverworld();
 bool checkIfBadgeEquipped(int16_t badge);
 void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();
+void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
 
 }

@@ -953,18 +953,19 @@ void displayPalaceSkipDetails()
 int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1, 
 	uint32_t unk2, uint32_t unk3)
 {
-	const int32_t OpenMenu = 1169;
-	const int32_t CloseMenu = 1168;
+	if (Cheat[DISABLE_MENU_SOUNDS].Active)
+	{
+		const int32_t OpenMenu = 1169;
+		const int32_t CloseMenu = 1168;
+		
+		if ((soundId == OpenMenu) || (soundId == CloseMenu))
+		{
+			return -1;
+		}
+	}
 	
-	if ((soundId == OpenMenu) || (soundId == CloseMenu))
-	{
-		return -1;
-	}
-	else
-	{
-		// Call original function
-		return mPFN_SoundEfxPlayEx_trampoline(soundId, unk1, unk2, unk3);
-	}
+	// Call original function
+	return mPFN_SoundEfxPlayEx_trampoline(soundId, unk1, unk2, unk3);
 }
 
 void actionCommandsTimingsInit()

@@ -2091,153 +2091,243 @@ int32_t changeItem()
 
 void cheatClearAreaFlags(uint32_t currentMenuOption)
 {
-	uint32_t LowerBound;
-	uint32_t UpperBound;
-	
 	switch (currentMenuOption)
 	{
 		case AREA_GOR:
 		{
-			LowerBound = 1175;
-			UpperBound = 1250;
+			// Clear the regular flags
+			clearGSWFsRange(1175, 1250);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5525, 5529);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5567, 5584);
 			break;
 		}
 		case AREA_TIK:
 		{
-			LowerBound = 1325;
-			UpperBound = 1371;
+			// Clear the regular flags
+			clearGSWFsRange(1325, 1371);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5530, 5537);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5585, 5597);
 			break;
 		}
 		case AREA_HEI:
 		{
-			LowerBound = 1774;
-			UpperBound = 1806;
+			// Clear the regular flags
+			clearGSWFsRange(1774, 1806);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5598, 5600);
 			break;
 		}
 		case AREA_NOK:
 		{
-			LowerBound = 1624;
-			UpperBound = 1629;
+			// Clear the regular flags
+			clearGSWFsRange(1624, 1629);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5601, 5602);
 			break;
 		}
 		case AREA_GON:
 		{
-			LowerBound = 1476;
-			UpperBound = 1511;
+			// Clear the regular flags
+			clearGSWFsRange(1476, 1511);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5538, 5540);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5603, 5607);
 			break;
 		}
 		case AREA_WIN:
 		{
-			LowerBound = 2675;
-			UpperBound = 2687;
+			// Clear the regular flags
+			clearGSWFsRange(2675, 2687);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5541, 5541);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5608, 5611);
 			break;
 		}
 		case AREA_MRI:
 		{
-			LowerBound = 2825;
-			UpperBound = 2885;
+			// Clear the regular flags
+			clearGSWFsRange(2825, 2885);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5542, 5545);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5612, 5617);
 			break;
 		}
 		case AREA_TOU:
 		{
-			LowerBound = 2374;
-			UpperBound = 2533;
+			// Clear the regular flags
+			clearGSWFsRange(2374, 2533);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5546, 5547);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5618, 5627);
 			break;
 		}
 		case AREA_USU:
 		{
-			LowerBound = 1925;
-			UpperBound = 1939;
+			// Clear the regular flags
+			clearGSWFsRange(1925, 1939);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5628, 5630);
 			break;
 		}
 		case AREA_GRA:
 		{
-			LowerBound = 2075;
-			UpperBound = 2091;
+			// Clear the regular flags
+			clearGSWFsRange(2075, 2091);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5548, 5548);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5631, 5633);
 			break;
 		}
 		case AREA_JIN:
 		{
-			LowerBound = 2226;
-			UpperBound = 2241;
+			// Clear the regular flags
+			clearGSWFsRange(2226, 2241);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5549, 5551);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5634, 5637);
 			break;
 		}
 		case AREA_MUJ:
 		{
-			LowerBound = 3126;
-			UpperBound = 3158;
+			// Clear the regular flags
+			clearGSWFsRange(3126, 3158);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5552, 5553);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5638, 5643);
 			break;
 		}
 		case AREA_DOU:
 		{
-			LowerBound = 2975;
-			UpperBound = 2994;
+			// Clear the regular flags
+			clearGSWFsRange(2975, 2994);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5554, 5558);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5644, 5647);
 			break;
 		}
 		case AREA_HOM:
 		{
-			LowerBound = 3574;
-			UpperBound = 3575;
+			// Clear the regular flags
+			clearGSWFsRange(3574, 3575);
 			break;
 		}
 		case AREA_RSH:
 		{
-			LowerBound = 3425;
-			UpperBound = 3462;
+			// Clear the regular flags
+			clearGSWFsRange(3425, 3462);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5559, 5560);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5648, 5652);
 			break;
 		}
 		case AREA_EKI:
 		{
-			LowerBound = 3725;
-			UpperBound = 3754;
+			// Clear the regular flags
+			clearGSWFsRange(3725, 3754);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5561, 5562);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5653, 5653);
 			break;
 		}
 		case AREA_PIK:
 		{
-			LowerBound = 3276;
-			UpperBound = 3279;
+			// Clear the regular flags
+			clearGSWFsRange(3276, 3279);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5563, 5564);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5654, 5657);
 			break;
 		}
 		case AREA_BOM:
 		{
-			LowerBound = 3874;
-			UpperBound = 3892;
+			// Clear the regular flags
+			clearGSWFsRange(3874, 3892);
+			
+			// Clear the Shine Sprites
+			clearGSWFsRange(5565, 5566);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5658, 5663);
 			break;
 		}
 		case AREA_MOO:
 		{
-			LowerBound = 4025;
-			UpperBound = 4039;
+			// Clear the regular flags
+			clearGSWFsRange(4025, 4039);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5664, 5664);
 			break;
 		}
 		case AREA_AJI:
 		{
-			LowerBound = 4175;
-			UpperBound = 4217;
+			// Clear the regular flags
+			clearGSWFsRange(4175, 4217);
+			
+			// Clear the Star Pieces
+			clearGSWFsRange(5665, 5666);
 			break;
 		}
 		case AREA_LAS:
 		{
-			LowerBound = 4326;
-			UpperBound = 4394;
+			// Clear the regular flags
+			clearGSWFsRange(4326, 4394);
 			break;
 		}
 		case AREA_JON:
 		{
-			LowerBound = 5075;
-			UpperBound = 5085;
+			// Clear the regular flags
+			clearGSWFsRange(5075, 5085);
 			break;
 		}
 		default:
 		{
 			return;
 		}
-	}
-	
-	// Clear each flag
-	for (uint32_t i = LowerBound; i <= UpperBound; i++)
-	{
-		ttyd::swdrv::swClear(i);
 	}
 }
 
