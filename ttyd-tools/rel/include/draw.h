@@ -73,6 +73,7 @@ void drawAddByIconMain(uint32_t currentMenu);
 void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);
 
+void drawVersionNumber(int32_t posX, int32_t posY);
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
 void drawCheatsBool(int32_t posY);
@@ -91,6 +92,7 @@ void drawButtonInputs();
 void drawYoshiSkipDetails();
 void drawPalaceSkipDetails();
 void drawActionCommandsTiming();
+void drawSettingsCurrentWork();
 
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();

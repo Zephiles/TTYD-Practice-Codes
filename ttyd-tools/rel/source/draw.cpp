@@ -1921,6 +1921,15 @@ void drawAddById(uint32_t currentMenu)
 	}
 }
 
+void drawVersionNumber(int32_t posX, int32_t posY)
+{
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	float Scale = 0.6;
+	
+	drawText(VersionNumber, posX, posY, Alpha, Color, Scale);
+}
+
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
 {
 	uint32_t Color = 0xFFFFFFFF;
@@ -2726,6 +2735,66 @@ void drawActionCommandsTiming()
 	DisplayActionCommands.DisplayTimer--;
 }
 
+void drawSettingsCurrentWork()
+{
+	const char *String;
+	int32_t WindowWidth;
+	
+	switch (MenuSettings.ReturnCode)
+	{
+		case LOAD_FAILED:
+		{
+			String = "Load Failed";
+			WindowWidth = 162;
+			break;
+		}
+		case LOAD_FAILED_NO_FILE:
+		{
+			String = "Settings file not found";
+			WindowWidth = 218;
+			break;
+		}
+		case LOAD_SUCCESSFUL:
+		{
+			String = "Load Successful";
+			WindowWidth = 162;
+			break;
+		}
+		case SAVE_FAILED:
+		{
+			String = "Save Failed";
+			WindowWidth = 162;
+			break;
+		}
+		case SAVE_SUCCESSFUL:
+		{
+			String = "Save Successful";
+			WindowWidth = 162;
+			break;
+		}
+		default:
+		{
+			Timer = 0;
+			return;
+		}
+	}
+	
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint32_t WindowColor 	= 0x151515F4;
+	uint8_t Alpha  			= 0xFF;
+	int32_t TextPosX 		= -80;
+	int32_t TextPosY 		= 0;
+	// int32_t WindowWidth 	= 162;
+	int32_t WindowCurve 	= 10;
+	float Scale 			= 0.6;
+	
+	drawTextWithWindow(String, TextPosX, TextPosY, Alpha, TextColor, 
+		Scale, WindowWidth, WindowColor, WindowCurve);
+	
+	uint32_t tempTimer = Timer;
+	Timer = tempTimer - 1;
+}
+
 void drawTitleScreenInfo()
 {
 	// Draw the window for the text
@@ -2750,8 +2819,12 @@ void drawTitleScreenInfo()
 	PosX 					+= 108;
 	PosY 					-= 14;
 	
-	const char *String = "Practice Codes v3.0.11\nCreated by Zephiles";
-	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Practice Codes %s\nCreated by Zephiles",
+		VersionNumber);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 }
 
 void drawFileSelectScreenInfo()

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/card.h>
+
 #include <cstdint>
 
 namespace mod {
@@ -10,6 +12,7 @@ enum MENU_NAMES
 	INVENTORY,
 	CHEATS,
 	STATS,
+	SETTINGS,
 	BATTLES,
 	DISPLAYS,
 	WARPS,
@@ -171,6 +174,21 @@ enum STATS_FOLLOWER_SELECTION_OPTIONS
 {
 	BRING_OUT_FOLLOWER = 1,
 	REMOVE_FOLLOWER,
+};
+
+enum SETTINGS_OPTIONS
+{
+	LOAD_SETTINGS = 1,
+	SAVE_SETTINGS,
+};
+
+enum SETTINGS_RETURN_CODES
+{
+	LOAD_FAILED = 1,
+	LOAD_FAILED_NO_FILE,
+	LOAD_SUCCESSFUL,
+	SAVE_FAILED,
+	SAVE_SUCCESSFUL,
 };
 
 enum BATTLES_CURRENT_ACTOR_STATS_SELECTION
@@ -464,7 +482,25 @@ struct DisplayActionCommandTiming
 	int8_t Last_B_Frame;
 };
 
-extern Menus Menu[20];
+struct MemoryCardStruct
+{
+	uint8_t ReturnCode;
+	// uint8_t CurrentAction;
+	gc::card::card_file FileInfo[1];
+	uint8_t *WorkArea;
+	const char *FileName;
+	const char *Description;
+};
+
+struct SettingsStruct
+{
+	bool CheatsActive[100];
+	uint16_t CheatButtonCombos[100];
+	bool DisplaysActive[100];
+	uint16_t DisplaysButtonCombos[100];
+};
+
+extern Menus Menu[21];
 extern Cheats Cheat[19];
 extern bool Displays[8];
 extern char DisplayBuffer[256];
@@ -482,7 +518,10 @@ extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
+extern MemoryCardStruct MenuSettings;
 
+extern const char *VersionNumber;
+extern uint8_t CheatsOrder[];
 extern const char *CheatsLines[];
 extern const char *CheatsForceItemDropAreas[];
 extern uint8_t CheatsForceItemDropAreasSize;
@@ -545,6 +584,7 @@ extern uint32_t NPCAddressesStart;
 extern uint32_t BattleAddressesStart;
 extern uint32_t PiantaParlorAddressesStart;
 extern uint32_t seqMainAddress;
+extern uint32_t WorkAreaAddress;
 extern uint32_t FieldItemsAddressesStart;
 
 extern uint32_t GlobalWorkPointer;

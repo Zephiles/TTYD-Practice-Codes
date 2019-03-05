@@ -1268,6 +1268,126 @@
 // 80290E20:DMAErrorHandler
 // 80290F80:__OSCacheInit
 
+// CARDBios.c
+// 802A56A0:__CARDDefaultApiCallback
+// 802A56A4:__CARDSyncCallback
+// 802A56D8:__CARDExtHandler
+// 802A57B0:__CARDExiHandler
+// 802A58C8:__CARDTxHandler
+// 802A5970:__CARDUnlockedHandler
+// 802A59F4:__CARDEnableInterrupt
+// 802A5AB4:__CARDReadStatus
+// 802A5BA4:__CARDReadVendorID
+// 802A5C94:__CARDClearStatus
+// 802A5D40:TimeoutHandler
+// 802A5DE4:Retry
+// 802A6084:UnlockedCallback
+// 802A6194:__CARDStart
+// 802A63B8:__CARDReadSegment
+// 802A64EC:__CARDWritePage
+// 802A6628:__CARDEraseSector
+// 802A6738:CARDInit
+// 802A67E4:__CARDGetFontEncode
+// 802A67EC:__CARDSetDiskID
+// 802A6824:__CARDGetControlBlock
+// 802A68DC:__CARDPutControlBlock
+802A6940:CARDGetResultCode
+// 802A6970:CARDFreeBlocks
+// 802A6AC0:__CARDSync
+// 802A6B58:OnReset
+// 802A6BA8:CARDSetFastMode
+// 802A6BDC:CARDGetFastMode
+
+// CARDUnlock.c
+// 802A6BF8:bitrev
+// 802A6D64:ReadArrayUnlock
+// 802A6EA8:DummyLen
+// 802A6F6C:__CARDUnlock
+// 802A7AC4:InitCallback
+// 802A7B34:DoneCallback
+
+// CARDRdwr.c
+// 802A7E58:BlockReadCallback
+// 802A7F34:__CARDRead
+// 802A7F98:BlockWriteCallback
+// 802A8080:__CARDWrite
+
+// CARDBlock.c
+// 802A80E8:__CARDGetFatBlock
+// 802A80F0:WriteCallback
+// 802A81C4:EraseCallback
+// 802A828C:__CARDAllocBlock
+// 802A83A4:__CARDFreeBlock
+// 802A8440:__CARDUpdateFatBlock
+
+// CARDDir.c
+// 802A84EC:__CARDGetDirBlock
+// 802A84F4:WriteCallback
+// 802A85C4:EraseCallback
+// 802A868C:__CARDUpdateDir
+
+// CARDCheck.c
+// 802A8750:__CARDCheckSum
+// 802A8900:VerifyID
+// 802A8B84:VerifyDir
+// 802A8DC4:VerifyFAT
+// 802A9048:__CARDVerify
+// 802A90D4:CARDCheckExAsync
+// 802A9664:CARDCheckAsync
+
+// CARDMount.c
+// 802A968C:IsCard
+// 802A9758:CARDProbe
+802A9790:CARDProbeEx
+// 802A990C:DoMount
+// 802A9D60:__CARDMountCallback
+802A9E98:CARDMountAsync
+// 802AA038:DoUnmount
+802AA0D4:CARDUnmount
+
+// CARDFormat.c
+// 802AA180:FormatCallback
+// 802AA2C4:__CARDFormatRegionAsync
+// 802AA91C:CARDFormatAsync
+
+// CARDOpen.c
+// 802AA964:__CARDCompareFileName
+// 802AA9CC:__CARDAccess
+// 802AAA60:__CARDIsWritable
+// 802AAB94:__CARDIsReadable
+// 802AAC88:__CARDGetFileNo
+802AADD8:CARDOpen
+802AAEF4:CARDClose
+// 802AAF48:__CARDIsOpened
+
+// CARDCreate.c
+// 802AAF50:CreateCallbackFat
+802AB080:CARDCreateAsync
+
+// CARDRead.c
+// 802AB2A0:__CARDSeek
+// 802AB458:ReadCallback
+802AB588:CARDReadAsync
+// 802AB6CC:CARDCancel
+
+// CARDWrite.c
+// 802AB758:WriteCallback
+// 802AB8C8:EraseCallback
+802AB978:CARDWriteAsync
+
+// CARDDelete.c
+// 802ABA8C:DeleteCallback
+// 802ABB30:CARDDeleteAsync
+// 802ABC40:CARDDelete
+
+// CARDStat.c
+// 802ABC88:UpdateIconOffsets
+802ABE80:CARDGetStatus
+802ABF94:CARDSetStatusAsync
+
+// CARDNet.c
+// 802AC108:CARDGetSerialNo
+
 // GXGeometry.c
 // 802AFBE8:__GXSetDirtyState
 802AFC68:GXBegin

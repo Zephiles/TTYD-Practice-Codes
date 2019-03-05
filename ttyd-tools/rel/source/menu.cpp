@@ -5,7 +5,9 @@
 #include "draw.h"
 #include "codes.h"
 #include "mod.h"
+#include "memcard.h"
 
+#include <gc/card.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_party.h>
 #include <ttyd/mario_party.h>
@@ -547,26 +549,49 @@ void menuCheckButton()
 						default:
 						{
 							// Enter the next menu
-							if ((tempCurrentMenuOption - 1) == CHANGE_SEQUENCE)
+							switch (tempCurrentMenuOption - 1)
 							{
-								CurrentMenu = CHEATS_CHANGE_SEQUENCE;
-							}
-							else if ((tempCurrentMenuOption - 1) < LOCK_MARIO_HP_TO_MAX)
-							{
-								CurrentMenu = CHEATS_STANDARD;
-							}
-							else if (((tempCurrentMenuOption - 1) >= LOCK_MARIO_HP_TO_MAX) && 
-								((tempCurrentMenuOption - 1) <= BOBBERY_EARLY))
-							{
-								CurrentMenu = CHEATS_NO_BUTTON_COMBO;
-							}
-							else if ((tempCurrentMenuOption - 1) == FORCE_ITEM_DROP)
-							{
-								CurrentMenu = CHEATS_NPC_FORCE_DROP;
-							}
-							else // (tempCurrentMenuOption - 1) == CHEATS_CLEAR_AREA_FLAGS
-							{
-								CurrentMenu = CHEATS_CLEAR_AREA_FLAGS;
+								case CHANGE_SEQUENCE:
+								{
+									CurrentMenu = CHEATS_CHANGE_SEQUENCE;
+									break;
+								}
+								case WALK_THROUGH_WALLS:
+								case SAVE_COORDINATES:
+								case LOAD_COORDINATES:
+								case SPAWN_ITEM:
+								case SAVE_ANYWHERE:
+								case TEXT_STORAGE:
+								case TIME_STOP_TEXT_STORAGE:
+								case SPEED_UP_MARIO:
+								case DISABLE_BATTLES:
+								case AUTO_ACTION_COMMANDS:
+								case INFINITE_ITEM_USAGE:
+								case RELOAD_ROOM:
+								case LEVITATE:
+								{
+									CurrentMenu = CHEATS_STANDARD;
+									break;
+								}
+								case LOCK_MARIO_HP_TO_MAX:
+								case RUN_FROM_BATTLES:
+								case DISABLE_MENU_SOUNDS:
+								case BOBBERY_EARLY:
+								{
+									CurrentMenu = CHEATS_NO_BUTTON_COMBO;
+									break;
+								}
+								case FORCE_ITEM_DROP:
+								{
+									CurrentMenu = CHEATS_NPC_FORCE_DROP;
+									break;
+								}
+								case CLEAR_AREA_FLAGS:
+								default:
+								{
+									CurrentMenu = CHEATS_CLEAR_AREA_FLAGS;
+									break;
+								}
 							}
 							
 							MenuSelectedOption = tempCurrentMenuOption - 1;
@@ -1391,6 +1416,128 @@ void menuCheckButton()
 			}
 			break;
 		}
+		case SETTINGS:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					Timer = 0;
+					default_DPAD_Actions(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					switch (tempCurrentMenuOption)
+					{
+						case 0:
+						{
+							// Go back to the previous menu
+							CurrentMenu = tempPreviousMenu;
+							resetMenu();
+							break;
+						}
+						case LOAD_SETTINGS:
+						{
+							int32_t ReturnCode = openFile(MenuSettings.FileName, 
+								MenuSettings.FileInfo, MenuSettings.WorkArea);
+							
+							switch (ReturnCode)
+							{
+								case CARD_ERROR_READY:
+								{
+									if (loadSettings(MenuSettings.FileInfo))
+									{
+										MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
+										Timer = secondsToFrames(3);
+									}
+									else
+									{
+										MenuSettings.ReturnCode = LOAD_FAILED;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								case CARD_ERROR_NOFILE:
+								{
+									gc::card::CARDUnmount(CARD_SLOTA);
+									MenuSettings.ReturnCode = LOAD_FAILED_NO_FILE;
+									Timer = secondsToFrames(3);
+									break;
+								}
+								default:
+								{
+									gc::card::CARDUnmount(CARD_SLOTA);
+									break;
+								}
+							}
+							break;
+						}
+						case SAVE_SETTINGS:
+						{
+							int32_t ReturnCode = openFile(MenuSettings.FileName, 
+								MenuSettings.FileInfo, MenuSettings.WorkArea);
+							
+							switch (ReturnCode)
+							{
+								case CARD_ERROR_READY:
+								{
+									if (writeSettings(MenuSettings.Description, MenuSettings.FileInfo))
+									{
+										MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
+										Timer = secondsToFrames(3);
+									}
+									else
+									{
+										MenuSettings.ReturnCode = SAVE_FAILED;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								case CARD_ERROR_NOFILE:
+								{
+									if (createSettingsFile(MenuSettings.FileName, 
+											MenuSettings.Description, MenuSettings.FileInfo))
+									{
+										MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
+										Timer = secondsToFrames(3);
+									}
+									else
+									{
+										MenuSettings.ReturnCode = SAVE_FAILED;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					// Go back to the root
+					CurrentMenu = tempPreviousMenu;
+					resetMenu();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
@@ -2093,6 +2240,11 @@ void drawMenu()
 			// Draw the text for the options
 			drawSingleColumnMain();
 			
+			// Draw the version number
+			int32_t PosX = 150;
+			int32_t PosY = 180;
+			drawVersionNumber(PosX, PosY);
+			
 			// Draw the error message if the player tried to use the battle menu while not in a battle
 			if (tempFunctionReturnCode == NOT_IN_BATTLE)
 			{
@@ -2377,6 +2529,17 @@ void drawMenu()
 					(tempFunctionReturnCode < 0))
 			{
 				drawFollowersErrorMessage();
+			}
+			break;
+		}
+		case SETTINGS:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			if (Timer > 0)
+			{
+				drawSettingsCurrentWork();
 			}
 			break;
 		}

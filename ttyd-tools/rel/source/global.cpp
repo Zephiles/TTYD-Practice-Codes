@@ -5,12 +5,15 @@
 
 namespace mod {
 
+const char *VersionNumber = "v3.0.12";
+
 const char *RootLines[] = 
 {
 	"Return",
 	"Inventory",
 	"Cheats",
 	"Stats",
+	"Settings",
 	"Battles",
 	"Displays",
 	"Warps",
@@ -34,6 +37,30 @@ const char *InventoryOptionLines[] =
 	"Change By Id",
 	"Change By Icon",
 	"Delete",
+};
+
+uint8_t CheatsOrder[] = 
+{
+	CHANGE_SEQUENCE,
+	WALK_THROUGH_WALLS,
+	SAVE_COORDINATES,
+	LOAD_COORDINATES,
+	SPAWN_ITEM,
+	SAVE_ANYWHERE,
+	TEXT_STORAGE,
+	TIME_STOP_TEXT_STORAGE,
+	SPEED_UP_MARIO,
+	DISABLE_BATTLES,
+	AUTO_ACTION_COMMANDS,
+	INFINITE_ITEM_USAGE,
+	RELOAD_ROOM,
+	LEVITATE,
+	LOCK_MARIO_HP_TO_MAX,
+	RUN_FROM_BATTLES,
+	DISABLE_MENU_SOUNDS,
+	BOBBERY_EARLY,
+	FORCE_ITEM_DROP,
+	CLEAR_AREA_FLAGS,
 };
 
 const char *CheatsLines[] = 
@@ -724,6 +751,13 @@ const char *WarpDescriptions[] =
 	"Title Screen",
 };
 
+const char *SettingsLines[] = 
+{
+	"Return",
+	"Load Settings",
+	"Save Settings",
+};
+
 const char *ReturnPlaceholder[] = 
 {
 	"Return",
@@ -768,7 +802,7 @@ const char *ButtonInputDisplay[] =
 };
 #endif
 
-struct Menus Menu[20];
+struct Menus Menu[21];
 struct Cheats Cheat[19];
 bool Displays[8];
 char DisplayBuffer[256];
@@ -786,6 +820,7 @@ struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
+struct MemoryCardStruct MenuSettings;
 
 bool MenuIsDisplayed 					= false;
 bool PreventClosingMenu 				= false;
@@ -818,6 +853,7 @@ uint32_t NPCAddressesStart 				= r13 + 0x19A0;
 uint32_t BattleAddressesStart 			= r13 + 0x1C70;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x1E08;
 uint32_t seqMainAddress 				= r13 + 0x1860;
+uint32_t WorkAreaAddress 				= r13 + 0x1B98;
 uint32_t FieldItemsAddressesStart 		= 0x803DC294;
 #elif defined TTYD_JP
 uint32_t r13 							= 0x80417260;
@@ -834,6 +870,7 @@ uint32_t NPCAddressesStart 				= r13 + 0x1448;
 uint32_t BattleAddressesStart  			= r13 + 0x1710;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x18F8;
 uint32_t seqMainAddress 				= r13 + 0x1300;
+uint32_t WorkAreaAddress 				= r13 + 0x1638;
 uint32_t FieldItemsAddressesStart 		= 0x803D8714;
 #elif defined TTYD_EU
 uint32_t r13 							= 0x80429760;
@@ -850,6 +887,7 @@ uint32_t NPCAddressesStart 				= r13 + 0x1A80;
 uint32_t BattleAddressesStart  			= r13 + 0x1D50;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x1F38;
 uint32_t seqMainAddress 				= r13 + 0x1940;
+uint32_t WorkAreaAddress 				= r13 + 0x1C78;
 uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
 #endif
 
@@ -897,6 +935,11 @@ void initMenuVars()
 	Menu[WARPS].ColumnSplitAmount 						= Menu[WARPS].TotalMenuOptions;
 	Menu[WARPS].PreviousMenu 							= ROOT;
 	Menu[WARPS].Line 									= WarpLines;
+	
+	Menu[SETTINGS].TotalMenuOptions 					= sizeof(SettingsLines) / sizeof(SettingsLines[0]);
+	Menu[SETTINGS].ColumnSplitAmount 					= Menu[SETTINGS].TotalMenuOptions;
+	Menu[SETTINGS].PreviousMenu 						= ROOT;
+	Menu[SETTINGS].Line 								= SettingsLines;
 	
 	Menu[INVENTORY_MAIN].TotalMenuOptions 				= sizeof(InventoryOptionLines) / sizeof(InventoryOptionLines[0]);
 	Menu[INVENTORY_MAIN].ColumnSplitAmount 				= Menu[INVENTORY_MAIN].TotalMenuOptions;
@@ -962,6 +1005,20 @@ void initMenuVars()
 	Menu[DISPLAYS_NO_BUTTON_COMBO].ColumnSplitAmount 	= Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions;
 	Menu[DISPLAYS_NO_BUTTON_COMBO].PreviousMenu 		= DISPLAYS;
 	Menu[DISPLAYS_NO_BUTTON_COMBO].Line 				= CheatsNoButtonComboOptionsLines;
+	
+	MenuSettings.WorkArea 								= reinterpret_cast<uint8_t *>(
+															*reinterpret_cast<uint32_t *>(
+																*reinterpret_cast<uint32_t *>(
+																	WorkAreaAddress) + 0x4));
+	#ifdef TTYD_US
+	MenuSettings.Description 							= "Practice Codes Settings (US)";
+	#elif defined TTYD_JP
+	MenuSettings.Description 							= "Practice Codes Settings (JP)";
+	#elif defined TTYD_EU
+	MenuSettings.Description 							= "Practice Codes Settings (EU)";
+	#endif
+	
+	MenuSettings.FileName 								= "rel_settings";
 	
 	Cheat[WALK_THROUGH_WALLS].Active 					= false;
 	// Cheat[SAVE_COORDINATES].Active 					= false;
