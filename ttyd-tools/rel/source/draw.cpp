@@ -4,6 +4,7 @@
 #include "items.h"
 #include "menufunctions.h"
 #include "commonfunctions.h"
+#include "codes.h"
 
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
@@ -13,7 +14,6 @@
 #include <ttyd/mario_pouch.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
-#include <ttyd/w_atan2.h>
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
@@ -2381,28 +2381,36 @@ void drawButtonInputs()
 	}
 }
 
+void drawStickAngle()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= -162;
+	float Scale 			= 0.75;
+	
+	// Move the text up if the input display is active
+	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if Mario's Coordinates are displayed, or if the Palace Skip display is active
+	if (Displays[MARIO_COORDINATES] || Displays[PALACE_SKIP])
+	{
+		PosY += 20;
+	}
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"StickAngle: %.2f",
+		getStickAngle());
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+}
+
 void drawYoshiSkipDetails()
 {
-	double StickX = static_cast<double>(ttyd::system::keyGetStickX(0));
-	if (StickX > 127)
-	{
-		StickX -= 256;
-	}
-	
-	double StickY = static_cast<double>(ttyd::system::keyGetStickY(0));
-	if (StickY > 127)
-	{
-		StickY -= 256;
-	}
-	
-	double PI = 3.14159265358979323846;
-	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);
-	
-	if (StickAngle < 0)
-	{
-		StickAngle += 360;
-	}
-	
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
@@ -2420,7 +2428,7 @@ void drawYoshiSkipDetails()
 	sprintf(tempDisplayBuffer,
 		"YST: %lu\nStickAngle: %.2f",
 		YoshiSkip.MainTimer,
-		StickAngle);
+		getStickAngle());
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	
@@ -2549,6 +2557,12 @@ void drawPalaceSkipDetails()
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the stick angle display is active
+	if (Displays[STICK_ANGLE])
 	{
 		PosY += 20;
 	}

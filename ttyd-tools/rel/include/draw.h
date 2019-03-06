@@ -89,6 +89,7 @@ void drawSequenceInPauseMenu();
 void drawMarioCoordinates();
 void drawJumpStorageDetails();
 void drawButtonInputs();
+void drawStickAngle();
 void drawYoshiSkipDetails();
 void drawPalaceSkipDetails();
 void drawActionCommandsTiming();

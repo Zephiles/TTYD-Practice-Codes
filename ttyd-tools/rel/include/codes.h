@@ -19,12 +19,14 @@ void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();
 void checkIfAreaFlagsShouldBeCleared();
+double getStickAngle();
 
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
 void displayMarioCoordinatesBoolCheck();
 void displayJumpStorageDetails();
 void displayButtonInputs();
+void displayStickAngle();
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
 void actionCommandsTimingsInit();

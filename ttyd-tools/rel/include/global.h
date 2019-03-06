@@ -239,6 +239,7 @@ enum DISPLAYS_OPTIONS
 	MARIO_COORDINATES,
 	JUMP_STORAGE,
 	BUTTON_INPUT_DISPLAY,
+	STICK_ANGLE,
 	GUARD_SUPERGUARD_TIMINGS,
 	ART_ATTACK_HITBOXES,
 	YOSHI_SKIP,
@@ -502,7 +503,7 @@ struct SettingsStruct
 
 extern Menus Menu[21];
 extern Cheats Cheat[19];
-extern bool Displays[8];
+extern bool Displays[9];
 extern char DisplayBuffer[256];
 
 extern AutoIncrement AdjustableValueMenu;
@@ -541,6 +542,7 @@ extern uint8_t BattlesCurrentActorStatsSize;
 extern const char *BattlesStatusesLines[];
 extern uint8_t BattlesStatusesLinesSize;
 extern uint16_t BattlesStatusesIcons[];
+extern uint8_t DisplaysOrder[];
 extern const char *DisplaysLines[];
 extern const char *OnScreenTimerOptions[];
 extern uint8_t OnScreenTimerOptionsSize;

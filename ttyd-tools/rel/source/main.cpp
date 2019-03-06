@@ -601,6 +601,7 @@ void Mod::run()
 		displaySequenceInPauseMenu();
 		displayMarioCoordinatesBoolCheck();
 		displayActionCommandsTiming();
+		displayStickAngle();
 	}
 	
 	uint32_t tempFrameCounter = FrameCounter;

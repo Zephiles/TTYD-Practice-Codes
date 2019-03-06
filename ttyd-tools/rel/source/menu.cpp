@@ -1440,35 +1440,27 @@ void menuCheckButton()
 						}
 						case LOAD_SETTINGS:
 						{
-							int32_t ReturnCode = openFile(MenuSettings.FileName, 
+							int32_t ReturnCode = loadSettings(MenuSettings.FileName, 
 								MenuSettings.FileInfo, MenuSettings.WorkArea);
 							
 							switch (ReturnCode)
 							{
 								case CARD_ERROR_READY:
 								{
-									if (loadSettings(MenuSettings.FileInfo))
-									{
-										MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
-										Timer = secondsToFrames(3);
-									}
-									else
-									{
-										MenuSettings.ReturnCode = LOAD_FAILED;
-										Timer = secondsToFrames(3);
-									}
+									MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
+									Timer = secondsToFrames(3);
 									break;
 								}
 								case CARD_ERROR_NOFILE:
 								{
-									gc::card::CARDUnmount(CARD_SLOTA);
 									MenuSettings.ReturnCode = LOAD_FAILED_NO_FILE;
 									Timer = secondsToFrames(3);
 									break;
 								}
 								default:
 								{
-									gc::card::CARDUnmount(CARD_SLOTA);
+									MenuSettings.ReturnCode = LOAD_FAILED;
+									Timer = secondsToFrames(3);
 									break;
 								}
 							}
@@ -1476,42 +1468,21 @@ void menuCheckButton()
 						}
 						case SAVE_SETTINGS:
 						{
-							int32_t ReturnCode = openFile(MenuSettings.FileName, 
-								MenuSettings.FileInfo, MenuSettings.WorkArea);
+							int32_t ReturnCode = writeSettings(MenuSettings.Description, 
+								MenuSettings.FileName, MenuSettings.FileInfo, MenuSettings.WorkArea);
 							
 							switch (ReturnCode)
 							{
 								case CARD_ERROR_READY:
 								{
-									if (writeSettings(MenuSettings.Description, MenuSettings.FileInfo))
-									{
-										MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
-										Timer = secondsToFrames(3);
-									}
-									else
-									{
-										MenuSettings.ReturnCode = SAVE_FAILED;
-										Timer = secondsToFrames(3);
-									}
-									break;
-								}
-								case CARD_ERROR_NOFILE:
-								{
-									if (createSettingsFile(MenuSettings.FileName, 
-											MenuSettings.Description, MenuSettings.FileInfo))
-									{
-										MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
-										Timer = secondsToFrames(3);
-									}
-									else
-									{
-										MenuSettings.ReturnCode = SAVE_FAILED;
-										Timer = secondsToFrames(3);
-									}
+									MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
+									Timer = secondsToFrames(3);
 									break;
 								}
 								default:
 								{
+									MenuSettings.ReturnCode = SAVE_FAILED;
+									Timer = secondsToFrames(3);
 									break;
 								}
 							}

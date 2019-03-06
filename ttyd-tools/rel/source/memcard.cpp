@@ -81,31 +81,29 @@ int32_t loopUntilSynced()
 	return ReturnCode;
 }
 
-int32_t openFile(const char *fileName, gc::card::card_file *fileInfo, uint8_t *workArea)
+int32_t loadSettings(const char *fileName, gc::card::card_file *fileInfo, uint8_t *workArea)
 {
-	// Make sure a memory card is present in slot A
+	// Load the settings file
 	int32_t ReturnCode = gc::card::CARDProbeEx(CARD_SLOTA, nullptr, nullptr);
-	if (ReturnCode == CARD_ERROR_READY)
+	if (ReturnCode != CARD_ERROR_READY)
 	{
-		// Mount the memory card in slot A
-		ReturnCode = mountCard(CARD_SLOTA, workArea, nullptr, nullptr);
-		if (ReturnCode == CARD_ERROR_READY)
-		{
-			// Open the desired file
-			ReturnCode = gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
-			if (ReturnCode != CARD_ERROR_READY)
-			{
-				// Failed to open the file, so close the card
-				gc::card::CARDClose(fileInfo);
-			}
-		}
+		return ReturnCode;
 	}
-	return ReturnCode;
-}
-
-bool loadSettings(gc::card::card_file *fileInfo)
-{
-	int32_t ReturnCode;
+	
+	// Mount the memory card in slot A
+	ReturnCode = mountCard(CARD_SLOTA, workArea, nullptr, nullptr);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		return ReturnCode;
+	}
+	
+	// Open the settings file
+	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		gc::card::CARDUnmount(CARD_SLOTA);
+		return ReturnCode;
+	}
 	
 	// Get the size of the file
 	uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
@@ -129,7 +127,7 @@ bool loadSettings(gc::card::card_file *fileInfo)
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (MiscData);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Get the settings struct from the file
@@ -139,27 +137,55 @@ bool loadSettings(gc::card::card_file *fileInfo)
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
-		Cheat[CheatsOrder[i]].Active 		= Settings->CheatsActive[i];
-		Cheat[CheatsOrder[i]].ButtonCombo 	= Settings->CheatButtonCombos[i];
+		uint32_t CurrentIndex 				= CheatsOrder[i];
+		Cheat[CurrentIndex].Active 			= Settings->CheatsActive[i];
+		Cheat[CurrentIndex].ButtonCombo 	= Settings->CheatButtonCombos[i];
 	}
 	
 	uint32_t DisplaysSize = sizeof(Displays);
 	for (uint32_t i = 0; i < DisplaysSize; i++)
 	{
-		Displays[i] = Settings->DisplaysActive[i];
+		uint32_t CurrentIndex 	= DisplaysOrder[i];
+		Displays[CurrentIndex] 	= Settings->DisplaysActive[i];
 	}
 	
 	OnScreenTimer.ButtonCombo[0] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER];
 	OnScreenTimer.ButtonCombo[1] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1];
 	
 	delete[] (MiscData);
-	return true;
+	return CARD_ERROR_READY;
 	
 }
 
-bool writeSettings(const char *description, gc::card::card_file *fileInfo)
+int32_t writeSettings(const char *description, const char *fileName, 
+	gc::card::card_file *fileInfo, uint8_t *workArea)
 {
-	int32_t ReturnCode;
+	// Load the settings file
+	int32_t ReturnCode = gc::card::CARDProbeEx(CARD_SLOTA, nullptr, nullptr);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		return ReturnCode;
+	}
+	
+	// Mount the memory card in slot A
+	ReturnCode = mountCard(CARD_SLOTA, workArea, nullptr, nullptr);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		return ReturnCode;
+	}
+	
+	// Open the settings file if it exists
+	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		// Settings file does not exist, so create it
+		// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
+		ReturnCode = createSettingsFile(fileName, description, fileInfo);
+		if (ReturnCode != CARD_ERROR_READY)
+		{
+			return ReturnCode;
+		}
+	}
 	
 	// Get the size of the file
 	uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
@@ -185,14 +211,16 @@ bool writeSettings(const char *description, gc::card::card_file *fileInfo)
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
-		Settings->CheatsActive[i] 		= Cheat[CheatsOrder[i]].Active;
-		Settings->CheatButtonCombos[i] 	= Cheat[CheatsOrder[i]].ButtonCombo;
+		uint32_t CurrentIndex 			= CheatsOrder[i];
+		Settings->CheatsActive[i] 		= Cheat[CurrentIndex].Active;
+		Settings->CheatButtonCombos[i] 	= Cheat[CurrentIndex].ButtonCombo;
 	}
 	
 	uint32_t DisplaysSize = sizeof(Displays);
 	for (uint32_t i = 0; i < DisplaysSize; i++)
 	{
-		Settings->DisplaysActive[i] = Displays[i];
+		uint32_t CurrentIndex 			= DisplaysOrder[i];
+		Settings->DisplaysActive[i] 	= Displays[CurrentIndex];
 	}
 	
 	Settings->DisplaysButtonCombos[ONSCREEN_TIMER] 		= OnScreenTimer.ButtonCombo[0];
@@ -210,27 +238,17 @@ bool writeSettings(const char *description, gc::card::card_file *fileInfo)
 	delete[] (MiscData);
 	gc::card::CARDClose(fileInfo);
 	gc::card::CARDUnmount(CARD_SLOTA);
-	
-	if (ReturnCode == CARD_ERROR_READY)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return ReturnCode;
 }
 
-bool createSettingsFile(const char *fileName, const char *description, gc::card::card_file *fileInfo)
+int32_t createSettingsFile(const char *fileName, const char *description, gc::card::card_file *fileInfo)
 {
-	int32_t ReturnCode;
-	
 	// Get the banner and icon data from the current REL file
-	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, "rel", fileInfo);
+	int32_t ReturnCode = gc::card::CARDOpen(CARD_SLOTA, "rel", fileInfo);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Set up the memory for the banner and icon data to go in
@@ -243,7 +261,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 		delete[] (BannerIconData);
 		gc::card::CARDClose(fileInfo);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Close the current REL file
@@ -252,7 +270,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		delete[] (BannerIconData);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Get the size of the new file
@@ -268,7 +286,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		delete[] (BannerIconData);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Get the stats for the new file
@@ -280,7 +298,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		delete[] (BannerIconData);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Modify the stats for the new file
@@ -296,7 +314,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		delete[] (BannerIconData);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Open the new file
@@ -305,7 +323,7 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		delete[] (BannerIconData);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
+		return ReturnCode;
 	}
 	
 	// Write the banner and icon data to the new file
@@ -318,11 +336,9 @@ bool createSettingsFile(const char *fileName, const char *description, gc::card:
 	{
 		gc::card::CARDClose(fileInfo);
 		gc::card::CARDUnmount(CARD_SLOTA);
-		return false;
 	}
 	
-	// Write the rest of the data to the new file
-	return writeSettings(description, fileInfo);
+	return ReturnCode;
 }
 
 }

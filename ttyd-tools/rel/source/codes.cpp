@@ -19,6 +19,7 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
+#include <ttyd/w_atan2.h>
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
@@ -751,6 +752,31 @@ void checkIfAreaFlagsShouldBeCleared()
 	}
 }
 
+double getStickAngle()
+{
+	double StickX = static_cast<double>(ttyd::system::keyGetStickX(0));
+	if (StickX > 127)
+	{
+		StickX -= 256;
+	}
+	
+	double StickY = static_cast<double>(ttyd::system::keyGetStickY(0));
+	if (StickY > 127)
+	{
+		StickY -= 256;
+	}
+	
+	const double PI = 3.14159265358979323846;
+	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);
+	
+	if (StickAngle < 0)
+	{
+		StickAngle += 360;
+	}
+	
+	return StickAngle;
+}
+
 void displaySequenceInPauseMenu()
 {
 	uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuStartAddress);
@@ -833,6 +859,28 @@ void displayButtonInputs()
 	}
 	
 	drawFunctionOnDebugLayer(drawButtonInputs);
+}
+
+void displayStickAngle()
+{
+	if (!Displays[STICK_ANGLE])
+	{
+		return;
+	}
+	
+	// Don't display if the Yoshi Skip display is active
+	if (Displays[YOSHI_SKIP])
+	{
+		return;
+	}
+	
+	// Don't display if the Guard/Superguard timings display is active
+	if (DisplayActionCommands.DisplayTimer > 0)
+	{
+		return;
+	}
+	
+	drawFunctionOnDebugLayer(drawStickAngle);
 }
 
 void displayYoshiSkipDetails()

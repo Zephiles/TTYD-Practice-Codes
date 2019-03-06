@@ -60,7 +60,7 @@ This menu allows you to modify your entire inventory, including standard items, 
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
 
 ### Settings
-This menu allows you to save and load various settings. The current settings included are as follows:
+This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The current settings included are as follows:
 * Which cheats are active
 * Cheats button combos
 * Which displays are active

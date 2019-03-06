@@ -22,9 +22,12 @@ int32_t setFileStatus(int32_t chn, int32_t fileNo, gc::card::card_stat *stats,
 	gc::card::cardcallback callback);
 
 int32_t loopUntilSynced();
-int32_t openFile(const char *description, gc::card::card_file *fileInfo, uint8_t *workArea);
-bool loadSettings(gc::card::card_file *fileInfo);
-bool writeSettings(const char *description, gc::card::card_file *fileInfo);
-bool createSettingsFile(const char *fileName, const char *description, gc::card::card_file *fileInfo);
+
+int32_t loadSettings(const char *fileName, gc::card::card_file *fileInfo, uint8_t *workArea);
+
+int32_t writeSettings(const char *description, const char *fileName, 
+	gc::card::card_file *fileInfo, uint8_t *workArea);
+
+int32_t createSettingsFile(const char *fileName, const char *description, gc::card::card_file *fileInfo);
 
 }

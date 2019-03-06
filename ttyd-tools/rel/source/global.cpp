@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.12";
+const char *VersionNumber = "v3.0.13";
 
 const char *RootLines[] = 
 {
@@ -659,6 +659,19 @@ uint16_t BattlesStatusesIcons[] =
 	#endif
 };
 
+uint8_t DisplaysOrder[] = 
+{
+	ONSCREEN_TIMER,
+	MARIO_COORDINATES,
+	JUMP_STORAGE,
+	BUTTON_INPUT_DISPLAY,
+	GUARD_SUPERGUARD_TIMINGS,
+	ART_ATTACK_HITBOXES,
+	YOSHI_SKIP,
+	PALACE_SKIP,
+	STICK_ANGLE,
+};
+
 const char *DisplaysLines[] = 
 {
 	"Return",
@@ -666,6 +679,7 @@ const char *DisplaysLines[] =
 	"Mario's Coordinates",
 	"Jump Storage",
 	"Button Input Display",
+	"Stick Angle",
 	"Guard/Superguard Timings",
 	"Art Attack Hitboxes",
 	"Yoshi Skip",
@@ -805,7 +819,7 @@ const char *ButtonInputDisplay[] =
 
 struct Menus Menu[21];
 struct Cheats Cheat[19];
-bool Displays[8];
+bool Displays[9];
 char DisplayBuffer[256];
 
 struct AutoIncrement AdjustableValueMenu;
@@ -1022,15 +1036,12 @@ void initMenuVars()
 	MenuSettings.FileName 								= "rel_settings";
 	
 	// Try to open the settings file
-	int32_t ReturnCode = openFile(MenuSettings.FileName, 
+	int32_t ReturnCode = loadSettings(MenuSettings.FileName, 
 		MenuSettings.FileInfo, MenuSettings.WorkArea);
 	
-	if ((ReturnCode != CARD_ERROR_READY) || 
-		!loadSettings(MenuSettings.FileInfo))
+	if (ReturnCode != CARD_ERROR_READY)
 	{
 		// Settings file couldn't be opened, so set the default values
-		gc::card::CARDUnmount(CARD_SLOTA);
-		
 		Cheat[WALK_THROUGH_WALLS].Active 					= false;
 		// Cheat[SAVE_COORDINATES].Active 					= false;
 		// Cheat[LOAD_COORDINATES].Active 					= false;
