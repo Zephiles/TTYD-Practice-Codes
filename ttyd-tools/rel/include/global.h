@@ -489,8 +489,8 @@ struct MemoryCardStruct
 	// uint8_t CurrentAction;
 	gc::card::card_file FileInfo[1];
 	uint8_t *WorkArea;
-	const char *FileName;
-	const char *Description;
+	char *FileName;
+	char *Description;
 };
 
 struct SettingsStruct

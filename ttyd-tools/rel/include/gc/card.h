@@ -73,11 +73,12 @@ int32_t CARDGetResultCode(int32_t chn);
 int32_t CARDProbeEx(int32_t chn, int32_t *mem_size, int32_t *sect_size);
 int32_t CARDMountAsync(int32_t chn, void *workarea, cardcallback detach_cb, cardcallback attach_cb);
 int32_t CARDUnmount(int32_t chn);
-int32_t CARDOpen(int32_t chn, const char *fileName, card_file *file);
+int32_t CARDOpen(int32_t chn, char *fileName, card_file *file);
 int32_t CARDClose(card_file *file);
-int32_t CARDCreateAsync(int32_t chn, const char *fileName, uint32_t size, card_file *file, cardcallback callback);
+int32_t CARDCreateAsync(int32_t chn, char *fileName, uint32_t size, card_file *file, cardcallback callback);
 int32_t CARDReadAsync(card_file *file, void *buffer, int32_t len, int32_t offset, cardcallback callback);
 int32_t CARDWriteAsync(card_file *file, void *buffer, int32_t len, int32_t offset, cardcallback callback);
+int32_t CARDDelete(int32_t chn, char *fileName);
 int32_t CARDGetStatus(int32_t chn, int32_t fileNo, card_stat *stats);
 int32_t CARDSetStatusAsync(int32_t chn, int32_t fileNo, card_stat *stats, cardcallback callback);
 

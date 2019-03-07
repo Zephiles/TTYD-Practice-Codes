@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.13";
+const char *VersionNumber = "v3.0.14";
 
 const char *RootLines[] = 
 {
@@ -1026,14 +1026,14 @@ void initMenuVars()
 																*reinterpret_cast<uint32_t *>(
 																	WorkAreaAddress) + 0x4));
 	#ifdef TTYD_US
-	MenuSettings.Description 							= "Practice Codes Settings (US)";
+	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (US)");
 	#elif defined TTYD_JP
-	MenuSettings.Description 							= "Practice Codes Settings (JP)";
+	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (JP)");
 	#elif defined TTYD_EU
-	MenuSettings.Description 							= "Practice Codes Settings (EU)";
+	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (EU)");
 	#endif
 	
-	MenuSettings.FileName 								= "rel_settings";
+	MenuSettings.FileName 								= const_cast<char *>("rel_settings");
 	
 	// Try to open the settings file
 	int32_t ReturnCode = loadSettings(MenuSettings.FileName, 

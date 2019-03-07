@@ -1384,7 +1384,7 @@
 // CARDDelete.c
 // 802B1890:DeleteCallback
 // 802B1934:CARDDeleteAsync
-// 802B1A44:CARDDelete
+802B1A44:CARDDelete
 
 // CARDStat.c
 // 802B1A8C:UpdateIconOffsets

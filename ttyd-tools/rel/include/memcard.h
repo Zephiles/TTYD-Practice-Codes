@@ -15,7 +15,7 @@ int32_t readFromCard(gc::card::card_file *file, void *buffer, int32_t len,
 int32_t writeToCard(gc::card::card_file *file, void *buffer, int32_t len, 
 	int32_t offset, gc::card::cardcallback callback);
 
-int32_t createFile(int32_t chn, const char *fileName, uint32_t size, 
+int32_t createFile(int32_t chn, char *fileName, uint32_t size, 
 	gc::card::card_file *file, gc::card::cardcallback callback);
 
 int32_t setFileStatus(int32_t chn, int32_t fileNo, gc::card::card_stat *stats, 
@@ -23,11 +23,11 @@ int32_t setFileStatus(int32_t chn, int32_t fileNo, gc::card::card_stat *stats,
 
 int32_t loopUntilSynced();
 
-int32_t loadSettings(const char *fileName, gc::card::card_file *fileInfo, uint8_t *workArea);
+int32_t loadSettings(char *fileName, gc::card::card_file *fileInfo, uint8_t *workArea);
 
-int32_t writeSettings(const char *description, const char *fileName, 
+int32_t writeSettings(char *description, char *fileName, 
 	gc::card::card_file *fileInfo, uint8_t *workArea);
 
-int32_t createSettingsFile(const char *fileName, const char *description, gc::card::card_file *fileInfo);
+int32_t createSettingsFile(char *fileName, char *description, gc::card::card_file *fileInfo);
 
 }
