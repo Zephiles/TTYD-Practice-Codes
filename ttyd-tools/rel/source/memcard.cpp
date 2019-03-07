@@ -154,7 +154,6 @@ int32_t loadSettings(const char *fileName, gc::card::card_file *fileInfo, uint8_
 	
 	delete[] (MiscData);
 	return CARD_ERROR_READY;
-	
 }
 
 int32_t writeSettings(const char *description, const char *fileName, 
@@ -176,12 +175,24 @@ int32_t writeSettings(const char *description, const char *fileName,
 	
 	// Open the settings file if it exists
 	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
-	if (ReturnCode != CARD_ERROR_READY)
+	switch (ReturnCode)
 	{
-		// Settings file does not exist, so create it
-		// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
-		ReturnCode = createSettingsFile(fileName, description, fileInfo);
-		if (ReturnCode != CARD_ERROR_READY)
+		case CARD_ERROR_READY:
+		{
+			break;
+		}
+		case CARD_ERROR_NOFILE:
+		{
+			// Settings file does not exist, so create it
+			// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
+			ReturnCode = createSettingsFile(fileName, description, fileInfo);
+			if (ReturnCode != CARD_ERROR_READY)
+			{
+				return ReturnCode;
+			}
+			break;
+		}
+		default:
 		{
 			return ReturnCode;
 		}
@@ -199,7 +210,7 @@ int32_t writeSettings(const char *description, const char *fileName,
 	char *MiscData = new char[MiscDataSize];
 	clearMemory(MiscData, MiscDataSize);
 	
-	// Copy the name and description to display into the memory
+	// Copy the name, description, and file size into the memory
 	ttyd::string::strcpy(MiscData, "Paper Mario");
 	ttyd::string::strcpy(&MiscData[0x20], description);
 	
