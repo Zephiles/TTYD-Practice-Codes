@@ -210,7 +210,7 @@ int32_t writeSettings(char *description, char *fileName,
 			// Make sure the size being written does not exceed the current size
 			if (FileSizeAdjusted > StoredFileSizeAdjusted)
 			{
-				// The new size exceeds the current size, so a new file must be made created
+				// The new size exceeds the current size, so a new file must be created
 				// Close the file
 				ReturnCode = gc::card::CARDClose(fileInfo);
 				if (ReturnCode != CARD_ERROR_READY)
