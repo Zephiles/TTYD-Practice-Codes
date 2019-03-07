@@ -4,7 +4,6 @@
 
 #include <gc/card.h>
 #include <ttyd/string.h>
-#include <ttyd/__mem.h>
 
 #include <cstdio>
 
@@ -173,8 +172,11 @@ int32_t writeSettings(char *description, char *fileName,
 		return ReturnCode;
 	}
 	
-	uint32_t SettingsStructSize;
-	uint32_t SettingsStructSizeAdjusted;
+	// Get the size thats going to be written
+	uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
+	
+	// Adjust the file size to be in multiples of 0x2000, rounding up
+	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
 	
 	// Open the settings file if it exists
 	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
@@ -197,22 +199,16 @@ int32_t writeSettings(char *description, char *fileName,
 			}
 			
 			// Get the size of the file
-			uint32_t CurrentFileSize = *reinterpret_cast<uint32_t *>(&tempFileData[0x40]);
+			uint32_t StoredFileSize = *reinterpret_cast<uint32_t *>(&tempFileData[0x40]);
 			
 			// Delete the data that holds the size, as it's not needed anymore
 			delete[] (tempFileData);
 			
 			// Adjust the file size to be in multiples of 0x2000, rounding up
-			uint32_t CurrentFileSizeAdjusted = (CurrentFileSize + 0x2000 - 1) & ~(0x2000 - 1);
-			
-			// Get the size thats going to be written
-			SettingsStructSize = sizeof(struct SettingsStruct);
-			
-			// Adjust the file size to be in multiples of 0x2000, rounding up
-			SettingsStructSizeAdjusted = (SettingsStructSize + 0x2000 - 1) & ~(0x2000 - 1);
+			uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
 			
 			// Make sure the size being written does not exceed the current size
-			if (SettingsStructSizeAdjusted > CurrentFileSizeAdjusted)
+			if (FileSizeAdjusted > StoredFileSizeAdjusted)
 			{
 				// The new size exceeds the current size, so a new file must be made created
 				// Close the file
@@ -250,12 +246,6 @@ int32_t writeSettings(char *description, char *fileName,
 			{
 				return ReturnCode;
 			}
-			
-			// Get the size thats going to be written
-			SettingsStructSize = sizeof(struct SettingsStruct);
-			
-			// Adjust the file size to be in multiples of 0x2000, rounding up
-			SettingsStructSizeAdjusted = (SettingsStructSize + 0x2000 - 1) & ~(0x2000 - 1);
 			break;
 		}
 		default:
@@ -265,13 +255,13 @@ int32_t writeSettings(char *description, char *fileName,
 	}
 	
 	// Set up the memory to be written to the file
-	char *MiscData = new char[SettingsStructSizeAdjusted];
-	clearMemory(MiscData, SettingsStructSizeAdjusted);
+	char *MiscData = new char[FileSizeAdjusted];
+	clearMemory(MiscData, FileSizeAdjusted);
 	
 	// Copy the name, description, and file size into the memory
 	ttyd::string::strcpy(MiscData, "Paper Mario");
 	ttyd::string::strcpy(&MiscData[0x20], description);
-	*reinterpret_cast<uint32_t *>(&MiscData[0x40]) = SettingsStructSize + 0x200;
+	*reinterpret_cast<uint32_t *>(&MiscData[0x40]) = FileSize;
 	
 	// Set up the struct to hold the variables to store
 	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
@@ -296,7 +286,7 @@ int32_t writeSettings(char *description, char *fileName,
 	Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1] 	= OnScreenTimer.ButtonCombo[1];
 	
 	// Write the data to the file
-	ReturnCode = writeToCard(fileInfo, MiscData, SettingsStructSizeAdjusted, 0x2000, nullptr);
+	ReturnCode = writeToCard(fileInfo, MiscData, FileSizeAdjusted, 0x2000, nullptr);
 	
 	delete[] (MiscData);
 	gc::card::CARDClose(fileInfo);
