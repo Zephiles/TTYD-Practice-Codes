@@ -104,20 +104,48 @@ int32_t loadSettings(char *fileName, gc::card::card_file *fileInfo, uint8_t *wor
 		return ReturnCode;
 	}
 	
+	// Set up the array to hold the area of the file that contains the size
+	char *tempFileData = new char[0x200];
+	clearMemory(tempFileData, 0x200);
+	
+	// Get the data from the area that holds the size
+	ReturnCode = readFromCard(fileInfo, tempFileData, 0x200, 0x2000, nullptr);
+	if (ReturnCode != CARD_ERROR_READY)
+	{
+		delete[] (tempFileData);
+		gc::card::CARDClose(fileInfo);
+		gc::card::CARDUnmount(CARD_SLOTA);
+		return ReturnCode;
+	}
+	
 	// Get the size of the file
-	uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
-	uint32_t FileSize = 0x2000 + SettingsStructSize + 0x200;
+	uint32_t StoredFileSize = *reinterpret_cast<uint32_t *>(&tempFileData[0x40]);
+	
+	// Delete the data that holds the size, as it's not needed anymore
+	delete[] (tempFileData);
 	
 	// Adjust the file size to be in multiples of 0x2000, rounding up
+	uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
+	
+	// Make sure the stored file size is at least 0x2000
+	if (StoredFileSizeAdjusted < 0x2000)
+	{
+		StoredFileSizeAdjusted = 0x2000;
+	}
+	
+	// Get the size needed to be read
+	uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
+	
+	// Adjust the struct size to be in multiples of 0x2000, rounding up
 	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
 	
 	// Set up the memory to be copied from the file
-	uint32_t MiscDataSize = FileSizeAdjusted - 0x2000; // Remove the extra 0x2000 from the banner and icon
-	char *MiscData = new char[MiscDataSize];
-	clearMemory(MiscData, MiscDataSize);
+	char *MiscData = new char[FileSizeAdjusted];
+	clearMemory(MiscData, FileSizeAdjusted);
 	
 	// Get the data from the file
-	ReturnCode = readFromCard(fileInfo, MiscData, MiscDataSize, 0x2000, nullptr);
+	// Must read by the stored size, as the struct size may exceed the size of the file
+	ReturnCode = readFromCard(fileInfo, MiscData, StoredFileSizeAdjusted, 0x2000, nullptr);
 	
 	// Close and unmount the card, as it's no longer needed
 	gc::card::CARDClose(fileInfo);
