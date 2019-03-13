@@ -883,6 +883,32 @@ void displayStickAngle()
 	drawFunctionOnDebugLayer(drawStickAngle);
 }
 
+void displayMemoryWatches()
+{
+	// Make sure at least one watch is going to be displayed
+	bool tempHideMenu = HideMenu;
+	uint32_t tempMenuSelectionOption = MenuSelectedOption;
+	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
+	
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		if (MemoryWatch[i].Display)
+		{
+			// Check to see if this watch is currently being repositioned
+			if (tempHideMenu && (tempMenuSelectionOption == i))
+			{
+				// This watch is currently being repositioned, so do not draw it
+			}
+			else
+			{
+				// At least one watch is being draw
+				drawFunctionOnDebugLayer(drawMemoryWatchesOnOverworld);
+				return;
+			}
+		}
+	}
+}
+
 void displayYoshiSkipDetails()
 {
 	if (!Displays[YOSHI_SKIP])

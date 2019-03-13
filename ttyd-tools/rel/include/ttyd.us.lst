@@ -1220,6 +1220,8 @@
 80264990:_savegpr_29
 80264994:_savegpr_30
 80264998:_savegpr_31
+802649EC:__udivdi3
+80264C10:__umoddi3
 
 // printf.c
 8026A0B8:sprintf

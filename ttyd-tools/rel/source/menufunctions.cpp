@@ -62,6 +62,7 @@ void resetMenuToRoot()
 {
 	CurrentMenu 			= ROOT;
 	MenuSelectedOption 		= 0;
+	HideMenu 				= false;
 	resetMenu();
 }
 
@@ -1144,6 +1145,219 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			{
 				MenuSelectionStates = 0;
 			}
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		default:
+		{
+			return 0;
+		}
+	}
+}
+
+uint32_t memoryAddressTypeButtonControls()
+{
+	uint32_t Button = checkButtonSingleFrame();
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	
+	switch (Button)
+	{
+		case DPADDOWN:
+		case DPADUP:
+		{
+			uint32_t tempMemoryTypeLinesSize = MemoryTypeLinesSize;
+			uint32_t TotalMenuOptions = tempMemoryTypeLinesSize;
+			uint32_t MaxOptionsPerRow = 1;
+			uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
+			uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
+			
+			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
+				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+					MaxOptionsPerRow, false);
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case A:
+		{
+			uint32_t tempMenuSelectedOption = MenuSelectedOption;
+			MemoryWatch[tempMenuSelectedOption].Type = tempSecondaryMenuOption;
+			SelectedOption = 0;
+			
+			// Adjust the hex setting if necessary
+			switch (tempSecondaryMenuOption)
+			{
+				case string:
+				case time:
+				{
+					MemoryWatch[tempMenuSelectedOption].ShowAsHex = false;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case B:
+		{
+			SelectedOption = 0;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		default:
+		{
+			return 0;
+		}
+	}
+}
+
+uint32_t memoryChangeWatchPositionButtonControls()
+{
+	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	bool CurrentlyAutoIncrementing = false;
+	uint32_t Button = 0;
+	
+	// Check to see if a D-Pad Button is being held
+	if (checkButtonComboEveryFrame(PAD_DPAD_LEFT))
+	{
+		Button = DPADLEFT;
+	}
+	else if (checkButtonComboEveryFrame(PAD_DPAD_RIGHT))
+	{
+		Button = DPADRIGHT;
+	}
+	else if (checkButtonComboEveryFrame(PAD_DPAD_UP))
+	{
+		Button = DPADUP;
+	}
+	else if (checkButtonComboEveryFrame(PAD_DPAD_DOWN))
+	{
+		Button = DPADDOWN;
+	}
+	
+	if (Button != 0)
+	{
+		// Check to see if the value should begin to auto-increment
+		if (MemoryWatchPosition.WaitFramesToBeginIncrement >= 
+			ttyd::system::sysMsec2Frame(500))
+		{
+			// Check to see if the number should increment or not
+			if (MemoryWatchPosition.WaitFramesToPerformIncrement >= 1)
+			{
+				// Auto-increment the value
+				switch (Button)
+				{
+					case DPADLEFT:
+					{
+						int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
+						MemoryWatch[tempMenuSelectedOption].PosX = PosX - 5;
+						break;
+					}
+					case DPADRIGHT:
+					{
+						int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
+						MemoryWatch[tempMenuSelectedOption].PosX = PosX + 5;
+						break;
+					}
+					case DPADUP:
+					{
+						int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
+						MemoryWatch[tempMenuSelectedOption].PosY = PosY + 5;
+						break;
+					}
+					case DPADDOWN:
+					{
+						int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
+						MemoryWatch[tempMenuSelectedOption].PosY = PosY - 5;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+				
+				MemoryWatchPosition.WaitFramesToPerformIncrement = 0;
+				return Button;
+			}
+			else
+			{
+				MemoryWatchPosition.WaitFramesToPerformIncrement++;
+				CurrentlyAutoIncrementing = true;
+			}
+		}
+		else
+		{
+			MemoryWatchPosition.WaitFramesToBeginIncrement++;
+		}
+	}
+	else
+	{
+		// Reset the counters
+		MemoryWatchPosition.WaitFramesToBeginIncrement = 0;
+		MemoryWatchPosition.WaitFramesToPerformIncrement = 0;
+	}
+	
+	if (CurrentlyAutoIncrementing)
+	{
+		return 0;
+	}
+	
+	Button = checkButtonSingleFrame();
+	switch (Button)
+	{
+		case DPADLEFT:
+		{
+			int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
+			MemoryWatch[tempMenuSelectedOption].PosX = PosX - 1;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case DPADRIGHT:
+		{
+			int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
+			MemoryWatch[tempMenuSelectedOption].PosX = PosX + 1;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case DPADUP:
+		{
+			int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
+			MemoryWatch[tempMenuSelectedOption].PosY = PosY + 1;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case DPADDOWN:
+		{
+			int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
+			MemoryWatch[tempMenuSelectedOption].PosY = PosY - 1;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case A:
+		{
+			SelectedOption = 0;
+			HideMenu = false;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case B:
+		{
+			MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
+			MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
+			SelectedOption = 0;
+			HideMenu = false;
 			
 			FrameCounter = 1;
 			return Button;
@@ -3079,6 +3293,39 @@ void adjustPartnerStatsSelection(uint32_t button)
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
+	
+	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+			MaxOptionsPerRow, false);
+}
+
+void adjustMemoryWatchSelection(uint32_t button)
+{
+	uint32_t TotalMenuOptions = 0;
+	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
+	
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		if (MemoryWatch[i].Address == 0)
+		{
+			break;
+		}
+		TotalMenuOptions++;
+	}
+	
+	uint32_t MaxOptionsPerRow = 1;
+	uint32_t MaxOptionsPerPage = 10;
+	
+	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+			MaxOptionsPerRow, false);
+}
+
+void adjustMemoryChangeAddressOrPointerSelection(uint32_t button)
+{
+	uint32_t TotalMenuOptions = MemoryWatch[MenuSelectedOption].AddressOffsetAmount + 1;
+	uint32_t MaxOptionsPerRow = 1;
+	uint32_t MaxOptionsPerPage = 11;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 

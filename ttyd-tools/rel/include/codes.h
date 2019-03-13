@@ -27,6 +27,8 @@ void displayMarioCoordinatesBoolCheck();
 void displayJumpStorageDetails();
 void displayButtonInputs();
 void displayStickAngle();
+void displayMemoryWatches();
+
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
 void actionCommandsTimingsInit();

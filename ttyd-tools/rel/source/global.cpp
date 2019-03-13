@@ -15,6 +15,7 @@ const char *RootLines[] =
 	"Cheats",
 	"Stats",
 	"Settings",
+	"Memory",
 	"Battles",
 	"Displays",
 	"Warps",
@@ -304,6 +305,57 @@ const char *StatsFollowerOptionsLines[] =
 	"Gus",
 };
 uint8_t StatsFollowerOptionsLinesSize = sizeof(StatsFollowerOptionsLines) / sizeof(StatsFollowerOptionsLines[0]);
+
+const char *SettingsLines[] = 
+{
+	"Return",
+	"Load Settings",
+	"Save Settings",
+};
+
+const char *MemoryLines[] = 
+{
+	"Return",
+	"Add Watch",
+	"Modify Watch",
+	"Delete Watch",
+};
+
+const char *MemoryModifyLines[] = 
+{
+	"Return",
+	"Address",
+	"Type",
+	"Show As Hex",
+	"Position",
+	"Display",
+};
+uint8_t MemoryModifyLinesSize = sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
+
+const char *MemoryTypeLines[] = 
+{
+	"string",
+	"time",
+	"int8_t",
+	"int16_t",
+	"int32_t",
+	"int64_t",
+	"uint8_t",
+	"uint16_t",
+	"uint32_t",
+	"uint64_t",
+	"float",
+	"double",
+};
+uint8_t MemoryTypeLinesSize = sizeof(MemoryTypeLines) / sizeof(MemoryTypeLines[0]);
+
+const char *MemoryChangeAddressLines[] = 
+{
+	"Return",
+	"Change Address/Pointer Levels",
+	"Add Pointer Level",
+	"Remove Pointer Level",
+};
 
 const char *BattlesLines[] = 
 {
@@ -766,13 +818,6 @@ const char *WarpDescriptions[] =
 	"Title Screen",
 };
 
-const char *SettingsLines[] = 
-{
-	"Return",
-	"Load Settings",
-	"Save Settings",
-};
-
 const char *ReturnPlaceholder[] = 
 {
 	"Return",
@@ -794,7 +839,7 @@ const char ButtonInputDisplay[] =
 	'Y',
 	'S',
 };
-#else	
+#else
 uint8_t ButtonLeft[] 	= {0x81, 0xA9, 0};
 uint8_t ButtonRight[] 	= {0x81, 0xA8, 0};
 uint8_t ButtonDown[] 	= {0x81, 0xAB, 0};
@@ -815,14 +860,20 @@ const char *ButtonInputDisplay[] =
 	"Y",
 	"S",
 };
+
+uint8_t PointerTextValues[] = {0x50, 0x81, 0xA8, 0};
+const char *PointerText = reinterpret_cast<const char *>(&PointerTextValues);
 #endif
 
-struct Menus Menu[21];
+struct Menus Menu[24];
 struct Cheats Cheat[19];
 bool Displays[9];
 char DisplayBuffer[256];
+struct MemoryWatchStruct MemoryWatch[30];
 
 struct AutoIncrement AdjustableValueMenu;
+struct AutoIncrement MemoryWatchAdjustableValueMenu;
+struct AutoIncrementCoordinates MemoryWatchPosition;
 struct CheatsHandleDisplayButtons CheatsDisplayButtons;
 struct MarioPartnerPositionsStruct MarioPartnerPositions;
 struct SaveAnywhereStruct SaveAnywhere;
@@ -837,6 +888,7 @@ struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
 
+bool HideMenu 							= false;
 bool MenuIsDisplayed 					= false;
 bool PreventClosingMenu 				= false;
 bool ChangingCheatButtonCombo 			= false;
@@ -851,6 +903,7 @@ int8_t FunctionReturnCode 				= 0;
 uint32_t Timer 							= 0;
 uint8_t MenuSelectionStates 			= 0;
 int32_t MenuSecondaryValue 				= 0;
+uint32_t MemoryWatchSecondaryValue 		= 0;
 uint8_t FrameCounter 					= 0;
 
 #ifdef TTYD_US
@@ -908,6 +961,7 @@ uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
 
 uint32_t GlobalWorkPointer 				= r13 - 0x6F50;
 uint32_t titleMainAddress 				= r13 - 0x7F80;
+uint32_t ConsoleBusSpeedAddress 		= 0x800000F8;
 
 // Variables used by cheats
 bool ResetMarioProperties 				= false;
@@ -936,6 +990,26 @@ void initMenuVars()
 	Menu[STATS].PreviousMenu 							= ROOT;
 	Menu[STATS].Line 									= StatsLines;
 	
+	Menu[SETTINGS].TotalMenuOptions 					= sizeof(SettingsLines) / sizeof(SettingsLines[0]);
+	Menu[SETTINGS].ColumnSplitAmount 					= Menu[SETTINGS].TotalMenuOptions;
+	Menu[SETTINGS].PreviousMenu 						= ROOT;
+	Menu[SETTINGS].Line 								= SettingsLines;
+	
+	Menu[MEMORY].TotalMenuOptions 						= sizeof(MemoryLines) / sizeof(MemoryLines[0]);
+	Menu[MEMORY].ColumnSplitAmount 						= Menu[MEMORY].TotalMenuOptions;
+	Menu[MEMORY].PreviousMenu 							= ROOT;
+	Menu[MEMORY].Line 									= MemoryLines;
+	
+	Menu[MEMORY_MODIFY].TotalMenuOptions 				= sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
+	Menu[MEMORY_MODIFY].ColumnSplitAmount 				= Menu[MEMORY_MODIFY].TotalMenuOptions;
+	Menu[MEMORY_MODIFY].PreviousMenu 					= MEMORY;
+	Menu[MEMORY_MODIFY].Line 							= MemoryModifyLines;
+	
+	Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions 		= sizeof(MemoryChangeAddressLines) / sizeof(MemoryChangeAddressLines[0]);
+	Menu[MEMORY_CHANGE_ADDRESS].ColumnSplitAmount 		= Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions;
+	Menu[MEMORY_CHANGE_ADDRESS].PreviousMenu 			= MEMORY_MODIFY;
+	Menu[MEMORY_CHANGE_ADDRESS].Line 					= MemoryChangeAddressLines;
+	
 	Menu[BATTLES].TotalMenuOptions 						= sizeof(BattlesLines) / sizeof(BattlesLines[0]);
 	Menu[BATTLES].ColumnSplitAmount 					= Menu[BATTLES].TotalMenuOptions;
 	Menu[BATTLES].PreviousMenu 							= ROOT;
@@ -950,11 +1024,6 @@ void initMenuVars()
 	Menu[WARPS].ColumnSplitAmount 						= Menu[WARPS].TotalMenuOptions;
 	Menu[WARPS].PreviousMenu 							= ROOT;
 	Menu[WARPS].Line 									= WarpLines;
-	
-	Menu[SETTINGS].TotalMenuOptions 					= sizeof(SettingsLines) / sizeof(SettingsLines[0]);
-	Menu[SETTINGS].ColumnSplitAmount 					= Menu[SETTINGS].TotalMenuOptions;
-	Menu[SETTINGS].PreviousMenu 						= ROOT;
-	Menu[SETTINGS].Line 								= SettingsLines;
 	
 	Menu[INVENTORY_MAIN].TotalMenuOptions 				= sizeof(InventoryOptionLines) / sizeof(InventoryOptionLines[0]);
 	Menu[INVENTORY_MAIN].ColumnSplitAmount 				= Menu[INVENTORY_MAIN].TotalMenuOptions;

@@ -46,6 +46,11 @@ void drawPartnerStats();
 void drawBattlesActorStats();
 void drawBattlesActorsHeldItem();
 void drawCurrentFollowerOut();
+void drawMemoryWatches();
+void drawMemoryModifyList();
+void drawMemoryTypeList();
+void drawMemoryChangeWatchPosition();
+void drawMemoryChangeAddressList();
 void drawBattlesActorsList();
 void drawBattlesStatusesList();
 
@@ -55,6 +60,7 @@ void drawWarpsErrorMessage();
 void drawPartnerFollowerMessage(const char *message);
 void drawPartnerErrorMessage();
 void drawFollowersErrorMessage();
+void drawMemoryErrorMessage(const char *message);
 void drawNotInBattleErrorMessage();
 void drawConfirmationWindow(const char *message);
 
@@ -69,6 +75,7 @@ void drawSingleLineFromStringAndArray(int32_t posX, int32_t posY,
 
 void drawAdjustableValueSpawnItem();
 void drawAdjustableValue(bool changingItem, uint32_t currentMenu);
+void drawMemoryWatchAdjustableValue(uint32_t currentMenu);
 void drawAddByIconMain(uint32_t currentMenu);
 void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);
@@ -90,6 +97,8 @@ void drawMarioCoordinates();
 void drawJumpStorageDetails();
 void drawButtonInputs();
 void drawStickAngle();
+void drawMemoryWatchesOnOverworld();
+
 void drawYoshiSkipDetails();
 void drawPalaceSkipDetails();
 void drawActionCommandsTiming();

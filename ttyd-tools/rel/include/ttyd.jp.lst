@@ -1214,6 +1214,8 @@
 8025E9E0:_savegpr_29
 8025E9E4:_savegpr_30
 8025E9E8:_savegpr_31
+8025EA3C:__udivdi3
+8025EC60:__umoddi3
 
 // printf.c
 80264108:sprintf

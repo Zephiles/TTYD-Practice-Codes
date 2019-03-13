@@ -6,6 +6,7 @@
 #include "codes.h"
 #include "mod.h"
 #include "memcard.h"
+#include "memorywatch.h"
 
 #include <gc/card.h>
 #include <ttyd/mario_pouch.h>
@@ -1509,6 +1510,436 @@ void menuCheckButton()
 			}
 			break;
 		}
+		case MEMORY:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							default_DPAD_Actions(CurrentButton);
+							break;
+						}
+						default:
+						{
+							adjustMemoryWatchSelection(CurrentButton);
+							break;
+						}
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							switch (tempCurrentMenuOption)
+							{
+								case 0:
+								{
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									resetMenu();
+									break;
+								}
+								case ADD_WATCH:
+								{
+									int32_t EmptyWatchSlot = getEmptyWatchSlot();
+									if (EmptyWatchSlot >= 0)
+									{
+										addMemoryWatch(EmptyWatchSlot);
+									}
+									else
+									{
+										// There are no more free slots
+										FunctionReturnCode = NO_SLOTS_LEFT;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								case MODIFY_WATCH:
+								{
+									uint32_t tempAddress = MemoryWatch[0].Address;
+									if (tempAddress)
+									{
+										SelectedOption 		= tempCurrentMenuOption;
+										CurrentMenuOption 	= tempCurrentPage * 10;
+									}
+									else
+									{
+										// All slots are empty
+										FunctionReturnCode = ALL_SLOTS_EMPTY;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								case DELETE_WATCH:
+								{
+									uint32_t tempAddress = MemoryWatch[0].Address;
+									if (tempAddress)
+									{
+										SelectedOption 		= tempCurrentMenuOption;
+										CurrentMenuOption 	= tempCurrentPage * 10;
+									}
+									else
+									{
+										// All slots are empty
+										FunctionReturnCode = ALL_SLOTS_EMPTY;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						case MODIFY_WATCH:
+						{
+							uint32_t tempAddress = MemoryWatch[0].Address;
+							if (tempAddress)
+							{
+								// Enter the next menu
+								CurrentMenu = MEMORY_MODIFY;
+								MenuSelectedOption = tempCurrentMenuOption;
+								resetMenu();
+							}
+							else
+							{
+								// All slots are empty
+								FunctionReturnCode = NO_SLOTS_LEFT;
+								Timer = secondsToFrames(3);
+							}
+							break;
+						}
+						case DELETE_WATCH:
+						{
+							uint32_t tempAddress = MemoryWatch[0].Address;
+							if (tempAddress)
+							{
+								deleteWatch(static_cast<int32_t>(tempCurrentMenuOption));
+							}
+							else
+							{
+								// All slots are empty
+								FunctionReturnCode = NO_SLOTS_LEFT;
+								Timer = secondsToFrames(3);
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							// Go back to the previous menu
+							CurrentMenu = tempPreviousMenu;
+							resetMenu();
+							break;
+						}
+						default:
+						{
+							closeSecondaryMenu();
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_MODIFY:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					if (tempSelectedOption == 0)
+					{
+						default_DPAD_Actions(CurrentButton);
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							switch (tempCurrentMenuOption)
+							{
+								case 0:
+								{
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									MenuSelectedOption = 0;
+									resetMenu();
+									break;
+								}
+								case CHANGE_ADDRESS:
+								{
+									// Enter the next menu
+									CurrentMenu = MEMORY_CHANGE_ADDRESS;
+									resetMenu();
+									break;
+								}
+								case CHANGE_TYPE:
+								{
+									SelectedOption = tempCurrentMenuOption;
+									SecondaryMenuOption = MemoryWatch[tempMenuSelectedOption].Type;
+									break;
+								}
+								case SHOW_AS_HEX:
+								{
+									// Only change for types that can be displayed in hex
+									switch (MemoryWatch[tempMenuSelectedOption].Type)
+									{
+										case string:
+										case time:
+										{
+											break;
+										}
+										default:
+										{
+											bool ShowAsHex = MemoryWatch[tempMenuSelectedOption].ShowAsHex;
+											MemoryWatch[tempMenuSelectedOption].ShowAsHex = !ShowAsHex;
+											break;
+										}
+									}
+									break;
+								}
+								case CHANGE_WATCH_POSITION:
+								{
+									MemoryWatchPosition.PosX = MemoryWatch[tempMenuSelectedOption].PosX;
+									MemoryWatchPosition.PosY = MemoryWatch[tempMenuSelectedOption].PosY;
+									SelectedOption = tempCurrentMenuOption;
+									HideMenu = true;
+									break;
+								}
+								case DISPLAY_OUT_OF_MENU:
+								{
+									bool DisplayOutOfMenu = MemoryWatch[tempMenuSelectedOption].Display;
+									MemoryWatch[tempMenuSelectedOption].Display = !DisplayOutOfMenu;
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							// Go back to the previous menu
+							CurrentMenu = tempPreviousMenu;
+							MenuSelectedOption = 0;
+							resetMenu();
+							break;
+						}
+						default:
+						{
+							closeSecondaryMenu();
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_CHANGE_ADDRESS:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					switch (tempMenuSelectionStates)
+					{
+						case 0:
+						{
+							switch (tempSelectedOption)
+							{
+								case 0:
+								{
+									default_DPAD_Actions(CurrentButton);
+									break;
+								}
+								default:
+								{
+									adjustMemoryChangeAddressOrPointerSelection(CurrentButton);
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempMenuSelectionStates)
+					{
+						case 0:
+						{
+							switch (tempSelectedOption)
+							{
+								case 0:
+								{
+									switch (tempCurrentMenuOption)
+									{
+										case 0:
+										{
+											// Go back to the previous menu
+											CurrentMenu = tempPreviousMenu;
+											resetMenu();
+											break;
+										}
+										case CHANGE_ADDRESS_OR_POINTERS:
+										{
+											SelectedOption 		= tempCurrentMenuOption;
+											CurrentMenuOption 	= 0;
+											break;
+										}
+										case ADD_POINTER_LEVEL:
+										{
+											// Only add a pointer level if not already at the max
+											uint32_t AddressOffsetTotal = MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount;
+											if (AddressOffsetTotal < 10)
+											{
+												MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount = AddressOffsetTotal + 1;
+												MemoryWatch[tempMenuSelectedOption].AddressOffset[AddressOffsetTotal] = 0;
+											}
+											break;
+										}
+										case REMOVE_POINTER_LEVEL:
+										{
+											// Only remove a pointer level if there is at least one left
+											uint32_t AddressOffsetTotal = MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount;
+											if (AddressOffsetTotal > 0)
+											{
+												MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount = AddressOffsetTotal - 1;
+											}
+											break;
+										}
+										default:
+										{
+											break;
+										}
+									}
+									break;
+								}
+								case CHANGE_ADDRESS_OR_POINTERS:
+								{
+									MenuSelectionStates = tempCurrentMenuOption + 1;
+									SecondaryMenuOption = 7;
+									
+									switch (tempCurrentMenuOption)
+									{
+										case 0:
+										{
+											MemoryWatchSecondaryValue = MemoryWatch[tempMenuSelectedOption].Address;
+											break;
+										}
+										default:
+										{
+											MemoryWatchSecondaryValue = MemoryWatch[tempMenuSelectedOption].AddressOffset[tempCurrentMenuOption - 1];
+											break;
+										}
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempMenuSelectionStates)
+					{
+						case 0:
+						{
+							switch (tempSelectedOption)
+							{
+								case 0:
+								{
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									resetMenu();
+									break;
+								}
+								default:
+								{
+									closeSecondaryMenu();
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
@@ -2189,7 +2620,10 @@ void menuCheckButton()
 void drawMenu()
 {
 	// Display the window for the text to go in
-	drawMenuWindow();
+	if (!HideMenu)
+	{
+		drawMenuWindow();
+	}
 	
 	uint32_t tempCurrentMenu 			= CurrentMenu;
 	// uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
@@ -2514,6 +2948,77 @@ void drawMenu()
 			}
 			break;
 		}
+		case MEMORY:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			// Draw the memory watches
+			drawMemoryWatches();
+			
+			switch (tempFunctionReturnCode)
+			{
+				case ALL_SLOTS_EMPTY:
+				{
+					const char *CurrentLine = "All slots are currently empty.";
+					drawMemoryErrorMessage(CurrentLine);
+					break;
+				}
+				case NO_SLOTS_LEFT:
+				{
+					const char *CurrentLine = "There are no more free slots.";
+					drawMemoryErrorMessage(CurrentLine);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_MODIFY:
+		{
+			// Draw the main text
+			// Don't draw if currently changing display positions
+			if (!HideMenu)
+			{
+				drawMemoryModifyList();
+			}
+			
+			switch (tempSelectedOption)
+			{
+				case CHANGE_TYPE:
+				{
+					drawMemoryTypeList();
+					break;
+				}
+				case CHANGE_WATCH_POSITION:
+				{
+					drawMemoryChangeWatchPosition();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_CHANGE_ADDRESS:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			// Draw the address, pointer levels, and final value
+			drawMemoryChangeAddressList();
+			
+			if (tempMenuSelectionStates != 0)
+			{
+				drawMemoryWatchAdjustableValue(tempCurrentMenu);
+			}
+			break;
+		}
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
@@ -2681,7 +3186,7 @@ void drawMenu()
 void enableOrDisableMenu()
 {
 	// Check for user input
-	uint16_t OpenMenuCombo = PAD_L | PAD_START;
+	const uint16_t OpenMenuCombo = PAD_L | PAD_START;
 	if (checkButtonCombo(OpenMenuCombo) && !PreventClosingMenu && !ChangingCheatButtonCombo)
 	{
 		MenuIsDisplayed = !MenuIsDisplayed;

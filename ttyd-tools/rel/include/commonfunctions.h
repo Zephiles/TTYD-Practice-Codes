@@ -37,5 +37,6 @@ bool checkIfBadgeEquipped(int16_t badge);
 void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
+void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);;
 
 }

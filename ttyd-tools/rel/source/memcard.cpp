@@ -3,6 +3,7 @@
 #include "commonfunctions.h"
 
 #include <gc/card.h>
+#include <ttyd/__mem.h>
 #include <ttyd/string.h>
 
 #include <cstdio>
@@ -179,6 +180,8 @@ int32_t loadSettings(char *fileName, gc::card::card_file *fileInfo, uint8_t *wor
 	OnScreenTimer.ButtonCombo[0] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER];
 	OnScreenTimer.ButtonCombo[1] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1];
 	
+	ttyd::__mem::memcpy(MemoryWatch, &Settings->MemoryWatchSettings[0], sizeof(MemoryWatch));
+	
 	delete[] (MiscData);
 	return CARD_ERROR_READY;
 }
@@ -312,6 +315,8 @@ int32_t writeSettings(char *description, char *fileName,
 	
 	Settings->DisplaysButtonCombos[ONSCREEN_TIMER] 		= OnScreenTimer.ButtonCombo[0];
 	Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1] 	= OnScreenTimer.ButtonCombo[1];
+	
+	ttyd::__mem::memcpy(&Settings->MemoryWatchSettings[0], MemoryWatch, sizeof(MemoryWatch));
 	
 	// Write the data to the file
 	ReturnCode = writeToCard(fileInfo, MiscData, FileSizeAdjusted, 0x2000, nullptr);

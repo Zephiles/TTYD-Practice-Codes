@@ -7,6 +7,7 @@
     -   [Cheats](#cheats)
     -   [Stats](#stats)
     -   [Settings](#settings)
+    -   [Memory](#memory)
     -   [Battles](#battles)
     -   [Displays](#displays)
     -   [Warps](#warps)
@@ -65,6 +66,10 @@ This menu allows you to save and load various settings. The settings are stored 
 * Cheats button combos
 * Which displays are active
 * Displays button combos
+* Memory watches (See below)
+
+### Memory
+This menu allows you to watch the values of up to 30 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
 
 ### Battles
 This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statuses of anyone in a battle (refered to as Actors).

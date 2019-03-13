@@ -272,4 +272,37 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	}
 }
 
+void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount)
+{
+	uint32_t tempAddress = reinterpret_cast<uint32_t>(address);
+	if (offsetAmount == 0)
+	{
+		return address;
+	}
+	else if ((tempAddress >= 0x80000000) && (tempAddress < 0x81800000))
+	{
+		tempAddress = *reinterpret_cast<uint32_t *>(tempAddress);
+	}
+	else
+	{
+		return nullptr;
+	}
+	
+	uint32_t Counter = 0;
+	for (uint32_t i = 0; i < (offsetAmount - 1); i++)
+	{
+		if ((tempAddress >= 0x80000000) && (tempAddress < 0x81800000))
+		{
+			tempAddress = *reinterpret_cast<uint32_t *>(tempAddress + offset[i]);
+		}
+		else
+		{
+			return nullptr;
+		}
+		Counter++;
+	}
+	
+	return reinterpret_cast<void *>(tempAddress + offset[Counter]);
+}
+
 }

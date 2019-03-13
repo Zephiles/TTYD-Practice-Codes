@@ -5,6 +5,7 @@
 #include "menufunctions.h"
 #include "commonfunctions.h"
 #include "codes.h"
+#include "memorywatch.h"
 
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
@@ -1209,6 +1210,471 @@ void drawCurrentFollowerOut()
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
+void drawMemoryWatches()
+{
+	// Make sure there's at least one watch to draw
+	if (MemoryWatch[0].Address == 0)
+	{
+		return;
+	}
+	
+	uint32_t tempCurrentPage 		= CurrentPage;
+	int32_t TotalMenuOptions 		= sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
+	int32_t MaxOptionsPerPage 		= 10;
+	int32_t IndexStart 				= tempCurrentPage * MaxOptionsPerPage;
+	
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 80;
+	float Scale = 0.6;
+	
+	const int32_t TypeOffset 		= 150;
+	const int32_t ValueOffset 		= TypeOffset + 90;
+	
+	// Draw the current page
+	drawPageNumber(PosX, PosY, tempCurrentPage);
+	PosY -= 40;
+	
+	// Draw the headers for the values
+	drawText("Address", PosX, PosY, Alpha, Color, Scale);
+	drawText("Display", PosX + TypeOffset, PosY, Alpha, Color, Scale);
+	drawText("Value", PosX + ValueOffset, PosY, Alpha, Color, Scale);
+	PosY -= 20;
+	
+	// Draw the main text
+	for (int32_t i = IndexStart; i < (IndexStart + MaxOptionsPerPage); i++)
+	{
+		if (i >= TotalMenuOptions)
+		{
+			// Reached the end of the slots, so exit
+			return;
+		}
+		
+		// Check if the current address is valid
+		if (!MemoryWatch[i].Address)
+		{
+			// Reached the end of the valid watches, so exit
+			return;
+		}
+		
+		// Draw the On/Off text for whether the watch is displayed or not
+		const char *OnOffText;
+		if (MemoryWatch[i].Display)
+		{
+			OnOffText = "On";
+			
+			if ((CurrentMenuOption == i) && (SelectedOption > 0))
+			{
+				Color = 0x5B59DEFF;
+			}
+			else
+			{
+				Color = 0x1BBE23FF;
+			}
+		}
+		else
+		{
+			OnOffText = "Off";
+			
+			if ((CurrentMenuOption == i) && (SelectedOption > 0))
+			{
+				Color = 0x5B59DEFF;
+			}
+			else
+			{
+				Color = 0xFF1414FF;
+			}
+		}
+		
+		drawText(OnOffText, PosX + TypeOffset, PosY, Alpha, Color, Scale);
+		
+		// Set the color of the other text
+		if ((CurrentMenuOption == i) && (SelectedOption > 0))
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		// Draw the current address
+		drawText(getAddressString(i), PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the value
+		drawText(getValueString(i), PosX + ValueOffset, PosY, Alpha, Color, Scale);
+		
+		PosY -= 20;
+	}
+}
+
+void drawMemoryModifyList()
+{
+	uint32_t tempSelectedOption 		= SelectedOption;
+	uint32_t tempCurrentMenuOption 		= CurrentMenuOption;
+	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
+	uint32_t TotalOptions 				= MemoryModifyLinesSize;
+	
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 180;
+	float Scale 	= 0.6;
+	uint32_t Color;
+	
+	const int32_t PosX_Offset = 130;
+	
+	for (uint32_t i = 0; i < TotalOptions; i++)
+	{
+		// Get the color of the main text
+		if (tempSelectedOption == 0)
+		{
+			if (tempCurrentMenuOption == i)
+			{
+				Color = 0x5B59DEFF;
+			}
+			else
+			{
+				Color = 0xFFFFFFFF;
+			}
+		}
+		else if (tempSelectedOption == i)
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		// Draw the main text
+		drawText(MemoryModifyLines[i], PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the value for the text
+		switch (i)
+		{
+			case CHANGE_ADDRESS:
+			{
+				// Draw the current address
+				drawText(getAddressString(tempMenuSelectedOption), PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+				break;
+			}
+			case CHANGE_TYPE:
+			{
+				// Draw the current type
+				drawText(MemoryTypeLines[MemoryWatch[tempMenuSelectedOption].Type], 
+					PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+				break;
+			}
+			case SHOW_AS_HEX:
+			{
+				// Draw the Yes/No text for whether the watch is shown as hex or not
+				const char *YesNoText;
+				if (MemoryWatch[tempMenuSelectedOption].ShowAsHex)
+				{
+					YesNoText = "Yes";
+					
+					if (tempSelectedOption == 0)
+					{
+						if (tempCurrentMenuOption == i)
+						{
+							Color = 0x5B59DEFF;
+						}
+						else
+						{
+							Color = 0x1BBE23FF;
+						}
+					}
+					else if (tempSelectedOption == i)
+					{
+						Color = 0x5B59DEFF;
+					}
+					else
+					{
+						Color = 0x1BBE23FF;
+					}
+				}
+				else
+				{
+					YesNoText = "No";
+					
+					if (tempSelectedOption == 0)
+					{
+						if (tempCurrentMenuOption == i)
+						{
+							Color = 0x5B59DEFF;
+						}
+						else
+						{
+							Color = 0xFF1414FF;
+						}
+					}
+					else if (tempSelectedOption == i)
+					{
+						Color = 0x5B59DEFF;
+					}
+					else
+					{
+						Color = 0xFF1414FF;
+					}
+				}
+				
+				drawText(YesNoText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+				break;
+			}
+			case CHANGE_WATCH_POSITION:
+			{
+				// Draw the X and Y positions
+				char *tempDisplayBuffer = DisplayBuffer;
+				sprintf(tempDisplayBuffer,
+					"%ld, %ld",
+					MemoryWatch[tempMenuSelectedOption].PosX,
+					MemoryWatch[tempMenuSelectedOption].PosY);
+				
+				drawText(tempDisplayBuffer, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+				break;
+			}
+			case DISPLAY_OUT_OF_MENU:
+			{
+				// Draw the On/Off text for whether the watch is displayed or not
+				const char *OnOffText;
+				if (MemoryWatch[tempMenuSelectedOption].Display)
+				{
+					OnOffText = "On";
+					
+					if (tempSelectedOption == 0)
+					{
+						if (tempCurrentMenuOption == i)
+						{
+							Color = 0x5B59DEFF;
+						}
+						else
+						{
+							Color = 0x1BBE23FF;
+						}
+					}
+					else if (tempSelectedOption == i)
+					{
+						Color = 0x5B59DEFF;
+					}
+					else
+					{
+						Color = 0x1BBE23FF;
+					}
+				}
+				else
+				{
+					OnOffText = "Off";
+					
+					if (tempSelectedOption == 0)
+					{
+						if (tempCurrentMenuOption == i)
+						{
+							Color = 0x5B59DEFF;
+						}
+						else
+						{
+							Color = 0xFF1414FF;
+						}
+					}
+					else if (tempSelectedOption == i)
+					{
+						Color = 0x5B59DEFF;
+					}
+					else
+					{
+						Color = 0xFF1414FF;
+					}
+				}
+				
+				drawText(OnOffText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+		
+		PosY -= 20;
+	}
+	
+	// Draw the value stored at the current address
+	Color = 0xFFFFFFFF;
+	PosY -= 20;
+	
+	drawText("Value", PosX, PosY, Alpha, Color, Scale);
+	drawText(getValueString(tempMenuSelectedOption), PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+}
+
+void drawMemoryTypeList()
+{
+	// Check for button inputs
+	memoryAddressTypeButtonControls();
+	
+	// Draw the window
+	uint32_t Color 		= 0x151515F6;
+	int32_t PosX 		= -110;
+	int32_t PosY 		= 169;
+	int32_t Width 		= 212;
+	int32_t Height 		= 332;
+	int32_t Curve 		= 20;
+	
+	drawWindow(Color, PosX, PosY, Width, Height, Curve);
+	
+	// Draw the help text
+	const char *HelpText = "Press A to confirm\nPress B to cancel";
+	uint8_t Alpha = 0xFF;
+	float Scale = 0.6;
+	Color = 0xFFFFFFFF;
+	PosX += 30;
+	PosY -= 25;
+	
+	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
+	PosX += 42;
+	PosY -= 50;
+	
+	// Draw the main text
+	uint32_t Size = MemoryTypeLinesSize;
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		if (SecondaryMenuOption == i)
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		drawText(MemoryTypeLines[i], PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+}
+
+void drawMemoryChangeWatchPosition()
+{
+	// Check for button inputs
+	memoryChangeWatchPositionButtonControls();	
+	
+	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	
+	// Draw the current watch
+	int32_t PosX 		= MemoryWatch[tempMenuSelectedOption].PosX;
+	int32_t PosY 		= MemoryWatch[tempMenuSelectedOption].PosY;
+	uint32_t TextColor 	= 0xFFFFFFFF;
+	uint8_t Alpha 		= 0xFF;
+	float Scale 		= 0.75;
+	
+	drawText(getValueString(tempMenuSelectedOption), PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Don't draw the window and text if Y is being held
+	if (checkButtonComboEveryFrame(PAD_Y))
+	{
+		return;
+	}
+	
+	// Draw the help window
+	int32_t Width 			= 293;
+	int32_t Curve 			= 20;
+	uint32_t WindowColor 	= 0x151515F6;
+	int32_t TextPosX 		= -135;
+	int32_t TextPosY 		= 100;
+	Scale = 0.6;
+	
+	const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress B to cancel";
+	drawTextWithWindow(HelpText, TextPosX, TextPosY, Alpha, TextColor, 
+		Scale, Width, WindowColor, Curve);
+}
+
+void drawMemoryChangeAddressList()
+{
+	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
+	uint32_t tempCurrentMenuOption 		= CurrentMenuOption;
+	uint32_t tempSelectedOption 		= SelectedOption;
+	
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 80;
+	float Scale 	= 0.6;
+	uint32_t Color;
+	
+	const int32_t PosX_Offset_Position 		= 110;
+	const int32_t PosX_Address_Position 	= 250;
+	
+	// Get the color for the address text
+	if ((tempSelectedOption != 0) && (tempCurrentMenuOption == 0))
+	{
+		Color = 0x5B59DEFF;
+	}
+	else
+	{
+		Color = 0xFFFFFFFF;
+	}
+	
+	// Draw the address
+	drawText("Address", PosX, PosY, Alpha, Color, Scale);
+	drawText(getAddressStringNoLetterP(tempMenuSelectedOption), 
+		PosX + PosX_Address_Position, PosY, Alpha, Color, Scale);
+	
+	PosY -= 20;
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	// Draw the pointer levels
+	uint32_t TotalLevels = MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount;
+	for (uint32_t i = 1; i <= TotalLevels; i++)
+	{
+		// Get the color for the text
+		if ((tempSelectedOption != 0) && (tempCurrentMenuOption == i))
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		// Draw the text for the current level
+		sprintf(tempDisplayBuffer,
+			"Level %ld",
+			i);
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the offset being applied
+		// Check if the value is negative
+		int32_t tempOffset = MemoryWatch[tempMenuSelectedOption].AddressOffset[i - 1];
+		if (tempOffset < 0)
+		{
+			// Conver the value to negative
+			tempOffset = -tempOffset;
+			
+			sprintf(tempDisplayBuffer,
+				"-0x%lX",
+				tempOffset);
+		}
+		else
+		{
+			sprintf(tempDisplayBuffer,
+				"0x%lX",
+				tempOffset);
+		}
+		
+		drawText(tempDisplayBuffer, PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
+		
+		// Draw the address pointed to by the current level
+		drawText(getAddressStringFromOffsets(tempMenuSelectedOption, i), 
+			PosX + PosX_Address_Position, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
+	// Draw the final value
+	Color = 0xFFFFFFFF;
+	PosY -= 20;
+	
+	drawText("Final Value", PosX, PosY, Alpha, Color, Scale);
+	drawText(getValueString(tempMenuSelectedOption), PosX + 250, PosY, Alpha, Color, Scale);
+}
+
 void drawBattlesActorsList()
 {
 	uint32_t tempCurrentPage 		= CurrentPage;
@@ -1216,10 +1682,10 @@ void drawBattlesActorsList()
 	uint32_t MaxOptionsPerPage 		= 13;
 	uint32_t IndexStart 			= tempCurrentPage * MaxOptionsPerPage;
 	
-	uint8_t Alpha = 0xFF;
-	int32_t PosX = -232;
-	int32_t PosY = 120;
-	float Scale = 0.6;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 120;
+	float Scale 	= 0.6;
 	uint32_t Color;
 	
 	// Draw the current page
@@ -1469,6 +1935,22 @@ void drawFollowersErrorMessage()
 	drawPartnerFollowerMessage(CurrentLine);
 }
 
+void drawMemoryErrorMessage(const char *message)
+{
+	uint32_t tempTimer = Timer;
+	if ((FunctionReturnCode < 0) && (tempTimer > 0))
+	{
+		if (checkForClosingErrorMessage())
+		{
+			return;
+		}
+		
+		int32_t PosX 			= -140;
+		int32_t WindowWidth 	= 275;
+		drawErrorWindow(message, PosX, WindowWidth);
+	}
+}
+
 void drawNotInBattleErrorMessage()
 {
 	uint32_t tempTimer = Timer;
@@ -1479,7 +1961,6 @@ void drawNotInBattleErrorMessage()
 			return;
 		}
 		
-		// Print error text if currently trying to warp when not able to
 		const char *CurrentLine = "You must be in a battle to use the Battles menu.";
 		int32_t PosX 			= -205;
 		int32_t WindowWidth 	= 440;
@@ -1794,6 +2275,148 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 }
 
+void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
+{
+	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	
+	// Check for button inputs
+	uint32_t ReturnCode = adjustWatchValueControls(tempMenuSelectedOption);
+	switch (ReturnCode)
+	{
+		case A: // Confirmed a value, so close the menu
+		case B: // Canceled, so close the menu
+		case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
+		{
+			return;
+		}
+		default:
+		{
+			break;
+		}
+	}
+	
+	// Draw the window
+	uint32_t color 	= 0x151515E0;
+	int32_t PosX 	= -189;
+	int32_t y 		= 105;
+	int32_t width 	= 377;
+	int32_t curve 	= 10;
+	int32_t height 	= 148;
+	
+	drawWindow(color, PosX, y, width, height, curve);
+	
+	// Draw the help text
+	uint8_t alpha 		= 0xFF;
+	float scale 		= 0.6;
+	int32_t x 			= PosX + 15;
+	y 					-= 13;
+	color 				= 0xFFFFFFFF;
+	const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
+	drawText(HelpText, x, y, alpha, color, scale);
+	
+	uint32_t tempMemoryWatchSecondaryValue = MemoryWatchSecondaryValue;
+	int32_t tempMemoryWatchSecondaryValueSigned;
+	y -= 100;
+	
+	// Check if the number is negative and get the amount of numbers to draw
+	bool NumberIsNegative = false;
+	uint32_t AmountOfNumbers;
+	
+	switch (currentMenu)
+	{
+		case MEMORY_CHANGE_ADDRESS:
+		{
+			AmountOfNumbers = 8;
+			
+			switch (CurrentMenuOption)
+			{
+				case 0:
+				{
+					// Modifying the address, which can never be 0
+					break;
+				}
+				default:
+				{
+					// Modifying the pointer offsets, which can be negative
+					tempMemoryWatchSecondaryValueSigned = static_cast<int32_t>(tempMemoryWatchSecondaryValue);
+					if (tempMemoryWatchSecondaryValueSigned < 0)
+					{
+						NumberIsNegative = true;
+					}
+				}
+			}
+			break;
+		}
+		default:
+		{
+			return;
+		}
+	}
+	
+	// Set up array for each digit of the number
+	uint8_t AdjustableValue[AmountOfNumbers];
+	
+	x 		+= 173;
+	scale 	= 0.9;
+	
+	// Calculate the X offset
+	int32_t tempPosX = 0;
+	for (uint32_t i = 0; i < (AmountOfNumbers - 1); i++)
+	{
+		tempPosX += 17;
+	}
+	x -= (tempPosX / 2);
+	
+	if (NumberIsNegative)
+	{
+		// Convert the number to positive
+		tempMemoryWatchSecondaryValueSigned = -tempMemoryWatchSecondaryValueSigned;
+		
+		// Get the values for the array
+		for (uint32_t i = 0; i < AmountOfNumbers; i++)
+		{
+			AdjustableValue[AmountOfNumbers - i - 1] = tempMemoryWatchSecondaryValueSigned % 0x10;
+			tempMemoryWatchSecondaryValueSigned /= 0x10;
+		}
+		
+		// Draw the negative sign
+		drawText("-", (x - 40), y, alpha, color, scale);	
+	}
+	else
+	{
+		// Get the values for the array
+		for (uint32_t i = 0; i < AmountOfNumbers; i++)
+		{
+			AdjustableValue[AmountOfNumbers - i - 1] = tempMemoryWatchSecondaryValue % 0x10;
+			tempMemoryWatchSecondaryValue /= 0x10;
+		}
+	}
+	
+	// Draw the 0x
+	drawText("0x", (x - 30), y, alpha, color, scale);
+	
+	// Draw each digit of the number
+	for (uint32_t i = 0; i < AmountOfNumbers; i++)
+	{
+		if (SecondaryMenuOption == i)
+		{
+			color = 0x5B59DEFF;
+		}
+		else
+		{
+			color = 0xFFFFFFFF;
+		}
+		
+		char *tempDisplayBuffer = DisplayBuffer;
+		sprintf(tempDisplayBuffer,
+			"%01X",
+			AdjustableValue[i]);
+
+		drawText(tempDisplayBuffer, x, y, alpha, color, scale);
+		x += 17;
+	}
+}
+
 void drawAddByIconMain(uint32_t currentMenu)
 {
 	// Check for button inputs
@@ -2054,7 +2677,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
-		"Time Left: %.2ld.%.2ld",
+		"Time Left: %02ld.%02ld",
 		second,
 		frame);
 	
@@ -2263,7 +2886,7 @@ void drawOnScreenTimer()
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%.2ld:%.2ld:%.2ld.%.2ld",
+		"%02ld:%02ld:%02ld.%02ld",
 		hour,
 		minute,
 		second,
@@ -2276,11 +2899,16 @@ void drawOnScreenTimer()
 	float Scale 		= 0.8;
 	
 	// Move the timer up if Mario's Coordinates are currently displayed
-	if (Displays[MARIO_COORDINATES] || 
-		Displays[PALACE_SKIP] || 
-			Displays[YOSHI_SKIP])
+	// Don't move up if the input display is active
+	if (!Displays[BUTTON_INPUT_DISPLAY])
 	{
-		PosY += 20;
+		if (Displays[MARIO_COORDINATES] || 
+			Displays[PALACE_SKIP] || 
+			Displays[YOSHI_SKIP])
+		{
+			
+			PosY += 20;
+		}
 	}
 	
 	#ifdef TTYD_JP
@@ -2407,6 +3035,36 @@ void drawStickAngle()
 		getStickAngle());
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+}
+
+void drawMemoryWatchesOnOverworld()
+{
+	// Figure out which watches are going to be displayed
+	bool tempHideMenu = HideMenu;
+	uint32_t tempMenuSelectionOption = MenuSelectedOption;
+	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
+	
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		if (MemoryWatch[i].Display)
+		{
+			// Check to see if this watch is currently being repositioned
+			if (tempHideMenu && (tempMenuSelectionOption == i))
+			{
+				// This watch is currently being repositioned, so do not draw it
+			}
+			else
+			{
+				// Draw the watch
+				uint32_t Color = 0xFFFFFFFF;
+				uint8_t Alpha = 0xFF;
+				float Scale = 0.75;
+				int32_t PosX = MemoryWatch[i].PosX;
+				int32_t PosY = MemoryWatch[i].PosY;
+				drawText(getValueString(i), PosX, PosY, Alpha, Color, Scale);
+			}
+		}
+	}
 }
 
 void drawYoshiSkipDetails()

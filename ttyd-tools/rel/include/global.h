@@ -13,6 +13,7 @@ enum MENU_NAMES
 	CHEATS,
 	STATS,
 	SETTINGS,
+	MEMORY,
 	BATTLES,
 	DISPLAYS,
 	WARPS,
@@ -25,6 +26,8 @@ enum MENU_NAMES
 	STATS_MARIO,
 	STATS_PARTNERS,
 	STATS_FOLLOWERS,
+	MEMORY_MODIFY,
+	MEMORY_CHANGE_ADDRESS,
 	BATTLES_CURRENT_ACTOR,
 	BATTLES_STATUSES,
 	DISPLAYS_ONSCREEN_TIMER,
@@ -189,6 +192,51 @@ enum SETTINGS_RETURN_CODES
 	LOAD_SUCCESSFUL,
 	SAVE_FAILED,
 	SAVE_SUCCESSFUL,
+};
+
+enum MEMORY_TYPES
+{
+	string = 0,
+	time,
+	s8,
+	s16,
+	s32,
+	s64,
+	u8,
+	u16,
+	u32,
+	u64,
+	f32,
+	f64,
+};
+
+enum MEMORY_OPTIONS
+{
+	ADD_WATCH = 1,
+	MODIFY_WATCH,
+	DELETE_WATCH,
+};
+
+enum MEMORY_MODIFY_OPTIONS
+{
+	CHANGE_ADDRESS = 1,
+	CHANGE_TYPE,
+	SHOW_AS_HEX,
+	CHANGE_WATCH_POSITION,
+	DISPLAY_OUT_OF_MENU,
+};
+
+enum MEMORY_MODIFY_ADDRESS_OPTIONS
+{
+	CHANGE_ADDRESS_OR_POINTERS = 1,
+	ADD_POINTER_LEVEL,
+	REMOVE_POINTER_LEVEL,
+};
+
+enum MEMORY_ERRORS
+{
+	ALL_SLOTS_EMPTY = -2,
+	NO_SLOTS_LEFT,
 };
 
 enum BATTLES_CURRENT_ACTOR_STATS_SELECTION
@@ -398,6 +446,14 @@ struct AutoIncrement
 	uint16_t WaitFramesToPerformIncrement;
 };
 
+struct AutoIncrementCoordinates
+{
+	uint16_t WaitFramesToBeginIncrement;
+	uint16_t WaitFramesToPerformIncrement;
+	int32_t PosX;
+	int32_t PosY;
+};
+
 struct CheatsHandleDisplayButtons
 {
 	uint8_t CheatsBButtonCounter;
@@ -493,20 +549,36 @@ struct MemoryCardStruct
 	char *Description;
 };
 
+struct MemoryWatchStruct
+{
+	uint32_t Address;
+	int32_t AddressOffset[10];
+	uint8_t AddressOffsetAmount;
+	uint8_t Type;
+	bool ShowAsHex;
+	bool Display;
+	int32_t PosX;
+	int32_t PosY;
+};
+
 struct SettingsStruct
 {
 	bool CheatsActive[100];
 	uint16_t CheatButtonCombos[100];
 	bool DisplaysActive[100];
 	uint16_t DisplaysButtonCombos[100];
+	MemoryWatchStruct MemoryWatchSettings[30];
 };
 
-extern Menus Menu[21];
+extern Menus Menu[24];
 extern Cheats Cheat[19];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
+extern MemoryWatchStruct MemoryWatch[30];
 
 extern AutoIncrement AdjustableValueMenu;
+extern AutoIncrement MemoryWatchAdjustableValueMenu;
+extern AutoIncrementCoordinates MemoryWatchPosition;
 extern CheatsHandleDisplayButtons CheatsDisplayButtons;
 extern MarioPartnerPositionsStruct MarioPartnerPositions;
 extern SaveAnywhereStruct SaveAnywhere;
@@ -536,6 +608,10 @@ extern const char *StatsPartnerOptionsLines[];
 extern uint8_t StatsPartnerOptionsLinesSize;
 extern const char *StatsFollowerOptionsLines[];
 extern uint8_t StatsFollowerOptionsLinesSize;
+extern const char *MemoryModifyLines[];
+extern uint8_t MemoryModifyLinesSize;
+extern const char *MemoryTypeLines[];
+extern uint8_t MemoryTypeLinesSize;
 extern const char *BattlesActorsLines[];
 extern const char *BattlesCurrentActorStats[];
 extern uint8_t BattlesCurrentActorStatsSize;
@@ -554,8 +630,10 @@ extern const char *WarpDescriptions[];
 extern const char ButtonInputDisplay[];
 #else
 extern const char *ButtonInputDisplay[];
+extern const char *PointerText;
 #endif
 
+extern bool HideMenu;
 extern bool MenuIsDisplayed;
 extern bool PreventClosingMenu;
 extern bool ChangingCheatButtonCombo;
@@ -570,6 +648,7 @@ extern int8_t FunctionReturnCode;
 extern uint32_t Timer;
 extern uint8_t MenuSelectionStates;
 extern int32_t MenuSecondaryValue;
+extern uint32_t MemoryWatchSecondaryValue;
 extern uint8_t FrameCounter;
 
 extern uint32_t r13;
@@ -591,6 +670,7 @@ extern uint32_t FieldItemsAddressesStart;
 
 extern uint32_t GlobalWorkPointer;
 extern uint32_t titleMainAddress;
+extern uint32_t ConsoleBusSpeedAddress;
 
 extern bool ResetMarioProperties;
 extern int16_t ForcedNPCItemDrop;

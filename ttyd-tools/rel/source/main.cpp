@@ -584,7 +584,8 @@ void Mod::run()
 	
 	// Run each display function
 	// Only run if the mod menu isn't currently open
-	if (!MenuIsDisplayed)
+	// Run if currently repositioning watches
+	if (!MenuIsDisplayed || HideMenu)
 	{
 		// Only run button-based codes if currently not changing button combos
 		if (!tempChangingCheatButtonCombo)
@@ -602,6 +603,7 @@ void Mod::run()
 		displayMarioCoordinatesBoolCheck();
 		displayActionCommandsTiming();
 		displayStickAngle();
+		displayMemoryWatches();
 	}
 	
 	uint32_t tempFrameCounter = FrameCounter;
