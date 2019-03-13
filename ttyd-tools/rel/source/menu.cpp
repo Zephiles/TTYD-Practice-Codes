@@ -3202,6 +3202,19 @@ void enableOrDisableMenu()
 		}
 		else
 		{
+			if (HideMenu)
+			{
+				// Restore the memory watch default position if currently modifying it
+				if (CurrentMenu == MEMORY_MODIFY)
+				{
+					uint32_t tempMenuSelectedOption = MenuSelectedOption;
+					MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
+					MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
+				}
+			}
+			
+			resetMenuToRoot();
+			
 			// Lower the System Level if not in a battle
 			lowerSystemLevel();
 			

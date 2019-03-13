@@ -27,7 +27,6 @@ bool checkForClosingErrorMessage();
 void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage);
 uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu);
 int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy);
-int32_t getDigitBeingChangedUnsignedHex(uint32_t number, int32_t valueChangedBy);
 void setAdjustableValueToMax(uint32_t currentMenu);
 void setAdjustableValueToMin(uint32_t currentMenu);
 uint32_t adjustableValueButtonControls(uint32_t currentMenu);

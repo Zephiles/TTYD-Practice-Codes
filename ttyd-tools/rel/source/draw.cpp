@@ -3044,6 +3044,10 @@ void drawMemoryWatchesOnOverworld()
 	uint32_t tempMenuSelectionOption = MenuSelectedOption;
 	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	float Scale = 0.75;
+	
 	for (uint32_t i = 0; i < Size; i++)
 	{
 		if (MemoryWatch[i].Display)
@@ -3056,9 +3060,6 @@ void drawMemoryWatchesOnOverworld()
 			else
 			{
 				// Draw the watch
-				uint32_t Color = 0xFFFFFFFF;
-				uint8_t Alpha = 0xFF;
-				float Scale = 0.75;
 				int32_t PosX = MemoryWatch[i].PosX;
 				int32_t PosY = MemoryWatch[i].PosY;
 				drawText(getValueString(i), PosX, PosY, Alpha, Color, Scale);

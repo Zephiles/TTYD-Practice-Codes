@@ -24,6 +24,8 @@ void closeMenu()
 {
 	MenuIsDisplayed = false;
 	
+	resetMenuToRoot();
+	
 	// Lower the System Level if not in a battle
 	lowerSystemLevel();
 	
