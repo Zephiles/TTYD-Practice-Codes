@@ -508,7 +508,10 @@ uint32_t adjustWatchValueControls(int32_t slot)
 						case 0:
 						{
 							// Modifying the address
-							MemoryWatch[slot].Address = MemoryWatchSecondaryValue;
+							// Make sure the addresses being read does not exceed 0x817FFFFF
+							MemoryWatch[slot].Address = reinterpret_cast<uint32_t>(
+								fixBaseAddress(slot, reinterpret_cast<void *>(MemoryWatchSecondaryValue)));
+							
 							MenuSelectionStates = 0;
 							
 							FrameCounter = 1;
@@ -591,7 +594,10 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
 				case 0:
 				{
 					// Modifying the address
-					UpperBoundUnsigned = 0x817FFFFF;
+					// Make sure the upper bound does not exceed 0x817FFFFF
+					UpperBoundUnsigned = reinterpret_cast<uint32_t>(
+						fixBaseAddress(slot, reinterpret_cast<void *>(0x817FFFFF)));
+					
 					LowerBoundUnsigned = 0x80000000;
 					
 					if (tempMemoryWatchSecondaryValue > UpperBoundUnsigned)
@@ -633,6 +639,51 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
 			return;
 		}
 	}
+}
+
+void *fixBaseAddress(int32_t slot, void *address)
+{
+	uint32_t CurrentTypeSize;	
+	switch (MemoryWatch[slot].Type)
+	{
+		case time:
+		case s64:
+		case u64:
+		case f64:
+		{
+			CurrentTypeSize = 8;
+			break;
+		}
+		case s32:
+		case u32:
+		case f32:
+		{
+			CurrentTypeSize = 4;
+			break;
+		}
+		case s16:
+		case u16:
+		{
+			CurrentTypeSize = 2;
+			break;
+		}
+		case s8:
+		case u8:
+		default:
+		{
+			CurrentTypeSize = 1;
+			break;
+		}
+	}
+	
+	// Make sure the address does not exceed 0x817FFFFF
+	uint32_t tempAddress = reinterpret_cast<uint32_t>(address);
+	while ((tempAddress + CurrentTypeSize - 1) >= 0x81800000)
+	{
+		tempAddress--;
+	}
+	
+	return reinterpret_cast<void *>(tempAddress);
 }
 
 }

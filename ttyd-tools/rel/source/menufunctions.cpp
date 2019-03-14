@@ -1,6 +1,7 @@
 #include "menufunctions.h"
 #include "global.h"
 #include "commonfunctions.h"
+#include "memorywatch.h"
 #include "codes.h"
 #include "items.h"
 
@@ -1185,6 +1186,12 @@ uint32_t memoryAddressTypeButtonControls()
 		{
 			uint32_t tempMenuSelectedOption = MenuSelectedOption;
 			MemoryWatch[tempMenuSelectedOption].Type = tempSecondaryMenuOption;
+			
+			// Make sure the addresses being read does not exceed 0x817FFFFF
+			MemoryWatch[tempMenuSelectedOption].Address = reinterpret_cast<uint32_t>(
+				fixBaseAddress(tempMenuSelectedOption, reinterpret_cast<void *>(
+					MemoryWatch[tempMenuSelectedOption].Address)));
+			
 			SelectedOption = 0;
 			
 			// Adjust the hex setting if necessary
