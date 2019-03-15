@@ -53,9 +53,10 @@ This menu allows you to modify your entire inventory, including standard items, 
 14. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
 15. **Lock Mario's HP To Max** locks Mario's current HP to the max.
 16. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
-17. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
-18. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
-19. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+17. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+18. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+19. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+20. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
@@ -96,5 +97,4 @@ This menu allows you to warp to various places around the game. A description fo
 ## Misc
 There are several other changes that have been made outside of the menu:
 1. The current Sequence value is displayed in the pause menu next to Mario's stats.
-2. The sound effects for pausing, unpausing, bringing up the Z menu, and closing the Z menu are disabled.
-3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
+2. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
