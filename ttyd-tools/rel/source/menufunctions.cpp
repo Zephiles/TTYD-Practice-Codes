@@ -2572,6 +2572,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			if (buttonArray == nullptr)
 			{
 				buttonArray = new uint8_t[2]; // Extra spot for a 0 at the end of the array
+				clearMemory(buttonArray, (2 * sizeof(uint8_t)));
 			}
 			else
 			{
@@ -2579,6 +2580,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 				
 				// Create a new array with a new spot for the next value
 				uint8_t *tempButtonArray = new uint8_t[Size + 1];
+				clearMemory(tempButtonArray, ((Size + 1) * sizeof(uint8_t)));
 				
 				// Copy the contents of the old array to the new array
 				ttyd::__mem::memcpy(tempButtonArray, buttonArray, ((Size - 1) * sizeof(uint8_t)));

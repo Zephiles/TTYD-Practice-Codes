@@ -107,7 +107,6 @@ int32_t loadSettings(char *fileName, gc::card::card_file *fileInfo, uint8_t *wor
 	
 	// Set up the array to hold the area of the file that contains the size
 	char *tempFileData = new char[0x200];
-	clearMemory(tempFileData, 0x200);
 	
 	// Get the data from the area that holds the size
 	ReturnCode = readFromCard(fileInfo, tempFileData, 0x200, 0x2000, nullptr);
@@ -217,7 +216,6 @@ int32_t writeSettings(char *description, char *fileName,
 		{
 			// Set up the array to hold the area of the file that contains the size
 			char *tempFileData = new char[0x200];
-			clearMemory(tempFileData, 0x200);
 			
 			// Get the data from the area that holds the size
 			ReturnCode = readFromCard(fileInfo, tempFileData, 0x200, 0x2000, nullptr);
