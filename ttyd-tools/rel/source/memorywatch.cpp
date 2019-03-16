@@ -78,6 +78,10 @@ const char *getAddressStringFromOffsets(int32_t slot, uint32_t maxOffset)
 		return "???";
 	}
 	
+	// Make sure the address being read does not exceed 0x817FFFFF
+	Address = reinterpret_cast<uint32_t>(fixBaseAddress(
+		slot, reinterpret_cast<void *>(Address)));
+	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
 		"0x%08lX",
@@ -98,6 +102,10 @@ const char *getValueString(int32_t slot)
 		// Address is invalid
 		return "???";
 	}
+	
+	// Make sure the address being read does not exceed 0x817FFFFF
+	Address = reinterpret_cast<uint32_t>(fixBaseAddress(
+		slot, reinterpret_cast<void *>(Address)));
 	
 	bool ShowAsHex = MemoryWatch[slot].ShowAsHex;
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -508,7 +516,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
 						case 0:
 						{
 							// Modifying the address
-							// Make sure the addresses being read does not exceed 0x817FFFFF
+							// Make sure the address being read does not exceed 0x817FFFFF
 							MemoryWatch[slot].Address = reinterpret_cast<uint32_t>(
 								fixBaseAddress(slot, reinterpret_cast<void *>(MemoryWatchSecondaryValue)));
 							

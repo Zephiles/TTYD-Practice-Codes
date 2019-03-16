@@ -1187,7 +1187,7 @@ uint32_t memoryAddressTypeButtonControls()
 			uint32_t tempMenuSelectedOption = MenuSelectedOption;
 			MemoryWatch[tempMenuSelectedOption].Type = tempSecondaryMenuOption;
 			
-			// Make sure the addresses being read does not exceed 0x817FFFFF
+			// Make sure the address being read does not exceed 0x817FFFFF
 			MemoryWatch[tempMenuSelectedOption].Address = reinterpret_cast<uint32_t>(
 				fixBaseAddress(tempMenuSelectedOption, reinterpret_cast<void *>(
 					MemoryWatch[tempMenuSelectedOption].Address)));
