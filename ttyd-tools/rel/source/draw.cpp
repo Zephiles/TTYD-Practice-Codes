@@ -1609,7 +1609,7 @@ void drawMemoryChangeAddressList()
 	PosY -= 20;
 	
 	drawText("Final Value", PosX, PosY, Alpha, Color, Scale);
-	drawText(getValueString(tempMenuSelectedOption), PosX + 250, PosY, Alpha, Color, Scale);
+	drawText(getValueString(tempMenuSelectedOption), PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
 }
 
 void drawBattlesActorsList()
