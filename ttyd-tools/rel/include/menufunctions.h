@@ -63,7 +63,7 @@ bool checkForDPADInput();
 uint32_t checkButtonSingleFrame();
 // void correctPageSingleColumn(uint32_t button, uint8_t &currentPage)
 void default_DPAD_Actions(uint32_t button);
-void adjustClearFlagsMenu(uint32_t button);
+void adjustCheatsSubMenu(uint32_t button);
 void adjustMenuSelectionInventory(uint32_t button);
 void adjustCheatClearAreaFlagSelection(uint32_t button);
 void adjustMarioStatsSelection(uint32_t button);

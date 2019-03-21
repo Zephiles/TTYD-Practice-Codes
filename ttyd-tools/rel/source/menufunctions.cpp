@@ -3110,16 +3110,18 @@ void default_DPAD_Actions(uint32_t button)
 	}
 }*/
 
-void adjustClearFlagsMenu(uint32_t button)
+void adjustCheatsSubMenu(uint32_t button)
 {
+	uint32_t tempCurrentMenu 		= CurrentMenu;
+	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
+	
 	// Pressing either of these causes the current option to jump to the last option when theres only one column - look into fixing
-	if ((button == DPADLEFT) || (button == DPADRIGHT))
+	if (((button == DPADLEFT) || (button == DPADRIGHT)) && 
+		(tempTotalMenuColumns == 1))
 	{
 		return;
 	}
 	
-	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
 	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount * tempTotalMenuColumns;

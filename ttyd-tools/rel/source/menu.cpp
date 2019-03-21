@@ -625,7 +625,7 @@ void menuCheckButton()
 				{
 					if (tempMenuSelectionStates == 0)
 					{
-						default_DPAD_Actions(CurrentButton);
+						adjustCheatsSubMenu(CurrentButton);
 					}
 					break;
 				}
@@ -685,7 +685,7 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustCheatsSubMenu(CurrentButton);
 					break;
 				}
 				case A:
@@ -770,7 +770,7 @@ void menuCheckButton()
 				{
 					if (tempMenuSelectionStates == 0)
 					{
-						default_DPAD_Actions(CurrentButton);
+						adjustCheatsSubMenu(CurrentButton);
 					}
 					break;
 				}
@@ -856,7 +856,7 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							adjustClearFlagsMenu(CurrentButton);
+							adjustCheatsSubMenu(CurrentButton);
 							break;
 						}
 						case SELECT_AREA:
