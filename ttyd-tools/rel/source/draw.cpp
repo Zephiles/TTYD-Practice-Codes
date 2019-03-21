@@ -1499,6 +1499,17 @@ void drawMemoryChangeWatchPosition()
 		Scale, Width, WindowColor, Curve);
 }
 
+void drawMemoryWatchChangeAddressListWindow(int32_t posY)
+{
+	uint32_t WindowColor = 0x151515E0;
+	int32_t WindowPosX = -245;
+	int32_t WindowPosY = posY;
+	int32_t Width = 373;
+	int32_t Height = 15;
+	int32_t Curve = 0;
+	drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+}
+
 void drawMemoryChangeAddressList()
 {
 	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
@@ -1517,6 +1528,10 @@ void drawMemoryChangeAddressList()
 	// Get the color for the address text
 	if ((tempSelectedOption != 0) && (tempCurrentMenuOption == 0))
 	{
+		// Draw a window for the current line
+		drawMemoryWatchChangeAddressListWindow(PosY);
+		
+		// Set the address text color to blue
 		Color = 0x5B59DEFF;
 	}
 	else
@@ -1541,6 +1556,10 @@ void drawMemoryChangeAddressList()
 		// Get the color for the pointer text
 		if ((tempSelectedOption != 0) && (tempCurrentMenuOption == i))
 		{
+			// Draw a window for the current line
+			drawMemoryWatchChangeAddressListWindow(PosY);
+			
+			// Set the pointer text color to blue
 			Color = 0x5B59DEFF;
 		}
 		else
