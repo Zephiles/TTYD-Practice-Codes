@@ -1263,33 +1263,17 @@ void drawMemoryWatches()
 		if (MemoryWatch[i].Display)
 		{
 			OnOffText = "On";
-			
-			if ((CurrentMenuOption == i) && (SelectedOption > 0))
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0x1BBE23FF;
-			}
+			Color = 0x1BBE23FF;
 		}
 		else
 		{
 			OnOffText = "Off";
-			
-			if ((CurrentMenuOption == i) && (SelectedOption > 0))
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFF1414FF;
-			}
+			Color = 0xFF1414FF;
 		}
 		
 		drawText(OnOffText, PosX + TypeOffset, PosY, Alpha, Color, Scale);
 		
-		// Set the color of the other text
+		// Set the color of the address text
 		if ((CurrentMenuOption == i) && (SelectedOption > 0))
 		{
 			Color = 0x5B59DEFF;
@@ -1303,6 +1287,7 @@ void drawMemoryWatches()
 		drawText(getAddressString(i), PosX, PosY, Alpha, Color, Scale);
 		
 		// Draw the value
+		Color = 0xFFFFFFFF;
 		drawText(getValueString(i), PosX + ValueOffset, PosY, Alpha, Color, Scale);
 		
 		PosY -= 20;
@@ -1350,6 +1335,9 @@ void drawMemoryModifyList()
 		// Draw the main text
 		drawText(MemoryModifyLines[i], PosX, PosY, Alpha, Color, Scale);
 		
+		// Reset the color back to white
+		Color = 0xFFFFFFFF;
+		
 		// Draw the value for the text
 		switch (i)
 		{
@@ -1373,50 +1361,12 @@ void drawMemoryModifyList()
 				if (MemoryWatch[tempMenuSelectedOption].ShowAsHex)
 				{
 					YesNoText = "Yes";
-					
-					if (tempSelectedOption == 0)
-					{
-						if (tempCurrentMenuOption == i)
-						{
-							Color = 0x5B59DEFF;
-						}
-						else
-						{
-							Color = 0x1BBE23FF;
-						}
-					}
-					else if (tempSelectedOption == i)
-					{
-						Color = 0x5B59DEFF;
-					}
-					else
-					{
-						Color = 0x1BBE23FF;
-					}
+					Color = 0x1BBE23FF;
 				}
 				else
 				{
 					YesNoText = "No";
-					
-					if (tempSelectedOption == 0)
-					{
-						if (tempCurrentMenuOption == i)
-						{
-							Color = 0x5B59DEFF;
-						}
-						else
-						{
-							Color = 0xFF1414FF;
-						}
-					}
-					else if (tempSelectedOption == i)
-					{
-						Color = 0x5B59DEFF;
-					}
-					else
-					{
-						Color = 0xFF1414FF;
-					}
+					Color = 0xFF1414FF;
 				}
 				
 				drawText(YesNoText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
@@ -1441,50 +1391,12 @@ void drawMemoryModifyList()
 				if (MemoryWatch[tempMenuSelectedOption].Display)
 				{
 					OnOffText = "On";
-					
-					if (tempSelectedOption == 0)
-					{
-						if (tempCurrentMenuOption == i)
-						{
-							Color = 0x5B59DEFF;
-						}
-						else
-						{
-							Color = 0x1BBE23FF;
-						}
-					}
-					else if (tempSelectedOption == i)
-					{
-						Color = 0x5B59DEFF;
-					}
-					else
-					{
-						Color = 0x1BBE23FF;
-					}
+					Color = 0x1BBE23FF;
 				}
 				else
 				{
 					OnOffText = "Off";
-					
-					if (tempSelectedOption == 0)
-					{
-						if (tempCurrentMenuOption == i)
-						{
-							Color = 0x5B59DEFF;
-						}
-						else
-						{
-							Color = 0xFF1414FF;
-						}
-					}
-					else if (tempSelectedOption == i)
-					{
-						Color = 0x5B59DEFF;
-					}
-					else
-					{
-						Color = 0xFF1414FF;
-					}
+					Color = 0xFF1414FF;
 				}
 				
 				drawText(OnOffText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
@@ -1614,6 +1526,8 @@ void drawMemoryChangeAddressList()
 	
 	// Draw the address
 	drawText("Address", PosX, PosY, Alpha, Color, Scale);
+	
+	Color = 0xFFFFFFFF;
 	drawText(getAddressStringNoLetterP(tempMenuSelectedOption), 
 		PosX + PosX_Address_Position, PosY, Alpha, Color, Scale);
 	
@@ -1624,7 +1538,7 @@ void drawMemoryChangeAddressList()
 	uint32_t TotalLevels = MemoryWatch[tempMenuSelectedOption].AddressOffsetAmount;
 	for (uint32_t i = 1; i <= TotalLevels; i++)
 	{
-		// Get the color for the text
+		// Get the color for the pointer text
 		if ((tempSelectedOption != 0) && (tempCurrentMenuOption == i))
 		{
 			Color = 0x5B59DEFF;
@@ -1639,6 +1553,9 @@ void drawMemoryChangeAddressList()
 			"Level %ld",
 			i);
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Reset the color back to white
+		Color = 0xFFFFFFFF;
 		
 		// Draw the offset being applied
 		// Check if the value is negative
@@ -1664,6 +1581,7 @@ void drawMemoryChangeAddressList()
 		// Draw the address pointed to by the current level
 		drawText(getAddressStringFromOffsets(tempMenuSelectedOption, i), 
 			PosX + PosX_Address_Position, PosY, Alpha, Color, Scale);
+		
 		PosY -= 20;
 	}
 	
