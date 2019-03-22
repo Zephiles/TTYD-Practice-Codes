@@ -1562,6 +1562,32 @@ void menuCheckButton()
 									}
 									break;
 								}
+								case DUPLICATE_WATCH:
+								{
+									uint32_t tempAddress = MemoryWatch[0].Address;
+									if (tempAddress)
+									{
+										int32_t EmptyWatchSlot = getEmptyWatchSlot();
+										if (EmptyWatchSlot >= 0)
+										{
+											SelectedOption 		= tempCurrentMenuOption;
+											CurrentMenuOption 	= tempCurrentPage * 10;
+										}
+										else
+										{
+											// There are no more free slots
+											FunctionReturnCode = NO_SLOTS_LEFT;
+											Timer = secondsToFrames(3);
+										}
+									}
+									else
+									{
+										// All slots are empty
+										FunctionReturnCode = ALL_SLOTS_EMPTY;
+										Timer = secondsToFrames(3);
+									}
+									break;
+								}
 								case MODIFY_WATCH:
 								{
 									uint32_t tempAddress = MemoryWatch[0].Address;
@@ -1601,6 +1627,40 @@ void menuCheckButton()
 							}
 							break;
 						}
+						case DUPLICATE_WATCH:
+						{
+							uint32_t tempAddress = MemoryWatch[0].Address;
+							if (tempAddress)
+							{
+								int32_t EmptyWatchSlot = getEmptyWatchSlot();
+								if (EmptyWatchSlot >= 0)
+								{
+									duplicateWatch(static_cast<int32_t>(tempCurrentMenuOption), EmptyWatchSlot);
+									
+									// Recheck to see if there are any empty slots left
+									if (getEmptyWatchSlot() < 0)
+									{
+										// There are no more free slots
+										closeSecondaryMenu();
+									}
+								}
+								else
+								{
+									// There are no more free slots
+									closeSecondaryMenu();
+									FunctionReturnCode = NO_SLOTS_LEFT;
+									Timer = secondsToFrames(3);
+								}
+							}
+							else
+							{
+								// All slots are empty
+								closeSecondaryMenu();
+								FunctionReturnCode = NO_SLOTS_LEFT;
+								Timer = secondsToFrames(3);
+							}
+							break;
+						}
 						case MODIFY_WATCH:
 						{
 							uint32_t tempAddress = MemoryWatch[0].Address;
@@ -1614,6 +1674,7 @@ void menuCheckButton()
 							else
 							{
 								// All slots are empty
+								closeSecondaryMenu();
 								FunctionReturnCode = NO_SLOTS_LEFT;
 								Timer = secondsToFrames(3);
 							}
@@ -1629,6 +1690,7 @@ void menuCheckButton()
 							else
 							{
 								// All slots are empty
+								closeSecondaryMenu();
 								FunctionReturnCode = NO_SLOTS_LEFT;
 								Timer = secondsToFrames(3);
 							}

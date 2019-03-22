@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.16";
+const char *VersionNumber = "v3.0.17";
 
 const char *RootLines[] = 
 {
@@ -318,6 +318,7 @@ const char *MemoryLines[] =
 	"Return",
 	"Add Watch",
 	"Modify Watch",
+	"Duplicate Watch",
 	"Delete Watch",
 };
 

@@ -3327,7 +3327,7 @@ void adjustMemoryWatchSelection(uint32_t button)
 	}
 	
 	uint32_t MaxOptionsPerRow = 1;
-	uint32_t MaxOptionsPerPage = 10;
+	uint32_t MaxOptionsPerPage = 9;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 

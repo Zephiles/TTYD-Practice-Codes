@@ -1220,13 +1220,13 @@ void drawMemoryWatches()
 	
 	uint32_t tempCurrentPage 		= CurrentPage;
 	int32_t TotalMenuOptions 		= sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
-	int32_t MaxOptionsPerPage 		= 10;
+	int32_t MaxOptionsPerPage 		= 9;
 	int32_t IndexStart 				= tempCurrentPage * MaxOptionsPerPage;
 	
 	uint32_t Color = 0xFFFFFFFF;
 	uint8_t Alpha = 0xFF;
 	int32_t PosX = -232;
-	int32_t PosY = 80;
+	int32_t PosY = 60;
 	float Scale = 0.6;
 	
 	const int32_t TypeOffset 		= 150;

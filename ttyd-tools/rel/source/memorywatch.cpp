@@ -371,6 +371,12 @@ void deleteWatch(int32_t slot)
 	}
 }
 
+void duplicateWatch(int32_t currentSlot, int32_t emptySlot)
+{
+	uint32_t Size = sizeof(MemoryWatch[0]);
+	ttyd::__mem::memcpy(&MemoryWatch[emptySlot], &MemoryWatch[currentSlot], Size);
+}
+
 uint32_t adjustWatchValueControls(int32_t slot)
 {
 	uint32_t tempCurrentMenu 		= CurrentMenu;
