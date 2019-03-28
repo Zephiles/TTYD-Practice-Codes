@@ -1864,7 +1864,11 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 		case SPECIAL_MOVES:
 		case STAR_POWER:
 		{
-			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case BP:
@@ -1886,7 +1890,11 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x70) = MaxHP;
 			}
 			
-			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case MARIO_MAX_FP:
@@ -1902,7 +1910,11 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x74) = MaxFP;
 			}
 			
-			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case MARIO_LEVEL:
@@ -1917,7 +1929,12 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 			}
 			
 			*reinterpret_cast<int16_t *>(PouchPtr + 0x88) = NewRank;*/
-			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case MAX_STAR_POWER:
@@ -1931,7 +1948,11 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 				*reinterpret_cast<int16_t *>(PouchPtr + 0x7A) = MaxSP;
 			}
 			
-			ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		default:
@@ -1954,7 +1975,11 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x6) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
 			
-			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case PARTNER_MAX_HP:
@@ -1966,7 +1991,11 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x4) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
 			
-			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		case PARTNER_RANK:
@@ -1978,7 +2007,15 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0xC) = 
 				static_cast<int16_t>(tempMenuSecondaryValue);
 			
-			ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			// Set the rank used to verify the partner's stats when equipping/unequipping badges
+			*reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x8) = 
+				static_cast<int16_t>(tempMenuSecondaryValue);
+			
+			// Only set the flag for clearing the cache if not in a battle
+			if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kBattle))
+			{
+				ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+			}
 			break;
 		}
 		default:
