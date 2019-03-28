@@ -630,6 +630,7 @@ extern const char *WarpDescriptions[];
 #ifndef TTYD_JP
 extern const char ButtonInputDisplay[];
 #else
+extern const char *CheatsEventNames[];
 extern const char *ButtonInputDisplay[];
 extern const char *PointerText;
 #endif

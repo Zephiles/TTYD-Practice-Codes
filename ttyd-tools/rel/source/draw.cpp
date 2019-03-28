@@ -14,6 +14,7 @@
 #include <ttyd/fontmgr.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/system.h>
+#include <ttyd/event.h>
 #include <ttyd/mario.h>
 #include <ttyd/battle_ac.h>
 
@@ -2529,6 +2530,130 @@ void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
 	
 	posY -= 20;
 	drawText(StringValue, PosX, posY, Alpha, Color, Scale);
+}
+
+void drawCheatsChangeSequence()
+{
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 120;
+	float Scale = 0.6;
+	
+	uint32_t SequencePosition = getSequencePosition();
+	
+	// Draw the text for showing what the current Sequence value is
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Current Value: %ld",
+		SequencePosition);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the name for the current Sequence value
+	const char *StageName = nullptr;
+	const char *EventName = nullptr;
+	bool FoundName = false;
+	
+	#ifdef TTYD_JP
+	// Make sure the Sequence value is valid
+	if (SequencePosition <= 405)
+	{
+		if ((SequencePosition >= 0) && (SequencePosition <= 22))
+		{
+			StageName = "Opening";
+		}
+		else if ((SequencePosition >= 403) && (SequencePosition <= 405))
+		{
+			StageName = "Ending";
+		}
+		else
+		{
+			int StageNumber;
+			if ((SequencePosition >= 23) && (SequencePosition <= 70))
+			{
+				StageNumber = 1;
+			}
+			else if ((SequencePosition >= 71) && (SequencePosition <= 126))
+			{
+				StageNumber = 2;
+			}
+			else if ((SequencePosition >= 127) && (SequencePosition <= 177))
+			{
+				StageNumber = 3;
+			}
+			else if ((SequencePosition >= 178) && (SequencePosition <= 229))
+			{
+				StageNumber = 4;
+			}
+			else if ((SequencePosition >= 230) && (SequencePosition <= 281))
+			{
+				StageNumber = 5;
+			}
+			else if ((SequencePosition >= 282) && (SequencePosition <= 351))
+			{
+				StageNumber = 6;
+			}
+			else if ((SequencePosition >= 352) && (SequencePosition <= 381))
+			{
+				StageNumber = 7;
+			}
+			else // if ((SequencePosition >= 382) && (SequencePosition <= 402))
+			{
+				StageNumber = 8;
+			}
+			
+			char tempString[8];
+			clearMemory(tempString, sizeof(tempString));
+			
+			sprintf(tempString,
+				"Stage %d",
+				StageNumber);
+			
+			StageName = tempString;
+		}
+		
+		EventName = CheatsEventNames[SequencePosition];
+		FoundName = true;
+	}
+	#else
+	uint16_t tempSequencePosition = static_cast<uint16_t>(SequencePosition);
+	int NumberOfStages = ttyd::event::eventStgNum();
+	
+	for (int i = 0; i < NumberOfStages; ++i)
+	{
+		ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
+		for (uint32_t j = 0; j < StageDesc->eventCount; ++j)
+		{
+			const ttyd::event::EventStageEventDescription &EventDesc = StageDesc->pEvents[j];
+			if (EventDesc.gsw0 >= tempSequencePosition)
+			{
+				StageName = StageDesc->nameEn;
+				EventName = EventDesc.nameEn;
+				FoundName = true;
+				break;
+			}
+		}
+		
+		if (FoundName)
+		{
+			break;
+		}
+	}
+	#endif
+	
+	if (FoundName)
+	{
+		PosY -= 40;
+		sprintf(tempDisplayBuffer,
+			"%s\n%s",
+			StageName,
+			EventName);
+		drawText(tempDisplayBuffer, PosX + 80, PosY, Alpha, Color, Scale);
+		
+		const char *String = "Stage\nEvent";
+		drawText(String, PosX, PosY, Alpha, Color, Scale);
+	}
 }
 
 void drawCheatsBool(int32_t posY)

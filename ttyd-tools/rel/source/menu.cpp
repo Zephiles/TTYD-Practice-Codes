@@ -2852,12 +2852,8 @@ void drawMenu()
 			// Draw the text for the options
 			drawSingleColumnMain();
 			
-			// Draw the text for showing what the current Sequence value is
-			int32_t PosX = -232;
-			int32_t PosY = 120;
-			const char *String = "Current Value: ";
-			int32_t tempSequencePosition = static_cast<int32_t>(getSequencePosition());
-			drawSingleLineFromStringAndValue(PosX, PosY, String, tempSequencePosition);
+			// Draw the text for the Sequence
+			drawCheatsChangeSequence();
 			
 			if (tempMenuSelectionStates == CHANGE_SEQUENCE_VALUE)
 			{
