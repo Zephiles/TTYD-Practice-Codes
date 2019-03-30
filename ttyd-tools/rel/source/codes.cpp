@@ -23,6 +23,7 @@
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
+#include <cinttypes>
 
 namespace mod {
 
@@ -667,7 +668,7 @@ void spawnItem()
 						
 						char *tempDisplayBuffer = DisplayBuffer;
 						sprintf(tempDisplayBuffer,
-							"C_Item%d",
+							"C_Item%" PRIu16,
 							SpawnItem.SpawnItemCounter);
 						
 						ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuSecondaryValue, 16, 

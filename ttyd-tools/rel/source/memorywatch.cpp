@@ -7,6 +7,7 @@
 #include <ttyd/system.h>
 
 #include <cstdio>
+#include <cinttypes>
 
 namespace mod {
 
@@ -27,7 +28,7 @@ const char *getAddressStringNoLetterP(int32_t slot)
 {
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"0x%08lX",
+		"0x%08" PRIX32,
 		MemoryWatch[slot].Address);
 	
 	return tempDisplayBuffer;
@@ -52,7 +53,7 @@ const char *getAddressString(int32_t slot)
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%s0x%08lX",
+		"%s0x%08" PRIX32,
 		tempPointerText,
 		MemoryWatch[slot].Address);
 	
@@ -84,7 +85,7 @@ const char *getAddressStringFromOffsets(int32_t slot, uint32_t maxOffset)
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"0x%08lX",
+		"0x%08" PRIX32,
 		Address);
 	
 	return tempDisplayBuffer;
@@ -131,7 +132,7 @@ const char *getValueString(int32_t slot)
 			uint32_t frame = CurrentTime % FPS;
 			
 			sprintf(tempDisplayBuffer,
-				"%02ld:%02ld:%02ld.%02ld",
+				"%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
 				hour,
 				minute,
 				second,
@@ -144,13 +145,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%02X",
+					"0x%02" PRIX8,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%d",
+					"%" PRId8,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -161,13 +162,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%04X",
+					"0x%04" PRIX16,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%d",
+					"%" PRId16,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -178,13 +179,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%08lX",
+					"0x%08" PRIX32,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%ld",
+					"%" PRId32,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -195,13 +196,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%016llX",
+					"0x%016" PRIX64,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%lld",
+					"%" PRId64,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -212,13 +213,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%02X",
+					"0x%02" PRIX8,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%d",
+					"%" PRIu8,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -229,13 +230,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%04X",
+					"0x%04" PRIX16,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%d",
+					"%" PRIu16,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -246,13 +247,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%08lX",
+					"0x%08" PRIX32,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%ld",
+					"%" PRIu32,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -263,13 +264,13 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%016llX",
+					"0x%016" PRIX64,
 					Value);
 			}
 			else
 			{
 				sprintf(tempDisplayBuffer,
-					"%lld",
+					"%" PRIu64,
 					Value);
 			}
 			return tempDisplayBuffer;
@@ -279,7 +280,7 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%08lX",
+					"0x%08" PRIX32,
 					*reinterpret_cast<uint32_t *>(Address));
 			}
 			else
@@ -295,7 +296,7 @@ const char *getValueString(int32_t slot)
 			if (ShowAsHex)
 			{
 				sprintf(tempDisplayBuffer,
-					"0x%016llX",
+					"0x%016" PRIX64,
 					*reinterpret_cast<uint64_t *>(Address));
 			}
 			else

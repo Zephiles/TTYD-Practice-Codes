@@ -19,6 +19,7 @@
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
+#include <cinttypes>
 
 namespace mod {
 
@@ -630,7 +631,7 @@ void iconViewer()
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%d",
+		"%" PRId16,
 		tempValue);
 	
 	drawText(tempDisplayBuffer, 0, 60, 0xFF, 0xFFFFFFFF, 0.8);
@@ -884,7 +885,7 @@ void drawMarioStats()
 			if (i != 11) // Special moves -- drawn separately
 			{
 				sprintf(tempDisplayBuffer,
-					"%ld",
+					"%" PRId32,
 					MarioStatsArray[Counter]);
 				
 				drawText(tempDisplayBuffer, ValuesPosX, PosY, Alpha, Color, TextScale);
@@ -1015,7 +1016,7 @@ void drawPartnerStats()
 	for (uint32_t i = 0; i < (tempStatsPartnerOptionsLinesSize - 1); i++)
 	{
 		sprintf(tempDisplayBuffer,
-			"%d",
+			"%" PRId16,
 			PartnerStats[i]);
 		
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -1093,7 +1094,7 @@ void drawBattlesActorStats()
 	for (uint32_t i = 0; i < (tempBattlesCurrentActorStatsSize); i++)
 	{
 		sprintf(tempDisplayBuffer,
-			"%d",
+			"%" PRId16,
 			ActorStats[i]);
 		
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -1378,7 +1379,7 @@ void drawMemoryModifyList()
 				// Draw the X and Y positions
 				char *tempDisplayBuffer = DisplayBuffer;
 				sprintf(tempDisplayBuffer,
-					"%ld, %ld",
+					"%" PRId32 ", %" PRId32,
 					MemoryWatch[tempMenuSelectedOption].PosX,
 					MemoryWatch[tempMenuSelectedOption].PosY);
 				
@@ -1570,7 +1571,7 @@ void drawMemoryChangeAddressList()
 		
 		// Draw the text for the current level
 		sprintf(tempDisplayBuffer,
-			"Level %ld",
+			"Level %" PRIu32,
 			i);
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 		
@@ -1586,13 +1587,13 @@ void drawMemoryChangeAddressList()
 			tempOffset = -tempOffset;
 			
 			sprintf(tempDisplayBuffer,
-				"-0x%lX",
+				"-0x%" PRIX32,
 				tempOffset);
 		}
 		else
 		{
 			sprintf(tempDisplayBuffer,
-				"0x%lX",
+				"0x%" PRIX32,
 				tempOffset);
 		}
 		
@@ -1792,7 +1793,7 @@ void drawBattlesStatusesList()
 		
 		// Draw the text of the value
 		sprintf(tempDisplayBuffer,
-			"%d",
+			"%" PRId8,
 			CurrentValue);
 		
 		Color = 0xFFFFFFFF;
@@ -2019,7 +2020,7 @@ void drawSingleLineFromStringAndValue(int32_t posX, int32_t posY,
 {
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%s%ld",
+		"%s%" PRId32,
 		line,
 		value);
 	
@@ -2205,7 +2206,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		
 		char *tempDisplayBuffer = DisplayBuffer;
 		sprintf(tempDisplayBuffer,
-			"%d",
+			"%" PRIu8,
 			AdjustableValue[i]);
 
 		drawText(tempDisplayBuffer, x, y, alpha, color, scale);
@@ -2347,7 +2348,7 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		
 		char *tempDisplayBuffer = DisplayBuffer;
 		sprintf(tempDisplayBuffer,
-			"%01X",
+			"%01" PRIX8,
 			AdjustableValue[i]);
 
 		drawText(tempDisplayBuffer, x, y, alpha, color, scale);
@@ -2499,7 +2500,7 @@ void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"Page %ld",
+		"Page %" PRIu32,
 		currentPage + 1);
 	
 	drawText(tempDisplayBuffer, posX, posY, Alpha, Color, Scale);
@@ -2545,7 +2546,7 @@ void drawCheatsChangeSequence()
 	// Draw the text for showing what the current Sequence value is
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"Current Value: %ld",
+		"Current Value: %" PRIu32,
 		SequencePosition);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -2569,7 +2570,7 @@ void drawCheatsChangeSequence()
 		}
 		else
 		{
-			int StageNumber;
+			int32_t StageNumber;
 			if ((SequencePosition >= 23) && (SequencePosition <= 70))
 			{
 				StageNumber = 1;
@@ -2607,7 +2608,7 @@ void drawCheatsChangeSequence()
 			clearMemory(tempString, sizeof(tempString));
 			
 			sprintf(tempString,
-				"Stage %d",
+				"Stage %" PRId32,
 				StageNumber);
 			
 			StageName = tempString;
@@ -2739,7 +2740,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
-		"Time Left: %02ld.%02ld",
+		"Time Left: %02" PRIu32 ".%02" PRIu32,
 		second,
 		frame);
 	
@@ -2928,7 +2929,7 @@ void drawSequenceInPauseMenu()
 	char *tempDisplayBuffer 	= DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
-		"Seq: %lu",
+		"Seq: %" PRIu32,
 		SequencePosition);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -2948,7 +2949,7 @@ void drawOnScreenTimer()
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%02ld:%02ld:%02ld.%02ld",
+		"%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
 		hour,
 		minute,
 		second,
@@ -3023,7 +3024,7 @@ void drawJumpStorageDetails()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
-		"JS: %ld\nSpdY: %.2f",
+		"JS: %" PRIu32 "\nSpdY: %.2f",
 		(player->flags3 & (1 << 16)) >> 16, // Get only the 16 bit
 		player->wJumpVelocityY);
 	
@@ -3147,7 +3148,7 @@ void drawYoshiSkipDetails()
 	// Draw the text
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"YST: %lu\nStickAngle: %.2f",
+		"YST: %" PRIu32 "\nStickAngle: %.2f",
 		YoshiSkip.MainTimer,
 		getStickAngle());
 	
@@ -3291,7 +3292,7 @@ void drawPalaceSkipDetails()
 	// Draw the text
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"PST: %lu\nItemTimer: %ld\nPhaEmY: %.2f\nParY: %.2f",
+		"PST: %" PRIu32 "\nItemTimer: %" PRId32 "\nPhaEmY: %.2f\nParY: %.2f",
 		PalaceSkip.MainTimer,
 		ItemTimer,
 		PhantomEmberPosY,
@@ -3388,7 +3389,7 @@ void drawActionCommandsTiming()
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %c on frame %ld of %ld",
+				"Pressed %c on frame %" PRIu32 " of %" PRIu32,
 				Button,
 				FramePressed,
 				CurrentDifficultyFrames);
@@ -3431,7 +3432,7 @@ void drawActionCommandsTiming()
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %c %ld frame%s early",
+				"Pressed %c %" PRIu32 " frame%s early",
 				Button,
 				FramesEarly,
 				CheckForPlural);
