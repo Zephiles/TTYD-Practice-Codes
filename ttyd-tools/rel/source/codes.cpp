@@ -754,17 +754,19 @@ void checkIfAreaFlagsShouldBeCleared()
 
 double getStickAngle()
 {
-	double StickX = static_cast<double>(ttyd::system::keyGetStickX(0));
-	if (StickX > 127)
+	int32_t tempStickX = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
+	if (tempStickX > 127)
 	{
-		StickX -= 256;
+		tempStickX -= 256;
 	}
+	double StickX = static_cast<double>(tempStickX);
 	
-	double StickY = static_cast<double>(ttyd::system::keyGetStickY(0));
-	if (StickY > 127)
+	int32_t tempStickY = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
+	if (tempStickY > 127)
 	{
-		StickY -= 256;
+		tempStickY -= 256;
 	}
+	double StickY = static_cast<double>(tempStickY);
 	
 	const double PI = 3.14159265358979323846;
 	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);

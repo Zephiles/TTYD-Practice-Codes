@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdio>
+#include <cstdint>
 
 enum ITEMS : int16_t
 {
