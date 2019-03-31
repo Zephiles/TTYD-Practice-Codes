@@ -2144,14 +2144,32 @@ void menuCheckButton()
 										}
 										
 										#ifdef TTYD_US
-										uint32_t offset = 0x308;
+										uint32_t HeldItemOffset = 0x308;
+										uint32_t BadgeFlagOffsetStart = 0x2E0;
 										#elif defined TTYD_JP
-										uint32_t offset = 0x304;
+										uint32_t HeldItemOffset = 0x304;
+										uint32_t BadgeFlagOffsetStart = 0x2DC;
 										#elif defined TTYD_EU
-										uint32_t offset = 0x30C;
+										uint32_t HeldItemOffset = 0x30C;
+										uint32_t BadgeFlagOffsetStart = 0x2E4;
 										#endif
 										
-										*reinterpret_cast<uint32_t *>(ActorAddress + offset) = 0;
+										// Clear the held item
+										*reinterpret_cast<int32_t *>(ActorAddress + HeldItemOffset) = 0;
+										
+										// Do not clear the equipped badges for Mario or the partners
+										uint32_t CurrentActorId = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
+										const uint32_t MarioId 	= 222;
+										const uint32_t MowzId 	= 230;
+										
+										if ((CurrentActorId >= MarioId) && 
+											(CurrentActorId <= MowzId))
+										{
+											break;
+										}
+										
+										// Clear all of the currently equipped badges
+										clearMemory(reinterpret_cast<void *>(ActorAddress + BadgeFlagOffsetStart), 0x28);
 										break;
 									}
 									case CHANGE_ACTOR_STATUSES:
