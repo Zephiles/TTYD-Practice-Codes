@@ -83,6 +83,13 @@ void drawAddById(uint32_t currentMenu);
 void drawVersionNumber(int32_t posX, int32_t posY);
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
+
+#ifdef TTYD_JP
+bool getSequenceStageAndEvent(const char **returnArray, char *stageNameBuffer, uint32_t sequencePosition);
+#else
+bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePosition);
+#endif
+
 void drawCheatsChangeSequence();
 void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description);

@@ -2074,6 +2074,9 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		}
 	}
 	
+	// Adjust the current value if necessary
+	adjustMenuItemBounds(0, currentMenu);
+	
 	// Draw the window
 	uint32_t color 	= 0x151515E0;
 	int32_t PosX 	= -189;
@@ -2085,6 +2088,10 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	if (changingItem)
 	{
 		height = 208;
+	}
+	else if (currentMenu == CHEATS_CHANGE_SEQUENCE)
+	{
+		height = 235;
 	}
 	else
 	{
@@ -2102,11 +2109,10 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress Y to set the value to max\nPress Z to set the value to min\nPress A to confirm\nPress B to cancel";
 	drawText(HelpText, x, y, alpha, color, scale);
 	
-	adjustMenuItemBounds(0, currentMenu); // Adjust the current value if necessary
-	
 	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
 	y -= 100;
 	
+	char *tempDisplayBuffer = DisplayBuffer;
 	if (changingItem)
 	{
 		int32_t IconPosX = x + 10;
@@ -2145,6 +2151,35 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		const char *ItemName = getItemName(CurrentItem);
 		
 		drawText(ItemName, IconPosX, y, alpha, color, scale);
+	}
+	else if (currentMenu == CHEATS_CHANGE_SEQUENCE)
+	{
+		// Draw the Stage and Event for the current Sequence value
+		const char *StageAndEventNames[2];
+		
+		#ifdef TTYD_JP
+		char StageNameBuffer[8];
+		clearMemory(StageNameBuffer, sizeof(StageNameBuffer));
+		
+		getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, 
+			static_cast<uint32_t>(tempMenuSecondaryValue));
+		#else
+		getSequenceStageAndEvent(StageAndEventNames, 
+			static_cast<uint32_t>(tempMenuSecondaryValue));
+		#endif
+		
+		sprintf(tempDisplayBuffer,
+			"%s\n%s",
+			StageAndEventNames[0], // Stage name
+			StageAndEventNames[1]); // Event name
+		
+		int32_t NamesPosY = y - 35;
+		drawText(tempDisplayBuffer, x + 80, NamesPosY, alpha, color, scale);
+		
+		const char *String = "Stage\nEvent";
+		drawText(String, x, NamesPosY, alpha, color, scale);
+		
+		y -= 60;
 	}
 	
 	// Check if the number is negative
@@ -2204,7 +2239,6 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 			color = 0xFFFFFFFF;
 		}
 		
-		char *tempDisplayBuffer = DisplayBuffer;
 		sprintf(tempDisplayBuffer,
 			"%" PRIu8,
 			AdjustableValue[i]);
@@ -2533,95 +2567,83 @@ void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
 	drawText(StringValue, PosX, posY, Alpha, Color, Scale);
 }
 
-void drawCheatsChangeSequence()
+#ifdef TTYD_JP
+bool getSequenceStageAndEvent(const char **returnArray, char *stageNameBuffer, uint32_t sequencePosition)
+#else
+bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePosition)
+#endif
 {
-	uint32_t Color = 0xFFFFFFFF;
-	uint8_t Alpha = 0xFF;
-	int32_t PosX = -232;
-	int32_t PosY = 120;
-	float Scale = 0.6;
-	
-	uint32_t SequencePosition = getSequencePosition();
-	
-	// Draw the text for showing what the current Sequence value is
-	char *tempDisplayBuffer = DisplayBuffer;
-	sprintf(tempDisplayBuffer,
-		"Current Value: %" PRIu32,
-		SequencePosition);
-	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
-	
-	// Draw the name for the current Sequence value
 	const char *StageName = nullptr;
 	const char *EventName = nullptr;
-	bool FoundName = false;
 	
 	#ifdef TTYD_JP
 	// Make sure the Sequence value is valid
-	if (SequencePosition <= 405)
+	if (sequencePosition <= 406)
 	{
-		if ((SequencePosition >= 0) && (SequencePosition <= 22))
+		if ((sequencePosition >= 0) && (sequencePosition <= 22))
 		{
 			StageName = "Opening";
 		}
-		else if ((SequencePosition >= 403) && (SequencePosition <= 405))
+		else if ((sequencePosition >= 403) && (sequencePosition <= 406))
 		{
 			StageName = "Ending";
 		}
 		else
 		{
 			int32_t StageNumber;
-			if ((SequencePosition >= 23) && (SequencePosition <= 70))
+			if ((sequencePosition >= 23) && (sequencePosition <= 70))
 			{
 				StageNumber = 1;
 			}
-			else if ((SequencePosition >= 71) && (SequencePosition <= 126))
+			else if ((sequencePosition >= 71) && (sequencePosition <= 126))
 			{
 				StageNumber = 2;
 			}
-			else if ((SequencePosition >= 127) && (SequencePosition <= 177))
+			else if ((sequencePosition >= 127) && (sequencePosition <= 177))
 			{
 				StageNumber = 3;
 			}
-			else if ((SequencePosition >= 178) && (SequencePosition <= 229))
+			else if ((sequencePosition >= 178) && (sequencePosition <= 229))
 			{
 				StageNumber = 4;
 			}
-			else if ((SequencePosition >= 230) && (SequencePosition <= 281))
+			else if ((sequencePosition >= 230) && (sequencePosition <= 281))
 			{
 				StageNumber = 5;
 			}
-			else if ((SequencePosition >= 282) && (SequencePosition <= 351))
+			else if ((sequencePosition >= 282) && (sequencePosition <= 351))
 			{
 				StageNumber = 6;
 			}
-			else if ((SequencePosition >= 352) && (SequencePosition <= 381))
+			else if ((sequencePosition >= 352) && (sequencePosition <= 381))
 			{
 				StageNumber = 7;
 			}
-			else // if ((SequencePosition >= 382) && (SequencePosition <= 402))
+			else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
 			{
 				StageNumber = 8;
 			}
 			
-			char tempString[8];
-			clearMemory(tempString, sizeof(tempString));
-			
-			sprintf(tempString,
+			sprintf(stageNameBuffer,
 				"Stage %" PRId32,
 				StageNumber);
 			
-			StageName = tempString;
+			StageName = stageNameBuffer;
 		}
 		
-		EventName = CheatsEventNames[SequencePosition];
-		FoundName = true;
+		EventName = CheatsEventNames[sequencePosition];
+	}
+	else
+	{
+		// Current value exceeds the max
+		return false;
 	}
 	#else
-	uint16_t tempSequencePosition = static_cast<uint16_t>(SequencePosition);
-	int NumberOfStages = ttyd::event::eventStgNum();
+	uint16_t tempSequencePosition = static_cast<uint16_t>(sequencePosition);
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	bool FoundName = false;
 	
-	for (int i = 0; i < NumberOfStages; ++i)
+	for (int32_t i = 0; i < NumberOfStages; ++i)
 	{
 		ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
 		for (uint32_t j = 0; j < StageDesc->eventCount; ++j)
@@ -2641,20 +2663,61 @@ void drawCheatsChangeSequence()
 			break;
 		}
 	}
+	
+	if (!FoundName)
+	{
+		return false;
+	}
 	#endif
 	
-	if (FoundName)
+	returnArray[0] = StageName;
+	returnArray[1] = EventName;
+	return true;
+}
+
+void drawCheatsChangeSequence()
+{
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 120;
+	float Scale = 0.6;
+	
+	uint32_t SequencePosition = getSequencePosition();
+	
+	// Draw the text for showing what the current Sequence value is
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Current Value: %" PRIu32,
+		SequencePosition);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the Stage and Event names for the current Sequence value
+	const char *StageAndEventNames[2];
+	
+	#ifdef TTYD_JP
+	char StageNameBuffer[8];
+	clearMemory(StageNameBuffer, sizeof(StageNameBuffer));
+	
+	if (!getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, SequencePosition))
+	#else
+	if (!getSequenceStageAndEvent(StageAndEventNames, SequencePosition))
+	#endif
 	{
-		PosY -= 40;
-		sprintf(tempDisplayBuffer,
-			"%s\n%s",
-			StageName,
-			EventName);
-		drawText(tempDisplayBuffer, PosX + 80, PosY, Alpha, Color, Scale);
-		
-		const char *String = "Stage\nEvent";
-		drawText(String, PosX, PosY, Alpha, Color, Scale);
+		return;
 	}
+	
+	sprintf(tempDisplayBuffer,
+		"%s\n%s",
+		StageAndEventNames[0], // Stage name
+		StageAndEventNames[1]); // Event name
+	
+	PosY -= 40;
+	drawText(tempDisplayBuffer, PosX + 80, PosY, Alpha, Color, Scale);
+	
+	const char *String = "Stage\nEvent";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawCheatsBool(int32_t posY)

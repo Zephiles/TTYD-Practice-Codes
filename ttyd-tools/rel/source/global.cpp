@@ -505,6 +505,7 @@ const char *CheatsEventNames[]
 	"Epilogue",
 	"End Credits",
 	"Return to Rogueport",
+	"Rogueport",
 };
 #endif
 
@@ -871,7 +872,7 @@ const char *BattlesActorsLines[] =
 	"Bullet Bill",
 	"Bulky Bob_omb",
 	"Cortez",
-	"Cortez - ???",
+	"Cortez - Bone Pile?",
 	"Hook",
 	"Rapier",
 	"Sword",
