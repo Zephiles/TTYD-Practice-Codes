@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace ttyd::sound {
 
 extern "C" {

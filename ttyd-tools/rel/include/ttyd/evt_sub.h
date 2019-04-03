@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace ttyd::evt_sub {
 
 extern "C" {

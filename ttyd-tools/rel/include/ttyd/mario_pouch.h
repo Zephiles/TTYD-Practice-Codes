@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace ttyd::mario_pouch {
 
 extern "C" {

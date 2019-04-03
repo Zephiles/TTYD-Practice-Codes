@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <ttyd/party.h>
 
 namespace ttyd::mario_party {
