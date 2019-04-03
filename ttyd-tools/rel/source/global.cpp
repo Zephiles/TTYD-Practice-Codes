@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.19";
+const char *VersionNumber = "v3.0.20";
 
 const char *RootLines[] = 
 {
@@ -63,6 +63,7 @@ uint8_t CheatsOrder[] =
 	BOBBERY_EARLY,
 	FORCE_ITEM_DROP,
 	CLEAR_AREA_FLAGS,
+	MANAGE_FLAGS,
 };
 
 const char *CheatsLines[] = 
@@ -87,6 +88,7 @@ const char *CheatsLines[] =
 	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
 	"Force NPC Item Drop",
+	"Manage Flags",
 	"Clear Area Flags",
 };
 
@@ -527,6 +529,32 @@ const char *CheatsForceItemDropOptionsLines[] =
 	"Return",
 	"Turn On/Off",
 	"Change Item By Id",
+};
+
+const char *CheatsManageFlagsOptions[] = 
+{
+	"Return",
+	"Set GSWs",
+	"Set GSWFs",
+	"Set GWs",
+	"Set GFs",
+	"Set LSWs",
+	"Set LSWFs",
+};
+
+const char *CheatsManageGlobalWordsOptions[]
+{
+	"Return",
+	// "Change ", // Remainder of the string is added later
+	"Change Value",
+	"Set New Value",
+};
+
+const char *CheatsManageGlobalFlagsOptions[]
+{
+	"Return",
+	// "Change ", // Remainder of the string is added later
+	"Toggle Value",
 };
 
 const char *CheatsClearAreaFlags[] = 
@@ -1279,8 +1307,8 @@ uint8_t PointerTextValues[] = {0x50, 0x81, 0xA8, 0};
 const char *PointerText = reinterpret_cast<const char *>(&PointerTextValues);
 #endif
 
-struct Menus Menu[24];
-struct Cheats Cheat[19];
+struct Menus Menu[26];
+struct Cheats Cheat[20];
 bool Displays[9];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[30];
@@ -1289,6 +1317,7 @@ struct AutoIncrement AdjustableValueMenu;
 struct AutoIncrement MemoryWatchAdjustableValueMenu;
 struct AutoIncrementCoordinates MemoryWatchPosition;
 struct CheatsHandleDisplayButtons CheatsDisplayButtons;
+struct CheatsManageFlags ManageFlags;
 struct MarioPartnerPositionsStruct MarioPartnerPositions;
 struct SaveAnywhereStruct SaveAnywhere;
 struct SpeedUpMarioStruct SpeedUpMario;
@@ -1463,6 +1492,13 @@ void initMenuVars()
 	Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount 		= Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
 	Menu[CHEATS_NPC_FORCE_DROP].PreviousMenu 			= CHEATS;
 	Menu[CHEATS_NPC_FORCE_DROP].Line 					= CheatsForceItemDropOptionsLines;
+	
+	Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions 			= sizeof(CheatsManageFlagsOptions) / sizeof(CheatsManageFlagsOptions[0]);
+	Menu[CHEATS_MANAGE_FLAGS].ColumnSplitAmount 		= Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions;
+	Menu[CHEATS_MANAGE_FLAGS].PreviousMenu 				= CHEATS;
+	Menu[CHEATS_MANAGE_FLAGS].Line 						= CheatsManageFlagsOptions;
+	
+	Menu[CHEATS_MANAGE_FLAGS_MAIN].PreviousMenu 		= CHEATS_MANAGE_FLAGS;
 	
 	Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions 		= sizeof(CheatsClearAreaFlags) / sizeof(CheatsClearAreaFlags[0]);
 	Menu[CHEATS_CLEAR_AREA_FLAGS].ColumnSplitAmount 	= Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions;

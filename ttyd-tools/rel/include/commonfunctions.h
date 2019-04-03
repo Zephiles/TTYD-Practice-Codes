@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ttyd/seqdrv.h>
+#include <ttyd/evtmgr.h>
 
 #include <cstdint>
 
@@ -37,6 +38,7 @@ bool checkIfBadgeEquipped(int16_t badge);
 void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
+ttyd::evtmgr::EvtWork *getCurrentEventWork();
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);;
 
 }

@@ -15,6 +15,7 @@
 #include <ttyd/mario_pouch.h>
 #include <ttyd/system.h>
 #include <ttyd/event.h>
+#include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/battle_ac.h>
 
@@ -2184,12 +2185,16 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	
 	// Check if the number is negative
 	bool NumberIsNegative = false;
+	
 	if (tempMenuSecondaryValue < 0)
 	{
 		// Convert the number to positive
 		NumberIsNegative = true;
 		tempMenuSecondaryValue = -tempMenuSecondaryValue;
 	}
+	
+	// Handle the value as unsigned - needed to avoid a display bug with the value being 0x80000000
+	uint32_t tempMenuSecondaryValueUnsigned = static_cast<uint32_t>(tempMenuSecondaryValue);
 	
 	// Get the amount of numbers to draw
 	uint32_t AmountOfNumbers = getHighestAdjustableValueDigit(currentMenu);
@@ -2200,13 +2205,13 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	// Get the values for the array
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
-		AdjustableValue[AmountOfNumbers - i - 1] = tempMenuSecondaryValue % 10;
-		tempMenuSecondaryValue /= 10;
+		AdjustableValue[AmountOfNumbers - i - 1] = tempMenuSecondaryValueUnsigned % 10;
+		tempMenuSecondaryValueUnsigned /= 10;
 	}
 	
-	/*AdjustableValue[0] = tempMenuSecondaryValue / 100;
-	AdjustableValue[1] = (tempMenuSecondaryValue % 100) / 10;
-	AdjustableValue[2] = (tempMenuSecondaryValue % 100) % 10;*/
+	/*AdjustableValue[0] = tempMenuSecondaryValueUnsigned / 100;
+	AdjustableValue[1] = (tempMenuSecondaryValueUnsigned % 100) / 10;
+	AdjustableValue[2] = (tempMenuSecondaryValueUnsigned % 100) % 10;*/
 	
 	x 					+= 166;
 	y 					-= 30;
@@ -2859,7 +2864,7 @@ void drawCheatsForcedDropItem()
 	float Scale 	= 0.6;
 	
 	// Draw the text for showing what the current item is
-	const char *CurrentLine = "Current Item/Badge";
+	const char *CurrentLine = "Current Item";
 	drawText(CurrentLine, PosX, PosY, Alpha, Color, Scale);
 	
 	PosX += 10;
@@ -2883,6 +2888,154 @@ void drawCheatsForcedDropItem()
 	const char *ItemName = getItemName(tempForcedNPCItemDrop);
 	
 	drawText(ItemName, PosX, PosY, Alpha, Color, Scale);
+}
+
+void drawCheatsManageFlagsMain(uint32_t currentMenu)
+{
+	bool ChangingWord = false;
+	const char **Line;
+	uint32_t Size;
+	
+	switch (currentMenu)
+	{
+		case SET_GSW:
+		case SET_GW:
+		case SET_LSW:
+		{
+			ChangingWord = true;
+			Line = CheatsManageGlobalWordsOptions;
+			Size = 4;
+			break;
+		}
+		case SET_GSWF:
+		case SET_GF:
+		case SET_LSWF:
+		default:
+		{
+			Line = CheatsManageGlobalFlagsOptions;
+			Size = 3;
+		}
+	}
+	
+	const char *FlagText;
+	switch (currentMenu)
+	{
+		case SET_GSW:
+		{
+			FlagText = "GSW";
+			break;
+		}
+		case SET_GSWF:
+		{
+			FlagText = "GSWF";
+			break;
+		}
+		case SET_GW:
+		{
+			FlagText = "GW";
+			break;
+		}
+		case SET_GF:
+		{
+			FlagText = "GF";
+			break;
+		}
+		case SET_LSW:
+		{
+			FlagText = "LSW";
+			break;
+		}
+		case SET_LSWF:
+		{
+			FlagText = "LSWF";
+			break;
+		}
+		default:
+		{
+			FlagText = "";
+		}
+	}
+	
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 180;
+	float Scale 	= 0.6;
+	uint32_t Color;
+	
+	uint32_t tempSelectedOption = SelectedOption;
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	// Draw the main text
+	uint32_t TextIndex = 0;
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		if (tempSelectedOption == 0)
+		{
+			if (CurrentMenuOption == i)
+			{
+				Color = 0x5B59DEFF;
+			}
+			else
+			{
+				Color = 0xFFFFFFFF;
+			}
+		}
+		else
+		{
+			if (tempSelectedOption == i)
+			{
+				Color = 0x5B59DEFF;
+			}
+			else
+			{
+				Color = 0xFFFFFFFF;
+			}
+		}
+		
+		if (i == 1)
+		{	
+			sprintf(tempDisplayBuffer,
+				"Change %s",
+				FlagText);
+			
+			drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		}
+		else
+		{
+			drawText(Line[TextIndex], PosX, PosY, Alpha, Color, Scale);
+			TextIndex++;
+		}
+		
+		PosY -= 20;
+	}
+	
+	// Draw the text for the values
+	uint32_t FlagToSet = ManageFlags.FlagToSet;
+	int32_t FlagValue = getGlobalFlagValue(currentMenu, FlagToSet);
+	Color = 0xFFFFFFFF;
+	PosY -= 20;
+	
+	if (ChangingWord)
+	{
+		sprintf(tempDisplayBuffer,
+			"%s To Set: %" PRIu32 "\nCurrent Value: %" PRId32 "\nNew Value: %" PRId32,
+			FlagText,
+			FlagToSet,
+			FlagValue,
+			ManageFlags.ValueToSet);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	}
+	else
+	{
+		sprintf(tempDisplayBuffer,
+			"%s To Set: %" PRIu32 "\nCurrent Value: %" PRId32,
+			FlagText,
+			FlagToSet,
+			FlagValue);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	}
 }
 
 void drawCheatsClearArea()

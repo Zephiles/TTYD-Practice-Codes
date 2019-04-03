@@ -51,6 +51,11 @@ void setAddByIconValue(void *address);
 void duplicateCurrentItem(void *address);
 void deleteItem();
 int32_t changeItem();
+int32_t getGW(uint32_t gw);
+void setGW(uint32_t gw, uint32_t value);
+bool getGF(uint32_t gf);
+void setGF(uint32_t gf);
+int32_t getGlobalFlagValue(uint32_t currentMenu, uint32_t flag);
 void cheatClearAreaFlags(uint32_t currentMenuOption);
 
 // uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo);
@@ -64,6 +69,7 @@ uint32_t checkButtonSingleFrame();
 // void correctPageSingleColumn(uint32_t button, uint8_t &currentPage)
 void default_DPAD_Actions(uint32_t button);
 void adjustCheatsSubMenu(uint32_t button);
+void adjustCheatsManageFlagsMainMenu(uint32_t button);
 void adjustMenuSelectionInventory(uint32_t button);
 void adjustCheatClearAreaFlagSelection(uint32_t button);
 void adjustMarioStatsSelection(uint32_t button);

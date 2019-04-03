@@ -212,7 +212,7 @@
 // 800377B0:evtmgrReInit
 // 8003781C:evtmgrInit
 // 80037934:make_pri_table
-// 80037A60:evtGetWork
+80037A60:evtGetWork
 
 // evt_sub.o
 // 80053764:mail_evt_gor_04_keyoff_check
@@ -447,11 +447,11 @@
 // 80084938:msgInit
 
 // swdrv.o
-// 80085744:_swByteGet
-// 80085754:_swByteSet
-// 80085764:_swClear
-// 800857A4:_swGet
-// 800857EC:_swSet
+80085744:_swByteGet
+80085754:_swByteSet
+80085764:_swClear
+800857A4:_swGet
+800857EC:_swSet
 8008582C:swByteGet
 80085850:swByteSet
 80085874:swClear

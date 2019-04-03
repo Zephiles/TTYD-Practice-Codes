@@ -9,6 +9,7 @@
 #include "memorywatch.h"
 
 #include <gc/card.h>
+#include <ttyd/swdrv.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_party.h>
 #include <ttyd/mario_party.h>
@@ -587,6 +588,11 @@ void menuCheckButton()
 									CurrentMenu = CHEATS_NPC_FORCE_DROP;
 									break;
 								}
+								case MANAGE_FLAGS:
+								{
+									CurrentMenu = CHEATS_MANAGE_FLAGS;
+									break;
+								}
 								case CLEAR_AREA_FLAGS:
 								default:
 								{
@@ -818,6 +824,236 @@ void menuCheckButton()
 						CurrentMenu 		= tempPreviousMenu;
 						CurrentMenuOption 	= tempMenuSelectedOption + 1;
 						MenuSelectedOption 	= 0;
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_MANAGE_FLAGS:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustCheatsSubMenu(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					switch (tempCurrentMenuOption)
+					{
+						case 0:
+						{
+							// Go back to the previous menu
+							CurrentMenu 		= tempPreviousMenu;
+							CurrentMenuOption 	= tempMenuSelectedOption + 1;
+							MenuSelectedOption 	= 0;
+							break;
+						}
+						default:
+						{
+							// Clear the current values set for managing flags
+							clearMemory(&ManageFlags, sizeof(ManageFlags));
+							
+							// Enter the next menu
+							CurrentMenu 			= CHEATS_MANAGE_FLAGS_MAIN;
+							MenuSelectionStates 	= tempCurrentMenuOption;
+							CurrentMenuOption 		= 0;
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
+					CurrentMenu 		= tempPreviousMenu;
+					CurrentMenuOption 	= tempMenuSelectedOption + 1;
+					MenuSelectedOption 	= 0;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_MANAGE_FLAGS_MAIN:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					if (tempSelectedOption == 0)
+					{
+						adjustCheatsManageFlagsMainMenu(CurrentButton);
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							if (tempCurrentMenuOption == 0)
+							{
+								// Go back to the previous menu
+								CurrentMenu 			= tempPreviousMenu;
+								CurrentMenuOption 		= 0;
+								MenuSelectionStates 	= 0;
+							}
+							else
+							{
+								uint32_t FlagToSet = ManageFlags.FlagToSet;
+								uint32_t ValueToSet = static_cast<uint32_t>(ManageFlags.ValueToSet);
+								
+								switch (tempMenuSelectionStates)
+								{
+									case SET_GSW:
+									case SET_GW:
+									case SET_LSW:
+									{
+										switch (tempCurrentMenuOption)
+										{
+											case CHANGE_GLOBAL_WORD:
+											{
+												SelectedOption 			= tempCurrentMenuOption;
+												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+												MenuSecondaryValue 		= FlagToSet;
+												break;
+											}
+											case CHANGE_GLOBAL_WORD_VALUE:
+											{
+												SelectedOption 			= tempCurrentMenuOption;
+												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+												MenuSecondaryValue 		= getGlobalFlagValue(tempMenuSelectionStates, FlagToSet);
+												break;
+											}
+											case SET_GLOBAL_WORD_VALUE:
+											{
+												switch (tempMenuSelectionStates)
+												{
+													case SET_GSW:
+													{
+														ttyd::swdrv::swByteSet(FlagToSet, ValueToSet);
+														break;
+													}
+													case SET_GW:
+													{
+														setGW(FlagToSet, ValueToSet);
+														break;
+													}
+													case SET_LSW:
+													{
+														ttyd::swdrv::_swByteSet(FlagToSet, ValueToSet);
+														break;
+													}
+													default:
+													{
+														break;
+													}
+												}
+												break;
+											}
+											default:
+											{
+												break;
+											}
+										}
+										break;
+									}
+									case SET_GSWF:
+									case SET_GF:
+									case SET_LSWF:
+									{
+										switch (tempCurrentMenuOption)
+										{
+											case CHANGE_GLOBAL_FLAG:
+											{
+												SelectedOption 			= tempCurrentMenuOption;
+												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+												MenuSecondaryValue 		= FlagToSet;
+												break;
+											}
+											case SET_GLOBAL_FLAG:
+											{
+												switch (tempMenuSelectionStates)
+												{
+													case SET_GSWF:
+													{
+														if (ttyd::swdrv::swGet(FlagToSet))
+														{
+															ttyd::swdrv::swClear(FlagToSet);
+														}
+														else
+														{
+															ttyd::swdrv::swSet(FlagToSet);
+														}
+														break;
+													}
+													case SET_GF:
+													{
+														setGF(FlagToSet); // setGF automatically toggles the value
+														break;
+													}
+													case SET_LSWF:
+													{
+														if (ttyd::swdrv::_swGet(FlagToSet))
+														{
+															ttyd::swdrv::_swClear(FlagToSet);
+														}
+														else
+														{
+															ttyd::swdrv::_swSet(FlagToSet);
+														}
+														break;
+													}
+													default:
+													{
+														break;
+													}
+												}
+												break;
+											}
+											default:
+											{
+												break;
+											}
+										}
+										break;
+									}
+									default:
+									{
+										break;
+									}
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					if (tempSelectedOption == 0)
+					{
+						// Go back to the previous menu
+						CurrentMenu 			= tempPreviousMenu;
+						CurrentMenuOption 		= 0;
+						MenuSelectionStates 	= 0;
 					}
 					break;
 				}
@@ -2925,6 +3161,17 @@ void drawMenu()
 			if (tempMenuSelectionStates == ITEM_DROP_CHANGE_BY_ID)
 			{
 				drawAdjustableValue(true, tempCurrentMenu);
+			}
+			break;
+		}
+		case CHEATS_MANAGE_FLAGS_MAIN:
+		{
+			// Draw the text for the options
+			drawCheatsManageFlagsMain(tempMenuSelectionStates);
+			
+			if (tempSelectedOption > 0)
+			{
+				drawAdjustableValue(false, tempCurrentMenu);
 			}
 			break;
 		}

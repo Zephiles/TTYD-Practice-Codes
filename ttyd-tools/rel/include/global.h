@@ -22,6 +22,8 @@ enum MENU_NAMES
 	CHEATS_STANDARD,
 	CHEATS_NO_BUTTON_COMBO,
 	CHEATS_NPC_FORCE_DROP,
+	CHEATS_MANAGE_FLAGS,
+	CHEATS_MANAGE_FLAGS_MAIN,
 	CHEATS_CLEAR_AREA_FLAGS,
 	STATS_MARIO,
 	STATS_PARTNERS,
@@ -79,6 +81,7 @@ enum CHEATS_OPTIONS
 	DISABLE_MENU_SOUNDS,
 	BOBBERY_EARLY,
 	FORCE_ITEM_DROP,
+	MANAGE_FLAGS,
 	CLEAR_AREA_FLAGS,
 };
 
@@ -97,6 +100,29 @@ enum CHEATS_FORCE_ITEM_DROP_SELECTION
 {
 	ITEM_DROP_TURN_ON_OR_OFF = 1,
 	ITEM_DROP_CHANGE_BY_ID,
+};
+
+enum CHEATS_MANAGE_FLAGS_SELECTION
+{
+	SET_GSW = 1,
+	SET_GSWF,
+	SET_GW,
+	SET_GF,
+	SET_LSW,
+	SET_LSWF,
+};
+
+enum CHEATS_MANAGE_GLOBAL_WORDS_SELECTION
+{
+	CHANGE_GLOBAL_WORD = 1,
+	CHANGE_GLOBAL_WORD_VALUE,
+	SET_GLOBAL_WORD_VALUE,
+};
+
+enum CHEATS_MANAGE_GLOBAL_FLAGS_SELECTION
+{
+	CHANGE_GLOBAL_FLAG = 1,
+	SET_GLOBAL_FLAG,
 };
 
 enum CHEATS_CLEAR_AREA_FLAGS_SELECTION
@@ -462,6 +488,12 @@ struct CheatsHandleDisplayButtons
 	uint8_t CheatsCurrentButtonsHeld[14]; // Extra spot for a 0 at the end of the array
 };
 
+struct CheatsManageFlags
+{
+	uint16_t FlagToSet;
+	int32_t ValueToSet;
+};
+
 struct MarioPartnerPositionsStruct
 {
 	float MarioPosition[4];
@@ -571,8 +603,8 @@ struct SettingsStruct
 	MemoryWatchStruct MemoryWatchSettings[30];
 };
 
-extern Menus Menu[24];
-extern Cheats Cheat[19];
+extern Menus Menu[26];
+extern Cheats Cheat[20];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[30];
@@ -581,6 +613,7 @@ extern AutoIncrement AdjustableValueMenu;
 extern AutoIncrement MemoryWatchAdjustableValueMenu;
 extern AutoIncrementCoordinates MemoryWatchPosition;
 extern CheatsHandleDisplayButtons CheatsDisplayButtons;
+extern CheatsManageFlags ManageFlags;
 extern MarioPartnerPositionsStruct MarioPartnerPositions;
 extern SaveAnywhereStruct SaveAnywhere;
 extern SpeedUpMarioStruct SpeedUpMario;
@@ -600,6 +633,8 @@ extern const char *CheatsLines[];
 extern const char *CheatsForceItemDropAreas[];
 extern uint8_t CheatsForceItemDropAreasSize;
 extern const char *CheatsForceItemDropAreasFullNames[];
+extern const char *CheatsManageGlobalWordsOptions[];
+extern const char *CheatsManageGlobalFlagsOptions[];
 extern const char *StatsMarioOptionsLines[];
 extern uint8_t StatsMarioOptionsLinesSize;
 extern uint16_t StatsMarioIcons[];

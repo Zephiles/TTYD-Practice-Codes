@@ -11,6 +11,7 @@
 #include <ttyd/party.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/evtmgr.h>
 
 #include <cstdio>
 
@@ -270,6 +271,11 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	{
 		ttyd::swdrv::swClear(i);
 	}
+}
+
+ttyd::evtmgr::EvtWork *getCurrentEventWork()
+{
+	return ttyd::evtmgr::evtGetWork();
 }
 
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount)

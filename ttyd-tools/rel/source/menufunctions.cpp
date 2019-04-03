@@ -13,6 +13,7 @@
 #include <ttyd/mario.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/battle.h>
+#include <ttyd/evtmgr.h>
 #include <ttyd/string.h>
 #include <ttyd/system.h>
 #include <ttyd/__mem.h>
@@ -264,6 +265,96 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 		{
 			LowerBound = PowerJump;
 			UpperBound = SuperChargeP;
+			break;
+		}
+		case CHEATS_MANAGE_FLAGS_MAIN:
+		{
+			uint32_t tempCurrentMenuOption = CurrentMenuOption;
+			switch (MenuSelectionStates)
+			{
+				case SET_GSW:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
+					{
+						UpperBound = 2048;
+					}
+					else if (ManageFlags.FlagToSet == 0) // 0 = Sequence position
+					{
+						UpperBound = 405;
+					}
+					else
+					{
+						UpperBound = 255;
+					}
+					break;
+				}
+				case SET_GSWF:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
+					{
+						UpperBound = 8192;
+					}
+					else
+					{
+						UpperBound = 1;
+					}
+					break;
+				}
+				case SET_GW:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
+					{
+						UpperBound = 32;
+					}
+					else
+					{
+						LowerBound = -0x80000000;
+						UpperBound = 0x7FFFFFFF;
+					}
+					break;
+				}
+				case SET_GF:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
+					{
+						UpperBound = 96;
+					}
+					else
+					{
+						UpperBound = 1;
+					}
+					break;
+				}
+				case SET_LSW:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
+					{
+						UpperBound = 1024;
+					}
+					else
+					{
+						UpperBound = 255;
+					}
+					break;
+				}
+				case SET_LSWF:
+				{
+					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
+					{
+						UpperBound = 512;
+					}
+					else
+					{
+						UpperBound = 1;
+					}
+					break;
+				}
+				default:
+				{
+					UpperBound = 0;
+					break;
+				}
+			}
 			break;
 		}
 		case STATS_MARIO:
@@ -892,13 +983,59 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					FrameCounter = 1;
 					return Button;
 				}
+				case CHEATS_MANAGE_FLAGS_MAIN:
+				{
+					switch (MenuSelectionStates)
+					{
+						case SET_GSW:
+						case SET_GW:
+						case SET_LSW:
+						{
+							if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
+							{
+								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuSecondaryValue);
+							}
+							else
+							{
+								ManageFlags.ValueToSet = MenuSecondaryValue;
+							}
+							
+							SelectedOption = 0;
+							
+							FrameCounter = 1;
+							return Button;
+						}
+						case SET_GSWF:
+						case SET_GF:
+						case SET_LSWF:
+						{
+							if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
+							{
+								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuSecondaryValue);
+							}
+							else
+							{
+								ManageFlags.ValueToSet = MenuSecondaryValue;
+							}
+							
+							SelectedOption = 0;
+							
+							FrameCounter = 1;
+							return Button;
+						}
+						default:
+						{
+							return 0;
+						}
+					}
+				}
 				case STATS_MARIO:
 				{
 					setMarioStatsValue(tempCurrentMenuOption + 1);
 					MenuSelectedOption = 0;
 					
 					FrameCounter = 1;
-					return Button;;
+					return Button;
 				}
 				case STATS_PARTNERS:
 				{
@@ -1033,6 +1170,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
+					case CHEATS_MANAGE_FLAGS_MAIN:
 					case BATTLES_CURRENT_ACTOR:
 					case BATTLES_STATUSES:
 					{
@@ -2349,6 +2487,67 @@ int32_t changeItem()
 	return 0;
 }
 
+int32_t getGW(uint32_t gw)
+{
+	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	return EventWork->gwData[gw];
+}
+
+void setGW(uint32_t gw, uint32_t value)
+{
+	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	EventWork->gwData[gw] = value;
+}
+
+bool getGF(uint32_t gf)
+{
+	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	uint32_t Size = sizeof(uint32_t) * 8;
+	return (EventWork->gfData[gf / Size] >> (gf % Size)) & 1;
+}
+
+void setGF(uint32_t gf)
+{
+	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	uint32_t Size = sizeof(uint32_t) * 8;
+	EventWork->gfData[gf / Size] ^= (1 << (gf % Size)); // Toggle the bit
+}
+
+int32_t getGlobalFlagValue(uint32_t currentMenu, uint32_t flag)
+{
+	switch (currentMenu)
+	{
+		case SET_GSW:
+		{
+			return static_cast<int32_t>(ttyd::swdrv::swByteGet(flag));
+		}
+		case SET_GSWF:
+		{
+			return static_cast<int32_t>(ttyd::swdrv::swGet(flag));
+		}
+		case SET_GW:
+		{
+			return getGW(flag);
+		}
+		case SET_GF:
+		{
+			return static_cast<int32_t>(getGF(flag));
+		}
+		case SET_LSW:
+		{
+			return static_cast<int32_t>(ttyd::swdrv::_swByteGet(flag));
+		}
+		case SET_LSWF:
+		{
+			return static_cast<int32_t>(ttyd::swdrv::_swGet(flag));
+		}
+		default:
+		{
+			return 0;
+		}
+	}
+}
+
 void cheatClearAreaFlags(uint32_t currentMenuOption)
 {
 	switch (currentMenuOption)
@@ -3169,6 +3368,44 @@ void adjustCheatsSubMenu(uint32_t button)
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		tempPage[0], tempTotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, true);
+}
+
+void adjustCheatsManageFlagsMainMenu(uint32_t button)
+{
+	// Pressing either of these causes the current option to jump to the last option when theres only one column - look into fixing
+	if ((button == DPADLEFT) || (button == DPADRIGHT))
+	{
+		return;
+	}
+	
+	uint32_t TotalMenuOptions;
+	switch (MenuSelectionStates)
+	{
+		case SET_GSW:
+		case SET_GW:
+		case SET_LSW:
+		{
+			TotalMenuOptions = 4;
+			break;
+		}
+		case SET_GSWF:
+		case SET_GF:
+		case SET_LSWF:
+		default:
+		{
+			TotalMenuOptions = 3;
+		}
+	}
+	
+	uint32_t tempColumnSplitAmount 	= TotalMenuOptions;
+	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount;
+	uint32_t MaxOptionsPerRow 		= 1;
+	uint8_t tempPage[1];
+	tempPage[0] 					= 0;
+	
+	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+		tempPage[0], TotalMenuOptions, MaxOptionsPerPage, 
+			MaxOptionsPerRow, false);
 }
 
 void adjustMenuSelectionInventory(uint32_t button)
