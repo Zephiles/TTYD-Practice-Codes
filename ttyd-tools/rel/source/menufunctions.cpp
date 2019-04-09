@@ -42,6 +42,9 @@ void closeSecondaryMenu()
 	
 	// Close the menu
 	SelectedOption = 0;
+	
+	// Reset the function return code
+	FunctionReturnCode = 0;
 }
 
 
