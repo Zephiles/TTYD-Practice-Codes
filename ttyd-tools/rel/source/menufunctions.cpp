@@ -69,6 +69,7 @@ void resetMenuToRoot()
 {
 	CurrentMenu 			= ROOT;
 	MenuSelectedOption 		= 0;
+	FunctionReturnCode 		= 0;
 	HideMenu 				= false;
 	resetMenu();
 }
