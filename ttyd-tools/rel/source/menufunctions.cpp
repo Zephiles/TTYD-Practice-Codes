@@ -3186,184 +3186,23 @@ uint32_t checkButtonSingleFrame()
 void default_DPAD_Actions(uint32_t button)
 {
 	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
-	
-	// Pressing either of these causes the current option to jump to the last option when theres only one column - look into fixing
-	if (((button == DPADLEFT) || (button == DPADRIGHT)) && 
-		(tempTotalMenuColumns == 1))
-	{
-		return;
-	}
-	
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
+	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
 	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount * tempTotalMenuColumns;
 	uint32_t MaxOptionsPerRow 		= tempTotalMenuColumns;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, tempTotalMenuOptions, MaxOptionsPerPage, 
-			MaxOptionsPerRow, true);
+			MaxOptionsPerRow, false);
 }
-
-/*void DPAD_Actions(uint32_t button)
-{
-	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
-	uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
-	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
-	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
-	
-	switch (button)
-	{
-		case DPADLEFT:
-		{
-			// Make sure the current menu has more than one column
-			if (tempTotalMenuColumns == 1)
-			{
-				return;
-			}
-			else if (tempCurrentMenuOption == 0)
-			{
-				// Current option is Return, so do nothing
-				return;
-			}
-			else if (tempCurrentMenuOption <= tempColumnSplitAmount)
-			{
-				// Currently on the furthest left side, so move to the furthest right option
-				tempCurrentMenuOption = ((tempColumnSplitAmount * tempTotalMenuColumns) - 
-					(tempColumnSplitAmount - tempCurrentMenuOption));
-				
-				// Make sure the current option is valid
-				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
-				{
-					// The current option exceeds the total options, so set the current option to the last option
-					CurrentMenuOption = (tempTotalMenuOptions - 1);
-				}
-				else
-				{
-					CurrentMenuOption = tempCurrentMenuOption;
-				}
-			}
-			else // if (tempCurrentMenuOption > tempColumnSplitAmount)
-			{
-				// Currently on the right side, so move to the next left option
-				CurrentMenuOption = (tempCurrentMenuOption - tempColumnSplitAmount);
-			}
-			break;
-		}
-		case DPADRIGHT:
-		{
-			// Make sure the current menu has more than one column
-			if (tempTotalMenuColumns == 1)
-			{
-				return;
-			}
-			else if (tempCurrentMenuOption == 0)
-			{
-				// Current option is Return, so do nothing
-				return;
-			}
-			else if (tempCurrentMenuOption < ((tempColumnSplitAmount * 
-				tempTotalMenuColumns) - (tempColumnSplitAmount - 1)))
-			{
-				// Currently not on the furthest right side, so move to the next right option
-				tempCurrentMenuOption += tempColumnSplitAmount;
-				
-				// Make sure the current option is valid
-				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
-				{
-					// The current option exceeds the total options, so set the current option to the last option
-					CurrentMenuOption = (tempTotalMenuOptions - 1);
-				}
-				else
-				{
-					CurrentMenuOption = tempCurrentMenuOption;
-				}
-			}
-			else
-			{
-				// Currently on the furthest right side, so go to the furthest left option
-				CurrentMenuOption = (tempCurrentMenuOption - 
-					(tempColumnSplitAmount * (tempTotalMenuColumns - 1)));
-			}
-			break;
-		}
-		case DPADDOWN:
-		{
-			// Check if currently at the bottom of the current column
-			if ((tempCurrentMenuOption != 0) && 
-				(tempCurrentMenuOption % tempColumnSplitAmount == 0))
-			{
-				// Go to the top of the current column
-				CurrentMenuOption = (tempCurrentMenuOption - tempColumnSplitAmount);
-			}
-			else if (tempCurrentMenuOption == (tempTotalMenuOptions - 1))
-			{
-				// Currently on the last option, so go to the first option of the last column
-				if (tempTotalMenuColumns > 1)
-				{
-					CurrentMenuOption = (((tempTotalMenuColumns - 1) * 
-						tempColumnSplitAmount) + 1);
-				}
-				else
-				{
-					// The current menu only has one column, so go to the first option
-					CurrentMenuOption = 0;
-				}
-			}
-			else
-			{
-				CurrentMenuOption = (tempCurrentMenuOption + 1);
-			}
-			break;
-		}
-		case DPADUP:
-		{
-			// Check if currently at the top of the current column
-			if ((tempCurrentMenuOption == 0) || 
-				(tempCurrentMenuOption % (tempColumnSplitAmount + 1) == 0))
-			{
-				// Loop to the last option in the current column
-				tempCurrentMenuOption += tempColumnSplitAmount;
-				
-				// Make sure the current option is valid
-				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
-				{
-					// The current option exceeds the total options, so set the current option to the last option
-					CurrentMenuOption = (tempTotalMenuOptions - 1);
-				}
-				else
-				{
-					CurrentMenuOption = tempCurrentMenuOption;
-				}
-			}
-			else
-			{
-				CurrentMenuOption = (tempCurrentMenuOption - 1);
-			}
-			break;
-		}
-		default:
-		{
-			return;
-		}
-	}
-}*/
 
 void adjustMenuNoPageEdit(uint32_t button)
 {
 	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
-	
-	// Pressing either of these causes the current option to jump to the last option when theres only one column - look into fixing
-	if (((button == DPADLEFT) || (button == DPADRIGHT)) && 
-		(tempTotalMenuColumns == 1))
-	{
-		return;
-	}
-	
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
+	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
 	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount * tempTotalMenuColumns;
 	uint32_t MaxOptionsPerRow 		= tempTotalMenuColumns;
 	uint8_t tempPage[1];
@@ -3371,17 +3210,11 @@ void adjustMenuNoPageEdit(uint32_t button)
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		tempPage[0], tempTotalMenuOptions, MaxOptionsPerPage, 
-			MaxOptionsPerRow, true);
+			MaxOptionsPerRow, false);
 }
 
 void adjustCheatsManageFlagsMainMenu(uint32_t button)
 {
-	// Pressing either of these causes the current option to jump to the last option when theres only one column - look into fixing
-	if ((button == DPADLEFT) || (button == DPADRIGHT))
-	{
-		return;
-	}
-	
 	uint32_t TotalMenuOptions;
 	switch (MenuSelectionStates)
 	{
@@ -3587,7 +3420,7 @@ void adjustPartnerStatsSelection(uint32_t button)
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
-			MaxOptionsPerRow, false);
+			MaxOptionsPerRow, true);
 }
 
 void adjustMemoryWatchSelection(uint32_t button)
