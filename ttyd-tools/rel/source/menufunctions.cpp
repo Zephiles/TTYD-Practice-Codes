@@ -3346,7 +3346,7 @@ void default_DPAD_Actions(uint32_t button)
 	}
 }*/
 
-void adjustCheatsSubMenu(uint32_t button)
+void adjustMenuNoPageEdit(uint32_t button)
 {
 	uint32_t tempCurrentMenu 		= CurrentMenu;
 	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
