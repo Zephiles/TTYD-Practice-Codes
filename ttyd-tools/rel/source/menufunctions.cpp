@@ -3718,7 +3718,6 @@ void adjustWarpsSelection(uint32_t button)
 			MaxOptionsPerRow, false);
 }
 
-// Need to fix the logic and whatnot for this function
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 
 	uint8_t &currentPage, uint32_t totalMenuOptions, 
 		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow,
@@ -3726,42 +3725,59 @@ void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption,
 {
 	uint32_t tempCurrentMenuOption 	= currentMenuOption;
 	uint32_t tempCurrentPage 		= currentPage;
-	uint32_t TotalPages 			= 1 + ((totalMenuOptions - 1) / maxOptionsPerPage); // Round up
+	
 	uint32_t TotalRowsPerPage 		= 1 + ((maxOptionsPerPage - 1) / maxOptionsPerRow); // Round up
 	uint32_t TotalColumns 			= 1 + ((maxOptionsPerPage - 1) / TotalRowsPerPage); // Round up
 	uint32_t ColumnSplitAmount 		= 1 + ((maxOptionsPerPage - 1) / TotalColumns); // Round up
-	uint32_t TotalRows 				= 1 + ((totalMenuOptions - 1) / maxOptionsPerRow); // Round up
-	uint32_t TotalFreeSpaces 		= ((TotalRows * maxOptionsPerRow) - 1) - (totalMenuOptions - 1);
+	
+	uint32_t LastValidOption 		= totalMenuOptions - 1;
+	uint32_t FirstOptionOnPage 		= maxOptionsPerPage * tempCurrentPage;
+	uint32_t LastOptionOnPage 		= (maxOptionsPerPage * (tempCurrentPage + 1)) - 1;
+	uint32_t LastValidOptionOnPage 	= LastOptionOnPage;
+	
+	int32_t NewCurrentMenuOption;
+	
+	// Make sure the last option on the page is valid
+	if (LastValidOptionOnPage > LastValidOption)
+	{
+		LastValidOptionOnPage = LastValidOption;
+	}
 	
 	switch (button)
 	{
 		case DPADLEFT:
 		{
 			// Check if currently on the furthest left column
-			if (tempCurrentMenuOption < (ColumnSplitAmount + 
-				(tempCurrentPage * maxOptionsPerPage)))
+			NewCurrentMenuOption = tempCurrentMenuOption - ColumnSplitAmount;
+			if (NewCurrentMenuOption < static_cast<int32_t>(FirstOptionOnPage))
 			{
-				// Currently on the furthest left side, so go to the furthest right option
-				// Check if there are more options on the right column of this page
-				if (totalMenuOptions > (((tempCurrentPage + 1) * 
-					maxOptionsPerPage) - ColumnSplitAmount))
-				{	
-					tempCurrentMenuOption += ColumnSplitAmount * (TotalColumns - 1);
+				// Currently on the furthest left column, so go to the furthest right column
+				// Check to see if there are more options to the right of the current column
+				NewCurrentMenuOption = tempCurrentMenuOption + ColumnSplitAmount;
+				uint32_t LastColumnFirstOption = LastOptionOnPage - ColumnSplitAmount + 1;
+				
+				if ((LastValidOptionOnPage >= LastColumnFirstOption) && 
+					(LastValidOptionOnPage <= LastOptionOnPage))
+				{
+					// Move to the furthest right option on the page
+					for (uint32_t i = 0; i < (TotalColumns - 1); i++)
+					{
+						tempCurrentMenuOption += ColumnSplitAmount;
+					}
 					
-					// Make sure the current option is valid
+					// Make sure the value is valid
 					if (allowUpwardsSnapFromLeftOrRight)
 					{
 						// Move to the furthest right option on the page
-						while (tempCurrentMenuOption > (totalMenuOptions - 1))
+						while (tempCurrentMenuOption > LastValidOptionOnPage)
 						{
-							// Go to the option in the previous row
 							tempCurrentMenuOption--;
 						}
 					}
 					else
 					{
 						// Move to the furthest right option without moving up
-						while (tempCurrentMenuOption > (totalMenuOptions - 1))
+						while (tempCurrentMenuOption > LastValidOptionOnPage)
 						{
 							tempCurrentMenuOption -= ColumnSplitAmount;
 						}
@@ -3771,180 +3787,205 @@ void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption,
 				}
 				else
 				{
-					// There are no options in the right column, so do nothing
+					// There are no options in the right columns, so do nothing
 					return;
 				}
 			}
 			else
 			{
-				// Currently on the right side, so move to the next left option
+				// Move to the next left column
 				currentMenuOption = tempCurrentMenuOption - ColumnSplitAmount;
 			}
-			break;
+			return;
 		}
 		case DPADRIGHT:
 		{
 			// Check if currently on the furthest right column
-			if ((tempCurrentMenuOption % ((tempCurrentPage + 1) * 
-				maxOptionsPerPage)) >= ((ColumnSplitAmount * 
-					(TotalColumns - 1)) + (tempCurrentPage * 
-						maxOptionsPerPage)))
+			uint32_t FurthestRightColumnStart = (LastOptionOnPage - ColumnSplitAmount) + 1;
+			if (tempCurrentMenuOption >= FurthestRightColumnStart)
 			{
 				// Move to the furthest left option on the page
-				currentMenuOption = tempCurrentMenuOption - 
-					(ColumnSplitAmount * (TotalColumns - 1));
-			}
-			else
-			{
-				// Currently on the left side, so move to the next right option
-				tempCurrentMenuOption += ColumnSplitAmount;
-				
-				// Make sure the current option is valid
-				if (allowUpwardsSnapFromLeftOrRight)
+				for (uint32_t i = 0; i < (TotalColumns - 1); i++)
 				{
-					while (tempCurrentMenuOption > (totalMenuOptions - 1))
-					{
-						// Go to the option in the previous row
-						tempCurrentMenuOption--;
-					}
-				}
-				else
-				{
-					if (tempCurrentMenuOption > (totalMenuOptions - 1))
-					{
-						// Move to the furthest left option
-						tempCurrentMenuOption -= ColumnSplitAmount * (TotalColumns - 1);
-					}
+					tempCurrentMenuOption -= ColumnSplitAmount;
 				}
 				
 				currentMenuOption = tempCurrentMenuOption;
 			}
-			break;
-		}
-		case DPADDOWN:
-		{
-			uint32_t MaxIndexOnPage = ((tempCurrentPage + 1) * maxOptionsPerPage) - 1;
-			bool CurrentlyAtBottom = false;
-			
-			for (uint32_t i = 0; i < TotalColumns; i++)
+			else
 			{
-				// Check if currently at the bottom of the current column
-				if ((tempCurrentMenuOption == (totalMenuOptions - 1)) || 
-					(tempCurrentMenuOption == (MaxIndexOnPage - 
-						(ColumnSplitAmount * i))))
-				{
-					CurrentlyAtBottom = true;
-					
-					// Check to see if currently on the last page or not
-					if (tempCurrentPage == (TotalPages - 1))
-					{
-						// Currently on the last page, so go to the first page
-						tempCurrentPage 	= 0;
-						currentPage 		= tempCurrentPage;
-						
-						// Go to the top of the current column
-						if (tempCurrentMenuOption == (totalMenuOptions - 1))
-						{
-							if (TotalColumns == 1)
-							{
-								currentMenuOption = 0;
-							}
-							else
-							{
-								currentMenuOption = (tempCurrentMenuOption - 
-									(ColumnSplitAmount - 1)) + TotalFreeSpaces;
-							}
-						}
-						else
-						{
-							currentMenuOption = tempCurrentMenuOption - 
-								(ColumnSplitAmount - 1);
-						}
-					}
-					else
-					{
-						// Go to the top of the next page
-						tempCurrentPage++;
-						currentPage = tempCurrentPage;
-						
-						// Loop to the first option in the current column
-						if (TotalColumns == 1)
-						{
-							currentMenuOption = tempCurrentMenuOption + 1;
-						}
-						else
-						{
-							currentMenuOption = (tempCurrentMenuOption + 
-								(maxOptionsPerPage * tempCurrentPage)) - 
-									(ColumnSplitAmount - 1);
-						}
-					}
-				}
+				// Check to see if there are more options to the right of the current column
+				tempCurrentMenuOption += ColumnSplitAmount;
+				uint32_t LastColumnFirstOption = LastOptionOnPage - ColumnSplitAmount + 1;
 				
-				if (CurrentlyAtBottom)
+				if ((LastValidOptionOnPage >= LastColumnFirstOption) && 
+					(LastValidOptionOnPage <= LastOptionOnPage))
 				{
-					// Already adjusted the current option, so exit
-					return;
-				}
-			}
-			
-			// Not at the bottom of the current column, so move to the next option
-			currentMenuOption = tempCurrentMenuOption + 1;
-			break;
-		}
-		case DPADUP:
-		{
-			bool CurrentlyAtTop = false;
-			for (uint32_t i = 0; i < TotalColumns; i++)
-			{
-				// Check if currently at the top of the current column
-				if (tempCurrentMenuOption == ((tempCurrentPage * maxOptionsPerPage) + 
-					(ColumnSplitAmount * i)))
-				{
-					CurrentlyAtTop = true;
-					
-					// Check if currently on the first page
-					if (tempCurrentPage == 0)
+					// Make sure the current option is valid
+					if (allowUpwardsSnapFromLeftOrRight)
 					{
-						// Go to the last page
-						tempCurrentPage 	= (TotalPages - 1);
-						currentPage 		= tempCurrentPage;
-						
-						// Loop to the last option in the current column
-						tempCurrentMenuOption = (tempCurrentPage * 
-							maxOptionsPerPage) + ((ColumnSplitAmount * 
-								(i + 1)) - 1);
-						
-						// Make sure the current option is valid
-						while (tempCurrentMenuOption > (totalMenuOptions - 1))
+						while (tempCurrentMenuOption > LastValidOptionOnPage)
 						{
 							// Go to the option in the previous row
 							tempCurrentMenuOption--;
 						}
-						
-						currentMenuOption = tempCurrentMenuOption;
 					}
 					else
 					{
-						// Go to the previous page
-						currentPage--;
-						
-						// Loop to the last option in the current column
-						currentMenuOption = tempCurrentMenuOption - 
-							(maxOptionsPerPage - (ColumnSplitAmount - 1));
+						if (tempCurrentMenuOption > LastValidOptionOnPage)
+						{
+							// Move to the furthest left option
+							uint32_t OptionAfterFirstColumn = FirstOptionOnPage + ColumnSplitAmount;
+							do
+							{
+								tempCurrentMenuOption -= ColumnSplitAmount;
+							}
+							while (tempCurrentMenuOption >= OptionAfterFirstColumn);
+						}
 					}
+					
+					currentMenuOption = tempCurrentMenuOption;
 				}
-				
-				if (CurrentlyAtTop)
+				else
 				{
-					// Already adjusted the current option, so exit
+					// There are no options in the right columns, so do nothing
 					return;
 				}
 			}
+			return;
+		}
+		case DPADDOWN:
+		{
+			// Check if currently at the bottom of the current column
+			bool CurrentlyAtBottom = false;
+			for (uint32_t i = 0; i < TotalColumns; i++)
+			{
+				uint32_t CurrentOption = LastOptionOnPage - (ColumnSplitAmount * i);
+				if (tempCurrentMenuOption == CurrentOption)
+				{
+					CurrentlyAtBottom = true;
+					break;
+				}
+			}
 			
-			// Not at the top of the current column, so move to the next option
-			currentMenuOption = tempCurrentMenuOption - 1;
-			break;
+			if (CurrentlyAtBottom)
+			{
+				// Check to see if the next page has a valid option
+				// Get the valid option on the next page if it exists
+				NewCurrentMenuOption = tempCurrentMenuOption + 1;
+				for (uint32_t i = 0; i < (TotalColumns - 1); i++)
+				{
+					NewCurrentMenuOption += ColumnSplitAmount;
+				}
+				
+				uint32_t NextPageFirstColumnOption = LastOptionOnPage + 1;
+				uint32_t tempNewCurrentMenuOption = static_cast<uint32_t>(NewCurrentMenuOption);
+				bool FoundValidOption = false;
+				
+				for (uint32_t i = NextPageFirstColumnOption; 
+					i <= tempNewCurrentMenuOption; i++)
+				{
+					if (i > LastValidOption)
+					{
+						break;
+					}
+					
+					NewCurrentMenuOption = i;
+					FoundValidOption = true;
+				}
+				
+				if (FoundValidOption)
+				{
+					// Go to the valid option on the next page
+					currentMenuOption = static_cast<uint32_t>(NewCurrentMenuOption);
+					currentPage = tempCurrentPage + 1;
+				}
+				else
+				{
+					// Go to the top of the column on the first page
+					currentMenuOption = (tempCurrentMenuOption % maxOptionsPerPage) - ColumnSplitAmount + 1;
+					currentPage = 0;
+				}
+			}
+			else if (tempCurrentMenuOption == LastValidOption)
+			{
+				// Currently on the last option, so go to the top of the column on the first page
+				uint32_t LastOptionCurrentColumn = 0;
+				for (uint32_t i = 0; i <= LastValidOption; i += ColumnSplitAmount)
+				{
+					LastOptionCurrentColumn += ColumnSplitAmount;
+				}
+				
+				uint32_t TotalFreeSpaces = LastOptionCurrentColumn - tempCurrentMenuOption - 1;
+				currentMenuOption = (((tempCurrentMenuOption % maxOptionsPerPage) - ColumnSplitAmount) + TotalFreeSpaces) + 1;
+				currentPage = 0;
+			}
+			else
+			{
+				// Move to the next option
+				currentMenuOption = tempCurrentMenuOption + 1;
+			}
+			return;
+		}
+		case DPADUP:
+		{
+			// Check if currently at the top of the current column
+			bool CurrentlyAtTop = false;
+			for (uint32_t i = 0; i < TotalColumns; i++)
+			{
+				uint32_t CurrentOption = FirstOptionOnPage + (ColumnSplitAmount * i);
+				if (tempCurrentMenuOption == CurrentOption)
+				{
+					CurrentlyAtTop = true;
+					break;
+				}
+			}
+			
+			if (CurrentlyAtTop)
+			{
+				// Check if currently on the first page
+				if (tempCurrentPage == 0)
+				{
+					// Go to the last option of the current column on the last page
+					uint32_t LastPage = (1 + ((totalMenuOptions - 1) / maxOptionsPerPage)) - 1;
+					uint32_t LastPageLastColumnLastOption = (maxOptionsPerPage * (LastPage + 1)) - 1;
+					
+					uint32_t DecrementAmount = ColumnSplitAmount * (TotalColumns - 1);
+					for (uint32_t i = 0; i < tempCurrentMenuOption; i += ColumnSplitAmount)
+					{
+						DecrementAmount -= ColumnSplitAmount;
+					}
+					
+					tempCurrentMenuOption = LastPageLastColumnLastOption - DecrementAmount;
+					
+					// Make sure the new option is valid
+					while (tempCurrentMenuOption > LastValidOption)
+					{
+						tempCurrentMenuOption--;
+					}
+					
+					currentMenuOption = tempCurrentMenuOption;
+					currentPage = LastPage;
+				}
+				else
+				{
+					// Go to the last option of the current column on the previous page
+					NewCurrentMenuOption = tempCurrentMenuOption - 1;
+					for (uint32_t i = 0; i < (TotalColumns - 1); i++)
+					{
+						NewCurrentMenuOption -= ColumnSplitAmount;
+					}
+					
+					currentMenuOption = static_cast<uint32_t>(NewCurrentMenuOption);
+					currentPage = tempCurrentPage - 1;
+				}
+			}
+			else
+			{
+				// Move to the next option
+				currentMenuOption = tempCurrentMenuOption - 1;
+			}
+			return;
 		}
 		default:
 		{
@@ -3953,191 +3994,39 @@ void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption,
 	}
 }
 
-/*void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 
-	uint8_t &currentPage, uint32_t totalMenuOptions, 
-		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow)
-{
-	uint32_t tempCurrentMenuOption 	= currentMenuOption;
-	uint32_t tempCurrentPage 		= currentPage;
-	uint32_t TotalPages 			= 1 + ((totalMenuOptions - 1) / maxOptionsPerPage); // Round up
-	uint32_t TotalRowsPerPage 		= 1 + ((maxOptionsPerPage - 1) / maxOptionsPerRow); // Round up
-	uint32_t TotalColumns 			= 1 + ((maxOptionsPerPage - 1) / TotalRowsPerPage); // Round up
-	uint32_t ColumnSplitAmount 		= 1 + ((maxOptionsPerPage - 1) / TotalColumns); // Round up
-	
-	switch (button)
-	{
-		case DPADLEFT:
-		case DPADRIGHT:
-		{
-			// Check if currently on the furthest left column
-			if ((tempCurrentMenuOption % (ColumnSplitAmount * 
-				maxOptionsPerRow)) < ColumnSplitAmount)
-			{
-				// Currently on the furthest left side, so go to the furthest right option
-				// Check if there are more options on the right column of this page
-				if (totalMenuOptions > (((tempCurrentPage + 1) * 
-					maxOptionsPerPage) - ColumnSplitAmount))
-				{
-					// Move to the furthest right option on the page
-					tempCurrentMenuOption += ColumnSplitAmount;
-					
-					// Make sure the current option is valid
-					while (tempCurrentMenuOption > (totalMenuOptions - 1))
-					{
-						// Go to the option in the previous row
-						tempCurrentMenuOption--;
-					}
-					
-					currentMenuOption = tempCurrentMenuOption;
-				}
-				else
-				{
-					// There are no options in the right column, so do nothing
-					return;
-				}
-			}
-			else
-			{
-				if (button == DPADLEFT)
-				{
-					// Currently on the right side, so move to the next left option
-					currentMenuOption = tempCurrentMenuOption - ColumnSplitAmount;
-				}
-				else
-				{
-					// Currently on the furthest right side, so go to the furthest left option
-					currentMenuOption = tempCurrentMenuOption - 
-						(ColumnSplitAmount * (TotalColumns - 1));
-				}
-			}
-			break;
-		}
-		case DPADDOWN:
-		{
-			uint32_t MaxIndexOnPage = ((tempCurrentPage + 1) * maxOptionsPerPage) - 1;
-			bool CurrentlyAtBottom = false;
-			
-			for (uint32_t i = 0; i < TotalColumns; i++)
-			{
-				// Check if currently at the bottom of the current column
-				if ((tempCurrentMenuOption == (totalMenuOptions - 1)) || 
-					(tempCurrentMenuOption == (MaxIndexOnPage - (ColumnSplitAmount * i))))
-				{
-					CurrentlyAtBottom = true;
-					
-					// Check to see if currently on the last page or not
-					if (tempCurrentPage == (TotalPages - 1))
-					{
-						// Currently on the last page, so go to the first page
-						tempCurrentPage 	= 0;
-						currentPage 		= tempCurrentPage;
-						
-						// Go to the top of the current column
-						currentMenuOption = ColumnSplitAmount * (tempCurrentMenuOption / 
-							(((MaxIndexOnPage + 1) - ColumnSplitAmount)));
-					}
-					else
-					{
-						// Go to the top of the next page
-						currentPage++;
-						currentMenuOption = tempCurrentMenuOption + 
-							(ColumnSplitAmount + 1);
-					}
-				}
-				
-				if (CurrentlyAtBottom)
-				{
-					// Already adjusted the current option, so exit
-					return;
-				}
-			}
-			
-			// Not at the bottom of the current column, so move to the next option
-			currentMenuOption = tempCurrentMenuOption + 1;
-			break;
-		}
-		case DPADUP:
-		{
-			bool CurrentlyAtTop = false;
-			for (uint32_t i = 0; i < TotalColumns; i++)
-			{
-				// Check if currently at the top of the current column
-				if (tempCurrentMenuOption == ((tempCurrentPage * maxOptionsPerPage) + 
-					(ColumnSplitAmount * i)))
-				{
-					CurrentlyAtTop = true;
-					
-					// Check if currently on the first page
-					if (tempCurrentPage == 0)
-					{
-						// Go to the last page
-						tempCurrentPage 	= (TotalPages - 1);
-						currentPage 		= tempCurrentPage;
-						
-						// Loop to the last option in the current column
-						tempCurrentMenuOption = (tempCurrentPage * 
-							maxOptionsPerPage) + ((ColumnSplitAmount * 
-								(i + 1)) - 1);
-						
-						// Make sure the current option is valid
-						while (tempCurrentMenuOption > (totalMenuOptions - 1))
-						{
-							// Go to the option in the previous row
-							tempCurrentMenuOption--;
-						}
-						
-						currentMenuOption = tempCurrentMenuOption;
-					}
-					else
-					{
-						// Go to the previous page
-						currentPage--;
-						
-						// Loop to the last option in the current column
-						currentMenuOption = tempCurrentMenuOption - 
-							(ColumnSplitAmount + 1);
-					}
-				}
-				
-				if (CurrentlyAtTop)
-				{
-					// Already adjusted the current option, so exit
-					return;
-				}
-			}
-			
-			// Not at the top of the current column, so move to the next option
-			currentMenuOption = tempCurrentMenuOption - 1;
-			break;
-		}
-		default:
-		{
-			return;
-		}
-	}
-}*/
-
-// Need to fix the logic and whatnot for this function
 void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption, 
 	uint8_t &currentPage, uint32_t totalMenuOptions, 
-		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow, 
+		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow,
 			bool allowUpwardsSnapFromLeftOrRight)
 {
 	uint32_t tempCurrentMenuOption 	= currentMenuOption;
 	uint32_t tempCurrentPage 		= currentPage;
-	uint32_t TotalPages 			= 1 + ((totalMenuOptions - 1) / maxOptionsPerPage); // Round up
+	
+	uint32_t LastValidOption 		= totalMenuOptions - 1;
+	uint32_t CurrentColumn 			= tempCurrentMenuOption % maxOptionsPerRow;
+	uint32_t LastColumn 			= maxOptionsPerRow - 1;
+	uint32_t LastPage 				= (1 + ((totalMenuOptions - 1) / maxOptionsPerPage)) - 1;
+	
 	uint32_t TotalRows 				= 1 + ((totalMenuOptions - 1) / maxOptionsPerRow); // Round up
 	uint32_t TotalFreeSpaces 		= ((TotalRows * maxOptionsPerRow) - 1) - (totalMenuOptions - 1);
+	
+	uint32_t TotalColumns 			= maxOptionsPerRow;
+	
+	// Make sure the total columns is valid
+	while (TotalColumns > totalMenuOptions)
+	{
+		TotalColumns--;
+	}
 	
 	switch (button)
 	{
 		case DPADLEFT:
 		{
-			if ((tempCurrentMenuOption % maxOptionsPerRow) == 0)
+			// Check to see if currently on the furthest left column
+			if (CurrentColumn == 0)
 			{
 				// Check to see if currently on the last option
-				if ((tempCurrentMenuOption + (maxOptionsPerRow - 1)) > 
-					(totalMenuOptions - 1))
+				if ((tempCurrentMenuOption + LastColumn) > LastValidOption)
 				{
 					if (allowUpwardsSnapFromLeftOrRight)
 					{
@@ -4147,37 +4036,39 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
 					else
 					{
 						// Go to the furthest left option
-						currentMenuOption = tempCurrentMenuOption + 
-							((maxOptionsPerRow - 1) - TotalFreeSpaces);
+						currentMenuOption = (tempCurrentMenuOption + LastColumn) - TotalFreeSpaces;
 					}
 				}
 				else
 				{
-					currentMenuOption = tempCurrentMenuOption + (maxOptionsPerRow - 1);
+					// Go to the furthest right option in the current row
+					currentMenuOption = tempCurrentMenuOption + LastColumn;
 				}
 			}
 			else
 			{
+				// Go to the next left option in the current row
 				currentMenuOption = tempCurrentMenuOption - 1;
 			}
-			break;
+			return;
 		}
 		case DPADRIGHT:
 		{
-			if ((tempCurrentMenuOption % maxOptionsPerRow) == (maxOptionsPerRow - 1))
+			// Check to see if currently on the furthest right column
+			if (CurrentColumn == LastColumn)
 			{
 				// Currently on the furthest right side, so go to the furthest left option
-				currentMenuOption = tempCurrentMenuOption - (maxOptionsPerRow - 1);
+				currentMenuOption = tempCurrentMenuOption - LastColumn;
 			}
 			else
 			{
 				// Check to see if currently on the last option
-				if (tempCurrentMenuOption == (totalMenuOptions - 1))
+				if (tempCurrentMenuOption >= LastValidOption)
 				{
 					if (allowUpwardsSnapFromLeftOrRight)
 					{
 						// Go to the next right option and up one column
-						currentMenuOption = tempCurrentMenuOption - (maxOptionsPerRow - 1);
+						currentMenuOption = tempCurrentMenuOption - LastColumn;
 					}
 					else
 					{
@@ -4188,28 +4079,38 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
 				}
 				else
 				{
+					// Go to the next right option in the current row
 					currentMenuOption = tempCurrentMenuOption + 1;
 				}
 			}
-			break;
+			return;
 		}
 		case DPADDOWN:
 		{
 			// Check if currently at the bottom of the current column
-			if (((tempCurrentMenuOption + maxOptionsPerRow) >= 
-				((tempCurrentPage + 1) * maxOptionsPerPage)) || 
-					((tempCurrentMenuOption + maxOptionsPerRow) 
-						> (totalMenuOptions - 1)))
+			uint32_t LastOptionOnPage = (maxOptionsPerPage * (tempCurrentPage + 1)) - 1;
+			bool CurrentlyAtBottom = false;
+			
+			for (uint32_t i = 0; i < TotalColumns; i++)
+			{
+				uint32_t CurrentOption = LastOptionOnPage - i;
+				if (tempCurrentMenuOption == CurrentOption)
+				{
+					CurrentlyAtBottom = true;
+					break;
+				}
+			}
+			
+			if (CurrentlyAtBottom)
 			{
 				// Check to see if currently on the last page or not
-				if (tempCurrentPage == (TotalPages - 1))
+				if (tempCurrentPage == LastPage)
 				{
 					// Currently on the last page, so go to the first page
-					tempCurrentPage 	= 0;
-					currentPage 		= tempCurrentPage;
+					currentPage = 0;
 					
 					// Go to the top of the current column
-					currentMenuOption = tempCurrentMenuOption % maxOptionsPerRow;
+					currentMenuOption = CurrentColumn;
 				}
 				else
 				{
@@ -4218,30 +4119,50 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
 					currentMenuOption = tempCurrentMenuOption + maxOptionsPerRow;
 				}
 			}
+			else if ((tempCurrentMenuOption + maxOptionsPerRow) > LastValidOption)
+			{
+				// Go to the first page
+				currentPage = 0;
+					
+				// Go to the top of the current column
+				currentMenuOption = CurrentColumn;
+			}
 			else
 			{
+				// Go to the next option in the current column
 				currentMenuOption = tempCurrentMenuOption + maxOptionsPerRow;
 			}
-			break;
+			return;
 		}
 		case DPADUP:
 		{
 			// Check if currently at the top of the current column
-			if (tempCurrentMenuOption < (maxOptionsPerRow + 
-				(tempCurrentPage * maxOptionsPerPage)))
+			uint32_t FirstOptionOnPage = maxOptionsPerPage * tempCurrentPage;
+			bool CurrentlyAtTop = false;
+			
+			for (uint32_t i = 0; i < TotalColumns; i++)
+			{
+				uint32_t CurrentOption = FirstOptionOnPage + i;
+				if (tempCurrentMenuOption == CurrentOption)
+				{
+					CurrentlyAtTop = true;
+					break;
+				}
+			}
+			
+			if (CurrentlyAtTop)
 			{
 				// Check if currently on the first page
 				if (tempCurrentPage == 0)
 				{
 					// Go to the last page
-					tempCurrentPage 	= (TotalPages - 1);
-					currentPage 		= tempCurrentPage;
+					currentPage = LastPage;
 					
-					// Loop to the last option in the current column
+					// Go to the last option in the current column
 					tempCurrentMenuOption += (TotalRows - 1) * maxOptionsPerRow;
 					
 					// Make sure the current option is valid
-					while (tempCurrentMenuOption > (totalMenuOptions - 1))
+					while (tempCurrentMenuOption > LastValidOption)
 					{
 						// Go to the option in the previous row
 						tempCurrentMenuOption -= maxOptionsPerRow;
@@ -4254,15 +4175,16 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
 					// Go to the previous page
 					currentPage = tempCurrentPage - 1;
 					
-					// Loop to the last option in the current column
+					// Go to the last option in the current column
 					currentMenuOption = tempCurrentMenuOption - maxOptionsPerRow;
 				}
 			}
 			else
 			{
+				// Go to the previous option in the current column
 				currentMenuOption = tempCurrentMenuOption - maxOptionsPerRow;
 			}
-			break;
+			return;
 		}
 		default:
 		{
