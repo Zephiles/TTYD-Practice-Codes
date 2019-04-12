@@ -3847,9 +3847,9 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
 	uint32_t TotalColumns 			= maxOptionsPerRow;
 	
 	// Make sure the total columns is valid
-	while (TotalColumns > totalMenuOptions)
+	if (TotalColumns > totalMenuOptions)
 	{
-		TotalColumns--;
+		TotalColumns = totalMenuOptions;
 	}
 	
 	switch (button)
