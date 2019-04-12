@@ -718,6 +718,6 @@ void initMenuVars();
 void assignCheatButtonCombo(uint32_t cheat);
 void assignDisplayButtonCombo(uint32_t display);
 void initArtAttackAssemblyOverwrites();
-void initAssemblyOverwrites();
+void initAddressOverwrites();
 
 }

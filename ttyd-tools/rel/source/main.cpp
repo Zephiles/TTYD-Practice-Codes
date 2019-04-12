@@ -425,7 +425,7 @@ void initArtAttackAssemblyOverwrites()
 		StartArtAttackHitboxes, BranchArtAttackHitboxes);
 }
 
-void initAssemblyOverwrites()
+void initAddressOverwrites()
 {
 	#ifdef TTYD_US
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800465CC);
@@ -546,6 +546,13 @@ void initAssemblyOverwrites()
 	*reinterpret_cast<uint32_t *>(BacktraceScreenPPCHaltBranchAddress) 		= 0x3B400000; // li r26,0
 	*reinterpret_cast<uint32_t *>(BacktraceScreenEndBranchAddress) 			= 0x4BFFFDD4; // b -0x22C
 	#endif
+	
+	// Set the initial value for the debug mode variable, to allow backtrace screens before the title sequence begins
+	uint32_t tempTitleMainAddress = *reinterpret_cast<uint32_t *>(titleMainAddress);
+	if (tempTitleMainAddress != 0)
+	{
+		*reinterpret_cast<int32_t *>(tempTitleMainAddress + 0x30) = -1;
+	}
 }
 
 void Mod::run()

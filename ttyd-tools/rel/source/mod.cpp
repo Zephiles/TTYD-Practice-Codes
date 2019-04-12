@@ -36,7 +36,7 @@ void Mod::init()
 	gMod = this;
 	initMenuVars();
 	initArtAttackAssemblyOverwrites();
-	initAssemblyOverwrites();
+	initAddressOverwrites();
 	actionCommandsTimingsInit();
 	
 	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::system::makeKey, []()
