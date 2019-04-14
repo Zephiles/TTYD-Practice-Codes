@@ -80,6 +80,9 @@ void displayArtAttackHitboxes()
 	uint32_t HitboxLineColor = 0x59000000;
 	gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
 	
+	// Get the address of the write gather pipe, and handle the value at the address as a float
+	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
+	
 	for (uint32_t Slot = 0; Slot < 64; Slot++)
 	{
 		void *BattleUnitPtr = getActorPointer(Slot);
