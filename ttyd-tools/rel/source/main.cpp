@@ -383,48 +383,6 @@ void writeStandardBranch(void *address, void functionStart(), void functionBranc
 	patch::writeBranch(tempFunctionBranchBack, branchBackAddress);
 }
 
-void initArtAttackAssemblyOverwrites()
-{
-	#ifdef TTYD_US
-	void *HookAddress 		= reinterpret_cast<void *>(0x80231928);
-	uint32_t stwu_address 	= 0x80231704;
-	#elif defined TTYD_JP
-	void *HookAddress 		= reinterpret_cast<void *>(0x8022C278);
-	uint32_t stwu_address 	= 0x8022C054;
-	#elif defined TTYD_EU
-	void *HookAddress 		= reinterpret_cast<void *>(0x802353B8);
-	uint32_t stwu_address 	= 0x80235194;
-	#endif
-	
-	uint32_t stw_r0_address 	= stwu_address + 0x8;
-	uint32_t stmw_address 		= stw_r0_address + 0x4;
-	uint32_t addi_r3_address 	= stmw_address + 0x178;
-	uint32_t stw_r6_address 	= addi_r3_address + 0x8;
-	uint32_t stb_r0_address 	= stw_r6_address + 0x18;
-	uint32_t lwz_r0_address 	= stb_r0_address + 0x4;
-	uint32_t stw_r0_2_address 	= lwz_r0_address + 0x4;
-	uint32_t stw_r3_address 	= stw_r0_2_address + 0x8;
-	uint32_t addi_r4_address 	= stw_r3_address + 0x4;
-	uint32_t lwz_r0_2_address 	= addi_r4_address + 0x70;
-	uint32_t addi_sp_address 	= lwz_r0_2_address + 0x8;
-	
-	*reinterpret_cast<uint8_t *>(stwu_address + 0x3) 		= 0x60;
-	*reinterpret_cast<uint8_t *>(stw_r0_address + 0x3) 		= 0xA4;
-	*reinterpret_cast<uint8_t *>(stmw_address + 0x3) 		= 0x48;
-	*reinterpret_cast<uint8_t *>(addi_r3_address + 0x3) 	= 0xC;
-	*reinterpret_cast<uint8_t *>(stw_r6_address + 0x3) 		= 0x14;
-	*reinterpret_cast<uint8_t *>(stb_r0_address + 0x3) 		= 0x14;
-	*reinterpret_cast<uint8_t *>(lwz_r0_address + 0x3) 		= 0x14;
-	*reinterpret_cast<uint8_t *>(stw_r0_2_address + 0x3) 	= 0xC;
-	*reinterpret_cast<uint8_t *>(stw_r3_address + 0x3) 		= 0x10;
-	*reinterpret_cast<uint8_t *>(addi_r4_address + 0x3) 	= 0x10;
-	*reinterpret_cast<uint8_t *>(lwz_r0_2_address + 0x3) 	= 0xA4;
-	*reinterpret_cast<uint8_t *>(addi_sp_address + 0x3) 	= 0xA0;
-	
-	writeStandardBranch(HookAddress, 
-		StartArtAttackHitboxes, BranchArtAttackHitboxes);
-}
-
 void initAddressOverwrites()
 {
 	#ifdef TTYD_US
@@ -449,6 +407,7 @@ void initAddressOverwrites()
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8025E4A4);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x8025E4A8);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231928);
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
@@ -469,6 +428,7 @@ void initAddressOverwrites()
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800CE01C);
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80422618);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C278);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
@@ -491,6 +451,7 @@ void initAddressOverwrites()
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8026207C);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x80262080);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353B8);
 	#endif
 	
 	writeStandardBranch(PreventPreBattleSoftlockAddress, 
@@ -528,6 +489,9 @@ void initAddressOverwrites()
 	
 	writeStandardBranch(FixRoomProblemsAddress, 
 		StartFixRoomProblems, BranchBackFixRoomProblems);
+	
+	writeStandardBranch(ArtAttackHitboxesAddress, 
+		StartArtAttackHitboxes, BranchArtAttackHitboxes);
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

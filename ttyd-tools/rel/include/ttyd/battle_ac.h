@@ -13,7 +13,7 @@ extern "C" {
 // BattleACGetButtonIcon
 // BattleActionCommandGetPrizeLv
 // BattleActionCommandSetDifficulty
-int8_t BattleActionCommandGetDifficulty(void *battlePointer);
+uint8_t BattleActionCommandGetDifficulty(void *battlePointer);
 // BattleActionCommandResetDefenceResult
 // BattleActionCommandGetDefenceResult
 uint32_t BattleACPadCheckRecordTrigger(uint32_t frame, uint32_t button);

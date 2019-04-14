@@ -35,7 +35,6 @@ void Mod::init()
 {
 	gMod = this;
 	initMenuVars();
-	initArtAttackAssemblyOverwrites();
 	initAddressOverwrites();
 	actionCommandsTimingsInit();
 	

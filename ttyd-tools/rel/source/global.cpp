@@ -1405,6 +1405,7 @@ uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
 uint32_t GlobalWorkPointer 				= r13 - 0x6F50;
 uint32_t titleMainAddress 				= r13 - 0x7F80;
 uint32_t ConsoleBusSpeedAddress 		= 0x800000F8;
+volatile float *WriteGatherPipe 		= reinterpret_cast<float *>(0xCC008000);
 
 // Variables used by cheats
 bool ResetMarioProperties 				= false;

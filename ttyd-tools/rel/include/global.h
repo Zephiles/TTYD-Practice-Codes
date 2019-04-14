@@ -708,6 +708,7 @@ extern uint32_t FieldItemsAddressesStart;
 extern uint32_t GlobalWorkPointer;
 extern uint32_t titleMainAddress;
 extern uint32_t ConsoleBusSpeedAddress;
+extern volatile float *WriteGatherPipe;
 
 extern bool ResetMarioProperties;
 extern int16_t ForcedNPCItemDrop;
@@ -717,7 +718,6 @@ extern uint16_t JumpStorageSetCounter;
 void initMenuVars();
 void assignCheatButtonCombo(uint32_t cheat);
 void assignDisplayButtonCombo(uint32_t display);
-void initArtAttackAssemblyOverwrites();
 void initAddressOverwrites();
 
 }
