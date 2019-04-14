@@ -1436,6 +1436,7 @@
 8025E9E4:_savegpr_30
 8025E9E8:_savegpr_31
 8025EA3C:__udivdi3
+8025EB28:__divdi3
 8025EC60:__umoddi3
 
 // printf.c

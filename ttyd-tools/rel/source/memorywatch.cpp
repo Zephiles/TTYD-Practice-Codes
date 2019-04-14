@@ -124,15 +124,28 @@ const char *getValueString(int32_t slot)
 			uint32_t FPS = *reinterpret_cast<uint32_t *>(
 				*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x4);
 			
-			uint64_t CurrentTime = *reinterpret_cast<uint64_t *>(Address) / (TimeBase / FPS);
+			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
+			const char *NegativeSign = "";
 			
-			uint32_t hour = CurrentTime / 3600 / FPS;
-			uint32_t minute = (CurrentTime / 60 / FPS) % 60;
-			uint32_t second = (CurrentTime / FPS) % 60;
-			uint32_t frame = CurrentTime % FPS;
+			// Check if the value is negative
+			if (CurrentTime < 0)
+			{
+				// Convert the number to positive
+				CurrentTime = -CurrentTime;
+				NegativeSign = "-";
+			}
+			
+			// Handle the value as unsigned
+			uint64_t CurrentTimeUnsigned = static_cast<uint64_t>(CurrentTime);
+			
+			uint32_t hour = CurrentTimeUnsigned / 3600 / FPS;
+			uint32_t minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
+			uint32_t second = (CurrentTimeUnsigned / FPS) % 60;
+			uint32_t frame = CurrentTimeUnsigned % FPS;
 			
 			sprintf(tempDisplayBuffer,
-				"%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
+				"%s%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
+				NegativeSign,
 				hour,
 				minute,
 				second,

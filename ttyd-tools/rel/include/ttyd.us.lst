@@ -1442,6 +1442,7 @@
 80264994:_savegpr_30
 80264998:_savegpr_31
 802649EC:__udivdi3
+80264AD8:__divdi3
 80264C10:__umoddi3
 
 // printf.c
