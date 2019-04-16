@@ -10,6 +10,7 @@
 
 #include <gc/gx.h>
 #include <ttyd/battle_unit.h>
+#include <ttyd/fontmgr.h>
 #include <ttyd/battle_disp.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
@@ -76,9 +77,12 @@ void displayArtAttackHitboxes()
 		return;
 	}
 	
-	// Set the color of the lines of the hitbox
-	uint32_t HitboxLineColor = 0x59000000;
-	gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
+	// Set the initial color to use for the lines of the hitboxes
+	uint8_t HSV[4]; // Extra slot at the end
+	*reinterpret_cast<uint32_t *>(&HSV) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
+	
+	// Set up a variable to handle adjusting the hue for the lines of the hitboxes
+	uint8_t HueAdjustment = 0;
 	
 	// Get the address of the write gather pipe, and handle the value at the address as a float
 	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
@@ -121,6 +125,16 @@ void displayArtAttackHitboxes()
 			continue;
 		}
 		
+		// Adjust the hue for the lines of the current hitbox
+		HSV[0] += HueAdjustment;
+		HueAdjustment += 30;
+		
+		// Get the RGB equivalent of the HSV value; Alpha is discarded
+		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSV);
+		
+		// Set the color of the lines of the current hitbox
+		gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
+		
 		uint32_t BattleUnitPtrUint = reinterpret_cast<uint32_t>(BattleUnitPtr);
 		
 		// Check if the current actor is hanging from the ceiling
@@ -139,11 +153,11 @@ void displayArtAttackHitboxes()
 		}
 		
 		// Get the variables used to calculate the position of the hitbox
-		float ActorHitboxWidth = *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE4);
-		float ActorHitboxHeight = *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE8);
-		float ActorHitboxPosOffsetX = *reinterpret_cast<float *>(BattleUnitPtrUint + 0xD8);
-		float ActorHitboxPosOffsetY = *reinterpret_cast<float *>(BattleUnitPtrUint + 0xDC);
-		float ActorSizeScale = *reinterpret_cast<float *>(BattleUnitPtrUint + 0x114);
+		float ActorHitboxWidth 			= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE4);
+		float ActorHitboxHeight 		= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE8);
+		float ActorHitboxPosOffsetX 	= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xD8);
+		float ActorHitboxPosOffsetY 	= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xDC);
+		float ActorSizeScale 			= *reinterpret_cast<float *>(BattleUnitPtrUint + 0x114);
 		
 		// Get the position of the current actor
 		float ActorPos[3];
