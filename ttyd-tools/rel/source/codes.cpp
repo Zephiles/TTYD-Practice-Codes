@@ -81,9 +81,6 @@ void displayArtAttackHitboxes()
 	uint8_t HSV[4]; // Extra slot at the end
 	*reinterpret_cast<uint32_t *>(&HSV) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
 	
-	// Set up a variable to handle adjusting the hue for the lines of the hitboxes
-	uint8_t HueAdjustment = 0;
-	
 	// Get the address of the write gather pipe, and handle the value at the address as a float
 	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
 	
@@ -124,10 +121,6 @@ void displayArtAttackHitboxes()
 			// The current actor cannot be attacked, so don't draw the hitbox
 			continue;
 		}
-		
-		// Adjust the hue for the lines of the current hitbox
-		HSV[0] += HueAdjustment;
-		HueAdjustment += 30;
 		
 		// Get the RGB equivalent of the HSV value; Alpha is discarded
 		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSV);
@@ -245,6 +238,9 @@ void displayArtAttackHitboxes()
 			*WriteGatherPipe = ScreenPointOut2[1];
 			*WriteGatherPipe = 0;
 		}
+		
+		// Adjust the hue for the lines of the next hitbox
+		HSV[0] += 45;
 	}
 }
 }
