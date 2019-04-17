@@ -78,8 +78,8 @@ void displayArtAttackHitboxes()
 	}
 	
 	// Set the initial color to use for the lines of the hitboxes
-	uint8_t HSV[4]; // Extra slot at the end
-	*reinterpret_cast<uint32_t *>(&HSV) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
+	uint8_t HSVA[4];
+	*reinterpret_cast<uint32_t *>(&HSVA) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
 	
 	// Get the address of the write gather pipe, and handle the value at the address as a float
 	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
@@ -122,8 +122,8 @@ void displayArtAttackHitboxes()
 			continue;
 		}
 		
-		// Get the RGB equivalent of the HSV value; Alpha is discarded
-		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSV);
+		// Get the RGBA equivalent of the HSVA value
+		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSVA);
 		
 		// Set the color of the lines of the current hitbox
 		gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
@@ -240,7 +240,7 @@ void displayArtAttackHitboxes()
 		}
 		
 		// Adjust the hue for the lines of the next hitbox
-		HSV[0] += 45;
+		HSVA[0] += 45;
 	}
 }
 }

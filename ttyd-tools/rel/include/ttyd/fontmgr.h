@@ -38,7 +38,7 @@ uint16_t FontGetMessageWidth(const char *message);
 uint16_t hankakuSearch(uint8_t code);
 uint16_t kanjiSearch(uint16_t code);
 uint8_t kanjiGetWidth(uint16_t code);
-uint32_t HSV2RGB(uint8_t hsv[3]);
+uint32_t HSV2RGB(uint8_t hsva[4]);
 
 void JUTFontSetup(uint32_t index);
 uint16_t JUTFont_CodeToGlyph(uint16_t code);
