@@ -20,6 +20,8 @@ void startDrawString(uint8_t alpha, uint32_t color, float scale);
 void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, 
 	uint32_t color, float scale);
 
+uint16_t getMessageWidth(const char *text, float scale);
+
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
 	uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
 
@@ -60,7 +62,6 @@ void drawWarpsErrorMessage();
 void drawPartnerFollowerMessage(const char *message);
 void drawPartnerErrorMessage();
 void drawFollowersErrorMessage();
-void drawMemoryErrorMessage(const char *message);
 void drawNotInBattleErrorMessage();
 void drawConfirmationWindow(const char *message);
 

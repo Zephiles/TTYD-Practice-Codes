@@ -259,6 +259,13 @@ void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, uint32_t co
 	}
 }
 
+uint16_t getMessageWidth(const char *text, float scale)
+{
+	uint16_t LineLength = ttyd::fontmgr::FontGetMessageWidth(text);
+	float Width = static_cast<float>(LineLength + 15) * (scale + 0.05);
+	return static_cast<uint16_t>(Width);
+}
+
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
 	uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve)
 {
@@ -1490,7 +1497,6 @@ void drawMemoryChangeWatchPosition()
 	}
 	
 	// Draw the help window
-	int32_t Width 			= 293;
 	int32_t Curve 			= 20;
 	uint32_t WindowColor 	= 0x151515F6;
 	int32_t TextPosX 		= -135;
@@ -1498,6 +1504,8 @@ void drawMemoryChangeWatchPosition()
 	Scale = 0.6;
 	
 	const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress B to cancel";
+	int32_t Width = static_cast<int32_t>(getMessageWidth(HelpText, Scale));
+	
 	drawTextWithWindow(HelpText, TextPosX, TextPosY, Alpha, TextColor, 
 		Scale, Width, WindowColor, Curve);
 }
@@ -1832,10 +1840,10 @@ void drawErrorMessage(const char *line)
 			return;
 		}
 		
-		int32_t TextPosX 			= -130;
-		// int32_t WindowWidth 		= 305;
-		uint32_t LineLength 		= ttyd::fontmgr::FontGetMessageWidth(line);
-		int32_t WindowWidth 		= 80 + (LineLength >> 1) - (LineLength % 10);
+		int32_t TextPosX 		= -130;
+		float Scale 			= 0.6;
+		int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(line, Scale));
+		
 		drawErrorWindow(line, TextPosX, WindowWidth);
 	}
 	else
@@ -1873,22 +1881,6 @@ void drawFollowersErrorMessage()
 	// Print error text if currently trying to spawn a follower when not able to
 	const char *CurrentLine = "To spawn a follower, you must have a file\nloaded and not be in a battle nor a\nscreen transition.";
 	drawPartnerFollowerMessage(CurrentLine);
-}
-
-void drawMemoryErrorMessage(const char *message)
-{
-	uint32_t tempTimer = Timer;
-	if ((FunctionReturnCode < 0) && (tempTimer > 0))
-	{
-		if (checkForClosingErrorMessage())
-		{
-			return;
-		}
-		
-		int32_t PosX 			= -140;
-		int32_t WindowWidth 	= 275;
-		drawErrorWindow(message, PosX, WindowWidth);
-	}
 }
 
 void drawNotInBattleErrorMessage()
@@ -3485,13 +3477,10 @@ void drawPalaceSkipDetails()
 	}
 	
 	uint32_t TextColor 		= 0xFFFFFFFF;
-	// uint32_t WindowColor = 0x000000C0;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
 	int32_t PosY 			= -70;
 	float Scale 			= 0.75;
-	// int32_t WindowWidth 	= 440;
-	// float WindowCurve 	= 0;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -3513,12 +3502,6 @@ void drawPalaceSkipDetails()
 		ItemTimer,
 		PhantomEmberPosY,
 		PartnerPosY);
-	
-	// uint32_t LineLength = ttyd::fontmgr::FontGetMessageWidth(tempDisplayBuffer);
-	// int32_t WindowWidth = 245 + (LineLength >> 1) - (LineLength % 10);
-	
-	/*drawTextWithWindow(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, 
-		Scale, WindowWidth, WindowColor, WindowCurve);*/
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	
@@ -3574,7 +3557,6 @@ void drawActionCommandsTiming()
 	
 	uint32_t TypeToDraw = DisplayActionCommands.TypeToDraw;
 	char *tempDisplayBuffer = DisplayBuffer;
-	uint32_t IncrementWindowWidth = 129;
 	const char *TextToDraw;
 	
 	const uint32_t SuccessfulTiming 		= 1;
@@ -3659,7 +3641,6 @@ void drawActionCommandsTiming()
 		case CannotBeSuperguarded:
 		{
 			TextToDraw = "Cannot superguard this attack";
-			IncrementWindowWidth += 7;
 			break;
 		}
 		default:
@@ -3678,8 +3659,7 @@ void drawActionCommandsTiming()
 	int32_t WindowCurve 	= 10;
 	float Scale 			= 0.75;
 	
-	uint32_t LineLength 	= ttyd::fontmgr::FontGetMessageWidth(TextToDraw);
-	int32_t WindowWidth 	= IncrementWindowWidth + (LineLength >> 1) - (LineLength % 10);
+	int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(TextToDraw, Scale));
 	
 	drawTextWithWindow(TextToDraw, TextPosX, TextPosY, Alpha, TextColor, 
 		Scale, WindowWidth, WindowColor, WindowCurve);

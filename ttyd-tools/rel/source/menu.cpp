@@ -3284,13 +3284,13 @@ void drawMenu()
 				case ALL_SLOTS_EMPTY:
 				{
 					const char *CurrentLine = "All slots are currently empty.";
-					drawMemoryErrorMessage(CurrentLine);
+					drawErrorMessage(CurrentLine);
 					break;
 				}
 				case NO_SLOTS_LEFT:
 				{
 					const char *CurrentLine = "There are no more free slots.";
-					drawMemoryErrorMessage(CurrentLine);
+					drawErrorMessage(CurrentLine);
 					break;
 				}
 				default:
