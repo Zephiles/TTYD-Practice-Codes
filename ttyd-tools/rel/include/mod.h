@@ -18,6 +18,7 @@ private:
 	bool performPreBattleActions();
 	int32_t preventMenuSounds(int32_t, uint32_t, uint32_t, uint32_t);
 	const char *getCustomMessage(const char *);
+	uint32_t pauseArtAttackTimer();
 
 private:
 	void (*mPFN_makeKey_trampoline)() = nullptr;
@@ -28,6 +29,7 @@ private:
 	int32_t (*mPFN_SoundEfxPlayEx_trampoline)(int32_t, uint32_t, 
 		uint32_t, uint32_t) = nullptr;
 	const char *(*mPFN_msgSearch_trampoline)(const char *) = nullptr;
+	uint32_t (*mPFN_scissor_timer_main_trampoline)() = nullptr;
 };
 
 }

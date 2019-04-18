@@ -99,3 +99,4 @@ This menu allows you to warp to various places around the game. A description fo
 There are several other changes that have been made outside of the menu:
 1. The current Sequence value is displayed in the pause menu next to Mario's stats.
 2. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
+3. Holding Y while using Art Attack will pause the timer that is used to check how long you are able to use it for.

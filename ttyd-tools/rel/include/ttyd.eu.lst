@@ -1406,6 +1406,35 @@
 // 801AB220:marioResetCamShiftRate
 // 801AB284:marioResetCamShift
 
+// sac_scissor.o
+// 80234D0C:wait_star_standby
+// 80234D44:star_stone_appear
+// 80234D70:scissor_end
+// 80234DE0:scissor_init
+// 80234E54:scissor_disp_region
+// 80235154:scissor_offscreen
+// 80235194:scissor_disp_control
+// 802353CC:scissor_capture
+// 80235434:scissor_ofscreen_ok
+// 80235498:scissor_damage_sub2
+// 802355B4:scissor_damage_sub
+// 8023581C:scissor_damage
+// 80235AA8:scissor_control
+80235EC4:scissor_timer_main
+// 8023602C:scissor_timer_get
+// 80236088:star_disp2D_sub
+// 80236230:star_disp2D
+// 802362A0:star_control
+// 8023673C:weaponGetPower_Scissor
+// 802367C8:tess
+// 80236A14:scissor_tess
+// 80236A84:scissor_cross
+// 80236EB0:scissor_intersection4
+// 80236F50:scissor_intersection3
+// 80236FEC:scissor_intersection2
+// 8023706C:scissor_intersection
+802376C4:GetScissorPtr
+
 // runtime.c
 8026849C:_savefpr_14
 802684A0:_savefpr_15

@@ -10,6 +10,7 @@
 #include <ttyd/seq_battle.h>
 #include <ttyd/sound.h>
 #include <ttyd/msgdrv.h>
+#include <ttyd/sac_scissor.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -78,6 +79,12 @@ void Mod::init()
 		ttyd::msgdrv::msgSearch, [](const char *msgKey)
 	{
 		return gMod->getCustomMessage(msgKey);
+	});
+	
+	mPFN_scissor_timer_main_trampoline = patch::hookFunction(
+		ttyd::sac_scissor::scissor_timer_main, []()
+	{
+		return gMod->pauseArtAttackTimer();
 	});
 
 	// Initialize typesetting early

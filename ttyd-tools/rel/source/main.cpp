@@ -12,6 +12,7 @@
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/OSCache.h>
+#include <ttyd/sac_scissor.h>
 
 #include <cstdio>
 
@@ -370,6 +371,27 @@ const char *Mod::getCustomMessage(const char *msgKey)
 
 	// Call original function
 	return mPFN_msgSearch_trampoline(msgKey);
+}
+
+uint32_t Mod::pauseArtAttackTimer()
+{
+	// Prevent the function from running if Y is being held
+	if (checkButtonComboEveryFrame(PAD_Y))
+	{
+		// Make sure the timer is not at 59 or lower, as pausing it then will cause issues
+		void *ArtAttackPointer = ttyd::sac_scissor::GetScissorPtr();
+		
+		int32_t ArtAttackTimer = *reinterpret_cast<int32_t *>(
+			reinterpret_cast<uint32_t>(ArtAttackPointer) + 0x104);
+		
+		if (ArtAttackTimer > 59)
+		{
+			return 0;
+		}
+	}
+	
+	// Call original function
+	return mPFN_scissor_timer_main_trampoline();
 }
 
 void writeStandardBranch(void *address, void functionStart(), void functionBranchBack())
