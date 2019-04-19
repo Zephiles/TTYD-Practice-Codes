@@ -1330,6 +1330,7 @@ struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
+struct CheckHeaps CheckHeap;
 
 bool HideMenu 							= false;
 bool MenuIsDisplayed 					= false;
@@ -1365,6 +1366,7 @@ uint32_t BattleAddressesStart 			= r13 + 0x1C70;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x1E08;
 uint32_t seqMainAddress 				= r13 + 0x1860;
 uint32_t WorkAreaAddress 				= r13 + 0x1B98;
+uint32_t SmartWorkAddress 				= r13 - 0x7D40;
 uint32_t FieldItemsAddressesStart 		= 0x803DC294;
 #elif defined TTYD_JP
 uint32_t r13 							= 0x80417260;
@@ -1382,6 +1384,7 @@ uint32_t BattleAddressesStart  			= r13 + 0x1710;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x18F8;
 uint32_t seqMainAddress 				= r13 + 0x1300;
 uint32_t WorkAreaAddress 				= r13 + 0x1638;
+uint32_t SmartWorkAddress 				= r13 - 0x7D58;
 uint32_t FieldItemsAddressesStart 		= 0x803D8714;
 #elif defined TTYD_EU
 uint32_t r13 							= 0x80429760;
@@ -1399,6 +1402,7 @@ uint32_t BattleAddressesStart  			= r13 + 0x1D50;
 uint32_t PiantaParlorAddressesStart 	= r13 + 0x1F38;
 uint32_t seqMainAddress 				= r13 + 0x1940;
 uint32_t WorkAreaAddress 				= r13 + 0x1C78;
+uint32_t SmartWorkAddress 				= r13 - 0x7D40;
 uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
 #endif
 

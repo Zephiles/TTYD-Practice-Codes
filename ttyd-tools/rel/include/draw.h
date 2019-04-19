@@ -114,6 +114,7 @@ void drawPalaceSkipDetails();
 void drawActionCommandsTiming();
 void drawSettingsCurrentWork();
 
+void drawHeapArrayErrors();
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();
 

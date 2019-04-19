@@ -603,6 +603,12 @@ struct SettingsStruct
 	MemoryWatchStruct MemoryWatchSettings[30];
 };
 
+struct CheckHeaps
+{
+	const char **StandardHeapArray;
+	const char **SmartHeapArray;
+};
+
 extern Menus Menu[26];
 extern Cheats Cheat[20];
 extern bool Displays[9];
@@ -626,6 +632,7 @@ extern TrickDisplay PalaceSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
+extern CheckHeaps CheckHeap;
 
 extern const char *VersionNumber;
 extern uint8_t CheatsOrder[];
@@ -703,6 +710,7 @@ extern uint32_t BattleAddressesStart;
 extern uint32_t PiantaParlorAddressesStart;
 extern uint32_t seqMainAddress;
 extern uint32_t WorkAreaAddress;
+extern uint32_t SmartWorkAddress;
 extern uint32_t FieldItemsAddressesStart;
 
 extern uint32_t GlobalWorkPointer;

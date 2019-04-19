@@ -39,6 +39,7 @@ void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
 ttyd::evtmgr::EvtWork *getCurrentEventWork();
+bool checkIfPointerIsValid(void *ptr);
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);;
 
 }

@@ -278,6 +278,12 @@ ttyd::evtmgr::EvtWork *getCurrentEventWork()
 	return ttyd::evtmgr::evtGetWork();
 }
 
+bool checkIfPointerIsValid(void *ptr)
+{
+	uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
+	return ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000));
+}
+
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount)
 {
 	uint32_t tempAddress = reinterpret_cast<uint32_t>(address);
@@ -285,7 +291,7 @@ void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmou
 	{
 		return address;
 	}
-	else if ((tempAddress >= 0x80000000) && (tempAddress < 0x81800000))
+	else if (checkIfPointerIsValid(address))
 	{
 		tempAddress = *reinterpret_cast<uint32_t *>(tempAddress);
 	}
@@ -297,7 +303,7 @@ void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmou
 	uint32_t Counter = 0;
 	for (uint32_t i = 0; i < (offsetAmount - 1); i++)
 	{
-		if ((tempAddress >= 0x80000000) && (tempAddress < 0x81800000))
+		if (checkIfPointerIsValid(reinterpret_cast<void *>(tempAddress)))
 		{
 			tempAddress = *reinterpret_cast<uint32_t *>(tempAddress + offset[i]);
 		}

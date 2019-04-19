@@ -7,14 +7,18 @@
 #include "draw.h"
 #include "patch.h"
 
+#include <gc/os.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/OSCache.h>
 #include <ttyd/sac_scissor.h>
+#include <ttyd/string.h>
+#include <ttyd/memory.h>
 
 #include <cstdio>
+#include <cinttypes>
 
 namespace mod {
 
@@ -394,6 +398,218 @@ uint32_t Mod::pauseArtAttackTimer()
 	return mPFN_scissor_timer_main_trampoline();
 }
 
+void clearHeapArray(const char **&heap)
+{
+	const char **tempHeapArray = heap;
+	if (!tempHeapArray)
+	{
+		// The array is already cleared
+		return;
+	}
+	
+	uint32_t Counter = 0;
+	const char *tempHeap = tempHeapArray[Counter];
+	
+	while (tempHeap)
+	{
+		delete[] heap[Counter];
+		Counter++;
+		tempHeap = tempHeapArray[Counter];
+	}
+	
+	delete[] heap;
+	heap = nullptr;
+}
+
+void addTextToHeapArray(const char **&heap, char *text)
+{
+	// Get the next available slot in the array
+	uint32_t FreeSlot = 0;
+	
+	if (!heap)
+	{
+		heap = new const char *[2]; // Extra slot at the end
+		clearMemory(heap, 2 * sizeof(const char **));
+	}
+	else
+	{
+		const char **tempHeapArray = heap;
+		const char *tempPtr;
+		
+		do
+		{
+			FreeSlot++;
+			tempPtr = tempHeapArray[FreeSlot];
+		}
+		while (tempPtr);
+		
+		// Create a new array with a new spot for the next value
+		uint32_t TotalSlots = FreeSlot + 1;
+		const char **tempNewHeapArray = new const char *[TotalSlots + 1];
+		clearMemory(tempNewHeapArray, (TotalSlots + 1) * sizeof(const char **));
+		
+		// Copy the contents of the old array to the new array
+		for (uint32_t i = 0; i < FreeSlot; i++)
+		{
+			tempNewHeapArray[i] = tempHeapArray[i];
+		}
+		
+		// Delete the old array
+		delete[] (heap);
+		
+		// Set the new array as the current array
+		heap = tempNewHeapArray;
+	}
+	
+	// Add the new text at the current free slot
+	uint32_t TextSize = ttyd::string::strlen(text);
+	char *NewText = new char[TextSize + 1];
+	ttyd::string::strcpy(NewText, text);
+	heap[FreeSlot] = NewText;
+}
+
+bool checkIfTextAlreadyAdded(const char **&heap, const char *text, uint32_t bytesToCompare)
+{
+	const char **tempHeapArray = heap;
+	if (tempHeapArray)
+	{
+		uint32_t Counter = 0;
+		const char *tempHeapString = tempHeapArray[Counter];
+		
+		while (tempHeapString)
+		{
+			if (compareStringsSize(tempHeapString, text, bytesToCompare))
+			{
+				return true;
+			}
+			
+			Counter++;
+			tempHeapString = tempHeapArray[Counter];
+		}
+	}
+	return false;
+}
+
+void checkHeaps()
+{
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	// Check the standard heaps
+	bool ErrorsFound = false;
+	for (int32_t i = 0; i < 5; i++)
+	{
+		const gc::os::HeapInfo &heap = gc::os::OSAlloc_HeapArray[i];
+		bool valid = true;
+		
+		gc::os::ChunkInfo *currentChunk = nullptr;
+		gc::os::ChunkInfo *prevChunk = nullptr;
+		for (currentChunk = heap.firstUsed; currentChunk; currentChunk = currentChunk->next)
+		{
+			// Check pointer sanity
+			if (!checkIfPointerIsValid(currentChunk))
+			{
+				ErrorsFound = true;
+				valid = false;
+				break;
+			}
+			
+			// Sanity check size
+			if (currentChunk->size > 0x17FFFFF)
+			{
+				ErrorsFound = true;
+				valid = false;
+				break;
+			}
+
+			// Check linked list integrity
+			if (prevChunk != currentChunk->prev)
+			{
+				ErrorsFound = true;
+				valid = false;
+				break;
+			}
+
+			prevChunk = currentChunk;
+		}
+		
+		if (!valid)
+		{
+			sprintf(tempDisplayBuffer,
+				"Standard Heap %" PRId32 " corrupted at 0x%08" PRIX32,
+				i,
+				reinterpret_cast<uint32_t>(currentChunk));
+			
+			// Only add the current heap once
+			if (!checkIfTextAlreadyAdded(CheckHeap.StandardHeapArray, tempDisplayBuffer, 16))
+			{	
+				addTextToHeapArray(CheckHeap.StandardHeapArray, tempDisplayBuffer);
+			}
+		}
+	}
+	
+	if (!ErrorsFound)
+	{
+		// No errors were found, so clear the standard heap array
+		clearHeapArray(CheckHeap.StandardHeapArray);
+	}
+	
+	// Check the smart heap
+	ttyd::memory::SmartWork *gpSmartWork = *reinterpret_cast<ttyd::memory::SmartWork **>(SmartWorkAddress);
+	bool valid = true;
+	
+	ttyd::memory::SmartAllocationData *currentChunk = nullptr;
+	ttyd::memory::SmartAllocationData *prevChunk = nullptr;
+	for (currentChunk = gpSmartWork->pFirstUsed; currentChunk; currentChunk = currentChunk->pNext)
+	{
+		// Check pointer sanity
+		if (!checkIfPointerIsValid(currentChunk))
+		{
+			valid = false;
+			break;
+		}
+		
+		// Sanity check size
+		if (currentChunk->usedSize > 0x17FFFFF)
+		{
+			valid = false;
+			break;
+		}
+
+		// Check linked list integrity
+		if (prevChunk != currentChunk->pPrev)
+		{
+			valid = false;
+			break;
+		}
+		
+		prevChunk = currentChunk;
+	}
+	
+	if (!valid)
+	{
+		sprintf(tempDisplayBuffer,
+			"Smart Heap corrupted at 0x%08" PRIX32,
+			reinterpret_cast<uint32_t>(currentChunk));
+		
+		// Only add the current heap once
+		if (!checkIfTextAlreadyAdded(CheckHeap.SmartHeapArray, tempDisplayBuffer, 16))
+		{	
+			addTextToHeapArray(CheckHeap.SmartHeapArray, tempDisplayBuffer);
+		}
+	}
+	else
+	{
+		// No errors were found, so clear the smart heap array
+		clearHeapArray(CheckHeap.SmartHeapArray);
+	}
+	
+	// Draw any errors that occured
+	if (CheckHeap.StandardHeapArray || CheckHeap.SmartHeapArray)
+	{
+		drawFunctionOnDebugLayer(drawHeapArrayErrors);
+	}
+}
+
 void writeStandardBranch(void *address, void functionStart(), void functionBranchBack())
 {
 	void *tempFunctionStart 		= reinterpret_cast<void *>(functionStart);
@@ -604,6 +820,9 @@ void Mod::run()
 	{
 		FrameCounter = tempFrameCounter - 1;
 	}
+	
+	// Check the heaps
+	checkHeaps();
 	
 	// Call original function
 	mPFN_makeKey_trampoline();

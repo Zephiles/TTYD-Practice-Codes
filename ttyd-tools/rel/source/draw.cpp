@@ -3727,6 +3727,43 @@ void drawSettingsCurrentWork()
 	Timer = tempTimer - 1;
 }
 
+void drawHeapArrayErrors()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= 120;
+	float Scale 			= 0.6;
+	
+	// Draw the standard heap text
+	if (CheckHeap.StandardHeapArray)
+	{
+		const char **tempHeapArray = CheckHeap.StandardHeapArray;
+		uint32_t Counter = 0;
+	
+		while (tempHeapArray[Counter])
+		{
+			drawText(tempHeapArray[Counter], PosX, PosY, Alpha, TextColor, Scale);
+			PosY -= 20;
+			Counter++;
+		}
+	}
+	
+	// Draw the smart heap text
+	if (CheckHeap.SmartHeapArray)
+	{
+		const char **tempHeapArray = CheckHeap.SmartHeapArray;
+		uint32_t Counter = 0;
+	
+		while (tempHeapArray[Counter])
+		{
+			drawText(tempHeapArray[Counter], PosX, PosY, Alpha, TextColor, Scale);
+			PosY -= 20;
+			Counter++;
+		}
+	}
+}
+
 void drawTitleScreenInfo()
 {
 	// Draw the window for the text

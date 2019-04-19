@@ -1506,6 +1506,20 @@
 // w_atan2.c
 802725A0:atan2
 
+// os.a
+// OSAlloc.c
+// text
+// 80296400:DLInsert
+802964AC:OSAllocFromHeap
+802965A8:OSFreeToHeap
+80296624:OSSetCurrentHeap
+80296634:OSInitAlloc
+802966A4:OSCreateHeap
+80296710:OSDestroyHeap
+// data
+8041F070:OSAlloc_HeapArray
+8041F074:OSAlloc_NumHeaps
+
 // OSCache.c
 // 80296A14:DCEnable
 // 80296A28:DCInvalidateRange
