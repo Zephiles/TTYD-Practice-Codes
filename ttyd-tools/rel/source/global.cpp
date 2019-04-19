@@ -1311,7 +1311,7 @@ struct Menus Menu[26];
 struct Cheats Cheat[20];
 bool Displays[9];
 char DisplayBuffer[256];
-struct MemoryWatchStruct MemoryWatch[30];
+struct MemoryWatchStruct MemoryWatch[60];
 
 struct AutoIncrement AdjustableValueMenu;
 struct AutoIncrement MemoryWatchAdjustableValueMenu;

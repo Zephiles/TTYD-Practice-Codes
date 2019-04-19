@@ -613,7 +613,7 @@ extern Menus Menu[26];
 extern Cheats Cheat[20];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
-extern MemoryWatchStruct MemoryWatch[30];
+extern MemoryWatchStruct MemoryWatch[60];
 
 extern AutoIncrement AdjustableValueMenu;
 extern AutoIncrement MemoryWatchAdjustableValueMenu;
