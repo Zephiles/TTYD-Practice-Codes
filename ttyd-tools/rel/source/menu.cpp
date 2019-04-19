@@ -1748,6 +1748,7 @@ void menuCheckButton()
 		}
 		case MEMORY:
 		{
+			uint32_t MaxOptionsPerPage = 9;
 			switch (CurrentButton)
 			{
 				case DPADDOWN:
@@ -1807,7 +1808,7 @@ void menuCheckButton()
 										if (EmptyWatchSlot >= 0)
 										{
 											SelectedOption 		= tempCurrentMenuOption;
-											CurrentMenuOption 	= tempCurrentPage * 10;
+											CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 										}
 										else
 										{
@@ -1830,7 +1831,7 @@ void menuCheckButton()
 									if (tempAddress)
 									{
 										SelectedOption 		= tempCurrentMenuOption;
-										CurrentMenuOption 	= tempCurrentPage * 10;
+										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
 									{
@@ -1846,7 +1847,7 @@ void menuCheckButton()
 									if (tempAddress)
 									{
 										SelectedOption 		= tempCurrentMenuOption;
-										CurrentMenuOption 	= tempCurrentPage * 10;
+										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
 									{
