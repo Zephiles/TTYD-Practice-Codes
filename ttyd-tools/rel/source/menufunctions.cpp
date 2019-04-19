@@ -3450,9 +3450,11 @@ void adjustMemoryChangeAddressOrPointerSelection(uint32_t button)
 	uint32_t TotalMenuOptions = MemoryWatch[MenuSelectedOption].AddressOffsetAmount + 1;
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t MaxOptionsPerPage = 11;
+	uint8_t tempPage[1];
+	tempPage[0] = 0;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+		tempPage[0], TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 

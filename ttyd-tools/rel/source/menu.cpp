@@ -1906,7 +1906,7 @@ void menuCheckButton()
 								// Enter the next menu
 								CurrentMenu = MEMORY_MODIFY;
 								MenuSelectedOption = tempCurrentMenuOption;
-								resetMenu();
+								resetMenuNoPageReset();
 							}
 							else
 							{
@@ -1975,7 +1975,7 @@ void menuCheckButton()
 				{
 					if (tempSelectedOption == 0)
 					{
-						default_DPAD_Actions(CurrentButton);
+						adjustMenuNoPageEdit(CurrentButton);
 					}
 					break;
 				}
@@ -1992,14 +1992,14 @@ void menuCheckButton()
 									// Go back to the previous menu
 									CurrentMenu = tempPreviousMenu;
 									MenuSelectedOption = 0;
-									resetMenu();
+									resetMenuNoPageReset();
 									break;
 								}
 								case CHANGE_ADDRESS:
 								{
 									// Enter the next menu
 									CurrentMenu = MEMORY_CHANGE_ADDRESS;
-									resetMenu();
+									resetMenuNoPageReset();
 									break;
 								}
 								case CHANGE_TYPE:
@@ -2064,7 +2064,7 @@ void menuCheckButton()
 							// Go back to the previous menu
 							CurrentMenu = tempPreviousMenu;
 							MenuSelectedOption = 0;
-							resetMenu();
+							resetMenuNoPageReset();
 							break;
 						}
 						default:
@@ -2097,7 +2097,7 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									default_DPAD_Actions(CurrentButton);
+									adjustMenuNoPageEdit(CurrentButton);
 									break;
 								}
 								default:
@@ -2131,7 +2131,7 @@ void menuCheckButton()
 										{
 											// Go back to the previous menu
 											CurrentMenu = tempPreviousMenu;
-											resetMenu();
+											resetMenuNoPageReset();
 											break;
 										}
 										case CHANGE_ADDRESS_OR_POINTERS:
@@ -2214,7 +2214,7 @@ void menuCheckButton()
 								{
 									// Go back to the previous menu
 									CurrentMenu = tempPreviousMenu;
-									resetMenu();
+									resetMenuNoPageReset();
 									break;
 								}
 								default:
