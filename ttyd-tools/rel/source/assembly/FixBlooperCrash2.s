@@ -17,7 +17,7 @@ mr %r30,%r4
 
 # Check if battleUnitPointer is valid
 mr %r3,%r4 # battleUnitPointer
-bl checkBattleUnitPointer
+bl checkIfPointerIsValid
 
 # Check the returned bool
 cmpwi %r3,0 # False

@@ -59,22 +59,6 @@ extern "C"
 	void BranchBackFixRoomProblems();
 }
 
-// Additional function used by assembly overwrites
-extern "C" {
-bool checkBattleUnitPointer(void *battleUnitPointer)
-{
-	uint32_t BattleUnitPtr = reinterpret_cast<uint32_t>(battleUnitPointer);
-	if ((BattleUnitPtr < 0x80000000) || (BattleUnitPtr >= 0x81800000))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-}
-
 // Functions accessed by assembly overwrites
 extern "C" {
 void *preventPreBattleSoftlock(void *fbatPointer)
@@ -121,7 +105,7 @@ bool displayMegaHammerBadgesInMenu(uint32_t checkBit)
 
 uint32_t fixBlooperCrash1(uint32_t unkValue, void *battleUnitPointer)
 {
-	if (checkBattleUnitPointer(battleUnitPointer))
+	if (checkIfPointerIsValid(battleUnitPointer))
 	{
 		#ifdef TTYD_US
 		uint32_t offset = 0x218;

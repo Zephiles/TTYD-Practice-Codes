@@ -7,6 +7,8 @@
 
 namespace mod {
 
+extern "C" {
+
 bool checkButtonCombo(uint16_t combo);
 bool checkButtonComboEveryFrame(uint16_t combo);
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq);
@@ -41,5 +43,7 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
 ttyd::evtmgr::EvtWork *getCurrentEventWork();
 bool checkIfPointerIsValid(void *ptr);
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);;
+
+}
 
 }

@@ -73,7 +73,7 @@ const char *getAddressStringFromOffsets(int32_t slot, uint32_t maxOffset)
 			MemoryWatch[slot].Address), OffsetArray, maxOffset));
 	
 	// Make sure the address is valid
-	if ((Address < 0x80000000) || (Address >= 0x81800000))
+	if (!checkIfPointerIsValid(reinterpret_cast<void *>(Address)))
 	{
 		// Address is invalid
 		return "???";
@@ -98,7 +98,7 @@ const char *getValueString(int32_t slot)
 			MemoryWatch[slot].AddressOffset, MemoryWatch[slot].AddressOffsetAmount));
 	
 	// Make sure the address is valid
-	if ((Address < 0x80000000) || (Address >= 0x81800000))
+	if (!checkIfPointerIsValid(reinterpret_cast<void *>(Address)))
 	{
 		// Address is invalid
 		return "???";
