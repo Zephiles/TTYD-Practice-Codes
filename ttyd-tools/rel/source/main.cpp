@@ -813,6 +813,9 @@ void Mod::run()
 		displayActionCommandsTiming();
 		displayStickAngle();
 		displayMemoryWatches();
+		
+		// Check the heaps
+		checkHeaps();
 	}
 	
 	uint32_t tempFrameCounter = FrameCounter;
@@ -820,9 +823,6 @@ void Mod::run()
 	{
 		FrameCounter = tempFrameCounter - 1;
 	}
-	
-	// Check the heaps
-	checkHeaps();
 	
 	// Call original function
 	mPFN_makeKey_trampoline();
