@@ -339,6 +339,7 @@ void addMemoryWatch(int32_t slot)
 
 void deleteWatch(int32_t slot)
 {
+	uint32_t TotalOptionsPerPage = 9;
 	int32_t TotalSlots = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	int32_t TotalMenuOptions = 0;
 	
@@ -379,7 +380,7 @@ void deleteWatch(int32_t slot)
 	
 	// Make sure the current page is valid
 	uint32_t tempCurrentPage = CurrentPage;
-	if ((tempCurrentPage * 10) > static_cast<uint32_t>(TotalMenuOptions))
+	if ((tempCurrentPage * TotalOptionsPerPage) > static_cast<uint32_t>(TotalMenuOptions))
 	{
 		CurrentPage = tempCurrentPage - 1;
 	}
