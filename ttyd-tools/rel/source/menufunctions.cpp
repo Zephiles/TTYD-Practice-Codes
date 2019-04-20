@@ -177,7 +177,7 @@ void *getFreeSlotPointer()
 	uint32_t Address_and_Size[2];
 	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return nullptr;
 	}
@@ -221,7 +221,7 @@ int32_t getTotalItems()
 	uint32_t Address_and_Size[2];
 	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return NULL_PTR;
 	}
@@ -602,7 +602,7 @@ bool checkForItemsOnNextPage(uint32_t currentPage)
 	uint32_t Address_and_Size[2];
 	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return false;
 	}
@@ -938,7 +938,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						case ADD_BY_ID:
 						{
 							void *tempAddress = getFreeSlotPointer();
-							if (tempAddress != 0)
+							if (tempAddress)
 							{
 								setAddByIdValue(tempAddress);
 								
@@ -1252,7 +1252,7 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			if (tempSelectedOption == ADD_BY_ICON)
 			{
 				void *tempAddress = getFreeSlotPointer();
-				if (tempAddress != nullptr)
+				if (tempAddress)
 				{
 					setAddByIconValue(tempAddress);
 					
@@ -2405,14 +2405,14 @@ void setAddByIconValue(void *address)
 void duplicateCurrentItem(void *address)
 {
 	uint32_t Address_and_Size[2];
-	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
+	uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return;
 	}
 	
-	uint32_t tempAddress 	= tempArray[0];
+	uint32_t tempAddress = tempArray[0];
 	
 	int16_t CurrentItem = *reinterpret_cast<int16_t *>(
 		tempAddress + (CurrentMenuOption * 0x2));
@@ -2426,9 +2426,9 @@ void duplicateCurrentItem(void *address)
 void deleteItem()
 {
 	uint32_t Address_and_Size[2];
-	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
+	uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return;
 	}
@@ -2460,9 +2460,9 @@ void deleteItem()
 int32_t changeItem()
 {
 	uint32_t Address_and_Size[2];
-	uint32_t *tempArray				= getPouchAddressAndSize(Address_and_Size);
+	uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return NULL_PTR;
 	}
@@ -2809,7 +2809,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 		
 		if (currentButtonCombo & (1 << i))
 		{
-			if (buttonArray == nullptr)
+			if (!buttonArray)
 			{
 				buttonArray = new uint8_t[2]; // Extra spot for a 0 at the end of the array
 				clearMemory(buttonArray, (2 * sizeof(uint8_t)));
@@ -2838,7 +2838,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 		Counter++;
 	}
 	
-	if (buttonArray != nullptr)
+	if (buttonArray)
 	{
 		buttonArray[Size] = 0;
 	}
@@ -2853,7 +2853,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 
 /*uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo)
 {
-	if (buttonArray == nullptr)
+	if (!buttonArray)
 	{
 		buttonArray = new uint8_t[14]; // Extra spot for a 0 at the end of the array
 	}
@@ -3464,13 +3464,13 @@ void adjustBattlesActorSelection(uint32_t button)
 	int32_t Counter = 0;
 	for (uint32_t i = 0; i < 62; i++)
 	{
-		if (getActorPointer(i + 1) == nullptr) // Add 1 to skip System
+		if (getActorPointer(i + 1)) // Add 1 to skip System
 		{
-			break;
+			Counter++;
 		}
 		else
 		{
-			Counter++;
+			break;
 		}
 	}
 	

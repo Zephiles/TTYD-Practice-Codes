@@ -66,7 +66,7 @@ void menuCheckButton()
 						case BATTLES:
 						{
 							// Make sure the player is currently in a battle
-							if (getBattlePointer() != nullptr)
+							if (getBattlePointer())
 							{
 								// Currently in a battle, so enter the menu
 								CurrentMenu = tempCurrentMenuOption;
@@ -150,6 +150,7 @@ void menuCheckButton()
 		}
 		case INVENTORY_MAIN:
 		{
+			uint32_t MaxOptionsPerPage = 20;
 			switch (CurrentButton)
 			{
 				case DPADLEFT:
@@ -199,7 +200,7 @@ void menuCheckButton()
 							if ((tempSelectedOption >= DUPLICATE) && 
 								(tempSelectedOption <= DELETE))
 							{
-								CurrentMenuOption = tempCurrentPage * 20;
+								CurrentMenuOption = tempCurrentPage * MaxOptionsPerPage;
 							}
 						}
 					}
@@ -218,7 +219,7 @@ void menuCheckButton()
 							if ((tempSelectedOption >= DUPLICATE) && 
 								(tempSelectedOption <= DELETE))
 							{
-								CurrentMenuOption = tempCurrentPage * 20;
+								CurrentMenuOption = tempCurrentPage * MaxOptionsPerPage;
 							}
 						}
 					}
@@ -226,7 +227,7 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					correctInventoryCurrentMenuOptionAndPage(20);
+					correctInventoryCurrentMenuOptionAndPage(MaxOptionsPerPage);
 					switch (tempSelectedOption)
 					{
 						case 0:
@@ -279,19 +280,18 @@ void menuCheckButton()
 								{
 									if (getTotalItems() > 0)
 									{
-										void *tempAddress = getFreeSlotPointer();
-										if (tempAddress == nullptr)
+										if (getFreeSlotPointer())
+										{
+											Timer 				= 0;
+											SelectedOption 		= tempCurrentMenuOption;
+											CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
+										}
+										else
 										{
 											// Inventory is currently full
 											SelectedOption 		= tempCurrentMenuOption;
 											FunctionReturnCode 	= INVENTORY_FULL;
 											Timer = secondsToFrames(3);
-										}
-										else
-										{
-											Timer 				= 0;
-											SelectedOption 		= tempCurrentMenuOption;
-											CurrentMenuOption 	= tempCurrentPage * 20;
 										}
 									}
 									else
@@ -311,7 +311,7 @@ void menuCheckButton()
 									{
 										Timer 					= 0;
 										SelectedOption 			= tempCurrentMenuOption;
-										CurrentMenuOption 		= tempCurrentPage * 20;
+										CurrentMenuOption 		= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
 									{
@@ -332,15 +332,15 @@ void menuCheckButton()
 						case ADD_BY_ID:
 						case ADD_BY_ICON:
 						{
-							if (getFreeSlotPointer() == nullptr)
+							if (getFreeSlotPointer())
+							{
+								Timer = 0;
+							}
+							else
 							{
 								// Inventory is currently full
 								FunctionReturnCode = INVENTORY_FULL;
 								Timer = secondsToFrames(3);
-							}
-							else
-							{
-								Timer = 0;
 							}
 							break;
 						}
@@ -351,13 +351,12 @@ void menuCheckButton()
 								Timer = 0;
 								
 								void *tempAddress = getFreeSlotPointer();
-								if (tempAddress != nullptr)
+								if (tempAddress)
 								{
 									duplicateCurrentItem(tempAddress);
 									
 									// Recheck the inventory
-									tempAddress = getFreeSlotPointer();
-									if (tempAddress == nullptr)
+									if (!getFreeSlotPointer())
 									{
 										// No more free spaces, so leave the duplicate menu
 										closeSecondaryMenu();
@@ -386,7 +385,7 @@ void menuCheckButton()
 								uint32_t Address_and_Size[2];
 								uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
 								
-								if (tempArray != nullptr)
+								if (tempArray)
 								{
 									uint32_t tempAddress = tempArray[0];
 									uint32_t CurrentItemAddress = tempAddress + (tempCurrentMenuOption * 0x2);
@@ -421,7 +420,7 @@ void menuCheckButton()
 								uint32_t Address_and_Size[2];
 								uint32_t *tempArray	= getPouchAddressAndSize(Address_and_Size);
 								
-								if (tempArray != nullptr)
+								if (tempArray)
 								{
 									uint32_t tempAddress = tempArray[0];
 									uint32_t CurrentItemAddress = tempAddress + (tempCurrentMenuOption * 0x2);
@@ -904,137 +903,142 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							if (tempCurrentMenuOption == 0)
+							switch (tempCurrentMenuOption)
 							{
-								// Go back to the previous menu
-								CurrentMenu 			= tempPreviousMenu;
-								CurrentMenuOption 		= 0;
-								MenuSelectionStates 	= 0;
-							}
-							else
-							{
-								uint32_t FlagToSet = ManageFlags.FlagToSet;
-								uint32_t ValueToSet = static_cast<uint32_t>(ManageFlags.ValueToSet);
-								
-								switch (tempMenuSelectionStates)
+								case 0:
 								{
-									case SET_GSW:
-									case SET_GW:
-									case SET_LSW:
+									// Go back to the previous menu
+									CurrentMenu 			= tempPreviousMenu;
+									CurrentMenuOption 		= 0;
+									MenuSelectionStates 	= 0;
+									break;
+								}
+								default:
+								{
+									uint32_t FlagToSet = ManageFlags.FlagToSet;
+									uint32_t ValueToSet = static_cast<uint32_t>(ManageFlags.ValueToSet);
+									
+									switch (tempMenuSelectionStates)
 									{
-										switch (tempCurrentMenuOption)
+										case SET_GSW:
+										case SET_GW:
+										case SET_LSW:
 										{
-											case CHANGE_GLOBAL_WORD:
+											switch (tempCurrentMenuOption)
 											{
-												SelectedOption 			= tempCurrentMenuOption;
-												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												MenuSecondaryValue 		= FlagToSet;
-												break;
-											}
-											case CHANGE_GLOBAL_WORD_VALUE:
-											{
-												SelectedOption 			= tempCurrentMenuOption;
-												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												MenuSecondaryValue 		= getGlobalFlagValue(tempMenuSelectionStates, FlagToSet);
-												break;
-											}
-											case SET_GLOBAL_WORD_VALUE:
-											{
-												switch (tempMenuSelectionStates)
+												case CHANGE_GLOBAL_WORD:
 												{
-													case SET_GSW:
-													{
-														ttyd::swdrv::swByteSet(FlagToSet, ValueToSet);
-														break;
-													}
-													case SET_GW:
-													{
-														setGW(FlagToSet, ValueToSet);
-														break;
-													}
-													case SET_LSW:
-													{
-														ttyd::swdrv::_swByteSet(FlagToSet, ValueToSet);
-														break;
-													}
-													default:
-													{
-														break;
-													}
+													SelectedOption 			= tempCurrentMenuOption;
+													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+													MenuSecondaryValue 		= FlagToSet;
+													break;
 												}
-												break;
+												case CHANGE_GLOBAL_WORD_VALUE:
+												{
+													SelectedOption 			= tempCurrentMenuOption;
+													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+													MenuSecondaryValue 		= getGlobalFlagValue(tempMenuSelectionStates, FlagToSet);
+													break;
+												}
+												case SET_GLOBAL_WORD_VALUE:
+												{
+													switch (tempMenuSelectionStates)
+													{
+														case SET_GSW:
+														{
+															ttyd::swdrv::swByteSet(FlagToSet, ValueToSet);
+															break;
+														}
+														case SET_GW:
+														{
+															setGW(FlagToSet, ValueToSet);
+															break;
+														}
+														case SET_LSW:
+														{
+															ttyd::swdrv::_swByteSet(FlagToSet, ValueToSet);
+															break;
+														}
+														default:
+														{
+															break;
+														}
+													}
+													break;
+												}
+												default:
+												{
+													break;
+												}
 											}
-											default:
-											{
-												break;
-											}
+											break;
 										}
-										break;
-									}
-									case SET_GSWF:
-									case SET_GF:
-									case SET_LSWF:
-									{
-										switch (tempCurrentMenuOption)
+										case SET_GSWF:
+										case SET_GF:
+										case SET_LSWF:
 										{
-											case CHANGE_GLOBAL_FLAG:
+											switch (tempCurrentMenuOption)
 											{
-												SelectedOption 			= tempCurrentMenuOption;
-												SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												MenuSecondaryValue 		= FlagToSet;
-												break;
-											}
-											case SET_GLOBAL_FLAG:
-											{
-												switch (tempMenuSelectionStates)
+												case CHANGE_GLOBAL_FLAG:
 												{
-													case SET_GSWF:
-													{
-														if (ttyd::swdrv::swGet(FlagToSet))
-														{
-															ttyd::swdrv::swClear(FlagToSet);
-														}
-														else
-														{
-															ttyd::swdrv::swSet(FlagToSet);
-														}
-														break;
-													}
-													case SET_GF:
-													{
-														setGF(FlagToSet); // setGF automatically toggles the value
-														break;
-													}
-													case SET_LSWF:
-													{
-														if (ttyd::swdrv::_swGet(FlagToSet))
-														{
-															ttyd::swdrv::_swClear(FlagToSet);
-														}
-														else
-														{
-															ttyd::swdrv::_swSet(FlagToSet);
-														}
-														break;
-													}
-													default:
-													{
-														break;
-													}
+													SelectedOption 			= tempCurrentMenuOption;
+													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+													MenuSecondaryValue 		= FlagToSet;
+													break;
 												}
-												break;
+												case SET_GLOBAL_FLAG:
+												{
+													switch (tempMenuSelectionStates)
+													{
+														case SET_GSWF:
+														{
+															if (ttyd::swdrv::swGet(FlagToSet))
+															{
+																ttyd::swdrv::swClear(FlagToSet);
+															}
+															else
+															{
+																ttyd::swdrv::swSet(FlagToSet);
+															}
+															break;
+														}
+														case SET_GF:
+														{
+															setGF(FlagToSet); // setGF automatically toggles the value
+															break;
+														}
+														case SET_LSWF:
+														{
+															if (ttyd::swdrv::_swGet(FlagToSet))
+															{
+																ttyd::swdrv::_swClear(FlagToSet);
+															}
+															else
+															{
+																ttyd::swdrv::_swSet(FlagToSet);
+															}
+															break;
+														}
+														default:
+														{
+															break;
+														}
+													}
+													break;
+												}
+												default:
+												{
+													break;
+												}
 											}
-											default:
-											{
-												break;
-											}
+											break;
 										}
-										break;
+										default:
+										{
+											break;
+										}
 									}
-									default:
-									{
-										break;
-									}
+									break;
 								}
 							}
 							break;
@@ -1276,74 +1280,77 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					if ((tempCurrentMenuOption == 0) && 
-						(tempMenuSelectionStates == 0))
+					switch (tempSelectedOption)
 					{
-						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
-					}
-					else
-					{
-						switch (tempSelectedOption)
+						case 0:
 						{
-							case 0:
+							switch (tempCurrentMenuOption)
 							{
-								MenuSelectionStates = 1;
-								SelectedOption = tempCurrentMenuOption;
-								CurrentMenuOption = 0;
-								break;
-							}
-							default:
-							{
-								switch (tempMenuSelectedOption)
+								case 0:
 								{
-									case 0:
-									{
-										MenuSelectedOption = tempCurrentMenuOption + 1;
-										
-										switch (tempCurrentMenuOption + 1)
-										{
-											case SPECIAL_MOVES:
-											{
-												SecondaryMenuOption = 0;
-												break;
-											}
-											default:
-											{
-												SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-											
-												uint32_t offset = getMarioStatsValueOffset(tempCurrentMenuOption + 1);
-												if (offset == 0)
-												{
-													break;
-												}
-												
-												// Set the current value in the display to the current value of the address being changed
-												if (((tempCurrentMenuOption + 1) >= PIANTAS_STORED) && 
-													((tempCurrentMenuOption + 1) <= CURRENT_PIANTAS))
-												{
-													uint32_t PiantaParlorPtr = *reinterpret_cast<uint32_t *>(PiantaParlorAddressesStart);
-													MenuSecondaryValue = *reinterpret_cast<int32_t *>(PiantaParlorPtr + offset);
-												}
-												else
-												{
-													uint32_t PouchPtr = reinterpret_cast<uint32_t>(
-														ttyd::mario_pouch::pouchGetPtr());
-													
-													MenuSecondaryValue = *reinterpret_cast<int16_t *>(PouchPtr + offset);
-												}
-												break;
-											}
-										}
-										break;
-									}
-									default:
-									{
-										break;
-									}
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									break;
 								}
-								break;
+								default:
+								{
+									SelectedOption = tempCurrentMenuOption;
+									CurrentMenuOption = 0;
+									break;
+								}
 							}
+							break;
+						}
+						default:
+						{
+							switch (tempMenuSelectedOption)
+							{
+								case 0:
+								{
+									MenuSelectedOption = tempCurrentMenuOption + 1;
+									
+									switch (tempCurrentMenuOption + 1)
+									{
+										case SPECIAL_MOVES:
+										{
+											SecondaryMenuOption = 0;
+											break;
+										}
+										default:
+										{
+											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+										
+											uint32_t offset = getMarioStatsValueOffset(tempCurrentMenuOption + 1);
+											if (offset == 0)
+											{
+												break;
+											}
+											
+											// Set the current value in the display to the current value of the address being changed
+											if (((tempCurrentMenuOption + 1) >= PIANTAS_STORED) && 
+												((tempCurrentMenuOption + 1) <= CURRENT_PIANTAS))
+											{
+												uint32_t PiantaParlorPtr = *reinterpret_cast<uint32_t *>(PiantaParlorAddressesStart);
+												MenuSecondaryValue = *reinterpret_cast<int32_t *>(PiantaParlorPtr + offset);
+											}
+											else
+											{
+												uint32_t PouchPtr = reinterpret_cast<uint32_t>(
+													ttyd::mario_pouch::pouchGetPtr());
+												
+												MenuSecondaryValue = *reinterpret_cast<int16_t *>(PouchPtr + offset);
+											}
+											break;
+										}
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
 						}
 					}
 					break;
@@ -1363,7 +1370,6 @@ void menuCheckButton()
 							}
 							default:
 							{
-								MenuSelectionStates = 0;
 								closeSecondaryMenu();
 								break;
 							}
@@ -1402,131 +1408,138 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					if ((tempCurrentMenuOption == 0) && 
-						(tempMenuSelectionStates == 0))
+					switch (tempSelectedOption)
 					{
-						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
-					}
-					else
-					{
-						switch (tempSelectedOption)
+						case 0:
 						{
-							case 0:
+							switch (tempCurrentMenuOption)
 							{
-								MenuSelectionStates = 1;
-								SelectedOption = tempCurrentMenuOption;
-								CurrentMenuOption = 0;
-								break;
-							}
-							default:
-							{
-								switch (tempMenuSelectedOption)
+								case 0:
 								{
-									case 0:
-									{
-										uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									break;
+								}
+								default:
+								{
+									SelectedOption = tempCurrentMenuOption;
+									CurrentMenuOption = 0;
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							switch (tempMenuSelectedOption)
+							{
+								case 0:
+								{
+									uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(
 											getPartnerEnabledAddress());
 									
-										switch (tempCurrentMenuOption + 1)
+									switch (tempCurrentMenuOption + 1)
+									{
+										case PARTNER_HP:
 										{
-											case PARTNER_HP:
+											MenuSecondaryValue = *reinterpret_cast<int16_t *>(
+												PartnerEnabledAddress + 0x6);
+											
+											MenuSelectedOption = tempCurrentMenuOption + 1;
+											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											break;
+										}
+										case PARTNER_MAX_HP:
+										{
+											MenuSecondaryValue = *reinterpret_cast<int16_t *>(
+												PartnerEnabledAddress + 0x2);
+											
+											MenuSelectedOption = tempCurrentMenuOption + 1;
+											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											break;
+										}
+										case PARTNER_RANK:
+										{
+											MenuSecondaryValue = *reinterpret_cast<int16_t *>(
+												PartnerEnabledAddress + 0xA);
+											
+											MenuSelectedOption = tempCurrentMenuOption + 1;
+											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											break;
+										}
+										case TOGGLE:
+										{
+											bool PartnerEnabled = *reinterpret_cast<bool *>(
+												PartnerEnabledAddress + 1);
+											
+											*reinterpret_cast<bool *>(
+												PartnerEnabledAddress + 1) = !PartnerEnabled;
+											
+											// Reset the partner menu if the pause menu is open
+											uint32_t SystemLevel = getSystemLevel();
+											if (SystemLevel == 15)
 											{
-												MenuSecondaryValue = *reinterpret_cast<int16_t *>(
-													PartnerEnabledAddress + 0x6);
-												
-												MenuSelectedOption = tempCurrentMenuOption + 1;
-												SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												break;
+												uint32_t *PauseMenuPointer = 
+													*reinterpret_cast<uint32_t **>(PauseMenuStartAddress);
+												ttyd::win_party::winPartyExit(PauseMenuPointer);
+												ttyd::win_party::winPartyInit(PauseMenuPointer);
 											}
-											case PARTNER_MAX_HP:
+											break;
+										}
+										case BRING_OUT:
+										case REMOVE:
+										{
+											if (checkIfPartnerOutSelected())
 											{
-												MenuSecondaryValue = *reinterpret_cast<int16_t *>(
-													PartnerEnabledAddress + 0x2);
-												
-												MenuSelectedOption = tempCurrentMenuOption + 1;
-												SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												break;
+												// Currently REMOVE
+												removePartnerFromOverworld();
 											}
-											case PARTNER_RANK:
+											else
 											{
-												MenuSecondaryValue = *reinterpret_cast<int16_t *>(
-													PartnerEnabledAddress + 0xA);
-												
-												MenuSelectedOption = tempCurrentMenuOption + 1;
-												SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-												break;
-											}
-											case TOGGLE:
-											{
-												bool PartnerEnabled = *reinterpret_cast<bool *>(
-													PartnerEnabledAddress + 1);
-												
-												*reinterpret_cast<bool *>(
-													PartnerEnabledAddress + 1) = !PartnerEnabled;
-												
-												// Reset the partner menu if the pause menu is open
-												uint32_t SystemLevel = getSystemLevel();
-												if (SystemLevel == 15)
+												// Currently BRING_OUT
+												// Make sure a file is loaded
+												if (checkIfInGame())
 												{
-													uint32_t *PauseMenuPointer = 
-														*reinterpret_cast<uint32_t **>(PauseMenuStartAddress);
-													ttyd::win_party::winPartyExit(PauseMenuPointer);
-													ttyd::win_party::winPartyInit(PauseMenuPointer);
-												}
-												break;
-											}
-											case BRING_OUT:
-											case REMOVE:
-											{
-												if (checkIfPartnerOutSelected())
-												{
-													// Currently REMOVE
-													removePartnerFromOverworld();
+													Timer = 0;
+													
+													// Preserve the current value of the enabled bool
+													bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
+														PartnerEnabledAddress + 1);
+													
+													// Make sure the selected partner is enabled, as marioPartyEntry needs it to be enabled
+													*reinterpret_cast<bool *>(
+														PartnerEnabledAddress + 1) = true;
+													
+													// Bring the partner out
+													ttyd::mario_party::marioPartyEntry(
+														static_cast<ttyd::party::PartyMembers>(
+															getSelectedOptionPartnerValue()));
+													
+													// Restore the value of the enabled bool
+													*reinterpret_cast<bool *>(
+														PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
 												}
 												else
 												{
-													// Currently BRING_OUT
-													// Make sure a file is loaded
-													if (checkIfInGame())
-													{
-														Timer = 0;
-														
-														// Preserve the current value of the enabled bool
-														bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
-															PartnerEnabledAddress + 1);
-														
-														// Make sure the selected partner is enabled, as marioPartyEntry needs it to be enabled
-														*reinterpret_cast<bool *>(
-															PartnerEnabledAddress + 1) = true;
-														
-														// Bring the partner out
-														ttyd::mario_party::marioPartyEntry(
-															static_cast<ttyd::party::PartyMembers>(
-																getSelectedOptionPartnerValue()));
-														
-														// Restore the value of the enabled bool
-														*reinterpret_cast<bool *>(
-															PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
-													}
-													else
-													{
-														FunctionReturnCode 	= NOT_IN_GAME;
-														Timer 				= secondsToFrames(3);
-													}
+													FunctionReturnCode 	= NOT_IN_GAME;
+													Timer 				= secondsToFrames(3);
 												}
-												break;
 											}
-											default:
-											{
-												break;
-											}
-										}	
-										break;
+											break;
+										}
+										default:
+										{
+											break;
+										}
 									}
+									break;
 								}
-								break;
+								default:
+								{
+									break;
+								}
 							}
+							break;
 						}
 					}
 					break;
@@ -1546,7 +1559,6 @@ void menuCheckButton()
 							}
 							default:
 							{
-								MenuSelectionStates = 0;
 								closeSecondaryMenu();
 								break;
 							}
@@ -2242,7 +2254,7 @@ void menuCheckButton()
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -2250,6 +2262,7 @@ void menuCheckButton()
 			}
 			else
 			{
+				uint32_t MaxOptionsPerPage = 13;
 				switch (CurrentButton)
 				{
 					case DPADDOWN:
@@ -2272,36 +2285,40 @@ void menuCheckButton()
 					}
 					case A:
 					{
-						if ((tempSelectedOption == 0) && 
-							(tempCurrentMenuOption == 0))
+						switch (tempSelectedOption)
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-						}
-						else
-						{
-							switch (tempSelectedOption)
+							case 0:
 							{
-								case 0:
+								switch (tempCurrentMenuOption)
 								{
-									SelectedOption 		= tempCurrentMenuOption;
-									CurrentMenuOption 	= tempCurrentPage * 13;
-									break;
-								}
-								default:
-								{
-									// Make sure the current slot isn't empty
-									void *CurrentActorPointer = getActorPointer(tempCurrentMenuOption + 1); // Add 1 to skip System
-									if (CurrentActorPointer != nullptr)
+									case 0:
 									{
-										// Go to the next menu
-										CurrentMenu = BATTLES_CURRENT_ACTOR;
-										MenuSelectedOption = tempCurrentMenuOption + 1; // Add 1 to skip System
+										// Go back to the previous menu
+										CurrentMenu = tempPreviousMenu;
 										resetMenu();
+										break;
 									}
-									break;
+									default:
+									{
+										SelectedOption 		= tempCurrentMenuOption;
+										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
+										break;
+									}
 								}
+								break;
+							}
+							default:
+							{
+								// Make sure the current slot isn't empty
+								void *CurrentActorPointer = getActorPointer(tempCurrentMenuOption + 1); // Add 1 to skip System
+								if (CurrentActorPointer)
+								{
+									// Go to the next menu
+									CurrentMenu = BATTLES_CURRENT_ACTOR;
+									MenuSelectedOption = tempCurrentMenuOption + 1; // Add 1 to skip System
+									resetMenu();
+								}
+								break;
 							}
 						}
 						break;
@@ -2336,7 +2353,7 @@ void menuCheckButton()
 		case BATTLES_CURRENT_ACTOR:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -2357,22 +2374,22 @@ void menuCheckButton()
 					}
 					case A:
 					{
-						if ((tempSelectedOption == 0) && 
-							(tempCurrentMenuOption == 0))
+						switch (tempSelectedOption)
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-						}
-						else
-						{
-							if (tempSelectedOption == 0)
+							case 0:
 							{
 								uint32_t ActorAddress = reinterpret_cast<uint32_t>(
 									getActorPointer(tempMenuSelectedOption));
 								
 								switch (tempCurrentMenuOption)
 								{
+									case 0:
+									{
+										// Go back to the previous menu
+										CurrentMenu = tempPreviousMenu;
+										resetMenu();
+										break;
+									}
 									case CLEAR_HELD_ITEM:
 									{
 										if (ActorAddress == 0)
@@ -2418,13 +2435,13 @@ void menuCheckButton()
 									}
 									default:
 									{
-										SelectedOption = tempCurrentMenuOption;
-										SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-										
 										if (ActorAddress == 0)
 										{
 											break;
 										}
+										
+										SelectedOption = tempCurrentMenuOption;
+										SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 										
 										switch (tempCurrentMenuOption)
 										{
@@ -2474,6 +2491,11 @@ void menuCheckButton()
 										break;
 									}
 								}
+								break;
+							}
+							default:
+							{	
+								break;
 							}
 						}
 						break;
@@ -2508,7 +2530,7 @@ void menuCheckButton()
 		case BATTLES_STATUSES:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -2531,15 +2553,16 @@ void menuCheckButton()
 					{
 						if (tempSelectedOption == 0)
 						{
-							SelectedOption = tempCurrentMenuOption + 1;
-							SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-							
 							uint32_t ActorAddress = reinterpret_cast<uint32_t>(
 								getActorPointer(tempMenuSelectedOption));
+							
 							if (ActorAddress == 0)
 							{
 								break;
 							}
+							
+							SelectedOption = tempCurrentMenuOption + 1;
+							SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 							
 							uint32_t Counter = 0;
 							if (tempCurrentMenuOption >= 1) // Sleep flags
@@ -2811,89 +2834,93 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					if ((tempCurrentMenuOption == 0) && 
-						(tempSelectedOption == 0))
+					switch (tempSelectedOption)
 					{
-						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
-						resetMenu();
-					}
-					else
-					{
-						switch (tempSelectedOption)
+						case 0:
 						{
-							case 0:
+							switch (tempCurrentMenuOption)
 							{
-								SelectedOption = tempCurrentMenuOption;
-								Timer = 0;
-								CurrentMenuOption = 0;
-								break;
-							}
-							default:
-							{
-								switch (tempCurrentMenuOption)
+								case 0:
 								{
-									case PIT_OF_100_TRIALS:
-									{
-										switch (tempMenuSelectedOption)
-										{
-											case 0:
-											{
-												if (checkIfInGame())
-												{
-													Timer = 0;
-													MenuSelectedOption = SELECTING_VALUE;
-													
-													SecondaryMenuOption = getHighestAdjustableValueDigit(
-														tempCurrentMenu) - 1;
-														
-													MenuSecondaryValue = getCurrentPitFloor();
-												}
-												else
-												{
-													FunctionReturnCode 	= NOT_IN_GAME;
-													Timer 				= secondsToFrames(3);
-												}
-												break;
-											}
-											default:
-											{
-												break;
-											}
-										}
-										break;
-									}
-									default:
-									{
-										// Warp to the currently selected map and close the menu
-										int32_t ReturnCode = warpToMap(tempCurrentMenuOption);
-										switch (ReturnCode)
-										{
-											case UNKNOWN_BEHAVIOR:
-											{
-												break;
-											}
-											case SUCCESS:
-											{
-												closeMenu();
-												return;
-											}
-											case NOT_IN_GAME:
-											{
-												FunctionReturnCode 	= ReturnCode;
-												Timer 				= secondsToFrames(3);
-												break;
-											}
-											default:
-											{
-												break;
-											}
-										}
-										break;
-									}
+									// Go back to the previous menu
+									CurrentMenu = tempPreviousMenu;
+									resetMenu();
+									break;
 								}
-								break;
+								default:
+								{
+									Timer = 0;
+									SelectedOption = tempCurrentMenuOption;
+									CurrentMenuOption = 0;
+									break;
+								}
 							}
+							break;
+						}
+						default:
+						{
+							switch (tempCurrentMenuOption)
+							{
+								case PIT_OF_100_TRIALS:
+								{
+									switch (tempMenuSelectedOption)
+									{
+										case 0:
+										{
+											if (checkIfInGame())
+											{
+												Timer = 0;
+												MenuSelectedOption = SELECTING_VALUE;
+												
+												SecondaryMenuOption = getHighestAdjustableValueDigit(
+													tempCurrentMenu) - 1;
+													
+												MenuSecondaryValue = getCurrentPitFloor();
+											}
+											else
+											{
+												FunctionReturnCode 	= NOT_IN_GAME;
+												Timer 				= secondsToFrames(3);
+											}
+											break;
+										}
+										default:
+										{
+											break;
+										}
+									}
+									break;
+								}
+								default:
+								{
+									// Warp to the currently selected map and close the menu
+									int32_t ReturnCode = warpToMap(tempCurrentMenuOption);
+									switch (ReturnCode)
+									{
+										case UNKNOWN_BEHAVIOR:
+										{
+											break;
+										}
+										case SUCCESS:
+										{
+											closeMenu();
+											return;
+										}
+										case NOT_IN_GAME:
+										{
+											FunctionReturnCode 	= ReturnCode;
+											Timer 				= secondsToFrames(3);
+											break;
+										}
+										default:
+										{
+											break;
+										}
+									}
+									break;
+								}
+							}
+							break;
 						}
 					}
 					break;
@@ -2976,7 +3003,8 @@ void drawMenu()
 		}
 		case INVENTORY_MAIN:
 		{
-			correctInventoryCurrentMenuOptionAndPage(20);
+			uint32_t MaxOptionsPerPage = 20;
+			correctInventoryCurrentMenuOptionAndPage(MaxOptionsPerPage);
 			
 			// Draw the text for the options
 			drawSingleColumnMain();
@@ -3346,7 +3374,7 @@ void drawMenu()
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -3371,7 +3399,7 @@ void drawMenu()
 		case BATTLES_CURRENT_ACTOR:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -3414,7 +3442,7 @@ void drawMenu()
 		case BATTLES_STATUSES:
 		{
 			// Close the menu if not in a battle
-			if (getBattlePointer() == nullptr)
+			if (!getBattlePointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;

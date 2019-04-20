@@ -413,7 +413,7 @@ void drawInventoryIconAndTextColumns()
 	uint32_t Address_and_Size[2];
 	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
 	
-	if (tempArray == nullptr)
+	if (!tempArray)
 	{
 		return;
 	}

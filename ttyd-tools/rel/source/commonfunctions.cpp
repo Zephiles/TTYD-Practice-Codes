@@ -102,7 +102,7 @@ void *getBattlePointer()
 void *getMarioBattlePointer()
 {
 	void *BattlePointer = getBattlePointer();
-	if (BattlePointer == nullptr)
+	if (!BattlePointer)
 	{
 		return nullptr;
 	}
@@ -113,7 +113,7 @@ void *getMarioBattlePointer()
 void *getPartnerBattlePointer()
 {
 	void *MarioBattlePointer = getMarioBattlePointer();
-	if (MarioBattlePointer == nullptr)
+	if (!MarioBattlePointer)
 	{
 		return nullptr;
 	}
@@ -125,7 +125,7 @@ void *getPartnerBattlePointer()
 void *getActorPointer(uint32_t slot)
 {
 	void *BattlePointer = getBattlePointer();
-	if (BattlePointer == nullptr)
+	if (!BattlePointer)
 	{
 		return nullptr;
 	}
