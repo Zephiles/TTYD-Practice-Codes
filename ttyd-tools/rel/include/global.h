@@ -600,7 +600,7 @@ struct SettingsStruct
 	uint16_t CheatButtonCombos[100];
 	bool DisplaysActive[100];
 	uint16_t DisplaysButtonCombos[100];
-	MemoryWatchStruct MemoryWatchSettings[30];
+	MemoryWatchStruct MemoryWatchSettings[60];
 };
 
 struct CheckHeaps
