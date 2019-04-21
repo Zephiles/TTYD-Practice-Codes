@@ -71,7 +71,7 @@ This menu allows you to save and load various settings. The settings are stored 
 * Memory watches (See below)
 
 ### Memory
-This menu allows you to watch the values of up to 30 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
+This menu allows you to watch the values of up to 60 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
 
 ### Battles
 This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statuses of anyone in a battle (refered to as Actors).
@@ -93,10 +93,14 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
 8. **Palace Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. *PhaEmy* keeps track of the Y coordinate for the phantom ember, *ItemTimer* keeps track of the timer for the current item in the field, and *ParY* keeps track of your partner's Y coordinate.
 
 ### Warps
-This menu allows you to warp to various places around the game. A description for each option is displayed when the cursor is over one.
+This menu allows you to warp to various places around the game. The menu allows you to either choose a map from a list, or to choose a map and entrance manually. When choosing from the list, a description for each option is displayed when the cursor is over one.
+* Notes about manually choosing a warp:
+  * If an invalid entrance is used, then Mario will be placed at/near the center of the chosen map.
+  * Some maps have entrances that don't actually work.
 
 ## Misc
 There are several other changes that have been made outside of the menu:
 1. The current Sequence value is displayed in the pause menu next to Mario's stats.
 2. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
 3. Holding Y while using Art Attack will pause the timer that is used to check how long you are able to use it for.
+4. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
