@@ -57,6 +57,8 @@ bool getGF(uint32_t gf);
 void setGF(uint32_t gf);
 int32_t getGlobalFlagValue(uint32_t currentMenu, uint32_t flag);
 void cheatClearAreaFlags(uint32_t currentMenuOption);
+const char *getMapFromIndex(int32_t index);
+int32_t getMapIndex();
 
 // uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo);
 uint8_t *getButtonsPressed(uint8_t *buttonArray, uint16_t currentButtonCombo);
@@ -79,6 +81,7 @@ void adjustMemoryChangeAddressOrPointerSelection(uint32_t button);
 void adjustBattlesActorSelection(uint32_t button);
 void adjustBattlesStatusSelection(uint32_t button);
 void adjustWarpsSelection(uint32_t button);
+void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button);
 
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 
 	uint8_t &currentPage, uint32_t totalMenuOptions, 

@@ -99,6 +99,8 @@ void drawCheatsForcedDropItem();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
 void drawWarpsOptions();
+void drawWarpIndexMapAndEntrance();
+void drawWarpIndexEntranceList();
 void drawOnScreenTimerButtonCombos();
 
 void drawOnScreenTimer();

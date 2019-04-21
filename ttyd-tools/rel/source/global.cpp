@@ -1198,6 +1198,7 @@ uint8_t OnScreenTimerOptionsSize = sizeof(OnScreenTimerOptions) / sizeof(OnScree
 const char *WarpLines[] = 
 {
 	"Return",
+	"Warp By Index",
 	"Select Warp",
 };
 
@@ -1260,6 +1261,15 @@ const char *WarpDescriptions[] =
 	"Title Screen",
 };
 
+const char *WarpIndexLines[] = 
+{
+	"Return",
+	"Select New Map",
+	"Select New Map Entrance",
+	"View Current Map Entrances",
+	"Warp",
+};
+
 const char *ReturnPlaceholder[] = 
 {
 	"Return",
@@ -1307,7 +1317,7 @@ uint8_t PointerTextValues[] = {0x50, 0x81, 0xA8, 0};
 const char *PointerText = reinterpret_cast<const char *>(&PointerTextValues);
 #endif
 
-struct Menus Menu[26];
+struct Menus Menu[27];
 struct Cheats Cheat[20];
 bool Displays[9];
 char DisplayBuffer[256];
@@ -1330,6 +1340,7 @@ struct TrickDisplay PalaceSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
+struct WarpByIndexStruct WarpByIndex;
 struct CheckHeaps CheckHeap;
 
 bool HideMenu 							= false;
@@ -1368,6 +1379,7 @@ uint32_t seqMainAddress 				= r13 + 0x1860;
 uint32_t WorkAreaAddress 				= r13 + 0x1B98;
 uint32_t SmartWorkAddress 				= r13 - 0x7D40;
 uint32_t FieldItemsAddressesStart 		= 0x803DC294;
+uint32_t unkMapDataPtr 					= 0x803057FC;
 #elif defined TTYD_JP
 uint32_t r13 							= 0x80417260;
 char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1128);
@@ -1386,6 +1398,7 @@ uint32_t seqMainAddress 				= r13 + 0x1300;
 uint32_t WorkAreaAddress 				= r13 + 0x1638;
 uint32_t SmartWorkAddress 				= r13 - 0x7D58;
 uint32_t FieldItemsAddressesStart 		= 0x803D8714;
+uint32_t unkMapDataPtr 					= 0x8030423C;
 #elif defined TTYD_EU
 uint32_t r13 							= 0x80429760;
 char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1768);
@@ -1404,6 +1417,7 @@ uint32_t seqMainAddress 				= r13 + 0x1940;
 uint32_t WorkAreaAddress 				= r13 + 0x1C78;
 uint32_t SmartWorkAddress 				= r13 - 0x7D40;
 uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
+uint32_t unkMapDataPtr 					= 0x8031153C;
 #endif
 
 uint32_t GlobalWorkPointer 				= r13 - 0x6F50;
@@ -1427,55 +1441,15 @@ void initMenuVars()
 	Menu[INVENTORY].PreviousMenu 						= ROOT;
 	Menu[INVENTORY].Line 								= InventoryLines;
 	
-	Menu[CHEATS].TotalMenuOptions 						= sizeof(CheatsLines) / sizeof(CheatsLines[0]);
-	Menu[CHEATS].ColumnSplitAmount 						= 18;
-	Menu[CHEATS].PreviousMenu 							= ROOT;
-	Menu[CHEATS].Line 									= CheatsLines;
-	
-	Menu[STATS].TotalMenuOptions 						= sizeof(StatsLines) / sizeof(StatsLines[0]);
-	Menu[STATS].ColumnSplitAmount 						= Menu[STATS].TotalMenuOptions;
-	Menu[STATS].PreviousMenu 							= ROOT;
-	Menu[STATS].Line 									= StatsLines;
-	
-	Menu[SETTINGS].TotalMenuOptions 					= sizeof(SettingsLines) / sizeof(SettingsLines[0]);
-	Menu[SETTINGS].ColumnSplitAmount 					= Menu[SETTINGS].TotalMenuOptions;
-	Menu[SETTINGS].PreviousMenu 						= ROOT;
-	Menu[SETTINGS].Line 								= SettingsLines;
-	
-	Menu[MEMORY].TotalMenuOptions 						= sizeof(MemoryLines) / sizeof(MemoryLines[0]);
-	Menu[MEMORY].ColumnSplitAmount 						= Menu[MEMORY].TotalMenuOptions;
-	Menu[MEMORY].PreviousMenu 							= ROOT;
-	Menu[MEMORY].Line 									= MemoryLines;
-	
-	Menu[MEMORY_MODIFY].TotalMenuOptions 				= sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
-	Menu[MEMORY_MODIFY].ColumnSplitAmount 				= Menu[MEMORY_MODIFY].TotalMenuOptions;
-	Menu[MEMORY_MODIFY].PreviousMenu 					= MEMORY;
-	Menu[MEMORY_MODIFY].Line 							= MemoryModifyLines;
-	
-	Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions 		= sizeof(MemoryChangeAddressLines) / sizeof(MemoryChangeAddressLines[0]);
-	Menu[MEMORY_CHANGE_ADDRESS].ColumnSplitAmount 		= Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions;
-	Menu[MEMORY_CHANGE_ADDRESS].PreviousMenu 			= MEMORY_MODIFY;
-	Menu[MEMORY_CHANGE_ADDRESS].Line 					= MemoryChangeAddressLines;
-	
-	Menu[BATTLES].TotalMenuOptions 						= sizeof(BattlesLines) / sizeof(BattlesLines[0]);
-	Menu[BATTLES].ColumnSplitAmount 					= Menu[BATTLES].TotalMenuOptions;
-	Menu[BATTLES].PreviousMenu 							= ROOT;
-	Menu[BATTLES].Line 									= BattlesLines;
-	
-	Menu[DISPLAYS].TotalMenuOptions 					= sizeof(DisplaysLines) / sizeof(DisplaysLines[0]);
-	Menu[DISPLAYS].ColumnSplitAmount 					= Menu[DISPLAYS].TotalMenuOptions;;
-	Menu[DISPLAYS].PreviousMenu 						= ROOT;
-	Menu[DISPLAYS].Line 								= DisplaysLines;
-	
-	Menu[WARPS].TotalMenuOptions 						= sizeof(WarpLines) / sizeof(WarpLines[0]);
-	Menu[WARPS].ColumnSplitAmount 						= Menu[WARPS].TotalMenuOptions;
-	Menu[WARPS].PreviousMenu 							= ROOT;
-	Menu[WARPS].Line 									= WarpLines;
-	
 	Menu[INVENTORY_MAIN].TotalMenuOptions 				= sizeof(InventoryOptionLines) / sizeof(InventoryOptionLines[0]);
 	Menu[INVENTORY_MAIN].ColumnSplitAmount 				= Menu[INVENTORY_MAIN].TotalMenuOptions;
 	Menu[INVENTORY_MAIN].PreviousMenu 					= INVENTORY;
 	Menu[INVENTORY_MAIN].Line 							= InventoryOptionLines;
+	
+	Menu[CHEATS].TotalMenuOptions 						= sizeof(CheatsLines) / sizeof(CheatsLines[0]);
+	Menu[CHEATS].ColumnSplitAmount 						= 18;
+	Menu[CHEATS].PreviousMenu 							= ROOT;
+	Menu[CHEATS].Line 									= CheatsLines;
 	
 	Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions 		= sizeof(CheatsChangeSequenceOptionsLines) / sizeof(CheatsChangeSequenceOptionsLines[0]);
 	Menu[CHEATS_CHANGE_SEQUENCE].ColumnSplitAmount 		= Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions;
@@ -1509,6 +1483,11 @@ void initMenuVars()
 	Menu[CHEATS_CLEAR_AREA_FLAGS].PreviousMenu 			= CHEATS;
 	Menu[CHEATS_CLEAR_AREA_FLAGS].Line 					= CheatsClearAreaFlags;
 	
+	Menu[STATS].TotalMenuOptions 						= sizeof(StatsLines) / sizeof(StatsLines[0]);
+	Menu[STATS].ColumnSplitAmount 						= Menu[STATS].TotalMenuOptions;
+	Menu[STATS].PreviousMenu 							= ROOT;
+	Menu[STATS].Line 									= StatsLines;
+	
 	Menu[STATS_MARIO].TotalMenuOptions 					= sizeof(StatsMarioLines) / sizeof(StatsMarioLines[0]);
 	Menu[STATS_MARIO].ColumnSplitAmount 				= Menu[STATS_MARIO].TotalMenuOptions;;
 	Menu[STATS_MARIO].PreviousMenu 						= STATS;
@@ -1524,6 +1503,31 @@ void initMenuVars()
 	Menu[STATS_FOLLOWERS].PreviousMenu 					= STATS;
 	Menu[STATS_FOLLOWERS].Line 							= StatsFollowerLines;
 	
+	Menu[SETTINGS].TotalMenuOptions 					= sizeof(SettingsLines) / sizeof(SettingsLines[0]);
+	Menu[SETTINGS].ColumnSplitAmount 					= Menu[SETTINGS].TotalMenuOptions;
+	Menu[SETTINGS].PreviousMenu 						= ROOT;
+	Menu[SETTINGS].Line 								= SettingsLines;
+	
+	Menu[MEMORY].TotalMenuOptions 						= sizeof(MemoryLines) / sizeof(MemoryLines[0]);
+	Menu[MEMORY].ColumnSplitAmount 						= Menu[MEMORY].TotalMenuOptions;
+	Menu[MEMORY].PreviousMenu 							= ROOT;
+	Menu[MEMORY].Line 									= MemoryLines;
+	
+	Menu[MEMORY_MODIFY].TotalMenuOptions 				= sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
+	Menu[MEMORY_MODIFY].ColumnSplitAmount 				= Menu[MEMORY_MODIFY].TotalMenuOptions;
+	Menu[MEMORY_MODIFY].PreviousMenu 					= MEMORY;
+	Menu[MEMORY_MODIFY].Line 							= MemoryModifyLines;
+	
+	Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions 		= sizeof(MemoryChangeAddressLines) / sizeof(MemoryChangeAddressLines[0]);
+	Menu[MEMORY_CHANGE_ADDRESS].ColumnSplitAmount 		= Menu[MEMORY_CHANGE_ADDRESS].TotalMenuOptions;
+	Menu[MEMORY_CHANGE_ADDRESS].PreviousMenu 			= MEMORY_MODIFY;
+	Menu[MEMORY_CHANGE_ADDRESS].Line 					= MemoryChangeAddressLines;
+	
+	Menu[BATTLES].TotalMenuOptions 						= sizeof(BattlesLines) / sizeof(BattlesLines[0]);
+	Menu[BATTLES].ColumnSplitAmount 					= Menu[BATTLES].TotalMenuOptions;
+	Menu[BATTLES].PreviousMenu 							= ROOT;
+	Menu[BATTLES].Line 									= BattlesLines;
+	
 	Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions 		= sizeof(BattlesCurrentActorLines) / sizeof(BattlesCurrentActorLines[0]);
 	Menu[BATTLES_CURRENT_ACTOR].ColumnSplitAmount 		= Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions;
 	Menu[BATTLES_CURRENT_ACTOR].PreviousMenu 			= BATTLES;
@@ -1534,6 +1538,11 @@ void initMenuVars()
 	Menu[BATTLES_STATUSES].PreviousMenu 				= BATTLES_CURRENT_ACTOR;
 	Menu[BATTLES_STATUSES].Line 						= BattlesStatusesLines;
 	
+	Menu[DISPLAYS].TotalMenuOptions 					= sizeof(DisplaysLines) / sizeof(DisplaysLines[0]);
+	Menu[DISPLAYS].ColumnSplitAmount 					= Menu[DISPLAYS].TotalMenuOptions;;
+	Menu[DISPLAYS].PreviousMenu 						= ROOT;
+	Menu[DISPLAYS].Line 								= DisplaysLines;
+	
 	Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions 		= sizeof(OnScreenTimerOptionsLines) / sizeof(OnScreenTimerOptionsLines[0]);
 	Menu[DISPLAYS_ONSCREEN_TIMER].ColumnSplitAmount 	= Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions;
 	Menu[DISPLAYS_ONSCREEN_TIMER].PreviousMenu 			= DISPLAYS;
@@ -1543,6 +1552,16 @@ void initMenuVars()
 	Menu[DISPLAYS_NO_BUTTON_COMBO].ColumnSplitAmount 	= Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions;
 	Menu[DISPLAYS_NO_BUTTON_COMBO].PreviousMenu 		= DISPLAYS;
 	Menu[DISPLAYS_NO_BUTTON_COMBO].Line 				= CheatsNoButtonComboOptionsLines;
+	
+	Menu[WARPS].TotalMenuOptions 						= sizeof(WarpLines) / sizeof(WarpLines[0]);
+	Menu[WARPS].ColumnSplitAmount 						= Menu[WARPS].TotalMenuOptions;
+	Menu[WARPS].PreviousMenu 							= ROOT;
+	Menu[WARPS].Line 									= WarpLines;
+	
+	Menu[WARPS_INDEX].TotalMenuOptions 					= sizeof(WarpIndexLines) / sizeof(WarpIndexLines[0]);
+	Menu[WARPS_INDEX].ColumnSplitAmount 				= Menu[WARPS_INDEX].TotalMenuOptions;
+	Menu[WARPS_INDEX].PreviousMenu 						= WARPS;
+	Menu[WARPS_INDEX].Line 								= WarpIndexLines;
 	
 	MenuSettings.WorkArea 								= reinterpret_cast<uint8_t *>(
 															*reinterpret_cast<uint32_t *>(

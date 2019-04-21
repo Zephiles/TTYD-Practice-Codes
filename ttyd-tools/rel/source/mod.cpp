@@ -11,6 +11,7 @@
 #include <ttyd/sound.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/sac_scissor.h>
+#include <ttyd/evt_bero.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -85,6 +86,12 @@ void Mod::init()
 		ttyd::sac_scissor::scissor_timer_main, []()
 	{
 		return gMod->pauseArtAttackTimer();
+	});
+	
+	mPFN_evt_bero_get_info_trampoline = patch::hookFunction(
+		ttyd::evt_bero::evt_bero_get_info, [](void *scriptContext, uint32_t waitMode)
+	{
+		return gMod->setIndexWarpEntrance(scriptContext, waitMode);
 	});
 
 	// Initialize typesetting early

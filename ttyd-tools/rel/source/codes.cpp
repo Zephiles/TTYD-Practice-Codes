@@ -1447,4 +1447,80 @@ int32_t warpToMap(uint32_t value)
 	return SUCCESS;
 }
 
+int32_t warpToMapByString(const char *map)
+{
+	// Make sure the player is currently in the game
+	if (!checkIfInGame())
+	{
+		return NOT_IN_GAME;
+	}
+	
+	setNextMap(map);
+	reloadRoomMain();
+	
+	return SUCCESS;
+}
+
+uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
+{
+	// Clear the array holding the loading zone names
+	clearMemory(WarpByIndex.EntranceList, sizeof(WarpByIndex.EntranceList));
+	
+	// Get the start of the loading zone addresses
+	uint32_t ScriptContextLZAddresses = *reinterpret_cast<uint32_t *>(
+		reinterpret_cast<uint32_t>(scriptContext) + 0x9C);
+	
+	// Loop through the loading zones and get the total amount of them
+	uint32_t tempScriptContextAddress = ScriptContextLZAddresses;
+	uint32_t LoadingZoneTotal = 0;
+	
+	while (*reinterpret_cast<uint32_t *>(tempScriptContextAddress))
+	{
+		tempScriptContextAddress += 0x3C;
+		LoadingZoneTotal++;
+	}
+	
+	// Copy each loading zone to the array
+	const char **tempEntranceArray = WarpByIndex.EntranceList;
+	for (uint32_t i = 0; i < LoadingZoneTotal; i++)
+	{
+		tempEntranceArray[i] = reinterpret_cast<const char *>(
+			*reinterpret_cast<uint32_t *>(
+				ScriptContextLZAddresses + (i * 0x3C)));
+	}
+	
+	// Check to see if warping by index
+	if (WarpByIndex.RunIndexWarpCode)
+	{
+		WarpByIndex.RunIndexWarpCode = false;
+		
+		// Make sure the chosen entrance exists for the chosen map
+		uint32_t ChosenEntrance = WarpByIndex.EntranceId;
+		const char *ChosenEntranceName;
+		
+		if (ChosenEntrance < LoadingZoneTotal)
+		{
+			// Valid entrance chosen
+			ChosenEntranceName = reinterpret_cast<const char *>(
+				*reinterpret_cast<uint32_t *>(
+					ScriptContextLZAddresses + (ChosenEntrance * 0x3C)));
+		}
+		else
+		{
+			// Invalid entrance chosen
+			ChosenEntranceName = "";
+		}
+		
+		// Set the chosen entrance
+		char *NextBeroGSW = reinterpret_cast<char *>(
+			*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x11C);
+		
+		ttyd::string::strcpy(NextBeroGSW, ChosenEntranceName);
+		ttyd::string::strcpy(NextBero, ChosenEntranceName);
+	}
+	
+	// Call original function
+	return mPFN_evt_bero_get_info_trampoline(scriptContext, waitMode);
+}
+
 }

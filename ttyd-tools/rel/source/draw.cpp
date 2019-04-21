@@ -2078,6 +2078,8 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	int32_t curve 	= 10;
 	int32_t height;
 	
+	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	
 	if (changingItem)
 	{
 		height = 208;
@@ -2085,6 +2087,17 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	else if (currentMenu == CHEATS_CHANGE_SEQUENCE)
 	{
 		height = 235;
+	}
+	else if (currentMenu == WARPS_INDEX)
+	{
+		if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+		{
+			height = 212;
+		}
+		else
+		{
+			height = 173;
+		}
 	}
 	else
 	{
@@ -2173,6 +2186,16 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		drawText(String, x, NamesPosY, alpha, color, scale);
 		
 		y -= 60;
+	}
+	else if ((currentMenu == WARPS_INDEX) && 
+		(tempCurrentMenuOption == INDEX_SELECT_MAP))
+	{
+		sprintf(tempDisplayBuffer,
+			"Map: %s",
+			getMapFromIndex(tempMenuSecondaryValue));
+		
+		drawText(tempDisplayBuffer, x, y - 35, alpha, color, scale);
+		y -= 35;
 	}
 	
 	// Check if the number is negative
@@ -3082,7 +3105,7 @@ void drawWarpsOptions()
 	const char **tempWarpDestinations 			= WarpDestinations;
 	
 	int32_t PosX 								= -232;
-	int32_t PosY 								= 120;
+	int32_t PosY 								= 100;
 	uint32_t Size 								= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerPage 					= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerRow 					= 4;
@@ -3110,6 +3133,108 @@ void drawWarpsOptions()
 		PosY -= 160;
 		drawSingleLineFromArray(PosX, PosY, 
 			tempCurrentMenuOption, WarpDescriptions);
+	}
+}
+
+void drawWarpIndexMapAndEntrance()
+{
+	uint32_t Color 				= 0xFFFFFFFF;
+	uint8_t Alpha 				= 0xFF;
+	int32_t PosX 				= -232;
+	int32_t PosY 				= 60;
+	float Scale 				= 0.6;
+	
+	const char *String = "Current Map\nNew Map\nEntrance";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	
+	const char *MapName = getMapFromIndex(static_cast<int32_t>(WarpByIndex.MapId));
+	uint32_t EntranceId = WarpByIndex.EntranceId;
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"%s\n%s\n%" PRIu32,
+		NextMap,
+		MapName,
+		EntranceId);
+	
+	drawText(tempDisplayBuffer, PosX + 130, PosY, Alpha, Color, Scale);
+}
+
+void drawWarpIndexEntranceList()
+{
+	// Draw the window for the text
+	uint32_t WindowColor 	= 0x000000E5;
+	int32_t PosX 			= -245;
+	int32_t PosY 			= 190;
+	int32_t Width 			= 490;
+	int32_t Height 			= 375;
+	int32_t Curve 			= 0;
+	
+	drawWindow(WindowColor, PosX, PosY, Width, Height, Curve);
+	
+	// Draw the help text
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	float Scale 	= 0.6;
+	PosY -= 20;
+	
+	const char *HelpText = "Press B to close this window\nPress D-Pad Up/Down to adjust the page";
+	drawText(HelpText, PosX + 72, PosY, Alpha, Color, Scale);
+	
+	// Draw the current map
+	PosX = -232;
+	PosY -= 55;
+	
+	const char *String = "Current Map";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	drawText(NextMap, PosX + 130, PosY, Alpha, Color, Scale);
+	
+	// Draw the current page
+	int32_t PageNumberPosX = 150;
+	uint32_t tempCurrentPage = CurrentPage;
+	drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
+	
+	// Draw the entrances
+	const char **tempEntranceArray = WarpByIndex.EntranceList;
+	PosY -= 40;
+	
+	// Make sure at least one entrance exists
+	if (!tempEntranceArray[0])
+	{
+		const char *String = "No entrances exist for this map";
+		drawText(String, PosX, PosY, Alpha, Color, Scale);
+		return;
+	}
+	
+	uint32_t MaxSlotsInArray = sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0]);
+	uint32_t MaxEntrancesPerPage = 13;
+	uint32_t Index = MaxEntrancesPerPage * tempCurrentPage;
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	for (uint32_t i = Index; i < (Index + MaxEntrancesPerPage); i++)
+	{
+		if (i >= MaxSlotsInArray)
+		{
+			// Reached the end of the array
+			return;
+		}
+		
+		if (!tempEntranceArray[i])
+		{
+			// Reached the end of the valid entries
+			return;
+		}
+		
+		// Draw the entrance number
+		sprintf(tempDisplayBuffer,
+			"Entrance %" PRIu32,
+			i);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the entrance name
+		drawText(tempEntranceArray[i], PosX + 130, PosY, Alpha, Color, Scale);
+		PosY -= 20;
 	}
 }
 

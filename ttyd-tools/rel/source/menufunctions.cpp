@@ -247,6 +247,7 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 {
 	uint32_t tempMenuSelectedOption = MenuSelectedOption;
 	uint32_t tempSelectedOption = SelectedOption;
+	uint32_t tempCurrentMenuOption = CurrentMenuOption;
 	int32_t LowerBound = 0;
 	int32_t UpperBound = 0;
 	
@@ -273,21 +274,23 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 		}
 		case CHEATS_MANAGE_FLAGS_MAIN:
 		{
-			uint32_t tempCurrentMenuOption = CurrentMenuOption;
 			switch (MenuSelectionStates)
 			{
 				case SET_GSW:
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
 					{
+						// LowerBound = 0;
 						UpperBound = 2048;
 					}
 					else if (ManageFlags.FlagToSet == 0) // 0 = Sequence position
 					{
+						// LowerBound = 0;
 						UpperBound = 405;
 					}
 					else
 					{
+						// LowerBound = 0;
 						UpperBound = 255;
 					}
 					break;
@@ -296,10 +299,12 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
 					{
+						// LowerBound = 0;
 						UpperBound = 8192;
 					}
 					else
 					{
+						// LowerBound = 0;
 						UpperBound = 1;
 					}
 					break;
@@ -308,6 +313,7 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
 					{
+						// LowerBound = 0;
 						UpperBound = 32;
 					}
 					else
@@ -321,10 +327,12 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
 					{
+						// LowerBound = 0;
 						UpperBound = 96;
 					}
 					else
 					{
+						// LowerBound = 0;
 						UpperBound = 1;
 					}
 					break;
@@ -333,10 +341,12 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
 					{
+						// LowerBound = 0;
 						UpperBound = 1024;
 					}
 					else
 					{
+						// LowerBound = 0;
 						UpperBound = 255;
 					}
 					break;
@@ -345,16 +355,19 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				{
 					if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
 					{
+						// LowerBound = 0;
 						UpperBound = 512;
 					}
 					else
 					{
+						// LowerBound = 0;
 						UpperBound = 1;
 					}
 					break;
 				}
 				default:
 				{
+					// LowerBound = 0;
 					UpperBound = 0;
 					break;
 				}
@@ -372,16 +385,19 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				case STAR_PIECES:
 				case SHINE_SPRITES:
 				{
+					// LowerBound = 0;
 					UpperBound = 999;
 					break;
 				}
 				case MARIO_HP:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(PouchPtr + 0x72); // Max HP
 					break;
 				}
 				case MARIO_FP:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(PouchPtr + 0x76); // Max FP
 					break;
 				}
@@ -389,37 +405,44 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				case MARIO_LEVEL:
 				case STAR_POINTS:
 				{
+					// LowerBound = 0;
 					UpperBound = 99;
 					break;
 				}
 				case MARIO_RANK:
 				{
+					// LowerBound = 0;
 					UpperBound = 3;
 					break;
 				}
 				case STAR_POWER:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(PouchPtr + 0x7C); // Max Star Power
 					break;
 				}
 				case MAX_STAR_POWER:
 				{
+					// LowerBound = 0;
 					UpperBound = 800;
 					break;
 				}
 				case SHOP_POINTS:
 				{
+					// LowerBound = 0;
 					UpperBound = 300;
 					break;
 				}
 				case PIANTAS_STORED:
 				case CURRENT_PIANTAS:
 				{
+					// LowerBound = 0;
 					UpperBound = 99999;
 					break;
 				}
 				default:
 				{
+					// LowerBound = 0;
 					UpperBound = 0;
 					break;
 				}
@@ -433,21 +456,25 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 			{
 				case PARTNER_HP:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(PartnerEnabledAddress + 0x2); // Max HP
 					break;
 				}
 				case PARTNER_MAX_HP:
 				{
+					// LowerBound = 0;
 					UpperBound = 999;
 					break;
 				}
 				case PARTNER_RANK:
 				{
+					// LowerBound = 0;
 					UpperBound = 2;
 					break;
 				}
 				default:
 				{
+					// LowerBound = 0;
 					UpperBound = 0;
 					break;
 				}
@@ -466,11 +493,13 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 			{
 				case CHANGE_ACTOR_HP:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(ActorAddress + 0x108); // Max HP
 					break;
 				}
 				case CHANGE_ACTOR_FP:
 				{
+					// LowerBound = 0;
 					UpperBound = *reinterpret_cast<int16_t *>(ActorAddress + 0x10E); // Max FP
 					break;
 				}
@@ -482,6 +511,7 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				}
 				default:
 				{
+					// LowerBound = 0;
 					UpperBound = 999;
 					break;
 				}
@@ -508,11 +538,13 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 				}
 				case DEFEATED_FLAG:
 				{
+					// LowerBound = 0;
 					UpperBound = 1;
 					break;
 				}
 				default:
 				{
+					// LowerBound = 0;
 					UpperBound = 99;
 					break;
 				}
@@ -535,6 +567,20 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 		{
 			LowerBound = 1;
 			UpperBound = 100;
+			break;
+		}
+		case WARPS_INDEX:
+		{
+			// LowerBound = 0;
+			
+			if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+			{
+				UpperBound = 271;
+			}
+			else
+			{
+				UpperBound = (sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0])) - 1;
+			}
 			break;
 		}
 		case SPAWN_ITEM_MENU_VALUE:
@@ -1099,6 +1145,22 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					FrameCounter = 1;
 					return Button;
 				}
+				case WARPS_INDEX:
+				{
+					if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+					{
+						WarpByIndex.MapId = static_cast<uint16_t>(MenuSecondaryValue);
+					}
+					else
+					{
+						WarpByIndex.EntranceId = static_cast<uint8_t>(MenuSecondaryValue);
+					}
+					
+					SelectedOption = 0;
+					
+					FrameCounter = 1;
+					return Button;
+				}
 				case SPAWN_ITEM_MENU_VALUE:
 				{
 					FrameCounter = 1;
@@ -1177,6 +1239,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case CHEATS_MANAGE_FLAGS_MAIN:
 					case BATTLES_CURRENT_ACTOR:
 					case BATTLES_STATUSES:
+					case WARPS_INDEX:
 					{
 						SelectedOption = 0;
 						
@@ -2794,6 +2857,64 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 	}
 }
 
+const char *getMapFromIndex(int32_t index)
+{
+	int32_t MaxIndex = 271;
+	if (index >= MaxIndex)
+	{
+		return "title";
+	}
+	else if (index <= 0)
+	{
+		return "aaa_00";
+	}
+	else
+	{
+		// Skip invalid values
+		int32_t NewIndex = index - 1;
+		uint32_t Counter = 0;
+		
+		if (NewIndex >= 74) // gon_bt00
+		{
+			Counter += 8;
+			
+			if (NewIndex >= 90) // hei_bt00
+			{
+				Counter += 8;
+				
+				if (NewIndex >= 266) // qiz_00
+				{
+					Counter += 8;
+					
+					if (NewIndex >= 269) // dig_00
+					{
+						Counter += 8;
+					}
+				}
+			}
+		}
+		
+		return reinterpret_cast<const char *>(
+			*reinterpret_cast<uint32_t *>(
+				*reinterpret_cast<uint32_t *>(
+					*reinterpret_cast<uint32_t *>(
+						unkMapDataPtr) + 0x10) + Counter + (NewIndex * 0x8)));
+	}
+}
+
+int32_t getMapIndex()
+{
+	int32_t MaxIndex = 271;
+	for (int32_t i = 0; i <= MaxIndex; i++)
+	{
+		if (compareStringToNextMap(getMapFromIndex(i)))
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 /*uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo)
 {
 	uint32_t Counter = 0;
@@ -3552,6 +3673,54 @@ void adjustWarpsSelection(uint32_t button)
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
+}
+
+void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
+{
+	uint32_t tempCurrentPage = CurrentPage;
+	switch (button)
+	{
+		case DPADDOWN:
+		{
+			uint32_t MaxSlotsInArray = sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0]);
+			uint32_t MaxEntrancesPerPage = 13;
+			uint32_t TotalEntrances = 0;
+			
+			// Get the total entrances for the current map
+			const char **tempEntrancesArray = WarpByIndex.EntranceList;
+			for (uint32_t i = 0; i < MaxSlotsInArray; i++)
+			{
+				if (tempEntrancesArray[i])
+				{
+					TotalEntrances++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			// Make sure entrances exist on the next page
+			if ((MaxEntrancesPerPage * (tempCurrentPage + 1)) < TotalEntrances)
+			{
+				CurrentPage = tempCurrentPage + 1;
+			}
+			break;
+		}
+		case DPADUP:
+		{
+			// Make sure the current page isn't already at 0
+			if (tempCurrentPage > 0)
+			{
+				CurrentPage = tempCurrentPage - 1;
+			}
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 

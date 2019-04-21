@@ -402,6 +402,60 @@
 80077BDC:fontmgrTexSetup
 80077C08:fontmgrInit
 
+// evt_bero.o
+// 80078A74:evt_camera_change_event_from_road
+// 80078C1C:evt_bero_1stcheck
+// 80078C90:evt_bero_mario_go_wait
+// 80078CAC:evt_bero_mario_go
+// 80078CBC:evt_bero_mario_go_init
+// 80078CCC:evt_bero_cam_shift_init
+// 80078CF4:evt_bero_cam3d_change
+// 80078E08:evt_bero_overwrite
+// 80078EE8:evt_bero_move_mario_speed
+// 80079198:evt_bero_disppos_load
+// 800791EC:evt_bero_disppos_save
+// 80079230:evt_bero_case_id_load
+// 8007928C:evt_bero_case_id_save
+// 800792EC:evt_bero_get_number
+// 800793AC:evt_bero_switch_off
+// 800794B0:evt_bero_switch_on
+// 800795B4:bero_set_disp_position_pipe
+// 80079684:bero_get_position_pipe2
+// 800797D0:bero_get_position_pipe_pure
+// 800798B8:bero_get_position_pipe_sub
+// 80079B74:bero_get_position_normal
+// 80079E84:evt_bero_get_info_num
+// 8007A088:evt_bero_id_filter
+// 8007A154:evt_bero_read_mario_pera
+// 8007A214:evt_bero_get_into_info
+8007A50C:evt_bero_get_info
+// 8007A60C:evt_bero_get_now_number
+// 8007A63C:evt_bero_set_now_number
+// 8007A66C:evt_bero_get_info_nextarea
+// 8007A6E4:evt_bero_get_info_kinddir
+// 8007A76C:evt_bero_get_info_length
+// 8007A860:evt_bero_get_info_anime
+// 8007A8F8:evt_bero_get_end_position
+// 8007A95C:evt_bero_get_start_position
+// 8007A9C0:evt_bero_exec_wait
+// 8007AA04:evt_bero_exec_get
+// 8007AA34:evt_bero_exec_onoff
+// 8007AA9C:evt_bero_get_entername
+// 8007AAD0:evt_bero_mapchange
+// 8007AB44:bero_id_filter
+// 8007ABE8:bero_clear_Offset
+// 8007ABFC:bero_get_ptr
+// 8007AC08:bero_get_BeroEZ
+// 8007AC10:bero_get_BeroEY
+// 8007AC18:bero_get_BeroEX
+// 8007AC20:bero_get_BeroSZ
+// 8007AC28:bero_get_BeroSY
+// 8007AC30:bero_get_BeroSX
+// 8007AC38:bero_get_BeroNUM
+// 8007AC40:bero_get_BeroEXEC
+// 8007AC48:unk_JP_US_PAL_06
+// 8007AC7C:unk_JP_US_PAL_07
+
 // windowdrv.o
 // 8007AD30:getWakuTexObj
 // 8007AD40:windowGetPointer

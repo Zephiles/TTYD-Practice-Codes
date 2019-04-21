@@ -34,6 +34,7 @@ enum MENU_NAMES
 	BATTLES_STATUSES,
 	DISPLAYS_ONSCREEN_TIMER,
 	DISPLAYS_NO_BUTTON_COMBO,
+	WARPS_INDEX,
 };
 
 enum INVENTORY_MENU_NAMES
@@ -341,7 +342,8 @@ enum ONSCREEN_TIMER_BUTTON_CODES
 
 enum WARPS_OPTIONS
 {
-	SELECT_WARP = 1,
+	WARP_BY_INDEX = 1,
+	SELECT_WARP,
 };
 
 enum WARPS_SELECTION_OPTIONS
@@ -376,6 +378,14 @@ enum WARPS_SELECTION_OPTIONS
 enum WARPS_IN_ADJUSTABLE_VALUE_MENU_OPTIONS
 {
 	SELECTING_VALUE = 1,
+};
+
+enum WARPS_INDEX_OPTIONS
+{
+	INDEX_SELECT_MAP = 1,
+	INDEX_SELECT_ENTRANCE,
+	INDEX_VIEW_CURRENT_MAP_ENTRANCES,
+	INDEX_WARP_NOW,
 };
 
 enum CODE_RETURN_VALUES
@@ -603,13 +613,21 @@ struct SettingsStruct
 	MemoryWatchStruct MemoryWatchSettings[60];
 };
 
+struct WarpByIndexStruct
+{
+	bool RunIndexWarpCode;
+	uint16_t MapId;
+	uint8_t EntranceId;
+	const char *EntranceList[32];
+};
+
 struct CheckHeaps
 {
 	const char **StandardHeapArray;
 	const char **SmartHeapArray;
 };
 
-extern Menus Menu[26];
+extern Menus Menu[27];
 extern Cheats Cheat[20];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
@@ -632,6 +650,7 @@ extern TrickDisplay PalaceSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
+extern WarpByIndexStruct WarpByIndex;
 extern CheckHeaps CheckHeap;
 
 extern const char *VersionNumber;
@@ -712,6 +731,7 @@ extern uint32_t seqMainAddress;
 extern uint32_t WorkAreaAddress;
 extern uint32_t SmartWorkAddress;
 extern uint32_t FieldItemsAddressesStart;
+extern uint32_t unkMapDataPtr;
 
 extern uint32_t GlobalWorkPointer;
 extern uint32_t titleMainAddress;

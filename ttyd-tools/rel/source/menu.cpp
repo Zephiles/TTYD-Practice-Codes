@@ -2847,11 +2847,22 @@ void menuCheckButton()
 									resetMenu();
 									break;
 								}
-								default:
+								case WARP_BY_INDEX:
+								{
+									// Enter the next menu
+									CurrentMenu = WARPS_INDEX;
+									resetMenu();
+									break;
+								}
+								case SELECT_WARP:
 								{
 									Timer = 0;
 									SelectedOption = tempCurrentMenuOption;
 									CurrentMenuOption = 0;
+									break;
+								}
+								default:
+								{
 									break;
 								}
 							}
@@ -2942,6 +2953,164 @@ void menuCheckButton()
 							{
 								closeSecondaryMenu();
 							}
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case WARPS_INDEX:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					switch (tempMenuSelectedOption)
+					{
+						case 0:
+						{
+							if (tempSelectedOption == 0)
+							{
+								adjustMenuNoPageEdit(CurrentButton);
+							}
+							break;
+						}
+						default:
+						{
+							adjustIndexWarpCurrentMapEntrancesPage(CurrentButton);
+							break;
+						}
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempMenuSelectedOption)
+					{
+						case 0:
+						{
+							switch (tempSelectedOption)
+							{
+								case 0:
+								{
+									switch (tempCurrentMenuOption)
+									{
+										case 0:
+										{
+											// Go back to the previous menu
+											CurrentMenu = tempPreviousMenu;
+											resetMenu();
+											break;
+										}
+										case INDEX_VIEW_CURRENT_MAP_ENTRANCES:
+										{
+											MenuSelectedOption = tempCurrentMenuOption;
+											break;
+										}
+										case INDEX_WARP_NOW:
+										{
+											int32_t ReturnCode = warpToMapByString(
+												getMapFromIndex(static_cast<int32_t>(WarpByIndex.MapId)));
+											
+											switch (ReturnCode)
+											{
+												case SUCCESS:
+												{
+													// Set the flag for the loading zone to be adjusted
+													WarpByIndex.RunIndexWarpCode = true;
+													
+													closeMenu();
+													return;
+												}
+												case NOT_IN_GAME:
+												{
+													FunctionReturnCode 	= ReturnCode;
+													Timer 				= secondsToFrames(3);
+													break;
+												}
+												default:
+												{
+													break;
+												}
+											}
+											break;
+										}
+										default:
+										{
+											Timer = 0;
+											SelectedOption = tempCurrentMenuOption;
+											
+											SecondaryMenuOption = getHighestAdjustableValueDigit(
+												tempCurrentMenu) - 1;
+											
+											if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+											{
+												int32_t MapIndex = getMapIndex();
+												if (MapIndex < 0)
+												{
+													MenuSecondaryValue = 0;
+												}
+												else
+												{
+													MenuSecondaryValue = MapIndex;
+												}
+											}
+											else
+											{
+												MenuSecondaryValue = static_cast<int32_t>(WarpByIndex.EntranceId);
+											}
+											break;
+										}
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempMenuSelectedOption)
+					{
+						case 0:
+						{
+							switch (tempSelectedOption)
+							{
+								case 0:
+								{
+									// Go back to the root
+									CurrentMenu = tempPreviousMenu;
+									resetMenu();
+									break;
+								}
+								default:
+								{
+									closeSecondaryMenu();
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							MenuSelectedOption = 0;
 							break;
 						}
 					}
@@ -3522,6 +3691,31 @@ void drawMenu()
 			// Draw the error message if the player tried to warp while either not in the game or in a battle
 			if ((tempSelectedOption == SELECT_WARP) && 
 				(tempFunctionReturnCode < 0))
+			{
+				drawWarpsErrorMessage();
+			}
+			break;
+		}
+		case WARPS_INDEX:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			// Draw the map and entrance
+			drawWarpIndexMapAndEntrance();
+			
+			if (tempMenuSelectedOption > 0)
+			{
+				drawWarpIndexEntranceList();
+			}
+			
+			if (tempSelectedOption > 0)
+			{
+				drawAdjustableValue(false, tempCurrentMenu);
+			}
+			
+			// Draw the error message if the player tried to warp while either not in the game or in a battle
+			if (tempFunctionReturnCode < 0)
 			{
 				drawWarpsErrorMessage();
 			}

@@ -6,7 +6,6 @@ namespace ttyd::evt_bero {
 
 extern "C" {
 
-
 // evt_camera_change_event_from_road
 // evt_bero_1stcheck
 // evt_bero_mario_go_wait
