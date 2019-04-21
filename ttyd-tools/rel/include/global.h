@@ -623,8 +623,8 @@ struct WarpByIndexStruct
 
 struct CheckHeaps
 {
-	const char **StandardHeapArray;
-	const char **SmartHeapArray;
+	const char *StandardHeapArray[16];
+	const char *SmartHeapArray[16];
 };
 
 extern Menus Menu[27];

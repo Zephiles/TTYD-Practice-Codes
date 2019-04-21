@@ -382,67 +382,37 @@ uint32_t Mod::pauseArtAttackTimer()
 	return mPFN_scissor_timer_main_trampoline();
 }
 
-void clearHeapArray(const char **&heap)
+void clearHeapArray(const char **heap)
 {
-	const char **tempHeapArray = heap;
-	if (!tempHeapArray)
-	{
-		// The array is already cleared
-		return;
-	}
-	
 	uint32_t Counter = 0;
-	const char *tempHeap = tempHeapArray[Counter];
-	
-	while (tempHeap)
+	while (heap[Counter])
 	{
 		delete[] heap[Counter];
+		heap[Counter] = nullptr;
 		Counter++;
-		tempHeap = tempHeapArray[Counter];
 	}
-	
-	delete[] heap;
-	heap = nullptr;
 }
 
-void addTextToHeapArray(const char **&heap, char *text)
+void addTextToHeapArray(const char **heap, char *text)
 {
 	// Get the next available slot in the array
-	uint32_t FreeSlot = 0;
+	uint32_t TotalSlots = 16;
+	int32_t FreeSlot = -1;
 	
-	if (!heap)
+	for (uint32_t i = 0; i < TotalSlots; i++)
 	{
-		heap = new const char *[2]; // Extra slot at the end
-		clearMemory(heap, 2 * sizeof(const char **));
+		if (!heap[i])
+		{
+			FreeSlot = i;
+			break;
+		}
 	}
-	else
+	
+	// Make sure the new text can be added
+	if (FreeSlot == -1)
 	{
-		const char **tempHeapArray = heap;
-		const char *tempPtr;
-		
-		do
-		{
-			FreeSlot++;
-			tempPtr = tempHeapArray[FreeSlot];
-		}
-		while (tempPtr);
-		
-		// Create a new array with a new spot for the next value
-		uint32_t TotalSlots = FreeSlot + 1;
-		const char **tempNewHeapArray = new const char *[TotalSlots + 1];
-		clearMemory(tempNewHeapArray, (TotalSlots + 1) * sizeof(const char **));
-		
-		// Copy the contents of the old array to the new array
-		for (uint32_t i = 0; i < FreeSlot; i++)
-		{
-			tempNewHeapArray[i] = tempHeapArray[i];
-		}
-		
-		// Delete the old array
-		delete[] (heap);
-		
-		// Set the new array as the current array
-		heap = tempNewHeapArray;
+		// The new text cannot be added
+		return;
 	}
 	
 	// Add the new text at the current free slot
@@ -452,30 +422,24 @@ void addTextToHeapArray(const char **&heap, char *text)
 	heap[FreeSlot] = NewText;
 }
 
-bool checkIfTextAlreadyAdded(const char **&heap, const char *text, uint32_t bytesToCompare)
+bool checkIfTextAlreadyAdded(const char **heap, const char *text, uint32_t bytesToCompare)
 {
-	const char **tempHeapArray = heap;
-	if (tempHeapArray)
+	uint32_t Counter = 0;
+	while (heap[Counter])
 	{
-		uint32_t Counter = 0;
-		const char *tempHeapString = tempHeapArray[Counter];
-		
-		while (tempHeapString)
+		if (compareStringsSize(heap[Counter], text, bytesToCompare))
 		{
-			if (compareStringsSize(tempHeapString, text, bytesToCompare))
-			{
-				return true;
-			}
-			
-			Counter++;
-			tempHeapString = tempHeapArray[Counter];
+			return true;
 		}
+		Counter++;
 	}
 	return false;
 }
 
 void checkHeaps()
 {
+	const char **tempStandardHeapArray = CheckHeap.StandardHeapArray;
+	const char **tempSmartHeapArray = CheckHeap.SmartHeapArray;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Check the standard heaps
@@ -524,9 +488,9 @@ void checkHeaps()
 				reinterpret_cast<uint32_t>(currentChunk));
 			
 			// Only add the current heap once
-			if (!checkIfTextAlreadyAdded(CheckHeap.StandardHeapArray, tempDisplayBuffer, 16))
+			if (!checkIfTextAlreadyAdded(tempStandardHeapArray, tempDisplayBuffer, 16))
 			{	
-				addTextToHeapArray(CheckHeap.StandardHeapArray, tempDisplayBuffer);
+				addTextToHeapArray(tempStandardHeapArray, tempDisplayBuffer);
 			}
 		}
 	}
@@ -534,7 +498,7 @@ void checkHeaps()
 	if (!ErrorsFound)
 	{
 		// No errors were found, so clear the standard heap array
-		clearHeapArray(CheckHeap.StandardHeapArray);
+		clearHeapArray(tempStandardHeapArray);
 	}
 	
 	// Check the smart heap
@@ -576,19 +540,19 @@ void checkHeaps()
 			reinterpret_cast<uint32_t>(currentChunk));
 		
 		// Only add the current heap once
-		if (!checkIfTextAlreadyAdded(CheckHeap.SmartHeapArray, tempDisplayBuffer, 16))
+		if (!checkIfTextAlreadyAdded(tempSmartHeapArray, tempDisplayBuffer, 16))
 		{	
-			addTextToHeapArray(CheckHeap.SmartHeapArray, tempDisplayBuffer);
+			addTextToHeapArray(tempSmartHeapArray, tempDisplayBuffer);
 		}
 	}
 	else
 	{
 		// No errors were found, so clear the smart heap array
-		clearHeapArray(CheckHeap.SmartHeapArray);
+		clearHeapArray(tempSmartHeapArray);
 	}
 	
 	// Draw any errors that occured
-	if (CheckHeap.StandardHeapArray || CheckHeap.SmartHeapArray)
+	if (tempStandardHeapArray[0] || tempSmartHeapArray[0])
 	{
 		drawFunctionOnDebugLayer(drawHeapArrayErrors);
 	}
