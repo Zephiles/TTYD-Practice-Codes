@@ -92,11 +92,11 @@ void displayArtAttackHitboxes()
 			continue;
 		}
 		
-		// Check if the current actor is Mario or one of the partners
-		bool BattleUnitBelong = ttyd::battle_unit::BtlUnit_GetBelong(BattleUnitPtr);
-		if (!BattleUnitBelong)
+		// Check if the current actor is a normal enemy that can be attacked
+		ttyd::battle_unit::ActorGroupBelong BattleUnitBelong = ttyd::battle_unit::BtlUnit_GetBelong(BattleUnitPtr);
+		if (BattleUnitBelong != ttyd::battle_unit::ActorGroupBelong::kEnemy)
 		{
-			// The current actor is either Mario or one of the partners, so don't draw the hitbox
+			// The current actor is not a normal enemy that can be attacked, so don't draw the hitbox
 			continue;
 		}
 		

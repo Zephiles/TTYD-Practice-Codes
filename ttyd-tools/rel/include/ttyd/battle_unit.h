@@ -4,6 +4,13 @@
 
 namespace ttyd::battle_unit {
 
+enum class ActorGroupBelong : uint8_t
+{
+	kParty = 0,
+	kEnemy,
+	kExtra,
+};
+
 extern "C" {
 
 // BtlUnit_CheckShadowGuard
@@ -63,7 +70,7 @@ bool BtlUnit_CheckStatus(void *battleUnitPtr, uint32_t status);
 // BtlUnit_SetStatus
 // BtlUnit_GetStatus
 // _CheckMoveCount
-bool BtlUnit_GetBelong(void *battleUnitPtr);
+ActorGroupBelong BtlUnit_GetBelong(void *battleUnitPtr);
 // BtlUnit_SetJumpSpeed
 // BtlUnit_SetPartsMoveSpeed
 // BtlUnit_SetMoveSpeed
