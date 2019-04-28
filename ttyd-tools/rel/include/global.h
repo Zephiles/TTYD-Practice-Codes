@@ -621,16 +621,11 @@ struct WarpByIndexStruct
 	const char *EntranceList[32];
 };
 
-struct CheckHeaps
-{
-	const char *StandardHeapArray[16];
-	const char *SmartHeapArray[16];
-};
-
 extern Menus Menu[27];
 extern Cheats Cheat[20];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
+extern char HeapBuffer[1024];
 extern MemoryWatchStruct MemoryWatch[60];
 
 extern AutoIncrement AdjustableValueMenu;
@@ -651,7 +646,6 @@ extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
 extern WarpByIndexStruct WarpByIndex;
-extern CheckHeaps CheckHeap;
 
 extern const char *VersionNumber;
 extern uint8_t CheatsOrder[];

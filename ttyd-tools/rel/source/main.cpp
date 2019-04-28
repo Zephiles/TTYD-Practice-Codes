@@ -382,68 +382,32 @@ uint32_t Mod::pauseArtAttackTimer()
 	return mPFN_scissor_timer_main_trampoline();
 }
 
-void clearHeapArray(const char **heap)
+void addTextToHeapArray(char *text)
 {
-	uint32_t Counter = 0;
-	while (heap[Counter])
-	{
-		delete[] heap[Counter];
-		heap[Counter] = nullptr;
-		Counter++;
-	}
-}
-
-void addTextToHeapArray(const char **heap, char *text)
-{
-	// Get the next available slot in the array
-	uint32_t TotalSlots = 16;
-	int32_t FreeSlot = -1;
+	char *tempHeapBuffer = HeapBuffer;
 	
-	for (uint32_t i = 0; i < TotalSlots; i++)
-	{
-		if (!heap[i])
-		{
-			FreeSlot = i;
-			break;
-		}
-	}
+	// Make sure adding the new text will not result in an overflow
+	uint32_t NewTextSize = ttyd::string::strlen(text);
+	uint32_t CurrentHeapSize = ttyd::string::strlen(tempHeapBuffer);
 	
-	// Make sure the new text can be added
-	if (FreeSlot == -1)
+	uint32_t NewHeapSize = CurrentHeapSize + NewTextSize + 1;
+	uint32_t MaxHeapSize = sizeof(HeapBuffer);
+	
+	if (NewHeapSize > MaxHeapSize)
 	{
-		// The new text cannot be added
+		// Adding the new text will result in an overflow, so don't add it
 		return;
 	}
 	
-	// Add the new text at the current free slot
-	uint32_t TextSize = ttyd::string::strlen(text);
-	char *NewText = new char[TextSize + 1];
-	ttyd::string::strcpy(NewText, text);
-	heap[FreeSlot] = NewText;
-}
-
-bool checkIfTextAlreadyAdded(const char **heap, const char *text, uint32_t bytesToCompare)
-{
-	uint32_t Counter = 0;
-	while (heap[Counter])
-	{
-		if (compareStringsSize(heap[Counter], text, bytesToCompare))
-		{
-			return true;
-		}
-		Counter++;
-	}
-	return false;
+	// Add the new text onto the heap
+	ttyd::string::strcat(tempHeapBuffer, text);
 }
 
 void checkHeaps()
 {
-	const char **tempStandardHeapArray = CheckHeap.StandardHeapArray;
-	const char **tempSmartHeapArray = CheckHeap.SmartHeapArray;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Check the standard heaps
-	bool ErrorsFound = false;
 	for (int32_t i = 0; i < 5; i++)
 	{
 		const gc::os::HeapInfo &heap = gc::os::OSAlloc_HeapArray[i];
@@ -456,7 +420,6 @@ void checkHeaps()
 			// Check pointer sanity
 			if (!checkIfPointerIsValid(currentChunk))
 			{
-				ErrorsFound = true;
 				valid = false;
 				break;
 			}
@@ -464,7 +427,6 @@ void checkHeaps()
 			// Sanity check size
 			if (currentChunk->size > 0x17FFFFF)
 			{
-				ErrorsFound = true;
 				valid = false;
 				break;
 			}
@@ -472,7 +434,6 @@ void checkHeaps()
 			// Check linked list integrity
 			if (prevChunk != currentChunk->prev)
 			{
-				ErrorsFound = true;
 				valid = false;
 				break;
 			}
@@ -483,22 +444,13 @@ void checkHeaps()
 		if (!valid)
 		{
 			sprintf(tempDisplayBuffer,
-				"Standard Heap %" PRId32 " corrupted at 0x%08" PRIX32,
+				"Standard Heap %" PRId32 " corrupted at 0x%08" PRIX32 "\n",
 				i,
 				reinterpret_cast<uint32_t>(currentChunk));
 			
-			// Only add the current heap once
-			if (!checkIfTextAlreadyAdded(tempStandardHeapArray, tempDisplayBuffer, 16))
-			{	
-				addTextToHeapArray(tempStandardHeapArray, tempDisplayBuffer);
-			}
+			// Add the text to the heap buffer
+			addTextToHeapArray(tempDisplayBuffer);
 		}
-	}
-	
-	if (!ErrorsFound)
-	{
-		// No errors were found, so clear the standard heap array
-		clearHeapArray(tempStandardHeapArray);
 	}
 	
 	// Check the smart heap
@@ -536,23 +488,15 @@ void checkHeaps()
 	if (!valid)
 	{
 		sprintf(tempDisplayBuffer,
-			"Smart Heap corrupted at 0x%08" PRIX32,
+			"Smart Heap corrupted at 0x%08" PRIX32 "\n",
 			reinterpret_cast<uint32_t>(currentChunk));
 		
-		// Only add the current heap once
-		if (!checkIfTextAlreadyAdded(tempSmartHeapArray, tempDisplayBuffer, 16))
-		{	
-			addTextToHeapArray(tempSmartHeapArray, tempDisplayBuffer);
-		}
-	}
-	else
-	{
-		// No errors were found, so clear the smart heap array
-		clearHeapArray(tempSmartHeapArray);
+		// Add the text to the heap buffer
+		addTextToHeapArray(tempDisplayBuffer);
 	}
 	
 	// Draw any errors that occured
-	if (tempStandardHeapArray[0] || tempSmartHeapArray[0])
+	if (HeapBuffer[0] != '\0')
 	{
 		drawFunctionOnDebugLayer(drawHeapArrayErrors);
 	}

@@ -1321,6 +1321,7 @@ struct Menus Menu[27];
 struct Cheats Cheat[20];
 bool Displays[9];
 char DisplayBuffer[256];
+char HeapBuffer[1024];
 struct MemoryWatchStruct MemoryWatch[60];
 
 struct AutoIncrement AdjustableValueMenu;
@@ -1341,7 +1342,6 @@ struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
 struct WarpByIndexStruct WarpByIndex;
-struct CheckHeaps CheckHeap;
 
 bool HideMenu 							= false;
 bool MenuIsDisplayed 					= false;

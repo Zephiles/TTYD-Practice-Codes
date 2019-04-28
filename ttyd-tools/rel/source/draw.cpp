@@ -3860,27 +3860,12 @@ void drawHeapArrayErrors()
 	int32_t PosY 			= 120;
 	float Scale 			= 0.6;
 	
-	// Draw the standard heap text
-	const char **tempStandardHeapArray = CheckHeap.StandardHeapArray;
-	uint32_t Counter = 0;
+	// Draw the text
+	char *tempHeapBuffer = HeapBuffer;
+	drawText(tempHeapBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	
-	while (tempStandardHeapArray[Counter])
-	{
-		drawText(tempStandardHeapArray[Counter], PosX, PosY, Alpha, TextColor, Scale);
-		PosY -= 20;
-		Counter++;
-	}
-	
-	// Draw the smart heap text
-	const char **tempSmartHeapArray = CheckHeap.SmartHeapArray;
-	Counter = 0;
-	
-	while (tempSmartHeapArray[Counter])
-	{
-		drawText(tempSmartHeapArray[Counter], PosX, PosY, Alpha, TextColor, Scale);
-		PosY -= 20;
-		Counter++;
-	}
+	// Clear the heap buffer
+	clearMemory(tempHeapBuffer, sizeof(HeapBuffer));
 }
 
 void drawTitleScreenInfo()
