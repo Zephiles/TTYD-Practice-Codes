@@ -33,6 +33,7 @@ void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
 void actionCommandsTimingsInit();
 void displayActionCommandsTiming();
+void displayArtAttackHitboxes();
 
 int32_t warpToMap(uint32_t value);
 int32_t warpToMapByString(const char *map);
