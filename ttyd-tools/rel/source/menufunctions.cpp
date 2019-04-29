@@ -1320,7 +1320,7 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 					setAddByIconValue(tempAddress);
 					
 					FrameCounter = 1;
-					return Button;
+					return ADDING_BY_ICON;
 				}
 				else
 				{
@@ -1469,26 +1469,26 @@ uint32_t memoryChangeWatchPositionButtonControls()
 				{
 					case DPADLEFT:
 					{
-						int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
-						MemoryWatch[tempMenuSelectedOption].PosX = PosX - 5;
+						int32_t PosX = MemoryWatchPosition.PosX;
+						MemoryWatchPosition.PosX = PosX - 5;
 						break;
 					}
 					case DPADRIGHT:
 					{
-						int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
-						MemoryWatch[tempMenuSelectedOption].PosX = PosX + 5;
+						int32_t PosX = MemoryWatchPosition.PosX;
+						MemoryWatchPosition.PosX = PosX + 5;
 						break;
 					}
 					case DPADUP:
 					{
-						int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
-						MemoryWatch[tempMenuSelectedOption].PosY = PosY + 5;
+						int32_t PosY = MemoryWatchPosition.PosY;
+						MemoryWatchPosition.PosY = PosY + 5;
 						break;
 					}
 					case DPADDOWN:
 					{
-						int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
-						MemoryWatch[tempMenuSelectedOption].PosY = PosY - 5;
+						int32_t PosY = MemoryWatchPosition.PosY;
+						MemoryWatchPosition.PosY = PosY - 5;
 						break;
 					}
 					default:
@@ -1528,38 +1528,41 @@ uint32_t memoryChangeWatchPositionButtonControls()
 	{
 		case DPADLEFT:
 		{
-			int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
-			MemoryWatch[tempMenuSelectedOption].PosX = PosX - 1;
+			int32_t PosX = MemoryWatchPosition.PosX;
+			MemoryWatchPosition.PosX = PosX - 1;
 			
 			FrameCounter = 1;
 			return Button;
 		}
 		case DPADRIGHT:
 		{
-			int32_t PosX = MemoryWatch[tempMenuSelectedOption].PosX;
-			MemoryWatch[tempMenuSelectedOption].PosX = PosX + 1;
+			int32_t PosX = MemoryWatchPosition.PosX;
+			MemoryWatchPosition.PosX = PosX + 1;
 			
 			FrameCounter = 1;
 			return Button;
 		}
 		case DPADUP:
 		{
-			int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
-			MemoryWatch[tempMenuSelectedOption].PosY = PosY + 1;
+			int32_t PosY = MemoryWatchPosition.PosY;
+			MemoryWatchPosition.PosY = PosY + 1;
 			
 			FrameCounter = 1;
 			return Button;
 		}
 		case DPADDOWN:
 		{
-			int32_t PosY = MemoryWatch[tempMenuSelectedOption].PosY;
-			MemoryWatch[tempMenuSelectedOption].PosY = PosY - 1;
+			int32_t PosY = MemoryWatchPosition.PosY;
+			MemoryWatchPosition.PosY = PosY - 1;
 			
 			FrameCounter = 1;
 			return Button;
 		}
 		case A:
 		{
+			MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
+			MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
+			
 			SelectedOption = 0;
 			HideMenu = false;
 			
@@ -1568,8 +1571,6 @@ uint32_t memoryChangeWatchPositionButtonControls()
 		}
 		case B:
 		{
-			MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
-			MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
 			SelectedOption = 0;
 			HideMenu = false;
 			

@@ -1489,13 +1489,13 @@ void drawMemoryTypeList()
 void drawMemoryChangeWatchPosition()
 {
 	// Check for button inputs
-	memoryChangeWatchPositionButtonControls();	
+	memoryChangeWatchPositionButtonControls();
 	
 	uint32_t tempMenuSelectedOption = MenuSelectedOption;
 	
 	// Draw the current watch
-	int32_t PosX 		= MemoryWatch[tempMenuSelectedOption].PosX;
-	int32_t PosY 		= MemoryWatch[tempMenuSelectedOption].PosY;
+	int32_t PosX 		= MemoryWatchPosition.PosX;
+	int32_t PosY 		= MemoryWatchPosition.PosY;
 	uint32_t TextColor 	= 0xFFFFFFFF;
 	uint8_t Alpha 		= 0xFF;
 	float Scale 		= 0.75;
@@ -1512,10 +1512,10 @@ void drawMemoryChangeWatchPosition()
 	int32_t Curve 			= 20;
 	uint32_t WindowColor 	= 0x151515F6;
 	int32_t TextPosX 		= -135;
-	int32_t TextPosY 		= 100;
+	int32_t TextPosY 		= 140;
 	Scale = 0.6;
 	
-	const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress B to cancel";
+	const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to cancel";
 	int32_t Width = static_cast<int32_t>(getMessageWidth(HelpText, Scale));
 	
 	drawTextWithWindow(HelpText, TextPosX, TextPosY, Alpha, TextColor, 
@@ -2066,8 +2066,6 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		uint32_t ReturnCode = adjustableValueButtonControls(currentMenu);
 		switch (ReturnCode)
 		{
-			case A: // Confirmed a value, so close the menu; Don't close if currently adding multiple items/badges
-			case B: // Canceled, so close the menu
 			case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
 			{
 				return;
@@ -2288,8 +2286,6 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	uint32_t ReturnCode = adjustWatchValueControls(tempMenuSelectedOption);
 	switch (ReturnCode)
 	{
-		case A: // Confirmed a value, so close the menu
-		case B: // Canceled, so close the menu
 		case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
 		{
 			return;

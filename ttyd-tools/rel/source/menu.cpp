@@ -3732,14 +3732,17 @@ void drawMenu()
 void enableOrDisableMenu()
 {
 	// Check for user input
-	const uint16_t OpenMenuCombo = PAD_L | PAD_START;
+	uint16_t OpenMenuCombo = PAD_L | PAD_START;
+	bool tempMenuIsDisplayed = MenuIsDisplayed;
+	
 	if (checkButtonCombo(OpenMenuCombo) && !PreventClosingMenu && !ChangingCheatButtonCombo)
 	{
-		MenuIsDisplayed = !MenuIsDisplayed;
-		if (MenuIsDisplayed)
+		resetMenuToRoot();
+		tempMenuIsDisplayed = !tempMenuIsDisplayed;
+		MenuIsDisplayed = tempMenuIsDisplayed;
+		
+		if (tempMenuIsDisplayed)
 		{
-			resetMenuToRoot();
-			
 			// Raise the System Level if not in a battle
 			raiseSystemLevel();
 			
@@ -3748,19 +3751,6 @@ void enableOrDisableMenu()
 		}
 		else
 		{
-			if (HideMenu)
-			{
-				// Restore the memory watch default position if currently modifying it
-				if (CurrentMenu == MEMORY_MODIFY)
-				{
-					uint32_t tempMenuSelectedOption = MenuSelectedOption;
-					MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
-					MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
-				}
-			}
-			
-			resetMenuToRoot();
-			
 			// Lower the System Level if not in a battle
 			lowerSystemLevel();
 			
@@ -3770,7 +3760,7 @@ void enableOrDisableMenu()
 	}
 	
 	// Check if the menu should be displayed or not
-	if (MenuIsDisplayed)
+	if (tempMenuIsDisplayed)
 	{
 		// Check for button inputs for the menu
 		// Don't check any buttons if the frame counter is not 0
