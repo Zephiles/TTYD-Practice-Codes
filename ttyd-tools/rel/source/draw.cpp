@@ -1070,6 +1070,22 @@ void drawBattlesActorStats()
 		return;
 	}
 	
+	// Draw the name of the current actor
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t NamePosX = -232;
+	int32_t NamePosY = 0;
+	float Scale = 0.6;
+	
+	uint32_t CurrentActor = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	sprintf(tempDisplayBuffer,
+		"Selected Actor\n%s",
+		BattlesActorsLines[CurrentActor - 1]);
+	
+	drawText(tempDisplayBuffer, NamePosX, NamePosY, Alpha, Color, Scale);
+	
 	// Create array for each stat to go in
 	int16_t ActorStats[4];
 	clearMemory(ActorStats, sizeof(ActorStats));
@@ -1080,11 +1096,8 @@ void drawBattlesActorStats()
 	ActorStats[2] = *reinterpret_cast<int16_t *>(ActorAddress + 0x112); // FP
 	ActorStats[3] = *reinterpret_cast<int16_t *>(ActorAddress + 0x10E); // Max FP
 	
-	uint32_t Color = 0xFFFFFFFF;
-	uint8_t Alpha = 0xFF;
 	int32_t PosX = -50;
 	int32_t PosY = 180;
-	float Scale = 0.6;
 	
 	// Draw the main text
 	uint32_t tempBattlesCurrentActorStatsSize = BattlesCurrentActorStatsSize;
@@ -1098,7 +1111,6 @@ void drawBattlesActorStats()
 	PosY = 180;
 	
 	// Draw the stats
-	char *tempDisplayBuffer = DisplayBuffer;
 	for (uint32_t i = 0; i < (tempBattlesCurrentActorStatsSize); i++)
 	{
 		sprintf(tempDisplayBuffer,
