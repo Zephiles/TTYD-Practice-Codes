@@ -150,25 +150,28 @@ void Mod::performBattleChecks()
 
 void walkThroughMostObjects()
 {
-	if (!Cheat[WALK_THROUGH_WALLS].Active || 
-		!checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo))
+	if (Cheat[WALK_THROUGH_WALLS].Active && 
+		checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo))
 	{
-		// Check to see if Mario's properties should be reset
-		if (ResetMarioProperties)
+		ResetMarioProperties = true;
+		
+		// Set Mario's properties to be able to walk through most objects
+		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+		player->flags1 |= (1 << 10); // Turn on the 10 bit
+	}
+	else if (ResetMarioProperties)
+	{
+		ResetMarioProperties = false;
+		
+		// Don't reset the properties if Vivian is currently being used
+		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+		const uint32_t UsingVivian = 28;
+		
+		if (player->currentMotionId != UsingVivian)
 		{
-			ResetMarioProperties = false;
-			
-			ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 			player->flags1 &= ~(1 << 10); // Turn off the 10 bit
 		}
-		return;
 	}
-	
-	// Set Mario;s properties to be able to walk through most objects
-	ResetMarioProperties = true;
-	
-	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-	player->flags1 |= (1 << 10); // Turn on the 10 bit
 }
 
 void saveMarioAndPartnerPositions()
