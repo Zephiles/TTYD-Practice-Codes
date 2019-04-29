@@ -3228,7 +3228,7 @@ void drawWarpIndexEntranceList()
 		// Draw the entrance number
 		sprintf(tempDisplayBuffer,
 			"Entrance %" PRIu32,
-			i);
+			i + 1);
 		
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 		

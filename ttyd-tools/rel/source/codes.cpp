@@ -1495,7 +1495,7 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 		WarpByIndex.RunIndexWarpCode = false;
 		
 		// Make sure the chosen entrance exists for the chosen map
-		uint32_t ChosenEntrance = WarpByIndex.EntranceId;
+		uint32_t ChosenEntrance = WarpByIndex.EntranceId - 1;
 		const char *ChosenEntranceName;
 		
 		if (ChosenEntrance < LoadingZoneTotal)

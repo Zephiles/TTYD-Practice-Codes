@@ -571,15 +571,15 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 		}
 		case WARPS_INDEX:
 		{
-			// LowerBound = 0;
-			
 			if (tempCurrentMenuOption == INDEX_SELECT_MAP)
 			{
+				// LowerBound = 0;
 				UpperBound = 271;
 			}
 			else
 			{
-				UpperBound = (sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0])) - 1;
+				LowerBound = 1;
+				UpperBound = sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0]);
 			}
 			break;
 		}

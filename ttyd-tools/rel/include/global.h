@@ -619,6 +619,11 @@ struct WarpByIndexStruct
 	uint16_t MapId;
 	uint8_t EntranceId;
 	const char *EntranceList[32];
+	
+	WarpByIndexStruct()
+	{
+		EntranceId = 1;
+	}
 };
 
 extern Menus Menu[27];
