@@ -3040,24 +3040,38 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 	
 	if (ChangingWord)
 	{
+		// Draw the text descriptions
 		sprintf(tempDisplayBuffer,
-			"%s To Set: %" PRIu32 "\nCurrent Value: %" PRId32 "\nNew Value: %" PRId32,
-			FlagText,
+			"%s To Set\nCurrent Value\nNew Value",
+			FlagText);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the values
+		sprintf(tempDisplayBuffer,
+			"%" PRIu32 "\n%" PRId32 "\n%" PRId32,
 			FlagToSet,
 			FlagValue,
 			ManageFlags.ValueToSet);
 		
-		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		drawText(tempDisplayBuffer, PosX + 150, PosY, Alpha, Color, Scale);
 	}
 	else
 	{
+		// Draw the text descriptions
 		sprintf(tempDisplayBuffer,
-			"%s To Set: %" PRIu32 "\nCurrent Value: %" PRId32,
-			FlagText,
+			"%s To Set\nCurrent Value",
+			FlagText);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the values
+		sprintf(tempDisplayBuffer,
+			"%" PRIu32 "\n%" PRId32,
 			FlagToSet,
 			FlagValue);
 		
-		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		drawText(tempDisplayBuffer, PosX + 150, PosY, Alpha, Color, Scale);
 	}
 }
 
