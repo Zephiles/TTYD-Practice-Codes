@@ -19,8 +19,8 @@ void lowerSystemLevel();
 const char *getItemName(int16_t item);
 void *getFreeSlotPointer();
 int32_t getTotalItems();
-int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu);
-uint32_t *getPouchAddressAndSize(uint32_t *tempArray);
+void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu);
+uint32_t *getPouchAddressAndSize(uint32_t tempArray[2]);
 bool checkForItemsOnNextPage(uint32_t currentPage);
 bool checkForClosingErrorMessage();
 
@@ -60,9 +60,9 @@ void cheatClearAreaFlags(uint32_t currentMenuOption);
 const char *getMapFromIndex(int32_t index);
 int32_t getMapIndex();
 
-// uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo);
-uint8_t *getButtonsPressed(uint8_t *buttonArray, uint16_t currentButtonCombo);
-char *createButtonStringArray(char *tempArray, uint8_t *buttonArray);
+// void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo);
+void getButtonsPressed(uint8_t *buttonArrayOut, uint16_t currentButtonCombo);
+void createButtonStringArray(char *stringOut, uint8_t *buttonArray);
 bool incrementCheatsBButtonCounter(uint32_t buttonInput);
 bool cheatsManageTimer(uint32_t buttonInput);
 

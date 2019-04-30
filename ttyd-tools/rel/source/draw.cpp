@@ -2425,9 +2425,10 @@ void drawAddByIconMain(uint32_t currentMenu)
 	
 	// Draw the main window
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray 			= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
-	int32_t LowerBound 			= tempArray[0];
-	int32_t UpperBound 			= tempArray[1];
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	
+	int32_t LowerBound 			= UpperAndLowerBounds[0];
+	int32_t UpperBound 			= UpperAndLowerBounds[1];
 	
 	uint32_t MaxIconsPerRow 	= 16;
 	uint32_t IconSpaceOccupied 	= 30;
@@ -2770,19 +2771,19 @@ void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description
 	drawText(description, PosX, posY, Alpha, Color, Scale);
 	
 	// Draw the button combo
-	uint8_t tempButtonArray[14]; // Extra spot for 0 at the end of the array
-	clearMemory(tempButtonArray, sizeof(tempButtonArray));
-	uint8_t *ButtonArray = getButtonsPressed(tempButtonArray, buttonCombo);
+	uint8_t ButtonArray[14]; // Extra spot for 0 at the end of the array
+	clearMemory(ButtonArray, sizeof(ButtonArray));
+	getButtonsPressed(ButtonArray, buttonCombo);
 	
-	// uint8_t *CurrentButtonComboArray = nullptr;
-	// uint8_t *ButtonArray = getButtonsPressed(CurrentButtonComboArray);
+	// uint8_t *ButtonArray = nullptr;
+	// getButtonsPressed(ButtonArray);
 	
 	char ButtonString[256];
 	clearMemory(ButtonString, sizeof(ButtonString));
-	char *tempButtonString = createButtonStringArray(ButtonString, ButtonArray);
+	createButtonStringArray(ButtonString, ButtonArray);
 	
 	posY -= 20;
-	drawText(tempButtonString, PosX, posY, Alpha, Color, Scale);
+	drawText(ButtonString, PosX, posY, Alpha, Color, Scale);
 	// delete[] (ButtonArray);
 	// ButtonArray = nullptr;
 }
@@ -2854,11 +2855,10 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	
 	char ButtonString[256];
 	clearMemory(ButtonString, sizeof(ButtonString));
-	char *tempButtonString = createButtonStringArray(ButtonString, 
-		CheatsDisplayButtons.CheatsCurrentButtonsHeld);
+	createButtonStringArray(ButtonString, tempButtonArray);
 	
 	PosY -= 20;
-	drawText(tempButtonString, PosX, PosY, Alpha, Color, Scale);
+	drawText(ButtonString, PosX, PosY, Alpha, Color, Scale);
 	
 	// Decrement the timer and check to see if it's at 0
 	if (cheatsManageTimer(ButtonInput))

@@ -429,10 +429,9 @@ void menuCheckButton()
 									if (CurrentItem != 0)
 									{
 										int32_t UpperAndLowerBounds[2];
-										int32_t *tempArray2 = getUpperAndLowerBounds(
-											UpperAndLowerBounds, tempMenuSelectedOption);
+										getUpperAndLowerBounds(UpperAndLowerBounds, tempMenuSelectedOption);
 										
-										int32_t LowerBound = tempArray2[0];
+										int32_t LowerBound = UpperAndLowerBounds[0];
 										SecondaryMenuOption = CurrentItem - LowerBound;
 									}
 									else

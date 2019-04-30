@@ -243,7 +243,7 @@ int32_t getTotalItems()
 	return Counter;
 }
 
-int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
+void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 {
 	uint32_t tempMenuSelectedOption = MenuSelectedOption;
 	uint32_t tempSelectedOption = SelectedOption;
@@ -595,12 +595,11 @@ int32_t *getUpperAndLowerBounds(int32_t *tempArray, uint32_t currentMenu)
 		}
 	}
 	
-	tempArray[0] = LowerBound;
-	tempArray[1] = UpperBound;
-	return tempArray;
+	arrayOut[0] = LowerBound;
+	arrayOut[1] = UpperBound;
 }
 
-uint32_t *getPouchAddressAndSize(uint32_t *tempArray)
+uint32_t *getPouchAddressAndSize(uint32_t tempArray[2])
 {
 	uint32_t tempAddressOffset;
 	uint32_t tempSize;
@@ -753,9 +752,10 @@ void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage)
 uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu)
 {
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-	int32_t LowerBound = tempArray[0];
-	int32_t UpperBound = tempArray[1];
+	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+	
+	int32_t LowerBound = UpperAndLowerBounds[0];
+	int32_t UpperBound = UpperAndLowerBounds[1];
 	
 	// Make sure each value is positive
 	if (LowerBound < 0)
@@ -812,18 +812,18 @@ int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy)
 void setAdjustableValueToMax(uint32_t currentMenu)
 {
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-	int32_t UpperBound = tempArray[1];
+	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	
+	int32_t UpperBound = UpperAndLowerBounds[1];
 	MenuSecondaryValue = UpperBound;
 }
 
 void setAdjustableValueToMin(uint32_t currentMenu)
 {
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-	int32_t LowerBound = tempArray[0];
+	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	
+	int32_t LowerBound = UpperAndLowerBounds[0];
 	MenuSecondaryValue = LowerBound;
 }
 
@@ -1295,9 +1295,9 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 		case DPADUP:
 		{
 			int32_t UpperAndLowerBounds[2];
-			int32_t *tempArray 				= getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-			int32_t LowerBound 				= tempArray[0];
-			int32_t UpperBound 				= tempArray[1];
+			getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+			int32_t LowerBound 				= UpperAndLowerBounds[0];
+			int32_t UpperBound 				= UpperAndLowerBounds[1];
 			
 			uint32_t MaxOptionsPerRow 		= 16;
 			uint32_t tempTotalMenuOptions 	= UpperBound - LowerBound + 1;
@@ -1924,9 +1924,10 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 	}
 	
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray = getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-	int32_t LowerBound = tempArray[0];
-	int32_t UpperBound = tempArray[1];
+	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+	
+	int32_t LowerBound = UpperAndLowerBounds[0];
+	int32_t UpperBound = UpperAndLowerBounds[1];
 	
 	adjustMenuItemBoundsMain(valueChangedBy, LowerBound, UpperBound);
 }
@@ -2454,8 +2455,9 @@ void setAddByIdValue(void *address)
 void setAddByIconValue(void *address)
 {
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray 	= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
-	int32_t LowerBound 					= tempArray[0];
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	
+	int32_t LowerBound 					= UpperAndLowerBounds[0];
 	uint32_t tempSecondaryMenuOption 	= SecondaryMenuOption;
 	int32_t NewItem = LowerBound + tempSecondaryMenuOption;
 	
@@ -2916,7 +2918,7 @@ int32_t getMapIndex()
 	return -1;
 }
 
-/*uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo)
+/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
 {
 	uint32_t Counter = 0;
 	uint32_t Size = 1;
@@ -2931,10 +2933,10 @@ int32_t getMapIndex()
 		
 		if (currentButtonCombo & (1 << i))
 		{
-			if (!buttonArray)
+			if (!buttonArrayOut)
 			{
-				buttonArray = new uint8_t[2]; // Extra spot for a 0 at the end of the array
-				clearMemory(buttonArray, (2 * sizeof(uint8_t)));
+				buttonArrayOut = new uint8_t[2]; // Extra spot for a 0 at the end of the array
+				clearMemory(buttonArrayOut, (2 * sizeof(uint8_t)));
 			}
 			else
 			{
@@ -2945,48 +2947,46 @@ int32_t getMapIndex()
 				clearMemory(tempButtonArray, ((Size + 1) * sizeof(uint8_t)));
 				
 				// Copy the contents of the old array to the new array
-				ttyd::__mem::memcpy(tempButtonArray, buttonArray, ((Size - 1) * sizeof(uint8_t)));
+				ttyd::__mem::memcpy(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
 				
 				// Delete the old array
-				delete[] (buttonArray);
+				delete[] (buttonArrayOut);
 				
 				// Set the new array as the current array
-				buttonArray = tempButtonArray;
+				buttonArrayOut = tempButtonArray;
 			}
 			
-			buttonArray[Size - 1] = Counter + 1;
+			buttonArrayOut[Size - 1] = Counter + 1;
 		}
 		
 		Counter++;
 	}
 	
-	if (buttonArray)
+	if (buttonArrayOut)
 	{
-		buttonArray[Size] = 0;
+		buttonArrayOut[Size] = 0;
 	}
 	else
 	{
-		buttonArray = new uint8_t[1];
-		buttonArray[0] = 0;
+		buttonArrayOut = new uint8_t[1];
+		buttonArrayOut[0] = 0;
 	}
-	
-	return buttonArray;
 }*/
 
-/*uint8_t *getButtonsPressedDynamic(uint8_t *buttonArray, uint16_t currentButtonCombo)
+/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
 {
-	if (!buttonArray)
+	if (!buttonArrayOut)
 	{
-		buttonArray = new uint8_t[14]; // Extra spot for a 0 at the end of the array
+		buttonArrayOut = new uint8_t[14]; // Extra spot for a 0 at the end of the array
 	}
 	
 	// Clear the memory, so that the previous results do not interfere with the new results
-	clearMemory(buttonArray, (14 * sizeof(uint8_t)));
+	clearMemory(buttonArrayOut, (14 * sizeof(uint8_t)));
 	
-	return getButtonsPressed(buttonArray, currentButtonCombo);
+	getButtonsPressed(buttonArrayOut, currentButtonCombo);
 }*/
 
-uint8_t *getButtonsPressed(uint8_t *buttonArray, uint16_t currentButtonCombo)
+void getButtonsPressed(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
 {
 	uint32_t Counter = 1;
 	uint32_t Size = 0;
@@ -3001,20 +3001,18 @@ uint8_t *getButtonsPressed(uint8_t *buttonArray, uint16_t currentButtonCombo)
 		
 		if (currentButtonCombo & (1 << i))
 		{
-			buttonArray[Size] = Counter;
+			buttonArrayOut[Size] = Counter;
 			Size++;
 		}
 		
 		Counter++;
 	}
-	
-	return buttonArray;
 }
 
-char *createButtonStringArray(char *tempArray, uint8_t *buttonArray)
+void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
 {
 	char *tempDisplayBuffer = DisplayBuffer;
-	const char *Button = "";
+	const char *Button;
 	uint32_t i = 0;
 	
 	while (buttonArray[i] != 0)
@@ -3083,6 +3081,7 @@ char *createButtonStringArray(char *tempArray, uint8_t *buttonArray)
 			}
 			default:
 			{
+				Button = "";
 				break;
 			}
 		}
@@ -3090,7 +3089,7 @@ char *createButtonStringArray(char *tempArray, uint8_t *buttonArray)
 		if (i == 0)
 		{
 			// Set the initial button pressed
-			ttyd::string::strcpy(tempArray, Button);
+			ttyd::string::strcpy(stringOut, Button);
 		}
 		else
 		{
@@ -3098,13 +3097,12 @@ char *createButtonStringArray(char *tempArray, uint8_t *buttonArray)
 			sprintf(tempDisplayBuffer,
 				" + %s",
 				Button);
-			ttyd::string::strcat(tempArray, tempDisplayBuffer);
+			
+			ttyd::string::strcat(stringOut, tempDisplayBuffer);
 		}
 		
 		i++;
 	}
-	
-	return tempArray;
 }
 
 bool incrementCheatsBButtonCounter(uint32_t buttonInput)
@@ -3398,9 +3396,10 @@ void adjustMenuSelectionInventory(uint32_t button)
 /*void adjustAddByIconCurrentOption(uint32_t button)
 {
 	int32_t UpperAndLowerBounds[2];
-	int32_t *tempArray 				= getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
-	int32_t LowerBound 				= tempArray[0];
-	int32_t UpperBound 				= tempArray[1];
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	
+	int32_t LowerBound 				= UpperAndLowerBounds[0];
+	int32_t UpperBound 				= UpperAndLowerBounds[1];
 	
 	uint32_t MaxIconsPerRow 		= 16;
 	
