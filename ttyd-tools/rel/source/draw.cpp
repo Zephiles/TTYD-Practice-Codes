@@ -3433,10 +3433,13 @@ void drawStickAngle()
 		PosY += 20;
 	}
 	
+	char StickAngleString[12];
+	getStickAngleString(StickAngleString);
+	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"StickAngle: %.2f",
-		getStickAngle());
+		"StickAngle: %s",
+		StickAngleString);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 }
@@ -3487,11 +3490,14 @@ void drawYoshiSkipDetails()
 	}
 	
 	// Draw the text
+	char StickAngleString[12];
+	getStickAngleString(StickAngleString);
+	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"YST: %" PRIu32 "\nStickAngle: %.2f",
+		"YST: %" PRIu32 "\nStickAngle: %s",
 		YoshiSkip.MainTimer,
-		getStickAngle());
+		StickAngleString);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	

@@ -19,7 +19,7 @@ void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();
 void checkIfAreaFlagsShouldBeCleared();
-double getStickAngle();
+void getStickAngleString(char *stringOut);
 
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();

@@ -755,31 +755,40 @@ void checkIfAreaFlagsShouldBeCleared()
 	}
 }
 
-double getStickAngle()
+void getStickAngleString(char *stringOut)
 {
 	int32_t tempStickX = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
+	int32_t tempStickY = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
+	
+	// Check if the stick is at the neutral position
+	if ((tempStickX == 0) && (tempStickY == 0))
+	{
+		// The stick is currently at the neutral position
+		ttyd::string::strcpy(stringOut, "Neutral");
+		return;
+	}
+	
 	if (tempStickX > 127)
 	{
 		tempStickX -= 256;
 	}
-	double StickX = static_cast<double>(tempStickX);
 	
-	int32_t tempStickY = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
 	if (tempStickY > 127)
 	{
 		tempStickY -= 256;
 	}
+	
+	double StickX = static_cast<double>(tempStickX);
 	double StickY = static_cast<double>(tempStickY);
-	
 	const double PI = 3.14159265358979323846;
-	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);
 	
+	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);
 	if (StickAngle < 0)
 	{
 		StickAngle += 360;
 	}
 	
-	return StickAngle;
+	sprintf(stringOut, "%.2f", StickAngle);
 }
 
 void displaySequenceInPauseMenu()
