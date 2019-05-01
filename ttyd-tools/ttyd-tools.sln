@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ttydasm", "ttydasm\ttydasm.vcxproj", "{02697344-600B-4CC6-B8AE-36E63378E280}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "elf2rel", "elf2rel\elf2rel.vcxproj", "{B5BB1531-4352-4B38-837C-C0139A45BDBA}"
 EndProject
 Global
