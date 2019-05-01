@@ -3276,18 +3276,23 @@ void drawSequenceInPauseMenu()
 {
 	uint32_t Color 				= 0xFFFFFFFF;
 	uint8_t Alpha 				= 0xFF;
-	int32_t PosX 				= 83;
+	int32_t PosX 				= 43;
 	int32_t PosY 				= 47;
 	float Scale 				= 0.8;
 	
+	// Draw the sequence text
+	const char *String = "Sequence";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the value
 	uint32_t SequencePosition 	= getSequencePosition();
 	char *tempDisplayBuffer 	= DisplayBuffer;
 	
 	sprintf(tempDisplayBuffer,
-		"Seq: %" PRIu32,
+		"%" PRIu32,
 		SequencePosition);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	drawText(tempDisplayBuffer, PosX + 157, PosY, Alpha, Color, Scale);
 }
 
 void drawOnScreenTimer()
