@@ -3,7 +3,7 @@
 #include "codes.h"
 #include "patch.h"
 
-#include <ttyd/system.h>
+#include <ttyd/mariost.h>
 #include <ttyd/battle_pad.h>
 #include <ttyd/win_root.h>
 #include <ttyd/mario_pouch.h>
@@ -40,7 +40,7 @@ void Mod::init()
 	initAddressOverwrites();
 	actionCommandsTimingsInit();
 	
-	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::system::makeKey, []()
+	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::mariost::marioStMain, []()
 	{
 		gMod->run();
 	});
