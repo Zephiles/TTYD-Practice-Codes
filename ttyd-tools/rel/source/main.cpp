@@ -9,6 +9,7 @@
 
 #include <gc/OSCache.h>
 #include <gc/os.h>
+#include <ttyd/seqdrv.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/evt_sub.h>
@@ -134,7 +135,7 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress,
 		{
 			if (selectedOption == ThirdOption)
 			{
-				setSpecificSeq(ttyd::seqdrv::SeqIndex::kGameOver, nullptr, nullptr);
+				ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kGameOver, nullptr, nullptr);
 			}
 			
 			NewOption = SecondOption;
@@ -383,8 +384,8 @@ void addTextToHeapArray(char *text)
 	char *tempHeapBuffer = HeapBuffer;
 	
 	// Make sure adding the new text will not result in an overflow
-	uint32_t NewTextSize = strlen(text);
-	uint32_t CurrentHeapSize = strlen(tempHeapBuffer);
+	uint32_t NewTextSize = getStringSize(text);
+	uint32_t CurrentHeapSize = getStringSize(tempHeapBuffer);
 	
 	uint32_t NewHeapSize = CurrentHeapSize + NewTextSize + 1;
 	uint32_t MaxHeapSize = sizeof(HeapBuffer);

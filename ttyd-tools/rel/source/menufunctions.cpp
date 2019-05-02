@@ -7,6 +7,7 @@
 
 #include <ttyd/win_main.h>
 #include <ttyd/win_item.h>
+#include <ttyd/seqdrv.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/party.h>
@@ -2556,6 +2557,11 @@ int32_t changeItem()
 	return 0;
 }
 
+ttyd::evtmgr::EvtWork *getCurrentEventWork()
+{
+	return ttyd::evtmgr::evtGetWork();
+}
+
 int32_t getGW(uint32_t gw)
 {
 	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
@@ -2946,7 +2952,7 @@ int32_t getMapIndex()
 				clearMemory(tempButtonArray, ((Size + 1) * sizeof(uint8_t)));
 				
 				// Copy the contents of the old array to the new array
-				memcpy(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
+				copyMemory(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
 				
 				// Delete the old array
 				delete[] (buttonArrayOut);
@@ -3088,7 +3094,7 @@ void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
 		if (i == 0)
 		{
 			// Set the initial button pressed
-			strcpy(stringOut, Button);
+			copyString(stringOut, Button);
 		}
 		else
 		{
@@ -3173,7 +3179,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 			Timer = secondsToFrames(3);
 			
 			// Copy the values from the current buttons held to the previous buttons held
-			memcpy(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
+			copyMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
 				CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 			
 			return false;

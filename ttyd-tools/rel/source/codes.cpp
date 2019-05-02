@@ -9,12 +9,10 @@
 #include "maps.h"
 
 #include <gc/gx.h>
-#include <ttyd/battle_unit.h>
-#include <ttyd/fontmgr.h>
-#include <ttyd/battle_disp.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
+#include <ttyd/seqdrv.h>
 #include <ttyd/camdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
@@ -23,10 +21,12 @@
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
+#include <ttyd/battle_unit.h>
+#include <ttyd/fontmgr.h>
+#include <ttyd/battle_disp.h>
 
 #include <cstdio>
 #include <cinttypes>
-#include <cstring>
 #include <cmath>
 
 namespace mod {
@@ -456,9 +456,9 @@ void reloadRoomMain()
 	char *tempNewBero = ReloadRoom.NewBero;
 	char *tempNewMap = ReloadRoom.NewMap;
 	
-	strcpy(tempNewBero, NextBero);
-	strcpy(tempNewMap, NextMap);
-	setSeq(tempNewMap, tempNewBero);
+	copyString(tempNewBero, NextBero);
+	copyString(tempNewMap, NextMap);
+	setSeqMapChange(tempNewMap, tempNewBero);
 	
 	// Reset the black screen fade effect set when loading into a room via a pipe
 	*reinterpret_cast<uint16_t *>(
@@ -764,7 +764,7 @@ void getStickAngleString(char *stringOut)
 	if ((tempStickX == 0) && (tempStickY == 0))
 	{
 		// The stick is currently at the neutral position
-		strcpy(stringOut, "Neutral");
+		copyString(stringOut, "Neutral");
 		return;
 	}
 	
@@ -1527,8 +1527,8 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 		char *NextBeroGSW = reinterpret_cast<char *>(
 			*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x11C);
 		
-		strcpy(NextBeroGSW, ChosenEntranceName);
-		strcpy(NextBero, ChosenEntranceName);
+		copyString(NextBeroGSW, ChosenEntranceName);
+		setNextBero(ChosenEntranceName);
 	}
 	
 	// Call original function

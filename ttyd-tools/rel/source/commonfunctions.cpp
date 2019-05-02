@@ -9,7 +9,6 @@
 #include <ttyd/party.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
-#include <ttyd/evtmgr.h>
 
 #include <cstdio>
 #include <cstring>
@@ -117,7 +116,7 @@ void *getPartnerBattlePointer()
 		return nullptr;
 	}
 	
-	uint32_t *BattlePointer = *reinterpret_cast<uint32_t **>(BattleAddressesStart);
+	void *BattlePointer = getBattlePointer();
 	return ttyd::battle::BattleGetPartnerPtr(BattlePointer, MarioBattlePointer);
 }
 
@@ -149,13 +148,23 @@ void setSequencePosition(uint32_t value)
 
 void setNextMap(const char *map)
 {
-	strcpy(NextMap, map);
+	copyString(NextMap, map);
 	strncpy(NextArea, map, 3);
 }
 
 void setNextBero(const char *bero)
 {
-	strcpy(NextBero, bero);
+	copyString(NextBero, bero);
+}
+
+char *copyString(char *destination, const char *source)
+{
+	return strcpy(destination, source);
+}
+
+void *copyMemory(void *destination, const void *source, uint32_t size)
+{
+	return memcpy(destination, source, size);
 }
 
 bool compareStrings(const char *str1, const char *str2)
@@ -170,7 +179,12 @@ bool compareStringsSize(const char *str1, const char *str2, uint32_t size)
 
 bool compareStringToNextMap(const char *str)
 {
-	return strcmp(NextMap, str) == 0;
+	return compareStrings(str, NextMap);
+}
+
+uint32_t getStringSize(const char *str)
+{
+	return strlen(str);
 }
 
 uint32_t getSystemLevel()
@@ -183,14 +197,9 @@ void setSystemLevel(uint32_t value)
 	ttyd::mariost::marioStSystemLevel(value);
 }
 
-void setSeq(const char *map, const char *bero)
+void setSeqMapChange(const char *map, const char *bero)
 {
 	ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kMapChange, map, bero);
-}
-
-void setSpecificSeq(ttyd::seqdrv::SeqIndex seq, const char *map, const char *bero)
-{
-	ttyd::seqdrv::seqSetSeq(seq, map, bero);
 }
 
 void *clearMemory(void *destination, uint32_t size)
@@ -270,11 +279,6 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	{
 		ttyd::swdrv::swClear(i);
 	}
-}
-
-ttyd::evtmgr::EvtWork *getCurrentEventWork()
-{
-	return ttyd::evtmgr::evtGetWork();
 }
 
 bool checkIfPointerIsValid(void *ptr)

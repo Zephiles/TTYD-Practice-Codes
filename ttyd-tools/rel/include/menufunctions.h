@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/evtmgr.h>
+
 #include <cstdint>
 
 namespace mod {
@@ -51,6 +53,7 @@ void setAddByIconValue(void *address);
 void duplicateCurrentItem(void *address);
 void deleteItem();
 int32_t changeItem();
+ttyd::evtmgr::EvtWork *getCurrentEventWork();
 int32_t getGW(uint32_t gw);
 void setGW(uint32_t gw, uint32_t value);
 bool getGF(uint32_t gf);
