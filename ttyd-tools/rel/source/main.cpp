@@ -7,12 +7,12 @@
 #include "draw.h"
 #include "patch.h"
 
+#include <gc/OSCache.h>
 #include <gc/os.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
-#include <ttyd/OSCache.h>
 #include <ttyd/sac_scissor.h>
 #include <ttyd/string.h>
 #include <ttyd/memory.h>
@@ -305,7 +305,7 @@ bool Mod::performPreBattleActions()
 		
 		uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
 		void *AddressesToClearStart = reinterpret_cast<void *>(PouchPtr + 0x70);
-		ttyd::OSCache::DCFlushRange(AddressesToClearStart, 0x21);
+		gc::OSCache::DCFlushRange(AddressesToClearStart, 0x21);
 	}
 	
 	// Clear the cache for the partners if their stats were changed manually
@@ -315,7 +315,7 @@ bool Mod::performPreBattleActions()
 		
 		uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
 		void *AddressesToClearStart = reinterpret_cast<void *>(PouchPtr + 0xE);
-		ttyd::OSCache::DCFlushRange(AddressesToClearStart, 0x61);
+		gc::OSCache::DCFlushRange(AddressesToClearStart, 0x61);
 	}
 	
 	// Call original function

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace ttyd::OSCache {
+namespace gc::OSCache {
 
 extern "C" {
 
