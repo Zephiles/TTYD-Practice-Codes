@@ -10,7 +10,6 @@
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/icondrv.h>
-#include <ttyd/string.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/system.h>
@@ -21,6 +20,7 @@
 
 #include <cstdio>
 #include <cinttypes>
+#include <cstring>
 
 namespace mod {
 
@@ -184,9 +184,9 @@ void drawStringMultiline(float x, float y, const char *text, float scale)
 	increment = static_cast<float>(tempIncrementValue);
 	
 	// Copy the text to a temporary array, as it will be modified
-	int32_t textSize = ttyd::string::strlen(text);
+	int32_t textSize = strlen(text);
 	char tempText[textSize + 1];
-	ttyd::string::strcpy(tempText, text);
+	strcpy(tempText, text);
 	
 	// Get the index for the next line
 	uint32_t index = getNextLineIndex(tempText);

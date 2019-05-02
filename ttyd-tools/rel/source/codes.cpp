@@ -15,7 +15,6 @@
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
-#include <ttyd/string.h>
 #include <ttyd/camdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
@@ -23,11 +22,12 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
-#include <ttyd/w_atan2.h>
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
 #include <cinttypes>
+#include <cstring>
+#include <cmath>
 
 namespace mod {
 
@@ -456,8 +456,8 @@ void reloadRoomMain()
 	char *tempNewBero = ReloadRoom.NewBero;
 	char *tempNewMap = ReloadRoom.NewMap;
 	
-	ttyd::string::strcpy(tempNewBero, NextBero);
-	ttyd::string::strcpy(tempNewMap, NextMap);
+	strcpy(tempNewBero, NextBero);
+	strcpy(tempNewMap, NextMap);
 	setSeq(tempNewMap, tempNewBero);
 	
 	// Reset the black screen fade effect set when loading into a room via a pipe
@@ -764,7 +764,7 @@ void getStickAngleString(char *stringOut)
 	if ((tempStickX == 0) && (tempStickY == 0))
 	{
 		// The stick is currently at the neutral position
-		ttyd::string::strcpy(stringOut, "Neutral");
+		strcpy(stringOut, "Neutral");
 		return;
 	}
 	
@@ -782,7 +782,7 @@ void getStickAngleString(char *stringOut)
 	double StickY = static_cast<double>(tempStickY);
 	const double PI = 3.14159265358979323846;
 	
-	double StickAngle = (ttyd::w_atan2::atan2(StickX, StickY)) * (180 / PI);
+	double StickAngle = (atan2(StickX, StickY)) * (180 / PI);
 	if (StickAngle < 0)
 	{
 		StickAngle += 360;
@@ -1527,8 +1527,8 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 		char *NextBeroGSW = reinterpret_cast<char *>(
 			*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x11C);
 		
-		ttyd::string::strcpy(NextBeroGSW, ChosenEntranceName);
-		ttyd::string::strcpy(NextBero, ChosenEntranceName);
+		strcpy(NextBeroGSW, ChosenEntranceName);
+		strcpy(NextBero, ChosenEntranceName);
 	}
 	
 	// Call original function

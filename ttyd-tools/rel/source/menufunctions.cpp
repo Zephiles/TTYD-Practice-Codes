@@ -14,11 +14,10 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/battle.h>
 #include <ttyd/evtmgr.h>
-#include <ttyd/string.h>
 #include <ttyd/system.h>
-#include <ttyd/__mem.h>
 
 #include <cstdio>
+#include <cstring>
 
 namespace mod {
 
@@ -2947,7 +2946,7 @@ int32_t getMapIndex()
 				clearMemory(tempButtonArray, ((Size + 1) * sizeof(uint8_t)));
 				
 				// Copy the contents of the old array to the new array
-				ttyd::__mem::memcpy(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
+				memcpy(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
 				
 				// Delete the old array
 				delete[] (buttonArrayOut);
@@ -3089,7 +3088,7 @@ void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
 		if (i == 0)
 		{
 			// Set the initial button pressed
-			ttyd::string::strcpy(stringOut, Button);
+			strcpy(stringOut, Button);
 		}
 		else
 		{
@@ -3098,7 +3097,7 @@ void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
 				" + %s",
 				Button);
 			
-			ttyd::string::strcat(stringOut, tempDisplayBuffer);
+			strcat(stringOut, tempDisplayBuffer);
 		}
 		
 		i++;
@@ -3174,7 +3173,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 			Timer = secondsToFrames(3);
 			
 			// Copy the values from the current buttons held to the previous buttons held
-			ttyd::__mem::memcpy(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
+			memcpy(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
 				CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 			
 			return false;

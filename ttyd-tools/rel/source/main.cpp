@@ -14,11 +14,11 @@
 #include <ttyd/evt_sub.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/sac_scissor.h>
-#include <ttyd/string.h>
 #include <ttyd/memory.h>
 
 #include <cstdio>
 #include <cinttypes>
+#include <cstring>
 
 namespace mod {
 
@@ -383,8 +383,8 @@ void addTextToHeapArray(char *text)
 	char *tempHeapBuffer = HeapBuffer;
 	
 	// Make sure adding the new text will not result in an overflow
-	uint32_t NewTextSize = ttyd::string::strlen(text);
-	uint32_t CurrentHeapSize = ttyd::string::strlen(tempHeapBuffer);
+	uint32_t NewTextSize = strlen(text);
+	uint32_t CurrentHeapSize = strlen(tempHeapBuffer);
 	
 	uint32_t NewHeapSize = CurrentHeapSize + NewTextSize + 1;
 	uint32_t MaxHeapSize = sizeof(HeapBuffer);
@@ -396,7 +396,7 @@ void addTextToHeapArray(char *text)
 	}
 	
 	// Add the new text onto the heap
-	ttyd::string::strcat(tempHeapBuffer, text);
+	strcat(tempHeapBuffer, text);
 }
 
 void checkHeaps()

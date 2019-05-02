@@ -5,15 +5,14 @@
 #include <ttyd/seqdrv.h>
 #include <ttyd/battle.h>
 #include <ttyd/swdrv.h>
-#include <ttyd/string.h>
 #include <ttyd/mariost.h>
-#include <ttyd/__mem.h>
 #include <ttyd/party.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/evtmgr.h>
 
 #include <cstdio>
+#include <cstring>
 
 namespace mod {
 
@@ -150,28 +149,28 @@ void setSequencePosition(uint32_t value)
 
 void setNextMap(const char *map)
 {
-	ttyd::string::strcpy(NextMap, map);
-	ttyd::string::strncpy(NextArea, map, 3);
+	strcpy(NextMap, map);
+	strncpy(NextArea, map, 3);
 }
 
 void setNextBero(const char *bero)
 {
-	ttyd::string::strcpy(NextBero, bero);
+	strcpy(NextBero, bero);
 }
 
 bool compareStrings(const char *str1, const char *str2)
 {
-	return ttyd::string::strcmp(str1, str2) == 0;
+	return strcmp(str1, str2) == 0;
 }
 
 bool compareStringsSize(const char *str1, const char *str2, uint32_t size)
 {
-	return ttyd::string::strncmp(str1, str2, size) == 0;
+	return strncmp(str1, str2, size) == 0;
 }
 
 bool compareStringToNextMap(const char *str)
 {
-	return ttyd::string::strcmp(NextMap, str) == 0;
+	return strcmp(NextMap, str) == 0;
 }
 
 uint32_t getSystemLevel()
@@ -196,7 +195,7 @@ void setSpecificSeq(ttyd::seqdrv::SeqIndex seq, const char *map, const char *ber
 
 void *clearMemory(void *destination, uint32_t size)
 {
-	return ttyd::__mem::memset(destination, 0, size);
+	return memset(destination, 0, size);
 }
 
 int32_t getPartnerID()
