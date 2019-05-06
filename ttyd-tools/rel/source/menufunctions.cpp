@@ -246,8 +246,8 @@ int32_t getTotalItems()
 void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 {
 	uint32_t tempMenuSelectedOption = MenuSelectedOption;
-	uint32_t tempSelectedOption = SelectedOption;
 	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempMenuSelectionStates = MenuSelectionStates;
 	int32_t LowerBound = 0;
 	int32_t UpperBound = 0;
 	
@@ -272,9 +272,21 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 			UpperBound = SuperChargeP;
 			break;
 		}
+		case CHEATS_CHANGE_SEQUENCE:
+		{
+			// LowerBound = 0;
+			UpperBound = 405;
+			break;
+		}
+		case CHEATS_NPC_FORCE_DROP:
+		{
+			LowerBound = GoldBar;
+			UpperBound = SuperChargeP;
+			break;
+		}
 		case CHEATS_MANAGE_FLAGS_MAIN:
 		{
-			switch (MenuSelectionStates)
+			switch (tempMenuSelectionStates)
 			{
 				case SET_GSW:
 				{
@@ -377,7 +389,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		case STATS_MARIO:
 		{
 			uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-			switch (tempMenuSelectedOption)
+			switch (tempMenuSelectionStates)
 			{
 				case COINS:
 				case MARIO_MAX_HP:
@@ -452,7 +464,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		case STATS_PARTNERS:
 		{
 			uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(getPartnerEnabledAddress());
-			switch (tempMenuSelectedOption)
+			switch (tempMenuSelectionStates)
 			{
 				case PARTNER_HP:
 				{
@@ -489,7 +501,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 				break;
 			}
 			
-			switch (tempSelectedOption)
+			switch (tempMenuSelectionStates)
 			{
 				case CHANGE_ACTOR_HP:
 				{
@@ -526,7 +538,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 				break;
 			}
 			
-			switch (tempSelectedOption)
+			switch (tempMenuSelectionStates)
 			{
 				case BIG_SHRINK_POWER_AMOUNT:
 				case ATTACK_UP_DOWN_POWER_AMOUNT:
@@ -549,18 +561,6 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 					break;
 				}
 			}
-			break;
-		}
-		case CHEATS_NPC_FORCE_DROP:
-		{
-			LowerBound = GoldBar;
-			UpperBound = SuperChargeP;
-			break;
-		}
-		case CHEATS_CHANGE_SEQUENCE:
-		{
-			// LowerBound = 0;
-			UpperBound = 405;
 			break;
 		}
 		case WARPS:
@@ -838,7 +838,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 	
 	if (AmountOfNumbers == 0)
 	{
-		// Close the menu IF there are no numbers to draw
+		// Close the menu if there are no numbers to draw
 		NoNumbersToDisplay = true;
 		Button = B;
 	}

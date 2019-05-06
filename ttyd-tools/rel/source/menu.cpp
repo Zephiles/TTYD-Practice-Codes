@@ -1307,6 +1307,7 @@ void menuCheckButton()
 								case 0:
 								{
 									MenuSelectedOption = tempCurrentMenuOption + 1;
+									MenuSelectionStates = tempCurrentMenuOption + 1;
 									
 									switch (tempCurrentMenuOption + 1)
 									{
@@ -1445,6 +1446,7 @@ void menuCheckButton()
 												PartnerEnabledAddress + 0x6);
 											
 											MenuSelectedOption = tempCurrentMenuOption + 1;
+											MenuSelectionStates = tempCurrentMenuOption + 1;
 											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 											break;
 										}
@@ -1454,6 +1456,7 @@ void menuCheckButton()
 												PartnerEnabledAddress + 0x2);
 											
 											MenuSelectedOption = tempCurrentMenuOption + 1;
+											MenuSelectionStates = tempCurrentMenuOption + 1;
 											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 											break;
 										}
@@ -1463,6 +1466,7 @@ void menuCheckButton()
 												PartnerEnabledAddress + 0xA);
 											
 											MenuSelectedOption = tempCurrentMenuOption + 1;
+											MenuSelectionStates = tempCurrentMenuOption + 1;
 											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 											break;
 										}
@@ -2440,6 +2444,7 @@ void menuCheckButton()
 										}
 										
 										SelectedOption = tempCurrentMenuOption;
+										MenuSelectionStates = tempCurrentMenuOption;
 										SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 										
 										switch (tempCurrentMenuOption)
@@ -2561,6 +2566,7 @@ void menuCheckButton()
 							}
 							
 							SelectedOption = tempCurrentMenuOption + 1;
+							MenuSelectionStates = tempCurrentMenuOption + 1;
 							SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 							
 							uint32_t Counter = 0;
