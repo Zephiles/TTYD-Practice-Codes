@@ -344,10 +344,10 @@ const char *Mod::getCustomMessage(const char *msgKey)
 		// Only needs to change when not on the train
 		if (!compareStrings(tempNextArea, "rsh"))
 		{
-			#ifndef TTYD_JP
-			const char *message = "<select 0 0 0 40>No\nAlright\nChoose this option";
-			#else
+			#ifdef TTYD_JP
 			const char *message = "<select 0 0 300 40>No\nAlright\nChoose this option";
+			#else
+			const char *message = "<select 0 0 0 40>No\nAlright\nChoose this option";
 			#endif
 			
 			return message;

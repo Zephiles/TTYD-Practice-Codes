@@ -667,25 +667,7 @@ uint8_t StatsMarioOptionsLinesSize = sizeof(StatsMarioOptionsLines) / sizeof(Sta
 
 uint16_t StatsMarioIcons[] = 
 {
-	#ifndef TTYD_JP
-	403, // Coins
-	423, // HP
-	424, // FP
-	425, // BP
-	423, // Max HP
-	424, // Max FP
-	422, // Level
-	422, // Rank
-	404, // Star Points
-	405, // Star Pieces
-	266, // Shine Sprites
-	415, // Special Moves
-	154, // Star Power
-	154, // Max Star Power
-	390, // Shop Points
-	327, // Piantas Stored
-	327, // Current Piantas
-	#else
+	#ifdef TTYD_JP
 	395, // Coins
 	415, // HP
 	416, // FP
@@ -703,6 +685,24 @@ uint16_t StatsMarioIcons[] =
 	382, // Shop Points
 	319, // Piantas Stored
 	319, // Current Piantas
+	#else
+	403, // Coins
+	423, // HP
+	424, // FP
+	425, // BP
+	423, // Max HP
+	424, // Max FP
+	422, // Level
+	422, // Rank
+	404, // Star Points
+	405, // Star Pieces
+	266, // Shine Sprites
+	415, // Special Moves
+	154, // Star Power
+	154, // Max Star Power
+	390, // Shop Points
+	327, // Piantas Stored
+	327, // Current Piantas
 	#endif
 };
 
@@ -1094,35 +1094,7 @@ uint8_t BattlesStatusesLinesSize = sizeof(BattlesStatusesLines) / sizeof(Battles
 
 uint16_t BattlesStatusesIcons[] = 
 {
-	#ifndef TTYD_JP
-	397, // Sleep
-	398, // Stop
-	379, // Dizzy
-	223, // Poision
-	223, // Poison Amount
-	409, // Confused
-	388, // Electrified
-	412, // Dodgy
-	15, // Burn
-	392, // Frozen
-	375, // Big/Shrink
-	375, // Big/Shrink Amount
-	47, // Attack Up/Down
-	47, // Attack Up/Down Amount
-	48, // Defense Up/Down
-	48, // Defense Up/Down Amount
-	37, // Charged
-	186, // Allergic
-	408, // Invisible
-	203, // Payback
-	426, // Fast
-	390, // Slow
-	386, // HP Regen
-	386, // HP Regen Amount
-	389, // FP Regen
-	389, // FP Regen Amount
-	362, // Defeated Flag
-	#else
+	#ifdef TTYD_JP
 	389, // Sleep
 	390, // Stop
 	371, // Dizzy
@@ -1150,6 +1122,34 @@ uint16_t BattlesStatusesIcons[] =
 	381, // FP Regen
 	381, // FP Regen Amount
 	354, // Defeated Flag
+	#else
+	397, // Sleep
+	398, // Stop
+	379, // Dizzy
+	223, // Poision
+	223, // Poison Amount
+	409, // Confused
+	388, // Electrified
+	412, // Dodgy
+	15, // Burn
+	392, // Frozen
+	375, // Big/Shrink
+	375, // Big/Shrink Amount
+	47, // Attack Up/Down
+	47, // Attack Up/Down Amount
+	48, // Defense Up/Down
+	48, // Defense Up/Down Amount
+	37, // Charged
+	186, // Allergic
+	408, // Invisible
+	203, // Payback
+	426, // Fast
+	390, // Slow
+	386, // HP Regen
+	386, // HP Regen Amount
+	389, // FP Regen
+	389, // FP Regen Amount
+	362, // Defeated Flag
 	#endif
 };
 
@@ -1275,23 +1275,7 @@ const char *ReturnPlaceholder[] =
 	"Return",
 };
 
-#ifndef TTYD_JP
-const char ButtonInputDisplay[] = 
-{
-	static_cast<char>(171), // Left
-	static_cast<char>(187), // Right
-	static_cast<char>(179), // Down
-	static_cast<char>(178), // Up
-	'Z',
-	'R',
-	'L',
-	'A',
-	'B',
-	'X',
-	'Y',
-	'S',
-};
-#else
+#ifdef TTYD_JP
 uint8_t ButtonLeft[] 	= {0x81, 0xA9, 0};
 uint8_t ButtonRight[] 	= {0x81, 0xA8, 0};
 uint8_t ButtonDown[] 	= {0x81, 0xAB, 0};
@@ -1315,6 +1299,22 @@ const char *ButtonInputDisplay[] =
 
 uint8_t PointerTextValues[] = {0x50, 0x81, 0xA8, 0};
 const char *PointerText = reinterpret_cast<const char *>(&PointerTextValues);
+#else
+const char ButtonInputDisplay[] = 
+{
+	static_cast<char>(171), // Left
+	static_cast<char>(187), // Right
+	static_cast<char>(179), // Down
+	static_cast<char>(178), // Up
+	'Z',
+	'R',
+	'L',
+	'A',
+	'B',
+	'X',
+	'Y',
+	'S',
+};
 #endif
 
 struct Menus Menu[27];

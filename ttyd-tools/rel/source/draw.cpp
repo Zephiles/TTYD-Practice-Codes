@@ -3419,13 +3419,13 @@ void drawButtonInputs()
 		
 		if (ButtonInput & (1 << i))
 		{
-			#ifndef TTYD_JP
+			#ifdef TTYD_JP
 			sprintf(tempDisplayBuffer,
-				"%c",
+				"%s",
 				ButtonInputDisplay[Counter]);
 			#else
 			sprintf(tempDisplayBuffer,
-				"%s",
+				"%c",
 				ButtonInputDisplay[Counter]);
 			#endif
 			

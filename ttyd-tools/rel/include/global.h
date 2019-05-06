@@ -692,12 +692,12 @@ extern const char *WarpDestinations[];
 extern uint8_t WarpDestinationsSize;
 extern const char *WarpDescriptions[];
 
-#ifndef TTYD_JP
-extern const char ButtonInputDisplay[];
-#else
+#ifdef TTYD_JP
 extern const char *CheatsEventNames[];
 extern const char *ButtonInputDisplay[];
 extern const char *PointerText;
+#else
+extern const char ButtonInputDisplay[];
 #endif
 
 extern bool HideMenu;

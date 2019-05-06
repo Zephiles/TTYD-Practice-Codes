@@ -39,10 +39,10 @@ const char *getAddressString(int32_t slot)
 	const char *tempPointerText;
 	if (MemoryWatch[slot].AddressOffsetAmount > 0)
 	{
-		#ifndef TTYD_JP
-		tempPointerText = "P=";
-		#else
+		#ifdef TTYD_JP
 		tempPointerText = PointerText;
+		#else
+		tempPointerText = "P=";
 		#endif
 	}
 	else
