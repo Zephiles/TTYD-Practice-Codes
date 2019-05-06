@@ -3405,7 +3405,6 @@ void drawButtonInputs()
 	int32_t PosY = -160;
 	float Scale = 0.75;
 	
-	startDrawString(Alpha, Color, Scale);
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 	char *tempDisplayBuffer = DisplayBuffer;
 	
@@ -3430,7 +3429,7 @@ void drawButtonInputs()
 				ButtonInputDisplay[Counter]);
 			#endif
 			
-			ttyd::fontmgr::FontDrawString(PosX, PosY, tempDisplayBuffer);
+			drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 		}
 		
 		PosX += 20;
