@@ -1265,7 +1265,7 @@ const char *WarpIndexLines[] =
 {
 	"Return",
 	"Select New Map",
-	"Select New Map Entrance",
+	"Select New Entrance Id",
 	"View Current Map Entrances",
 	"Warp",
 };

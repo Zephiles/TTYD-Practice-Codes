@@ -3159,13 +3159,13 @@ void drawWarpsOptions()
 
 void drawWarpIndexMapAndEntrance()
 {
-	uint32_t Color 				= 0xFFFFFFFF;
-	uint8_t Alpha 				= 0xFF;
-	int32_t PosX 				= -232;
-	int32_t PosY 				= 60;
-	float Scale 				= 0.6;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 60;
+	float Scale 	= 0.6;
 	
-	const char *String = "Current Map\nNew Map\nEntrance";
+	const char *String = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	
 	const char *MapName = getMapFromIndex(static_cast<int32_t>(WarpByIndex.MapId));
@@ -3173,12 +3173,13 @@ void drawWarpIndexMapAndEntrance()
 	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%s\n%s\n%" PRIu32,
+		"%s\n%s\n\n%s\n%" PRIu32,
 		NextMap,
+		NextBero,
 		MapName,
 		EntranceId);
 	
-	drawText(tempDisplayBuffer, PosX + 130, PosY, Alpha, Color, Scale);
+	drawText(tempDisplayBuffer, PosX + 170, PosY, Alpha, Color, Scale);
 }
 
 void drawWarpIndexEntranceList()
@@ -3206,9 +3207,16 @@ void drawWarpIndexEntranceList()
 	PosX = -232;
 	PosY -= 55;
 	
-	const char *String = "Current Map";
+	const char *String = "Current Map\nCurrent Entrance";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
-	drawText(NextMap, PosX + 130, PosY, Alpha, Color, Scale);
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"%s\n%s",
+		NextMap,
+		NextBero);
+	
+	drawText(tempDisplayBuffer, PosX + 170, PosY, Alpha, Color, Scale);
 	
 	// Draw the current page
 	int32_t PageNumberPosX = 150;
@@ -3217,7 +3225,7 @@ void drawWarpIndexEntranceList()
 	
 	// Draw the entrances
 	const char **tempEntranceArray = WarpByIndex.EntranceList;
-	PosY -= 40;
+	PosY -= 60;
 	
 	// Make sure at least one entrance exists
 	if (!tempEntranceArray[0])
@@ -3228,9 +3236,8 @@ void drawWarpIndexEntranceList()
 	}
 	
 	uint32_t MaxSlotsInArray = sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0]);
-	uint32_t MaxEntrancesPerPage = 13;
+	uint32_t MaxEntrancesPerPage = 12;
 	uint32_t Index = MaxEntrancesPerPage * tempCurrentPage;
-	char *tempDisplayBuffer = DisplayBuffer;
 	
 	for (uint32_t i = Index; i < (Index + MaxEntrancesPerPage); i++)
 	{

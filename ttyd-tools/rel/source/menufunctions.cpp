@@ -3688,7 +3688,7 @@ void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
 		case DPADDOWN:
 		{
 			uint32_t MaxSlotsInArray = sizeof(WarpByIndex.EntranceList) / sizeof(WarpByIndex.EntranceList[0]);
-			uint32_t MaxEntrancesPerPage = 13;
+			uint32_t MaxEntrancesPerPage = 12;
 			uint32_t TotalEntrances = 0;
 			
 			// Get the total entrances for the current map
