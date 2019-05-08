@@ -53,11 +53,12 @@ This menu allows you to modify your entire inventory, including standard items, 
 14. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
 15. **Lock Mario's HP To Max** locks Mario's current HP to the max.
 16. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
-17. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
-18. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
-19. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
-20. **Manage Flags** allows you to manually change a lot of the important flags in the game.
-21. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+17. **Disable D-Pad Options Display** prevents the D-Pad options display at the bottom-left of the screen from appearing. More specifically, this is the display that shows which D-Pad button opens which menu in the pause menu. These buttons can still be used, regardless of whether the display is disabled or not.
+18. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+19. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+20. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+21. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+22. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.

@@ -575,6 +575,7 @@ void menuCheckButton()
 								}
 								case LOCK_MARIO_HP_TO_MAX:
 								case RUN_FROM_BATTLES:
+								case DISABLE_DPAD_OPTIONS_DISPLAY:
 								case DISABLE_MENU_SOUNDS:
 								case BOBBERY_EARLY:
 								{

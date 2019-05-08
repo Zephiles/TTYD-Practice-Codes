@@ -79,6 +79,7 @@ enum CHEATS_OPTIONS
 	LEVITATE,
 	LOCK_MARIO_HP_TO_MAX,
 	RUN_FROM_BATTLES,
+	DISABLE_DPAD_OPTIONS_DISPLAY,
 	DISABLE_MENU_SOUNDS,
 	BOBBERY_EARLY,
 	FORCE_ITEM_DROP,
@@ -632,7 +633,7 @@ struct WarpByIndexStruct
 };
 
 extern Menus Menu[27];
-extern Cheats Cheat[20];
+extern Cheats Cheat[22];
 extern bool Displays[9];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[1024];

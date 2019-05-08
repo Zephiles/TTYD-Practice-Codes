@@ -69,6 +69,16 @@ int32_t forceNPCItemDrop(void *ptr)
 	return *reinterpret_cast<int32_t *>(
 		reinterpret_cast<uint32_t>(ptr) + 0x23C);
 }
+
+bool disableDPadOptionsDisplay(uint16_t unkVar)
+{
+	if (Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active)
+	{
+		return false;
+	}
+	
+	return (unkVar & (1 << 8)); // Check the 8 bit
+}
 }
 
 void Mod::performBattleChecks()

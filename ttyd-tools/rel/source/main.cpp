@@ -54,6 +54,8 @@ extern "C"
 	void BranchBackPreventJumpAndHammer();
 	void StartFixRoomProblems();
 	void BranchBackFixRoomProblems();
+	void StartDisableDPadOptionsDisplay();
+	void BranchBackDisableDPadOptionsDisplay();
 }
 
 // Functions accessed by assembly overwrites
@@ -515,7 +517,7 @@ void initAddressOverwrites()
 	#ifdef TTYD_US
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80046600);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800448CC);
-	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x80123CA4);
+	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004EC10);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009B2C);
 	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x80008FE8);
@@ -535,10 +537,11 @@ void initAddressOverwrites()
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x8025E4A8);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231938);
+	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013D148);
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F5C);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
-	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x8011E7DC);
+	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004DFB0);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x8000999C);
 	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x80008EB8);
@@ -556,10 +559,11 @@ void initAddressOverwrites()
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80422618);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C288);
+	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x80137C1C);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466E8);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
-	void *AllowRunningFromBattles 				= reinterpret_cast<void *>(0x80124BE4);
+	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004ECDC);
 	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009CF0);
 	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x800091B4);
@@ -579,12 +583,13 @@ void initAddressOverwrites()
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x80262080);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353C8);
+	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013EC30);
 	#endif
 	
 	writeStandardBranch(DisableBattlesAddress, 
 		StartDisableBattles, BranchBackDisableBattles);
 	
-	writeStandardBranch(AllowRunningFromBattles, 
+	writeStandardBranch(AllowRunningFromBattlesAddress, 
 		StartAllowRunningFromBattles, BranchBackAllowRunningFromBattles);
 	
 	writeStandardBranch(ForceNPCItemDropAddress, 
@@ -613,6 +618,9 @@ void initAddressOverwrites()
 	
 	writeStandardBranch(FixRoomProblemsAddress, 
 		StartFixRoomProblems, BranchBackFixRoomProblems);
+	
+	writeStandardBranch(DisableDPadOptionsDisplayAddress, 
+		StartDisableDPadOptionsDisplay, BranchBackDisableDPadOptionsDisplay);
 	
 	patch::writeBranch(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(preventPreBattleSoftlock));
 	

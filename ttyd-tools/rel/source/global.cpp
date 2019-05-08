@@ -64,6 +64,7 @@ uint8_t CheatsOrder[] =
 	FORCE_ITEM_DROP,
 	CLEAR_AREA_FLAGS,
 	MANAGE_FLAGS,
+	DISABLE_DPAD_OPTIONS_DISPLAY,
 };
 
 const char *CheatsLines[] = 
@@ -85,6 +86,7 @@ const char *CheatsLines[] =
 	"Levitate",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
+	"Disable D-Pad Options Display",
 	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
 	"Force NPC Item Drop",
@@ -1318,7 +1320,7 @@ const char ButtonInputDisplay[] =
 #endif
 
 struct Menus Menu[27];
-struct Cheats Cheat[20];
+struct Cheats Cheat[22];
 bool Displays[9];
 char DisplayBuffer[256];
 char HeapBuffer[1024];
@@ -1599,6 +1601,7 @@ void initMenuVars()
 		Cheat[LOCK_MARIO_HP_TO_MAX].Active 					= false;
 		Cheat[RUN_FROM_BATTLES].Active 						= false;
 		Cheat[SPAWN_ITEM].Active 							= false;
+		// Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active 		= false;
 		// Cheat[DISABLE_MENU_SOUNDS].Active 				= false;
 		// Cheat[BOBBERY_EARLY].Active 						= false;
 		Cheat[FORCE_ITEM_DROP].Active 						= false;
