@@ -40,7 +40,7 @@ void Mod::init()
 	initAddressOverwrites();
 	actionCommandsTimingsInit();
 	
-	mPFN_makeKey_trampoline = patch::hookFunction(ttyd::mariost::marioStMain, []()
+	mPFN_marioStMain_trampoline = patch::hookFunction(ttyd::mariost::marioStMain, []()
 	{
 		gMod->run();
 	});

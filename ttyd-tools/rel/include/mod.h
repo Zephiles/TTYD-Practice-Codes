@@ -22,7 +22,7 @@ private:
 	uint32_t setIndexWarpEntrance(void *, uint32_t);
 
 private:
-	void (*mPFN_makeKey_trampoline)() = nullptr;
+	void (*mPFN_marioStMain_trampoline)() = nullptr;
 	void (*mPFN_BattlePadManager_trampoline)() = nullptr;
 	int32_t (*mPFN_winRootMain_trampoline)(void *) = nullptr;
 	bool (*mPFN_pouchRemoveItemIndex_trampoline)(int16_t, uint32_t) = nullptr;

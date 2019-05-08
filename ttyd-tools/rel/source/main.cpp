@@ -712,7 +712,7 @@ void Mod::run()
 	}
 	
 	// Call original function
-	mPFN_makeKey_trampoline();
+	mPFN_marioStMain_trampoline();
 }
 
 }
