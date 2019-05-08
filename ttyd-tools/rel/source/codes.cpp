@@ -1483,22 +1483,22 @@ int32_t warpToMapByString(const char *map)
 	return SUCCESS;
 }
 
-uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
+uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
 {
 	// Clear the array holding the loading zone names
 	clearMemory(WarpByIndex.EntranceList, sizeof(WarpByIndex.EntranceList));
 	
 	// Get the start of the loading zone addresses
-	uint32_t ScriptContextLZAddresses = *reinterpret_cast<uint32_t *>(
-		reinterpret_cast<uint32_t>(scriptContext) + 0x9C);
+	uint32_t eventLZAddresses = *reinterpret_cast<uint32_t *>(
+		reinterpret_cast<uint32_t>(event) + 0x9C);
 	
 	// Loop through the loading zones and get the total amount of them
-	uint32_t tempScriptContextAddress = ScriptContextLZAddresses;
+	uint32_t tempEventAddress = eventLZAddresses;
 	uint32_t LoadingZoneTotal = 0;
 	
-	while (*reinterpret_cast<uint32_t *>(tempScriptContextAddress))
+	while (*reinterpret_cast<uint32_t *>(tempEventAddress))
 	{
-		tempScriptContextAddress += 0x3C;
+		tempEventAddress += 0x3C;
 		LoadingZoneTotal++;
 	}
 	
@@ -1508,7 +1508,7 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 	{
 		tempEntranceArray[i] = reinterpret_cast<const char *>(
 			*reinterpret_cast<uint32_t *>(
-				ScriptContextLZAddresses + (i * 0x3C)));
+				eventLZAddresses + (i * 0x3C)));
 	}
 	
 	// Check to see if warping by index
@@ -1525,7 +1525,7 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 			// Valid entrance chosen
 			ChosenEntranceName = reinterpret_cast<const char *>(
 				*reinterpret_cast<uint32_t *>(
-					ScriptContextLZAddresses + (ChosenEntrance * 0x3C)));
+					eventLZAddresses + (ChosenEntrance * 0x3C)));
 		}
 		else
 		{
@@ -1542,7 +1542,7 @@ uint32_t Mod::setIndexWarpEntrance(void *scriptContext, uint32_t waitMode)
 	}
 	
 	// Call original function
-	return mPFN_evt_bero_get_info_trampoline(scriptContext, waitMode);
+	return mPFN_evt_bero_get_info_trampoline(event, waitMode);
 }
 
 }

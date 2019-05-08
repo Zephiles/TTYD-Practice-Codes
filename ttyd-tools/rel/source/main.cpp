@@ -182,49 +182,32 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 {
 	if (compareStringsSize(jumpFallString, "M_J_", 4))
 	{
-		if (compareStringToNextMap("gor_01"))
+		const char *MapCheck = "gor_01";
+		if (compareStringToNextMap(MapCheck))
 		{
-			// Return an arbitrary string
-			const char *newString = "gor_01";
-			
 			if (MarioFreeze)
 			{
-				return newString;
+				// Return an arbitrary string
+				return MapCheck;
 			}
 			else
 			{
 				ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-				int32_t PosX = static_cast<int32_t>(player->playerPosition[0]);
-				int32_t PosZ = static_cast<int32_t>(player->playerPosition[2]);
 				
-				int32_t args[9];
-				clearMemory(args, sizeof(args));
-				
-				args[0] = PosX;
-				args[1] = PosZ;
-				args[2] = PosX + 5;
-				args[3] = PosZ + 5;
-				args[4] = 10;
-				args[5] = 250;
-				args[6] = -10;
-				args[7] = 267;
-				
-				*reinterpret_cast<uint32_t *>(&args[8]) = 0xFE363C80;
-				
-				char fakeContext[0x1B0];
-				clearMemory(fakeContext, sizeof(fakeContext));
-				
-				*reinterpret_cast<int32_t **>(fakeContext + 0x18) = args;
-				
-				ttyd::evt_sub::evt_sub_check_intersect(fakeContext);
-				
-				if (*reinterpret_cast<bool *>(
-					reinterpret_cast<uint32_t>(fakeContext) + 0x9F))
+				int32_t MarPosX = static_cast<int32_t>(player->playerPosition[0]);
+				if ((MarPosX >= -9) && (MarPosX <= 8))
 				{
-					if (player->playerPosition[1] >= 58)
+					int32_t MarPosZ = static_cast<int32_t>(player->playerPosition[2]);
+					if ((MarPosZ >= 245) && (MarPosZ <= 265))
 					{
-						MarioFreeze = true;
-						return newString;
+						int32_t MarPosY = static_cast<int32_t>(player->playerPosition[1]);
+						if (MarPosY >= 59)
+						{
+							MarioFreeze = true;
+							
+							// Return an arbitrary string
+							return MapCheck;
+						}
 					}
 				}
 			}

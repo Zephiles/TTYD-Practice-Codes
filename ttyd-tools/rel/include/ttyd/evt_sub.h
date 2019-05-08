@@ -9,7 +9,7 @@ extern "C" {
 
 // mail_evt_gor_04_keyoff_check
 // irai_mail_check
-uint32_t evt_sub_check_intersect(void *scriptContext);
+uint32_t evt_sub_check_intersect(void *event);
 // bgm_start_wait
 // get_stop
 // set_stop

@@ -89,9 +89,9 @@ void Mod::init()
 	});
 	
 	mPFN_evt_bero_get_info_trampoline = patch::hookFunction(
-		ttyd::evt_bero::evt_bero_get_info, [](void *scriptContext, uint32_t waitMode)
+		ttyd::evt_bero::evt_bero_get_info, [](void *event, uint32_t waitMode)
 	{
-		return gMod->setIndexWarpEntrance(scriptContext, waitMode);
+		return gMod->setIndexWarpEntrance(event, waitMode);
 	});
 
 	// Initialize typesetting early
