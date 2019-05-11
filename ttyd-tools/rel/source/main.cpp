@@ -426,7 +426,7 @@ void checkHeaps()
 		if (!valid)
 		{
 			sprintf(tempDisplayBuffer,
-				"Standard Heap %" PRId32 " corrupted at 0x%08" PRIX32 "\n",
+				"Standard Heap %" PRId32 " corrupt at 0x%08" PRIX32 "\n",
 				i,
 				reinterpret_cast<uint32_t>(currentChunk));
 			
@@ -470,7 +470,7 @@ void checkHeaps()
 	if (!valid)
 	{
 		sprintf(tempDisplayBuffer,
-			"Smart Heap corrupted at 0x%08" PRIX32 "\n",
+			"Smart Heap corrupt at 0x%08" PRIX32 "\n",
 			reinterpret_cast<uint32_t>(currentChunk));
 		
 		// Add the text to the heap buffer
