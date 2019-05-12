@@ -373,9 +373,7 @@ void performRELPatches()
 	}
 	
 	// Make sure a REL file is currently loaded
-	uint32_t Current_REL_Loaded_Pointer = *reinterpret_cast<uint32_t *>(
-		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
-	
+	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
 	if (Current_REL_Loaded_Pointer == 0)
 	{
 		return;

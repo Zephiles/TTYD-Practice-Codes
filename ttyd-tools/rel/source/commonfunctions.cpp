@@ -66,9 +66,7 @@ bool checkIfInGame()
 		ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
 		if (CurrentSeq == Game)
 		{
-			uint32_t Current_REL_Loaded_Pointer = *reinterpret_cast<uint32_t *>(
-				*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
-			
+			uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
 			if (Current_REL_Loaded_Pointer != 0)
 			{
 				#ifdef TTYD_US
@@ -91,10 +89,15 @@ bool checkIfInGame()
 	return false;
 }
 
+void *getCurrentRELPointer()
+{
+	return *reinterpret_cast<uint32_t **>(
+		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
+}
+
 void *getBattlePointer()
 {
-	uint32_t *BattlePointer = *reinterpret_cast<uint32_t **>(BattleAddressesStart);
-	return BattlePointer;
+	return *reinterpret_cast<uint32_t **>(BattleAddressesStart);
 }
 
 void *getMarioBattlePointer()
@@ -270,7 +273,7 @@ void recheckJumpAndHammerLevels()
 
 uint32_t getCurrentPitFloor()
 {
-	return ttyd::swdrv::swByteGet(1321) + 1; // GSW(1321);
+	return ttyd::swdrv::swByteGet(1321) + 1; // GSW(1321)
 }
 
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
