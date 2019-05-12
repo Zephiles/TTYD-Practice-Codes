@@ -66,10 +66,10 @@ bool checkIfInGame()
 		ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
 		if (CurrentSeq == Game)
 		{
-			uint32_t Current_REL_Loaded = *reinterpret_cast<uint32_t *>(
+			uint32_t Current_REL_Loaded_Pointer = *reinterpret_cast<uint32_t *>(
 				*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
 			
-			if (Current_REL_Loaded != 0)
+			if (Current_REL_Loaded_Pointer != 0)
 			{
 				#ifdef TTYD_US
 				const uint32_t DMO = 0x4;
@@ -79,7 +79,7 @@ bool checkIfInGame()
 				const uint32_t DMO = 0x5;
 				#endif
 				
-				uint32_t Current_REL_Id = *reinterpret_cast<uint32_t *>(Current_REL_Loaded);
+				uint32_t Current_REL_Id = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
 				if (Current_REL_Id != DMO)
 				{
 					// Currently not in the intro

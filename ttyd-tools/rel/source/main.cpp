@@ -364,6 +364,69 @@ uint32_t Mod::pauseArtAttackTimer()
 	return mPFN_scissor_timer_main_trampoline();
 }
 
+void performRELPatches()
+{
+	// Only run during screen transitions
+	if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kMapChange))
+	{
+		return;
+	}
+	
+	// Make sure a REL file is currently loaded
+	uint32_t Current_REL_Loaded_Pointer = *reinterpret_cast<uint32_t *>(
+		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
+	
+	if (Current_REL_Loaded_Pointer == 0)
+	{
+		return;
+	}
+	
+	#ifdef TTYD_US
+	const uint32_t LAS = 0x10;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
+	#elif defined TTYD_JP
+	const uint32_t LAS = 0x11;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FC0;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x58;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0xD4;
+	#elif defined TTYD_EU
+	const uint32_t LAS = 0x11;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
+	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
+	#endif
+	
+	uint32_t CurrentREL = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
+	switch (CurrentREL)
+	{
+		case LAS:
+		{
+			if (compareStringToNextMap("las_29"))
+			{
+				// Make changes to the function that spawns the textboxes, to prevent the standard heap from being corrupted
+				// Change the loop count from 10 to 5
+				*reinterpret_cast<uint32_t *>(
+					Current_REL_Loaded_Pointer + 
+						SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
+							SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset) = 5;
+				
+				// Wait for 400ms instead of 200ms at the end of the loop
+				*reinterpret_cast<uint32_t *>(
+					Current_REL_Loaded_Pointer + 
+						SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
+							SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset) = 400;
+			}
+			return;
+		}
+		default:
+		{
+			return;
+		}
+	}
+}
+
 void addTextToHeapArray(char *text)
 {
 	char *tempHeapBuffer = HeapBuffer;
@@ -691,6 +754,9 @@ void Mod::run()
 		displayActionCommandsTiming();
 		displayStickAngle();
 		displayMemoryWatches();
+		
+		// Perform any necessaery REL patches
+		performRELPatches();
 		
 		// Check the heaps
 		checkHeaps();
