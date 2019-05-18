@@ -1,6 +1,7 @@
 #include "commonfunctions.h"
 #include "global.h"
 
+#include <gc/OSCache.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/battle.h>
@@ -282,6 +283,12 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	{
 		ttyd::swdrv::swClear(i);
 	}
+}
+
+void clear_DC_IC_Cache(void *ptr, uint32_t size)
+{
+	gc::OSCache::DCFlushRange(ptr, size);
+	gc::OSCache::ICInvalidateRange(ptr, size);
 }
 
 bool checkIfPointerIsValid(void *ptr)

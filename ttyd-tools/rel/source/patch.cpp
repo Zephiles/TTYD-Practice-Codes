@@ -1,5 +1,5 @@
 #include "patch.h"
-#include "clearcache.h"
+#include "commonfunctions.h"
 
 #include <cstdint>
 
@@ -14,7 +14,7 @@ void writeBranch(void *ptr, void *destination)
 	uint32_t *p = reinterpret_cast<uint32_t *>(ptr);
 	*p = value;
 	
-	clearcache::clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+	clear_DC_IC_Cache(ptr, sizeof(uint32_t));
 }
 
 }
