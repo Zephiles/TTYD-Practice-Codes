@@ -52,8 +52,6 @@ extern "C"
 	void BranchBackPreventTextboxSelection();
 	void StartPreventJumpAndHammer();
 	void BranchBackPreventJumpAndHammer();
-	void StartFixRoomProblems();
-	void BranchBackFixRoomProblems();
 	void StartDisableDPadOptionsDisplay();
 	void BranchBackDisableDPadOptionsDisplay();
 }
@@ -158,7 +156,7 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress,
 		reinterpret_cast<uint32_t>(storeAddress) + 0x9C) = NewOption;
 }
 
-void fixRoomProblems()
+uint32_t fixRoomProblems()
 {
 	// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
 	if (compareStringToNextMap("las_08"))
@@ -176,6 +174,9 @@ void fixRoomProblems()
 			}
 		}
 	}
+	
+	// The overwritten instruction sets r3 to 512, so return 512
+	return 512;
 }
 
 const char *replaceJumpFallAnim(char *jumpFallString)
@@ -660,15 +661,14 @@ void initAddressOverwrites()
 	writeStandardBranch(PreventTextboxSelectionAddress, 
 		StartPreventTextboxSelection, BranchBackPreventTextboxSelection);
 	
-	writeStandardBranch(FixRoomProblemsAddress, 
-		StartFixRoomProblems, BranchBackFixRoomProblems);
-	
 	writeStandardBranch(DisableDPadOptionsDisplayAddress, 
 		StartDisableDPadOptionsDisplay, BranchBackDisableDPadOptionsDisplay);
 	
 	patch::writeBranch(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(preventPreBattleSoftlock));
 	
 	patch::writeBranch(ArtAttackHitboxesAddress, reinterpret_cast<void *>(displayArtAttackHitboxes));
+	
+	patch::writeBranchLR(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
