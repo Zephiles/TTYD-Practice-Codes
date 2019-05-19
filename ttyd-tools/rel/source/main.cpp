@@ -701,6 +701,9 @@ void Mod::run()
 	// Display the title screen and file select screen info
 	displayTitleScreenAndFileSelectScreenInfo();
 	
+	// Perform any necessaery REL patches
+	performRELPatches();
+	
 	// Check if the menu should be enabled or disabled
 	// Prevent checking it if currently in the process of spawning an item
 	if (!SpawnItem.InAdjustableValueMenu)
@@ -764,9 +767,6 @@ void Mod::run()
 		spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
 		displaySequenceInPauseMenu();
 		displayActionCommandsTiming();
-		
-		// Perform any necessaery REL patches
-		performRELPatches();
 		
 		// Check the heaps
 		checkHeaps();
