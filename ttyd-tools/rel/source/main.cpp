@@ -706,7 +706,8 @@ void Mod::run()
 	
 	// Check if the menu should be enabled or disabled
 	// Prevent checking it if currently in the process of spawning an item
-	if (!SpawnItem.InAdjustableValueMenu)
+	bool CurrentlySpawningItem = SpawnItem.InAdjustableValueMenu;
+	if (!CurrentlySpawningItem)
 	{
 		enableOrDisableMenu();
 	}
@@ -739,7 +740,8 @@ void Mod::run()
 	if (!MenuIsDisplayed || HideMenu)
 	{
 		// Don't display some displays if the Guard/Superguard timings display is active
-		if (DisplayActionCommands.DisplayTimer == 0)
+		// Don't display some displays if current in the process of spawning an item
+		if ((DisplayActionCommands.DisplayTimer == 0) && !CurrentlySpawningItem)
 		{
 			// Only run button-based codes if currently not changing button combos
 			if (!tempChangingCheatButtonCombo)
@@ -758,8 +760,13 @@ void Mod::run()
 		// Only run button-based codes if currently not changing button combos
 		if (!tempChangingCheatButtonCombo)
 		{
-			displayOnScreenTimer();
-			displayJumpStorageDetails();
+			// Don't display some displays if current in the process of spawning an item
+			if (!CurrentlySpawningItem)
+			{
+				displayOnScreenTimer();
+				displayJumpStorageDetails();
+			}
+			
 			displayButtonInputs();
 		}
 		
