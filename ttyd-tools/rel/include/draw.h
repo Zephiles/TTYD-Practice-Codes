@@ -106,6 +106,7 @@ void drawOnScreenTimerButtonCombos();
 void drawOnScreenTimer();
 void drawSequenceInPauseMenu();
 void drawMarioCoordinates();
+void drawMarioSpeedXZ();
 void drawJumpStorageDetails();
 void drawButtonInputs();
 void drawStickAngle();

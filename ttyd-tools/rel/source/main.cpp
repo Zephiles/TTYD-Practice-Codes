@@ -735,23 +735,35 @@ void Mod::run()
 	// Run if currently repositioning watches
 	if (!MenuIsDisplayed || HideMenu)
 	{
+		// Don't display some displays if the Guard/Superguard timings display is active
+		if (DisplayActionCommands.DisplayTimer == 0)
+		{
+			// Only run button-based codes if currently not changing button combos
+			if (!tempChangingCheatButtonCombo)
+			{
+				displayYoshiSkipDetails();
+				displayPalaceSkipDetails();
+			}
+			
+			// Run each display function that isn't button-based
+			displayMarioCoordinatesBoolCheck();
+			displayMarioSpeedXZ();
+			displayStickAngle();
+			displayMemoryWatches();
+		}
+		
 		// Only run button-based codes if currently not changing button combos
 		if (!tempChangingCheatButtonCombo)
 		{
 			displayOnScreenTimer();
 			displayJumpStorageDetails();
 			displayButtonInputs();
-			displayYoshiSkipDetails();
-			displayPalaceSkipDetails();
 		}
 		
 		// Run each display function that isn't button-based
 		spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
 		displaySequenceInPauseMenu();
-		displayMarioCoordinatesBoolCheck();
 		displayActionCommandsTiming();
-		displayStickAngle();
-		displayMemoryWatches();
 		
 		// Perform any necessaery REL patches
 		performRELPatches();

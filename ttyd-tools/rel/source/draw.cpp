@@ -3335,7 +3335,6 @@ void drawOnScreenTimer()
 			Displays[PALACE_SKIP] || 
 			Displays[YOSHI_SKIP])
 		{
-			
 			PosY += 20;
 		}
 	}
@@ -3374,6 +3373,38 @@ void drawMarioCoordinates()
 	sprintf(tempDisplayBuffer,
 		"MarPos: %.2f  %.2f  %.2f",
 		player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+}
+
+void drawMarioSpeedXZ()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= -162;
+	float Scale 			= 0.75;
+	
+	// Move the text up if the input display is active
+	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Mario coordinates display is active
+	if (Displays[MARIO_COORDINATES] || 
+		Displays[PALACE_SKIP] || 
+		Displays[YOSHI_SKIP])
+	{
+		PosY += 20;
+	}
+	
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	sprintf(tempDisplayBuffer,
+		"MarSpeedXZ: %.6f",
+		player->wPlayerEffectiveSpeed);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 }
@@ -3451,6 +3482,12 @@ void drawStickAngle()
 		PosY += 20;
 	}
 	
+	// Move the text up if the Mario Speed XZ display is active
+	if (Displays[MARIO_SPEED_XZ])
+	{
+		PosY += 20;
+	}
+	
 	// Move the text up if Mario's Coordinates are displayed, or if the Palace Skip display is active
 	if (Displays[MARIO_COORDINATES] || Displays[PALACE_SKIP])
 	{
@@ -3509,6 +3546,12 @@ void drawYoshiSkipDetails()
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Mario Speed XZ display is active
+	if (Displays[MARIO_SPEED_XZ])
 	{
 		PosY += 20;
 	}
@@ -3653,6 +3696,12 @@ void drawPalaceSkipDetails()
 	
 	// Move the text up if the stick angle display is active
 	if (Displays[STICK_ANGLE])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Mario Speed XZ display is active
+	if (Displays[MARIO_SPEED_XZ])
 	{
 		PosY += 20;
 	}

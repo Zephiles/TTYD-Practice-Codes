@@ -846,6 +846,16 @@ void displayMarioCoordinatesBoolCheck()
 	drawFunctionOnDebugLayer(drawMarioCoordinates);
 }
 
+void displayMarioSpeedXZ()
+{
+	if (!Displays[MARIO_SPEED_XZ])
+	{
+		return;
+	}
+	
+	drawFunctionOnDebugLayer(drawMarioSpeedXZ);
+}
+
 void displayJumpStorageDetails()
 {
 	if (!Displays[JUMP_STORAGE])
@@ -898,12 +908,6 @@ void displayStickAngle()
 		return;
 	}
 	
-	// Don't display if the Guard/Superguard timings display is active
-	if (DisplayActionCommands.DisplayTimer > 0)
-	{
-		return;
-	}
-	
 	drawFunctionOnDebugLayer(drawStickAngle);
 }
 
@@ -936,12 +940,6 @@ void displayMemoryWatches()
 void displayYoshiSkipDetails()
 {
 	if (!Displays[YOSHI_SKIP])
-	{
-		return;
-	}
-	
-	// Don't display if the Guard/Superguard timings display is active
-	if (DisplayActionCommands.DisplayTimer > 0)
 	{
 		return;
 	}
@@ -996,12 +994,6 @@ void displayYoshiSkipDetails()
 void displayPalaceSkipDetails()
 {
 	if (!Displays[PALACE_SKIP])
-	{
-		return;
-	}
-	
-	// Don't display if the Guard/Superguard timings display is active
-	if (DisplayActionCommands.DisplayTimer > 0)
 	{
 		return;
 	}

@@ -83,17 +83,18 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
 ### Displays
 1. **On-Screen Timer** displays a timer at the bottom-right of the screen. This timer is set to run at the current FPS, and therefore will count from 0 to 59 (0 to 49 for EU at 50hz) before reaching one second.
 2. **Mario's Coordinates** displays Mario's coordinates at the bottom-left of the screen. If the On-Screen Timer is active, then the position of Mario's Coordinates will be shifted upwards.
-3. **Jump Storage** displays a value that determines whether you have Jump Storage or not. The value will be 0 when you don't have it, and 1 when you have it. While this display is active, you can press Y three times in succession to manually give yourself Jump Storage.
-4. **Button Input Display** displays which buttons are pressed at the bottom-left of the screen. When this display is active, the other displays that are placed at the bottom-left of the screen are shifted upwards.
-5. **Stick Angle** displays the current angle held with the left stick. The four main directions are 0 for up, 90 for right, 180 for down, and 270 for left. If no angle is held, then it will simply print **Neutral**.
-6. **Guard/Superguard Timings** displays the following:
+3. **Mario's Speed XZ** displays Mario's speed, based on both the X axis and the Z axis.
+4. **Jump Storage** displays a value that determines whether you have Jump Storage or not. The value will be 0 when you don't have it, and 1 when you have it. While this display is active, you can press Y three times in succession to manually give yourself Jump Storage.
+5. **Button Input Display** displays which buttons are pressed at the bottom-left of the screen. When this display is active, the other displays that are placed at the bottom-left of the screen are shifted upwards.
+6. **Stick Angle** displays the current angle held with the left stick. The four main directions are 0 for up, 90 for right, 180 for down, and 270 for left. If no angle is held, then it will simply print **Neutral**.
+7. **Guard/Superguard Timings** displays the following:
    * The frame that you guarded/superguarded an attack out of the total amount of possible frames.
    * How many frames early you pressed A or B. It should be noted that nothing will be displayed if the button was pressed very early (more than 6 or so frames for guards, and more than 12 or so frames for superguards).
    * Whether you pressed too many buttons in a short period of time for the guard/superguard to be accepted.
    * Whether the attack can be superguarded or not (will only be displayed if you tried to superguard it).
-7. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack.
-8. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
-9. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
+8. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack.
+9. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
+10. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
 
 ### Warps
 This menu allows you to warp to various places around the game. The menu allows you to either choose a map from a list, or to choose a map and entrance manually. When choosing from the list, a description for each option is displayed when the cursor is over one.

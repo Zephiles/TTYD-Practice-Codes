@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.26";
+const char *VersionNumber = "v3.0.27";
 
 const char *RootLines[] = 
 {
@@ -1166,6 +1166,7 @@ uint8_t DisplaysOrder[] =
 	YOSHI_SKIP,
 	PALACE_SKIP,
 	STICK_ANGLE,
+	MARIO_SPEED_XZ,
 };
 
 const char *DisplaysLines[] = 
@@ -1173,6 +1174,7 @@ const char *DisplaysLines[] =
 	"Return",
 	"On-Screen Timer",
 	"Mario's Coordinates",
+	"Mario's Speed XZ",
 	"Jump Storage",
 	"Button Input Display",
 	"Stick Angle",
@@ -1321,7 +1323,7 @@ const char ButtonInputDisplay[] =
 
 struct Menus Menu[27];
 struct Cheats Cheat[22];
-bool Displays[9];
+bool Displays[10];
 char DisplayBuffer[256];
 char HeapBuffer[1024];
 struct MemoryWatchStruct MemoryWatch[60];

@@ -24,6 +24,7 @@ void getStickAngleString(char *stringOut);
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
 void displayMarioCoordinatesBoolCheck();
+void displayMarioSpeedXZ();
 void displayJumpStorageDetails();
 void displayButtonInputs();
 void displayStickAngle();

@@ -319,6 +319,7 @@ enum DISPLAYS_OPTIONS
 {
 	ONSCREEN_TIMER = 0,
 	MARIO_COORDINATES,
+	MARIO_SPEED_XZ,
 	JUMP_STORAGE,
 	BUTTON_INPUT_DISPLAY,
 	STICK_ANGLE,
@@ -634,7 +635,7 @@ struct WarpByIndexStruct
 
 extern Menus Menu[27];
 extern Cheats Cheat[22];
-extern bool Displays[9];
+extern bool Displays[10];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[1024];
 extern MemoryWatchStruct MemoryWatch[60];
