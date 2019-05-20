@@ -1,6 +1,7 @@
 #include "mod.h"
 #include "menu.h"
 #include "commonfunctions.h"
+#include "menufunctions.h"
 #include "codes.h"
 #include "items.h"
 #include "global.h"
@@ -10,9 +11,11 @@
 #include <gc/OSCache.h>
 #include <gc/os.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/npcdrv.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
-#include <ttyd/evt_sub.h>
+#include <ttyd/mario_party.h>
+#include <ttyd/party.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/sac_scissor.h>
 #include <ttyd/memory.h>
@@ -54,6 +57,8 @@ extern "C"
 	void BranchBackPreventJumpAndHammer();
 	void StartDisableDPadOptionsDisplay();
 	void BranchBackDisableDPadOptionsDisplay();
+	void StartFixEvtMapBlendSetFlagCrash();
+	void BranchBackFixEvtMapBlendSetFlagCrash();
 }
 
 // Functions accessed by assembly overwrites
@@ -158,11 +163,37 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress,
 
 uint32_t fixRoomProblems()
 {
-	// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
-	if (compareStringToNextMap("las_08"))
+	uint32_t SequencePosition = getSequencePosition();
+	
+	if (compareStringToNextMap("nok_00"))
 	{
-		// Check if the Sequence is currently at 385
-		uint32_t SequencePosition = getSequencePosition();
+		// Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past slot 10
+		// Check if the cutscene is going to play
+		if (SequencePosition < 26)
+		{
+			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
+			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
+			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
+		}
+	}
+	else if (compareStringToNextMap("rsh_05_a"))
+	{
+		// Prevent the game from crashing if the player enters rsh_05_a with the Sequence past 338
+		if (SequencePosition > 338)
+		{
+			// Set the Sequence to 338 to prevent the crash
+			setSequencePosition(338);
+		}
+	}
+	else if (compareStringToNextMap("aji_13"))
+	{
+		// Prevent the game from crashing if the conveyor belt has not been activated
+		// Set GW(11) to 0 upon entering the room to prevent the crash
+		setGW(11, 0);
+	}
+	else if (compareStringToNextMap("las_08"))
+	{
+		// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
 		if (SequencePosition == 385)
 		{
 			// Check if GSW(1121) is currently at 7
@@ -177,6 +208,39 @@ uint32_t fixRoomProblems()
 	
 	// The overwritten instruction sets r3 to 512, so return 512
 	return 512;
+}
+
+void *fixEvtMapBlendSetFlagCrash(void *partnerPtr)
+{
+	// Bring out a partner if no partner is currently out
+	if (!partnerPtr)
+	{
+		#ifdef TTYD_JP
+		uint32_t tempMarioPtr = reinterpret_cast<uint32_t>(ttyd::mario::marioGetPtr());
+		uint8_t PreviousPartnerOut = *reinterpret_cast<uint8_t *>(tempMarioPtr + 0x243);
+		#else
+		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+		uint8_t PreviousPartnerOut = player->prevFollowerId[0];
+		#endif
+
+		// Check if a partner was previously out
+		if (PreviousPartnerOut != 0)
+		{
+			// A partner was previously out, so bring them back out
+			ttyd::mario_party::marioPartyHello(static_cast<ttyd::party::PartyMembers>(PreviousPartnerOut));
+		}
+		else
+		{
+			// No partner was previously out, so bring out Goombella
+			ttyd::mario_party::marioPartyHello(ttyd::party::PartyMembers::kGoombella);
+		}
+		
+		return getPartnerPointer();
+	}
+	else
+	{
+		return partnerPtr;
+	}
 }
 
 const char *replaceJumpFallAnim(char *jumpFallString)
@@ -583,6 +647,7 @@ void initAddressOverwrites()
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231938);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013D148);
+	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x800389C4);
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F5C);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
@@ -605,6 +670,7 @@ void initAddressOverwrites()
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C288);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x80137C1C);
+	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038328);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466E8);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
@@ -629,6 +695,7 @@ void initAddressOverwrites()
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
 	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353C8);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013EC30);
+	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038AAC);
 	#endif
 	
 	writeStandardBranch(DisableBattlesAddress, 
@@ -663,6 +730,9 @@ void initAddressOverwrites()
 	
 	writeStandardBranch(DisableDPadOptionsDisplayAddress, 
 		StartDisableDPadOptionsDisplay, BranchBackDisableDPadOptionsDisplay);
+	
+	writeStandardBranch(FixEvtMapBlendSetFlagCrashAddress, 
+		StartFixEvtMapBlendSetFlagCrash, BranchBackFixEvtMapBlendSetFlagCrash);
 	
 	patch::writeBranch(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(preventPreBattleSoftlock));
 	
