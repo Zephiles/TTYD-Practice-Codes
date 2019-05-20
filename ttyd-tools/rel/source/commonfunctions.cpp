@@ -224,41 +224,25 @@ int32_t getFollowerID()
 void *getPartnerPointer()
 {
 	int32_t PartyID = getPartnerID();
-	if (PartyID < 0)
-	{
-		return nullptr;
-	}
-	
 	return ttyd::party::partyGetPtr(PartyID);
 }
 
 void *getFollowerPointer()
 {
-	int32_t PartyID = getFollowerID();
-	if (PartyID < 0)
-	{
-		return nullptr;
-	}
-	
-	return ttyd::party::partyGetPtr(PartyID);
+	int32_t FollowerID = getFollowerID();
+	return ttyd::party::partyGetPtr(FollowerID);
 }
 
 void removePartnerFromOverworld()
 {
 	int32_t PartyID = getPartnerID();
-	if (PartyID >= 0)
-	{
-		ttyd::party::partyKill2(PartyID);
-	}
+	ttyd::party::partyKill2(PartyID);
 }
 
 void removeFollowerFromOverworld()
 {
-	int32_t PartyID = getFollowerID();
-	if (PartyID >= 0)
-	{
-		ttyd::party::partyKill2(PartyID);
-	}
+	int32_t FollowerID = getFollowerID();
+	ttyd::party::partyKill2(FollowerID);
 }
 
 bool checkIfBadgeEquipped(int16_t badge)

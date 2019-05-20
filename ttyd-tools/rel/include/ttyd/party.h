@@ -90,7 +90,7 @@ int32_t partyKill2(int32_t partyId);
 // partyPaperOff
 // partyPaperOn
 // anotherPartyGetPtr
-void *partyGetPtr(uint32_t partyId);
+void *partyGetPtr(int32_t partyId);
 
 }
 

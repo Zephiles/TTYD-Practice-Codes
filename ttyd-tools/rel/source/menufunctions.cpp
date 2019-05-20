@@ -1652,17 +1652,13 @@ uint32_t followersOptionsButtonControls()
 		{
 			if (checkIfInGame())
 			{
-				int32_t FollowerId = getFollowerID();
-				if (FollowerId >= 0)
-				{
-					// A follower is currently out, so remove it
-					removeFollowerFromOverworld();
-				}
+				// If a follower is out, remove them
+				removeFollowerFromOverworld();
+				
+				// Get the new follower
+				uint8_t NewFollower = SecondaryMenuOption + 8; // Start at the egg
 				
 				// Spawn the new follower
-				uint32_t NewFollower = SecondaryMenuOption + 8; // Start at the egg
-				
-				// Spawn the follower
 				int32_t ReturnCode = ttyd::party::partyEntry2Hello(
 					static_cast<ttyd::party::PartyMembers>(NewFollower));
 				
