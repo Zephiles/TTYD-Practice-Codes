@@ -703,8 +703,8 @@
 // mario_pouch.o
 // 800D3BAC:pouchGetYoshiName
 // 800D3BF4:pouchSetYoshiName
-// 800D3C20:pouchSetPartyColor
-// 800D3C3C:pouchGetPartyColor
+800D3C20:pouchSetPartyColor
+800D3C3C:pouchGetPartyColor
 // 800D3C50:pouchCheckMail
 // 800D3CAC:pouchOpenMail
 // 800D3CEC:pouchReceiveMail

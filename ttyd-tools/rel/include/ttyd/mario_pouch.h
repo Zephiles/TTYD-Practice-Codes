@@ -8,8 +8,8 @@ extern "C" {
 
 // pouchGetYoshiName
 // pouchSetYoshiName
-// pouchSetPartyColor
-// pouchGetPartyColor
+void pouchSetPartyColor(uint32_t partnerId, uint32_t colorId);
+uint32_t pouchGetPartyColor(uint32_t partnerId);
 // pouchCheckMail
 // pouchOpenMail
 // pouchReceiveMail

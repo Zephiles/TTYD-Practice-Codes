@@ -245,6 +245,26 @@ void removeFollowerFromOverworld()
 	ttyd::party::partyKill2(FollowerID);
 }
 
+uint32_t getCurrentYoshiColorId()
+{
+	const uint32_t YoshiPartnerId = 4;
+	return ttyd::mario_pouch::pouchGetPartyColor(YoshiPartnerId);
+}
+
+void setNewYoshiColorId(uint32_t colorId)
+{
+	// Make sure the desired color is valid
+	const uint32_t ColorIdWhite = 6;
+	if (colorId > ColorIdWhite)
+	{
+		// The desired color is not valid
+		return;
+	}
+	
+	const uint32_t YoshiPartnerId = 4;
+	ttyd::mario_pouch::pouchSetPartyColor(YoshiPartnerId, colorId);
+}
+
 bool checkIfBadgeEquipped(int16_t badge)
 {
 	return ttyd::mario_pouch::pouchEquipCheckBadge(badge) > 0;

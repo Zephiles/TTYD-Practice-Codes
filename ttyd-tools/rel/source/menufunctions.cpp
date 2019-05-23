@@ -909,7 +909,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		case DPADLEFT:
 		{
 			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
-			if (SecondaryMenuOption == 0)
+			if (tempSecondaryMenuOption == 0)
 			{
 				// Loop to the last option
 				SecondaryMenuOption = getHighestAdjustableValueDigit(currentMenu) - 1;
@@ -926,7 +926,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		case DPADRIGHT:
 		{
 			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
-			if (SecondaryMenuOption == (getHighestAdjustableValueDigit(currentMenu) - 1))
+			if (tempSecondaryMenuOption == (getHighestAdjustableValueDigit(currentMenu) - 1))
 			{
 				// Loop to the first option
 				SecondaryMenuOption = 0;
@@ -1627,6 +1627,49 @@ uint32_t marioSpecialMovesButtonControls()
 	}
 }
 
+uint32_t cheatChangeYoshiColorButtonControls()
+{
+	uint32_t Button = checkButtonSingleFrame();
+	switch (Button)
+	{
+		case DPADDOWN:
+		case DPADUP:
+		{
+			uint32_t tempCheatsYoshiColorOptionsLinesSize = CheatsYoshiColorOptionsLinesSize;
+			uint32_t TotalMenuOptions = tempCheatsYoshiColorOptionsLinesSize;
+			uint32_t MaxOptionsPerPage = TotalMenuOptions;
+			uint32_t MaxOptionsPerRow = 1;
+			
+			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
+				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+					MaxOptionsPerRow, false);
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case A:
+		{
+			setNewYoshiColorId(SecondaryMenuOption);
+			
+			MenuSelectionStates = 0;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		case B:
+		{
+			MenuSelectionStates = 0;
+			
+			FrameCounter = 1;
+			return Button;
+		}
+		default:
+		{
+			return 0;
+		}
+	}
+}
+
 uint32_t followersOptionsButtonControls()
 {
 	uint32_t Button = checkButtonSingleFrame();
@@ -2223,7 +2266,7 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 		}
 		default:
 		{
-			break;;
+			break;
 		}
 	}
 }

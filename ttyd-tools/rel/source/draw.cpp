@@ -670,8 +670,9 @@ void drawMarioSpecialMovesOptions()
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Set the values for the text to use
+	int32_t NewPosY = PosY - 54;
 	PosX += 25;
-	PosY = 90;
+	PosY = NewPosY;
 	
 	// Set up array to use for displaying icons
 	int32_t IconPosition[3];
@@ -682,6 +683,7 @@ void drawMarioSpecialMovesOptions()
 	IconPosition[IconPositionY] 	= PosY - 18;
 	
 	// Draw the icons and main text
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
 	int16_t SpecialMoveIcon;
 	
 	for (uint32_t i = 0; i < 8; i++)
@@ -700,7 +702,7 @@ void drawMarioSpecialMovesOptions()
 		drawIconFromItem(IconPosition, SpecialMoveIcon, Scale);
 		
 		// Draw the main text
-		if (SecondaryMenuOption == i)
+		if (tempSecondaryMenuOption == i)
 		{
 			Color = 0x5B59DEFF;
 		}
@@ -719,7 +721,7 @@ void drawMarioSpecialMovesOptions()
 	uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
 	int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
 	PosX += 130;
-	PosY = 90;
+	PosY = NewPosY;
 	
 	for (uint32_t i = 0; i < 8; i++)
 	{
@@ -771,9 +773,11 @@ void drawFollowersOptions()
 	
 	// Draw the main text
 	uint32_t tempStatsFollowerOptionsLinesSize = StatsFollowerOptionsLinesSize;
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	
 	for (uint32_t i = 0; i < tempStatsFollowerOptionsLinesSize; i++)
 	{
-		if (SecondaryMenuOption == i)
+		if (tempSecondaryMenuOption == i)
 		{
 			Color = 0x5B59DEFF;
 		}
@@ -1469,9 +1473,11 @@ void drawMemoryTypeList()
 	
 	// Draw the main text
 	uint32_t Size = MemoryTypeLinesSize;
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	
 	for (uint32_t i = 0; i < Size; i++)
 	{
-		if (SecondaryMenuOption == i)
+		if (tempSecondaryMenuOption == i)
 		{
 			Color = 0x5B59DEFF;
 		}
@@ -2257,9 +2263,10 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 	
 	// Draw each digit of the number
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
-		if (SecondaryMenuOption == i)
+		if (tempSecondaryMenuOption == i)
 		{
 			color = 0x5B59DEFF;
 		}
@@ -2396,9 +2403,10 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	drawText("0x", (x - 30), y, alpha, color, scale);
 	
 	// Draw each digit of the number
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
-		if (SecondaryMenuOption == i)
+		if (tempSecondaryMenuOption == i)
 		{
 			color = 0x5B59DEFF;
 		}
@@ -2746,6 +2754,85 @@ void drawCheatsChangeSequence()
 	
 	const char *String = "Stage\nEvent";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
+}
+
+void drawCheatsCurrentYoshiColor()
+{
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 120;
+	float Scale = 0.6;
+	
+	// Get the current Yoshi color
+	uint32_t CurrentColorId = getCurrentYoshiColorId();
+	const char *CurrentColorString = "";
+	
+	// Make sure the current color is valid
+	const uint32_t ColorIdWhite = 6;
+	if (CurrentColorId <= ColorIdWhite)
+	{
+		CurrentColorString = CheatsYoshiColorOptionsLines[CurrentColorId];
+	}
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Current Color: %s",
+		CurrentColorString);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the text stating that the player must change partners for the new color to take effect
+	const char *String = "You must swap partners for the new color to\ntake effect";
+	drawText(String, PosX, PosY - 40, Alpha, Color, Scale);
+}
+
+void drawCheatsChangeYoshiColorOptions()
+{
+	// Check for button inputs
+	cheatChangeYoshiColorButtonControls();
+	
+	// Draw the window
+	uint32_t Color 		= 0x151515F6;
+	int32_t PosX 		= -106;
+	int32_t PosY 		= 123;
+	int32_t Width 		= 212;
+	int32_t Height 		= 239;
+	int32_t Curve 		= 20;
+	
+	drawWindow(Color, PosX, PosY, Width, Height, Curve);
+	
+	// Draw the help text
+	const char *HelpText = "Press A to confirm\nPress B to cancel";
+	uint8_t Alpha = 0xFF;
+	float Scale = 0.6;
+	Color = 0xFFFFFFFF;
+	PosX += 30;
+	PosY -= 25;
+	
+	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
+	
+	// Set the values for the text to use
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	PosX += 47;
+	PosY -= 54;
+	
+	uint32_t Size = CheatsYoshiColorOptionsLinesSize;
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		// Draw the main text
+		if (tempSecondaryMenuOption == i)
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		drawText(CheatsYoshiColorOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
 }
 
 void drawCheatsBool(int32_t posY)

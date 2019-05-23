@@ -92,6 +92,8 @@ bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePositio
 #endif
 
 void drawCheatsChangeSequence();
+void drawCheatsCurrentYoshiColor();
+void drawCheatsChangeYoshiColorOptions();
 void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description);
 void drawChangeButtonCombo(uint16_t &currentButtonCombo);

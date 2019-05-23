@@ -556,6 +556,11 @@ void menuCheckButton()
 									CurrentMenu = CHEATS_CHANGE_SEQUENCE;
 									break;
 								}
+								case CHANGE_YOSHI_COLOR:
+								{
+									CurrentMenu = CHEATS_CHANGE_YOSHI_COLOR;
+									break;
+								}
 								case WALK_THROUGH_WALLS:
 								case SAVE_COORDINATES:
 								case LOAD_COORDINATES:
@@ -667,6 +672,81 @@ void menuCheckButton()
 				case B:
 				{
 					if (tempMenuSelectionStates != CHANGE_SEQUENCE_VALUE)
+					{
+						// Go back to the previous menu
+						CurrentMenu 		= tempPreviousMenu;
+						CurrentMenuOption 	= tempMenuSelectedOption + 1;
+						MenuSelectedOption 	= 0;
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_CHANGE_YOSHI_COLOR:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					if (tempMenuSelectionStates == 0)
+					{
+						adjustMenuNoPageEdit(CurrentButton);
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempMenuSelectionStates)
+					{
+						case 0:
+						{
+							switch (tempCurrentMenuOption)
+							{
+								case 0:
+								{
+									// No option has been selected yet
+									// Go back to the previous menu
+									CurrentMenu 		= tempPreviousMenu;
+									CurrentMenuOption 	= tempMenuSelectedOption + 1;
+									MenuSelectedOption 	= 0;
+									break;
+								}
+								default:
+								{
+									MenuSelectionStates = tempCurrentMenuOption;
+									uint32_t CurrentColorId = getCurrentYoshiColorId();
+									
+									// Make sure the current color is valid
+									const uint32_t ColorIdWhite = 6;
+									if (CurrentColorId <= ColorIdWhite)
+									{
+										SecondaryMenuOption = CurrentColorId;
+									}
+									else
+									{
+										SecondaryMenuOption = 0;
+									}
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					if (tempMenuSelectionStates == 0)
 					{
 						// Go back to the previous menu
 						CurrentMenu 		= tempPreviousMenu;
@@ -3316,6 +3396,20 @@ void drawMenu()
 			if (tempMenuSelectionStates == CHANGE_SEQUENCE_VALUE)
 			{
 				drawAdjustableValue(false, tempCurrentMenu);
+			}
+			break;
+		}
+		case CHEATS_CHANGE_YOSHI_COLOR:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			// Draw the current Yoshi color
+			drawCheatsCurrentYoshiColor();
+			
+			if (tempMenuSelectionStates != 0)
+			{
+				drawCheatsChangeYoshiColorOptions();
 			}
 			break;
 		}

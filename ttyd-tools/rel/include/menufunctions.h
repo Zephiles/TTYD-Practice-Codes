@@ -36,6 +36,7 @@ uint32_t addByIconButtonControls(uint32_t currentMenu);
 uint32_t memoryAddressTypeButtonControls();
 uint32_t memoryChangeWatchPositionButtonControls();
 uint32_t marioSpecialMovesButtonControls();
+uint32_t cheatChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);

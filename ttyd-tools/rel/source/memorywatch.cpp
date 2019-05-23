@@ -478,7 +478,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
 		case DPADLEFT:
 		{
 			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
-			if (SecondaryMenuOption == 0)
+			if (tempSecondaryMenuOption == 0)
 			{
 				// Loop to the last option
 				SecondaryMenuOption = HighestDigit - 1;
@@ -495,7 +495,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
 		case DPADRIGHT:
 		{
 			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
-			if (SecondaryMenuOption == (HighestDigit - 1))
+			if (tempSecondaryMenuOption == (HighestDigit - 1))
 			{
 				// Loop to the first option
 				SecondaryMenuOption = 0;
