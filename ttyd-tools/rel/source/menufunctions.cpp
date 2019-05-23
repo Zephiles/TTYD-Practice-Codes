@@ -9,8 +9,9 @@
 #include <ttyd/win_item.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/msgdrv.h>
-#include <ttyd/mario_pouch.h>
+#include <ttyd/mario_party.h>
 #include <ttyd/party.h>
+#include <ttyd/mario_pouch.h>
 #include <ttyd/mario.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/battle.h>
@@ -161,6 +162,47 @@ void lowerSystemLevel()
 			// Decrease the System Level by 1
 			// Only decrease if not already at 0
 			setSystemLevel(SystemLevel - 1);
+		}
+	}
+}
+
+void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
+{
+	if (checkIfPartnerOutSelected())
+	{
+		// Draw the option to remove the partner from the overworld
+		removePartnerFromOverworld();
+	}
+	else
+	{
+		// Draw the option to bring a partner out
+		// Make sure a file is loaded
+		if (checkIfInGame())
+		{
+			uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(partnerEnabledAddress);
+			Timer = 0;
+			
+			// Preserve the current value of the enabled bool
+			bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
+				PartnerEnabledAddress + 1);
+			
+			// Make sure the selected partner is enabled, as marioPartyEntry needs it to be enabled
+			*reinterpret_cast<bool *>(
+				PartnerEnabledAddress + 1) = true;
+			
+			// Bring the partner out
+			ttyd::mario_party::marioPartyEntry(
+				static_cast<ttyd::party::PartyMembers>(
+					getSelectedOptionPartnerValue()));
+			
+			// Restore the value of the enabled bool
+			*reinterpret_cast<bool *>(
+				PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
+		}
+		else
+		{
+			FunctionReturnCode 	= NOT_IN_GAME;
+			Timer 				= secondsToFrames(3);
 		}
 	}
 }
@@ -1627,7 +1669,7 @@ uint32_t marioSpecialMovesButtonControls()
 	}
 }
 
-uint32_t cheatChangeYoshiColorButtonControls()
+uint32_t partnerChangeYoshiColorButtonControls()
 {
 	uint32_t Button = checkButtonSingleFrame();
 	switch (Button)
@@ -1635,8 +1677,8 @@ uint32_t cheatChangeYoshiColorButtonControls()
 		case DPADDOWN:
 		case DPADUP:
 		{
-			uint32_t tempCheatsYoshiColorOptionsLinesSize = CheatsYoshiColorOptionsLinesSize;
-			uint32_t TotalMenuOptions = tempCheatsYoshiColorOptionsLinesSize;
+			uint32_t tempStatsYoshiColorOptionsLinesSize = StatsYoshiColorOptionsLinesSize;
+			uint32_t TotalMenuOptions = tempStatsYoshiColorOptionsLinesSize;
 			uint32_t MaxOptionsPerPage = TotalMenuOptions;
 			uint32_t MaxOptionsPerRow = 1;
 			
@@ -1651,14 +1693,14 @@ uint32_t cheatChangeYoshiColorButtonControls()
 		{
 			setNewYoshiColorId(SecondaryMenuOption);
 			
-			MenuSelectionStates = 0;
+			MenuSelectedOption = 0;
 			
 			FrameCounter = 1;
 			return Button;
 		}
 		case B:
 		{
-			MenuSelectionStates = 0;
+			MenuSelectedOption = 0;
 			
 			FrameCounter = 1;
 			return Button;
@@ -3578,7 +3620,20 @@ void adjustMarioStatsSelection(uint32_t button)
 void adjustPartnerStatsSelection(uint32_t button)
 {
 	uint32_t tempStatsPartnerOptionsLinesSize = StatsPartnerOptionsLinesSize;
-	uint32_t TotalMenuOptions = tempStatsPartnerOptionsLinesSize - 1;
+	uint32_t TotalMenuOptions = tempStatsPartnerOptionsLinesSize;
+	
+	// Add the necessary extra lines
+	const uint32_t YoshiPartner = 4;
+	uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+	if (CurrentPartner == YoshiPartner)
+	{
+		TotalMenuOptions += 2;
+	}
+	else
+	{
+		TotalMenuOptions += 1;
+	}
+	
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;

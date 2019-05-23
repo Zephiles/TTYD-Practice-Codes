@@ -6,7 +6,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.28";
+const char *VersionNumber = "v3.0.29";
 
 const char *RootLines[] = 
 {
@@ -65,7 +65,6 @@ uint8_t CheatsOrder[] =
 	CLEAR_AREA_FLAGS,
 	MANAGE_FLAGS,
 	DISABLE_DPAD_OPTIONS_DISPLAY,
-	CHANGE_YOSHI_COLOR,
 };
 
 const char *CheatsLines[] = 
@@ -87,7 +86,6 @@ const char *CheatsLines[] =
 	"Levitate",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
-	"Change Yoshi Color",
 	"Disable D-Pad Options Display",
 	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
@@ -515,24 +513,6 @@ const char *CheatsEventNames[]
 };
 #endif
 
-const char *CheatsChangeYoshiColorLines[] = 
-{
-	"Return",
-	"Select New Color",
-};
-
-const char *CheatsYoshiColorOptionsLines[] = 
-{
-	"Green",
-	"Red",
-	"Blue",
-	"Orange",
-	"Pink",
-	"Black",
-	"White",
-};
-uint8_t CheatsYoshiColorOptionsLinesSize = sizeof(CheatsYoshiColorOptionsLines) / sizeof(CheatsYoshiColorOptionsLines[0]);
-
 const char *CheatsStandardOptionsLines[] = 
 {
 	"Return",
@@ -665,6 +645,18 @@ const char *StatsPartnerLines[] =
 	"Ms. Mowz",
 };
 
+const char *StatsYoshiColorOptionsLines[] = 
+{
+	"Green",
+	"Red",
+	"Blue",
+	"Orange",
+	"Pink",
+	"Black",
+	"White",
+};
+uint8_t StatsYoshiColorOptionsLinesSize = sizeof(StatsYoshiColorOptionsLines) / sizeof(StatsYoshiColorOptionsLines[0]);
+
 const char *StatsMarioOptionsLines[] = 
 {
 	"Coins",
@@ -747,8 +739,6 @@ const char *StatsPartnerOptionsLines[] =
 	"Max HP",
 	"Rank",
 	"Toggle",
-	"Bring Out",
-	"Remove From Overworld",
 };
 uint8_t StatsPartnerOptionsLinesSize = sizeof(StatsPartnerOptionsLines) / sizeof(StatsPartnerOptionsLines[0]);
 
@@ -1341,8 +1331,8 @@ const char ButtonInputDisplay[] =
 };
 #endif
 
-struct Menus Menu[28];
-struct Cheats Cheat[23];
+struct Menus Menu[27];
+struct Cheats Cheat[22];
 bool Displays[10];
 char DisplayBuffer[256];
 char HeapBuffer[1024];
@@ -1479,11 +1469,6 @@ void initMenuVars()
 	Menu[CHEATS_CHANGE_SEQUENCE].ColumnSplitAmount 		= Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions;
 	Menu[CHEATS_CHANGE_SEQUENCE].PreviousMenu 			= CHEATS;
 	Menu[CHEATS_CHANGE_SEQUENCE].Line 					= CheatsChangeSequenceOptionsLines;
-	
-	Menu[CHEATS_CHANGE_YOSHI_COLOR].TotalMenuOptions 	= sizeof(CheatsChangeYoshiColorLines) / sizeof(CheatsChangeYoshiColorLines[0]);
-	Menu[CHEATS_CHANGE_YOSHI_COLOR].ColumnSplitAmount 	= Menu[CHEATS_CHANGE_YOSHI_COLOR].TotalMenuOptions;
-	Menu[CHEATS_CHANGE_YOSHI_COLOR].PreviousMenu 		= CHEATS;
-	Menu[CHEATS_CHANGE_YOSHI_COLOR].Line 				= CheatsChangeYoshiColorLines;
 	
 	Menu[CHEATS_STANDARD].TotalMenuOptions 				= sizeof(CheatsStandardOptionsLines) / sizeof(CheatsStandardOptionsLines[0]);
 	Menu[CHEATS_STANDARD].ColumnSplitAmount 			= Menu[CHEATS_STANDARD].TotalMenuOptions;

@@ -953,12 +953,9 @@ void drawPartnerStats()
 	uint32_t tempSelectedOption = SelectedOption;
 	
 	// Only display if a partner is selected
-	if (tempSelectedOption == 0)
+	if ((tempSelectedOption == 0) && (tempCurrentMenuOption == 0))
 	{
-		if (tempCurrentMenuOption == 0)
-		{
-			return;
-		}
+		return;
 	}
 	
 	// Create array for each stat to go in
@@ -978,7 +975,7 @@ void drawPartnerStats()
 	uint32_t Color;
 	
 	// Draw the main text
-	uint32_t tempStatsPartnerOptionsLinesSize = StatsPartnerOptionsLinesSize - 2;
+	uint32_t tempStatsPartnerOptionsLinesSize = StatsPartnerOptionsLinesSize;
 	for (uint32_t i = 0; i < tempStatsPartnerOptionsLinesSize; i++)
 	{
 		if ((tempCurrentMenuOption == i) && (tempSelectedOption > 0))
@@ -994,20 +991,48 @@ void drawPartnerStats()
 		PosY -= 20;
 	}
 	
+	// Draw the color text for Yoshi
+	const uint32_t YoshiPartner = 4;
+	uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+	
+	uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
+	if (CurrentPartner == YoshiPartner)
+	{
+		if ((tempCurrentMenuOption == FirstFreeSlot) && (tempSelectedOption > 0))
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		const char *String = "Color";
+		drawText(String, PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
 	// Check if the current partner out is the selected one
-	uint8_t OptionToDraw;
+	const char *OptionToDrawText;
+	
 	if (checkIfPartnerOutSelected())
 	{
-		OptionToDraw = REMOVE; 
+		OptionToDrawText = "Remove From Overworld";
 	}
 	else
 	{
-		OptionToDraw = BRING_OUT;
+		OptionToDrawText = "Bring Out";
 	}
 	
 	// Draw the option
-	if ((static_cast<uint8_t>(tempCurrentMenuOption) == 
-		(BRING_OUT - 1)) && (tempSelectedOption > 0))
+	uint32_t AdditionalOptions = 0;
+	if (CurrentPartner == YoshiPartner)
+	{
+		// Add an extra line for Yoshi
+		AdditionalOptions++;
+	}
+	
+	if ((tempCurrentMenuOption == (FirstFreeSlot + AdditionalOptions)) && (tempSelectedOption > 0))
 	{
 		Color = 0x5B59DEFF;
 	}
@@ -1016,7 +1041,7 @@ void drawPartnerStats()
 		Color = 0xFFFFFFFF;
 	}
 	
-	drawText(StatsPartnerOptionsLines[OptionToDraw - 1], PosX, PosY, Alpha, Color, Scale);
+	drawText(OptionToDrawText, PosX, PosY, Alpha, Color, Scale);
 	
 	PosX = -20;
 	PosY = 180;
@@ -1051,6 +1076,73 @@ void drawPartnerStats()
 	
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	
+	// Draw Yoshi's color
+	if (CurrentPartner == YoshiPartner)
+	{
+		// Get the current Yoshi color
+		uint32_t YoshiColorId = getCurrentYoshiColorId();
+		const char *YoshiColorString = "";
+		
+		// Make sure the current color is valid
+		const uint32_t ColorIdWhite = 6;
+		if (YoshiColorId <= ColorIdWhite)
+		{
+			YoshiColorString = StatsYoshiColorOptionsLines[YoshiColorId];
+		}
+		
+		const uint32_t ColorIdGreen 	= 0;
+		const uint32_t ColorIdRed 		= 1;
+		const uint32_t ColorIdBlue 		= 2;
+		const uint32_t ColorIdOrange 	= 3;
+		const uint32_t ColorIdPink 		= 4;
+		const uint32_t ColorIdBlack 	= 5;
+		// const uint32_t ColorIdWhite 	= 6;
+		
+		uint32_t YoshiColorText;
+		switch (YoshiColorId)
+		{
+			case ColorIdGreen:
+			{
+				YoshiColorText = 0x29AD21FF;
+				break;
+			}
+			case ColorIdRed:
+			{
+				YoshiColorText = 0xE8385AFF;
+				break;
+			}
+			case ColorIdBlue:
+			{
+				YoshiColorText = 0x8E7DDFFF;
+				break;
+			}
+			case ColorIdOrange:
+			{
+				YoshiColorText = 0xF47529FF;
+				break;
+			}
+			case ColorIdPink:
+			{
+				YoshiColorText = 0xF58BB6FF;
+				break;
+			}
+			case ColorIdBlack:
+			{
+				YoshiColorText = 0x635D63FF;
+				break;
+			}
+			case ColorIdWhite:
+			default:
+			{
+				YoshiColorText = 0xFFFFFFFF;
+				break;
+			}
+		}
+		
+		PosY -= 20;
+		drawText(YoshiColorString, PosX, PosY, Alpha, YoshiColorText, Scale);
+	}
+	
 	// Check if a partner is out or not
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
 	if (PartnerPointer == 0)
@@ -1061,6 +1153,54 @@ void drawPartnerStats()
 		PosX = -120;
 		PosY -= 60;
 		drawText(String, PosX, PosY, Alpha, Color, Scale);
+	}
+}
+
+void drawPartnerChangeYoshiColorOptions()
+{
+	// Check for button inputs
+	partnerChangeYoshiColorButtonControls();
+	
+	// Draw the window
+	uint32_t Color 		= 0x151515F6;
+	int32_t PosX 		= -106;
+	int32_t PosY 		= 123;
+	int32_t Width 		= 212;
+	int32_t Height 		= 239;
+	int32_t Curve 		= 20;
+	
+	drawWindow(Color, PosX, PosY, Width, Height, Curve);
+	
+	// Draw the help text
+	const char *HelpText = "Press A to confirm\nPress B to cancel";
+	uint8_t Alpha = 0xFF;
+	float Scale = 0.6;
+	Color = 0xFFFFFFFF;
+	PosX += 30;
+	PosY -= 25;
+	
+	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
+	
+	// Set the values for the text to use
+	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	PosX += 47;
+	PosY -= 54;
+	
+	uint32_t Size = StatsYoshiColorOptionsLinesSize;
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		// Draw the main text
+		if (tempSecondaryMenuOption == i)
+		{
+			Color = 0x5B59DEFF;
+		}
+		else
+		{
+			Color = 0xFFFFFFFF;
+		}
+		
+		drawText(StatsYoshiColorOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
 	}
 }
 
@@ -2754,85 +2894,6 @@ void drawCheatsChangeSequence()
 	
 	const char *String = "Stage\nEvent";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
-}
-
-void drawCheatsCurrentYoshiColor()
-{
-	uint32_t Color = 0xFFFFFFFF;
-	uint8_t Alpha = 0xFF;
-	int32_t PosX = -232;
-	int32_t PosY = 120;
-	float Scale = 0.6;
-	
-	// Get the current Yoshi color
-	uint32_t CurrentColorId = getCurrentYoshiColorId();
-	const char *CurrentColorString = "";
-	
-	// Make sure the current color is valid
-	const uint32_t ColorIdWhite = 6;
-	if (CurrentColorId <= ColorIdWhite)
-	{
-		CurrentColorString = CheatsYoshiColorOptionsLines[CurrentColorId];
-	}
-	
-	char *tempDisplayBuffer = DisplayBuffer;
-	sprintf(tempDisplayBuffer,
-		"Current Color: %s",
-		CurrentColorString);
-	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
-	
-	// Draw the text stating that the player must change partners for the new color to take effect
-	const char *String = "You must swap partners for the new color to\ntake effect";
-	drawText(String, PosX, PosY - 40, Alpha, Color, Scale);
-}
-
-void drawCheatsChangeYoshiColorOptions()
-{
-	// Check for button inputs
-	cheatChangeYoshiColorButtonControls();
-	
-	// Draw the window
-	uint32_t Color 		= 0x151515F6;
-	int32_t PosX 		= -106;
-	int32_t PosY 		= 123;
-	int32_t Width 		= 212;
-	int32_t Height 		= 239;
-	int32_t Curve 		= 20;
-	
-	drawWindow(Color, PosX, PosY, Width, Height, Curve);
-	
-	// Draw the help text
-	const char *HelpText = "Press A to confirm\nPress B to cancel";
-	uint8_t Alpha = 0xFF;
-	float Scale = 0.6;
-	Color = 0xFFFFFFFF;
-	PosX += 30;
-	PosY -= 25;
-	
-	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
-	
-	// Set the values for the text to use
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
-	PosX += 47;
-	PosY -= 54;
-	
-	uint32_t Size = CheatsYoshiColorOptionsLinesSize;
-	for (uint32_t i = 0; i < Size; i++)
-	{
-		// Draw the main text
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
-		
-		drawText(CheatsYoshiColorOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
-		PosY -= 20;
-	}
 }
 
 void drawCheatsBool(int32_t posY)

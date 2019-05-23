@@ -556,11 +556,6 @@ void menuCheckButton()
 									CurrentMenu = CHEATS_CHANGE_SEQUENCE;
 									break;
 								}
-								case CHANGE_YOSHI_COLOR:
-								{
-									CurrentMenu = CHEATS_CHANGE_YOSHI_COLOR;
-									break;
-								}
 								case WALK_THROUGH_WALLS:
 								case SAVE_COORDINATES:
 								case LOAD_COORDINATES:
@@ -672,81 +667,6 @@ void menuCheckButton()
 				case B:
 				{
 					if (tempMenuSelectionStates != CHANGE_SEQUENCE_VALUE)
-					{
-						// Go back to the previous menu
-						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption + 1;
-						MenuSelectedOption 	= 0;
-					}
-					break;
-				}
-				default:
-				{
-					break;
-				}
-			}
-			break;
-		}
-		case CHEATS_CHANGE_YOSHI_COLOR:
-		{
-			switch (CurrentButton)
-			{
-				case DPADDOWN:
-				case DPADUP:
-				{
-					if (tempMenuSelectionStates == 0)
-					{
-						adjustMenuNoPageEdit(CurrentButton);
-					}
-					break;
-				}
-				case A:
-				{
-					switch (tempMenuSelectionStates)
-					{
-						case 0:
-						{
-							switch (tempCurrentMenuOption)
-							{
-								case 0:
-								{
-									// No option has been selected yet
-									// Go back to the previous menu
-									CurrentMenu 		= tempPreviousMenu;
-									CurrentMenuOption 	= tempMenuSelectedOption + 1;
-									MenuSelectedOption 	= 0;
-									break;
-								}
-								default:
-								{
-									MenuSelectionStates = tempCurrentMenuOption;
-									uint32_t CurrentColorId = getCurrentYoshiColorId();
-									
-									// Make sure the current color is valid
-									const uint32_t ColorIdWhite = 6;
-									if (CurrentColorId <= ColorIdWhite)
-									{
-										SecondaryMenuOption = CurrentColorId;
-									}
-									else
-									{
-										SecondaryMenuOption = 0;
-									}
-									break;
-								}
-							}
-							break;
-						}
-						default:
-						{
-							break;
-						}
-					}
-					break;
-				}
-				case B:
-				{
-					if (tempMenuSelectionStates == 0)
 					{
 						// Go back to the previous menu
 						CurrentMenu 		= tempPreviousMenu;
@@ -1516,8 +1436,7 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(
-											getPartnerEnabledAddress());
+									uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(getPartnerEnabledAddress());
 									
 									switch (tempCurrentMenuOption + 1)
 									{
@@ -1570,44 +1489,41 @@ void menuCheckButton()
 											}
 											break;
 										}
-										case BRING_OUT:
-										case REMOVE:
+										case TOGGLE + 1:
 										{
-											if (checkIfPartnerOutSelected())
+											// Check if currently on Yoshi
+											const uint32_t YoshiPartner = 4;
+											uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+											if (CurrentPartner == YoshiPartner)
 											{
-												// Currently REMOVE
-												removePartnerFromOverworld();
-											}
-											else
-											{
-												// Currently BRING_OUT
-												// Make sure a file is loaded
-												if (checkIfInGame())
+												MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_COLORS;
+												uint32_t CurrentColorId = getCurrentYoshiColorId();
+												
+												// Make sure the current color is valid
+												const uint32_t ColorIdWhite = 6;
+												if (CurrentColorId <= ColorIdWhite)
 												{
-													Timer = 0;
-													
-													// Preserve the current value of the enabled bool
-													bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
-														PartnerEnabledAddress + 1);
-													
-													// Make sure the selected partner is enabled, as marioPartyEntry needs it to be enabled
-													*reinterpret_cast<bool *>(
-														PartnerEnabledAddress + 1) = true;
-													
-													// Bring the partner out
-													ttyd::mario_party::marioPartyEntry(
-														static_cast<ttyd::party::PartyMembers>(
-															getSelectedOptionPartnerValue()));
-													
-													// Restore the value of the enabled bool
-													*reinterpret_cast<bool *>(
-														PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
+													SecondaryMenuOption = CurrentColorId;
 												}
 												else
 												{
-													FunctionReturnCode 	= NOT_IN_GAME;
-													Timer 				= secondsToFrames(3);
+													SecondaryMenuOption = 0;
 												}
+											}
+											else
+											{
+												partnerMenuRemoveOrBringOut(reinterpret_cast<void *>(PartnerEnabledAddress));
+											}
+											break;
+										}
+										case TOGGLE + 2:
+										{
+											// This option should only be available for Yoshi
+											const uint32_t YoshiPartner = 4;
+											uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+											if (CurrentPartner == YoshiPartner)
+											{
+												partnerMenuRemoveOrBringOut(reinterpret_cast<void *>(PartnerEnabledAddress));
 											}
 											break;
 										}
@@ -3399,20 +3315,6 @@ void drawMenu()
 			}
 			break;
 		}
-		case CHEATS_CHANGE_YOSHI_COLOR:
-		{
-			// Draw the text for the options
-			drawSingleColumnMain();
-			
-			// Draw the current Yoshi color
-			drawCheatsCurrentYoshiColor();
-			
-			if (tempMenuSelectionStates != 0)
-			{
-				drawCheatsChangeYoshiColorOptions();
-			}
-			break;
-		}
 		case CHEATS_STANDARD:
 		{
 			// Draw the text for the options
@@ -3523,16 +3425,33 @@ void drawMenu()
 			// Draw each option to choose from
 			drawPartnerStats();
 			
-			if (tempMenuSelectedOption != 0)
+			if (tempMenuSelectedOption == STATS_PARTNER_DISPLAY_YOSHI_COLORS)
+			{
+				drawPartnerChangeYoshiColorOptions();
+			}
+			else if (tempMenuSelectedOption != 0)
 			{
 				drawAdjustableValue(false, tempCurrentMenu);
 			}
 			
 			// Draw the error message if the player tried to spawn a partner while either not in the game or in a battle
-			if ((CurrentMenuOption == (BRING_OUT - 1)) && 
-				(tempFunctionReturnCode < 0))
+			if (tempFunctionReturnCode < 0)
 			{
-				drawPartnerErrorMessage();
+				const uint32_t YoshiPartner = 4;
+				uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+				
+				uint32_t AdditionalOptions = 0;
+				if (CurrentPartner == YoshiPartner)
+				{
+					// Add an extra line for Yoshi
+					AdditionalOptions++;
+				}
+				
+				uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
+				if (CurrentMenuOption == (FirstFreeSlot + AdditionalOptions))
+				{
+					drawPartnerErrorMessage();
+				}
 			}
 			break;
 		}

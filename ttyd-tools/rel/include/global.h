@@ -19,7 +19,6 @@ enum MENU_NAMES
 	WARPS,
 	INVENTORY_MAIN,
 	CHEATS_CHANGE_SEQUENCE,
-	CHEATS_CHANGE_YOSHI_COLOR,
 	CHEATS_STANDARD,
 	CHEATS_NO_BUTTON_COMBO,
 	CHEATS_NPC_FORCE_DROP,
@@ -80,7 +79,6 @@ enum CHEATS_OPTIONS
 	LEVITATE,
 	LOCK_MARIO_HP_TO_MAX,
 	RUN_FROM_BATTLES,
-	CHANGE_YOSHI_COLOR,
 	DISABLE_DPAD_OPTIONS_DISPLAY,
 	DISABLE_MENU_SOUNDS,
 	BOBBERY_EARLY,
@@ -204,8 +202,11 @@ enum STATS_PARTNER_SELECTION_OPTIONS
 	PARTNER_MAX_HP,
 	PARTNER_RANK,
 	TOGGLE,
-	BRING_OUT,
-	REMOVE,
+};
+
+enum STATS_PARTNER_WINDOW_TO_DISPLAY
+{
+	STATS_PARTNER_DISPLAY_YOSHI_COLORS = 100,
 };
 
 enum STATS_FOLLOWER_SELECTION_OPTIONS
@@ -635,8 +636,8 @@ struct WarpByIndexStruct
 	}
 };
 
-extern Menus Menu[28];
-extern Cheats Cheat[23];
+extern Menus Menu[27];
+extern Cheats Cheat[22];
 extern bool Displays[10];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[1024];
@@ -664,8 +665,6 @@ extern WarpByIndexStruct WarpByIndex;
 extern const char *VersionNumber;
 extern uint8_t CheatsOrder[];
 extern const char *CheatsLines[];
-extern const char *CheatsYoshiColorOptionsLines[];
-extern uint8_t CheatsYoshiColorOptionsLinesSize;
 extern const char *CheatsForceItemDropAreas[];
 extern uint8_t CheatsForceItemDropAreasSize;
 extern const char *CheatsForceItemDropAreasFullNames[];
@@ -678,6 +677,8 @@ extern const char *MarioStatsSpecialMovesOptions[];
 extern uint8_t MarioStatsSpecialMovesOptionsSize;
 extern const char *StatsPartnerOptionsLines[];
 extern uint8_t StatsPartnerOptionsLinesSize;
+extern const char *StatsYoshiColorOptionsLines[];
+extern uint8_t StatsYoshiColorOptionsLinesSize;
 extern const char *StatsFollowerOptionsLines[];
 extern uint8_t StatsFollowerOptionsLinesSize;
 extern const char *MemoryModifyLines[];
