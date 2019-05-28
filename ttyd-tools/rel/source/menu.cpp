@@ -1689,8 +1689,7 @@ void menuCheckButton()
 						}
 						case LOAD_SETTINGS:
 						{
-							int32_t ReturnCode = loadSettings(MenuSettings.FileName, 
-								MenuSettings.FileInfo, MenuSettings.WorkArea);
+							int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName, MenuSettings.WorkArea);
 							
 							switch (ReturnCode)
 							{
@@ -1717,8 +1716,8 @@ void menuCheckButton()
 						}
 						case SAVE_SETTINGS:
 						{
-							int32_t ReturnCode = writeSettings(MenuSettings.Description, 
-								MenuSettings.FileName, MenuSettings.FileInfo, MenuSettings.WorkArea);
+							int32_t ReturnCode = writeSettings(MenuSettings.SettingsDescription, 
+								MenuSettings.SettingsFileName, MenuSettings.RelFileName, MenuSettings.WorkArea);
 							
 							switch (ReturnCode)
 							{

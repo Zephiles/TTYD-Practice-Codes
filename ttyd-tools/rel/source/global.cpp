@@ -1577,23 +1577,24 @@ void initMenuVars()
 	Menu[WARPS_INDEX].PreviousMenu 						= WARPS;
 	Menu[WARPS_INDEX].Line 								= WarpIndexLines;
 	
-	MenuSettings.WorkArea 								= reinterpret_cast<uint8_t *>(
-															*reinterpret_cast<uint32_t *>(
-																*reinterpret_cast<uint32_t *>(
-																	WorkAreaAddress) + 0x4));
+	MenuSettings.WorkArea = *reinterpret_cast<uint32_t **>(
+		*reinterpret_cast<uint32_t *>(WorkAreaAddress) + 0x4);
+	
+	// The CARD functions do not modify the strings, so const_cast<char *> can be used
+	MenuSettings.SettingsFileName = const_cast<char *>("rel_settings");
+	
 	#ifdef TTYD_US
-	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (US)");
+	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (US)");
 	#elif defined TTYD_JP
-	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (JP)");
+	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (JP)");
 	#elif defined TTYD_EU
-	MenuSettings.Description 							= const_cast<char *>("Practice Codes Settings (EU)");
+	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (EU)");
 	#endif
 	
-	MenuSettings.FileName 								= const_cast<char *>("rel_settings");
+	MenuSettings.RelFileName = const_cast<char *>("rel");
 	
 	// Try to open the settings file
-	int32_t ReturnCode = loadSettings(MenuSettings.FileName, 
-		MenuSettings.FileInfo, MenuSettings.WorkArea);
+	int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName, MenuSettings.WorkArea);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{

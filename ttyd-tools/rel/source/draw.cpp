@@ -4037,7 +4037,7 @@ void drawSettingsCurrentWork()
 		case LOAD_FAILED:
 		{
 			String = "Load Failed";
-			WindowWidth = 162;
+			WindowWidth = 129;
 			break;
 		}
 		case LOAD_FAILED_NO_FILE:
@@ -4055,7 +4055,7 @@ void drawSettingsCurrentWork()
 		case SAVE_FAILED:
 		{
 			String = "Save Failed";
-			WindowWidth = 162;
+			WindowWidth = 129;
 			break;
 		}
 		case SAVE_SUCCESSFUL:
@@ -4076,7 +4076,6 @@ void drawSettingsCurrentWork()
 	uint8_t Alpha  			= 0xFF;
 	int32_t TextPosX 		= -80;
 	int32_t TextPosY 		= 0;
-	// int32_t WindowWidth 	= 162;
 	int32_t WindowCurve 	= 10;
 	float Scale 			= 0.6;
 	

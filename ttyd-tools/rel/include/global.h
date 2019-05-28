@@ -1,7 +1,5 @@
 #pragma once
 
-#include <gc/card.h>
-
 #include <cstdint>
 
 namespace mod {
@@ -595,11 +593,10 @@ struct DisplayActionCommandTiming
 struct MemoryCardStruct
 {
 	uint8_t ReturnCode;
-	// uint8_t CurrentAction;
-	gc::card::card_file FileInfo[1];
-	uint8_t *WorkArea;
-	char *FileName;
-	char *Description;
+	void *WorkArea;
+	char *SettingsFileName;
+	char *SettingsDescription;
+	char *RelFileName;
 };
 
 struct MemoryWatchStruct
