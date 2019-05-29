@@ -258,6 +258,7 @@ int32_t writeSettings(char *settingsDescription,
 		}
 		default:
 		{
+			gc::card::CARDUnmount(CARD_SLOTA);
 			return ReturnCode;
 		}
 	}
