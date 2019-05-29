@@ -1593,164 +1593,66 @@ void initMenuVars()
 	
 	MenuSettings.RelFileName = const_cast<char *>("rel");
 	
-	// Try to open the settings file
-	int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName);
+	// Set the initial settings
+	setSettings();
 	
-	if (ReturnCode != CARD_ERROR_READY)
-	{
-		// Settings file couldn't be opened, so set the default values
-		Cheat[WALK_THROUGH_WALLS].Active 					= false;
-		// Cheat[SAVE_COORDINATES].Active 					= false;
-		// Cheat[LOAD_COORDINATES].Active 					= false;
-		Cheat[SAVE_ANYWHERE].Active 						= false;
-		// Cheat[TEXT_STORAGE].Active 						= false;
-		// Cheat[TIME_STOP_TEXT_STORAGE].Active 			= false;
-		// Cheat[SPEED_UP_MARIO].Active 					= false;
-		// Cheat[DISABLE_BATTLES].Active 					= false;
-		// Cheat[AUTO_ACTION_COMMANDS].Active 				= false;
-		// Cheat[INFINITE_ITEM_USAGE].Active 				= false;
-		// Cheat[RELOAD_ROOM].Active 						= false;
-		// Cheat[LEVITATE].Active 							= false;
-		Cheat[LOCK_MARIO_HP_TO_MAX].Active 					= false;
-		Cheat[RUN_FROM_BATTLES].Active 						= false;
-		Cheat[SPAWN_ITEM].Active 							= false;
-		// Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active 		= false;
-		// Cheat[DISABLE_MENU_SOUNDS].Active 				= false;
-		// Cheat[BOBBERY_EARLY].Active 						= false;
-		Cheat[FORCE_ITEM_DROP].Active 						= false;
-		
-		Displays[GUARD_SUPERGUARD_TIMINGS] 					= true;
-	}
-	
-	// Assign the cheats a button combo if they don't already have one
-	uint32_t Size = sizeof(Cheat) / sizeof(Cheat[0]);
-	for (uint32_t i = 0; i < Size; i++)
-	{
-		// Don't assign if the cheat already has a button combo
-		if (!Cheat[i].ButtonCombo)
-		{
-			assignCheatButtonCombo(i);
-		}
-	}
-	
-	// Assign the displays a button combo if they don't already have one
-	Size = sizeof(Displays);
-	for (uint32_t i = 0; i < Size; i++)
-	{
-		// Don't assign if the display already has a button combo
-		if (i == ONSCREEN_TIMER)
-		{
-			if (!OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] ||
-				!OnScreenTimer.ButtonCombo[RESET])
-			{
-				assignDisplayButtonCombo(i);
-			}
-		}
-		else
-		{
-			// Extra checks will be added when more displays that use button combos are added
-		}
-	}
+	// Load the custom settings from the settings file if it exists
+	loadSettings(MenuSettings.SettingsFileName);
 }
 
-void assignCheatButtonCombo(uint32_t cheat)
+void setSettings()
 {
-	switch (cheat)
-	{
-		case WALK_THROUGH_WALLS:
-		{
-			Cheat[cheat].ButtonCombo = PAD_Z;
-			break;
-		}
-		case SAVE_COORDINATES:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_DPAD_LEFT;
-			break;
-		}
-		case LOAD_COORDINATES:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_DPAD_UP;
-			break;
-		}
-		case SAVE_ANYWHERE:
-		{
-			Cheat[cheat].ButtonCombo = PAD_Y | PAD_B;
-			break;
-		}
-		case TEXT_STORAGE:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_X;
-			break;
-		}
-		case TIME_STOP_TEXT_STORAGE:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_R;
-			break;
-		}
-		case SPEED_UP_MARIO:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_Y;
-			break;
-		}
-		case DISABLE_BATTLES:
-		{
-			Cheat[cheat].ButtonCombo = PAD_Y;
-			break;
-		}
-		case AUTO_ACTION_COMMANDS:
-		{
-			Cheat[cheat].ButtonCombo = PAD_R;
-			break;
-		}
-		case INFINITE_ITEM_USAGE:
-		{
-			Cheat[cheat].ButtonCombo = PAD_Y;
-			break;
-		}
-		case RELOAD_ROOM:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_B;
-			break;
-		}
-		case LEVITATE:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_A;
-			break;
-		}
-		case SPAWN_ITEM:
-		{
-			Cheat[cheat].ButtonCombo = PAD_L | PAD_DPAD_DOWN;
-			break;
-		}
-		default:
-		{
-			return;
-		}
-	}
-}
-
-void assignDisplayButtonCombo(uint32_t display)
-{
-	switch (display)
-	{
-		case ONSCREEN_TIMER:
-		{
-			if (!OnScreenTimer.ButtonCombo[START_PAUSE_RESUME])
-			{
-				OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 	= PAD_L | PAD_Z;
-			}
-			
-			if (!OnScreenTimer.ButtonCombo[RESET])
-			{
-				OnScreenTimer.ButtonCombo[RESET] 				= PAD_L | PAD_DPAD_RIGHT;
-			}
-			break;
-		}
-		default:
-		{
-			return;
-		}
-	}
+	// Set the Cheats bools
+	Cheat[WALK_THROUGH_WALLS].Active 				= false;
+	// Cheat[SAVE_COORDINATES].Active 				= false;
+	// Cheat[LOAD_COORDINATES].Active 				= false;
+	Cheat[SAVE_ANYWHERE].Active 					= false;
+	// Cheat[TEXT_STORAGE].Active 					= false;
+	// Cheat[TIME_STOP_TEXT_STORAGE].Active 		= false;
+	// Cheat[SPEED_UP_MARIO].Active 				= false;
+	// Cheat[DISABLE_BATTLES].Active 				= false;
+	// Cheat[AUTO_ACTION_COMMANDS].Active 			= false;
+	// Cheat[INFINITE_ITEM_USAGE].Active 			= false;
+	// Cheat[RELOAD_ROOM].Active 					= false;
+	// Cheat[LEVITATE].Active 						= false;
+	Cheat[LOCK_MARIO_HP_TO_MAX].Active 				= false;
+	Cheat[RUN_FROM_BATTLES].Active 					= false;
+	Cheat[SPAWN_ITEM].Active 						= false;
+	// Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active 	= false;
+	// Cheat[DISABLE_MENU_SOUNDS].Active 			= false;
+	// Cheat[BOBBERY_EARLY].Active 					= false;
+	Cheat[FORCE_ITEM_DROP].Active 					= false;
+	
+	// Set the Cheats button combos
+	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
+	Cheat[SAVE_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_LEFT;
+	Cheat[LOAD_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_UP;
+	Cheat[SAVE_ANYWHERE].ButtonCombo 			= PAD_Y | PAD_B;
+	Cheat[TEXT_STORAGE].ButtonCombo 			= PAD_L | PAD_X;
+	Cheat[TIME_STOP_TEXT_STORAGE].ButtonCombo 	= PAD_L | PAD_R;
+	Cheat[SPEED_UP_MARIO].ButtonCombo 			= PAD_L | PAD_Y;
+	Cheat[DISABLE_BATTLES].ButtonCombo 			= PAD_Y;
+	Cheat[AUTO_ACTION_COMMANDS].ButtonCombo 	= PAD_R;
+	Cheat[INFINITE_ITEM_USAGE].ButtonCombo 		= PAD_Y;
+	Cheat[RELOAD_ROOM].ButtonCombo 				= PAD_L | PAD_B;
+	Cheat[LEVITATE].ButtonCombo 				= PAD_L | PAD_A;
+	Cheat[SPAWN_ITEM].ButtonCombo 				= PAD_L | PAD_DPAD_DOWN;
+	
+	// Set the Displays bools
+	// Displays[ONSCREEN_TIMER] 		= true;
+	// Displays[MARIO_COORDINATES] 		= true;
+	// Displays[MARIO_SPEED_XZ] 		= true;
+	// Displays[JUMP_STORAGE] 			= true;
+	// Displays[BUTTON_INPUT_DISPLAY] 	= true;
+	// Displays[STICK_ANGLE] 			= true;
+	Displays[GUARD_SUPERGUARD_TIMINGS] 	= true;
+	// Displays[ART_ATTACK_HITBOXES] 	= true;
+	// Displays[YOSHI_SKIP] 			= true;
+	// Displays[PALACE_SKIP] 			= true;
+	
+	// Set the Displays button combos
+	OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 	= PAD_L | PAD_Z;
+	OnScreenTimer.ButtonCombo[RESET] 				= PAD_L | PAD_DPAD_RIGHT;
 }
 
 }

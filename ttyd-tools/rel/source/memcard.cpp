@@ -172,14 +172,22 @@ int32_t loadSettings(char *settingsFileName)
 	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
 	
 	// Get the desired variables from the struct
+	// Get the Cheats bools and button combos
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
 		uint32_t CurrentIndex 				= CheatsOrder[i];
 		Cheat[CurrentIndex].Active 			= Settings->CheatsActive[i];
-		Cheat[CurrentIndex].ButtonCombo 	= Settings->CheatButtonCombos[i];
+		
+		// Make sure the button combo is valid, so that new button combos are not overwritten with 0
+		uint16_t ButtonCombo = Settings->CheatButtonCombos[i];
+		if (ButtonCombo)
+		{
+			Cheat[CurrentIndex].ButtonCombo = ButtonCombo;
+		}
 	}
 	
+	// Get the Displays bools
 	uint32_t DisplaysSize = sizeof(Displays);
 	for (uint32_t i = 0; i < DisplaysSize; i++)
 	{
@@ -187,9 +195,20 @@ int32_t loadSettings(char *settingsFileName)
 		Displays[CurrentIndex] 	= Settings->DisplaysActive[i];
 	}
 	
-	OnScreenTimer.ButtonCombo[0] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER];
-	OnScreenTimer.ButtonCombo[1] = Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1];
+	// Get the On-Screen Timer button combos
+	uint32_t OnScreenTimerSize = sizeof(OnScreenTimer.ButtonCombo) / sizeof(OnScreenTimer.ButtonCombo[0]);
+	for (uint32_t i = 0; i < OnScreenTimerSize; i++)
+	{
+		uint16_t ButtonCombo = Settings->DisplaysButtonCombos[ONSCREEN_TIMER + i];
+		
+		// Make sure the button combo is valid, so that new button combos are not overwritten with 0
+		if (ButtonCombo)
+		{
+			OnScreenTimer.ButtonCombo[i] = ButtonCombo;
+		}
+	}
 	
+	// Get the Memory Watches
 	copyMemory(MemoryWatch, Settings->MemoryWatchSettings, sizeof(MemoryWatch));
 	
 	delete[] (MiscData);
@@ -308,6 +327,7 @@ int32_t writeSettings(char *settingsDescription, char *settingsFileName, char *r
 	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
 	
 	// Copy the desired variables to the struct
+	// Copy the Cheats bools and button combos
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
@@ -316,6 +336,7 @@ int32_t writeSettings(char *settingsDescription, char *settingsFileName, char *r
 		Settings->CheatButtonCombos[i] 	= Cheat[CurrentIndex].ButtonCombo;
 	}
 	
+	// Copy the Displays bools
 	uint32_t DisplaysSize = sizeof(Displays);
 	for (uint32_t i = 0; i < DisplaysSize; i++)
 	{
@@ -323,9 +344,14 @@ int32_t writeSettings(char *settingsDescription, char *settingsFileName, char *r
 		Settings->DisplaysActive[i] 	= Displays[CurrentIndex];
 	}
 	
-	Settings->DisplaysButtonCombos[ONSCREEN_TIMER] 		= OnScreenTimer.ButtonCombo[0];
-	Settings->DisplaysButtonCombos[ONSCREEN_TIMER + 1] 	= OnScreenTimer.ButtonCombo[1];
+	// Copy the On-Screen Timer button combos
+	uint32_t OnScreenTimerSize = sizeof(OnScreenTimer.ButtonCombo) / sizeof(OnScreenTimer.ButtonCombo[0]);
+	for (uint32_t i = 0; i < OnScreenTimerSize; i++)
+	{
+		Settings->DisplaysButtonCombos[ONSCREEN_TIMER + i] = OnScreenTimer.ButtonCombo[i];
+	}
 	
+	// Copy the Memory Watches
 	copyMemory(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
 	
 	// Write the data to the file

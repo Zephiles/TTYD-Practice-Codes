@@ -751,8 +751,7 @@ extern bool MarioFreeze;
 extern uint16_t JumpStorageSetCounter;
 
 void initMenuVars();
-void assignCheatButtonCombo(uint32_t cheat);
-void assignDisplayButtonCombo(uint32_t display);
+void setSettings();
 void initAddressOverwrites();
 
 }
