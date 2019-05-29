@@ -8,41 +8,6 @@
 
 namespace mod {
 
-int32_t mountCard(int32_t channel, void *workArea, 
-	gc::card::CARDCallback detachCallback, gc::card::CARDCallback attachCallback)
-{
-	int32_t ReturnCode = gc::card::CARDMountAsync(channel, workArea, detachCallback, attachCallback);
-	return finishAsyncFunction(ReturnCode);
-}
-
-int32_t readFromCard(gc::card::CARDFileInfo *fileInfo, void *buffer, 
-	int32_t length, int32_t offset, gc::card::CARDCallback callback)
-{
-	int32_t ReturnCode = gc::card::CARDReadAsync(fileInfo, buffer, length, offset, callback);
-	return finishAsyncFunction(ReturnCode);
-}
-
-int32_t writeToCard(gc::card::CARDFileInfo *fileInfo, void *buffer, 
-	int32_t length, int32_t offset, gc::card::CARDCallback callback)
-{
-	int32_t ReturnCode = gc::card::CARDWriteAsync(fileInfo, buffer, length, offset, callback);
-	return finishAsyncFunction(ReturnCode);
-}
-
-int32_t createFile(int32_t channel, char *fileName, uint32_t size, 
-	gc::card::CARDFileInfo *fileInfo, gc::card::CARDCallback callback)
-{
-	int32_t ReturnCode = gc::card::CARDCreateAsync(channel, fileName, size, fileInfo, callback);
-	return finishAsyncFunction(ReturnCode);
-}
-
-int32_t setFileStatus(int32_t channel, int32_t fileNum, 
-	gc::card::CARDStat *stat, gc::card::CARDCallback callback)
-{
-	int32_t ReturnCode = gc::card::CARDSetStatusAsync(channel, fileNum, stat, callback);
-	return finishAsyncFunction(ReturnCode);
-}
-
 int32_t finishAsyncFunction(int32_t returnCode)
 {
 	if (returnCode == CARD_ERROR_READY)
@@ -56,10 +21,81 @@ int32_t finishAsyncFunction(int32_t returnCode)
 	return returnCode;
 }
 
+int32_t checkForMemoryCard(int32_t channel, int32_t *memSize, int32_t *sectorSize)
+{
+	return gc::card::CARDProbeEx(channel, memSize, sectorSize);
+}
+
+int32_t mountCard(int32_t channel, void *workArea, 
+	gc::card::CARDCallback detachCallback, gc::card::CARDCallback attachCallback)
+{
+	int32_t ReturnCode = gc::card::CARDMountAsync(channel, workArea, detachCallback, attachCallback);
+	return finishAsyncFunction(ReturnCode);
+}
+
+int32_t unmountCard(int32_t channel)
+{
+	return gc::card::CARDUnmount(channel);
+}
+
+int32_t openFileFromCard(int32_t channel, char *fileName, gc::card::CARDFileInfo *fileInfo)
+{
+	return gc::card::CARDOpen(channel, fileName, fileInfo);
+}
+
+int32_t closeFileFromCard(gc::card::CARDFileInfo *fileInfo)
+{
+	return gc::card::CARDClose(fileInfo);
+}
+
+void closeFileAndUnmountCard(gc::card::CARDFileInfo *fileInfo, int32_t channel)
+{
+	closeFileFromCard(fileInfo);
+	unmountCard(channel);
+}
+
+int32_t createFileOnCard(int32_t channel, char *fileName, uint32_t size, 
+	gc::card::CARDFileInfo *fileInfo, gc::card::CARDCallback callback)
+{
+	int32_t ReturnCode = gc::card::CARDCreateAsync(channel, fileName, size, fileInfo, callback);
+	return finishAsyncFunction(ReturnCode);
+}
+
+int32_t readFromFileOnCard(gc::card::CARDFileInfo *fileInfo, void *buffer, 
+	int32_t length, int32_t offset, gc::card::CARDCallback callback)
+{
+	int32_t ReturnCode = gc::card::CARDReadAsync(fileInfo, buffer, length, offset, callback);
+	return finishAsyncFunction(ReturnCode);
+}
+
+int32_t writeToFileOnCard(gc::card::CARDFileInfo *fileInfo, void *buffer, 
+	int32_t length, int32_t offset, gc::card::CARDCallback callback)
+{
+	int32_t ReturnCode = gc::card::CARDWriteAsync(fileInfo, buffer, length, offset, callback);
+	return finishAsyncFunction(ReturnCode);
+}
+
+int32_t deleteFileOnCard(int32_t channel, char *fileName)
+{
+	return gc::card::CARDDelete(channel, fileName);
+}
+
+int32_t getFileStatus(int32_t channel, int32_t fileNum, gc::card::CARDStat *stat)
+{
+	return gc::card::CARDGetStatus(channel, fileNum, stat);
+}
+
+int32_t setFileStatus(int32_t channel, int32_t fileNum, 
+	gc::card::CARDStat *stat, gc::card::CARDCallback callback)
+{
+	int32_t ReturnCode = gc::card::CARDSetStatusAsync(channel, fileNum, stat, callback);
+	return finishAsyncFunction(ReturnCode);
+}
+
 int32_t loadSettings(char *settingsFileName, void *workArea)
 {
 	// Load the settings file
-	int32_t ReturnCode = gc::card::CARDProbeEx(CARD_SLOTA, nullptr, nullptr);
+	int32_t ReturnCode = checkForMemoryCard(CARD_SLOTA, nullptr, nullptr);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		return ReturnCode;
@@ -74,11 +110,11 @@ int32_t loadSettings(char *settingsFileName, void *workArea)
 	
 	// Open the settings file
 	gc::card::CARDFileInfo FileInfo;
-	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, settingsFileName, &FileInfo);
+	ReturnCode = openFileFromCard(CARD_SLOTA, settingsFileName, &FileInfo);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -86,12 +122,11 @@ int32_t loadSettings(char *settingsFileName, void *workArea)
 	char *FileData = new char[0x200];
 	
 	// Get the data from the area that holds the size
-	ReturnCode = readFromCard(&FileInfo, FileData, 0x200, 0x2000, nullptr);
+	ReturnCode = readFromFileOnCard(&FileInfo, FileData, 0x200, 0x2000, nullptr);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (FileData);
-		gc::card::CARDClose(&FileInfo);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		closeFileAndUnmountCard(&FileInfo, CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -122,11 +157,10 @@ int32_t loadSettings(char *settingsFileName, void *workArea)
 	
 	// Get the data from the file
 	// Must read by the stored size, as the struct size may exceed the size of the file
-	ReturnCode = readFromCard(&FileInfo, MiscData, StoredFileSizeAdjusted, 0x2000, nullptr);
+	ReturnCode = readFromFileOnCard(&FileInfo, MiscData, StoredFileSizeAdjusted, 0x2000, nullptr);
 	
 	// Close and unmount the card, as it's no longer needed
-	gc::card::CARDClose(&FileInfo);
-	gc::card::CARDUnmount(CARD_SLOTA);
+	closeFileAndUnmountCard(&FileInfo, CARD_SLOTA);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{
@@ -166,7 +200,7 @@ int32_t writeSettings(char *settingsDescription,
 	char *settingsFileName, char *relFileName, void *workArea)
 {
 	// Load the settings file
-	int32_t ReturnCode = gc::card::CARDProbeEx(CARD_SLOTA, nullptr, nullptr);
+	int32_t ReturnCode = checkForMemoryCard(CARD_SLOTA, nullptr, nullptr);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		return ReturnCode;
@@ -187,7 +221,7 @@ int32_t writeSettings(char *settingsDescription,
 	
 	// Open the settings file if it exists
 	gc::card::CARDFileInfo FileInfo;
-	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, settingsFileName, &FileInfo);
+	ReturnCode = openFileFromCard(CARD_SLOTA, settingsFileName, &FileInfo);
 	
 	switch (ReturnCode)
 	{
@@ -197,12 +231,11 @@ int32_t writeSettings(char *settingsDescription,
 			char *FileData = new char[0x200];
 			
 			// Get the data from the area that holds the size
-			ReturnCode = readFromCard(&FileInfo, FileData, 0x200, 0x2000, nullptr);
+			ReturnCode = readFromFileOnCard(&FileInfo, FileData, 0x200, 0x2000, nullptr);
 			if (ReturnCode != CARD_ERROR_READY)
 			{
 				delete[] (FileData);
-				gc::card::CARDClose(&FileInfo);
-				gc::card::CARDUnmount(CARD_SLOTA);
+				closeFileAndUnmountCard(&FileInfo, CARD_SLOTA);
 				return ReturnCode;
 			}
 			
@@ -220,18 +253,18 @@ int32_t writeSettings(char *settingsDescription,
 			{
 				// The new size exceeds the current size, so a new file must be created
 				// Close the file
-				ReturnCode = gc::card::CARDClose(&FileInfo);
+				ReturnCode = closeFileFromCard(&FileInfo);
 				if (ReturnCode != CARD_ERROR_READY)
 				{
-					gc::card::CARDUnmount(CARD_SLOTA);
+					unmountCard(CARD_SLOTA);
 					return ReturnCode;
 				}
 				
 				// Delete the current file
-				ReturnCode = gc::card::CARDDelete(CARD_SLOTA, settingsFileName);
+				ReturnCode = deleteFileOnCard(CARD_SLOTA, settingsFileName);
 				if (ReturnCode != CARD_ERROR_READY)
 				{
-					gc::card::CARDUnmount(CARD_SLOTA);
+					unmountCard(CARD_SLOTA);
 					return ReturnCode;
 				}
 				
@@ -258,7 +291,7 @@ int32_t writeSettings(char *settingsDescription,
 		}
 		default:
 		{
-			gc::card::CARDUnmount(CARD_SLOTA);
+			unmountCard(CARD_SLOTA);
 			return ReturnCode;
 		}
 	}
@@ -297,11 +330,10 @@ int32_t writeSettings(char *settingsDescription,
 	copyMemory(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
 	
 	// Write the data to the file
-	ReturnCode = writeToCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000, nullptr);
+	ReturnCode = writeToFileOnCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000, nullptr);
 	
 	delete[] (MiscData);
-	gc::card::CARDClose(&FileInfo);
-	gc::card::CARDUnmount(CARD_SLOTA);
+	closeFileAndUnmountCard(&FileInfo, CARD_SLOTA);
 	return ReturnCode;
 }
 
@@ -310,11 +342,11 @@ int32_t createSettingsFile(char *settingsFileName,
 {
 	// Get the banner and icon data from the desired REL file
 	gc::card::CARDFileInfo FileInfo;
-	int32_t ReturnCode = gc::card::CARDOpen(CARD_SLOTA, relFileName, &FileInfo);
+	int32_t ReturnCode = openFileFromCard(CARD_SLOTA, relFileName, &FileInfo);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -322,21 +354,20 @@ int32_t createSettingsFile(char *settingsFileName,
 	char *BannerIconData = new char[0x2000];
 	
 	// Get the banner and icon data
-	ReturnCode = readFromCard(&FileInfo, BannerIconData, 0x2000, 0, nullptr);
+	ReturnCode = readFromFileOnCard(&FileInfo, BannerIconData, 0x2000, 0, nullptr);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDClose(&FileInfo);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		closeFileAndUnmountCard(&FileInfo, CARD_SLOTA);
 		return ReturnCode;
 	}
 	
 	// Close the current REL file
-	ReturnCode = gc::card::CARDClose(&FileInfo);
+	ReturnCode = closeFileFromCard(&FileInfo);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -348,11 +379,11 @@ int32_t createSettingsFile(char *settingsFileName,
 	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
 	
 	// Create the new file
-	ReturnCode = createFile(CARD_SLOTA, settingsFileName, FileSizeAdjusted, &FileInfo, nullptr);
+	ReturnCode = createFileOnCard(CARD_SLOTA, settingsFileName, FileSizeAdjusted, &FileInfo, nullptr);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -360,11 +391,11 @@ int32_t createSettingsFile(char *settingsFileName,
 	gc::card::CARDStat CardStat;
 	int32_t FileNumber = FileInfo.fileNum;
 	
-	ReturnCode = gc::card::CARDGetStatus(CARD_SLOTA, FileNumber, &CardStat);
+	ReturnCode = getFileStatus(CARD_SLOTA, FileNumber, &CardStat);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
@@ -380,29 +411,28 @@ int32_t createSettingsFile(char *settingsFileName,
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
 	// Open the new file
-	ReturnCode = gc::card::CARDOpen(CARD_SLOTA, settingsFileName, settingsFileInfo);
+	ReturnCode = openFileFromCard(CARD_SLOTA, settingsFileName, settingsFileInfo);
 	if (ReturnCode != CARD_ERROR_READY)
 	{
 		delete[] (BannerIconData);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		unmountCard(CARD_SLOTA);
 		return ReturnCode;
 	}
 	
 	// Write the banner and icon data to the new file
-	ReturnCode = writeToCard(settingsFileInfo, BannerIconData, 0x2000, 0, nullptr);
+	ReturnCode = writeToFileOnCard(settingsFileInfo, BannerIconData, 0x2000, 0, nullptr);
 	
 	// Delete the data for the icon and banner, as they are not needed anymore
 	delete[] (BannerIconData);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{
-		gc::card::CARDClose(settingsFileInfo);
-		gc::card::CARDUnmount(CARD_SLOTA);
+		closeFileAndUnmountCard(settingsFileInfo, CARD_SLOTA);
 	}
 	
 	return ReturnCode;
