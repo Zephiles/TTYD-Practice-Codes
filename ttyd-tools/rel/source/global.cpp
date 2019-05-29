@@ -1594,7 +1594,7 @@ void initMenuVars()
 	MenuSettings.RelFileName = const_cast<char *>("rel");
 	
 	// Try to open the settings file
-	int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName, MenuSettings.WorkArea);
+	int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName);
 	
 	if (ReturnCode != CARD_ERROR_READY)
 	{
