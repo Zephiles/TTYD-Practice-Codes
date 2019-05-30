@@ -17,7 +17,7 @@ uint8_t BattleActionCommandGetDifficulty(void *battlePointer);
 // BattleActionCommandResetDefenceResult
 // BattleActionCommandGetDefenceResult
 uint32_t BattleACPadCheckRecordTrigger(uint32_t frame, uint32_t button);
-int32_t BattleActionCommandCheckDefence(void *battle_unit, void *attack_params);
+int32_t BattleActionCommandCheckDefence(void *battleUnitPtr, void *attackParams);
 // BattleActionCommandStop
 // BattleActionCommandStart
 // BattleActionCommandSetup

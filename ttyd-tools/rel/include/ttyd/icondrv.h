@@ -19,8 +19,8 @@ extern "C" {
 // iconGetTexObj
 // iconDispGxCol
 // iconDispGx2
-void iconDispGx(float position[3], uint16_t unkBits, uint16_t iconNum, float scale);
-void iconDispGxAlpha(float position[3], uint16_t unkBits, uint16_t iconNum, uint8_t alpha, float scale);
+void iconDispGx(float position[3], uint16_t unkBits, int16_t iconNum, float scale);
+void iconDispGxAlpha(float position[3], uint16_t unkBits, int16_t iconNum, uint8_t alpha, float scale);
 // iconDisp
 // iconChange
 // iconDelete

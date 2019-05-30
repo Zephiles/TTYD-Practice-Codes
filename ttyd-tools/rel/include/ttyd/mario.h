@@ -157,13 +157,13 @@ extern "C" {
 // marioBgmodeOn
 // marioBgmodeChk
 // marioSetMutekiTime
-int8_t marioKeyOn();
-int8_t marioKeyOff();
+int32_t marioKeyOn();
+int32_t marioKeyOff();
 // marioCtrlOn2
 // marioCtrlOff2
 // marioCtrlOn
 // marioCtrlOff
-int8_t marioKeyOffChk();
+int32_t marioKeyOffChk();
 // marioCtrlOffChk
 // marioFBattlePost
 // marioFBattlePrepare
@@ -178,7 +178,7 @@ bool marioChkKey();
 void marioSetSpec();
 // marioSetFamicomMode
 void marioSetCharMode(uint32_t mode);
-int8_t marioGetColor();
+int32_t marioGetColor();
 Player *marioGetPtr();
 
 }

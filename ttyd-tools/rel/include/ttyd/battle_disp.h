@@ -10,7 +10,7 @@ extern "C" {
 // BattleStockExpDisp
 // _btlDispTex4
 // btlDispTex4
-void btlGetScreenPoint(float position[3], float positionOut[3]);
+void btlGetScreenPoint(float pos[3], float posOut[3]);
 // btlDispAnimeSpeed
 // _pose_two_pattern
 // _pose_one_pattern

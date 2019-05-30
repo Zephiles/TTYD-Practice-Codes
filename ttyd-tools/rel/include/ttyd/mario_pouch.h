@@ -14,7 +14,7 @@ uint32_t pouchGetPartyColor(uint32_t partnerId);
 // pouchOpenMail
 // pouchReceiveMail
 // pouchReceiveMailCount
-void pouchGetStarStone(uint32_t id);
+void pouchGetStarStone(uint32_t starId);
 // pouchAddKpaScore
 // pouchGetKpaScore
 // pouchAddKpaCoin
@@ -24,7 +24,7 @@ void pouchGetStarStone(uint32_t id);
 // pouchUnEquipBadgeID
 // pouchEquipBadgeID
 // pouchEquipCheckBadgeIndex
-uint32_t pouchEquipCheckBadge(uint32_t id);
+uint32_t pouchEquipCheckBadge(int16_t badge);
 // pouchUnEquipBadgeIndex
 // pouchEquipBadgeIndex
 // pouchGetStarPoint
@@ -66,8 +66,8 @@ int16_t pouchGetCoin();
 // comp_aiueo
 bool pouchRemoveItemIndex(int16_t item, uint32_t index);
 // pouchRemoveItem
-uint32_t pouchCheckItem(uint32_t id);
-bool pouchGetItem(uint32_t id);
+uint32_t pouchCheckItem(int16_t item);
+bool pouchGetItem(int16_t item);
 // pouchGetEmptyKeepItemCnt
 // pouchGetEmptyHaveItemCnt
 // pouchGetEquipBadgeCnt

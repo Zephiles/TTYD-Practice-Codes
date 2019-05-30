@@ -8,8 +8,7 @@ struct SmartAllocationData
 {
 	void *pMemory;
 	uint32_t usedSize;
-	// FileEntryData *pFileInfo;
-	void *pFileInfo;
+	void *pFileInfo; // FileEntryData *pFileInfo;
 	uint16_t bUsed;
 	uint8_t group;
 	uint8_t pad_f;

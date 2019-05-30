@@ -30,7 +30,7 @@ void FontDrawStringVecPitch(float position[3], float pitch, const char *text);
 void FontDrawStringMtx(float matrix[3][4], const char *text);
 void FontDrawStringCenterMtx(float matrix[3][4], const char *text);
 void FontDrawStringShake(float x, float y, const char *text);
-void FontDrawMessage(int x, int y, const char *message);
+void FontDrawMessage(int32_t x, int32_t y, const char *message);
 void FontDrawMessageMtx(float matrix[3][4], const char *message);
 uint16_t FontGetMessageWidthLine(const char *message, uint16_t *outLines);
 uint16_t FontGetMessageWidth(const char *message);

@@ -27,9 +27,10 @@ extern "C" {
 // itemHitCheck
 // itemNameToPtr
 // itemDelete
-void *itemEntry(const char *name, uint32_t id, uint32_t mode, 
-	int32_t wasCollectedExpr, void *pickupScript, float coordinateX, 
-		float coordinateY, float coordinateZ);
+
+void *itemEntry(const char *name, int32_t id, uint32_t mode, 
+	int32_t wasCollectedExpr, void *pickupScript, float x, float y, float z);
+
 // itemModeChange
 // itemMain
 // itemGetNokoCheck

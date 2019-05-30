@@ -12,7 +12,7 @@ struct EventStageEventDescription
 	uint8_t party0Id;
 	uint8_t party1Id;
 	uint8_t pad_3;
-	uint16_t gsw0; // sequence position
+	uint16_t gsw0; // Sequence Position
 	uint16_t pad_6;
 	char *textId;
 	char *nameJp;
@@ -34,8 +34,8 @@ struct EventStageDescription
 	uint32_t eventCount;
 } __attribute__((__packed__));
 
-int eventStgNum();
-EventStageDescription *eventStgDtPtr(int stageId);
+int32_t eventStgNum();
+EventStageDescription *eventStgDtPtr(int32_t stageId);
 // stg8_15_init
 // stg8_14_init
 // stg8_13_init

@@ -210,7 +210,6 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 const char *getItemName(int16_t item)
 {
 	ItemData *item_db = ItemDataTable;
-	
 	return ttyd::msgdrv::msgSearch(item_db[item].item_name_msg);
 }
 

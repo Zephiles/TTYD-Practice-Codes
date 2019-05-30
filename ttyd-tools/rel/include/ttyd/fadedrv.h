@@ -29,7 +29,7 @@ extern "C" {
 // fadeTecSoftOn
 // fadeTecOff
 // fadeTecOn
-void fadeEntry(int type, int duration, uint8_t color[4]);
+void fadeEntry(int32_t type, int32_t duration, uint8_t color[4]);
 // fadeTexSetup
 // fadeInit
 // _callback

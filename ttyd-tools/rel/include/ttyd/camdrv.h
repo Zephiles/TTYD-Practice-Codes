@@ -14,7 +14,7 @@ extern "C" {
 // camCtrlOff
 // camCtrlOn
 // camDispOff
-void camDispOn(uint32_t unkId);
+void camDispOn(uint32_t camId);
 // camSetMode
 // camEffMain
 // cam3dImgMain
@@ -22,7 +22,7 @@ void camDispOn(uint32_t unkId);
 // camSetCurNo
 // camGetCurNo
 // camGetCurPtr
-void *camGetPtr(uint32_t unkId);
+void *camGetPtr(uint32_t camId);
 // camUnLoadRoad
 // camLoadRoad
 // camDraw

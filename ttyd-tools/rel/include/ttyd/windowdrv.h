@@ -10,8 +10,10 @@ extern "C" {
 // windowGetPointer
 // windowCheckID
 // windowDispGX2_Waku_col
-void windowDispGX_Waku_col(uint16_t GXTexMapID, uint8_t color[4], float x, 
-	float y, float width, float height, float curve);
+
+void windowDispGX_Waku_col(uint16_t GXTexMapID, uint8_t color[4], 
+	float x, float y, float width, float height, float curve);
+
 // windowDispGX_Message
 // _windowDispGX_Message
 // windowDispGX_System

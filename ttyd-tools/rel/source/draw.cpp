@@ -1975,7 +1975,7 @@ void drawErrorWindow(const char *text, int32_t textPosX, int32_t windowWidth)
 {
 	// int32_t TextPosX 		= -200;
 	int32_t TextPosY 		= 60;
-	uint8_t Alpha  			= 0xFF;
+	uint8_t Alpha 			= 0xFF;
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	float Scale 			= 0.6;
 	// int32_t WindowWidth 	= 415;
@@ -3588,7 +3588,7 @@ void drawButtonInputs()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	uint32_t Counter = 0;
-	for (int i = 0; i < 13; i++)
+	for (uint32_t i = 0; i < 13; i++)
 	{
 		if (i == 7)
 		{
@@ -3778,7 +3778,7 @@ void drawPalaceSkipDetails()
 	bool FoundItem = false;
 	int32_t ItemTimer;
 	
-	for (int i = 0; i < 32; i++)
+	for (uint32_t i = 0; i < 32; i++)
 	{
 		uint32_t Coin = 121;
 		uint32_t Heart = 123;
@@ -4012,7 +4012,7 @@ void drawActionCommandsTiming()
 	
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint32_t WindowColor 	= 0x000000D0;
-	uint8_t Alpha  			= 0xFF;
+	uint8_t Alpha 			= 0xFF;
 	int32_t TextPosX 		= -232;
 	int32_t TextPosY 		= -105;
 	// int32_t WindowWidth 	= 320;
@@ -4073,7 +4073,7 @@ void drawSettingsCurrentWork()
 	
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint32_t WindowColor 	= 0x151515F4;
-	uint8_t Alpha  			= 0xFF;
+	uint8_t Alpha 			= 0xFF;
 	int32_t TextPosX 		= -80;
 	int32_t TextPosY 		= 0;
 	int32_t WindowCurve 	= 10;

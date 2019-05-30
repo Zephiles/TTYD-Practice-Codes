@@ -20,7 +20,7 @@ extern "C" {
 // msgIconStr2ID
 // msgGetCommand
 // _ismbblead
-const char *msgSearch(const char *msgKey);
+const char *msgSearch(const char *key);
 // msg_compare
 // msgGetWork
 // msgAnalize

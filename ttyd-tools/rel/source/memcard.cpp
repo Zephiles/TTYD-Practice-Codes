@@ -176,8 +176,8 @@ int32_t loadSettings(char *settingsFileName)
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
-		uint32_t CurrentIndex 				= CheatsOrder[i];
-		Cheat[CurrentIndex].Active 			= Settings->CheatsActive[i];
+		uint32_t CurrentIndex 		= CheatsOrder[i];
+		Cheat[CurrentIndex].Active 	= Settings->CheatsActive[i];
 		
 		// Make sure the button combo is valid, so that new button combos are not overwritten with 0
 		uint16_t ButtonCombo = Settings->CheatButtonCombos[i];
