@@ -9,13 +9,11 @@ void drawFunctionOn2DLayer(void (*func)());
 
 void drawMenuWindow();
 
-void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, 
-	int32_t height, int32_t curve);
+void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t height, int32_t curve);
 
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
 void drawStringMultiline(float x, float y, const char *text);
-void startDrawString(uint8_t alpha, uint32_t color, float scale);
 
 void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, 
 	uint32_t color, float scale);

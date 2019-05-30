@@ -56,7 +56,14 @@ void drawMenuWindow()
 
 void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t height, int32_t curve)
 {
-	ttyd::windowdrv::windowDispGX_Waku_col(0, reinterpret_cast<uint8_t *>(&color), x, y, width, height, curve);
+	uint8_t *NewColor 	= reinterpret_cast<uint8_t *>(&color);
+	float NewX 			= static_cast<float>(x);
+	float NewY 			= static_cast<float>(y);
+	float NewWidth 		= static_cast<float>(width);
+	float NewHeight 	= static_cast<float>(height);
+	float NewCurve 		= static_cast<float>(curve);
+	
+	ttyd::windowdrv::windowDispGX_Waku_col(0, NewColor, NewX, NewY, NewWidth, NewHeight, NewCurve);
 }
 
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
@@ -183,7 +190,7 @@ void drawStringMultiline(float x, float y, const char *text, float scale)
 	increment = static_cast<float>(tempIncrementValue);
 	
 	// Copy the text to a temporary array, as it will be modified
-	int32_t textSize = getStringSize(text);
+	uint32_t textSize = getStringSize(text);
 	char tempText[textSize + 1];
 	copyString(tempText, text);
 	
@@ -214,29 +221,21 @@ void drawStringMultiline(float x, float y, const char *text, float scale)
 	while (index != 0);
 }
 
-void startDrawString(uint8_t alpha, uint32_t color, float scale)
+void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, uint32_t color, float scale)
 {
 	ttyd::fontmgr::FontDrawStart_alpha(alpha);
 	ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
 	ttyd::fontmgr::FontDrawEdge();
 	ttyd::fontmgr::FontDrawScale(scale);
-}
-
-void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, uint32_t color, float scale)
-{
-	startDrawString(alpha, color, scale);
-	bool MultipleLines = false;
 	
 	uint32_t i = 0;
+	char EndOfLineChar;
 	bool LoopDone = false;
+	
 	while (!LoopDone)
 	{
-		if (text[i] == '\n')
-		{
-			MultipleLines 	= true;
-			LoopDone 		= true;
-		}
-		else if (text[i] == '\0')
+		EndOfLineChar = text[i];
+		if ((EndOfLineChar == '\n') || (EndOfLineChar == '\0'))
 		{
 			LoopDone = true;
 		}
@@ -246,7 +245,7 @@ void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, uint32_t co
 	float NewX = static_cast<float>(x);
 	float NewY = static_cast<float>(y);
 	
-	if (MultipleLines)
+	if (EndOfLineChar == '\n')
 	{
 		// The text has multiple lines
 		drawStringMultiline(NewX, NewY, text, scale);
