@@ -72,7 +72,7 @@ int32_t forceNPCItemDrop(void *ptr)
 
 bool disableDPadOptionsDisplay(uint16_t unkVar)
 {
-	if (Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active)
+	if (!Displays[DPAD_OPTIONS_DISPLAY])
 	{
 		return false;
 	}
@@ -1063,11 +1063,11 @@ void actionCommandsTimingsInit()
 	// Credits to Jdaster64 for writing the original code for this
 	DisplayActionCommands.Trampoline = patch::hookFunction(
 	ttyd::battle_ac::BattleActionCommandCheckDefence, [](
-		void *battle_unit, void *attack_params)
+		void *battleUnitPtr, void *attackParams)
 	{
 		if (!Displays[GUARD_SUPERGUARD_TIMINGS])
 		{
-			return DisplayActionCommands.Trampoline(battle_unit, attack_params);
+			return DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
 		}
 		
 		// Check to see if the attack will be automatically guarded/superguarded or not
@@ -1086,7 +1086,7 @@ void actionCommandsTimingsInit()
 			if (DebugBadgeCheck > 0)
 			{
 				// The attack will be automatically guarded/superguarded
-				return DisplayActionCommands.Trampoline(battle_unit, attack_params);
+				return DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
 			}
 		}
 		
@@ -1114,8 +1114,7 @@ void actionCommandsTimingsInit()
 			}
 		}
 		
-		const int32_t DefenseResult = DisplayActionCommands.Trampoline(
-			battle_unit, attack_params);
+		const int32_t DefenseResult = DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
 		
 		const uint32_t SuccessfulTiming 		= 1;
 		const uint32_t PressedTooManyButtons 	= 2;
@@ -1153,7 +1152,7 @@ void actionCommandsTimingsInit()
 		{
 			// Check if the attack can be superguarded or not
 			uint8_t SuperguardCheck = *reinterpret_cast<uint8_t *>(
-				reinterpret_cast<uint32_t>(attack_params) + 0x13);
+				reinterpret_cast<uint32_t>(attackParams) + 0x13);
 			
 			if (SuperguardCheck > 0)
 			{
@@ -1241,6 +1240,9 @@ void displayArtAttackHitboxes()
 		// Set the color of the lines of the current hitbox
 		gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
 		
+		// Adjust the hue for the lines of the next hitbox
+		HSVA[0] += 45;
+		
 		uint32_t BattleUnitPtrUint = reinterpret_cast<uint32_t>(BattleUnitPtr);
 		
 		// Check if the current actor is hanging from the ceiling
@@ -1267,8 +1269,7 @@ void displayArtAttackHitboxes()
 		
 		// Get the position of the current actor
 		float ActorPos[3];
-		ttyd::battle_unit::BtlUnit_GetPos(BattleUnitPtr, 
-			&ActorPos[0], &ActorPos[1], &ActorPos[2]);
+		ttyd::battle_unit::BtlUnit_GetPos(BattleUnitPtr, &ActorPos[0], &ActorPos[1], &ActorPos[2]);
 		
 		// Get the X and Y coordinate starting positions
 		float DrawHitboxPosXStart = (ActorHitboxPosOffsetX * ActorSizeScale) + ActorPos[0];
@@ -1285,8 +1286,8 @@ void displayArtAttackHitboxes()
 		ScreenPoint[2] = ActorPos[2];
 		
 		// Set up 2 sets of points; One for the start of a line and one for the end of a line
-		float ScreenPointOut1[3];
-		float ScreenPointOut2[3];
+		float ScreenPointOutLineStart[3];
+		float ScreenPointOutLineEnd[3];
 		
 		// Draw the 4 lines that show the hitbox
 		for (uint32_t i = 0; i < 4; i++)
@@ -1296,64 +1297,61 @@ void displayArtAttackHitboxes()
 				// Get the top-left corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut1);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
 				
 				// Get the top-right corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut2);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
 			}
 			else if (i == 1)
 			{
 				// Get the top-right corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut1);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
 				
 				// Get the bottom-right corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut2);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
 			}
 			else if (i == 2)
 			{
 				// Get the bottom-right corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut1);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
 				
 				// Get the bottom-left corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut2);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
 			}
 			else // if (i == 3)
 			{
 				// Get the bottom-left corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut1);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
 				
 				// Get the top-left corner of the hitbox
 				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
 				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOut2);
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
 			}
 			
 			// Draw the line from corner 1 to corner 2
 			gc::gx::GXBegin(static_cast<gc::gx::GXPrimitive>(168), gc::gx::GX_VTXFMT0, 2);
 			
-			*WriteGatherPipe = ScreenPointOut1[0];
-			*WriteGatherPipe = ScreenPointOut1[1];
+			*WriteGatherPipe = ScreenPointOutLineStart[0];
+			*WriteGatherPipe = ScreenPointOutLineStart[1];
 			*WriteGatherPipe = 0;
 			
-			*WriteGatherPipe = ScreenPointOut2[0];
-			*WriteGatherPipe = ScreenPointOut2[1];
+			*WriteGatherPipe = ScreenPointOutLineEnd[0];
+			*WriteGatherPipe = ScreenPointOutLineEnd[1];
 			*WriteGatherPipe = 0;
 		}
-		
-		// Adjust the hue for the lines of the next hitbox
-		HSVA[0] += 45;
 	}
 }
 

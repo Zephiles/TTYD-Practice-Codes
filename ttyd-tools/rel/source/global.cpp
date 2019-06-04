@@ -64,7 +64,6 @@ uint8_t CheatsOrder[] =
 	FORCE_ITEM_DROP,
 	CLEAR_AREA_FLAGS,
 	MANAGE_FLAGS,
-	DISABLE_DPAD_OPTIONS_DISPLAY,
 };
 
 const char *CheatsLines[] = 
@@ -86,7 +85,6 @@ const char *CheatsLines[] =
 	"Levitate",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
-	"Disable D-Pad Options Display",
 	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
 	"Force NPC Item Drop",
@@ -547,7 +545,6 @@ const char *CheatsManageFlagsOptions[] =
 const char *CheatsManageGlobalWordsOptions[]
 {
 	"Return",
-	// "Change ", // Remainder of the string is added later
 	"Change Value",
 	"Set New Value",
 };
@@ -555,7 +552,6 @@ const char *CheatsManageGlobalWordsOptions[]
 const char *CheatsManageGlobalFlagsOptions[]
 {
 	"Return",
-	// "Change ", // Remainder of the string is added later
 	"Toggle Value",
 };
 
@@ -1177,6 +1173,7 @@ uint8_t DisplaysOrder[] =
 	PALACE_SKIP,
 	STICK_ANGLE,
 	MARIO_SPEED_XZ,
+	DPAD_OPTIONS_DISPLAY,
 };
 
 const char *DisplaysLines[] = 
@@ -1188,6 +1185,7 @@ const char *DisplaysLines[] =
 	"Jump Storage",
 	"Button Input Display",
 	"Stick Angle",
+	"D-Pad Options Display",
 	"Guard/Superguard Timings",
 	"Art Attack Hitboxes",
 	"Yoshi Skip",
@@ -1332,8 +1330,8 @@ const char ButtonInputDisplay[] =
 #endif
 
 struct Menus Menu[27];
-struct Cheats Cheat[22];
-bool Displays[10];
+struct Cheats Cheat[21];
+bool Displays[11];
 char DisplayBuffer[256];
 char HeapBuffer[1024];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1603,25 +1601,24 @@ void initMenuVars()
 void setSettings()
 {
 	// Set the Cheats bools
-	Cheat[WALK_THROUGH_WALLS].Active 				= false;
-	// Cheat[SAVE_COORDINATES].Active 				= false;
-	// Cheat[LOAD_COORDINATES].Active 				= false;
-	Cheat[SAVE_ANYWHERE].Active 					= false;
-	// Cheat[TEXT_STORAGE].Active 					= false;
-	// Cheat[TIME_STOP_TEXT_STORAGE].Active 		= false;
-	// Cheat[SPEED_UP_MARIO].Active 				= false;
-	// Cheat[DISABLE_BATTLES].Active 				= false;
-	// Cheat[AUTO_ACTION_COMMANDS].Active 			= false;
-	// Cheat[INFINITE_ITEM_USAGE].Active 			= false;
-	// Cheat[RELOAD_ROOM].Active 					= false;
-	// Cheat[LEVITATE].Active 						= false;
-	Cheat[LOCK_MARIO_HP_TO_MAX].Active 				= false;
-	Cheat[RUN_FROM_BATTLES].Active 					= false;
-	Cheat[SPAWN_ITEM].Active 						= false;
-	// Cheat[DISABLE_DPAD_OPTIONS_DISPLAY].Active 	= false;
-	// Cheat[DISABLE_MENU_SOUNDS].Active 			= false;
-	// Cheat[BOBBERY_EARLY].Active 					= false;
-	Cheat[FORCE_ITEM_DROP].Active 					= false;
+	Cheat[WALK_THROUGH_WALLS].Active 			= false;
+	// Cheat[SAVE_COORDINATES].Active 			= false;
+	// Cheat[LOAD_COORDINATES].Active 			= false;
+	Cheat[SAVE_ANYWHERE].Active 				= false;
+	// Cheat[TEXT_STORAGE].Active 				= false;
+	// Cheat[TIME_STOP_TEXT_STORAGE].Active 	= false;
+	// Cheat[SPEED_UP_MARIO].Active 			= false;
+	// Cheat[DISABLE_BATTLES].Active 			= false;
+	// Cheat[AUTO_ACTION_COMMANDS].Active 		= false;
+	// Cheat[INFINITE_ITEM_USAGE].Active 		= false;
+	// Cheat[RELOAD_ROOM].Active 				= false;
+	// Cheat[LEVITATE].Active 					= false;
+	Cheat[LOCK_MARIO_HP_TO_MAX].Active 			= false;
+	Cheat[RUN_FROM_BATTLES].Active 				= false;
+	Cheat[SPAWN_ITEM].Active 					= false;
+	// Cheat[DISABLE_MENU_SOUNDS].Active 		= false;
+	// Cheat[BOBBERY_EARLY].Active 				= false;
+	Cheat[FORCE_ITEM_DROP].Active 				= false;
 	
 	// Set the Cheats button combos
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
@@ -1645,6 +1642,7 @@ void setSettings()
 	// Displays[JUMP_STORAGE] 			= true;
 	// Displays[BUTTON_INPUT_DISPLAY] 	= true;
 	// Displays[STICK_ANGLE] 			= true;
+	// Displays[DPAD_OPTIONS_DISPLAY] 	= true;
 	Displays[GUARD_SUPERGUARD_TIMINGS] 	= true;
 	// Displays[ART_ATTACK_HITBOXES] 	= true;
 	// Displays[YOSHI_SKIP] 			= true;

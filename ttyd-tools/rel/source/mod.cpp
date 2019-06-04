@@ -70,16 +70,16 @@ void Mod::init()
 	});
 	
 	mPFN_SoundEfxPlayEx_trampoline = patch::hookFunction(
-		ttyd::sound::SoundEfxPlayEx, [](int32_t soundId, uint32_t unk1, 
-			uint32_t unk2, uint32_t unk3)
+		ttyd::sound::SoundEfxPlayEx, [](int32_t soundId, 
+			uint32_t unk1, uint32_t unk2, uint32_t unk3)
 	{
 		return gMod->preventMenuSounds(soundId, unk1, unk2, unk3);
 	});
 	
 	mPFN_msgSearch_trampoline = patch::hookFunction(
-		ttyd::msgdrv::msgSearch, [](const char *msgKey)
+		ttyd::msgdrv::msgSearch, [](const char *key)
 	{
-		return gMod->getCustomMessage(msgKey);
+		return gMod->getCustomMessage(key);
 	});
 	
 	mPFN_scissor_timer_main_trampoline = patch::hookFunction(

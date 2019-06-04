@@ -2695,7 +2695,7 @@ void drawAddById(uint32_t currentMenu)
 void drawVersionNumber(int32_t posX, int32_t posY)
 {
 	uint32_t Color = 0xFFFFFFFF;
-	uint8_t Alpha 	= 0xFF;
+	uint8_t Alpha = 0xFF;
 	float Scale = 0.6;
 	
 	drawText(VersionNumber, posX, posY, Alpha, Color, Scale);

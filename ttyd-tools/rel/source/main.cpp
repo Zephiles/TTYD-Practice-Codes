@@ -373,22 +373,21 @@ bool Mod::performPreBattleActions()
 	return mPFN_battle_init_trampoline();
 }
 
-const char *Mod::getCustomMessage(const char *msgKey)
+const char *Mod::getCustomMessage(const char *key)
 {
-	// char *tempMsgKey = const_cast<char *>(msgKey);
 	char *tempNextArea = NextArea;
-	
-	if (compareStrings(msgKey, "stg6_rsh_diary_01"))
+	if (compareStrings(key, "stg6_rsh_diary_01"))
 	{
 		// Change the text asking if you want to read the diary
 		// Only needs to change when not on the train
 		if (!compareStrings(tempNextArea, "rsh"))
 		{
 			const char *message = "<system>\n@ me if you think this mod\nsucks, but <shake><col EC2013FF>don't</col></shake><col DCC8DCFF> mention\nwhy you're @ing me.</col>\n<o>";
+			
 			return message;
 		}
 	}
-	else if (compareStrings(msgKey, "stg6_rsh_diary_01_yn"))
+	else if (compareStrings(key, "stg6_rsh_diary_01_yn"))
 	{
 		// Change the yes/no text answers for the diary
 		// Only needs to change when not on the train
@@ -405,7 +404,7 @@ const char *Mod::getCustomMessage(const char *msgKey)
 	}
 
 	// Call original function
-	return mPFN_msgSearch_trampoline(msgKey);
+	return mPFN_msgSearch_trampoline(key);
 }
 
 uint32_t Mod::pauseArtAttackTimer()
