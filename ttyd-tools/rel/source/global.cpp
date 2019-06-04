@@ -1333,7 +1333,7 @@ struct Menus Menu[27];
 struct Cheats Cheat[21];
 bool Displays[11];
 char DisplayBuffer[256];
-char HeapBuffer[1024];
+char HeapBuffer[512];
 struct MemoryWatchStruct MemoryWatch[60];
 
 struct AutoIncrement AdjustableValueMenu;

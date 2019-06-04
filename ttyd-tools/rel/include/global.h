@@ -637,7 +637,7 @@ extern Menus Menu[27];
 extern Cheats Cheat[21];
 extern bool Displays[11];
 extern char DisplayBuffer[256];
-extern char HeapBuffer[1024];
+extern char HeapBuffer[512];
 extern MemoryWatchStruct MemoryWatch[60];
 
 extern AutoIncrement AdjustableValueMenu;
