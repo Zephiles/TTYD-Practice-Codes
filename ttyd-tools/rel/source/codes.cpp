@@ -1482,23 +1482,25 @@ uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
 	uint32_t eventLZAddresses = *reinterpret_cast<uint32_t *>(
 		reinterpret_cast<uint32_t>(event) + 0x9C);
 	
-	// Loop through the loading zones and get the total amount of them
+	// Copy each loading zone to the array
+	const char **tempEntranceArray = WarpByIndex.EntranceList;
 	uint32_t tempEventAddress = eventLZAddresses;
 	uint32_t LoadingZoneTotal = 0;
 	
-	while (*reinterpret_cast<uint32_t *>(tempEventAddress))
+	bool FoundEndOfArray = false;
+	while (!FoundEndOfArray)
 	{
-		tempEventAddress += 0x3C;
-		LoadingZoneTotal++;
-	}
-	
-	// Copy each loading zone to the array
-	const char **tempEntranceArray = WarpByIndex.EntranceList;
-	for (uint32_t i = 0; i < LoadingZoneTotal; i++)
-	{
-		tempEntranceArray[i] = reinterpret_cast<const char *>(
-			*reinterpret_cast<uint32_t *>(
-				eventLZAddresses + (i * 0x3C)));
+		uint32_t tempAddress = *reinterpret_cast<uint32_t *>(tempEventAddress);
+		if (tempAddress)
+		{
+			tempEntranceArray[LoadingZoneTotal] = reinterpret_cast<const char *>(tempAddress);
+			tempEventAddress += 0x3C;
+			LoadingZoneTotal++;
+		}
+		else
+		{
+			FoundEndOfArray = true;
+		}
 	}
 	
 	// Check to see if warping by index
