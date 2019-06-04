@@ -2925,8 +2925,7 @@ void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description
 	// getButtonsPressed(ButtonArray);
 	
 	char ButtonString[128];
-	clearMemory(ButtonString, sizeof(ButtonString));
-	createButtonStringArray(ButtonString, ButtonArray);
+	createButtonStringArray(ButtonArray, ButtonString, sizeof(ButtonString));
 	
 	posY -= 20;
 	drawText(ButtonString, PosX, posY, Alpha, Color, Scale);
@@ -3000,8 +2999,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	getButtonsPressed(tempButtonArray, NewButtonCombo);
 	
 	char ButtonString[128];
-	clearMemory(ButtonString, sizeof(ButtonString));
-	createButtonStringArray(ButtonString, tempButtonArray);
+	createButtonStringArray(tempButtonArray, ButtonString, sizeof(ButtonString));
 	
 	PosY -= 20;
 	drawText(ButtonString, PosX, PosY, Alpha, Color, Scale);

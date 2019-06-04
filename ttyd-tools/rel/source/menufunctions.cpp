@@ -3094,79 +3094,83 @@ void getButtonsPressed(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
 	}
 }
 
-void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
+void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t stringOutSize)
 {
+	// Make sure the output array has been cleared
+	clearMemory(stringOut, stringOutSize);
+	
+	// Get the text for each button
 	char *tempDisplayBuffer = DisplayBuffer;
-	const char *Button;
+	const char *ButtonText;
 	uint32_t i = 0;
 	
-	while (buttonArray[i] != 0)
+	while (buttonArray[i])
 	{
 		switch (buttonArray[i])
 		{
 			case DPADLEFT:
 			{
-				Button = "D-Pad Left";
+				ButtonText = "D-Pad Left";
 				break;
 			}
 			case DPADRIGHT:
 			{
-				Button = "D-Pad Right";
+				ButtonText = "D-Pad Right";
 				break;
 			}
 			case DPADDOWN:
 			{
-				Button = "D-Pad Down";
+				ButtonText = "D-Pad Down";
 				break;
 			}
 			case DPADUP:
 			{
-				Button = "D-Pad Up";
+				ButtonText = "D-Pad Up";
 				break;
 			}
 			case Z:
 			{
-				Button = "Z";
+				ButtonText = "Z";
 				break;
 			}
 			case R:
 			{
-				Button = "R";
+				ButtonText = "R";
 				break;
 			}
 			case L:
 			{
-				Button = "L";
+				ButtonText = "L";
 				break;
 			}
 			case A:
 			{
-				Button = "A";
+				ButtonText = "A";
 				break;
 			}
 			case B:
 			{
-				Button = "B";
+				ButtonText = "B";
 				break;
 			}
 			case X:
 			{
-				Button = "X";
+				ButtonText = "X";
 				break;
 			}
 			case Y:
 			{
-				Button = "Y";
+				ButtonText = "Y";
 				break;
 			}
 			case START:
 			{
-				Button = "Start";
+				ButtonText = "Start";
 				break;
 			}
 			default:
 			{
-				Button = "";
+				ButtonText = "";
 				break;
 			}
 		}
@@ -3174,15 +3178,26 @@ void createButtonStringArray(char *stringOut, uint8_t *buttonArray)
 		if (i == 0)
 		{
 			// Set the initial button pressed
-			copyString(stringOut, Button);
+			copyString(stringOut, ButtonText);
 		}
 		else
 		{
-			// Add the next button pressed onto the first button pressed
-			sprintf(tempDisplayBuffer,
+			// Add the next button pressed
+			int32_t NewTextSize = sprintf(tempDisplayBuffer,
 				" + %s",
-				Button);
+				ButtonText);
 			
+			// Make sure adding the new text will not result in an overflow
+			uint32_t CurrentTextSize = getStringSize(stringOut);
+			uint32_t TotalTextSize = CurrentTextSize + static_cast<uint32_t>(NewTextSize) + 1;
+			
+			if (TotalTextSize > stringOutSize)
+			{
+				// Adding the new text will result in an overflow, so don't add it
+				return;
+			}
+			
+			// Add the new text
 			strcat(stringOut, tempDisplayBuffer);
 		}
 		
