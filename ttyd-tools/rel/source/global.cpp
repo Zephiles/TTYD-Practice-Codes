@@ -1575,9 +1575,6 @@ void initMenuVars()
 	Menu[WARPS_INDEX].PreviousMenu 						= WARPS;
 	Menu[WARPS_INDEX].Line 								= WarpIndexLines;
 	
-	MenuSettings.WorkArea = *reinterpret_cast<uint32_t **>(
-		*reinterpret_cast<uint32_t *>(WorkAreaAddress) + 0x4);
-	
 	// The CARD functions do not modify the strings, so const_cast<char *> can be used
 	MenuSettings.SettingsFileName = const_cast<char *>("rel_settings");
 	

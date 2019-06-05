@@ -593,7 +593,6 @@ struct DisplayActionCommandTiming
 struct MemoryCardStruct
 {
 	uint8_t ReturnCode;
-	void *WorkArea;
 	char *SettingsFileName;
 	char *SettingsDescription;
 	char *RelFileName;

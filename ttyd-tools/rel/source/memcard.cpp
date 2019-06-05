@@ -28,7 +28,9 @@ int32_t checkForMemoryCard(int32_t channel)
 
 int32_t mountCard(int32_t channel)
 {
-	void *WorkArea = MenuSettings.WorkArea;
+	void *WorkArea = *reinterpret_cast<uint32_t **>(
+		*reinterpret_cast<uint32_t *>(WorkAreaAddress) + 0x4);
+	
 	int32_t ReturnCode = gc::card::CARDMountAsync(channel, WorkArea, nullptr, nullptr);
 	return finishAsyncFunction(ReturnCode);
 }
