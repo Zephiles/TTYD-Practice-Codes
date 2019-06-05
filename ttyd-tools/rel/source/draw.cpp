@@ -1131,6 +1131,10 @@ void drawPartnerStats()
 				break;
 			}
 			case ColorIdWhite:
+			{
+				YoshiColorText = 0xC6E1ECFF;
+				break;
+			}
 			default:
 			{
 				YoshiColorText = 0xFFFFFFFF;
