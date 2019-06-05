@@ -515,9 +515,12 @@ void checkHeaps()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Check the standard heaps
-	for (int32_t i = 0; i < 5; i++)
+	int32_t TotalHeaps = gc::os::OSAlloc_NumHeaps;
+	gc::os::HeapInfo *HeapArray = gc::os::OSAlloc_HeapArray;
+	
+	for (int32_t i = 0; i < TotalHeaps; i++)
 	{
-		const gc::os::HeapInfo &heap = gc::os::OSAlloc_HeapArray[i];
+		const gc::os::HeapInfo &heap = HeapArray[i];
 		bool valid = true;
 		
 		gc::os::ChunkInfo *currentChunk = nullptr;
