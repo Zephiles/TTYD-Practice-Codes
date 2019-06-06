@@ -5,7 +5,6 @@
 #include "patch.h"
 #include "menufunctions.h"
 #include "global.h"
-#include "maps.h"
 
 #include <gc/gx.h>
 #include <ttyd/item_data.h>
@@ -616,7 +615,7 @@ void bobberyEarly()
 	// Turn off GSWF(3137)
 	ttyd::swdrv::swClear(3137);
 	
-	if (compareStringToNextMap(reinterpret_cast<const char *>(muj_05)))
+	if (compareStringToNextMap("muj_05"))
 	{
 		const uint32_t NPCSlot6 = 5;
 		uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot6));
@@ -1374,42 +1373,42 @@ int32_t warpToMap(uint32_t value)
 		return NOT_IN_GAME;
 	}
 	
-	uint32_t WarpToMap;
+	const char *WarpToMap;
 	switch (value)
 	{
-		case 0: WarpToMap = gor_01; break;
-		case 1: WarpToMap = tik_00; break;
-		case 2: WarpToMap = hei_00; break;
-		case 3: WarpToMap = gon_00; break;
-		case 4: WarpToMap = win_06; break;
-		case 5: WarpToMap = mri_01; break;
-		case 6: WarpToMap = tou_02; break;
-		case 7: WarpToMap = tou_05; break;
-		case 8: WarpToMap = usu_00; break;
-		case 9: WarpToMap = jin_00; break;
-		case 10: WarpToMap = muj_01; break;
-		case 11: WarpToMap = dou_00; break;
-		case 12: WarpToMap = rsh_02_a; break;
-		case 13: WarpToMap = eki_00; break;
-		case 14: WarpToMap = pik_00; break;
-		case 15: WarpToMap = bom_00; break;
-		case 16: WarpToMap = moo_00; break;
-		case 17: WarpToMap = aji_00; break;
-		case 18: WarpToMap = aji_13; break;
-		case 19: WarpToMap = las_00; break;
-		case 20: WarpToMap = las_09; break;
-		case 21: WarpToMap = las_27; break;
+		case 0: WarpToMap = "gor_01"; break;
+		case 1: WarpToMap = "tik_00"; break;
+		case 2: WarpToMap = "hei_00"; break;
+		case 3: WarpToMap = "gon_00"; break;
+		case 4: WarpToMap = "win_06"; break;
+		case 5: WarpToMap = "mri_01"; break;
+		case 6: WarpToMap = "tou_02"; break;
+		case 7: WarpToMap = "tou_05"; break;
+		case 8: WarpToMap = "usu_00"; break;
+		case 9: WarpToMap = "jin_00"; break;
+		case 10: WarpToMap = "muj_01"; break;
+		case 11: WarpToMap = "dou_00"; break;
+		case 12: WarpToMap = "rsh_02_a"; break;
+		case 13: WarpToMap = "eki_00"; break;
+		case 14: WarpToMap = "pik_00"; break;
+		case 15: WarpToMap = "bom_00"; break;
+		case 16: WarpToMap = "moo_00"; break;
+		case 17: WarpToMap = "aji_00"; break;
+		case 18: WarpToMap = "aji_13"; break;
+		case 19: WarpToMap = "las_00"; break;
+		case 20: WarpToMap = "las_09"; break;
+		case 21: WarpToMap = "las_27"; break;
 		case 22:
 		{
 			setNextBero("minnnanokoe");
 			setSequencePosition(400);
-			WarpToMap = las_29;
+			WarpToMap = "las_29";
 			break;
 		}
 		case 23:
 		{
 			uint32_t NewPitFloor = getCurrentPitFloor();
-			uint32_t NewPitMap;
+			const char *NewPitMap;
 
 			// Get proper room to use for chosen floor
 			if (NewPitFloor % 10 == 0)
@@ -1417,34 +1416,34 @@ int32_t warpToMap(uint32_t value)
 				// Current floor is a chest floor or Bonetail
 				if (NewPitFloor <= 40)
 				{
-					NewPitMap = jon_03;
+					NewPitMap = "jon_03";
 				}
 				else if (NewPitFloor <= 70)
 				{
-					NewPitMap = jon_04;
+					NewPitMap = "jon_04";
 				}
 				else if (NewPitFloor <= 90)
 				{
-					NewPitMap = jon_05;
+					NewPitMap = "jon_05";
 				}
 				else // NewPitFloor == 100
 				{
-					NewPitMap = jon_06;
+					NewPitMap = "jon_06";
 				}
 			}
 			else // Current floor is not a chest floor nor Bonetail
 			{
 				if (NewPitFloor < 50)
 				{
-					NewPitMap = jon_00;
+					NewPitMap = "jon_00";
 				}
 				else if (NewPitFloor < 80)
 				{
-					NewPitMap = jon_01;
+					NewPitMap = "jon_01";
 				}
 				else // NewPitMap < 100
 				{
-					NewPitMap = jon_02;
+					NewPitMap = "jon_02";
 				}
 			}
 			
@@ -1454,7 +1453,7 @@ int32_t warpToMap(uint32_t value)
 		}
 		case 24:
 		{
-			WarpToMap = reinterpret_cast<uint32_t>("title");
+			WarpToMap = "title";
 			break;
 		}
 		default: 
@@ -1463,8 +1462,7 @@ int32_t warpToMap(uint32_t value)
 		}
 	}
 	
-	char *WantedMap = reinterpret_cast<char *>(WarpToMap);
-	setNextMap(WantedMap);
+	setNextMap(WarpToMap);
 	reloadRoomMain();
 	
 	return SUCCESS;
