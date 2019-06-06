@@ -1,7 +1,6 @@
 #include "mod.h"
 #include "draw.h"
 #include "global.h"
-#include "items.h"
 #include "menufunctions.h"
 #include "commonfunctions.h"
 #include "codes.h"
@@ -10,12 +9,15 @@
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/icondrv.h>
+#include <ttyd/item_data.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/evt_yuugijou.h>
 #include <ttyd/system.h>
 #include <ttyd/event.h>
-#include <ttyd/swdrv.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/mario.h>
+#include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
 
 #include <cstdio>
@@ -82,74 +84,74 @@ int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
 
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 {
-	ItemData *item_db = ItemDataTable;
-	int16_t iconNum;
-	
 	#ifdef TTYD_JP
-	const int16_t diamondStarIconValue 		= 407;
-	const int16_t emeraldStarIconValue 		= 408;
-	const int16_t garnetStarIconValue 		= 409;
-	const int16_t goldStarIconValue 		= 410;
-	const int16_t crystalStarIconValue 		= 411;
-	const int16_t rubyStarIconValue 		= 412;
-	const int16_t sapphireStarIconValue 	= 413;
+	const int16_t DiamondStarIconValue 		= 407;
+	const int16_t EmeraldStarIconValue 		= 408;
+	const int16_t GarnetStarIconValue 		= 409;
+	const int16_t GoldStarIconValue 		= 410;
+	const int16_t CrystalStarIconValue 		= 411;
+	const int16_t RubyStarIconValue 		= 412;
+	const int16_t SapphireStarIconValue 	= 413;
 	#else
-	const int16_t diamondStarIconValue 		= 415;
-	const int16_t emeraldStarIconValue 		= 416;
-	const int16_t garnetStarIconValue 		= 417;
-	const int16_t goldStarIconValue 		= 418;
-	const int16_t crystalStarIconValue 		= 419;
-	const int16_t rubyStarIconValue 		= 420;
-	const int16_t sapphireStarIconValue 	= 421;
+	const int16_t DiamondStarIconValue 		= 415;
+	const int16_t EmeraldStarIconValue 		= 416;
+	const int16_t GarnetStarIconValue 		= 417;
+	const int16_t GoldStarIconValue 		= 418;
+	const int16_t CrystalStarIconValue 		= 419;
+	const int16_t RubyStarIconValue 		= 420;
+	const int16_t SapphireStarIconValue 	= 421;
 	#endif
+	
+	ttyd::item_data::ItemData *ItemDb = ttyd::item_data::itemDataTable;
+	int16_t iconNum;
 	
 	// Get different icons for the crystal stars
 	switch (itemNum)
 	{
-		case WeddingRing:
+		case ttyd::item_data::Item::WeddingRing:
 		{
 			// Use the larger icon; the smaller one is used by default
-			iconNum = item_db[itemNum].icon_id - 1;
+			iconNum = ItemDb[itemNum].iconId - 1;
 			break;
 		}
-		case DiamondStar:
+		case ttyd::item_data::Item::DiamondStar:
 		{
-			iconNum = diamondStarIconValue;
+			iconNum = DiamondStarIconValue;
 			break;
 		}
-		case EmeraldStar:
+		case ttyd::item_data::Item::EmeraldStar:
 		{
-			iconNum = emeraldStarIconValue;
+			iconNum = EmeraldStarIconValue;
 			break;
 		}
-		case GoldStar:
+		case ttyd::item_data::Item::GoldStar:
 		{
-			iconNum = goldStarIconValue;
+			iconNum = GoldStarIconValue;
 			break;
 		}
-		case RubyStar:
+		case ttyd::item_data::Item::RubyStar:
 		{
-			iconNum = rubyStarIconValue;
+			iconNum = RubyStarIconValue;
 			break;
 		}
-		case SapphireStar:
+		case ttyd::item_data::Item::SapphireStar:
 		{
-			iconNum = sapphireStarIconValue;
+			iconNum = SapphireStarIconValue;
 			break;
 		}
-		case GarnetStar:
+		case ttyd::item_data::Item::GarnetStar:
 		{
-			iconNum = garnetStarIconValue;
+			iconNum = GarnetStarIconValue;
 			break;
 		}
-		case CrystalStar:
+		case ttyd::item_data::Item::CrystalStar:
 		{
-			iconNum = crystalStarIconValue;
+			iconNum = CrystalStarIconValue;
 			break;
 		}
 		default:
 		{
-			iconNum = item_db[itemNum].icon_id;
+			iconNum = ItemDb[itemNum].iconId;
 			break;
 		}
 	}
@@ -544,13 +546,13 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
 			// Reached the end of the array, so exit
 			return;
 		}
-		else if ((CurrentItem >= PaperModeCurse) && 
-			(CurrentItem <= UltraHammer))
+		else if ((CurrentItem >= ttyd::item_data::Item::PaperModeCurse) && 
+			(CurrentItem <= ttyd::item_data::Item::UltraHammer))
 		{
 			// Decrease the size of these icons
 			tempScale = 0.5;
 		}
-		else if (CurrentItem == MagicalMapBigger)
+		else if (CurrentItem == ttyd::item_data::Item::MagicalMapBigger)
 		{
 			// Decrease the size of the bigger magical map
 			tempScale = 0.4;
@@ -691,11 +693,11 @@ void drawMarioSpecialMovesOptions()
 		if (i == 0)
 		{
 			// Set the icon for Sweet Treat
-			SpecialMoveIcon = MagicalMap;
+			SpecialMoveIcon = ttyd::item_data::Item::MagicalMap;
 		}
 		else
 		{
-			SpecialMoveIcon = (DiamondStar + i) - 1;
+			SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
 		}
 		
 		drawIconFromItem(IconPosition, SpecialMoveIcon, Scale);
@@ -812,7 +814,7 @@ void drawMarioStats()
 		Counter++;
 	}
 	
-	uint32_t PiantaParlorPtr = *reinterpret_cast<uint32_t *>(PiantaParlorAddressesStart);
+	uint32_t PiantaParlorPtr = reinterpret_cast<uint32_t>(ttyd::evt_yuugijou::yuugijouWorkPointer);
 	MarioStatsArray[14] = *reinterpret_cast<int32_t *>(PiantaParlorPtr + 0x4); // Piantas Stored
 	MarioStatsArray[15] = *reinterpret_cast<int32_t *>(PiantaParlorPtr + 0x8); // Current Piantas
 	
@@ -932,11 +934,11 @@ void drawMarioStats()
 			if (i == 0)
 			{
 				// Set the icon for Sweet Treat
-				SpecialMoveIcon = MagicalMap;
+				SpecialMoveIcon = ttyd::item_data::Item::MagicalMap;
 			}
 			else
 			{
-				SpecialMoveIcon = (DiamondStar + i) - 1;
+				SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
 			}
 			
 			drawIconFromItem(IconPosition, SpecialMoveIcon, SpecialMovesScale);
@@ -2293,13 +2295,13 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		
 		float IconScale = 0.6;
 		
-		if ((tempMenuSecondaryValue >= PaperModeCurse) && 
-			(tempMenuSecondaryValue <= UltraHammer))
+		if ((tempMenuSecondaryValue >= ttyd::item_data::Item::PaperModeCurse) && 
+			(tempMenuSecondaryValue <= ttyd::item_data::Item::UltraHammer))
 		{
 			// Decrease the size of these icons
 			IconScale = 0.5;
 		}
-		else if (tempMenuSecondaryValue == MagicalMapBigger)
+		else if (tempMenuSecondaryValue == ttyd::item_data::Item::MagicalMapBigger)
 		{
 			// Decrease the size of the bigger magical map
 			IconScale = 0.4;
@@ -2636,12 +2638,13 @@ void drawAddByIconMain(uint32_t currentMenu)
 	uint32_t Counter = 0;
 	for (int32_t i = LowerBound; i <= UpperBound; i++)
 	{
-		if ((i >= PaperModeCurse) && (i <= UltraHammer))
+		if ((i >= ttyd::item_data::Item::PaperModeCurse) && 
+			(i <= ttyd::item_data::Item::UltraHammer))
 		{
 			// Decrease the size of these icons
 			Scale = 0.5;
 		}
-		else if (i == MagicalMapBigger)
+		else if (i == ttyd::item_data::Item::MagicalMapBigger)
 		{
 			// Decrease the size of the bigger magical map
 			Scale = 0.4;
@@ -2972,8 +2975,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	
 	// Draw the timer
 	// Get the proper FPS for the timer
-	uint32_t FPS = *reinterpret_cast<uint32_t *>(
-		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x4);
+	uint32_t FPS = getCurrentFPS();
 	
 	uint32_t tempTimer = Timer;
 	uint32_t second = (tempTimer / FPS) % 60;
@@ -3323,8 +3325,8 @@ void drawWarpIndexMapAndEntrance()
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
 		"%s\n%s\n\n%s\n%" PRIu32,
-		NextMap,
-		NextBero,
+		ttyd::seq_mapchange::NextMap,
+		ttyd::seq_mapchange::NextBero,
 		MapName,
 		EntranceId);
 	
@@ -3362,8 +3364,8 @@ void drawWarpIndexEntranceList()
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
 		"%s\n%s",
-		NextMap,
-		NextBero);
+		ttyd::seq_mapchange::NextMap,
+		ttyd::seq_mapchange::NextBero);
 	
 	drawText(tempDisplayBuffer, PosX + 170, PosY, Alpha, Color, Scale);
 	
@@ -3453,8 +3455,7 @@ void drawSequenceInPauseMenu()
 void drawOnScreenTimer()
 {
 	// Get the proper FPS for the timer
-	uint32_t FPS = *reinterpret_cast<uint32_t *>(
-		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x4);
+	uint32_t FPS = getCurrentFPS();
 	
 	uint32_t tempTimer = OnScreenTimer.MainTimer;
 	uint32_t hour = tempTimer / 3600 / FPS;
@@ -3748,24 +3749,23 @@ void drawPalaceSkipDetails()
 	}
 	
 	// Get Phantom Ember Y coordinate
-	uint32_t NPCAddresses = *reinterpret_cast<uint32_t *>(NPCAddressesStart);
-	uint32_t tempNPCAddresses = NPCAddresses + 0x340; // NPC 2
-	float PhantomEmberPosY;
+	const uint32_t NPCSlot2 = 1;
+	uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot2)); // NPC 2
 	
 	// Check if NPC 2 is active, followed by NPC 1, and then default to 0 if neither is active
 	bool FoundPhantomEmber = false;
+	float PhantomEmberPosY;
+	
 	for (int32_t i = 0; i < 2; i++)
 	{
-		uint32_t NPCActive = *reinterpret_cast<uint32_t *>(tempNPCAddresses);
+		uint32_t NPCActive = *reinterpret_cast<uint32_t *>(NPCAddress);
 		if (NPCActive &= (1 << 0)) // Check if 0 bit is active
 		{
-			PhantomEmberPosY = *reinterpret_cast<float *>(
-				tempNPCAddresses + 0x90);
-			
+			PhantomEmberPosY = *reinterpret_cast<float *>(NPCAddress + 0x90);
 			FoundPhantomEmber = true;
 			break;
 		}
-		tempNPCAddresses -= 0x340;
+		NPCAddress -= 0x340;
 	}
 	
 	if (!FoundPhantomEmber)
@@ -3775,7 +3775,7 @@ void drawPalaceSkipDetails()
 	}
 	
 	// Get Field Item Timer
-	uint32_t FieldItemsAddress = *reinterpret_cast<uint32_t *>(FieldItemsAddressesStart);
+	uint32_t FieldItemsAddress = reinterpret_cast<uint32_t>(ttyd::itemdrv::itemDrvWork.wItemsInField);
 	bool FoundItem = false;
 	int32_t ItemTimer;
 	
@@ -3887,7 +3887,7 @@ void drawActionCommandsTiming()
 		return;
 	}
 	
-	// const int8_t CommandDifficulty = ttyd::battle_ac::BattleActionCommandGetDifficulty(getBattlePointer());
+	// const int8_t CommandDifficulty = ttyd::battle_ac::BattleActionCommandGetDifficulty(getBattleWorkPointer());
 	#ifdef TTYD_US
 	uint32_t SimplifierOffset 		= 0x305;
 	uint32_t UnsimplifierOffset 	= 0x306;
@@ -3936,13 +3936,13 @@ void drawActionCommandsTiming()
 			
 			if (temp_Last_A_Frame > -1)
 			{
-				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
+				CurrentDifficultyFrames = ttyd::battle_ac::GuardFrames[CommandDifficulty];
 				FramePressed = CurrentDifficultyFrames - temp_Last_A_Frame;
 				Button = 'A';
 			}
 			else
 			{
-				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				CurrentDifficultyFrames = ttyd::battle_ac::SuperguardFrames[CommandDifficulty];
 				FramePressed = CurrentDifficultyFrames - temp_Last_B_Frame;
 				Button = 'B';
 			}
@@ -3969,13 +3969,13 @@ void drawActionCommandsTiming()
 			
 			if (temp_Last_A_Frame > -1)
 			{
-				CurrentDifficultyFrames = GuardFrames[CommandDifficulty];
+				CurrentDifficultyFrames = ttyd::battle_ac::GuardFrames[CommandDifficulty];
 				FramesEarly = temp_Last_A_Frame - CurrentDifficultyFrames + 1;
 				Button = 'A';
 			}
 			else
 			{
-				CurrentDifficultyFrames = SuperguardFrames[CommandDifficulty];
+				CurrentDifficultyFrames = ttyd::battle_ac::SuperguardFrames[CommandDifficulty];
 				FramesEarly = temp_Last_B_Frame - CurrentDifficultyFrames + 1;
 				Button = 'B';
 			}

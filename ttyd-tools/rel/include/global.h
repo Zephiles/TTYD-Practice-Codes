@@ -438,27 +438,6 @@ enum CUSTOM_BUTTON_IDS
 	START,
 };
 
-struct ItemData
-{
-	const char*		item_string_id;	// Used for recipe lookups, etc.
-	const char*		item_name_msg;
-	const char*		item_desc_msg;
-	const char*		item_desc_menu_msg;
-	uint16_t 		_unk_0x10;
-	int16_t			type_sort_order; // For "By Type" ordering
-	int16_t			buy_price;
-	int16_t			discount_price;
-	int16_t			star_piece_price;
-	int16_t 		sell_price;
-	int8_t 			bp_cost;
-	int8_t 			hp_restored;
-	int8_t 			fp_restored;
-	uint8_t 		_unk_0x1f;
-	int16_t 		icon_id;
-	uint16_t 		_unk_0x22;
-	void* 			attack_params;
-} __attribute__((__packed__));
-
 struct Menus
 {
 	uint8_t TotalMenuOptions;
@@ -720,29 +699,6 @@ extern uint8_t MenuSelectionStates;
 extern int32_t MenuSecondaryValue;
 extern uint32_t MemoryWatchSecondaryValue;
 extern uint8_t FrameCounter;
-
-extern uint32_t r13;
-extern char *NextBero;
-extern char *NextMap;
-extern char *NextArea;
-extern ItemData *ItemDataTable;
-extern uint8_t *GuardFrames;
-extern uint8_t *SuperguardFrames;
-extern uint32_t PauseMenuStartAddress;
-extern uint32_t wp_fadedrv_Address;
-extern uint32_t _mapEntAddress;
-extern uint32_t NPCAddressesStart;
-extern uint32_t BattleAddressesStart;
-extern uint32_t PiantaParlorAddressesStart;
-extern uint32_t seqMainAddress;
-extern uint32_t WorkAreaAddress;
-extern uint32_t SmartWorkAddress;
-extern uint32_t FieldItemsAddressesStart;
-extern uint32_t unkMapDataPtr;
-
-extern uint32_t GlobalWorkPointer;
-extern uint32_t titleMainAddress;
-extern uint32_t ConsoleBusSpeedAddress;
 
 extern bool ResetMarioProperties;
 extern int16_t ForcedNPCItemDrop;

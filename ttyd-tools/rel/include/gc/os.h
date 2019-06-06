@@ -20,8 +20,8 @@ struct HeapInfo
 
 extern "C" {
 
-extern HeapInfo *OSAlloc_HeapArray;
-extern int32_t OSAlloc_NumHeaps;
+extern HeapInfo *HeapArray;
+extern int32_t NumHeaps;
 
 }
 

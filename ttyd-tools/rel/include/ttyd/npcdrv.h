@@ -78,7 +78,7 @@ void *fbatGetPointer();
 // mtx_setup
 // npcRecoveryFiledNpc
 // npcReleaseFiledNpc
-// npcGetWorkPtr
+void *npcGetWorkPtr();
 
 }
 

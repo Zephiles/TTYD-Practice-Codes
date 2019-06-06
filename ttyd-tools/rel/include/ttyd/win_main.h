@@ -37,7 +37,7 @@ void winOpenEnable();
 // winCheck
 // winReInit
 // winInit
-// winGetPtr
+void *winGetPtr();
 
 }
 

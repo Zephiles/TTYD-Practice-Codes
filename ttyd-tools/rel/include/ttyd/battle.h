@@ -6,6 +6,8 @@ namespace ttyd::battle {
 
 extern "C" {
 
+extern void *battleWorkPointer;
+
 // BattleConsumeReserveItem
 // BattleStatusWindowCheck
 // BattleStatusWindowSystemOff
@@ -34,13 +36,13 @@ void _EquipItem(void *battleUnitPtr, uint32_t unkBits, int16_t item);
 // BattleTransPartyId
 // BattleChangeParty
 // BattlePartyAnimeLoad
-void *BattleGetPartnerPtr(void *battlePointer, void *battleMarioPointer);
+void *BattleGetPartnerPtr(void *battleWorkPtr, void *battleMarioPointer);
 // BattleGetPartyPtr
-void *BattleGetMarioPtr(void *battlePointer);
+void *BattleGetMarioPtr(void *battleWorkPtr);
 // BattleGetSystemPtr
 // BattleGetUnitPartsPtr
 // BattleSetUnitPtr
-void *BattleGetUnitPtr(void *battlePointer, uint32_t slot);
+void *BattleGetUnitPtr(void *battleWorkPtr, uint32_t slot);
 // BattleFree
 // BattleAlloc
 // BattleIncSeq

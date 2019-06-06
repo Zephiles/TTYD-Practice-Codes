@@ -4,7 +4,18 @@
 
 namespace ttyd::itemdrv {
 
+struct ItemDrvWork
+{
+	uint32_t entries;
+	void *wItemsInField;
+	uint8_t unk_8[48];
+} __attribute__((__packed__));
+
+static_assert(sizeof(ItemDrvWork) == 0x38);
+
 extern "C" {
+
+extern ItemDrvWork itemDrvWork;
 
 // itemPickUp
 // itemStatus

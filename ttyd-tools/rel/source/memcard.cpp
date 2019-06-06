@@ -3,6 +3,7 @@
 #include "commonfunctions.h"
 
 #include <gc/card.h>
+#include <ttyd/cardmgr.h>
 
 #include <cstdio>
 
@@ -29,7 +30,7 @@ int32_t checkForMemoryCard(int32_t channel)
 int32_t mountCard(int32_t channel)
 {
 	void *WorkArea = *reinterpret_cast<uint32_t **>(
-		*reinterpret_cast<uint32_t *>(WorkAreaAddress) + 0x4);
+		reinterpret_cast<uint32_t>(ttyd::cardmgr::cardMgrWorkPointer) + 0x4);
 	
 	int32_t ReturnCode = gc::card::CARDMountAsync(channel, WorkArea, nullptr, nullptr);
 	return finishAsyncFunction(ReturnCode);

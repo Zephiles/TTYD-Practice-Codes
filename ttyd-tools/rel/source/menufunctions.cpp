@@ -3,20 +3,22 @@
 #include "commonfunctions.h"
 #include "memorywatch.h"
 #include "codes.h"
-#include "items.h"
 
 #include <ttyd/win_main.h>
 #include <ttyd/win_item.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/item_data.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/party.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/mario.h>
 #include <ttyd/swdrv.h>
+#include <ttyd/evt_yuugijou.h>
 #include <ttyd/battle.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/system.h>
+#include <ttyd/mapdata.h>
 
 #include <cstdio>
 #include <cstring>
@@ -104,8 +106,7 @@ void resetImportantItemsPauseMenu()
 		return;
 	}
 	
-	void *PauseMenuPointer = reinterpret_cast<void *>(
-		*reinterpret_cast<uint32_t *>(PauseMenuStartAddress));
+	void *PauseMenuPointer = ttyd::win_main::winGetPtr();
 	
 	// Get the current submenu that is open in the items menu
 	uint32_t ImportantItemsSubMenu = *reinterpret_cast<uint32_t *>(
@@ -132,7 +133,8 @@ void recheckUpgradesBattles(int32_t item)
 	}
 	
 	// Only run if the current item is a boot or hammer upgrade
-	if ((item >= Boots) && (item <= UltraHammer))
+	if ((item >= ttyd::item_data::Item::Boots) && 
+		(item <= ttyd::item_data::Item::UltraHammer))
 	{
 		// Call the functions for checking which upgrades the player has
 		recheckJumpAndHammerLevels();
@@ -209,8 +211,8 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 
 const char *getItemName(int16_t item)
 {
-	ItemData *item_db = ItemDataTable;
-	return ttyd::msgdrv::msgSearch(item_db[item].item_name_msg);
+	ttyd::item_data::ItemData *ItemDb = ttyd::item_data::itemDataTable;
+	return ttyd::msgdrv::msgSearch(ItemDb[item].itemNameMsg);
 }
 
 void *getFreeSlotPointer()
@@ -297,20 +299,20 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		case INVENTORY_STANDARD:
 		case INVENTORY_STORED_ITEMS:
 		{
-			LowerBound = GoldBar;
-			UpperBound = FreshJuice;
+			LowerBound = ttyd::item_data::Item::GoldBar;
+			UpperBound = ttyd::item_data::Item::FreshJuice;
 			break;
 		}
 		case INVENTORY_IMPORTANT:
 		{
-			LowerBound = StrangeSack;
-			UpperBound = CrystalStar;
+			LowerBound = ttyd::item_data::Item::StrangeSack;
+			UpperBound = ttyd::item_data::Item::CrystalStar;
 			break;
 		}
 		case INVENTORY_BADGES:
 		{
-			LowerBound = PowerJump;
-			UpperBound = SuperChargeP;
+			LowerBound = ttyd::item_data::Item::PowerJump;
+			UpperBound = ttyd::item_data::Item::SuperChargeP;
 			break;
 		}
 		case CHEATS_CHANGE_SEQUENCE:
@@ -321,8 +323,8 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		}
 		case CHEATS_NPC_FORCE_DROP:
 		{
-			LowerBound = GoldBar;
-			UpperBound = SuperChargeP;
+			LowerBound = ttyd::item_data::Item::GoldBar;
+			UpperBound = ttyd::item_data::Item::SuperChargeP;
 			break;
 		}
 		case CHEATS_MANAGE_FLAGS_MAIN:
@@ -558,8 +560,8 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 				}
 				case CHANGE_HELD_ITEM:
 				{
-					LowerBound = ThunderBolt;
-					UpperBound = SuperChargeP;
+					LowerBound = ttyd::item_data::Item::ThunderBolt;
+					UpperBound = ttyd::item_data::Item::SuperChargeP;
 					break;
 				}
 				default:
@@ -626,8 +628,8 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		}
 		case SPAWN_ITEM_MENU_VALUE:
 		{
-			LowerBound = StrangeSack;
-			UpperBound = SuperChargeP;
+			LowerBound = ttyd::item_data::Item::StrangeSack;
+			UpperBound = ttyd::item_data::Item::SuperChargeP;
 			break;
 		}
 		default:
@@ -1950,16 +1952,16 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 	{
 		case CHEATS_NPC_FORCE_DROP:
 		{
-			if ((tempMenuSecondaryValue > FreshJuice) && 
-				(tempMenuSecondaryValue < PowerJump))
+			if ((tempMenuSecondaryValue > ttyd::item_data::Item::FreshJuice) && 
+				(tempMenuSecondaryValue < ttyd::item_data::Item::PowerJump))
 			{
 				if (valueChangedBy > 0)
 				{
-					MenuSecondaryValue = PowerJump;
+					MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
 				}
 				else
 				{
-					MenuSecondaryValue = FreshJuice;
+					MenuSecondaryValue = ttyd::item_data::Item::FreshJuice;
 				}
 				return;
 			}
@@ -1969,7 +1971,7 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 		{
 			if (SelectedOption == CHANGE_HELD_ITEM)
 			{
-				if (tempMenuSecondaryValue == TradeOff)
+				if (tempMenuSecondaryValue == ttyd::item_data::Item::TradeOff)
 				{
 					if (valueChangedBy > 0)
 					{
@@ -1981,16 +1983,16 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 					}
 					return;
 				}
-				else if ((tempMenuSecondaryValue > Cake) && 
-					(tempMenuSecondaryValue < PowerJump))
+				else if ((tempMenuSecondaryValue > ttyd::item_data::Item::Cake) && 
+					(tempMenuSecondaryValue < ttyd::item_data::Item::PowerJump))
 				{
 					if (valueChangedBy > 0)
 					{
-						MenuSecondaryValue = PowerJump;
+						MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
 					}
 					else
 					{
-						MenuSecondaryValue = Cake;
+						MenuSecondaryValue = ttyd::item_data::Item::Cake;
 					}
 					return;
 				}
@@ -2134,7 +2136,7 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 	if ((currentMenuOption >= PIANTAS_STORED) && 
 		(currentMenuOption <= CURRENT_PIANTAS))
 	{
-		uint32_t PiantaParlorPtr = *reinterpret_cast<uint32_t *>(PiantaParlorAddressesStart);
+		uint32_t PiantaParlorPtr = reinterpret_cast<uint32_t>(ttyd::evt_yuugijou::yuugijouWorkPointer);
 		*reinterpret_cast<int32_t *>(PiantaParlorPtr + offset) = tempMenuSecondaryValue;
 	}
 	else
@@ -2364,7 +2366,7 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 			*reinterpret_cast<int32_t *>(ActorAddress + HeldItemOffset) = tempMenuSecondaryValue;
 			
 			// If the new item is a badge, then unequip all current badges and equip the new badge
-			if (tempMenuSecondaryValue < PowerJump)
+			if (tempMenuSecondaryValue < ttyd::item_data::Item::PowerJump)
 			{
 				break;
 			}
@@ -2982,11 +2984,12 @@ const char *getMapFromIndex(int32_t index)
 			}
 		}
 		
+		uint32_t WorldDataPointer = reinterpret_cast<uint32_t>(ttyd::mapdata::worldData.unk_18);
+		
 		return reinterpret_cast<const char *>(
 			*reinterpret_cast<uint32_t *>(
 				*reinterpret_cast<uint32_t *>(
-					*reinterpret_cast<uint32_t *>(
-						unkMapDataPtr) + 0x10) + Counter + (NewIndex * 0x8)));
+					WorldDataPointer + 0x10) + Counter + (NewIndex * 0x8)));
 	}
 }
 

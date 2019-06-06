@@ -62,6 +62,34 @@
 // unused:__assert
 80007388:getMarioStDvdRoot
 
+// seq_mapchange.o
+// text
+// 80007574:_relUnLoad
+// 800075E0:_load
+// 80007AB4:_unload
+// 80007C2C:seq_mapChangeMain
+// 80008724:seq_mapChangeExit
+// 8000874C:seq_mapChangeInit
+// data
+8041E5A8:NextBero
+8041E5C8:NextMap
+8041E5E8:NextArea
+
+// seq_title.o
+// text
+// 80008888:pressStartGX
+// 80008D30:disp2
+// 80009098:disp1
+// 80009224:titleMain
+// 80009AE8:titleInit
+// 80009CCC:getDebugMode
+// 80009CD8:seq_titleMain
+// 80009CF8:seq_titleExit
+// 80009D30:seq_titleInit
+// 80009D90:DbgBtlSel_GetMsgDataPtr
+// data
+80414FA0:seqTitleWorkPointer2
+
 // camdrv.o
 // 8000E388:camLetterBox
 // 8000E564:camLetterBoxDraw
@@ -100,6 +128,7 @@
 80010C70:dispInit
 
 // fadedrv.o
+// text
 // 80010CD4:fadeSetNarrowFast
 // 80010CE8:fadeGetTpl
 // 80010CF4:fadeReset
@@ -127,6 +156,8 @@
 // 80013AA4:fadeTexSetup
 // 80013B90:fadeInit
 // 80013CA4:_callback
+// data
+8041E620:fadeDrvWorkPointer
 
 // icondrv.o
 // 80018E9C:iconNumberDispGx3D
@@ -156,7 +187,111 @@
 // 8001B810:_callback_bin
 // 8001B83C:_callback_tpl
 
+// mapdrv.o
+// 8001C450:mapObjGetFlushColor
+// 8001C584:mapGrpSetFlushColor
+// 8001C5E0:mapObjSetFlushColor
+// 8001C7A4:mapGrpFlushOff
+// 8001C7C8:mapGrpFlushOn
+// 8001C7EC:mapObjFlushOff
+// 8001C8FC:mapObjFlushOn
+// 8001CA0C:mapSetTevCallback
+// 8001CA2C:mapTestXLU
+// 8001CAD4:spline_getvalue
+// 8001CC4C:spline_maketable
+// 8001D2B4:mapSetProjMtx
+// 8001D2D8:mapSetProjTexObj
+// 8001D320:mapGrpSetColor
+// 8001D3DC:setColor
+// 8001D830:mapObjSetColor
+// 8001D8F4:mapBlendOff2
+// 8001D914:mapBlendOff
+// 8001D934:mapGetBlend2
+// 8001D968:mapGetBlend
+// 8001D99C:mapSetBlend2
+// 8001D9C4:mapSetBlend
+// 8001D9EC:mapFogOff
+// 8001DA0C:mapFogOn
+// 8001DA2C:mapGetFog
+// 8001DA60:mapSetFog
+// 8001DA88:mapObjGetPos
+// 8001DBC8:mapObjGetPosSub
+// 8001E134:mapObjScale
+// 8001E254:mapObjTranslate
+// 8001E390:mapObjRotate
+// 8001E510:mapGrpClearOffScreen
+// 8001E5C4:mapObjClearOffScreen
+// 8001E67C:mapGrpSetOffScreen
+// 8001E740:mapObjSetOffScreen
+// 8001E800:_setOffScrnId
+// 8001ECB8:mapGrpFlagOff
+// 8001EDD0:mapGrpFlagOn
+// 8001EEE8:mapFlgOff
+// 8001F1FC:mapFlgOn
+// 8001F63C:mapObjFlagOff
+// 8001F750:mapObjFlagOn
+// 8001F878:mapGetMapObj
+// 8001F920:mapSearchDmdJoint
+// 8001F958:mapSearchDmdJointSub2
+// 8001FD48:mapSearchDmdJointSub
+// 800202C8:mapSetPolygonVtxDesc
+// 8002048C:mapSetPolygon
+// 800208C0:mapSetMaterialLight
+// 80020E3C:mapResetPaperAmbColor
+// 80020E48:mapSetPaperAmbColor
+// 80020E54:mapSetMaterial
+// 80021468:mapSetTextureMatrix
+// 800217C8:mapSetMaterialFog
+// 80021860:mapSetMaterialLastStageBlend
+// 80021B80:mapSetMaterialTev
+// 8002493C:mapSetLight
+// 80024B08:mapDisp
+// 8002532C:mapDispMapGrp_bbox
+// 8002538C:mapDispMapObj_bbox
+// 800254D4:_mapDispMapGrp_NoMaterial
+// 8002592C:_mapDispMapObj_NoMaterial
+// 80025A4C:test_kururing_mapdisp
+// 80025AE8:mapDispMapGrp_off
+// 80025B60:mapDispMapObj_off
+// 80025BD8:mapDispMapGrp
+// 80025BF8:mapDispMapObj
+// 80025C18:_mapDispMapGrp
+// 80025F8C:_mapDispMapObj
+// 80026BB8:mapMain
+// 80028130:mapReCalcMatrix
+// 80028550:mapCalcAnimMatrix
+// 8002892C:bmapLoad
+// 80028AA8:bmapUnLoad
+// 80028D08:mapLoad
+// 80028D70:mapPreLoad
+// 80028D78:mapUnLoad
+// 80028F18:_mapLoad
+// 80029AF8:mapSetPlayRate
+// 80029BB4:mapReStartAnimationAll
+// 80029C14:mapPauseAnimationAll
+// 80029C74:mapReStartAnimation
+// 80029D2C:mapPauseAnimation
+// 80029DE4:mapPlayAnimationLv
+// 8002A050:mapCheckAnimation
+// 8002A180:mapSearchAnmObj
+// 8002A228:makeDisplayList
+// 8002A46C:mapEntry
+// 8002A508:mapEntrySub
+// 8002A780:_mapEnt
+// 8002AD08:mapBuildTexture
+// 8002AF18:mapInit
+// 8002AF5C:mapGetBoundingBox
+// 8002B120:mapGetJoints
+// 8002B16C:mapGetJointsSub
+// 8002B430:mapGetActiveGroup
+8002B438:mapGetWork
+// 8002B44C:mapDispOn
+// 8002B458:mapDispOff
+// 8002B464:getMapDataDvdRoot
+// 8002B46C:mapErrorEntry
+
 // seqdrv.o
+// text
 8002E1E4:seqCheckSeq
 8002E200:seqGetNextSeq
 8002E208:seqGetPrevSeq
@@ -164,8 +299,11 @@
 8002E218:seqSetSeq
 8002E228:seqMain
 8002E304:seqInit_MARIOSTORY
+// data
+8041E780:seqWork
 
 // memory.o
+// text
 // unused:smartGetWorkPtr
 8002F33C:smartTexObj
 8002F378:smartGarbage
@@ -178,12 +316,12 @@
 8002FDC4:_mapFree
 8002FE60:_mapAllocTail
 8002FF58:_mapAlloc
-// 80030048:unk_US_PAL_01
-// 80030078:unk_US_PAL_02
 800300C4:__memFree
 800300F0:__memAlloc
 80030154:memClear
 80030218:memInit
+// data
+804151E0:smartWorkPointer
 
 // evtmgr.o
 // 80035A28:evtGetPtrID
@@ -213,6 +351,15 @@
 // 8003781C:evtmgrInit
 // 80037934:make_pri_table
 80037A60:evtGetWork
+
+// mapdata.o
+// text
+// 80038FD8:relSetBtlAddr
+// 80039088:relSetEvtAddr
+// 800391E0:areaDataPtr
+// 80039278:mapDataPtr
+// data
+803057E4:worldData
 
 // npcdrv.o
 // 80042F38:fbatPreventMarioEventChk
@@ -287,13 +434,12 @@
 // 8004CA80:mtx_setup
 // 8004CD38:npcRecoveryFiledNpc
 // 8004CE58:npcReleaseFiledNpc
-// 8004CF6C:npcGetWorkPtr
+8004CF6C:npcGetWorkPtr
 
 // evt_sub.o
 // 80053764:mail_evt_gor_04_keyoff_check
 // 800537C4:irai_mail_check
 80053C4C:evt_sub_check_intersect
-// 80053F10:unk_US_PAL_02
 // 80053FD8:bgm_start_wait
 // 80054010:get_stop
 // 80054040:set_stop
@@ -365,7 +511,6 @@
 80058D84:marioChgPose
 80058F9C:toDotMarioPose
 80059124:marioChgEvtPose
-// 800591B4:unk_JP_US_PAL_005
 800593FC:marioAnimeId
 8005942C:marioChkPushAnime
 800594A8:marioMoveMain
@@ -394,11 +539,9 @@
 8005C2FC:marioCtrlOffChk
 8005C30C:marioFBattlePost
 8005C3CC:marioFBattlePrepare
-// 8005C438:unk_JP_US_PAL_006
 8005C464:marioChkCtrl
 8005C47C:marioChkKey
 8005C5B8:marioCheckMenuDisable
-// 8005CA2C:unk_JP_US_PAL_007
 8005CA58:marioCaseEventValidChk
 8005CA98:marioItemGetOk
 8005CAAC:marioItemGetChk
@@ -411,6 +554,7 @@
 8005E0C0:marioGetPtr
 
 // mariost.o
+// text
 // unused:gcResetDone
 // unused:gcResetCheck
 8006EED8:gcRumbleCheck
@@ -423,6 +567,8 @@
 8006F8DC:marioStDisp
 8006F904:marioStMain
 8006FB3C:marioStInit
+// data
+80415FD0:globalWorkPointer
 
 // seq_battle.o
 // 800736EC:battle_exit
@@ -528,8 +674,6 @@
 // 8007AC30:bero_get_BeroSX
 // 8007AC38:bero_get_BeroNUM
 // 8007AC40:bero_get_BeroEXEC
-// 8007AC48:unk_JP_US_PAL_06
-// 8007AC7C:unk_JP_US_PAL_07
 
 // windowdrv.o
 // 8007AD30:getWakuTexObj
@@ -547,7 +691,6 @@
 // 8007FB0C:windowEntry
 // 8007FB94:windowReInit
 8007FBD8:windowTexSetup
-// 8007FCF0:unk_JP_US_PAL_008
 // 8007FD84:windowInit
 
 // msgdrv.o
@@ -600,6 +743,7 @@
 800874B0:seq_logoInit
 
 // itemdrv.o
+// text
 // 800AA4FC:itemPickUp
 // 800AA530:itemStatus
 // 800AA53C:itemStatusOn
@@ -624,12 +768,46 @@
 800AD7F0:itemEntry
 // 800ADFD0:itemModeChange
 // 800ADFE0:itemMain
-// 800AE67C:unk_JP_US_PAL_023
 // 800AE6DC:itemGetNokoCheck
 // 800AE870:itemGetCheck
 // 800AEAAC:itemCoinDrop
 // 800AEB20:itemReInit
 // 800AEC18:itemInit
+// data
+803DC290:itemDrvWork
+
+// cardmgr.o
+// text
+// 800AECB0:memcard_open
+// 800AF004:statusCallback
+// 800AF020:readCallback
+// 800AF03C:writeCallback
+// 800AF058:createCallback
+// 800AF074:formatCallback
+// 800AF090:checkCallback
+// 800AF0AC:mountAttachCallback
+// 800AF0E4:mountDetachCallback
+// 800AF0E8:cardFormat
+// 800AF148:create_main
+// 800AF9BC:cardCreate
+// 800AFA2C:read_all_main
+// 800B04BC:cardReadAll
+// 800B0524:read_main
+// 800B0DBC:write_header_main
+// 800B1174:cardWriteHeader
+// 800B139C:write_main
+// 800B1E7C:cardWrite
+// 800B2168:cardCopy
+// 800B2208:cardErase
+// 800B2388:cardCopy2Main
+// 800B2508:cardMain
+// 800B2B80:cardGetCode
+// 800B2B8C:cardIsExec
+// 800B2C58:cardInit
+// 800B3060:cardBufReset
+// 800B33E4:cardGetFilePtr
+// data
+8041EAB8:cardMgrWorkPointer
 
 // party.o
 // 800B713C:partySetFamicomMode
@@ -651,7 +829,6 @@
 // 800B98EC:partyRideChk
 // 800B9928:allPartyRideOff2
 // 800B99EC:allPartyRideOff
-// 800B9AB0:unk_JP_US_PAL_029
 // 800B9B2C:allPartyForceRideOn
 // 800B9C00:getRidePos
 // 800B9E80:allPartyRideShip
@@ -666,9 +843,6 @@
 // 800BBDDC:partyDoWork
 // 800BBE84:driveParty
 // 800BC574:partyMain
-// 800BC660:unk_JP_US_PAL_030
-// 800BCAB0:unk_JP_US_PAL_031
-// 800BCB2C:unk_JP_US_PAL_032
 // 800BCB98:partyChgRunMode
 // 800BCF34:partyUsePost
 // 800BCF90:partyReInit
@@ -758,7 +932,6 @@
 // 800D4540:comp_aiueo_r
 // 800D46D4:comp_kind
 // 800D471C:comp_aiueo
-// 800D48B0:unk_JP_US_PAL_035
 800D4974:pouchRemoveItemIndex
 // 800D4C38:pouchRemoveItem
 800D4ED4:pouchCheckItem
@@ -807,11 +980,9 @@
 // 800DABAC:psndBGMOff_f_d
 // 800DAEFC:psndBGMOff
 // 800DAF24:psndBGMOn_f_d
-// 800DB778:unk_JP_US_PAL_051
 // 800DB7A0:psndBGMOn
 // 800DB7CC:psndBGMMain
 // 800DBC60:psndBGM_rate
-// 800DBCC4:unk_JP_US_PAL_052
 // 800DBDF0:psndSFXAllOff
 // 800DBF38:psndMapChange
 // 800DC0E8:psndGetFlag
@@ -892,7 +1063,6 @@
 // event.o
 800EBBB8:eventStgNum
 800EBBC0:eventStgDtPtr
-// 800EBBD4:unk_JP_US_PAL_40
 // 800EBC00:stg8_15_init
 // 800EBC2C:stg8_14_init
 // 800EBC58:stg8_13_init
@@ -1111,6 +1281,7 @@
 // 800EE688:stg0_00_init
 
 // battle.o
+// text
 // 800F74B4:BattleConsumeReserveItem
 // 800F7514:BattleStatusWindowCheck
 // 800F75CC:BattleStatusWindowSystemOff
@@ -1158,8 +1329,11 @@
 // 800F8F04:BattleInit
 // 800F903C:battleSeqEndCheck
 // 800F904C:battleMain
+// data
+8041EB90:battleWorkPointer
 
 // battle_ac.o
+// text
 // 800F9094:BattleAcGaugeSeDelete
 // 800F90D8:BattleAcGaugeSeUpdate
 // 800F9150:BattleAcGaugeSeInit
@@ -1179,6 +1353,9 @@
 // 800FA574:BattleActionCommandResult
 // 800FA5B0:BattleActionCommandManager
 // 800FA62C:BattleActionCommandManagerInit
+// data
+802EE018:GuardFrames
+802EE020:SuperguardFrames
 
 // battle_disp.o
 // 80100258:_btlStockExpDisp
@@ -1377,12 +1554,9 @@
 80141204:marioPartyGoodbye
 8014124C:marioPartyHello
 801412FC:marioPartyEntry
-// 8014140C:unk_JP_US_PAL_062
 // 801414A0:marioUseParty
 
 // win_root.o
-// 80152BDC:unk_JP_US_PAL_52
-// 80152E80:unk_JP_US_PAL_53
 // 80152F00:winMailDisp
 // 80153DD4:winZClear
 // 80153F84:winKageGX
@@ -1468,26 +1642,18 @@
 // 8016D6A0:winMakeSkipList
 
 // win_main.o
-// 8017B0C4:unk_JP_US_PAL_58
-// 8017B2B0:unk_JP_US_PAL_59
-// 8017B330:unk_JP_US_PAL_60
-// 8017B350:unk_JP_US_PAL_61
 // 8017B5B0:winLectureCheck
 // 8017B60C:winLectureOn
 // 8017B670:winLectureKeyMask
-// 8017B84C:unk_JP_US_PAL_62
-// 8017B864:unk_JP_US_PAL_63
 // 8017B8D8:winIconSet
 // 8017BBCC:winIconGrayInit
 // 8017BFDC:winIconInit
 // 8017C158:winTexSet_x2
 // 8017C3F8:winTexInit_x2
 // 8017C6D0:winTexSetRot
-// 8017C9BC:unk_JP_US_PAL_64
 // 8017CC2C:winTexSet
 // 8017CEF0:winTexInit
 // 8017D068:winFontSetLabel
-// 8017D10C:unk_US_PAL_12
 // 8017D28C:winFontSetEdge
 // 8017D3B8:winFontSetR
 // 8017D52C:winFontSetPitch
@@ -1495,7 +1661,6 @@
 // 8017D7D0:winFontInit
 // 8017D7F0:winGhostDiaryChk
 // 8017D834:cam_r
-// 8017D8F8:unk_JP_US_PAL_65
 // 8017D91C:party_color
 // 8017D96C:famicom_check
 // 8017D9BC:itemUseFunc2
@@ -1508,7 +1673,7 @@
 // 8017EB24:winCheck
 // 8017EB70:winReInit
 // 8017EB9C:winInit
-// 8017EBD4:winGetPtr
+8017EBD4:winGetPtr
 
 // mario_cam.o
 // 801A86F0:marioCamZoomUpLevelMain
@@ -1532,6 +1697,27 @@
 // 801A9514:marioInitCamId
 // 801A9544:marioResetCamShiftRate
 // 801A95A8:marioResetCamShift
+
+// evt_yuugijou.o
+// text
+// 80229554:evtYuuWindowEndChk
+// 80229564:evtYuuWindow
+// 802295E0:yuuminigame_end
+// 80229618:yuuminigame_window_end
+// 80229630:yuugijou_set_yupflag
+// 80229688:yuugijou_get_takeoutflag
+// 802296D8:yuugijou_montemedal_return
+// 80229720:yuugijou_montemedal_keep
+// 80229774:yuugijou_montemedal_wait
+// 80229798:yuugijou_montemedal_disp_onoff
+// 802297FC:yuugijou_add_montemedal_moto
+// 80229868:yuugijou_get_montemedal_keep
+// 802298B8:yuugijou_get_montemedal
+// 802298EC:yuugijou_add_montemedal
+// 80229978:monteCountDisp
+// 80229BCC:yuugijou_init
+// data
+8041ED28:yuugijouWorkPointer
 
 // sac_scissor.o
 // 8023127C:wait_star_standby
@@ -1635,7 +1821,6 @@
 // w_atan2.c
 802725A0:atan2
 
-// os.a
 // OSAlloc.c
 // text
 // 80296400:DLInsert
@@ -1646,8 +1831,8 @@
 802966A4:OSCreateHeap
 80296710:OSDestroyHeap
 // data
-8041F070:OSAlloc_HeapArray
-8041F074:OSAlloc_NumHeaps
+8041F070:HeapArray
+8041F074:NumHeaps
 
 // OSCache.c
 // 80296A14:DCEnable
@@ -1814,3 +1999,7 @@
 802B6E54:GXSetChanMatColor
 // 802B6F3C:GXSetNumChans
 // 802B6F78:GXSetChanCtrl
+
+// item_data.o
+// data
+803108A8:itemDataTable

@@ -6,6 +6,9 @@ namespace ttyd::battle_ac {
 
 extern "C" {
 
+extern uint8_t GuardFrames[];
+extern uint8_t SuperguardFrames[];
+
 // BattleAcGaugeSeDelete
 // BattleAcGaugeSeUpdate
 // BattleAcGaugeSeInit
@@ -13,7 +16,7 @@ extern "C" {
 // BattleACGetButtonIcon
 // BattleActionCommandGetPrizeLv
 // BattleActionCommandSetDifficulty
-uint8_t BattleActionCommandGetDifficulty(void *battlePointer);
+uint8_t BattleActionCommandGetDifficulty(void *battleWorkPtr);
 // BattleActionCommandResetDefenceResult
 // BattleActionCommandGetDefenceResult
 uint32_t BattleACPadCheckRecordTrigger(uint32_t frame, uint32_t button);

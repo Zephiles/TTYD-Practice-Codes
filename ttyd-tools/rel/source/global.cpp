@@ -1,6 +1,7 @@
 #include "global.h"
-#include "items.h"
 #include "memcard.h"
+
+#include <ttyd/item_data.h>
 
 #include <cstdio>
 
@@ -1373,72 +1374,9 @@ int32_t MenuSecondaryValue 				= 0;
 uint32_t MemoryWatchSecondaryValue 		= 0;
 uint8_t FrameCounter 					= 0;
 
-#ifdef TTYD_US
-uint32_t r13 							= 0x8041CF20;
-char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1688);
-char *NextMap 							= reinterpret_cast<char *>(r13 + 0x16A8);
-char *NextArea 							= reinterpret_cast<char *>(r13 + 0x16C8);
-ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x803108A8);
-uint8_t *GuardFrames 					= reinterpret_cast<uint8_t *>(0x802EE018);
-uint8_t *SuperguardFrames 				= reinterpret_cast<uint8_t *>(0x802EE020);
-uint32_t PauseMenuStartAddress 			= r13 + 0x1D10;
-uint32_t wp_fadedrv_Address 			= r13 + 0x1700;
-uint32_t _mapEntAddress 				= r13 + 0x1740;
-uint32_t NPCAddressesStart 				= r13 + 0x19A0;
-uint32_t BattleAddressesStart 			= r13 + 0x1C70;
-uint32_t PiantaParlorAddressesStart 	= r13 + 0x1E08;
-uint32_t seqMainAddress 				= r13 + 0x1860;
-uint32_t WorkAreaAddress 				= r13 + 0x1B98;
-uint32_t SmartWorkAddress 				= r13 - 0x7D40;
-uint32_t FieldItemsAddressesStart 		= 0x803DC294;
-uint32_t unkMapDataPtr 					= 0x803057FC;
-#elif defined TTYD_JP
-uint32_t r13 							= 0x80417260;
-char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1128);
-char *NextMap 							= reinterpret_cast<char *>(r13 + 0x1148);
-char *NextArea 							= reinterpret_cast<char *>(r13 + 0x1168);
-ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x8030EE58);
-uint8_t *GuardFrames 					= reinterpret_cast<uint8_t *>(0x802EDA48);
-uint8_t *SuperguardFrames 				= reinterpret_cast<uint8_t *>(0x802EDA50);
-uint32_t PauseMenuStartAddress 			= r13 + 0x17B0;
-uint32_t wp_fadedrv_Address 			= r13 + 0x11A0;
-uint32_t _mapEntAddress 				= r13 + 0x11E0;
-uint32_t NPCAddressesStart 				= r13 + 0x1448;
-uint32_t BattleAddressesStart 			= r13 + 0x1710;
-uint32_t PiantaParlorAddressesStart 	= r13 + 0x18F8;
-uint32_t seqMainAddress 				= r13 + 0x1300;
-uint32_t WorkAreaAddress 				= r13 + 0x1638;
-uint32_t SmartWorkAddress 				= r13 - 0x7D58;
-uint32_t FieldItemsAddressesStart 		= 0x803D8714;
-uint32_t unkMapDataPtr 					= 0x8030423C;
-#elif defined TTYD_EU
-uint32_t r13 							= 0x80429760;
-char *NextBero 							= reinterpret_cast<char *>(r13 + 0x1768);
-char *NextMap 							= reinterpret_cast<char *>(r13 + 0x1788);
-char *NextArea 							= reinterpret_cast<char *>(r13 + 0x17A8);
-ItemData *ItemDataTable 				= reinterpret_cast<ItemData *>(0x8031C638);
-uint8_t *GuardFrames 					= reinterpret_cast<uint8_t *>(0x802F9C78);
-uint8_t *SuperguardFrames 				= reinterpret_cast<uint8_t *>(0x802F9C80);
-uint32_t PauseMenuStartAddress 			= r13 + 0x1DF0;
-uint32_t wp_fadedrv_Address 			= r13 + 0x17E0;
-uint32_t _mapEntAddress 				= r13 + 0x1820;
-uint32_t NPCAddressesStart 				= r13 + 0x1A80;
-uint32_t BattleAddressesStart 			= r13 + 0x1D50;
-uint32_t PiantaParlorAddressesStart 	= r13 + 0x1F38;
-uint32_t seqMainAddress 				= r13 + 0x1940;
-uint32_t WorkAreaAddress 				= r13 + 0x1C78;
-uint32_t SmartWorkAddress 				= r13 - 0x7D40;
-uint32_t FieldItemsAddressesStart 		= 0x803E82F4;
-uint32_t unkMapDataPtr 					= 0x8031153C;
-#endif
-
-uint32_t GlobalWorkPointer 				= r13 - 0x6F50;
-uint32_t titleMainAddress 				= r13 - 0x7F80;
-uint32_t ConsoleBusSpeedAddress 		= 0x800000F8;
-
 // Variables used by cheats
 bool ResetMarioProperties 				= false;
-int16_t ForcedNPCItemDrop 				= SleepySheep;
+int16_t ForcedNPCItemDrop 				= ttyd::item_data::Item::SleepySheep;
 bool MarioFreeze 						= false;
 uint16_t JumpStorageSetCounter 			= 0;
 

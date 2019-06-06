@@ -118,10 +118,9 @@ const char *getValueString(int32_t slot)
 		}
 		case time:
 		{
-			uint32_t TimeBase = *reinterpret_cast<uint32_t *>(ConsoleBusSpeedAddress) / 4;
-			
-			uint32_t FPS = *reinterpret_cast<uint32_t *>(
-				*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x4);
+			uint32_t *ConsoleBusSpeed = reinterpret_cast<uint32_t *>(0x800000F8);
+			uint32_t TimeBase = *ConsoleBusSpeed / 4;
+			uint32_t FPS = getCurrentFPS();
 			
 			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
 			const char *NegativeSign = "";

@@ -29,7 +29,18 @@ struct SeqInfo
 	uint32_t unk_1c;
 } __attribute__((__packed__));
 
+struct SeqWork
+{
+	uint8_t unk_0[4];
+	uint32_t wFileSelectScreenProgress;
+	uint8_t unk_8[24];
+} __attribute__((__packed__));
+
+static_assert(sizeof(SeqWork) == 0x20);
+
 extern "C" {
+
+extern SeqWork seqWork;
 
 void seqInit_MARIOSTORY();
 void seqMain();

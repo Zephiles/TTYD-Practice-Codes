@@ -1,0 +1,113 @@
+#pragma once
+
+#include <cstdint>
+
+namespace ttyd::mapdrv {
+
+extern "C" {
+
+// mapObjGetFlushColor
+// mapGrpSetFlushColor
+// mapObjSetFlushColor
+// mapGrpFlushOff
+// mapGrpFlushOn
+// mapObjFlushOff
+// mapObjFlushOn
+// mapSetTevCallback
+// mapTestXLU
+// spline_getvalue
+// spline_maketable
+// mapSetProjMtx
+// mapSetProjTexObj
+// mapGrpSetColor
+// setColor
+// mapObjSetColor
+// mapBlendOff2
+// mapBlendOff
+// mapGetBlend2
+// mapGetBlend
+// mapSetBlend2
+// mapSetBlend
+// mapFogOff
+// mapFogOn
+// mapGetFog
+// mapSetFog
+// mapObjGetPos
+// mapObjGetPosSub
+// mapObjScale
+// mapObjTranslate
+// mapObjRotate
+// mapGrpClearOffScreen
+// mapObjClearOffScreen
+// mapGrpSetOffScreen
+// mapObjSetOffScreen
+// _setOffScrnId
+// mapGrpFlagOff
+// mapGrpFlagOn
+// mapFlgOff
+// mapFlgOn
+// mapObjFlagOff
+// mapObjFlagOn
+// mapGetMapObj
+// mapSearchDmdJoint
+// mapSearchDmdJointSub2
+// mapSearchDmdJointSub
+// mapSetPolygonVtxDesc
+// mapSetPolygon
+// mapSetMaterialLight
+// mapResetPaperAmbColor
+// mapSetPaperAmbColor
+// mapSetMaterial
+// mapSetTextureMatrix
+// mapSetMaterialFog
+// mapSetMaterialLastStageBlend
+// mapSetMaterialTev
+// mapSetLight
+// mapDisp
+// mapDispMapGrp_bbox
+// mapDispMapObj_bbox
+// _mapDispMapGrp_NoMaterial
+// _mapDispMapObj_NoMaterial
+// test_kururing_mapdisp
+// mapDispMapGrp_off
+// mapDispMapObj_off
+// mapDispMapGrp
+// mapDispMapObj
+// _mapDispMapGrp
+// _mapDispMapObj
+// mapMain
+// mapReCalcMatrix
+// mapCalcAnimMatrix
+// bmapLoad
+// bmapUnLoad
+// mapLoad
+// mapPreLoad
+// mapUnLoad
+// _mapLoad
+// mapSetPlayRate
+// mapReStartAnimationAll
+// mapPauseAnimationAll
+// mapReStartAnimation
+// mapPauseAnimation
+// mapPlayAnimationLv
+// mapCheckAnimation
+// mapSearchAnmObj
+// makeDisplayList
+// mapEntry
+// mapEntrySub
+// _mapEnt
+// mapBuildTexture
+// mapInit
+// mapGetBoundingBox
+// mapGetJoints
+// mapGetJointsSub
+// mapGetActiveGroup
+void *mapGetWork();
+// mapDispOn
+// mapDispOff
+// getMapDataDvdRoot
+// mapErrorEntry
+
+}
+
+}

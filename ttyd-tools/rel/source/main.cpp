@@ -3,19 +3,21 @@
 #include "commonfunctions.h"
 #include "menufunctions.h"
 #include "codes.h"
-#include "items.h"
 #include "global.h"
 #include "draw.h"
 #include "patch.h"
 
 #include <gc/OSCache.h>
 #include <gc/os.h>
+#include <ttyd/item_data.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/party.h>
+#include <ttyd/seq_title.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/sac_scissor.h>
 #include <ttyd/memory.h>
@@ -65,7 +67,7 @@ extern "C"
 extern "C" {
 bool displayMegaJumpBadgeInMenu(uint32_t checkBit)
 {
-	if (checkIfBadgeEquipped(UpgradedPowerJump))
+	if (checkIfBadgeEquipped(ttyd::item_data::Item::UpgradedPowerJump))
 	{
 		return false;
 	}
@@ -77,8 +79,8 @@ bool displayMegaJumpBadgeInMenu(uint32_t checkBit)
 
 bool displayMegaHammerBadgesInMenu(uint32_t checkBit)
 {
-	if (checkIfBadgeEquipped(UpgradedPowerSmash) || 
-		checkIfBadgeEquipped(UpgradedQuakeHammer))
+	if (checkIfBadgeEquipped(ttyd::item_data::Item::UpgradedPowerSmash) || 
+		checkIfBadgeEquipped(ttyd::item_data::Item::UpgradedQuakeHammer))
 	{
 		return false;
 	}
@@ -136,7 +138,7 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress,
 	{
 		// Prevent the first option from being selected, so that the game does not crash when reading the diary
 		// Only needs to run when not on the train
-		if (!compareStrings(NextArea, "rsh"))
+		if (!compareStrings(ttyd::seq_mapchange::NextArea, "rsh"))
 		{
 			if (selectedOption == ThirdOption)
 			{
@@ -306,7 +308,7 @@ void displayTitleScreenAndFileSelectScreenInfo()
 		// Check to see if the title screen is ready
 		// Check to see if the curtain is fully displayed or not
 		uint32_t TitleMainCheck = *reinterpret_cast<uint32_t *>(
-			*reinterpret_cast<uint32_t *>(titleMainAddress) + 0x8);
+			reinterpret_cast<uint32_t>(ttyd::seq_title::seqTitleWorkPointer2) + 0x8);
 		
 		if ((TitleMainCheck >= 2) && (TitleMainCheck < 12))
 		{
@@ -318,7 +320,8 @@ void displayTitleScreenAndFileSelectScreenInfo()
 	else if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kLoad))
 	{
 		// Check to see if the curtain is down or not
-		uint32_t SeqMainCheck = *reinterpret_cast<uint32_t *>(seqMainAddress + 0x4);
+		uint32_t SeqMainCheck = ttyd::seqdrv::seqWork.wFileSelectScreenProgress;
+		
 		if (SeqMainCheck == 2)
 		{
 			// Draw the file select screen info
@@ -375,7 +378,7 @@ bool Mod::performPreBattleActions()
 
 const char *Mod::getCustomMessage(const char *key)
 {
-	char *tempNextArea = NextArea;
+	char *tempNextArea = ttyd::seq_mapchange::NextArea;
 	if (compareStrings(key, "stg6_rsh_diary_01"))
 	{
 		// Change the text asking if you want to read the diary
@@ -515,8 +518,8 @@ void checkHeaps()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Check the standard heaps
-	int32_t TotalHeaps = gc::os::OSAlloc_NumHeaps;
-	gc::os::HeapInfo *HeapArray = gc::os::OSAlloc_HeapArray;
+	int32_t TotalHeaps = gc::os::NumHeaps;
+	gc::os::HeapInfo *HeapArray = gc::os::HeapArray;
 	
 	for (int32_t i = 0; i < TotalHeaps; i++)
 	{
@@ -564,12 +567,12 @@ void checkHeaps()
 	}
 	
 	// Check the smart heap
-	ttyd::memory::SmartWork *gpSmartWork = *reinterpret_cast<ttyd::memory::SmartWork **>(SmartWorkAddress);
+	ttyd::memory::SmartWork *SmartWorkPtr = ttyd::memory::smartWorkPointer;
 	bool valid = true;
 	
 	ttyd::memory::SmartAllocationData *currentChunk = nullptr;
 	ttyd::memory::SmartAllocationData *prevChunk = nullptr;
-	for (currentChunk = gpSmartWork->pFirstUsed; currentChunk; currentChunk = currentChunk->pNext)
+	for (currentChunk = SmartWorkPtr->pFirstUsed; currentChunk; currentChunk = currentChunk->pNext)
 	{
 		// Check pointer sanity
 		if (!checkIfPointerIsValid(currentChunk))
@@ -761,11 +764,9 @@ void initAddressOverwrites()
 	#endif
 	
 	// Set the initial value for the debug mode variable, to allow backtrace screens before the title sequence begins
-	uint32_t tempTitleMainAddress = *reinterpret_cast<uint32_t *>(titleMainAddress);
-	if (tempTitleMainAddress != 0)
-	{
-		*reinterpret_cast<int32_t *>(tempTitleMainAddress + 0x30) = -1;
-	}
+	*reinterpret_cast<int32_t *>(
+		reinterpret_cast<uint32_t>(
+			ttyd::seq_title::seqTitleWorkPointer2) + 0x30) = -1;
 }
 
 void Mod::run()

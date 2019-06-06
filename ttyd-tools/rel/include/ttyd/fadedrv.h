@@ -6,6 +6,8 @@ namespace ttyd::fadedrv {
 
 extern "C" {
 
+extern void *fadeDrvWorkPointer;
+
 // fadeSetNarrowFast
 // fadeGetTpl
 // fadeReset

@@ -4,9 +4,11 @@
 #include <gc/OSCache.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
-#include <ttyd/battle.h>
-#include <ttyd/swdrv.h>
 #include <ttyd/mariost.h>
+#include <ttyd/battle.h>
+#include <ttyd/npcdrv.h>
+#include <ttyd/swdrv.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/party.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
@@ -93,17 +95,18 @@ bool checkIfInGame()
 void *getCurrentRELPointer()
 {
 	return *reinterpret_cast<uint32_t **>(
-		*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x15C);
+		reinterpret_cast<uint32_t>(
+			ttyd::mariost::globalWorkPointer) + 0x15C);
 }
 
-void *getBattlePointer()
+void *getBattleWorkPointer()
 {
-	return *reinterpret_cast<uint32_t **>(BattleAddressesStart);
+	return ttyd::battle::battleWorkPointer;
 }
 
 void *getMarioBattlePointer()
 {
-	void *BattlePointer = getBattlePointer();
+	void *BattlePointer = getBattleWorkPointer();
 	if (!BattlePointer)
 	{
 		return nullptr;
@@ -120,19 +123,39 @@ void *getPartnerBattlePointer()
 		return nullptr;
 	}
 	
-	void *BattlePointer = getBattlePointer();
+	void *BattlePointer = getBattleWorkPointer();
 	return ttyd::battle::BattleGetPartnerPtr(BattlePointer, MarioBattlePointer);
 }
 
 void *getActorPointer(uint32_t slot)
 {
-	void *BattlePointer = getBattlePointer();
+	void *BattlePointer = getBattleWorkPointer();
 	if (!BattlePointer)
 	{
 		return nullptr;
 	}
 	
 	return ttyd::battle::BattleGetUnitPtr(BattlePointer, slot);
+}
+
+void *getNPCFieldWorkPointer(uint32_t npcSlot)
+{
+	// Get the work pointer
+	uint32_t NPCWorkPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::npcGetWorkPtr());
+	
+	// Adjust the pointer if currently in a battle
+	uint32_t BattleFlag = *reinterpret_cast<uint32_t *>(
+		reinterpret_cast<uint32_t>(
+			ttyd::mariost::globalWorkPointer) + 0x14);
+	
+	if (BattleFlag)
+	{
+		NPCWorkPointer -= 0x14;
+	}
+	
+	// Get the pointer for the desired NPC
+	uint32_t NPCFieldPointer = *reinterpret_cast<uint32_t *>(NPCWorkPointer + 0xC);
+	return reinterpret_cast<void *>(NPCFieldPointer + (npcSlot * 0x340));
 }
 
 uint32_t secondsToFrames(uint32_t seconds)
@@ -152,13 +175,13 @@ void setSequencePosition(uint32_t value)
 
 void setNextMap(const char *map)
 {
-	copyString(NextMap, map);
-	strncpy(NextArea, map, 3);
+	copyString(ttyd::seq_mapchange::NextMap, map);
+	strncpy(ttyd::seq_mapchange::NextArea, map, 3);
 }
 
 void setNextBero(const char *bero)
 {
-	copyString(NextBero, bero);
+	copyString(ttyd::seq_mapchange::NextBero, bero);
 }
 
 char *copyString(char *destination, const char *source)
@@ -183,7 +206,7 @@ bool compareStringsSize(const char *str1, const char *str2, uint32_t size)
 
 bool compareStringToNextMap(const char *str)
 {
-	return compareStrings(str, NextMap);
+	return compareStrings(str, ttyd::seq_mapchange::NextMap);
 }
 
 uint32_t getStringSize(const char *str)
@@ -279,6 +302,13 @@ void recheckJumpAndHammerLevels()
 uint32_t getCurrentPitFloor()
 {
 	return ttyd::swdrv::swByteGet(1321) + 1; // GSW(1321)
+}
+
+uint32_t getCurrentFPS()
+{
+	return *reinterpret_cast<uint32_t *>(
+		reinterpret_cast<uint32_t>(
+			ttyd::mariost::globalWorkPointer) + 0x4);
 }
 
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)

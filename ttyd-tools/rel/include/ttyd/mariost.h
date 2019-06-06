@@ -6,6 +6,8 @@ namespace ttyd::mariost {
 
 extern "C" {
 
+extern void *globalWorkPointer;
+
 void marioStInit();
 void marioStMain();
 void marioStDisp();

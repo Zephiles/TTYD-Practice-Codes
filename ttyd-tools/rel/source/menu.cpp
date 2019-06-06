@@ -10,6 +10,7 @@
 
 #include <gc/card.h>
 #include <ttyd/swdrv.h>
+#include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_party.h>
 #include <ttyd/mario_party.h>
@@ -66,7 +67,7 @@ void menuCheckButton()
 						case BATTLES:
 						{
 							// Make sure the player is currently in a battle
-							if (getBattlePointer())
+							if (getBattleWorkPointer())
 							{
 								// Currently in a battle, so enter the menu
 								CurrentMenu = tempCurrentMenuOption;
@@ -1330,7 +1331,9 @@ void menuCheckButton()
 											if (((tempCurrentMenuOption + 1) >= PIANTAS_STORED) && 
 												((tempCurrentMenuOption + 1) <= CURRENT_PIANTAS))
 											{
-												uint32_t PiantaParlorPtr = *reinterpret_cast<uint32_t *>(PiantaParlorAddressesStart);
+												uint32_t PiantaParlorPtr = reinterpret_cast<uint32_t>(
+													ttyd::evt_yuugijou::yuugijouWorkPointer);
+												
 												MenuSecondaryValue = *reinterpret_cast<int32_t *>(PiantaParlorPtr + offset);
 											}
 											else
@@ -1481,8 +1484,7 @@ void menuCheckButton()
 											uint32_t SystemLevel = getSystemLevel();
 											if (SystemLevel == 15)
 											{
-												uint32_t *PauseMenuPointer = 
-													*reinterpret_cast<uint32_t **>(PauseMenuStartAddress);
+												void *PauseMenuPointer = ttyd::win_main::winGetPtr();
 												ttyd::win_party::winPartyExit(PauseMenuPointer);
 												ttyd::win_party::winPartyInit(PauseMenuPointer);
 											}
@@ -2252,7 +2254,7 @@ void menuCheckButton()
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -2351,7 +2353,7 @@ void menuCheckButton()
 		case BATTLES_CURRENT_ACTOR:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -2529,7 +2531,7 @@ void menuCheckButton()
 		case BATTLES_STATUSES:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -3560,7 +3562,7 @@ void drawMenu()
 		case BATTLES:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -3585,7 +3587,7 @@ void drawMenu()
 		case BATTLES_CURRENT_ACTOR:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;
@@ -3628,7 +3630,7 @@ void drawMenu()
 		case BATTLES_STATUSES:
 		{
 			// Close the menu if not in a battle
-			if (!getBattlePointer())
+			if (!getBattleWorkPointer())
 			{
 				resetMenuToRoot();
 				FunctionReturnCode = NOT_IN_BATTLE;

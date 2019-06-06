@@ -5,18 +5,21 @@
 #include "patch.h"
 #include "menufunctions.h"
 #include "global.h"
-#include "items.h"
 #include "maps.h"
 
 #include <gc/gx.h>
+#include <ttyd/item_data.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/seq_mapchange.h>
+#include <ttyd/fadedrv.h>
 #include <ttyd/camdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/mapdrv.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
@@ -24,6 +27,7 @@
 #include <ttyd/battle_unit.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/battle_disp.h>
+#include <ttyd/mariost.h>
 
 #include <cstdio>
 #include <cinttypes>
@@ -100,7 +104,7 @@ void Mod::performBattleChecks()
 		if (Cheat[AUTO_ACTION_COMMANDS].Active)
 		{
 			if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo) || 
-				checkIfBadgeEquipped(DebugBadge))
+				checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
 				
@@ -122,7 +126,7 @@ void Mod::performBattleChecks()
 		else
 		{
 			// Check if the Debug Badge is equipped or not
-			if (checkIfBadgeEquipped(DebugBadge))
+			if (checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
 				
@@ -466,19 +470,16 @@ void reloadRoomMain()
 	char *tempNewBero = ReloadRoom.NewBero;
 	char *tempNewMap = ReloadRoom.NewMap;
 	
-	copyString(tempNewBero, NextBero);
-	copyString(tempNewMap, NextMap);
+	copyString(tempNewBero, ttyd::seq_mapchange::NextBero);
+	copyString(tempNewMap, ttyd::seq_mapchange::NextMap);
 	setSeqMapChange(tempNewMap, tempNewBero);
 	
 	// Reset the black screen fade effect set when loading into a room via a pipe
-	*reinterpret_cast<uint16_t *>(
-		*reinterpret_cast<uint32_t *>(wp_fadedrv_Address)) &= 
-			~(1 << 15); // Turn off the 15 bit
+	*reinterpret_cast<uint16_t *>(ttyd::fadedrv::fadeDrvWorkPointer) &= ~(1 << 15); // Turn off the 15 bit
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
 	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
-	*reinterpret_cast<uint16_t *>(CameraPointer) &= 
-		~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
+	*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 	
 	uint32_t SystemLevel = getSystemLevel();
 	if (SystemLevel == 0)
@@ -505,13 +506,9 @@ void reloadRoom()
 	if (checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
 	{
 		// Prevent being able to reload the room if the menu is open or if currently in the spawn item menu
-		if (Cheat[RELOAD_ROOM].Active && !MenuIsDisplayed && 
-			!SpawnItem.InAdjustableValueMenu)
+		if (Cheat[RELOAD_ROOM].Active && !MenuIsDisplayed && !SpawnItem.InAdjustableValueMenu)
 		{
-			
-			{
-				reloadRoomMain();
-			}
+			reloadRoomMain();
 		}
 	}
 	
@@ -519,18 +516,22 @@ void reloadRoom()
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	const uint16_t ReceivingItem = 15;
 	
+	if (player->currentMotionId != ReceivingItem)
+	{
+		return;
+	}
+	
 	ttyd::seqdrv::SeqIndex NextSeq 		= ttyd::seqdrv::seqGetNextSeq();
 	ttyd::seqdrv::SeqIndex MapChange 	= ttyd::seqdrv::SeqIndex::kMapChange;
 	
-	if ((player->currentMotionId == ReceivingItem) && (NextSeq == MapChange))
+	if (NextSeq == MapChange)
 	{
 		// Reset the System Level
 		ReloadRoom.SystemLevelShouldBeLowered = true;
 		
 		// Reset the camera - mainly for the black bars at the top and bottom of the screen
 		uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
-		*reinterpret_cast<uint16_t *>(CameraPointer) &= 
-			~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
+		*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 	}
 }
 
@@ -584,9 +585,10 @@ void bobberyEarly()
 	
 	if (MarioFreeze)
 	{
-		uint32_t RopeAddress = *reinterpret_cast<uint32_t *>(_mapEntAddress);
-		RopeAddress = *reinterpret_cast<uint32_t *>(RopeAddress + 0x154);
-		float RopePosZ = *reinterpret_cast<float *>(RopeAddress + 0x8B4);
+		float RopePosZ = *reinterpret_cast<float *>(
+			*reinterpret_cast<uint32_t *>(
+				reinterpret_cast<uint32_t>(
+					ttyd::mapdrv::mapGetWork()) + 0x154) + 0x8B4);
 		
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 		player->flags1 |= (1 << 1); // Turn on the 1 bit
@@ -616,11 +618,11 @@ void bobberyEarly()
 	
 	if (compareStringToNextMap(reinterpret_cast<const char *>(muj_05)))
 	{
-		uint32_t NPC_6_Addresses_Start = (*reinterpret_cast<uint32_t *>(
-			NPCAddressesStart)) + 0x1040;
+		const uint32_t NPCSlot6 = 5;
+		uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot6));
 		
 		// Allow the Ember to be refought
-		*reinterpret_cast<uint8_t *>(NPC_6_Addresses_Start + 0x1D7) = 0;
+		*reinterpret_cast<uint8_t *>(NPCAddress + 0x1D7) = 0;
 	}
 }
 
@@ -803,13 +805,22 @@ void getStickAngleString(char *stringOut)
 
 void displaySequenceInPauseMenu()
 {
-	uint32_t PauseMenuAddress = *reinterpret_cast<uint32_t *>(PauseMenuStartAddress);
-	uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
-	uint32_t CurrentMenu = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x24);
 	uint32_t SystemLevel = getSystemLevel();
+	if (SystemLevel != 15)
+	{
+		return;
+	}
 	
-	if ((SystemLevel == 15) && (CurrentTab == 0) && 
-		((CurrentMenu == 10) || (CurrentMenu == 11)))
+	uint32_t PauseMenuAddress = reinterpret_cast<uint32_t>(ttyd::win_main::winGetPtr());
+	uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
+	
+	if (CurrentTab != 0)
+	{
+		return;
+	}
+	
+	uint32_t CurrentMenu = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x24);
+	if ((CurrentMenu == 10) || (CurrentMenu == 11))
 	{
 		drawFunctionOnDebugLayer(drawSequenceInPauseMenu);
 	}
@@ -1527,7 +1538,8 @@ uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
 		
 		// Set the chosen entrance
 		char *NextBeroGSW = reinterpret_cast<char *>(
-			*reinterpret_cast<uint32_t *>(GlobalWorkPointer) + 0x11C);
+			reinterpret_cast<uint32_t>(
+				ttyd::mariost::globalWorkPointer) + 0x11C);
 		
 		copyString(NextBeroGSW, ChosenEntranceName);
 		setNextBero(ChosenEntranceName);
