@@ -1,8 +1,9 @@
 .global StartReplaceJumpFallAnim
-.global BranchBackReplaceJumpFallAnim
 
 StartReplaceJumpFallAnim:
 stwu %sp,-0xC(%sp)
+mflr %r3
+stw %r3,0x10(%sp)
 stw %r31,0x8(%sp)
 mr %r31,%r0
 
@@ -12,7 +13,7 @@ mr %r4,%r3
 
 mr %r0,%r31
 lwz %r31,0x8(%sp)
+lwz %r3,0x10(%sp)
+mtlr %r3
 addi %sp,%sp,0xC
-
-BranchBackReplaceJumpFallAnim:
-b 0
+blr

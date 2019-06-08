@@ -6,11 +6,14 @@
 #include "codes.h"
 #include "memorywatch.h"
 
+#include <gc/gx.h>
+#include <ttyd/battle_unit.h>
+#include <ttyd/fontmgr.h>
+#include <ttyd/battle_disp.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/icondrv.h>
 #include <ttyd/item_data.h>
-#include <ttyd/fontmgr.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/system.h>
@@ -24,6 +27,194 @@
 #include <cinttypes>
 
 namespace mod {
+
+// Functions accessed by assembly overwrites
+extern "C" {
+
+void drawArtAttackHitboxes()
+{
+	if (!Displays[ART_ATTACK_HITBOXES])
+	{
+		return;
+	}
+	
+	// Set the initial color to use for the lines of the hitboxes
+	uint8_t HSVA[4];
+	*reinterpret_cast<uint32_t *>(&HSVA) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
+	
+	// Get the address of the write gather pipe, and handle the value at the address as a float
+	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
+	
+	for (uint32_t Slot = 0; Slot < 64; Slot++)
+	{
+		void *BattleUnitPtr = getActorPointer(Slot);
+		if (!BattleUnitPtr)
+		{
+			continue;
+		}
+		
+		// Check if the current actor is a normal enemy that can be attacked
+		ttyd::battle_unit::ActorGroupBelong BattleUnitBelong = ttyd::battle_unit::BtlUnit_GetBelong(BattleUnitPtr);
+		if (BattleUnitBelong != ttyd::battle_unit::ActorGroupBelong::kEnemy)
+		{
+			// The current actor is not a normal enemy that can be attacked, so don't draw the hitbox
+			continue;
+		}
+		
+		// Check if the defeated flag is set for the current actor
+		const uint32_t DefeatedFlag = 27;
+		bool DefeatedFlagIsOn = ttyd::battle_unit::BtlUnit_CheckStatus(BattleUnitPtr, DefeatedFlag);
+		if (DefeatedFlagIsOn)
+		{
+			// The defeated flag is set for the current actor, so don't draw the hitbox
+			continue;
+		}
+		
+		// Check if the current actor can be attacked
+		int32_t BodyPartsId = ttyd::battle_unit::BtlUnit_GetBodyPartsId(BattleUnitPtr);
+		void *BodyPartsPtr = ttyd::battle_unit::BtlUnit_GetPartsPtr(BattleUnitPtr, BodyPartsId);
+		
+		uint32_t BodyPartsFlags = *reinterpret_cast<uint32_t *>(
+			reinterpret_cast<uint32_t>(BodyPartsPtr) + 0x1AC);
+		
+		if (BodyPartsFlags & (1 << 16)) // Check if 16 bit is on
+		{
+			// The current actor cannot be attacked, so don't draw the hitbox
+			continue;
+		}
+		
+		// Get the RGBA equivalent of the HSVA value
+		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSVA);
+		
+		// Set the color of the lines of the current hitbox
+		gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
+		
+		// Adjust the hue for the lines of the next hitbox
+		HSVA[0] += 45;
+		
+		uint32_t BattleUnitPtrUint = reinterpret_cast<uint32_t>(BattleUnitPtr);
+		
+		// Check if the current actor is hanging from the ceiling
+		uint32_t ActorFlags = *reinterpret_cast<uint32_t *>(BattleUnitPtrUint + 0x104);
+		float DrawHitboxDirection;
+		
+		if (ActorFlags & (1 << 1)) // Check if 1 bit is on
+		{
+			// The current actor is hanging from the ceiling
+			DrawHitboxDirection = -1; // Draw down
+		}
+		else
+		{
+			// The current actor is not hanging from the ceiling
+			DrawHitboxDirection = 1; // Draw up
+		}
+		
+		// Get the variables used to calculate the position of the hitbox
+		float ActorHitboxWidth 			= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE4);
+		float ActorHitboxHeight 		= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xE8);
+		float ActorHitboxPosOffsetX 	= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xD8);
+		float ActorHitboxPosOffsetY 	= *reinterpret_cast<float *>(BattleUnitPtrUint + 0xDC);
+		float ActorSizeScale 			= *reinterpret_cast<float *>(BattleUnitPtrUint + 0x114);
+		
+		// Get the position of the current actor
+		float ActorPos[3];
+		ttyd::battle_unit::BtlUnit_GetPos(BattleUnitPtr, &ActorPos[0], &ActorPos[1], &ActorPos[2]);
+		
+		// Get the X and Y coordinate starting positions
+		float DrawHitboxPosXStart = (ActorHitboxPosOffsetX * ActorSizeScale) + ActorPos[0];
+		float DrawHitboxPosYStart = (DrawHitboxDirection * ActorHitboxPosOffsetY * ActorSizeScale) + ActorPos[1];
+		
+		// Get the amount to adjust the starting positions by
+		float DrawHitboxAdjustPosX = (ActorHitboxWidth * ActorSizeScale) * 0.5;
+		float DrawHitboxAdjustPosY = (ActorHitboxHeight * ActorSizeScale) * 0.5;
+		
+		// Set up a set of points, used to get the starts and ends of lines
+		float ScreenPoint[3];
+		
+		// Set the Z coordinate for all calculated points, as it will not change
+		ScreenPoint[2] = ActorPos[2];
+		
+		// Set up 2 sets of points; One for the start of a line and one for the end of a line
+		float ScreenPointOutLineStart[3];
+		float ScreenPointOutLineEnd[3];
+		
+		// Draw the 4 lines that show the hitbox
+		for (uint32_t i = 0; i < 4; i++)
+		{
+			if (i == 0)
+			{
+				// Get the top-left corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+				
+				// Get the top-right corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+			}
+			else if (i == 1)
+			{
+				// Get the top-right corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+				
+				// Get the bottom-right corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+			}
+			else if (i == 2)
+			{
+				// Get the bottom-right corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+				
+				// Get the bottom-left corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+			}
+			else // if (i == 3)
+			{
+				// Get the bottom-left corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+				
+				// Get the top-left corner of the hitbox
+				ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+				ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+				ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+			}
+			
+			// Draw the line from corner 1 to corner 2
+			gc::gx::GXBegin(static_cast<gc::gx::GXPrimitive>(168), gc::gx::GX_VTXFMT0, 2);
+			
+			*WriteGatherPipe = ScreenPointOutLineStart[0];
+			*WriteGatherPipe = ScreenPointOutLineStart[1];
+			*WriteGatherPipe = 0;
+			
+			*WriteGatherPipe = ScreenPointOutLineEnd[0];
+			*WriteGatherPipe = ScreenPointOutLineEnd[1];
+			*WriteGatherPipe = 0;
+		}
+	}
+}
+
+bool disableDPadOptionsDisplay(uint16_t unkVar)
+{
+	if (!Displays[DPAD_OPTIONS_DISPLAY])
+	{
+		return false;
+	}
+	
+	return (unkVar & (1 << 8)); // Check the 8 bit
+}
+
+}
 
 void drawFunctionOnDebugLayer(void (*func)())
 {

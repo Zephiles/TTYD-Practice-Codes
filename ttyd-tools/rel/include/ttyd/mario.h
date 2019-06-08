@@ -22,7 +22,9 @@ struct Player
 	uint16_t prevMotionId;
 	uint16_t pad_32;
 	uint32_t wMapTime;
-	uint32_t wUnkCounter;
+	uint8_t unk_38;
+	int8_t wKey;
+	uint8_t unk_3a[2];
 	int8_t characterId;
 	int8_t colorId;
 	uint8_t unk_3e;

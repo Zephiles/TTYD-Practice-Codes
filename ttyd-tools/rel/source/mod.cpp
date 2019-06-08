@@ -12,6 +12,7 @@
 #include <ttyd/msgdrv.h>
 #include <ttyd/sac_scissor.h>
 #include <ttyd/evt_bero.h>
+#include <ttyd/mario.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -92,6 +93,12 @@ void Mod::init()
 		ttyd::evt_bero::evt_bero_get_info, [](void *event, uint32_t waitMode)
 	{
 		return gMod->setIndexWarpEntrance(event, waitMode);
+	});
+	
+	mPFN_marioKeyOn_trampoline = patch::hookFunction(
+		ttyd::mario::marioKeyOn, []()
+	{
+		return gMod->fixMarioKeyOn();
 	});
 
 	// Initialize typesetting early

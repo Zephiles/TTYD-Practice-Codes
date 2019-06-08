@@ -20,6 +20,7 @@ private:
 	const char *getCustomMessage(const char *);
 	uint32_t pauseArtAttackTimer();
 	uint32_t setIndexWarpEntrance(void *, uint32_t);
+	int32_t fixMarioKeyOn();
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -34,6 +35,7 @@ private:
 	const char *(*mPFN_msgSearch_trampoline)(const char *) = nullptr;
 	uint32_t (*mPFN_scissor_timer_main_trampoline)() = nullptr;
 	uint32_t (*mPFN_evt_bero_get_info_trampoline)(void *, uint32_t) = nullptr;
+	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 };
 
 }

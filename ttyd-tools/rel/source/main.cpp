@@ -31,40 +31,43 @@ namespace mod {
 // Assembly overwrite functions
 extern "C"
 {
-	void StartPauseMenuPreventUnpause();
-	void BranchBackPauseMenuPreventUnpause();
-	void StartDisableBattles();
-	void BranchBackDisableBattles();
-	void StartInfiniteItemUsage();
-	void BranchBackInfiniteItemUsage();
-	void StartReplaceJumpFallAnim();
-	void BranchBackReplaceJumpFallAnim();
-	void StartAllowRunningFromBattles();
-	void BranchBackAllowRunningFromBattles();
-	void StartForceNPCItemDrop();
-	void BranchBackForceNPCItemDrop();
-	void StartDisplayMegaHammerBadgesBattleMenu();
-	void BranchBackDisplayMegaHammerBadgesBattleMenu();
-	void StartDisplayMegaJumpBadgeBattleMenu();
-	void BranchBackDisplayMegaJumpBadgeBattleMenu();
-	void StartFixBlooperCrash1();
-	void BranchBackFixBlooperCrash1();
-	void StartFixBlooperCrash2();
-	void BranchBackFixBlooperCrash2();
-	void StartFixMarioKeyOn();
-	void BranchBackFixMarioKeyOn();
-	void StartPreventTextboxSelection();
-	void BranchBackPreventTextboxSelection();
-	void StartPreventJumpAndHammer();
-	void BranchBackPreventJumpAndHammer();
-	void StartDisableDPadOptionsDisplay();
-	void BranchBackDisableDPadOptionsDisplay();
-	void StartFixEvtMapBlendSetFlagCrash();
-	void BranchBackFixEvtMapBlendSetFlagCrash();
+
+void StartPreventPreBattleSoftlock();
+void StartDisableBattles();
+void StartReplaceJumpFallAnim();
+void StartAllowRunningFromBattles();
+void StartForceNPCItemDrop();
+void StartDisplayMegaJumpBadgeBattleMenu();
+void StartDisplayMegaHammerBadgesBattleMenu();
+void StartFixBlooperCrash1();
+void StartFixBlooperCrash2();
+void StartPreventTextboxSelection();
+void StartDrawArtAttackHitboxes();
+void StartDisableDPadOptionsDisplay();
+void StartFixEvtMapBlendSetFlagCrash();
+
 }
 
 // Functions accessed by assembly overwrites
 extern "C" {
+
+void *preventPreBattleSoftlock(void *fbatPointer)
+{
+	uint16_t ReloadRoomCombo 	= PAD_L | PAD_B;
+	uint16_t OpenMenuCombo 		= PAD_L | PAD_START;
+	
+	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
+	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
+		checkButtonComboEveryFrame(OpenMenuCombo))
+	{
+		return nullptr;
+	}
+	else
+	{
+		return fbatPointer;
+	}
+}
+
 bool displayMegaJumpBadgeInMenu(uint32_t checkBit)
 {
 	if (checkIfBadgeEquipped(ttyd::item_data::Item::UpgradedPowerJump))
@@ -108,22 +111,6 @@ uint32_t fixBlooperCrash1(uint32_t unkValue, void *battleUnitPointer)
 	}
 	
 	return 2;
-}
-
-int32_t fixMarioKeyOn(int32_t currentKeyValue)
-{
-	// Properly convert key to int8_t
-	int8_t NewKeyValue = static_cast<int8_t>(currentKeyValue);
-	
-	// Prevent key from becoming negative
-	if (NewKeyValue < 1)
-	{
-		return 0;
-	}
-	else
-	{
-		return NewKeyValue - 1;
-	}
 }
 
 void preventTextboxOptionSelection(char *currentText, void *storeAddress, 
@@ -282,23 +269,7 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 	}
 	return jumpFallString;
 }
-}
 
-void *preventPreBattleSoftlock(void *fbatPointer)
-{
-	uint16_t ReloadRoomCombo 	= PAD_L | PAD_B;
-	uint16_t OpenMenuCombo 		= PAD_L | PAD_START;
-	
-	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
-	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
-		checkButtonComboEveryFrame(OpenMenuCombo))
-	{
-		return nullptr;
-	}
-	else
-	{
-		return fbatPointer;
-	}
 }
 
 void displayTitleScreenAndFileSelectScreenInfo()
@@ -429,6 +400,21 @@ uint32_t Mod::pauseArtAttackTimer()
 	
 	// Call original function
 	return mPFN_scissor_timer_main_trampoline();
+}
+
+int32_t Mod::fixMarioKeyOn()
+{
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	int8_t MarioKey = player->wKey;
+	
+	// Make sure the value is greater than 0
+	if (MarioKey < 1)
+	{
+		player->wKey = 1;
+	}
+	
+	// Call original function
+	return mPFN_marioKeyOn_trampoline();
 }
 
 void performRELPatches()
@@ -629,7 +615,7 @@ void writeStandardBranch(void *address, void functionStart(), void functionBranc
 void initAddressOverwrites()
 {
 	#ifdef TTYD_US
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80046600);
+	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800465CC);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800448CC);
 	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004EC10);
@@ -640,21 +626,20 @@ void initAddressOverwrites()
 	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x800411D0);
 	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800ABCD8);
 	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x800816F4);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80122BB8);
 	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x80122BA4);
+	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80122BB8);
 	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x8010F810);
 	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010F888);
-	void *FixMarioKeyOnAddress 					= reinterpret_cast<void *>(0x8005C1C8);
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800D214C);
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80428BC0);
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8025E4A4);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x8025E4A8);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231938);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231928);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013D148);
 	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x800389C4);
 	#elif defined TTYD_JP
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F5C);
+	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
 	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004DFB0);
@@ -665,19 +650,18 @@ void initAddressOverwrites()
 	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x80040B34);
 	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800AA01C);
 	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x80080B6C);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x8011D6F0);
 	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x8011D6DC);
+	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x8011D6F0);
 	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x8010A724);
 	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010A79C);
-	void *FixMarioKeyOnAddress 					= reinterpret_cast<void *>(0x8005B370);
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800CE01C);
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80422618);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C288);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C278);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x80137C1C);
 	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038328);
 	#elif defined TTYD_EU
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466E8);
+	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
 	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004ECDC);
@@ -688,62 +672,47 @@ void initAddressOverwrites()
 	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x800412B8);
 	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800AD0A8);
 	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x800829b0);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80123AF8);
 	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x80123AE4);
+	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80123AF8);
 	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x801106E8);
 	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x80110760);
-	void *FixMarioKeyOnAddress 					= reinterpret_cast<void *>(0x8005C300);
 	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800D2F44);
 	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x804356C8);
 	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8026207C);
 	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x80262080);
 	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353C8);
+	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353b8);
 	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013EC30);
 	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038AAC);
 	#endif
 	
-	writeStandardBranch(DisableBattlesAddress, 
-		StartDisableBattles, BranchBackDisableBattles);
+	patch::writeBranchLR(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(StartPreventPreBattleSoftlock));
 	
-	writeStandardBranch(AllowRunningFromBattlesAddress, 
-		StartAllowRunningFromBattles, BranchBackAllowRunningFromBattles);
+	patch::writeBranchLR(DisableBattlesAddress, reinterpret_cast<void *>(StartDisableBattles));
 	
-	writeStandardBranch(ForceNPCItemDropAddress, 
-		StartForceNPCItemDrop, BranchBackForceNPCItemDrop);
+	patch::writeBranchLR(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
 	
-	writeStandardBranch(ReplaceJumpAnimAddress, 
-		StartReplaceJumpFallAnim, BranchBackReplaceJumpFallAnim);
+	patch::writeBranchLR(ForceNPCItemDropAddress, reinterpret_cast<void *>(StartForceNPCItemDrop));
 	
-	writeStandardBranch(DisplayBattleMenuHammerAddress, 
-		StartDisplayMegaHammerBadgesBattleMenu, BranchBackDisplayMegaHammerBadgesBattleMenu);
+	patch::writeBranchLR(ReplaceJumpAnimAddress, reinterpret_cast<void *>(StartReplaceJumpFallAnim));
 	
-	writeStandardBranch(DisplayBattleMenuJumpAddress, 
-		StartDisplayMegaJumpBadgeBattleMenu, BranchBackDisplayMegaJumpBadgeBattleMenu);
+	patch::writeBranchLR(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(StartDisplayMegaJumpBadgeBattleMenu));
 	
-	writeStandardBranch(FixBlooperCrash1Address, 
-		StartFixBlooperCrash1, BranchBackFixBlooperCrash1);
+	patch::writeBranchLR(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(StartDisplayMegaHammerBadgesBattleMenu));
 	
-	writeStandardBranch(FixBlooperCrash2Address, 
-		StartFixBlooperCrash2, BranchBackFixBlooperCrash2);
+	patch::writeBranchLR(FixBlooperCrash1Address, reinterpret_cast<void *>(StartFixBlooperCrash1));
 	
-	writeStandardBranch(FixMarioKeyOnAddress, 
-		StartFixMarioKeyOn, BranchBackFixMarioKeyOn);
+	patch::writeBranchLR(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
 	
-	writeStandardBranch(PreventTextboxSelectionAddress, 
-		StartPreventTextboxSelection, BranchBackPreventTextboxSelection);
-	
-	writeStandardBranch(DisableDPadOptionsDisplayAddress, 
-		StartDisableDPadOptionsDisplay, BranchBackDisableDPadOptionsDisplay);
-	
-	writeStandardBranch(FixEvtMapBlendSetFlagCrashAddress, 
-		StartFixEvtMapBlendSetFlagCrash, BranchBackFixEvtMapBlendSetFlagCrash);
-	
-	patch::writeBranch(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(preventPreBattleSoftlock));
-	
-	patch::writeBranch(ArtAttackHitboxesAddress, reinterpret_cast<void *>(displayArtAttackHitboxes));
+	patch::writeBranchLR(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
 	
 	patch::writeBranchLR(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
+	
+	patch::writeBranchLR(ArtAttackHitboxesAddress, reinterpret_cast<void *>(StartDrawArtAttackHitboxes));
+	
+	patch::writeBranchLR(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
+	
+	patch::writeBranchLR(FixEvtMapBlendSetFlagCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagCrash));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
