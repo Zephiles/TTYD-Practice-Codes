@@ -457,6 +457,32 @@ uint16_t getMessageWidth(const char *text, float scale)
 	return static_cast<uint16_t>(Width);
 }
 
+void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut)
+{
+	if (valueToCheck)
+	{
+		*textOut = "On";
+		*colorOut = 0x1BBE23FF;
+	}
+	else
+	{
+		*textOut = "Off";
+		*colorOut = 0xFF1414FF;
+	}
+}
+
+uint32_t getSelectedTextColor(bool valueToCheck)
+{
+	if (valueToCheck)
+	{
+		return 0x5B59DEFF; // Blue
+	}
+	else
+	{
+		return 0xFFFFFFFF; // White
+	}
+}
+
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
 	uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve)
 {
@@ -519,30 +545,18 @@ void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage)
 			return;
 		}
 		
+		bool CurrentOptionCheck;
 		if (tempSelectedOption == 0)
 		{
-			if (CurrentMenuOption == i)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			CurrentOptionCheck = CurrentMenuOption == i;
 		}
 		else
 		{
-			if (tempSelectedOption == i)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			CurrentOptionCheck = tempSelectedOption == i;
 		}
 		
 		const char *CurrentLine = Menu[tempCurrentMenu].Line[i];
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		drawText(CurrentLine, PosX, PosY, Alpha, Color, Scale);
 		PosY -= 20;
 	}
@@ -577,14 +591,8 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
 				return;
 			}
 			
-			if ((currentMenuOption == i) && showCurrentOption)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			bool CurrentOptionCheck = (currentMenuOption == i) && showCurrentOption;
+			Color = getSelectedTextColor(CurrentOptionCheck);
 			
 			const char *CurrentLine = lines[i];
 			drawText(CurrentLine, posX, posY, Alpha, Color, Scale);
@@ -779,24 +787,19 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t s
 			return;
 		}
 		
-		if ((tempSelectedOption >= DUPLICATE) && 
-			(tempSelectedOption <= DELETE) && 
-				(FunctionReturnCode >= 0) && 
-					(CurrentMenuOption == IndexCounter))
-		{
-			TextColor = 0x5B59DEFF;
-		}
-		else
-		{
-			TextColor = 0xFFFFFFFF;
-		}
-		
 		int16_t CurrentItem = *reinterpret_cast<int16_t *>(address + (IndexCounter * 0x2));
 		if (CurrentItem == 0)
 		{
 			// Reached the end of the array, so exit
 			return;
 		}
+		
+		bool CurrentOptionCheck = (tempSelectedOption >= DUPLICATE) && 
+			(tempSelectedOption <= DELETE) && 
+				(FunctionReturnCode >= 0) && 
+					(CurrentMenuOption == IndexCounter);
+		
+		TextColor = getSelectedTextColor(CurrentOptionCheck);
 		
 		const char *ItemName = getItemName(CurrentItem);
 		drawText(ItemName, posX, posY, alpha, TextColor, scale);
@@ -894,14 +897,8 @@ void drawMarioSpecialMovesOptions()
 		drawIconFromItem(IconPosition, SpecialMoveIcon, Scale);
 		
 		// Draw the main text
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(MarioStatsSpecialMovesOptions[i], PosX, PosY, Alpha, Color, Scale);
 		
@@ -918,17 +915,10 @@ void drawMarioSpecialMovesOptions()
 	for (uint32_t i = 0; i < 8; i++)
 	{
 		// Check if the current special move is on or off
+		bool SpecialMoveOnOrOff = SpecialMovesBits & (1 << i);
 		const char *CurrentSpecialMove;
-		if (SpecialMovesBits & (1 << i))
-		{
-			CurrentSpecialMove = "On";
-			Color = 0x1BBE23FF;
-		}
-		else
-		{
-			CurrentSpecialMove = "Off";
-			Color = 0xFF1414FF;
-		}
+		
+		getOnOffTextAndColor(SpecialMoveOnOrOff, &CurrentSpecialMove, &Color);
 		
 		drawText(CurrentSpecialMove, PosX, PosY, Alpha, Color, Scale);
 		PosY -= 30;
@@ -969,14 +959,8 @@ void drawFollowersOptions()
 	
 	for (uint32_t i = 0; i < tempStatsFollowerOptionsLinesSize; i++)
 	{
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(StatsFollowerOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
 		PosY -= 20;
@@ -1074,14 +1058,9 @@ void drawMarioStats()
 			drawIcon(IconPosition, StatsMarioIcons[i], IconScale);
 			
 			// Draw the text
-			if ((CurrentMenuOption == i) && (SelectedOption > 0))
-			{
-				SelectionTextColor = 0x5B59DEFF;
-			}
-			else
-			{
-				SelectionTextColor = 0xFFFFFFFF;
-			}
+			bool CurrentOptionCheck = (CurrentMenuOption == i) && (SelectedOption > 0);
+			SelectionTextColor = getSelectedTextColor(CurrentOptionCheck);
+			
 			drawText(StatsMarioOptionsLines[i], PosX, PosY, Alpha, SelectionTextColor, TextScale);
 			
 			// Draw the values
@@ -1170,14 +1149,8 @@ void drawPartnerStats()
 	uint32_t tempStatsPartnerOptionsLinesSize = StatsPartnerOptionsLinesSize;
 	for (uint32_t i = 0; i < tempStatsPartnerOptionsLinesSize; i++)
 	{
-		if ((tempCurrentMenuOption == i) && (tempSelectedOption > 0))
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = (tempCurrentMenuOption == i) && (tempSelectedOption > 0);
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(StatsPartnerOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
 		PosY -= 20;
@@ -1190,14 +1163,8 @@ void drawPartnerStats()
 	uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
 	if (CurrentPartner == YoshiPartner)
 	{
-		if ((tempCurrentMenuOption == FirstFreeSlot) && (tempSelectedOption > 0))
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = (tempCurrentMenuOption == FirstFreeSlot) && (tempSelectedOption > 0);
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		const char *String = "Color";
 		drawText(String, PosX, PosY, Alpha, Color, Scale);
@@ -1224,15 +1191,10 @@ void drawPartnerStats()
 		AdditionalOptions++;
 	}
 	
-	if ((tempCurrentMenuOption == (FirstFreeSlot + AdditionalOptions)) && (tempSelectedOption > 0))
-	{
-		Color = 0x5B59DEFF;
-	}
-	else
-	{
-		Color = 0xFFFFFFFF;
-	}
+	bool CurrentOptionCheck = (tempCurrentMenuOption == (
+		FirstFreeSlot + AdditionalOptions)) && (tempSelectedOption > 0);
 	
+	Color = getSelectedTextColor(CurrentOptionCheck);
 	drawText(OptionToDrawText, PosX, PosY, Alpha, Color, Scale);
 	
 	PosX = -20;
@@ -1255,17 +1217,7 @@ void drawPartnerStats()
 	bool PartnerEnabled = *reinterpret_cast<bool *>(PartnerEnabledAddress + 0x1);
 	const char *String;
 	
-	if (PartnerEnabled)
-	{
-		String = "On";
-		Color = 0x1BBE23FF;
-	}
-	else
-	{
-		String = "Off";
-		Color = 0xFF1414FF;
-	}
-	
+	getOnOffTextAndColor(PartnerEnabled, &String, &Color);
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw Yoshi's color
@@ -1386,14 +1338,8 @@ void drawPartnerChangeYoshiColorOptions()
 	for (uint32_t i = 0; i < Size; i++)
 	{
 		// Draw the main text
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(StatsYoshiColorOptionsLines[i], PosX, PosY, Alpha, Color, Scale);
 		PosY -= 20;
@@ -1621,28 +1567,13 @@ void drawMemoryWatches()
 		
 		// Draw the On/Off text for whether the watch is displayed or not
 		const char *OnOffText;
-		if (MemoryWatch[i].Display)
-		{
-			OnOffText = "On";
-			Color = 0x1BBE23FF;
-		}
-		else
-		{
-			OnOffText = "Off";
-			Color = 0xFF1414FF;
-		}
 		
+		getOnOffTextAndColor(MemoryWatch[i].Display, &OnOffText, &Color);
 		drawText(OnOffText, PosX + TypeOffset, PosY, Alpha, Color, Scale);
 		
 		// Set the color of the address text
-		if ((CurrentMenuOption == i) && (SelectedOption > 0))
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = (CurrentMenuOption == i) && (SelectedOption > 0);
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		// Draw the current address
 		drawText(getAddressString(i), PosX, PosY, Alpha, Color, Scale);
@@ -1673,25 +1604,18 @@ void drawMemoryModifyList()
 	for (uint32_t i = 0; i < TotalOptions; i++)
 	{
 		// Get the color of the main text
+		bool CurrentOptionCheck;
+		
 		if (tempSelectedOption == 0)
 		{
-			if (tempCurrentMenuOption == i)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
-		}
-		else if (tempSelectedOption == i)
-		{
-			Color = 0x5B59DEFF;
+			CurrentOptionCheck = tempCurrentMenuOption == i;
 		}
 		else
 		{
-			Color = 0xFFFFFFFF;
+			CurrentOptionCheck = tempSelectedOption == i;
 		}
+		
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		// Draw the main text
 		drawText(MemoryModifyLines[i], PosX, PosY, Alpha, Color, Scale);
@@ -1749,17 +1673,7 @@ void drawMemoryModifyList()
 			{
 				// Draw the On/Off text for whether the watch is displayed or not
 				const char *OnOffText;
-				if (MemoryWatch[tempMenuSelectedOption].Display)
-				{
-					OnOffText = "On";
-					Color = 0x1BBE23FF;
-				}
-				else
-				{
-					OnOffText = "Off";
-					Color = 0xFF1414FF;
-				}
-				
+				getOnOffTextAndColor(MemoryWatch[tempMenuSelectedOption].Display, &OnOffText, &Color);
 				drawText(OnOffText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
 				break;
 			}
@@ -1813,14 +1727,8 @@ void drawMemoryTypeList()
 	
 	for (uint32_t i = 0; i < Size; i++)
 	{
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(MemoryTypeLines[i], PosX, PosY, Alpha, Color, Scale);
 		PosY -= 20;
@@ -1890,17 +1798,13 @@ void drawMemoryChangeAddressList()
 	const int32_t PosX_Address_Position 	= 250;
 	
 	// Get the color for the address text
-	if ((tempSelectedOption != 0) && (tempCurrentMenuOption == 0))
+	bool CurrentOptionCheck = (tempSelectedOption != 0) && (tempCurrentMenuOption == 0);
+	Color = getSelectedTextColor(CurrentOptionCheck);
+	
+	if (CurrentOptionCheck)
 	{
 		// Draw a window for the current line
 		drawMemoryWatchChangeAddressListWindow(PosY);
-		
-		// Set the address text color to blue
-		Color = 0x5B59DEFF;
-	}
-	else
-	{
-		Color = 0xFFFFFFFF;
 	}
 	
 	// Draw the address
@@ -1918,17 +1822,13 @@ void drawMemoryChangeAddressList()
 	for (uint32_t i = 1; i <= TotalLevels; i++)
 	{
 		// Get the color for the pointer text
-		if ((tempSelectedOption != 0) && (tempCurrentMenuOption == i))
+		bool CurrentOptionCheck = (tempSelectedOption != 0) && (tempCurrentMenuOption == i);
+		Color = getSelectedTextColor(CurrentOptionCheck);
+		
+		if (CurrentOptionCheck)
 		{
 			// Draw a window for the current line
 			drawMemoryWatchChangeAddressListWindow(PosY);
-			
-			// Set the pointer text color to blue
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
 		}
 		
 		// Draw the text for the current level
@@ -2027,21 +1927,17 @@ void drawBattlesActorsList()
 			}
 		}
 		
-		if ((CurrentMenuOption == i) && 
-			(SelectedOption != 0))
+		if ((CurrentMenuOption == i) && (SelectedOption != 0))
 		{
 			Color = 0x5B59DEFF;
 		}
+		else if (SlotIsEmpty)
+		{
+			Color = 0x4B4B4BFF;
+		}
 		else
 		{
-			if (SlotIsEmpty)
-			{
-				Color = 0x4B4B4BFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			Color = 0xFFFFFFFF;
 		}
 		
 		drawText(CurrentActorString, PosX, PosY, Alpha, Color, Scale);
@@ -2108,7 +2004,10 @@ void drawBattlesStatusesList()
 			return;
 		}
 		
-		if (CurrentMenuOption == i)
+		bool CurrentOptionCheck = CurrentMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
+		
+		if (CurrentOptionCheck)
 		{
 			// Draw a window for the current line
 			uint32_t WindowColor = 0x151515E0;
@@ -2118,13 +2017,6 @@ void drawBattlesStatusesList()
 			int32_t Height = 35;
 			int32_t Curve = 0;
 			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
-			
-			// Set the main text color to blue
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
 		}
 		
 		// Draw the main text
@@ -2154,12 +2046,25 @@ void drawBattlesStatusesList()
 			ActorAddress + 0x118 + i + DisplayValueCounter);
 		
 		// Draw the text of the value
-		sprintf(tempDisplayBuffer,
-			"%" PRId8,
-			CurrentValue);
+		const char *TextToDraw;
 		
-		Color = 0xFFFFFFFF;
-		drawText(tempDisplayBuffer, TextPosX + 290, TextPosY, Alpha, Color, TextScale);
+		if (i == (TotalOptions - 1))
+		{
+			// Drawing the defeated flag
+			getOnOffTextAndColor(CurrentValue, &TextToDraw, &Color);
+		}
+		else
+		{
+			// Not drawing the defeated flag
+			sprintf(tempDisplayBuffer,
+				"%" PRId8,
+				CurrentValue);
+			
+			TextToDraw = tempDisplayBuffer;
+			Color = 0xFFFFFFFF;
+		}
+		
+		drawText(TextToDraw, TextPosX + 290, TextPosY, Alpha, Color, TextScale);
 		
 		IconPosition[IconPositionY] -= 30;
 		TextPosY -= 30;
@@ -2336,14 +2241,8 @@ void drawConfirmationWindow(const char *message)
 			Option = "No";
 		}
 		
-		if (tempSecondaryMenuOption == i)
-		{
-			Color = 0x5B59DEFF;
-		}
-		else
-		{
-			Color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		drawText(Option, PosX, PosY, Alpha, Color, Scale);
 		PosY -= 23;
@@ -2579,9 +2478,9 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	AdjustableValue[1] = (tempMenuSecondaryValueUnsigned % 100) / 10;
 	AdjustableValue[2] = (tempMenuSecondaryValueUnsigned % 100) % 10;*/
 	
-	x 					+= 166;
-	y 					-= 30;
-	scale 				= 0.9;
+	x += 166;
+	y -= 30;
+	scale = 0.9;
 	
 	// Calculate the X offset
 	int32_t tempPosX = 0;
@@ -2602,14 +2501,8 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
-		if (tempSecondaryMenuOption == i)
-		{
-			color = 0x5B59DEFF;
-		}
-		else
-		{
-			color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		color = getSelectedTextColor(CurrentOptionCheck);
 		
 		sprintf(tempDisplayBuffer,
 			"%" PRIu8,
@@ -2742,14 +2635,8 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
-		if (tempSecondaryMenuOption == i)
-		{
-			color = 0x5B59DEFF;
-		}
-		else
-		{
-			color = 0xFFFFFFFF;
-		}
+		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+		color = getSelectedTextColor(CurrentOptionCheck);
 		
 		char *tempDisplayBuffer = DisplayBuffer;
 		sprintf(tempDisplayBuffer,
@@ -2925,16 +2812,7 @@ void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
 	
 	// Draw the bool value
 	const char *StringValue;
-	if (tempBool)
-	{
-		StringValue = "On";
-		Color = 0x1BBE23FF;
-	}
-	else
-	{
-		StringValue = "Off";
-		Color = 0xFF1414FF;
-	}
+	getOnOffTextAndColor(tempBool, &StringValue, &Color);
 	
 	posY -= 20;
 	drawText(StringValue, PosX, posY, Alpha, Color, Scale);
@@ -3333,28 +3211,17 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 	uint32_t TextIndex = 0;
 	for (uint32_t i = 0; i < Size; i++)
 	{
+		bool CurrentOptionCheck;
 		if (tempSelectedOption == 0)
 		{
-			if (CurrentMenuOption == i)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			CurrentOptionCheck = CurrentMenuOption == i;
 		}
 		else
 		{
-			if (tempSelectedOption == i)
-			{
-				Color = 0x5B59DEFF;
-			}
-			else
-			{
-				Color = 0xFFFFFFFF;
-			}
+			CurrentOptionCheck = tempSelectedOption == i;
 		}
+		
+		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		if (i == 1)
 		{	
@@ -3407,12 +3274,17 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 		
 		// Draw the values
+		// Draw the flag being changed
 		sprintf(tempDisplayBuffer,
-			"%" PRIu32 "\n%" PRId32,
-			FlagToSet,
-			FlagValue);
+			"%" PRIu32,
+			FlagToSet);
 		
 		drawText(tempDisplayBuffer, PosX + 150, PosY, Alpha, Color, Scale);
+		
+		// Draw the On/Off text
+		const char *TextToDraw;
+		getOnOffTextAndColor(FlagValue, &TextToDraw, &Color);
+		drawText(TextToDraw, PosX + 150, PosY - 20, Alpha, Color, Scale);
 	}
 }
 
@@ -3761,12 +3633,19 @@ void drawJumpStorageDetails()
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	char *tempDisplayBuffer = DisplayBuffer;
 	
+	// Draw the main text
 	sprintf(tempDisplayBuffer,
-		"JS: %" PRIu32 "\nSpdY: %.2f",
-		(player->flags3 & (1 << 16)) >> 16, // Get only the 16 bit
+		"JS:\nSpdY: %.2f",
 		player->wJumpVelocityY);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Draw the On/Off Text
+	bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
+	const char *TextToDraw;
+	
+	getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &TextColor);
+	drawText(TextToDraw, PosX + 38, PosY, Alpha, TextColor, Scale);
 }
 
 void drawButtonInputs()

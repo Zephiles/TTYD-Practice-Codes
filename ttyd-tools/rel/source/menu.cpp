@@ -1474,11 +1474,10 @@ void menuCheckButton()
 										}
 										case TOGGLE:
 										{
-											bool PartnerEnabled = *reinterpret_cast<bool *>(
+											bool *AddressToChange = reinterpret_cast<bool *>(
 												PartnerEnabledAddress + 1);
 											
-											*reinterpret_cast<bool *>(
-												PartnerEnabledAddress + 1) = !PartnerEnabled;
+											*AddressToChange = !*AddressToChange;
 											
 											// Reset the partner menu if the pause menu is open
 											uint32_t SystemLevel = getSystemLevel();
@@ -2562,10 +2561,6 @@ void menuCheckButton()
 								break;
 							}
 							
-							SelectedOption = tempCurrentMenuOption + 1;
-							MenuSelectionStates = tempCurrentMenuOption + 1;
-							SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-							
 							uint32_t Counter = 0;
 							if (tempCurrentMenuOption >= 1) // Sleep flags
 							{
@@ -2582,8 +2577,27 @@ void menuCheckButton()
 								}
 							}
 							
-							MenuSecondaryValue = *reinterpret_cast<int8_t *>(
-								ActorAddress + (0x118 + tempCurrentMenuOption + Counter));
+							uint32_t TotalOptions = BattlesStatusesLinesSize;
+							uint32_t OffsetToLoad = 0x118 + tempCurrentMenuOption + Counter;
+							
+							if (tempCurrentMenuOption == (TotalOptions - 1))
+							{
+								// Currently modifying the defeated flag
+								// Toggle the value
+								bool *AddressToChange = reinterpret_cast<bool *>(
+									ActorAddress + OffsetToLoad);
+								
+								*AddressToChange = !*AddressToChange;
+							}
+							else
+							{
+								SelectedOption = tempCurrentMenuOption + 1;
+								MenuSelectionStates = tempCurrentMenuOption + 1;
+								SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+								
+								MenuSecondaryValue = *reinterpret_cast<int8_t *>(
+									ActorAddress + OffsetToLoad);
+							}
 						}
 						break;
 					}
