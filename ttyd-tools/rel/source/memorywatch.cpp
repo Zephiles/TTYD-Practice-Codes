@@ -123,14 +123,15 @@ const char *getValueString(int32_t slot)
 			uint32_t FPS = getCurrentFPS();
 			
 			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
-			const char *NegativeSign = "";
+			bool ValueIsPositive = true;
 			
 			// Check if the value is negative
 			if (CurrentTime < 0)
 			{
+				ValueIsPositive = false;
+				
 				// Convert the number to positive
 				CurrentTime = -CurrentTime;
-				NegativeSign = "-";
 			}
 			
 			// Handle the value as unsigned
@@ -141,13 +142,24 @@ const char *getValueString(int32_t slot)
 			uint32_t second = (CurrentTimeUnsigned / FPS) % 60;
 			uint32_t frame = CurrentTimeUnsigned % FPS;
 			
-			sprintf(tempDisplayBuffer,
-				"%s%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
-				NegativeSign,
-				hour,
-				minute,
-				second,
-				frame);
+			if (ValueIsPositive)
+			{
+				sprintf(tempDisplayBuffer,
+					"%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
+					hour,
+					minute,
+					second,
+					frame);
+			}
+			else
+			{
+				sprintf(tempDisplayBuffer,
+					"-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
+					hour,
+					minute,
+					second,
+					frame);
+			}
 			return tempDisplayBuffer;
 		}
 		case s8:
