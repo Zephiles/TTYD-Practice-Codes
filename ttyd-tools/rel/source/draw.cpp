@@ -87,7 +87,7 @@ void drawArtAttackHitboxes()
 		uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSVA);
 		
 		// Set the color of the lines of the current hitbox
-		gc::gx::GXSetChanMatColor(gc::gx::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
+		gc::gx::GXSetChanMatColor(gc::gx::GXChannelID::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
 		
 		// Adjust the hue for the lines of the next hitbox
 		HSVA[0] += 45;
@@ -191,7 +191,7 @@ void drawArtAttackHitboxes()
 			}
 			
 			// Draw the line from corner 1 to corner 2
-			gc::gx::GXBegin(static_cast<gc::gx::GXPrimitive>(168), gc::gx::GX_VTXFMT0, 2);
+			gc::gx::GXBegin(gc::gx::GXPrimitive::GX_LINES, gc::gx::GXVtxFmt::GX_VTXFMT0, 2);
 			
 			*WriteGatherPipe = ScreenPointOutLineStart[0];
 			*WriteGatherPipe = ScreenPointOutLineStart[1];

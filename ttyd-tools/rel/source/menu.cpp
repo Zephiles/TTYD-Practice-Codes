@@ -1694,13 +1694,13 @@ void menuCheckButton()
 							
 							switch (ReturnCode)
 							{
-								case CARD_ERROR_READY:
+								case CARD_RESULT_READY:
 								{
 									MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
 									Timer = secondsToFrames(3);
 									break;
 								}
-								case CARD_ERROR_NOFILE:
+								case CARD_RESULT_NOFILE:
 								{
 									MenuSettings.ReturnCode = LOAD_FAILED_NO_FILE;
 									Timer = secondsToFrames(3);
@@ -1722,7 +1722,7 @@ void menuCheckButton()
 							
 							switch (ReturnCode)
 							{
-								case CARD_ERROR_READY:
+								case CARD_RESULT_READY:
 								{
 									MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
 									Timer = secondsToFrames(3);

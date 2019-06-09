@@ -6,18 +6,18 @@ namespace gc::gx {
 
 extern "C" {
 
-enum GXPrimitive
+enum class GXPrimitive
 {
-	GX_POINTS = 0,
-	GX_LINES,
-	GX_LINESTRIP,
-	GX_TRIANGLES,
-	GX_TRIANGLESTRIP,
-	GX_TRIANGLEFAN,
-	GX_QUADS,
+	GX_QUADS 			= 128,
+	GX_TRIANGLES 		= 144,
+	GX_TRIANGLESTRIP 	= 152,
+	GX_TRIANGLEFAN 		= 160,
+	GX_LINES 			= 168,
+	GX_LINESTRIP 		= 176,
+	GX_POINTS 			= 184,
 };
 
-enum GXVtxFmt
+enum class GXVtxFmt
 {
 	GX_VTXFMT0 = 0,
 	GX_VTXFMT1,
@@ -30,7 +30,7 @@ enum GXVtxFmt
 	GX_MAX_VTXFMT,
 };
 
-enum GXChannelID
+enum class GXChannelID
 {
 	GX_COLOR0 = 0,
 	GX_COLOR1,
@@ -41,7 +41,7 @@ enum GXChannelID
 	GX_COLOR_ZERO,
 	GX_ALPHA_BUMP,
 	GX_ALPHA_BUMPN,
-	GX_COLOR_NULL,
+	GX_COLOR_NULL = 255,
 };
 
 void GXBegin(GXPrimitive type, GXVtxFmt vtxFmt, uint16_t nVerts);

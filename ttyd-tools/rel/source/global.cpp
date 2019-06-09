@@ -1513,18 +1513,17 @@ void initMenuVars()
 	Menu[WARPS_INDEX].PreviousMenu 						= WARPS;
 	Menu[WARPS_INDEX].Line 								= WarpIndexLines;
 	
-	// The CARD functions do not modify the strings, so const_cast<char *> can be used
-	MenuSettings.SettingsFileName = const_cast<char *>("rel_settings");
+	MenuSettings.SettingsFileName = "rel_settings";
 	
 	#ifdef TTYD_US
-	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (US)");
+	MenuSettings.SettingsDescription = "Practice Codes Settings (US)";
 	#elif defined TTYD_JP
-	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (JP)");
+	MenuSettings.SettingsDescription = "Practice Codes Settings (JP)";
 	#elif defined TTYD_EU
-	MenuSettings.SettingsDescription = const_cast<char *>("Practice Codes Settings (EU)");
+	MenuSettings.SettingsDescription = "Practice Codes Settings (EU)";
 	#endif
 	
-	MenuSettings.RelFileName = const_cast<char *>("rel");
+	MenuSettings.RelFileName = "rel";
 	
 	// Set the initial settings
 	setSettings();

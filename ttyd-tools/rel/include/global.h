@@ -572,9 +572,9 @@ struct DisplayActionCommandTiming
 struct MemoryCardStruct
 {
 	uint8_t ReturnCode;
-	char *SettingsFileName;
-	char *SettingsDescription;
-	char *RelFileName;
+	const char *SettingsFileName;
+	const char *SettingsDescription;
+	const char *RelFileName;
 };
 
 struct MemoryWatchStruct

@@ -29,8 +29,7 @@
 namespace mod {
 
 // Assembly overwrite functions
-extern "C"
-{
+extern "C" {
 
 void StartPreventPreBattleSoftlock();
 void StartDisableBattles();
