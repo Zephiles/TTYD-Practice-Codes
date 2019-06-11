@@ -462,12 +462,12 @@ void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *col
 	if (valueToCheck)
 	{
 		*textOut = "On";
-		*colorOut = 0x1BBE23FF;
+		*colorOut = 0x1BBE23FF; // Green
 	}
 	else
 	{
 		*textOut = "Off";
-		*colorOut = 0xFF1414FF;
+		*colorOut = 0xFF1414FF; // Red
 	}
 }
 
