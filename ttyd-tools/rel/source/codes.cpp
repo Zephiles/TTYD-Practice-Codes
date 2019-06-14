@@ -193,14 +193,20 @@ void saveMarioAndPartnerPositions()
 	MarioPartnerPositions.MarioPosition[1] = player->playerPosition[1]; // Mario Coordinate Y
 	MarioPartnerPositions.MarioPosition[2] = player->playerPosition[2]; // Mario Coordinate Z
 	MarioPartnerPositions.MarioPosition[3] = player->wPlayerAngleCurrent;
+	MarioPartnerPositions.MarioPosition[4] = player->wPlayerAngle;
+	MarioPartnerPositions.MarioPosition[5] = player->wPlayerDirectionCurrent;
+	MarioPartnerPositions.MarioPosition[6] = player->wPlayerDirection;
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer != 0)
+	if (PartnerPointer)
 	{
 		MarioPartnerPositions.PartnerPosition[0] = *reinterpret_cast<float *>(PartnerPointer + 0x58); // Partner Coordinate X
 		MarioPartnerPositions.PartnerPosition[1] = *reinterpret_cast<float *>(PartnerPointer + 0x5C); // Partner Coordinate Y
 		MarioPartnerPositions.PartnerPosition[2] = *reinterpret_cast<float *>(PartnerPointer + 0x60); // Partner Coordinate Z
-		MarioPartnerPositions.PartnerPosition[3] = *reinterpret_cast<float *>(PartnerPointer + 0x100);
+		MarioPartnerPositions.PartnerPosition[3] = *reinterpret_cast<float *>(PartnerPointer + 0xFC); // Partner Angle Current
+		MarioPartnerPositions.PartnerPosition[4] = *reinterpret_cast<float *>(PartnerPointer + 0x100); // Partner Angle
+		MarioPartnerPositions.PartnerPosition[5] = *reinterpret_cast<float *>(PartnerPointer + 0x10C); // Partner Direction Current
+		MarioPartnerPositions.PartnerPosition[6] = *reinterpret_cast<float *>(PartnerPointer + 0x110); // Partner Direction
 	}
 }
 
@@ -218,18 +224,24 @@ void loadMarioAndPartnerPositions()
 	
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	
-	player->playerPosition[0] 		= MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
-	player->playerPosition[1] 		= MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
-	player->playerPosition[2] 		= MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
-	player->wPlayerAngleCurrent 	= MarioPartnerPositions.MarioPosition[3];
+	player->playerPosition[0] 			= MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
+	player->playerPosition[1] 			= MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
+	player->playerPosition[2] 			= MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
+	player->wPlayerAngleCurrent 		= MarioPartnerPositions.MarioPosition[3];
+	player->wPlayerAngle 				= MarioPartnerPositions.MarioPosition[4];
+	player->wPlayerDirectionCurrent 	= MarioPartnerPositions.MarioPosition[5];
+	player->wPlayerDirection 			= MarioPartnerPositions.MarioPosition[6];
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer != 0)
+	if (PartnerPointer)
 	{
 		*reinterpret_cast<float *>(PartnerPointer + 0x58) 	= MarioPartnerPositions.PartnerPosition[0]; // Partner Coordinate X
 		*reinterpret_cast<float *>(PartnerPointer + 0x5C) 	= MarioPartnerPositions.PartnerPosition[1]; // Partner Coordinate Y
 		*reinterpret_cast<float *>(PartnerPointer + 0x60) 	= MarioPartnerPositions.PartnerPosition[2]; // Partner Coordinate Z
-		*reinterpret_cast<float *>(PartnerPointer + 0x100) 	= MarioPartnerPositions.PartnerPosition[3];
+		*reinterpret_cast<float *>(PartnerPointer + 0xFC) 	= MarioPartnerPositions.PartnerPosition[3]; // Partner Angle Current
+		*reinterpret_cast<float *>(PartnerPointer + 0x100) 	= MarioPartnerPositions.PartnerPosition[4]; // Partner Angle
+		*reinterpret_cast<float *>(PartnerPointer + 0x10C) 	= MarioPartnerPositions.PartnerPosition[5]; // Partner Direction Current
+		*reinterpret_cast<float *>(PartnerPointer + 0x110) 	= MarioPartnerPositions.PartnerPosition[6]; // Partner Direction
 	}
 }
 
@@ -586,6 +598,8 @@ void bobberyEarly()
 		player->playerPosition[1] = 59;
 		player->playerPosition[2] = RopePosZ + 10;
 		player->wPlayerAngleCurrent = 180;
+		player->wPlayerAngle = 180;
+		player->wPlayerDirectionCurrent = 180;
 		player->wPlayerDirection = 180;
 	}
 	

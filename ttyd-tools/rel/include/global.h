@@ -493,8 +493,8 @@ struct CheatsManageFlags
 
 struct MarioPartnerPositionsStruct
 {
-	float MarioPosition[4];
-	float PartnerPosition[4];
+	float MarioPosition[7];
+	float PartnerPosition[7];
 };
 
 struct SaveAnywhereStruct
