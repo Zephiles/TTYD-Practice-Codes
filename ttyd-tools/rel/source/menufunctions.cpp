@@ -1751,15 +1751,9 @@ uint32_t followersOptionsButtonControls()
 				// Set specific bytes
 				if (ReturnCode >= 0)
 				{
-					#ifdef TTYD_JP
-					uint32_t MarioPtr = reinterpret_cast<uint32_t>(ttyd::mario::marioGetPtr());
-					*reinterpret_cast<uint8_t *>(MarioPtr + 0x242) = ReturnCode;
-					*reinterpret_cast<uint8_t *>(MarioPtr + 0x244) = NewFollower;
-					#else
 					ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-					player->wFollowerFlags[1] = ReturnCode; // 0x246
-					player->prevFollowerId[1] = NewFollower; // 0x248
-					#endif
+					player->wFollowerFlags[1] = ReturnCode;
+					player->prevFollowerId[1] = NewFollower;
 				}
 				
 				closeSecondaryMenu();

@@ -203,13 +203,8 @@ void *fixEvtMapBlendSetFlagCrash(void *partnerPtr)
 	// Bring out a partner if no partner is currently out
 	if (!partnerPtr)
 	{
-		#ifdef TTYD_JP
-		uint32_t tempMarioPtr = reinterpret_cast<uint32_t>(ttyd::mario::marioGetPtr());
-		uint8_t PreviousPartnerOut = *reinterpret_cast<uint8_t *>(tempMarioPtr + 0x243);
-		#else
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 		uint8_t PreviousPartnerOut = player->prevFollowerId[0];
-		#endif
 
 		// Check if a partner was previously out
 		if (PreviousPartnerOut != 0)

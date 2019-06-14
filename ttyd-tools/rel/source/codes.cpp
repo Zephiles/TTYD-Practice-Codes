@@ -192,7 +192,7 @@ void saveMarioAndPartnerPositions()
 	MarioPartnerPositions.MarioPosition[0] = player->playerPosition[0]; // Mario Coordinate X
 	MarioPartnerPositions.MarioPosition[1] = player->playerPosition[1]; // Mario Coordinate Y
 	MarioPartnerPositions.MarioPosition[2] = player->playerPosition[2]; // Mario Coordinate Z
-	MarioPartnerPositions.MarioPosition[3] = player->unk_1a0;
+	MarioPartnerPositions.MarioPosition[3] = player->wPlayerAngleCurrent;
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
 	if (PartnerPointer != 0)
@@ -218,10 +218,10 @@ void loadMarioAndPartnerPositions()
 	
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	
-	player->playerPosition[0] 	= MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
-	player->playerPosition[1] 	= MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
-	player->playerPosition[2] 	= MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
-	player->unk_1a0 			= MarioPartnerPositions.MarioPosition[3];
+	player->playerPosition[0] 		= MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
+	player->playerPosition[1] 		= MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
+	player->playerPosition[2] 		= MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
+	player->wPlayerAngleCurrent 	= MarioPartnerPositions.MarioPosition[3];
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
 	if (PartnerPointer != 0)
@@ -585,14 +585,8 @@ void bobberyEarly()
 		player->playerPosition[0] = -1;
 		player->playerPosition[1] = 59;
 		player->playerPosition[2] = RopePosZ + 10;
-		
-		#ifdef TTYD_JP
-		player->unk_19c = 180;
+		player->wPlayerAngleCurrent = 180;
 		player->wPlayerDirection = 180;
-		#else
-		player->unk_1a0 = 180;
-		player->unk_1b0 = 180;
-		#endif
 	}
 	
 	if (!Cheat[BOBBERY_EARLY].Active)

@@ -4,6 +4,8 @@
 
 namespace ttyd::mario {
 
+// The Player struct was defined using the US version, but has been adjusted to work with the JP version as well
+// The Player struct is also 100% identical between US and EU
 struct Player
 {
 	uint32_t flags1;
@@ -24,7 +26,7 @@ struct Player
 	uint32_t wMapTime;
 	uint8_t unk_38;
 	int8_t wKey;
-	uint8_t unk_3a[2];
+	uint16_t unk_3a;
 	int8_t characterId;
 	int8_t colorId;
 	uint8_t unk_3e;
@@ -66,15 +68,17 @@ struct Player
 	float unk_184;
 	float unk_188;
 	float wPlayerEffectiveSpeed;
+	#ifndef TTYD_JP
 	float unk_190;
+	#endif
 	float wControlStickSensitivity;
 	float wControlStickAngle;
 	float unk_19c;
-	float unk_1a0;
+	float wPlayerAngleCurrent;
 	float wPlayerAngle;
 	float unk_1a8;
+	float wPlayerDirectionCurrent;
 	float wPlayerDirection;
-	float unk_1b0;
 	uint32_t unk_1b4;
 	float wPlayerCollisionBox[3];
 	float wPlayerCollisionRelated[3];
@@ -96,7 +100,8 @@ struct Player
 	uint8_t prevFollowerId[2];
 	uint8_t unk_249;
 	uint16_t wPauseButtonBuffer;
-	uint32_t unk_24c;
+	uint16_t unk_24c;
+	uint16_t unk_24e;
 	uint16_t unk_250;
 	uint8_t wStickDir1;
 	uint8_t wStickDir2;
@@ -104,9 +109,15 @@ struct Player
 	uint8_t wSubStickDir2;
 	uint8_t wPauseLeftTrigger;
 	uint8_t wPauseRightTrigger;
-	uint32_t unk_258;
+	uint8_t unk_258;
+	uint8_t unk_259;
+	uint16_t unk_25a;
 	uint32_t unk_25c;
+	#ifdef TTYD_JP
+	uint8_t gap_260[68];
+	#else
 	uint8_t gap_260[88];
+	#endif
 	float wMultiVal1;
 	float wYoshiHoverHeight;
 	float wCamVal1;
@@ -117,7 +128,11 @@ struct Player
 	uint32_t unk_2f4;
 } __attribute__((__packed__));
 
+#ifdef TTYD_JP
+static_assert(sizeof(Player) == 0x2E0);
+#else
 static_assert(sizeof(Player) == 0x2F8);
+#endif
 
 extern "C" {
 
