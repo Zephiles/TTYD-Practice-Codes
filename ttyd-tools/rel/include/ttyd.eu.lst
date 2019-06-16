@@ -1,3 +1,7 @@
+// os
+// data
+800000F8:OSBusClock
+
 // __mem.c
 800050B4:memset
 // 800050E4:__fill_mem

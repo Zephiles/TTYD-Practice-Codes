@@ -3,6 +3,7 @@
 #include "commonfunctions.h"
 #include "menufunctions.h"
 
+#include <gc/os.h>
 #include <ttyd/system.h>
 
 #include <cstdio>
@@ -118,8 +119,8 @@ const char *getValueString(int32_t slot)
 		}
 		case time:
 		{
-			uint32_t *ConsoleBusSpeed = reinterpret_cast<uint32_t *>(0x800000F8);
-			uint32_t TimeBase = *ConsoleBusSpeed / 4;
+			uint32_t ConsoleBusSpeed = gc::os::OSBusClock;
+			uint32_t TimeBase = ConsoleBusSpeed / 4;
 			uint32_t FPS = getCurrentFPS();
 			
 			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
