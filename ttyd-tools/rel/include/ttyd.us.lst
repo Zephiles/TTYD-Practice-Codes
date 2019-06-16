@@ -2003,3 +2003,7 @@
 // item_data.o
 // data
 803108A8:itemDataTable
+
+// ppc
+// data
+CC008000:writeGatherPipe

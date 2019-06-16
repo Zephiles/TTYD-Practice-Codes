@@ -7,6 +7,7 @@
 #include "memorywatch.h"
 
 #include <gc/gx.h>
+#include <gc/ppc.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/battle_disp.h>
@@ -41,9 +42,6 @@ void drawArtAttackHitboxes()
 	// Set the initial color to use for the lines of the hitboxes
 	uint8_t HSVA[4];
 	*reinterpret_cast<uint32_t *>(&HSVA) = 0x00FFCCFF; // RGBA value is 0xCC0000FF
-	
-	// Get the address of the write gather pipe, and handle the value at the address as a float
-	volatile float *WriteGatherPipe = reinterpret_cast<float *>(0xCC008000);
 	
 	for (uint32_t Slot = 0; Slot < 64; Slot++)
 	{
@@ -193,13 +191,13 @@ void drawArtAttackHitboxes()
 			// Draw the line from corner 1 to corner 2
 			gc::gx::GXBegin(gc::gx::GXPrimitive::GX_LINES, gc::gx::GXVtxFmt::GX_VTXFMT0, 2);
 			
-			*WriteGatherPipe = ScreenPointOutLineStart[0];
-			*WriteGatherPipe = ScreenPointOutLineStart[1];
-			*WriteGatherPipe = 0;
+			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineStart[0];
+			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineStart[1];
+			gc::ppc::writeGatherPipe.f32 = 0;
 			
-			*WriteGatherPipe = ScreenPointOutLineEnd[0];
-			*WriteGatherPipe = ScreenPointOutLineEnd[1];
-			*WriteGatherPipe = 0;
+			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[0];
+			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[1];
+			gc::ppc::writeGatherPipe.f32 = 0;
 		}
 	}
 }
