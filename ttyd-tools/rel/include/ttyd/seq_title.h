@@ -6,8 +6,6 @@ namespace ttyd::seq_title {
 
 extern "C" {
 
-extern void *seqTitleWorkPointer2;
-
 // pressStartGX
 // disp2
 // disp1
@@ -18,6 +16,8 @@ extern void *seqTitleWorkPointer2;
 // seq_titleExit
 // seq_titleInit
 // DbgBtlSel_GetMsgDataPtr
+
+extern void *seqTitleWorkPointer2;
 
 }
 

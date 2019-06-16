@@ -6,8 +6,6 @@ namespace ttyd::mariost {
 
 extern "C" {
 
-extern void *globalWorkPointer;
-
 void marioStInit();
 void marioStMain();
 void marioStDisp();
@@ -16,6 +14,8 @@ uint32_t marioStGetSystemLevel();
 void viPostCallback(uint32_t retraceCount);
 void gcDvdCheckThread();
 void gcRumbleCheck();
+
+extern void *globalWorkPointer;
 
 }
 

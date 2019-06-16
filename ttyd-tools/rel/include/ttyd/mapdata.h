@@ -48,12 +48,12 @@ static_assert(sizeof(WorldData) == 0x108);
 
 extern "C" {
 
-extern WorldData worldData;
-
 // relSetBtlAddr
 // relSetEvtAddr
 // areaDataPtr
 // mapDataPtr
+
+extern WorldData worldData;
 
 }
 

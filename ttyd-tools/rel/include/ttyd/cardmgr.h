@@ -6,8 +6,6 @@ namespace ttyd::cardmgr {
 
 extern "C" {
 
-extern void *cardMgrWorkPointer;
-
 // memcard_open
 // statusCallback
 // readCallback
@@ -36,6 +34,8 @@ extern void *cardMgrWorkPointer;
 // cardInit
 // cardBufReset
 // cardGetFilePtr
+
+extern void *cardMgrWorkPointer;
 
 }
 

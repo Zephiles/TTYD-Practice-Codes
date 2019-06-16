@@ -15,8 +15,6 @@ static_assert(sizeof(ItemDrvWork) == 0x38);
 
 extern "C" {
 
-extern ItemDrvWork itemDrvWork;
-
 // itemPickUp
 // itemStatus
 // itemStatusOn
@@ -49,6 +47,8 @@ void *itemEntry(const char *name, int32_t id, uint32_t mode,
 // itemCoinDrop
 // itemReInit
 // itemInit
+
+extern ItemDrvWork itemDrvWork;
 
 }
 

@@ -6,8 +6,6 @@ namespace ttyd::evt_yuugijou {
 
 extern "C" {
 
-extern void *yuugijouWorkPointer;
-
 // evtYuuWindowEndChk
 // evtYuuWindow
 // yuuminigame_end
@@ -24,6 +22,8 @@ extern void *yuugijouWorkPointer;
 // yuugijou_add_montemedal
 // monteCountDisp
 // yuugijou_init
+
+extern void *yuugijouWorkPointer;
 
 }
 

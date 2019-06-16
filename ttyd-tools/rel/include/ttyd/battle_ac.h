@@ -6,9 +6,6 @@ namespace ttyd::battle_ac {
 
 extern "C" {
 
-extern uint8_t GuardFrames[];
-extern uint8_t SuperguardFrames[];
-
 // BattleAcGaugeSeDelete
 // BattleAcGaugeSeUpdate
 // BattleAcGaugeSeInit
@@ -28,6 +25,9 @@ int32_t BattleActionCommandCheckDefence(void *battleUnitPtr, void *attackParams)
 // BattleActionCommandResult
 // BattleActionCommandManager
 // BattleActionCommandManagerInit
+
+extern uint8_t GuardFrames[];
+extern uint8_t SuperguardFrames[];
 
 }
 

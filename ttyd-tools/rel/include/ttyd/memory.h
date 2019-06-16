@@ -40,8 +40,6 @@ enum SmartAllocationGroup
 
 extern "C" {
 
-extern SmartWork *smartWorkPointer;
-
 // memInit
 // memClear
 void *__memAlloc(uint32_t heap, uint32_t size);
@@ -56,6 +54,8 @@ void smartFree(SmartAllocationData *pAlloc);
 SmartAllocationData *smartAlloc(uint32_t size, uint32_t group);
 // smartGarbage
 // smartTexObj
+
+extern SmartWork *smartWorkPointer;
 
 }
 

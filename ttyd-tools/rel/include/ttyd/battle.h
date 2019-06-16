@@ -6,8 +6,6 @@ namespace ttyd::battle {
 
 extern "C" {
 
-extern void *battleWorkPointer;
-
 // BattleConsumeReserveItem
 // BattleStatusWindowCheck
 // BattleStatusWindowSystemOff
@@ -55,6 +53,8 @@ void *BattleGetUnitPtr(void *battleWorkPtr, uint32_t slot);
 // BattleInit
 // battleSeqEndCheck
 // battleMain
+
+extern void *battleWorkPointer;
 
 }
 
