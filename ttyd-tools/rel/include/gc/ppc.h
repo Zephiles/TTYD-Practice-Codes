@@ -4,8 +4,6 @@
 
 namespace gc::ppc {
 
-extern "C" {
-
 typedef union WriteGatherPipe
 {
 	int8_t 		s8;
@@ -19,6 +17,8 @@ typedef union WriteGatherPipe
 	float 		f32;
 	double 		f64;
 } WriteGatherPipe;
+
+extern "C" {
 
 extern volatile WriteGatherPipe writeGatherPipe;
 

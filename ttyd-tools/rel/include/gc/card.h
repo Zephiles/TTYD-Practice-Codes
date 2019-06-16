@@ -4,8 +4,6 @@
 
 namespace gc::card {
 
-extern "C" {
-
 #define CARD_SLOT_A 				0		// Memory card slot A
 #define CARD_SLOT_B 				1		// Memory card slot B
 
@@ -58,6 +56,8 @@ typedef struct CARDStat {
 } CARDStat;
 
 typedef void (*CARDCallback)(int32_t channel, int32_t result);
+
+extern "C" {
 
 int32_t CARDGetResultCode(int32_t channel);
 int32_t CARDProbeEx(int32_t channel, int32_t *memSize, int32_t *sectorSize);

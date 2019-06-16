@@ -4,8 +4,6 @@
 
 namespace gc::gx {
 
-extern "C" {
-
 enum class GXPrimitive
 {
 	GX_QUADS 			= 128,
@@ -43,6 +41,8 @@ enum class GXChannelID
 	GX_ALPHA_BUMPN,
 	GX_COLOR_NULL = 255,
 };
+
+extern "C" {
 
 void GXBegin(GXPrimitive type, GXVtxFmt vtxFmt, uint16_t nVerts);
 void GXSetChanMatColor(GXChannelID chan, uint8_t matColor[4]);

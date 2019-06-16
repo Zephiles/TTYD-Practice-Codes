@@ -4,8 +4,6 @@
 
 namespace ttyd::event {
 
-extern "C" {
-
 struct EventStageEventDescription
 {
 	uint8_t entryMotionType;
@@ -33,6 +31,8 @@ struct EventStageDescription
 	EventStageEventDescription *pEvents;
 	uint32_t eventCount;
 } __attribute__((__packed__));
+
+extern "C" {
 
 int32_t eventStgNum();
 EventStageDescription *eventStgDtPtr(int32_t stageId);
