@@ -11,15 +11,15 @@ extern "C" {
 // partyGetTechLv
 // partyGetHp
 // partyChkJoin
-void partyLeft(party::PartyMembers id);
-void partyJoin(party::PartyMembers id);
+void partyLeft(ttyd::party::PartyMembers id);
+void partyJoin(ttyd::party::PartyMembers id);
 int32_t marioGetExtraPartyId();
 int32_t marioGetPartyId();
 // marioGetParty
 // marioPartyKill
 int32_t marioPartyGoodbye();
-int32_t marioPartyHello(party::PartyMembers id);
-int32_t marioPartyEntry(party::PartyMembers id);
+int32_t marioPartyHello(ttyd::party::PartyMembers id);
+int32_t marioPartyEntry(ttyd::party::PartyMembers id);
 // marioUseParty
 
 }

@@ -4,6 +4,7 @@
 
 namespace ttyd::battle_unit {
 
+// There may be more values for ActorGroupBelong
 enum class ActorGroupBelong : uint8_t
 {
 	kParty = 0,
