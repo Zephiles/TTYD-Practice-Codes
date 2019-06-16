@@ -15,7 +15,7 @@ int32_t finishAsyncFunction(int32_t returnCode)
 	{
 		do
 		{
-			returnCode = gc::card::CARDGetResultCode(CARD_SLOTA);
+			returnCode = gc::card::CARDGetResultCode(CARD_SLOT_A);
 		}
 		while (returnCode == CARD_RESULT_BUSY);
 	}
@@ -24,7 +24,7 @@ int32_t finishAsyncFunction(int32_t returnCode)
 
 int32_t checkForMemoryCard()
 {
-	return gc::card::CARDProbeEx(CARD_SLOTA, nullptr, nullptr);
+	return gc::card::CARDProbeEx(CARD_SLOT_A, nullptr, nullptr);
 }
 
 int32_t mountCard()
@@ -32,18 +32,18 @@ int32_t mountCard()
 	void *WorkArea = *reinterpret_cast<uint32_t **>(
 		reinterpret_cast<uint32_t>(ttyd::cardmgr::cardMgrWorkPointer) + 0x4);
 	
-	int32_t ReturnCode = gc::card::CARDMountAsync(CARD_SLOTA, WorkArea, nullptr, nullptr);
+	int32_t ReturnCode = gc::card::CARDMountAsync(CARD_SLOT_A, WorkArea, nullptr, nullptr);
 	return finishAsyncFunction(ReturnCode);
 }
 
 int32_t unmountCard()
 {
-	return gc::card::CARDUnmount(CARD_SLOTA);
+	return gc::card::CARDUnmount(CARD_SLOT_A);
 }
 
 int32_t openFileFromCard(const char *fileName, gc::card::CARDFileInfo *fileInfo)
 {
-	return gc::card::CARDOpen(CARD_SLOTA, fileName, fileInfo);
+	return gc::card::CARDOpen(CARD_SLOT_A, fileName, fileInfo);
 }
 
 int32_t closeFileFromCard(gc::card::CARDFileInfo *fileInfo)
@@ -54,7 +54,7 @@ int32_t closeFileFromCard(gc::card::CARDFileInfo *fileInfo)
 int32_t createFileOnCard(const char *fileName, 
 	uint32_t size, gc::card::CARDFileInfo *fileInfo)
 {
-	int32_t ReturnCode = gc::card::CARDCreateAsync(CARD_SLOTA, fileName, size, fileInfo, nullptr);
+	int32_t ReturnCode = gc::card::CARDCreateAsync(CARD_SLOT_A, fileName, size, fileInfo, nullptr);
 	return finishAsyncFunction(ReturnCode);
 }
 
@@ -74,17 +74,17 @@ int32_t writeToFileOnCard(gc::card::CARDFileInfo *fileInfo,
 
 int32_t deleteFileOnCard(const char *fileName)
 {
-	return gc::card::CARDDelete(CARD_SLOTA, fileName);
+	return gc::card::CARDDelete(CARD_SLOT_A, fileName);
 }
 
 int32_t getFileStatus(int32_t fileNum, gc::card::CARDStat *stat)
 {
-	return gc::card::CARDGetStatus(CARD_SLOTA, fileNum, stat);
+	return gc::card::CARDGetStatus(CARD_SLOT_A, fileNum, stat);
 }
 
 int32_t setFileStatus(int32_t fileNum, gc::card::CARDStat *stat)
 {
-	int32_t ReturnCode = gc::card::CARDSetStatusAsync(CARD_SLOTA, fileNum, stat, nullptr);
+	int32_t ReturnCode = gc::card::CARDSetStatusAsync(CARD_SLOT_A, fileNum, stat, nullptr);
 	return finishAsyncFunction(ReturnCode);
 }
 

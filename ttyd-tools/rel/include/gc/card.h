@@ -6,11 +6,11 @@ namespace gc::card {
 
 extern "C" {
 
-#define CARD_SLOTA 					0		// Memory card slot A
-#define CARD_SLOTB 					1		// Memory card slot B
+#define CARD_SLOT_A 				0		// Memory card slot A
+#define CARD_SLOT_B 				1		// Memory card slot B
 
-#define CARD_FILENAMELEN 			32		// Maximum filename length
-#define CARD_MAXICONS 				8
+#define CARD_FILENAME_MAX 			32		// Maximum filename length, excluding null terminator
+#define CARD_MAX_ICONS 				8
 
 #define CARD_RESULT_UNLOCKED 		1		// Card is being unlocked or is already unlocked
 #define CARD_RESULT_READY			0		// Card is ready
@@ -40,7 +40,7 @@ typedef struct CARDFileInfo {
 } CARDFileInfo;
 
 typedef struct CARDStat {
-	char 		fileName[CARD_FILENAMELEN];
+	char 		fileName[CARD_FILENAME_MAX];
 	uint32_t	length;
 	uint32_t	time;
 	uint8_t 	gameName[4];
@@ -52,7 +52,7 @@ typedef struct CARDStat {
 	uint32_t 	commentAddress;
 	uint32_t 	offsetBanner;
 	uint32_t 	offsetBannerTlut;
-	uint32_t 	offsetIcon[CARD_MAXICONS];
+	uint32_t 	offsetIcon[CARD_MAX_ICONS];
 	uint32_t 	offsetIconTlut;
 	uint32_t 	offsetData;
 } CARDStat;
