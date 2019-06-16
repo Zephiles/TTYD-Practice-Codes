@@ -8,7 +8,7 @@
 #include "patch.h"
 
 #include <gc/OSCache.h>
-#include <gc/os.h>
+#include <gc/OSAlloc.h>
 #include <ttyd/item_data.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
@@ -498,16 +498,16 @@ void checkHeaps()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Check the standard heaps
-	int32_t TotalHeaps = gc::os::NumHeaps;
-	gc::os::HeapInfo *HeapArray = gc::os::HeapArray;
+	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
+	gc::OSAlloc::HeapInfo *HeapArray = gc::OSAlloc::HeapArray;
 	
 	for (int32_t i = 0; i < TotalHeaps; i++)
 	{
-		const gc::os::HeapInfo &heap = HeapArray[i];
+		const gc::OSAlloc::HeapInfo &heap = HeapArray[i];
 		bool valid = true;
 		
-		gc::os::ChunkInfo *currentChunk = nullptr;
-		gc::os::ChunkInfo *prevChunk = nullptr;
+		gc::OSAlloc::ChunkInfo *currentChunk = nullptr;
+		gc::OSAlloc::ChunkInfo *prevChunk = nullptr;
 		for (currentChunk = heap.firstUsed; currentChunk; currentChunk = currentChunk->next)
 		{
 			// Check pointer sanity

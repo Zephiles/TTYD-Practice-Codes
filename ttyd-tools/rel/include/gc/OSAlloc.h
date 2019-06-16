@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace gc::os {
+namespace gc::OSAlloc {
 
 struct ChunkInfo
 {
@@ -19,6 +19,14 @@ struct HeapInfo
 } __attribute__((__packed__));
 
 extern "C" {
+
+// DLInsert
+// OSAllocFromHeap
+// OSFreeToHeap
+// OSSetCurrentHeap
+// OSInitAlloc
+// OSCreateHeap
+// OSDestroyHeap
 
 extern HeapInfo *HeapArray;
 extern int32_t NumHeaps;
