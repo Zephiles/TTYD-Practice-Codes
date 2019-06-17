@@ -1769,7 +1769,7 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							default_DPAD_Actions(CurrentButton);
+							adjustMenuNoPageEdit(CurrentButton);
 							break;
 						}
 						default:
