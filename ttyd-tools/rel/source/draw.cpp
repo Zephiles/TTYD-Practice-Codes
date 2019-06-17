@@ -3510,7 +3510,27 @@ void drawSequenceInPauseMenu()
 		"%" PRIu32,
 		SequencePosition);
 	
-	drawText(tempDisplayBuffer, PosX + 157, PosY, Alpha, Color, Scale);
+	// Adjust the position of the value based on the Sequence Position
+	#ifdef TTYD_JP
+	int32_t PosXIncrement = 186;
+	#else
+	int32_t PosXIncrement = 182;
+	#endif
+	
+	if (SequencePosition >= 100)
+	{
+		PosXIncrement -= 26;
+	}
+	else if (SequencePosition >= 10)
+	{
+		PosXIncrement -= 13;
+	}
+	
+	#ifdef TTYD_JP
+	Scale += 0.05;
+	#endif
+	
+	drawText(tempDisplayBuffer, PosX + PosXIncrement, PosY, Alpha, Color, Scale);
 }
 
 void drawOnScreenTimer()
