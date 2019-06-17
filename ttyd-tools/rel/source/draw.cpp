@@ -1974,19 +1974,18 @@ void drawBattlesStatusesList()
 	
 	// Get the initial address offset
 	uint32_t DisplayValueCounter = 0;
-	if (IndexStart >= 1) // Sleep flags
+	
+	if (IndexStart >= 20) // Explosion turns left
+	{
+		DisplayValueCounter += 3;
+	}
+	else if (IndexStart >= 18) // Can't use items
+	{
+		DisplayValueCounter += 2;
+	}
+	else if (IndexStart >= 1) // Sleep flags
 	{
 		DisplayValueCounter++;
-		
-		if (IndexStart >= 18) // Can't use items
-		{
-			DisplayValueCounter++;
-			
-			if (IndexStart >= 20) // Explosion turns left
-			{
-				DisplayValueCounter++;
-			}
-		}
 	}
 	
 	// Draw the text and icons

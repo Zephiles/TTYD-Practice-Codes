@@ -2562,19 +2562,17 @@ void menuCheckButton()
 							}
 							
 							uint32_t Counter = 0;
-							if (tempCurrentMenuOption >= 1) // Sleep flags
+							if (tempCurrentMenuOption >= 20) // Explosion turns left
+							{
+								Counter += 3;
+							}
+							else if (tempCurrentMenuOption >= 18) // Can't use items
+							{
+								Counter += 2;
+							}
+							else if (tempCurrentMenuOption >= 1) // Sleep flags
 							{
 								Counter++;
-								
-								if (tempCurrentMenuOption >= 18) // Can't use items
-								{
-									Counter++;
-									
-									if (tempCurrentMenuOption >= 20) // Explosion turns left
-									{
-										Counter++;
-									}
-								}
 							}
 							
 							uint32_t TotalOptions = BattlesStatusesLinesSize;

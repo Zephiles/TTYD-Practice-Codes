@@ -2958,24 +2958,21 @@ const char *getMapFromIndex(int32_t index)
 		int32_t NewIndex = index - 1;
 		uint32_t Counter = 0;
 		
-		if (NewIndex >= 74) // gon_bt00
+		if (NewIndex >= 269) // dig_00
+		{
+			Counter += 32;
+		}
+		else if (NewIndex >= 266) // qiz_00
+		{
+			Counter += 24;
+		}
+		else if (NewIndex >= 90) // hei_bt00
+		{
+			Counter += 16;
+		}
+		else if (NewIndex >= 74) // gon_bt00
 		{
 			Counter += 8;
-			
-			if (NewIndex >= 90) // hei_bt00
-			{
-				Counter += 8;
-				
-				if (NewIndex >= 266) // qiz_00
-				{
-					Counter += 8;
-					
-					if (NewIndex >= 269) // dig_00
-					{
-						Counter += 8;
-					}
-				}
-			}
 		}
 		
 		uint32_t WorldDataPointer = reinterpret_cast<uint32_t>(ttyd::mapdata::worldData.unk_18);
