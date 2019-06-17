@@ -26,7 +26,8 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 	uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
 
 void drawSingleColumnMain();
-void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage);
+void drawSingleColumnSelectedOption();
+void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adjustSelectedOption);
 
 void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMenuOption, 
 	uint32_t currentPage, uint32_t size, uint32_t maxOptionsPerPage, 

@@ -519,10 +519,18 @@ void drawSingleColumnMain()
 	uint32_t tempTotalMenuOptions = Menu[CurrentMenu].TotalMenuOptions;
 	uint32_t tempCurrentPage = 0;
 	
-	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage);
+	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, false);
 }
 
-void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage)
+void drawSingleColumnSelectedOption()
+{
+	uint32_t tempTotalMenuOptions = Menu[CurrentMenu].TotalMenuOptions;
+	uint32_t tempCurrentPage = 0;
+	
+	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, true);
+}
+
+void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adjustSelectedOption)
 {
 	uint32_t tempCurrentMenu 		= CurrentMenu;
 	uint32_t tempSelectedOption 	= SelectedOption;
@@ -547,6 +555,10 @@ void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage)
 		if (tempSelectedOption == 0)
 		{
 			CurrentOptionCheck = CurrentMenuOption == i;
+		}
+		else if (adjustSelectedOption)
+		{
+			CurrentOptionCheck = (tempSelectedOption - 1) == i;
 		}
 		else
 		{
@@ -996,7 +1008,7 @@ void drawMarioStats()
 	float TextScale 				= 0.6;
 	float IconScale					= 0.6;
 	int32_t TextPosX 				= -208;
-	int32_t TextPosY 				= 120;
+	int32_t TextPosY 				= 140;
 	int32_t ValuesPosX 				= TextPosX + 105;
 	int32_t IconPosX 				= TextPosX - 15;
 	int32_t IconPosY 				= TextPosY - 20;
@@ -1092,7 +1104,7 @@ void drawMarioStats()
 	float SpecialMovesScale = 0.37;
 	int16_t SpecialMoveIcon;
 	IconPosition[IconPositionX] = 133;
-	IconPosition[IconPositionY] = 46;
+	IconPosition[IconPositionY] = 66;
 	
 	int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
 	for (uint32_t i = 0; i < 8; i++)
@@ -1120,12 +1132,6 @@ void drawPartnerStats()
 {
 	uint32_t tempCurrentMenuOption = CurrentMenuOption;
 	uint32_t tempSelectedOption = SelectedOption;
-	
-	// Only display if a partner is selected
-	if ((tempSelectedOption == 0) && (tempCurrentMenuOption == 0))
-	{
-		return;
-	}
 	
 	// Create array for each stat to go in
 	int16_t PartnerStats[3];
@@ -1357,7 +1363,7 @@ void drawBattlesActorStats()
 	uint32_t Color = 0xFFFFFFFF;
 	uint8_t Alpha = 0xFF;
 	int32_t NamePosX = -232;
-	int32_t NamePosY = 0;
+	int32_t NamePosY = 20;
 	float Scale = 0.6;
 	
 	uint32_t CurrentActor = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
@@ -1509,7 +1515,7 @@ void drawCurrentFollowerOut()
 	uint8_t Alpha = 0xFF;
 	uint32_t Color = 0xFFFFFFFF;
 	int32_t PosX = -232;
-	int32_t PosY = 100;
+	int32_t PosY = 120;
 	float Scale = 0.6;
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -1525,13 +1531,13 @@ void drawMemoryWatches()
 	
 	uint32_t tempCurrentPage 		= CurrentPage;
 	int32_t TotalMenuOptions 		= sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
-	int32_t MaxOptionsPerPage 		= 9;
+	int32_t MaxOptionsPerPage 		= 10;
 	int32_t IndexStart 				= tempCurrentPage * MaxOptionsPerPage;
 	
 	uint32_t Color = 0xFFFFFFFF;
 	uint8_t Alpha = 0xFF;
 	int32_t PosX = -232;
-	int32_t PosY = 60;
+	int32_t PosY = 80;
 	float Scale = 0.6;
 	
 	const int32_t TypeOffset 		= 150;
@@ -1610,7 +1616,7 @@ void drawMemoryModifyList()
 		}
 		else
 		{
-			CurrentOptionCheck = tempSelectedOption == i;
+			CurrentOptionCheck = (tempSelectedOption - 1) == i;
 		}
 		
 		Color = getSelectedTextColor(CurrentOptionCheck);
@@ -1622,7 +1628,7 @@ void drawMemoryModifyList()
 		Color = 0xFFFFFFFF;
 		
 		// Draw the value for the text
-		switch (i)
+		switch (i + 1)
 		{
 			case CHANGE_ADDRESS:
 			{
@@ -1788,7 +1794,7 @@ void drawMemoryChangeAddressList()
 	
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 80;
+	int32_t PosY 	= 100;
 	float Scale 	= 0.6;
 	uint32_t Color;
 	
@@ -1878,12 +1884,12 @@ void drawBattlesActorsList()
 {
 	uint32_t tempCurrentPage 		= CurrentPage;
 	uint32_t TotalMenuOptions 		= 62; // Excluding System
-	uint32_t MaxOptionsPerPage 		= 13;
+	uint32_t MaxOptionsPerPage 		= 14;
 	uint32_t IndexStart 			= tempCurrentPage * MaxOptionsPerPage;
 	
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 120;
+	int32_t PosY 	= 140;
 	float Scale 	= 0.6;
 	uint32_t Color;
 	
@@ -2337,7 +2343,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 	else if (currentMenu == WARPS_INDEX)
 	{
-		if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+		if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 		{
 			height = 212;
 		}
@@ -2435,7 +2441,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		y -= 60;
 	}
 	else if ((currentMenu == WARPS_INDEX) && 
-		(tempCurrentMenuOption == INDEX_SELECT_MAP))
+		((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP))
 	{
 		sprintf(tempDisplayBuffer,
 			"Map: %s",
@@ -2928,7 +2934,7 @@ void drawCheatsChangeSequence()
 	uint32_t Color = 0xFFFFFFFF;
 	uint8_t Alpha = 0xFF;
 	int32_t PosX = -232;
-	int32_t PosY = 120;
+	int32_t PosY = 140;
 	float Scale = 0.6;
 	
 	uint32_t SequencePosition = getSequencePosition();
@@ -2973,7 +2979,7 @@ void drawCheatsBool(int32_t posY)
 	uint32_t tempMenuSelectedOption = MenuSelectedOption;
 	
 	bool CheatActive = Cheat[tempMenuSelectedOption].Active;
-	const char *CurrentLine = CheatsLines[tempMenuSelectedOption + 1];
+	const char *CurrentLine = CheatsLines[tempMenuSelectedOption];
 	
 	drawBoolOnOrOff(CheatActive, CurrentLine, posY);
 }
@@ -3099,7 +3105,7 @@ void drawCheatsForcedDropItem()
 	uint8_t Alpha 	= 0xFF;
 	uint32_t Color 	= 0xFFFFFFFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 10;
+	int32_t PosY 	= 60;
 	float Scale 	= 0.6;
 	
 	// Draw the text for showing what the current item is
@@ -3143,7 +3149,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		{
 			ChangingWord = true;
 			Line = CheatsManageGlobalWordsOptions;
-			Size = 4;
+			Size = 3;
 			break;
 		}
 		case SET_GSWF:
@@ -3152,7 +3158,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		default:
 		{
 			Line = CheatsManageGlobalFlagsOptions;
-			Size = 3;
+			Size = 2;
 		}
 	}
 	
@@ -3209,18 +3215,18 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 	for (uint32_t i = 0; i < Size; i++)
 	{
 		bool CurrentOptionCheck;
-		if (tempSelectedOption == 0)
+		if (tempSelectedOption <= 1)
 		{
 			CurrentOptionCheck = CurrentMenuOption == i;
 		}
 		else
 		{
-			CurrentOptionCheck = tempSelectedOption == i;
+			CurrentOptionCheck = (tempSelectedOption - 1) == i;
 		}
 		
 		Color = getSelectedTextColor(CurrentOptionCheck);
 		
-		if (i == 1)
+		if (i == 0)
 		{	
 			sprintf(tempDisplayBuffer,
 				"Change %s",
@@ -3292,7 +3298,7 @@ void drawCheatsClearArea()
 	const char **tempCheatsForceItemDropAreas 	= CheatsForceItemDropAreas;
 	
 	int32_t PosX 								= -232;
-	int32_t PosY 								= 100;
+	int32_t PosY 								= 120;
 	uint32_t Size 								= tempCheatsForceItemDropAreasSize;
 	uint32_t MaxOptionsPerPage 					= tempCheatsForceItemDropAreasSize;
 	uint32_t MaxOptionsPerRow 					= 4;
@@ -3337,7 +3343,7 @@ void drawWarpsOptions()
 	const char **tempWarpDestinations 			= WarpDestinations;
 	
 	int32_t PosX 								= -232;
-	int32_t PosY 								= 100;
+	int32_t PosY 								= 120;
 	uint32_t Size 								= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerPage 					= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerRow 					= 4;
@@ -3373,7 +3379,7 @@ void drawWarpIndexMapAndEntrance()
 	uint32_t Color 	= 0xFFFFFFFF;
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 60;
+	int32_t PosY 	= 80;
 	float Scale 	= 0.6;
 	
 	const char *String = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
@@ -3479,7 +3485,7 @@ void drawWarpIndexEntranceList()
 
 void drawOnScreenTimerButtonCombos()
 {
-	int32_t PosY = -20;
+	int32_t PosY = 0;
 	uint32_t tempOnScreenTimerOptionsSize = OnScreenTimerOptionsSize;
 	
 	for (uint32_t i = 0; i < tempOnScreenTimerOptionsSize; i++)

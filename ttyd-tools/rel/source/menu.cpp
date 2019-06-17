@@ -56,21 +56,15 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					switch (tempCurrentMenuOption + 1)
 					{
-						case 0:
-						{
-							// Currently selecting Return on the ROOT, so close the menu
-							closeMenu();
-							return;
-						}
 						case BATTLES:
 						{
 							// Make sure the player is currently in a battle
 							if (getBattleWorkPointer())
 							{
 								// Currently in a battle, so enter the menu
-								CurrentMenu = tempCurrentMenuOption;
+								CurrentMenu = BATTLES;
 								resetMenu();
 							}
 							else
@@ -83,7 +77,7 @@ void menuCheckButton()
 						default:
 						{
 							// Enter the next menu
-							CurrentMenu = tempCurrentMenuOption;
+							CurrentMenu = tempCurrentMenuOption + 1;
 							resetMenu();
 							break;
 						}
@@ -115,24 +109,10 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
-					{
-						case 0:
-						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-							break;
-						}
-						default:
-						{
-							// Enter the next menu
-							CurrentMenu 		= INVENTORY_MAIN;
-							MenuSelectedOption 	= tempCurrentMenuOption - 1;
-							resetMenu();
-							break;
-						}
-					}
+					// Enter the next menu
+					CurrentMenu 		= INVENTORY_MAIN;
+					MenuSelectedOption 	= tempCurrentMenuOption;
+					resetMenu();
 					break;
 				}
 				case B:
@@ -233,28 +213,21 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+							switch (CurrentMenuOptionCheck)
 							{
-								case 0:
-								{
-									// No option has been selected yet
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									MenuSelectedOption = 0;
-									break;
-								}
 								case ADD_BY_ID:
 								{
 									if (getFreeSlotPointer())
 									{
 										Timer 					= 0;
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempMenuSelectedOption) - 1;
 									}
 									else
 									{
 										// Inventory is currently full
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										FunctionReturnCode 		= INVENTORY_FULL;
 										Timer = secondsToFrames(3);
 									}
@@ -265,13 +238,13 @@ void menuCheckButton()
 									if (getFreeSlotPointer())
 									{
 										Timer 					= 0;
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										SecondaryMenuOption 	= 0;
 									}
 									else
 									{
 										// Inventory is currently full
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										FunctionReturnCode 		= INVENTORY_FULL;
 										Timer = secondsToFrames(3);
 									}
@@ -284,13 +257,13 @@ void menuCheckButton()
 										if (getFreeSlotPointer())
 										{
 											Timer 				= 0;
-											SelectedOption 		= tempCurrentMenuOption;
+											SelectedOption 		= CurrentMenuOptionCheck;
 											CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 										}
 										else
 										{
 											// Inventory is currently full
-											SelectedOption 		= tempCurrentMenuOption;
+											SelectedOption 		= CurrentMenuOptionCheck;
 											FunctionReturnCode 	= INVENTORY_FULL;
 											Timer = secondsToFrames(3);
 										}
@@ -298,7 +271,7 @@ void menuCheckButton()
 									else
 									{
 										// Inventory is currently empty
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										FunctionReturnCode 		= INVENTORY_EMPTY;
 										Timer = secondsToFrames(3);
 									}
@@ -311,13 +284,13 @@ void menuCheckButton()
 									if (getTotalItems() > 0)
 									{
 										Timer 					= 0;
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										CurrentMenuOption 		= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
 									{
 										// Inventory is currently empty
-										SelectedOption 			= tempCurrentMenuOption;
+										SelectedOption 			= CurrentMenuOptionCheck;
 										FunctionReturnCode 		= INVENTORY_EMPTY;
 										Timer = secondsToFrames(3);
 									}
@@ -538,73 +511,59 @@ void menuCheckButton()
 				}
 				case A:
 				{
+					// Enter the next menu
 					switch (tempCurrentMenuOption)
 					{
-						case 0:
+						case CHANGE_SEQUENCE:
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
+							CurrentMenu = CHEATS_CHANGE_SEQUENCE;
 							break;
 						}
+						case WALK_THROUGH_WALLS:
+						case SAVE_COORDINATES:
+						case LOAD_COORDINATES:
+						case SPAWN_ITEM:
+						case SAVE_ANYWHERE:
+						case TEXT_STORAGE:
+						case TIME_STOP_TEXT_STORAGE:
+						case SPEED_UP_MARIO:
+						case DISABLE_BATTLES:
+						case AUTO_ACTION_COMMANDS:
+						case INFINITE_ITEM_USAGE:
+						case RELOAD_ROOM:
+						case LEVITATE:
+						{
+							CurrentMenu = CHEATS_STANDARD;
+							break;
+						}
+						case LOCK_MARIO_HP_TO_MAX:
+						case RUN_FROM_BATTLES:
+						case DISABLE_MENU_SOUNDS:
+						case BOBBERY_EARLY:
+						{
+							CurrentMenu = CHEATS_NO_BUTTON_COMBO;
+							break;
+						}
+						case FORCE_ITEM_DROP:
+						{
+							CurrentMenu = CHEATS_NPC_FORCE_DROP;
+							break;
+						}
+						case MANAGE_FLAGS:
+						{
+							CurrentMenu = CHEATS_MANAGE_FLAGS;
+							break;
+						}
+						case CLEAR_AREA_FLAGS:
 						default:
 						{
-							// Enter the next menu
-							switch (tempCurrentMenuOption - 1)
-							{
-								case CHANGE_SEQUENCE:
-								{
-									CurrentMenu = CHEATS_CHANGE_SEQUENCE;
-									break;
-								}
-								case WALK_THROUGH_WALLS:
-								case SAVE_COORDINATES:
-								case LOAD_COORDINATES:
-								case SPAWN_ITEM:
-								case SAVE_ANYWHERE:
-								case TEXT_STORAGE:
-								case TIME_STOP_TEXT_STORAGE:
-								case SPEED_UP_MARIO:
-								case DISABLE_BATTLES:
-								case AUTO_ACTION_COMMANDS:
-								case INFINITE_ITEM_USAGE:
-								case RELOAD_ROOM:
-								case LEVITATE:
-								{
-									CurrentMenu = CHEATS_STANDARD;
-									break;
-								}
-								case LOCK_MARIO_HP_TO_MAX:
-								case RUN_FROM_BATTLES:
-								case DISABLE_MENU_SOUNDS:
-								case BOBBERY_EARLY:
-								{
-									CurrentMenu = CHEATS_NO_BUTTON_COMBO;
-									break;
-								}
-								case FORCE_ITEM_DROP:
-								{
-									CurrentMenu = CHEATS_NPC_FORCE_DROP;
-									break;
-								}
-								case MANAGE_FLAGS:
-								{
-									CurrentMenu = CHEATS_MANAGE_FLAGS;
-									break;
-								}
-								case CLEAR_AREA_FLAGS:
-								default:
-								{
-									CurrentMenu = CHEATS_CLEAR_AREA_FLAGS;
-									break;
-								}
-							}
-							
-							MenuSelectedOption = tempCurrentMenuOption - 1;
-							resetMenuNoPageReset();
+							CurrentMenu = CHEATS_CLEAR_AREA_FLAGS;
 							break;
 						}
 					}
+					
+					MenuSelectedOption = tempCurrentMenuOption;
+					resetMenuNoPageReset();
 					break;
 				}
 				case B:
@@ -625,42 +584,13 @@ void menuCheckButton()
 		{
 			switch (CurrentButton)
 			{
-				case DPADDOWN:
-				case DPADUP:
+				case A:
 				{
 					if (tempMenuSelectionStates == 0)
 					{
-						adjustMenuNoPageEdit(CurrentButton);
-					}
-					break;
-				}
-				case A:
-				{
-					switch (tempCurrentMenuOption)
-					{
-						case 0:
-						{
-							// No option has been selected yet
-							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
-							MenuSelectedOption 	= 0;
-							break;
-						}
-						case CHANGE_SEQUENCE_VALUE:
-						{
-							if (tempMenuSelectionStates == 0)
-							{
-								MenuSecondaryValue 	= static_cast<int32_t>(getSequencePosition());
-								MenuSelectionStates = tempCurrentMenuOption;
-								SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-							}
-							break;
-						}
-						default:
-						{
-							break;
-						}
+						MenuSecondaryValue 	= static_cast<int32_t>(getSequencePosition());
+						MenuSelectionStates = CHANGE_SEQUENCE_VALUE;
+						SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 					}
 					break;
 				}
@@ -670,7 +600,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption + 1;
+						CurrentMenuOption 	= tempMenuSelectedOption;
 						MenuSelectedOption 	= 0;
 					}
 					break;
@@ -699,17 +629,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
-								{
-									// No option has been selected yet
-									// Go back to the previous menu
-									CurrentMenu 		= tempPreviousMenu;
-									CurrentMenuOption 	= tempMenuSelectedOption + 1;
-									MenuSelectedOption 	= 0;
-									break;
-								}
 								case TURN_ON_OR_OFF:
 								{
 									// Flip the bool for the current cheat
@@ -719,7 +640,7 @@ void menuCheckButton()
 								}
 								case CHANGE_BUTTON_COMBO:
 								{
-									SelectedOption 				= tempCurrentMenuOption;
+									SelectedOption 				= tempCurrentMenuOption + 1;
 									ChangingCheatButtonCombo 	= true;
 									Timer 						= secondsToFrames(3);
 									break;
@@ -752,7 +673,7 @@ void menuCheckButton()
 						{
 							// Go back to the previous menu
 							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
+							CurrentMenuOption 	= tempMenuSelectedOption;
 							MenuSelectedOption 	= 0;
 							break;
 						}
@@ -781,17 +702,8 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					switch (tempCurrentMenuOption + 1)
 					{
-						case 0:
-						{
-							// No option has been selected yet
-							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
-							MenuSelectedOption 	= 0;
-							break;
-						}
 						case ITEM_DROP_TURN_ON_OR_OFF:
 						{
 							// Flip the bool for the current cheat
@@ -803,7 +715,7 @@ void menuCheckButton()
 						{
 							if (tempMenuSelectionStates == 0)
 							{
-								MenuSelectionStates = tempCurrentMenuOption;
+								MenuSelectionStates = tempCurrentMenuOption + 1;
 								SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 							}
 							break;
@@ -821,7 +733,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption + 1;
+						CurrentMenuOption 	= tempMenuSelectedOption;
 						MenuSelectedOption 	= 0;
 					}
 					break;
@@ -845,35 +757,20 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
-					{
-						case 0:
-						{
-							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
-							MenuSelectedOption 	= 0;
-							break;
-						}
-						default:
-						{
-							// Clear the current values set for managing flags
-							clearMemory(&ManageFlags, sizeof(ManageFlags));
-							
-							// Enter the next menu
-							CurrentMenu 			= CHEATS_MANAGE_FLAGS_MAIN;
-							MenuSelectionStates 	= tempCurrentMenuOption;
-							CurrentMenuOption 		= 0;
-							break;
-						}
-					}
+					// Clear the current values set for managing flags
+					clearMemory(&ManageFlags, sizeof(ManageFlags));
+					
+					// Enter the next menu
+					CurrentMenu 			= CHEATS_MANAGE_FLAGS_MAIN;
+					MenuSelectionStates 	= tempCurrentMenuOption + 1;
+					CurrentMenuOption 		= 0;
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
 					CurrentMenu 		= tempPreviousMenu;
-					CurrentMenuOption 	= tempMenuSelectedOption + 1;
+					CurrentMenuOption 	= tempMenuSelectedOption;
 					MenuSelectedOption 	= 0;
 					break;
 				}
@@ -903,67 +800,48 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							uint32_t FlagToSet = ManageFlags.FlagToSet;
+							uint32_t ValueToSet = static_cast<uint32_t>(ManageFlags.ValueToSet);
+							
+							switch (tempMenuSelectionStates)
 							{
-								case 0:
+								case SET_GSW:
+								case SET_GW:
+								case SET_LSW:
 								{
-									// Go back to the previous menu
-									CurrentMenu 			= tempPreviousMenu;
-									CurrentMenuOption 		= 0;
-									MenuSelectionStates 	= 0;
-									break;
-								}
-								default:
-								{
-									uint32_t FlagToSet = ManageFlags.FlagToSet;
-									uint32_t ValueToSet = static_cast<uint32_t>(ManageFlags.ValueToSet);
-									
-									switch (tempMenuSelectionStates)
+									switch (tempCurrentMenuOption)
 									{
-										case SET_GSW:
-										case SET_GW:
-										case SET_LSW:
+										case CHANGE_GLOBAL_WORD:
 										{
-											switch (tempCurrentMenuOption)
+											SelectedOption 			= tempCurrentMenuOption + 1;
+											SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											MenuSecondaryValue 		= FlagToSet;
+											break;
+										}
+										case CHANGE_GLOBAL_WORD_VALUE:
+										{
+											SelectedOption 			= tempCurrentMenuOption + 1;
+											SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											MenuSecondaryValue 		= getGlobalFlagValue(tempMenuSelectionStates, FlagToSet);
+											break;
+										}
+										case SET_GLOBAL_WORD_VALUE:
+										{
+											switch (tempMenuSelectionStates)
 											{
-												case CHANGE_GLOBAL_WORD:
+												case SET_GSW:
 												{
-													SelectedOption 			= tempCurrentMenuOption;
-													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-													MenuSecondaryValue 		= FlagToSet;
+													ttyd::swdrv::swByteSet(FlagToSet, ValueToSet);
 													break;
 												}
-												case CHANGE_GLOBAL_WORD_VALUE:
+												case SET_GW:
 												{
-													SelectedOption 			= tempCurrentMenuOption;
-													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-													MenuSecondaryValue 		= getGlobalFlagValue(tempMenuSelectionStates, FlagToSet);
+													setGW(FlagToSet, ValueToSet);
 													break;
 												}
-												case SET_GLOBAL_WORD_VALUE:
+												case SET_LSW:
 												{
-													switch (tempMenuSelectionStates)
-													{
-														case SET_GSW:
-														{
-															ttyd::swdrv::swByteSet(FlagToSet, ValueToSet);
-															break;
-														}
-														case SET_GW:
-														{
-															setGW(FlagToSet, ValueToSet);
-															break;
-														}
-														case SET_LSW:
-														{
-															ttyd::swdrv::_swByteSet(FlagToSet, ValueToSet);
-															break;
-														}
-														default:
-														{
-															break;
-														}
-													}
+													ttyd::swdrv::_swByteSet(FlagToSet, ValueToSet);
 													break;
 												}
 												default:
@@ -973,56 +851,56 @@ void menuCheckButton()
 											}
 											break;
 										}
-										case SET_GSWF:
-										case SET_GF:
-										case SET_LSWF:
+										default:
 										{
-											switch (tempCurrentMenuOption)
+											break;
+										}
+									}
+									break;
+								}
+								case SET_GSWF:
+								case SET_GF:
+								case SET_LSWF:
+								{
+									switch (tempCurrentMenuOption)
+									{
+										case CHANGE_GLOBAL_FLAG:
+										{
+											SelectedOption 			= tempCurrentMenuOption + 1;
+											SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+											MenuSecondaryValue 		= FlagToSet;
+											break;
+										}
+										case SET_GLOBAL_FLAG:
+										{
+											switch (tempMenuSelectionStates)
 											{
-												case CHANGE_GLOBAL_FLAG:
+												case SET_GSWF:
 												{
-													SelectedOption 			= tempCurrentMenuOption;
-													SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-													MenuSecondaryValue 		= FlagToSet;
+													if (ttyd::swdrv::swGet(FlagToSet))
+													{
+														ttyd::swdrv::swClear(FlagToSet);
+													}
+													else
+													{
+														ttyd::swdrv::swSet(FlagToSet);
+													}
 													break;
 												}
-												case SET_GLOBAL_FLAG:
+												case SET_GF:
 												{
-													switch (tempMenuSelectionStates)
+													setGF(FlagToSet); // setGF automatically toggles the value
+													break;
+												}
+												case SET_LSWF:
+												{
+													if (ttyd::swdrv::_swGet(FlagToSet))
 													{
-														case SET_GSWF:
-														{
-															if (ttyd::swdrv::swGet(FlagToSet))
-															{
-																ttyd::swdrv::swClear(FlagToSet);
-															}
-															else
-															{
-																ttyd::swdrv::swSet(FlagToSet);
-															}
-															break;
-														}
-														case SET_GF:
-														{
-															setGF(FlagToSet); // setGF automatically toggles the value
-															break;
-														}
-														case SET_LSWF:
-														{
-															if (ttyd::swdrv::_swGet(FlagToSet))
-															{
-																ttyd::swdrv::_swClear(FlagToSet);
-															}
-															else
-															{
-																ttyd::swdrv::_swSet(FlagToSet);
-															}
-															break;
-														}
-														default:
-														{
-															break;
-														}
+														ttyd::swdrv::_swClear(FlagToSet);
+													}
+													else
+													{
+														ttyd::swdrv::_swSet(FlagToSet);
 													}
 													break;
 												}
@@ -1038,6 +916,10 @@ void menuCheckButton()
 											break;
 										}
 									}
+									break;
+								}
+								default:
+								{
 									break;
 								}
 							}
@@ -1113,24 +995,15 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					switch (tempCurrentMenuOption + 1)
 					{
-						case 0:
-						{
-							// No option has been selected yet
-							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
-							MenuSelectedOption 	= 0;
-							break;
-						}
 						case SELECT_AREA:
 						{
 							switch (tempSelectedOption)
 							{
 								case 0:
 								{
-									SelectedOption 			= tempCurrentMenuOption;
+									SelectedOption 			= tempCurrentMenuOption + 1;
 									SecondaryMenuOption 	= 0;
 									break;
 								}
@@ -1149,7 +1022,7 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									SelectedOption 			= tempCurrentMenuOption;
+									SelectedOption 			= tempCurrentMenuOption + 1;
 									SecondaryMenuOption 	= 1;
 									break;
 								}
@@ -1177,6 +1050,10 @@ void menuCheckButton()
 							}
 							break;
 						}
+						default:
+						{
+							break;
+						}
 					}
 					break;
 				}
@@ -1194,7 +1071,7 @@ void menuCheckButton()
 						{
 							// Go back to the previous menu
 							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
+							CurrentMenuOption 	= tempMenuSelectedOption;
 							MenuSelectedOption 	= 0;
 							break;
 						}
@@ -1220,24 +1097,10 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
-					{
-						case 0:
-						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-							break;
-						}
-						default:
-						{
-							// Enter the next menu
-							CurrentMenu = STATS_MARIO + (tempCurrentMenuOption - 1);
-							MenuSelectedOption = 0;
-							resetMenu();
-							break;
-						}
-					}
+					// Enter the next menu
+					CurrentMenu = STATS_MARIO + tempCurrentMenuOption;
+					MenuSelectedOption = 0;
+					resetMenu();
 					break;
 				}
 				case B:
@@ -1263,18 +1126,9 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					switch (tempSelectedOption)
+					if (tempSelectedOption != 0)
 					{
-						case 0:
-						{
-							default_DPAD_Actions(CurrentButton);
-							break;
-						}
-						default:
-						{
-							adjustMarioStatsSelection(CurrentButton);
-							break;
-						}
+						adjustMarioStatsSelection(CurrentButton);
 					}
 					break;
 				}
@@ -1284,21 +1138,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
-							{
-								case 0:
-								{
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									break;
-								}
-								default:
-								{
-									SelectedOption = tempCurrentMenuOption;
-									CurrentMenuOption = 0;
-									break;
-								}
-							}
+							SelectedOption = tempCurrentMenuOption + 1;
+							CurrentMenuOption = 0;
 							break;
 						}
 						default:
@@ -1415,21 +1256,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
-							{
-								case 0:
-								{
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									break;
-								}
-								default:
-								{
-									SelectedOption = tempCurrentMenuOption;
-									CurrentMenuOption = 0;
-									break;
-								}
-							}
+							SelectedOption = tempCurrentMenuOption + 1;
+							CurrentMenuOption = 0;
 							break;
 						}
 						default:
@@ -1584,56 +1412,20 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					switch (tempSelectedOption)
 					{
 						case 0:
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							break;
-						}
-						default:
-						{
-							switch (tempSelectedOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
+								case BRING_OUT_FOLLOWER:
 								{
-									switch (tempCurrentMenuOption)
-									{
-										case BRING_OUT_FOLLOWER:
-										{
-											// Make sure a file is loaded
-											if (checkIfInGame())
-											{
-												Timer 				= 0;
-												SecondaryMenuOption = 0;
-												SelectedOption = tempCurrentMenuOption;
-											}
-											else
-											{
-												FunctionReturnCode 	= NOT_IN_GAME;
-												Timer 				= secondsToFrames(3);
-											}
-											break;
-										}
-										case REMOVE_FOLLOWER:
-										{
-											removeFollowerFromOverworld();
-											break;
-										}
-										default:
-										{
-											break;
-										}
-									}
-									break;
-								}
-								default:
-								{
-									// Make sure a file is loaded again
+									// Make sure a file is loaded
 									if (checkIfInGame())
 									{
-										Timer = 0;
+										Timer 				= 0;
+										SecondaryMenuOption = 0;
+										SelectedOption = tempCurrentMenuOption + 1;
 									}
 									else
 									{
@@ -1642,6 +1434,29 @@ void menuCheckButton()
 									}
 									break;
 								}
+								case REMOVE_FOLLOWER:
+								{
+									removeFollowerFromOverworld();
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							// Make sure a file is loaded again
+							if (checkIfInGame())
+							{
+								Timer = 0;
+							}
+							else
+							{
+								FunctionReturnCode 	= NOT_IN_GAME;
+								Timer 				= secondsToFrames(3);
 							}
 							break;
 						}
@@ -1678,15 +1493,8 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					switch (tempCurrentMenuOption + 1)
 					{
-						case 0:
-						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
-							break;
-						}
 						case LOAD_SETTINGS:
 						{
 							int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName);
@@ -1759,7 +1567,7 @@ void menuCheckButton()
 		}
 		case MEMORY:
 		{
-			uint32_t MaxOptionsPerPage = 9;
+			uint32_t MaxOptionsPerPage = 10;
 			switch (CurrentButton)
 			{
 				case DPADDOWN:
@@ -1786,15 +1594,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
-								{
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									resetMenu();
-									break;
-								}
 								case ADD_WATCH:
 								{
 									int32_t EmptyWatchSlot = getEmptyWatchSlot();
@@ -1818,7 +1619,7 @@ void menuCheckButton()
 										int32_t EmptyWatchSlot = getEmptyWatchSlot();
 										if (EmptyWatchSlot >= 0)
 										{
-											SelectedOption 		= tempCurrentMenuOption;
+											SelectedOption 		= tempCurrentMenuOption + 1;
 											CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 										}
 										else
@@ -1841,7 +1642,7 @@ void menuCheckButton()
 									uint32_t tempAddress = MemoryWatch[0].Address;
 									if (tempAddress)
 									{
-										SelectedOption 		= tempCurrentMenuOption;
+										SelectedOption 		= tempCurrentMenuOption + 1;
 										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
@@ -1857,7 +1658,7 @@ void menuCheckButton()
 									uint32_t tempAddress = MemoryWatch[0].Address;
 									if (tempAddress)
 									{
-										SelectedOption 		= tempCurrentMenuOption;
+										SelectedOption 		= tempCurrentMenuOption + 1;
 										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 									}
 									else
@@ -1996,16 +1797,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
-								{
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									MenuSelectedOption = 0;
-									resetMenuNoPageReset();
-									break;
-								}
 								case CHANGE_ADDRESS:
 								{
 									// Enter the next menu
@@ -2015,7 +1808,7 @@ void menuCheckButton()
 								}
 								case CHANGE_TYPE:
 								{
-									SelectedOption = tempCurrentMenuOption;
+									SelectedOption = tempCurrentMenuOption + 1;
 									SecondaryMenuOption = MemoryWatch[tempMenuSelectedOption].Type;
 									break;
 								}
@@ -2042,7 +1835,7 @@ void menuCheckButton()
 								{
 									MemoryWatchPosition.PosX = MemoryWatch[tempMenuSelectedOption].PosX;
 									MemoryWatchPosition.PosY = MemoryWatch[tempMenuSelectedOption].PosY;
-									SelectedOption = tempCurrentMenuOption;
+									SelectedOption = tempCurrentMenuOption + 1;
 									HideMenu = true;
 									break;
 								}
@@ -2136,18 +1929,11 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									switch (tempCurrentMenuOption)
+									switch (tempCurrentMenuOption + 1)
 									{
-										case 0:
-										{
-											// Go back to the previous menu
-											CurrentMenu = tempPreviousMenu;
-											resetMenuNoPageReset();
-											break;
-										}
 										case CHANGE_ADDRESS_OR_POINTERS:
 										{
-											SelectedOption 		= tempCurrentMenuOption;
+											SelectedOption 		= tempCurrentMenuOption + 1;
 											CurrentMenuOption 	= 0;
 											break;
 										}
@@ -2261,24 +2047,15 @@ void menuCheckButton()
 			}
 			else
 			{
-				uint32_t MaxOptionsPerPage = 13;
+				uint32_t MaxOptionsPerPage = 14;
 				switch (CurrentButton)
 				{
 					case DPADDOWN:
 					case DPADUP:
 					{
-						switch (tempSelectedOption)
+						if (tempSelectedOption != 0)
 						{
-							case 0:
-							{
-								default_DPAD_Actions(CurrentButton);
-								break;
-							}
-							default:
-							{
-								adjustBattlesActorSelection(CurrentButton);
-								break;
-							}
+							adjustBattlesActorSelection(CurrentButton);
 						}
 						break;
 					}
@@ -2288,22 +2065,8 @@ void menuCheckButton()
 						{
 							case 0:
 							{
-								switch (tempCurrentMenuOption)
-								{
-									case 0:
-									{
-										// Go back to the previous menu
-										CurrentMenu = tempPreviousMenu;
-										resetMenu();
-										break;
-									}
-									default:
-									{
-										SelectedOption 		= tempCurrentMenuOption;
-										CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
-										break;
-									}
-								}
+								SelectedOption 		= tempCurrentMenuOption + 1;
+								CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
 								break;
 							}
 							default:
@@ -2380,15 +2143,8 @@ void menuCheckButton()
 								uint32_t ActorAddress = reinterpret_cast<uint32_t>(
 									getActorPointer(tempMenuSelectedOption));
 								
-								switch (tempCurrentMenuOption)
+								switch (tempCurrentMenuOption + 1)
 								{
-									case 0:
-									{
-										// Go back to the previous menu
-										CurrentMenu = tempPreviousMenu;
-										resetMenu();
-										break;
-									}
 									case CLEAR_HELD_ITEM:
 									{
 										if (ActorAddress == 0)
@@ -2439,11 +2195,11 @@ void menuCheckButton()
 											break;
 										}
 										
-										SelectedOption = tempCurrentMenuOption;
-										MenuSelectionStates = tempCurrentMenuOption;
+										SelectedOption = tempCurrentMenuOption + 1;
+										MenuSelectionStates = tempCurrentMenuOption + 1;
 										SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 										
-										switch (tempCurrentMenuOption)
+										switch (tempCurrentMenuOption + 1)
 										{
 											case CHANGE_ACTOR_HP:
 											{
@@ -2638,37 +2394,23 @@ void menuCheckButton()
 				}
 				case A:
 				{
+					// Enter the next menu
 					switch (tempCurrentMenuOption)
 					{
-						case 0:
+						case ONSCREEN_TIMER:
 						{
-							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
-							resetMenu();
+							CurrentMenu = DISPLAYS_ONSCREEN_TIMER;
 							break;
 						}
 						default:
 						{
-							// Enter the next menu
-							switch (tempCurrentMenuOption - 1)
-							{
-								case ONSCREEN_TIMER:
-								{
-									CurrentMenu = DISPLAYS_ONSCREEN_TIMER;
-									break;
-								}
-								default:
-								{
-									CurrentMenu = DISPLAYS_NO_BUTTON_COMBO;
-									break;
-								}
-							}
-							
-							MenuSelectedOption = tempCurrentMenuOption - 1;
-							resetMenu();
+							CurrentMenu = DISPLAYS_NO_BUTTON_COMBO;
 							break;
 						}
 					}
+					
+					MenuSelectedOption = tempCurrentMenuOption;
+					resetMenu();
 					break;
 				}
 				case B:
@@ -2701,17 +2443,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
-								{
-									// No option has been selected yet
-									// Go back to the previous menu
-									CurrentMenu 		= tempPreviousMenu;
-									CurrentMenuOption 	= tempMenuSelectedOption + 1;
-									MenuSelectedOption 	= 0;
-									break;
-								}
 								case ONSCREEN_TIMER_TURN_ON_OR_OFF:
 								{
 									// Flip the bool for the current cheat
@@ -2722,7 +2455,7 @@ void menuCheckButton()
 								case CHANGE_START_PAUSE_RESUME_BUTTON_COMBO:
 								case CHANGE_RESET_BUTTON_COMBO:
 								{
-									SelectedOption 				= tempCurrentMenuOption;
+									SelectedOption 				= tempCurrentMenuOption + 1;
 									ChangingCheatButtonCombo 	= true;
 									Timer 						= secondsToFrames(3);
 									break;
@@ -2754,7 +2487,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption + 1;
+						CurrentMenuOption 	= tempMenuSelectedOption;
 						MenuSelectedOption 	= 0;
 					}
 					break;
@@ -2778,28 +2511,11 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					switch (tempCurrentMenuOption)
+					if ((tempCurrentMenuOption + 1) == TURN_ON_OR_OFF)
 					{
-						case 0:
-						{
-							// No option has been selected yet
-							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption + 1;
-							MenuSelectedOption 	= 0;
-							break;
-						}
-						case TURN_ON_OR_OFF:
-						{
-							// Flip the bool for the current display
-							bool DisplayActive = Displays[tempMenuSelectedOption];
-							Displays[tempMenuSelectedOption] = !DisplayActive;
-							break;
-						}
-						default:
-						{
-							break;
-						}
+						// Flip the bool for the current display
+						bool DisplayActive = Displays[tempMenuSelectedOption];
+						Displays[tempMenuSelectedOption] = !DisplayActive;
 					}
 					break;
 				}
@@ -2807,7 +2523,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					CurrentMenu 		= tempPreviousMenu;
-					CurrentMenuOption 	= tempMenuSelectedOption + 1;
+					CurrentMenuOption 	= tempMenuSelectedOption;
 					MenuSelectedOption 	= 0;
 					break;
 				}
@@ -2852,13 +2568,13 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							switch (tempCurrentMenuOption)
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
+								case SELECT_WARP:
 								{
-									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									resetMenu();
+									Timer = 0;
+									SelectedOption = tempCurrentMenuOption + 1;
+									CurrentMenuOption = 0;
 									break;
 								}
 								case WARP_BY_INDEX:
@@ -2866,13 +2582,6 @@ void menuCheckButton()
 									// Enter the next menu
 									CurrentMenu = WARPS_INDEX;
 									resetMenu();
-									break;
-								}
-								case SELECT_WARP:
-								{
-									Timer = 0;
-									SelectedOption = tempCurrentMenuOption;
-									CurrentMenuOption = 0;
 									break;
 								}
 								default:
@@ -3014,18 +2723,11 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									switch (tempCurrentMenuOption)
+									switch (tempCurrentMenuOption + 1)
 									{
-										case 0:
-										{
-											// Go back to the previous menu
-											CurrentMenu = tempPreviousMenu;
-											resetMenu();
-											break;
-										}
 										case INDEX_VIEW_CURRENT_MAP_ENTRANCES:
 										{
-											MenuSelectedOption = tempCurrentMenuOption;
+											MenuSelectedOption = tempCurrentMenuOption + 1;
 											break;
 										}
 										case INDEX_WARP_NOW:
@@ -3059,12 +2761,12 @@ void menuCheckButton()
 										default:
 										{
 											Timer = 0;
-											SelectedOption = tempCurrentMenuOption;
+											SelectedOption = tempCurrentMenuOption + 1;
 											
 											SecondaryMenuOption = getHighestAdjustableValueDigit(
 												tempCurrentMenu) - 1;
 											
-											if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+											if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 											{
 												int32_t MapIndex = getMapIndex();
 												if (MapIndex < 0)
@@ -3190,7 +2892,7 @@ void drawMenu()
 			correctInventoryCurrentMenuOptionAndPage(MaxOptionsPerPage);
 			
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the item icons and text
 			drawInventoryIconAndTextColumns();
@@ -3305,7 +3007,7 @@ void drawMenu()
 		{
 			// Draw the text for the options
 			uint32_t MaxOptionsPerPage = 18;
-			drawSingleColumn(MaxOptionsPerPage, tempCurrentPage);
+			drawSingleColumn(MaxOptionsPerPage, tempCurrentPage, false);
 			
 			// Draw the page number
 			int32_t PosX = 150;
@@ -3333,7 +3035,7 @@ void drawMenu()
 			drawSingleColumnMain();
 			
 			// Draw the bool
-			int32_t PosY = 80;
+			int32_t PosY = 120;
 			drawCheatsBool(PosY);
 			
 			// Draw the button combo
@@ -3354,7 +3056,7 @@ void drawMenu()
 			drawSingleColumnMain();
 			
 			// Draw the bool
-			int32_t PosY = 100;
+			int32_t PosY = 140;
 			drawCheatsBool(PosY);
 			break;
 		}
@@ -3364,7 +3066,7 @@ void drawMenu()
 			drawSingleColumnMain();
 			
 			// Draw the bool
-			int32_t PosY = 80;
+			int32_t PosY = 120;
 			drawCheatsBool(PosY);
 			
 			// Draw the current item
@@ -3390,7 +3092,7 @@ void drawMenu()
 		case CHEATS_CLEAR_AREA_FLAGS:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the options for which area flags to clear
 			drawCheatsClearArea();
@@ -3406,7 +3108,7 @@ void drawMenu()
 		case STATS_MARIO:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw each of Mario's stats
 			drawMarioStats();
@@ -3432,7 +3134,7 @@ void drawMenu()
 		case STATS_PARTNERS:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw each option to choose from
 			drawPartnerStats();
@@ -3470,7 +3172,7 @@ void drawMenu()
 		case STATS_FOLLOWERS:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the text for the current follower out
 			drawCurrentFollowerOut();
@@ -3481,7 +3183,7 @@ void drawMenu()
 			}
 			
 			// Draw the error message if the player tried to spawn a partner while either not in the game or in a battle
-			if (((CurrentMenuOption == BRING_OUT_FOLLOWER) || 
+			if ((((CurrentMenuOption + 1) == BRING_OUT_FOLLOWER) || 
 				(tempSelectedOption == BRING_OUT_FOLLOWER)) && 
 					(tempFunctionReturnCode < 0))
 			{
@@ -3503,7 +3205,7 @@ void drawMenu()
 		case MEMORY:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the memory watches
 			drawMemoryWatches();
@@ -3560,7 +3262,7 @@ void drawMenu()
 		case MEMORY_CHANGE_ADDRESS:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the address, pointer levels, and final value
 			drawMemoryChangeAddressList();
@@ -3583,7 +3285,7 @@ void drawMenu()
 			else
 			{
 				// Draw the text for the options
-				drawSingleColumnMain();
+				drawSingleColumnSelectedOption();
 				
 				// Draw each actor
 				drawBattlesActorsList();
@@ -3608,7 +3310,7 @@ void drawMenu()
 			else
 			{
 				// Draw the text for the options
-				drawSingleColumnMain();
+				drawSingleColumnSelectedOption();
 				
 				// Draw the HP/FP values
 				drawBattlesActorStats();
@@ -3674,12 +3376,13 @@ void drawMenu()
 		case DISPLAYS_ONSCREEN_TIMER:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the bool
 			bool CurrentDisplay = Displays[tempMenuSelectedOption];
-			const char *CurrentLine = DisplaysLines[tempMenuSelectedOption + 1];
-			int32_t PosY = 60;
+			const char *CurrentLine = DisplaysLines[tempMenuSelectedOption];
+			
+			int32_t PosY = 80;
 			drawBoolOnOrOff(CurrentDisplay, CurrentLine, PosY);
 			
 			// Draw each button combo
@@ -3700,8 +3403,8 @@ void drawMenu()
 			
 			// Draw the bool
 			bool CurrentDisplay = Displays[tempMenuSelectedOption];
-			const char *CurrentLine = DisplaysLines[tempMenuSelectedOption + 1];
-			int32_t PosY = 100;
+			const char *CurrentLine = DisplaysLines[tempMenuSelectedOption];
+			int32_t PosY = 140;
 			
 			drawBoolOnOrOff(CurrentDisplay, CurrentLine, PosY);
 			break;
@@ -3709,7 +3412,7 @@ void drawMenu()
 		case WARPS:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the warps options
 			drawWarpsOptions();
@@ -3730,7 +3433,7 @@ void drawMenu()
 		case WARPS_INDEX:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the map and entrance
 			drawWarpIndexMapAndEntrance();

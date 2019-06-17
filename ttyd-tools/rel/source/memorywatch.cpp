@@ -350,7 +350,7 @@ void addMemoryWatch(int32_t slot)
 
 void deleteWatch(int32_t slot)
 {
-	uint32_t TotalOptionsPerPage = 9;
+	uint32_t TotalOptionsPerPage = 10;
 	int32_t TotalSlots = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	int32_t TotalMenuOptions = 0;
 	

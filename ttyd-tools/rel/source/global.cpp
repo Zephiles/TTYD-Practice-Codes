@@ -11,7 +11,6 @@ const char *VersionNumber = "v3.0.29";
 
 const char *RootLines[] = 
 {
-	"Return",
 	"Inventory",
 	"Cheats",
 	"Stats",
@@ -24,7 +23,6 @@ const char *RootLines[] =
 
 const char *InventoryLines[] = 
 {
-	"Return",
 	"Standard Items",
 	"Important Items",
 	"Badges",
@@ -33,7 +31,6 @@ const char *InventoryLines[] =
 
 const char *InventoryOptionLines[] = 
 {
-	"Return",
 	"Add By Id",
 	"Add By Icon",
 	"Duplicate",
@@ -69,7 +66,6 @@ uint8_t CheatsOrder[] =
 
 const char *CheatsLines[] = 
 {
-	"Return",
 	"Change Sequence",
 	"Walk Through Most Objects",
 	"Save Coordinates",
@@ -95,7 +91,6 @@ const char *CheatsLines[] =
 
 const char *CheatsChangeSequenceOptionsLines[] = 
 {
-	"Return",
 	"Change Value",
 };
 
@@ -514,27 +509,23 @@ const char *CheatsEventNames[]
 
 const char *CheatsStandardOptionsLines[] = 
 {
-	"Return",
 	"Turn On/Off",
 	"Change Button Combo",
 };
 
 const char *CheatsNoButtonComboOptionsLines[] = 
 {
-	"Return",
 	"Turn On/Off",
 };
 
 const char *CheatsForceItemDropOptionsLines[] = 
 {
-	"Return",
 	"Turn On/Off",
 	"Change Item By Id",
 };
 
 const char *CheatsManageFlagsOptions[] = 
 {
-	"Return",
 	"Set GSWs",
 	"Set GSWFs",
 	"Set GWs",
@@ -545,20 +536,17 @@ const char *CheatsManageFlagsOptions[] =
 
 const char *CheatsManageGlobalWordsOptions[]
 {
-	"Return",
 	"Change Value",
 	"Set New Value",
 };
 
 const char *CheatsManageGlobalFlagsOptions[]
 {
-	"Return",
 	"Toggle Value",
 };
 
 const char *CheatsClearAreaFlags[] = 
 {
-	"Return",
 	"Select Area",
 	"Clear Flags",
 };
@@ -618,7 +606,6 @@ const char *CheatsForceItemDropAreasFullNames[] =
 
 const char *StatsLines[] = 
 {
-	"Return",
 	"Mario",
 	"Partners",
 	"Followers",
@@ -626,33 +613,8 @@ const char *StatsLines[] =
 
 const char *StatsMarioLines[] = 
 {
-	"Return",
 	"Change Values",
 };
-
-const char *StatsPartnerLines[] = 
-{
-	"Return",
-	"Goombella",
-	"Koops",
-	"Flurrie",
-	"Yoshi",
-	"Vivian",
-	"Bobbery",
-	"Ms. Mowz",
-};
-
-const char *StatsYoshiColorOptionsLines[] = 
-{
-	"Green",
-	"Red",
-	"Blue",
-	"Orange",
-	"Pink",
-	"Black",
-	"White",
-};
-uint8_t StatsYoshiColorOptionsLinesSize = sizeof(StatsYoshiColorOptionsLines) / sizeof(StatsYoshiColorOptionsLines[0]);
 
 const char *StatsMarioOptionsLines[] = 
 {
@@ -730,6 +692,17 @@ const char *MarioStatsSpecialMovesOptions[] =
 };
 uint8_t MarioStatsSpecialMovesOptionsSize = sizeof(MarioStatsSpecialMovesOptions) / sizeof(MarioStatsSpecialMovesOptions[0]);
 
+const char *StatsPartnerLines[] = 
+{
+	"Goombella",
+	"Koops",
+	"Flurrie",
+	"Yoshi",
+	"Vivian",
+	"Bobbery",
+	"Ms. Mowz",
+};
+
 const char *StatsPartnerOptionsLines[] = 
 {
 	"HP",
@@ -739,9 +712,20 @@ const char *StatsPartnerOptionsLines[] =
 };
 uint8_t StatsPartnerOptionsLinesSize = sizeof(StatsPartnerOptionsLines) / sizeof(StatsPartnerOptionsLines[0]);
 
+const char *StatsYoshiColorOptionsLines[] = 
+{
+	"Green",
+	"Red",
+	"Blue",
+	"Orange",
+	"Pink",
+	"Black",
+	"White",
+};
+uint8_t StatsYoshiColorOptionsLinesSize = sizeof(StatsYoshiColorOptionsLines) / sizeof(StatsYoshiColorOptionsLines[0]);
+
 const char *StatsFollowerLines [] = 
 {
-	"Return",
 	"Bring Follower Out",
 	"Remove Current Follower",
 };
@@ -758,14 +742,12 @@ uint8_t StatsFollowerOptionsLinesSize = sizeof(StatsFollowerOptionsLines) / size
 
 const char *SettingsLines[] = 
 {
-	"Return",
 	"Load Settings",
 	"Save Settings",
 };
 
 const char *MemoryLines[] = 
 {
-	"Return",
 	"Add Watch",
 	"Modify Watch",
 	"Duplicate Watch",
@@ -774,7 +756,6 @@ const char *MemoryLines[] =
 
 const char *MemoryModifyLines[] = 
 {
-	"Return",
 	"Address",
 	"Type",
 	"Show As Hex",
@@ -802,7 +783,6 @@ uint8_t MemoryTypeLinesSize = sizeof(MemoryTypeLines) / sizeof(MemoryTypeLines[0
 
 const char *MemoryChangeAddressLines[] = 
 {
-	"Return",
 	"Change Address/Pointer Levels",
 	"Add Pointer Level",
 	"Remove Pointer Level",
@@ -810,7 +790,6 @@ const char *MemoryChangeAddressLines[] =
 
 const char *BattlesLines[] = 
 {
-	"Return",
 	"Choose Actor",
 };
 
@@ -1050,7 +1029,6 @@ const char *BattlesActorsLines[] =
 
 const char *BattlesCurrentActorLines[] = 
 {
-	"Return",
 	"Change HP",
 	"Change Max HP",
 	"Change FP",
@@ -1179,7 +1157,6 @@ uint8_t DisplaysOrder[] =
 
 const char *DisplaysLines[] = 
 {
-	"Return",
 	"On-Screen Timer",
 	"Mario's Coordinates",
 	"Mario's Speed XZ",
@@ -1195,7 +1172,6 @@ const char *DisplaysLines[] =
 
 const char *OnScreenTimerOptionsLines[] = 
 {
-	"Return",
 	"Turn On/Off",
 	"Change Start/Pause/Resume Button Combo",
 	"Change Reset Button Combo",
@@ -1210,9 +1186,8 @@ uint8_t OnScreenTimerOptionsSize = sizeof(OnScreenTimerOptions) / sizeof(OnScree
 
 const char *WarpLines[] = 
 {
-	"Return",
-	"Warp By Index",
 	"Select Warp",
+	"Warp By Index",
 };
 
 const char *WarpDestinations[] = 
@@ -1276,16 +1251,10 @@ const char *WarpDescriptions[] =
 
 const char *WarpIndexLines[] = 
 {
-	"Return",
 	"Select New Map",
 	"Select New Entrance Id",
 	"View Current Map Entrances",
 	"Warp",
-};
-
-const char *ReturnPlaceholder[] = 
-{
-	"Return",
 };
 
 #ifdef TTYD_JP

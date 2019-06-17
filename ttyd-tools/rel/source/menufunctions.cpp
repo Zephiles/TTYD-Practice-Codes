@@ -41,7 +41,7 @@ void closeMenu()
 void closeSecondaryMenu()
 {
 	// Reset the current menu option
-	CurrentMenuOption = SelectedOption;
+	CurrentMenuOption = SelectedOption - 1;
 	
 	// Close the menu
 	SelectedOption = 0;
@@ -614,7 +614,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		}
 		case WARPS_INDEX:
 		{
-			if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+			if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 			{
 				// LowerBound = 0;
 				UpperBound = 271;
@@ -1140,7 +1140,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				}
 				case BATTLES_CURRENT_ACTOR:
 				{
-					setBattlesActorValue(tempCurrentMenuOption);
+					setBattlesActorValue(tempCurrentMenuOption + 1);
 					SelectedOption = 0;
 					
 					FrameCounter = 1;
@@ -1190,7 +1190,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				}
 				case WARPS_INDEX:
 				{
-					if (tempCurrentMenuOption == INDEX_SELECT_MAP)
+					if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 					{
 						WarpByIndex.MapId = static_cast<uint16_t>(MenuSecondaryValue);
 					}
@@ -2435,14 +2435,7 @@ uint8_t getSelectedOptionPartnerValue()
 	
 	if (tempSelectedOption == 0)
 	{
-		if (tempCurrentMenuOption == 0)
-		{
-			return 0;
-		}
-		else
-		{
-			tempOption = tempCurrentMenuOption;
-		}
+		tempOption = tempCurrentMenuOption + 1;
 	}
 	else
 	{
@@ -3666,7 +3659,7 @@ void adjustMemoryWatchSelection(uint32_t button)
 	}
 	
 	uint32_t MaxOptionsPerRow = 1;
-	uint32_t MaxOptionsPerPage = 9;
+	uint32_t MaxOptionsPerPage = 10;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
@@ -3689,16 +3682,15 @@ void adjustMemoryChangeAddressOrPointerSelection(uint32_t button)
 void adjustBattlesActorSelection(uint32_t button)
 {
 	// Get the highest slot in use
-	int32_t Counter = 0;
-	for (uint32_t i = 0; i < 62; i++)
+	uint32_t TotalMenuOptions = 62;
+	uint32_t MaxOptionsPerPage = 14;
+	int32_t HighestSlot = 0;
+	
+	for (uint32_t i = 1; i <= TotalMenuOptions; i++) // Start at 1 to skip System
 	{
-		if (getActorPointer(i + 1)) // Add 1 to skip System
+		if (getActorPointer(i))
 		{
-			Counter++;
-		}
-		else
-		{
-			break;
+			HighestSlot = i;
 		}
 	}
 	
@@ -3710,10 +3702,10 @@ void adjustBattlesActorSelection(uint32_t button)
 		case DPADDOWN:
 		{
 			// Check to see if at the bottom of the current page
-			if (tempCurrentMenuOption == (((tempCurrentPage + 1) * 13) - 1))
+			if (tempCurrentMenuOption == (((tempCurrentPage + 1) * MaxOptionsPerPage) - 1))
 			{
 				// Prevent going to the next page if there are no more free spaces
-				if (Counter < static_cast<int32_t>((tempCurrentPage + 1) * 13))
+				if (HighestSlot <= static_cast<int32_t>((tempCurrentPage + 1) * MaxOptionsPerPage))
 				{
 					// Go to the first page
 					CurrentMenuOption = 0;
@@ -3726,19 +3718,23 @@ void adjustBattlesActorSelection(uint32_t button)
 		case DPADUP:
 		{
 			// Check to see if at the top of the current page
-			if (tempCurrentMenuOption == (tempCurrentPage * 13))
+			if (tempCurrentMenuOption == (tempCurrentPage * MaxOptionsPerPage))
 			{
-				// Go to the last page that has slots in use
-				while (Counter >= static_cast<int32_t>((tempCurrentPage + 1) * 13))
+				// Only run if on the first page
+				if (tempCurrentPage == 0)
 				{
-					tempCurrentPage++;
-					tempCurrentMenuOption += 13;
-					Counter -= 13;
+					// Go to the last page that has slots in use
+					while (HighestSlot > static_cast<int32_t>((tempCurrentPage + 1) * MaxOptionsPerPage))
+					{
+						tempCurrentPage++;
+						tempCurrentMenuOption += MaxOptionsPerPage;
+						HighestSlot -= MaxOptionsPerPage;
+					}
+					
+					CurrentPage = tempCurrentPage;
+					CurrentMenuOption = tempCurrentMenuOption + MaxOptionsPerPage - 1;
+					return;
 				}
-				
-				CurrentPage = tempCurrentPage;
-				CurrentMenuOption = tempCurrentMenuOption + 12;
-				return;
 			}
 			break;
 		}
@@ -3748,9 +3744,7 @@ void adjustBattlesActorSelection(uint32_t button)
 		}
 	}
 	
-	uint32_t TotalMenuOptions = 62;
 	uint32_t MaxOptionsPerRow = 1;
-	uint32_t MaxOptionsPerPage = 13;
 	
 	adjustMenuSelectionVertical(button, CurrentMenuOption, 
 		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
