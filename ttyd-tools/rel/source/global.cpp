@@ -611,11 +611,6 @@ const char *StatsLines[] =
 	"Followers",
 };
 
-const char *StatsMarioLines[] = 
-{
-	"Change Values",
-};
-
 const char *StatsMarioOptionsLines[] = 
 {
 	"Coins",
@@ -1407,10 +1402,7 @@ void initMenuVars()
 	Menu[STATS].PreviousMenu 							= ROOT;
 	Menu[STATS].Line 									= StatsLines;
 	
-	Menu[STATS_MARIO].TotalMenuOptions 					= sizeof(StatsMarioLines) / sizeof(StatsMarioLines[0]);
-	Menu[STATS_MARIO].ColumnSplitAmount 				= Menu[STATS_MARIO].TotalMenuOptions;
 	Menu[STATS_MARIO].PreviousMenu 						= STATS;
-	Menu[STATS_MARIO].Line 								= StatsMarioLines;
 	
 	Menu[STATS_PARTNERS].TotalMenuOptions 				= sizeof(StatsPartnerLines) / sizeof(StatsPartnerLines[0]);
 	Menu[STATS_PARTNERS].ColumnSplitAmount 				= Menu[STATS_PARTNERS].TotalMenuOptions;

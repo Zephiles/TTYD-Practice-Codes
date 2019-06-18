@@ -1126,74 +1126,58 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					if (tempSelectedOption != 0)
-					{
-						adjustMarioStatsSelection(CurrentButton);
-					}
+					adjustMarioStatsSelection(CurrentButton);
 					break;
 				}
 				case A:
 				{
-					switch (tempSelectedOption)
+					switch (tempMenuSelectedOption)
 					{
 						case 0:
 						{
-							SelectedOption = tempCurrentMenuOption + 1;
-							CurrentMenuOption = 0;
-							break;
-						}
-						default:
-						{
-							switch (tempMenuSelectedOption)
+							MenuSelectedOption = tempCurrentMenuOption + 1;
+							MenuSelectionStates = tempCurrentMenuOption + 1;
+							
+							switch (tempCurrentMenuOption + 1)
 							{
-								case 0:
+								case SPECIAL_MOVES:
 								{
-									MenuSelectedOption = tempCurrentMenuOption + 1;
-									MenuSelectionStates = tempCurrentMenuOption + 1;
-									
-									switch (tempCurrentMenuOption + 1)
-									{
-										case SPECIAL_MOVES:
-										{
-											SecondaryMenuOption = 0;
-											break;
-										}
-										default:
-										{
-											SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
-										
-											uint32_t offset = getMarioStatsValueOffset(tempCurrentMenuOption + 1);
-											if (offset == 0)
-											{
-												break;
-											}
-											
-											// Set the current value in the display to the current value of the address being changed
-											if (((tempCurrentMenuOption + 1) >= PIANTAS_STORED) && 
-												((tempCurrentMenuOption + 1) <= CURRENT_PIANTAS))
-											{
-												uint32_t PiantaParlorPtr = reinterpret_cast<uint32_t>(
-													ttyd::evt_yuugijou::yuugijouWorkPointer);
-												
-												MenuSecondaryValue = *reinterpret_cast<int32_t *>(PiantaParlorPtr + offset);
-											}
-											else
-											{
-												uint32_t PouchPtr = reinterpret_cast<uint32_t>(
-													ttyd::mario_pouch::pouchGetPtr());
-												
-												MenuSecondaryValue = *reinterpret_cast<int16_t *>(PouchPtr + offset);
-											}
-											break;
-										}
-									}
+									SecondaryMenuOption = 0;
 									break;
 								}
 								default:
 								{
+									SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+								
+									uint32_t offset = getMarioStatsValueOffset(tempCurrentMenuOption + 1);
+									if (offset == 0)
+									{
+										break;
+									}
+									
+									// Set the current value in the display to the current value of the address being changed
+									if (((tempCurrentMenuOption + 1) >= PIANTAS_STORED) && 
+										((tempCurrentMenuOption + 1) <= CURRENT_PIANTAS))
+									{
+										uint32_t PiantaParlorPtr = reinterpret_cast<uint32_t>(
+											ttyd::evt_yuugijou::yuugijouWorkPointer);
+										
+										MenuSecondaryValue = *reinterpret_cast<int32_t *>(PiantaParlorPtr + offset);
+									}
+									else
+									{
+										uint32_t PouchPtr = reinterpret_cast<uint32_t>(
+											ttyd::mario_pouch::pouchGetPtr());
+										
+										MenuSecondaryValue = *reinterpret_cast<int16_t *>(PouchPtr + offset);
+									}
 									break;
 								}
 							}
+							break;
+						}
+						default:
+						{
 							break;
 						}
 					}
@@ -1203,21 +1187,9 @@ void menuCheckButton()
 				{
 					if (tempMenuSelectedOption == 0)
 					{
-						switch (tempSelectedOption)
-						{
-							case 0:
-							{
-								// Go back to the previous menu
-								CurrentMenu = tempPreviousMenu;
-								resetMenu();
-								break;
-							}
-							default:
-							{
-								closeSecondaryMenu();
-								break;
-							}
-						}
+						// Go back to the previous menu
+						CurrentMenu = tempPreviousMenu;
+						resetMenu();
 					}
 					break;
 				}
@@ -3108,25 +3080,26 @@ void drawMenu()
 		case STATS_MARIO:
 		{
 			// Draw the text for the options
-			drawSingleColumnSelectedOption();
+			drawSingleColumnMain();
 			
 			// Draw each of Mario's stats
 			drawMarioStats();
 			
-			if (tempMenuSelectedOption != 0)
+			switch (tempMenuSelectedOption)
 			{
-				switch (tempMenuSelectedOption)
+				case 0:
 				{
-					case SPECIAL_MOVES:
-					{
-						drawMarioSpecialMovesOptions();
-						break;
-					}
-					default:
-					{
-						drawAdjustableValue(false, tempCurrentMenu);
-						break;
-					}
+					break;
+				}
+				case SPECIAL_MOVES:
+				{
+					drawMarioSpecialMovesOptions();
+					break;
+				}
+				default:
+				{
+					drawAdjustableValue(false, tempCurrentMenu);
+					break;
 				}
 			}
 			break;
@@ -3382,7 +3355,7 @@ void drawMenu()
 			bool CurrentDisplay = Displays[tempMenuSelectedOption];
 			const char *CurrentLine = DisplaysLines[tempMenuSelectedOption];
 			
-			int32_t PosY = 80;
+			int32_t PosY = 100;
 			drawBoolOnOrOff(CurrentDisplay, CurrentLine, PosY);
 			
 			// Draw each button combo

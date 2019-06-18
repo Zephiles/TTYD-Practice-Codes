@@ -1008,7 +1008,7 @@ void drawMarioStats()
 	float TextScale 				= 0.6;
 	float IconScale					= 0.6;
 	int32_t TextPosX 				= -208;
-	int32_t TextPosY 				= 140;
+	int32_t TextPosY 				= 175;
 	int32_t ValuesPosX 				= TextPosX + 105;
 	int32_t IconPosX 				= TextPosX - 15;
 	int32_t IconPosY 				= TextPosY - 20;
@@ -1035,6 +1035,8 @@ void drawMarioStats()
 	uint32_t SelectionTextColor;
 	Counter = 0;
 	
+	const uint32_t BeforeStarPowerSlot = 11;
+	
 	bool ExitLoop = false;
 	for (uint32_t j = 0; j < TotalColumns; j++)
 	{
@@ -1050,12 +1052,12 @@ void drawMarioStats()
 			}
 			
 			// Draw the icon
-			if (i == 11) // 1 before Star Power
+			if (i == BeforeStarPowerSlot) // 1 before Star Power
 			{
 				// Move the icons up
 				IconPosYIncrement = -5;
 			}
-			else if (i == 13) // 1 after Max Star Power
+			else if (i == (BeforeStarPowerSlot + 2)) // 1 after Max Star Power
 			{
 				// Reset the value
 				IconPosYIncrement = 5;
@@ -1068,13 +1070,13 @@ void drawMarioStats()
 			drawIcon(IconPosition, StatsMarioIcons[i], IconScale);
 			
 			// Draw the text
-			bool CurrentOptionCheck = (CurrentMenuOption == i) && (SelectedOption > 0);
+			bool CurrentOptionCheck = (CurrentMenuOption == i);
 			SelectionTextColor = getSelectedTextColor(CurrentOptionCheck);
 			
 			drawText(StatsMarioOptionsLines[i], PosX, PosY, Alpha, SelectionTextColor, TextScale);
 			
 			// Draw the values
-			if (i != 11) // Special moves -- drawn separately
+			if (i != BeforeStarPowerSlot) // Special moves -- drawn separately
 			{
 				sprintf(tempDisplayBuffer,
 					"%" PRId32,
@@ -1104,7 +1106,7 @@ void drawMarioStats()
 	float SpecialMovesScale = 0.37;
 	int16_t SpecialMoveIcon;
 	IconPosition[IconPositionX] = 133;
-	IconPosition[IconPositionY] = 66;
+	IconPosition[IconPositionY] = 101;
 	
 	int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
 	for (uint32_t i = 0; i < 8; i++)
@@ -3485,7 +3487,7 @@ void drawWarpIndexEntranceList()
 
 void drawOnScreenTimerButtonCombos()
 {
-	int32_t PosY = 0;
+	int32_t PosY = 40;
 	uint32_t tempOnScreenTimerOptionsSize = OnScreenTimerOptionsSize;
 	
 	for (uint32_t i = 0; i < tempOnScreenTimerOptionsSize; i++)
