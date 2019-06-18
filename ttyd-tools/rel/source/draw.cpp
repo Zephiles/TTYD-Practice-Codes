@@ -1886,18 +1886,14 @@ void drawBattlesActorsList()
 {
 	uint32_t tempCurrentPage 		= CurrentPage;
 	uint32_t TotalMenuOptions 		= 62; // Excluding System
-	uint32_t MaxOptionsPerPage 		= 14;
+	uint32_t MaxOptionsPerPage 		= 18;
 	uint32_t IndexStart 			= tempCurrentPage * MaxOptionsPerPage;
 	
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 140;
+	int32_t PosY 	= 180;
 	float Scale 	= 0.6;
 	uint32_t Color;
-	
-	// Draw the current page
-	drawPageNumber(PosX, PosY, tempCurrentPage);
-	PosY -= 40;
 	
 	// Draw the main text
 	for (uint32_t i = IndexStart; i < (IndexStart + MaxOptionsPerPage); i++)
@@ -1933,7 +1929,7 @@ void drawBattlesActorsList()
 			}
 		}
 		
-		if ((CurrentMenuOption == i) && (SelectedOption != 0))
+		if (CurrentMenuOption == i)
 		{
 			Color = 0x5B59DEFF;
 		}

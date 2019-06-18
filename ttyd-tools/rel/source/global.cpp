@@ -783,11 +783,6 @@ const char *MemoryChangeAddressLines[] =
 	"Remove Pointer Level",
 };
 
-const char *BattlesLines[] = 
-{
-	"Choose Actor",
-};
-
 const char *BattlesActorsLines[] = 
 {
 	"Goomba",
@@ -1434,10 +1429,7 @@ void initMenuVars()
 	Menu[MEMORY_CHANGE_ADDRESS].PreviousMenu 			= MEMORY_MODIFY;
 	Menu[MEMORY_CHANGE_ADDRESS].Line 					= MemoryChangeAddressLines;
 	
-	Menu[BATTLES].TotalMenuOptions 						= sizeof(BattlesLines) / sizeof(BattlesLines[0]);
-	Menu[BATTLES].ColumnSplitAmount 					= Menu[BATTLES].TotalMenuOptions;
 	Menu[BATTLES].PreviousMenu 							= ROOT;
-	Menu[BATTLES].Line 									= BattlesLines;
 	
 	Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions 		= sizeof(BattlesCurrentActorLines) / sizeof(BattlesCurrentActorLines[0]);
 	Menu[BATTLES_CURRENT_ACTOR].ColumnSplitAmount 		= Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions;

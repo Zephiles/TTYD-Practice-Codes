@@ -3683,7 +3683,7 @@ void adjustBattlesActorSelection(uint32_t button)
 {
 	// Get the highest slot in use
 	uint32_t TotalMenuOptions = 62;
-	uint32_t MaxOptionsPerPage = 14;
+	uint32_t MaxOptionsPerPage = 18;
 	int32_t HighestSlot = 0;
 	
 	for (uint32_t i = 1; i <= TotalMenuOptions; i++) // Start at 1 to skip System

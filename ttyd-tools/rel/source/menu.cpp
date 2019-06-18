@@ -2019,61 +2019,32 @@ void menuCheckButton()
 			}
 			else
 			{
-				uint32_t MaxOptionsPerPage = 14;
 				switch (CurrentButton)
 				{
 					case DPADDOWN:
 					case DPADUP:
 					{
-						if (tempSelectedOption != 0)
-						{
-							adjustBattlesActorSelection(CurrentButton);
-						}
+						adjustBattlesActorSelection(CurrentButton);
 						break;
 					}
 					case A:
 					{
-						switch (tempSelectedOption)
+						// Make sure the current slot isn't empty
+						void *CurrentActorPointer = getActorPointer(tempCurrentMenuOption + 1); // Add 1 to skip System
+						if (CurrentActorPointer)
 						{
-							case 0:
-							{
-								SelectedOption 		= tempCurrentMenuOption + 1;
-								CurrentMenuOption 	= tempCurrentPage * MaxOptionsPerPage;
-								break;
-							}
-							default:
-							{
-								// Make sure the current slot isn't empty
-								void *CurrentActorPointer = getActorPointer(tempCurrentMenuOption + 1); // Add 1 to skip System
-								if (CurrentActorPointer)
-								{
-									// Go to the next menu
-									CurrentMenu = BATTLES_CURRENT_ACTOR;
-									MenuSelectedOption = tempCurrentMenuOption + 1; // Add 1 to skip System
-									resetMenu();
-								}
-								break;
-							}
+							// Go to the next menu
+							CurrentMenu = BATTLES_CURRENT_ACTOR;
+							MenuSelectedOption = tempCurrentMenuOption + 1; // Add 1 to skip System
+							resetMenu();
 						}
 						break;
 					}
 					case B:
 					{
-						switch (tempSelectedOption)
-						{
-							case 0:
-							{
-								// Go back to the previous menu
-								CurrentMenu = tempPreviousMenu;
-								resetMenu();
-								break;
-							}
-							default:
-							{
-								closeSecondaryMenu();
-								break;
-							}
-						}
+						// Go back to the previous menu
+						CurrentMenu = tempPreviousMenu;
+						resetMenu();
 						break;
 					}
 					default:
@@ -3258,7 +3229,12 @@ void drawMenu()
 			else
 			{
 				// Draw the text for the options
-				drawSingleColumnSelectedOption();
+				drawSingleColumnMain();
+				
+				// Draw the page number
+				int32_t PosX = 150;
+				int32_t PosY = 180;
+				drawPageNumber(PosX, PosY, tempCurrentPage);
 				
 				// Draw each actor
 				drawBattlesActorsList();
