@@ -23,4 +23,5 @@ To build, navigate to the root directory of the repository (the folder with the 
 ## Special Thanks
 * **PistonMiner** for helping me with many C++ questions, and overall providing a ton of in-depth technical assistance.
 * **Jdaster64** for helping me with various formulas, providing logic about guard/superguard timing, and other C++ related help.
+* **Muz** for drawing the banners and icons used in the save files.
 * **Gibstack** for testing out the menu, and for confirming many battle actor names.

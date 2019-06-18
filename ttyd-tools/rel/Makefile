@@ -130,13 +130,15 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/include/ttyd.$(VERSION).lst
 ifeq ($(VERSION),us)
-	export BANNERFILE	:= $(CURDIR)/banner_us.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 else ifeq ($(VERSION),jp)
-	export BANNERFILE	:= $(CURDIR)/banner_jp.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
 else ifeq ($(VERSION),eu)
-	export BANNERFILE	:= $(CURDIR)/banner_us.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
 endif
-export ICONFILE		:= $(CURDIR)/icon.raw
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
