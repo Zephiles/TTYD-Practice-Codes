@@ -981,7 +981,6 @@ void drawMarioStats()
 {
 	// Create array for each stat to go in
 	int32_t MarioStatsArray[16];
-	clearMemory(MarioStatsArray, sizeof(MarioStatsArray));
 	
 	uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
 	
@@ -1137,7 +1136,6 @@ void drawPartnerStats()
 	
 	// Create array for each stat to go in
 	int16_t PartnerStats[3];
-	clearMemory(PartnerStats, sizeof(PartnerStats));
 	
 	// Add each stat to the array
 	uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(getPartnerEnabledAddress());
@@ -1379,7 +1377,6 @@ void drawBattlesActorStats()
 	
 	// Create array for each stat to go in
 	int16_t ActorStats[4];
-	clearMemory(ActorStats, sizeof(ActorStats));
 	
 	// Add each stat to the array
 	ActorStats[0] = *reinterpret_cast<int16_t *>(ActorAddress + 0x10C); // HP
