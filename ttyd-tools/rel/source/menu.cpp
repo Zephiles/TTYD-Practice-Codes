@@ -620,7 +620,10 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					adjustMenuNoPageEdit(CurrentButton);
+					if (tempCurrentMenu == CHEATS_STANDARD)
+					{
+						adjustMenuNoPageEdit(CurrentButton);
+					}
 					break;
 				}
 				case A:
@@ -2446,12 +2449,6 @@ void menuCheckButton()
 		{
 			switch (CurrentButton)
 			{
-				case DPADDOWN:
-				case DPADUP:
-				{
-					default_DPAD_Actions(CurrentButton);
-					break;
-				}
 				case A:
 				{
 					if ((tempCurrentMenuOption + 1) == TURN_ON_OR_OFF)
