@@ -2982,7 +2982,7 @@ void drawMenu()
 		case CHEATS_STANDARD:
 		{
 			// Draw the text for the options
-			drawSingleColumnMain();
+			drawSingleColumnSelectedOption();
 			
 			// Draw the bool
 			int32_t PosY = 120;
