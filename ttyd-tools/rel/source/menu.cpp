@@ -3432,6 +3432,9 @@ void enableOrDisableMenu()
 		
 		if (tempMenuIsDisplayed)
 		{
+			// Prevent the menu from checking inputs on the frame that it is opened
+			FrameCounter = 1;
+			
 			// Raise the System Level if not in a battle
 			raiseSystemLevel();
 			
