@@ -60,7 +60,7 @@ void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption)
 	{
 		i = 0;
 	}
-	else if (static_cast<uint32_t>(i) >= Size)
+	else if (static_cast<uint32_t>(i) >= (Size - 1))
 	{
 		// Failsafe; may change later
 		i = Size - 1;
