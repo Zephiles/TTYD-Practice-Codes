@@ -224,7 +224,6 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 		if (checkIfInGame())
 		{
 			uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(partnerEnabledAddress);
-			Timer = 0;
 			
 			// Preserve the current value of the enabled bool
 			bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
@@ -242,6 +241,8 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 			// Restore the value of the enabled bool
 			*reinterpret_cast<bool *>(
 				PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
+			
+			Timer = 0;
 		}
 		else
 		{
