@@ -35,7 +35,6 @@ void menuCheckButton()
 	// uint32_t tempTotalMenuColumns 		= Menu[tempCurrentMenu].TotalMenuColumns;
 	// uint32_t tempColumnSplitAmount 		= Menu[tempCurrentMenu].ColumnSplitAmount;
 	// uint32_t tempTotalMenuOptions 		= Menu[tempCurrentMenu].TotalMenuOptions;
-	uint32_t tempPreviousMenu 				= Menu[tempCurrentMenu].PreviousMenu;
 	uint32_t tempSelectedOption 			= SelectedOption;
 	uint32_t tempCurrentPage 				= CurrentPage;
 	uint32_t tempMenuSelectionStates 		= MenuSelectionStates;
@@ -51,7 +50,7 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
@@ -63,8 +62,8 @@ void menuCheckButton()
 							// Make sure the player is currently in a battle
 							if (getBattleWorkPointer())
 							{
-								// Currently in a battle, so enter the menu
-								CurrentMenu = BATTLES;
+								// Currently in a battle, so enter the next menu
+								enterNextMenu(BATTLES, tempCurrentMenuOption);
 								resetMenu();
 							}
 							else
@@ -77,7 +76,8 @@ void menuCheckButton()
 						default:
 						{
 							// Enter the next menu
-							CurrentMenu = tempCurrentMenuOption + 1;
+							enterNextMenu(tempCurrentMenuOption + 1, tempCurrentMenuOption);
+							
 							resetMenu();
 							break;
 						}
@@ -104,22 +104,22 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
 				{
 					// Enter the next menu
-					CurrentMenu 		= INVENTORY_MAIN;
-					MenuSelectedOption 	= tempCurrentMenuOption;
+					MenuSelectedOption = tempCurrentMenuOption;
+					enterNextMenu(INVENTORY_MAIN, tempCurrentMenuOption);
 					resetMenu();
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu = tempPreviousMenu;
 					resetMenu();
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -470,9 +470,9 @@ void menuCheckButton()
 						case 0:
 						{
 							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
 							MenuSelectedOption = 0;
 							resetMenu();
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 						case CHANGE_BY_ID:
@@ -512,11 +512,12 @@ void menuCheckButton()
 				case A:
 				{
 					// Enter the next menu
+					uint32_t MenuToEnter;
 					switch (tempCurrentMenuOption)
 					{
 						case CHANGE_SEQUENCE:
 						{
-							CurrentMenu = CHEATS_CHANGE_SEQUENCE;
+							MenuToEnter = CHEATS_CHANGE_SEQUENCE;
 							break;
 						}
 						case WALK_THROUGH_WALLS:
@@ -533,7 +534,7 @@ void menuCheckButton()
 						case RELOAD_ROOM:
 						case LEVITATE:
 						{
-							CurrentMenu = CHEATS_STANDARD;
+							MenuToEnter = CHEATS_STANDARD;
 							break;
 						}
 						case LOCK_MARIO_HP_TO_MAX:
@@ -541,36 +542,37 @@ void menuCheckButton()
 						case DISABLE_MENU_SOUNDS:
 						case BOBBERY_EARLY:
 						{
-							CurrentMenu = CHEATS_NO_BUTTON_COMBO;
+							MenuToEnter = CHEATS_NO_BUTTON_COMBO;
 							break;
 						}
 						case FORCE_ITEM_DROP:
 						{
-							CurrentMenu = CHEATS_NPC_FORCE_DROP;
+							MenuToEnter = CHEATS_NPC_FORCE_DROP;
 							break;
 						}
 						case MANAGE_FLAGS:
 						{
-							CurrentMenu = CHEATS_MANAGE_FLAGS;
+							MenuToEnter = CHEATS_MANAGE_FLAGS;
 							break;
 						}
 						case CLEAR_AREA_FLAGS:
 						default:
 						{
-							CurrentMenu = CHEATS_CLEAR_AREA_FLAGS;
+							MenuToEnter = CHEATS_CLEAR_AREA_FLAGS;
 							break;
 						}
 					}
 					
 					MenuSelectedOption = tempCurrentMenuOption;
-					resetMenuNoPageReset();
+					enterNextMenu(MenuToEnter, tempCurrentMenuOption);
+					resetMenu();
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu = tempPreviousMenu;
 					resetMenu();
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -599,9 +601,8 @@ void menuCheckButton()
 					if (tempMenuSelectionStates != CHANGE_SEQUENCE_VALUE)
 					{
 						// Go back to the previous menu
-						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption;
-						MenuSelectedOption 	= 0;
+						MenuSelectedOption = 0;
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -675,9 +676,8 @@ void menuCheckButton()
 						default:
 						{
 							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption;
-							MenuSelectedOption 	= 0;
+							MenuSelectedOption = 0;
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 					}
@@ -735,9 +735,8 @@ void menuCheckButton()
 					if (tempMenuSelectionStates != ITEM_DROP_CHANGE_BY_ID)
 					{
 						// Go back to the previous menu
-						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption;
-						MenuSelectedOption 	= 0;
+						MenuSelectedOption = 0;
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -764,17 +763,16 @@ void menuCheckButton()
 					clearMemory(&ManageFlags, sizeof(ManageFlags));
 					
 					// Enter the next menu
-					CurrentMenu 			= CHEATS_MANAGE_FLAGS_MAIN;
-					MenuSelectionStates 	= tempCurrentMenuOption + 1;
-					CurrentMenuOption 		= 0;
+					MenuSelectionStates = tempCurrentMenuOption + 1;
+					enterNextMenu(CHEATS_MANAGE_FLAGS_MAIN, tempCurrentMenuOption);
+					CurrentMenuOption = 0;
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu 		= tempPreviousMenu;
-					CurrentMenuOption 	= tempMenuSelectedOption;
-					MenuSelectedOption 	= 0;
+					MenuSelectedOption = 0;
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -940,9 +938,8 @@ void menuCheckButton()
 					if (tempSelectedOption == 0)
 					{
 						// Go back to the previous menu
-						CurrentMenu 			= tempPreviousMenu;
-						CurrentMenuOption 		= 0;
-						MenuSelectionStates 	= 0;
+						MenuSelectionStates = 0;
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -1073,9 +1070,8 @@ void menuCheckButton()
 						default:
 						{
 							// Go back to the previous menu
-							CurrentMenu 		= tempPreviousMenu;
-							CurrentMenuOption 	= tempMenuSelectedOption;
-							MenuSelectedOption 	= 0;
+							MenuSelectedOption = 0;
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 					}
@@ -1095,22 +1091,22 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
 				{
 					// Enter the next menu
-					CurrentMenu = STATS_MARIO + tempCurrentMenuOption;
 					MenuSelectedOption = 0;
+					enterNextMenu(STATS_MARIO + tempCurrentMenuOption, tempCurrentMenuOption);
 					resetMenu();
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu = tempPreviousMenu;
 					resetMenu();
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -1191,8 +1187,8 @@ void menuCheckButton()
 					if (tempMenuSelectedOption == 0)
 					{
 						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
 						resetMenu();
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -1214,7 +1210,7 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							default_DPAD_Actions(CurrentButton);
+							adjustMenuNoPageEdit(CurrentButton);
 							break;
 						}
 						default:
@@ -1356,8 +1352,8 @@ void menuCheckButton()
 							case 0:
 							{
 								// Go back to the previous menu
-								CurrentMenu = tempPreviousMenu;
 								resetMenu();
+								CurrentMenuOption = enterPreviousMenu();
 								break;
 							}
 							default:
@@ -1381,7 +1377,7 @@ void menuCheckButton()
 				{
 					if (tempSelectedOption == 0)
 					{
-						default_DPAD_Actions(CurrentButton);
+						adjustMenuNoPageEdit(CurrentButton);
 					}
 					break;
 				}
@@ -1443,8 +1439,8 @@ void menuCheckButton()
 					if (tempSelectedOption == 0)
 					{
 						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
 						resetMenu();
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -1463,7 +1459,7 @@ void menuCheckButton()
 				case DPADUP:
 				{
 					Timer = 0;
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
@@ -1529,8 +1525,8 @@ void menuCheckButton()
 				case B:
 				{
 					// Go back to the root
-					CurrentMenu = tempPreviousMenu;
 					resetMenu();
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -1691,9 +1687,9 @@ void menuCheckButton()
 							if (tempAddress)
 							{
 								// Enter the next menu
-								CurrentMenu = MEMORY_MODIFY;
 								MenuSelectedOption = tempCurrentMenuOption;
-								resetMenuNoPageReset();
+								enterNextMenu(MEMORY_MODIFY, tempSelectedOption - 1);
+								resetMenu();
 							}
 							else
 							{
@@ -1734,8 +1730,8 @@ void menuCheckButton()
 						case 0:
 						{
 							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
 							resetMenu();
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 						default:
@@ -1777,8 +1773,8 @@ void menuCheckButton()
 								case CHANGE_ADDRESS:
 								{
 									// Enter the next menu
-									CurrentMenu = MEMORY_CHANGE_ADDRESS;
-									resetMenuNoPageReset();
+									enterNextMenu(MEMORY_CHANGE_ADDRESS, tempCurrentMenuOption);
+									resetMenu();
 									break;
 								}
 								case CHANGE_TYPE:
@@ -1841,9 +1837,9 @@ void menuCheckButton()
 						case 0:
 						{
 							// Go back to the previous menu
-							CurrentMenu = tempPreviousMenu;
 							MenuSelectedOption = 0;
-							resetMenuNoPageReset();
+							resetMenu();
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 						default:
@@ -1985,8 +1981,8 @@ void menuCheckButton()
 								case 0:
 								{
 									// Go back to the previous menu
-									CurrentMenu = tempPreviousMenu;
-									resetMenuNoPageReset();
+									resetMenu();
+									CurrentMenuOption = enterPreviousMenu();
 									break;
 								}
 								default:
@@ -2037,8 +2033,8 @@ void menuCheckButton()
 						if (CurrentActorPointer)
 						{
 							// Go to the next menu
-							CurrentMenu = BATTLES_CURRENT_ACTOR;
 							MenuSelectedOption = tempCurrentMenuOption + 1; // Add 1 to skip System
+							enterNextMenu(BATTLES_CURRENT_ACTOR, tempCurrentMenuOption);
 							resetMenu();
 						}
 						break;
@@ -2046,8 +2042,8 @@ void menuCheckButton()
 					case B:
 					{
 						// Go back to the previous menu
-						CurrentMenu = tempPreviousMenu;
 						resetMenu();
+						CurrentMenuOption = enterPreviousMenu();
 						break;
 					}
 					default:
@@ -2076,7 +2072,7 @@ void menuCheckButton()
 					{
 						if (tempSelectedOption == 0)
 						{
-							default_DPAD_Actions(CurrentButton);
+							adjustMenuNoPageEdit(CurrentButton);
 						}
 						break;
 					}
@@ -2130,7 +2126,7 @@ void menuCheckButton()
 									case CHANGE_ACTOR_STATUSES:
 									{
 										// Go to the next menu
-										CurrentMenu = BATTLES_STATUSES;
+										enterNextMenu(BATTLES_STATUSES, tempCurrentMenuOption);
 										resetMenu();
 										break;
 									}
@@ -2209,8 +2205,8 @@ void menuCheckButton()
 							case 0:
 							{
 								// Go back to the previous menu
-								CurrentMenu = tempPreviousMenu;
 								resetMenu();
+								CurrentMenuOption = enterPreviousMenu();
 								break;
 							}
 							default:
@@ -2308,8 +2304,8 @@ void menuCheckButton()
 							case 0:
 							{
 								// Go back to the previous menu
-								CurrentMenu = tempPreviousMenu;
 								resetMenu();
+								CurrentMenuOption = enterPreviousMenu();
 								break;
 							}
 							default:
@@ -2335,35 +2331,37 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
 				{
 					// Enter the next menu
+					uint32_t MenuToEnter;
 					switch (tempCurrentMenuOption)
 					{
 						case ONSCREEN_TIMER:
 						{
-							CurrentMenu = DISPLAYS_ONSCREEN_TIMER;
+							MenuToEnter = DISPLAYS_ONSCREEN_TIMER;
 							break;
 						}
 						default:
 						{
-							CurrentMenu = DISPLAYS_NO_BUTTON_COMBO;
+							MenuToEnter = DISPLAYS_NO_BUTTON_COMBO;
 							break;
 						}
 					}
 					
 					MenuSelectedOption = tempCurrentMenuOption;
+					enterNextMenu(MenuToEnter, tempCurrentMenuOption);
 					resetMenu();
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu = tempPreviousMenu;
 					resetMenu();
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -2380,7 +2378,7 @@ void menuCheckButton()
 				case DPADDOWN:
 				case DPADUP:
 				{
-					default_DPAD_Actions(CurrentButton);
+					adjustMenuNoPageEdit(CurrentButton);
 					break;
 				}
 				case A:
@@ -2432,9 +2430,8 @@ void menuCheckButton()
 					else
 					{
 						// Go back to the previous menu
-						CurrentMenu 		= tempPreviousMenu;
-						CurrentMenuOption 	= tempMenuSelectedOption;
-						MenuSelectedOption 	= 0;
+						MenuSelectedOption = 0;
+						CurrentMenuOption = enterPreviousMenu();
 					}
 					break;
 				}
@@ -2451,20 +2448,16 @@ void menuCheckButton()
 			{
 				case A:
 				{
-					if ((tempCurrentMenuOption + 1) == TURN_ON_OR_OFF)
-					{
-						// Flip the bool for the current display
-						bool DisplayActive = Displays[tempMenuSelectedOption];
-						Displays[tempMenuSelectedOption] = !DisplayActive;
-					}
+					// Flip the bool for the current display
+					bool DisplayActive = Displays[tempMenuSelectedOption];
+					Displays[tempMenuSelectedOption] = !DisplayActive;
 					break;
 				}
 				case B:
 				{
 					// Go back to the previous menu
-					CurrentMenu 		= tempPreviousMenu;
-					CurrentMenuOption 	= tempMenuSelectedOption;
-					MenuSelectedOption 	= 0;
+					MenuSelectedOption = 0;
+					CurrentMenuOption = enterPreviousMenu();
 					break;
 				}
 				default:
@@ -2487,7 +2480,7 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							default_DPAD_Actions(CurrentButton);
+							adjustMenuNoPageEdit(CurrentButton);
 							break;
 						}
 						case SELECT_WARP:
@@ -2520,7 +2513,7 @@ void menuCheckButton()
 								case WARP_BY_INDEX:
 								{
 									// Enter the next menu
-									CurrentMenu = WARPS_INDEX;
+									enterNextMenu(WARPS_INDEX, tempCurrentMenuOption);
 									resetMenu();
 									break;
 								}
@@ -2606,8 +2599,8 @@ void menuCheckButton()
 						case 0:
 						{
 							// Go back to the root
-							CurrentMenu = tempPreviousMenu;
 							resetMenu();
+							CurrentMenuOption = enterPreviousMenu();
 							break;
 						}
 						default:
@@ -2752,8 +2745,8 @@ void menuCheckButton()
 								case 0:
 								{
 									// Go back to the root
-									CurrentMenu = tempPreviousMenu;
 									resetMenu();
+									CurrentMenuOption = enterPreviousMenu();
 									break;
 								}
 								default:

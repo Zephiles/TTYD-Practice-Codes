@@ -443,7 +443,6 @@ struct Menus
 	uint8_t TotalMenuOptions;
 	uint8_t TotalMenuColumns;
 	uint8_t ColumnSplitAmount;
-	uint8_t PreviousMenu;
 	const char **Line;
 	
 	Menus()
@@ -611,6 +610,19 @@ struct WarpByIndexStruct
 	}
 };
 
+struct MenuPrevMenuAndOption
+{
+	int32_t CurrentIndex;
+	uint8_t PreviousPage[20];
+	uint8_t PreviousMenu[20];
+	uint8_t PreviousMenuOption[20];
+	
+	MenuPrevMenuAndOption()
+	{
+		CurrentIndex = -1;
+	}
+};
+
 extern Menus Menu[27];
 extern Cheats Cheat[21];
 extern bool Displays[11];
@@ -636,6 +648,7 @@ extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
 extern WarpByIndexStruct WarpByIndex;
+extern MenuPrevMenuAndOption PrevMenuAndOption;
 
 extern const char *VersionNumber;
 extern uint8_t CheatsOrder[];

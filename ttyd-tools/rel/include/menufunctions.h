@@ -8,8 +8,9 @@ namespace mod {
 
 void closeMenu();
 void closeSecondaryMenu();
+void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption);
+uint8_t enterPreviousMenu();
 void resetMenu();
-void resetMenuNoPageReset();
 void resetMenuToRoot();
 void resetAndCloseSecondaryMenu();
 void resetImportantItemsPauseMenu();

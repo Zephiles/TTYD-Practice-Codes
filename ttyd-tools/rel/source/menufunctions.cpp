@@ -50,15 +50,53 @@ void closeSecondaryMenu()
 	FunctionReturnCode = 0;
 }
 
+void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption)
+{
+	uint32_t Size = sizeof(PrevMenuAndOption.PreviousPage) / 
+		sizeof(PrevMenuAndOption.PreviousMenu[0]);
+	
+	int32_t i = PrevMenuAndOption.CurrentIndex;
+	if (i < 0)
+	{
+		i = 0;
+	}
+	else if (static_cast<uint32_t>(i) >= Size)
+	{
+		// Failsafe; may change later
+		i = Size - 1;
+	}
+	else
+	{
+		i++;
+	}
+	
+	PrevMenuAndOption.CurrentIndex = i;
+	PrevMenuAndOption.PreviousPage[i] = CurrentPage;
+	PrevMenuAndOption.PreviousMenu[i] = CurrentMenu;
+	PrevMenuAndOption.PreviousMenuOption[i] = currentMenuOption;
+	
+	CurrentMenu = nextMenu;
+}
+
+uint8_t enterPreviousMenu()
+{
+	int32_t i = PrevMenuAndOption.CurrentIndex;
+	if (i < 0)
+	{
+		i = 0;
+	}
+	
+	uint8_t PreviousMenuOption = PrevMenuAndOption.PreviousMenuOption[i];
+	CurrentPage = PrevMenuAndOption.PreviousPage[i];
+	CurrentMenu = PrevMenuAndOption.PreviousMenu[i];
+	
+	PrevMenuAndOption.CurrentIndex = --i;
+	return PreviousMenuOption;
+}
 
 void resetMenu()
 {
-	CurrentPage = 0;
-	resetMenuNoPageReset();
-}
-
-void resetMenuNoPageReset()
-{
+	CurrentPage 			= 0;
 	CurrentMenuOption 		= 0;
 	SecondaryMenuOption 	= 0;
 	SelectedOption 			= 0;
@@ -70,11 +108,15 @@ void resetMenuNoPageReset()
 
 void resetMenuToRoot()
 {
-	CurrentMenu 			= ROOT;
-	MenuSelectedOption 		= 0;
-	FunctionReturnCode 		= 0;
-	HideMenu 				= false;
+	CurrentMenu 		= ROOT;
+	MenuSelectedOption 	= 0;
+	FunctionReturnCode 	= 0;
+	HideMenu 			= false;
 	resetMenu();
+	
+	CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[0];
+	clearMemory(&PrevMenuAndOption, sizeof(PrevMenuAndOption));
+	PrevMenuAndOption.CurrentIndex = -1;
 }
 
 void resetAndCloseSecondaryMenu()
