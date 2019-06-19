@@ -3144,7 +3144,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		{
 			ChangingWord = true;
 			Line = CheatsManageGlobalWordsOptions;
-			Size = 3;
+			Size = CheatsManageGlobalWordsOptionsSize + 1;
 			break;
 		}
 		case SET_GSWF:
@@ -3153,7 +3153,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		default:
 		{
 			Line = CheatsManageGlobalFlagsOptions;
-			Size = 2;
+			Size = CheatsManageGlobalFlagsOptionsSize + 1;
 		}
 	}
 	

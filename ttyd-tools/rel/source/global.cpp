@@ -539,11 +539,13 @@ const char *CheatsManageGlobalWordsOptions[]
 	"Change Value",
 	"Set New Value",
 };
+uint8_t CheatsManageGlobalWordsOptionsSize = sizeof(CheatsManageGlobalWordsOptions) / sizeof(CheatsManageGlobalWordsOptions[0]);
 
 const char *CheatsManageGlobalFlagsOptions[]
 {
 	"Toggle Value",
 };
+uint8_t CheatsManageGlobalFlagsOptionsSize = sizeof(CheatsManageGlobalFlagsOptions) / sizeof(CheatsManageGlobalFlagsOptions[0]);
 
 const char *CheatsClearAreaFlags[] = 
 {

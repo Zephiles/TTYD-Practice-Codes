@@ -3429,7 +3429,7 @@ void adjustCheatsManageFlagsMainMenu(uint32_t button)
 		case SET_GW:
 		case SET_LSW:
 		{
-			TotalMenuOptions = 4;
+			TotalMenuOptions = CheatsManageGlobalWordsOptionsSize + 1;
 			break;
 		}
 		case SET_GSWF:
@@ -3437,7 +3437,7 @@ void adjustCheatsManageFlagsMainMenu(uint32_t button)
 		case SET_LSWF:
 		default:
 		{
-			TotalMenuOptions = 3;
+			TotalMenuOptions = CheatsManageGlobalFlagsOptionsSize + 1;
 		}
 	}
 	
