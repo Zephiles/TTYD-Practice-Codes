@@ -612,15 +612,10 @@ struct WarpByIndexStruct
 
 struct MenuPrevMenuAndOption
 {
-	int32_t CurrentIndex;
+	uint8_t CurrentIndex;
 	uint8_t PreviousPage[20];
 	uint8_t PreviousMenu[20];
 	uint8_t PreviousMenuOption[20];
-	
-	MenuPrevMenuAndOption()
-	{
-		CurrentIndex = -1;
-	}
 };
 
 extern Menus Menu[27];

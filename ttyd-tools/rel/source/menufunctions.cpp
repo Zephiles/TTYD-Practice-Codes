@@ -52,46 +52,35 @@ void closeSecondaryMenu()
 
 void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption)
 {
-	uint32_t Size = sizeof(PrevMenuAndOption.PreviousPage) / 
-		sizeof(PrevMenuAndOption.PreviousMenu[0]);
-	
-	int32_t i = PrevMenuAndOption.CurrentIndex;
-	if (i < 0)
-	{
-		i = 0;
-	}
-	else if (static_cast<uint32_t>(i) >= (Size - 1))
-	{
-		// Failsafe; may change later
-		i = Size - 1;
-	}
-	else
-	{
-		i++;
-	}
-	
-	PrevMenuAndOption.CurrentIndex = i;
+	uint32_t i = PrevMenuAndOption.CurrentIndex;
 	PrevMenuAndOption.PreviousPage[i] = CurrentPage;
 	PrevMenuAndOption.PreviousMenu[i] = CurrentMenu;
 	PrevMenuAndOption.PreviousMenuOption[i] = currentMenuOption;
 	
 	CurrentMenu = nextMenu;
+	
+	uint32_t Size = sizeof(PrevMenuAndOption.PreviousPage) / 
+		sizeof(PrevMenuAndOption.PreviousPage[0]);
+	
+	if (i < (Size - 1))
+	{
+		PrevMenuAndOption.CurrentIndex = ++i;
+	}
 }
 
 uint8_t enterPreviousMenu()
 {
-	int32_t i = PrevMenuAndOption.CurrentIndex;
-	if (i < 0)
+	uint32_t i = PrevMenuAndOption.CurrentIndex;
+	
+	if (i > 0)
 	{
-		i = 0;
+		i--;
+		PrevMenuAndOption.CurrentIndex = i;
 	}
 	
-	uint8_t PreviousMenuOption = PrevMenuAndOption.PreviousMenuOption[i];
 	CurrentPage = PrevMenuAndOption.PreviousPage[i];
 	CurrentMenu = PrevMenuAndOption.PreviousMenu[i];
-	
-	PrevMenuAndOption.CurrentIndex = --i;
-	return PreviousMenuOption;
+	return PrevMenuAndOption.PreviousMenuOption[i];
 }
 
 void resetMenu()
@@ -116,7 +105,6 @@ void resetMenuToRoot()
 	
 	CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[0];
 	clearMemory(&PrevMenuAndOption, sizeof(PrevMenuAndOption));
-	PrevMenuAndOption.CurrentIndex = -1;
 }
 
 void resetAndCloseSecondaryMenu()
