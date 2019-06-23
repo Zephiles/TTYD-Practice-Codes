@@ -9,7 +9,7 @@ namespace mod {
 void closeMenu();
 void closeSecondaryMenu();
 void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption);
-uint8_t enterPreviousMenu();
+void enterPreviousMenu();
 void resetMenu();
 void resetMenuToRoot();
 void resetAndCloseSecondaryMenu();

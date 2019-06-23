@@ -119,7 +119,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					resetMenu();
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -472,7 +472,7 @@ void menuCheckButton()
 							// Go back to the previous menu
 							MenuVar.MenuSelectedOption = 0;
 							resetMenu();
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 						case CHANGE_BY_ID:
@@ -572,7 +572,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					resetMenu();
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -602,7 +602,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						MenuVar.MenuSelectedOption = 0;
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -678,7 +678,7 @@ void menuCheckButton()
 						{
 							// Go back to the previous menu
 							MenuVar.MenuSelectedOption = 0;
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 					}
@@ -738,7 +738,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						MenuVar.MenuSelectedOption = 0;
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -774,7 +774,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					MenuVar.MenuSelectedOption = 0;
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -941,7 +941,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						MenuVar.MenuSelectionStates = 0;
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -1074,7 +1074,7 @@ void menuCheckButton()
 						{
 							// Go back to the previous menu
 							MenuVar.MenuSelectedOption = 0;
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 					}
@@ -1109,7 +1109,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					resetMenu();
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -1192,7 +1192,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						resetMenu();
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -1358,7 +1358,7 @@ void menuCheckButton()
 							{
 								// Go back to the previous menu
 								resetMenu();
-								MenuVar.CurrentMenuOption = enterPreviousMenu();
+								enterPreviousMenu();
 								break;
 							}
 							default:
@@ -1446,7 +1446,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						resetMenu();
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -1533,7 +1533,7 @@ void menuCheckButton()
 				{
 					// Go back to the root
 					resetMenu();
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -1739,7 +1739,7 @@ void menuCheckButton()
 						{
 							// Go back to the previous menu
 							resetMenu();
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 						default:
@@ -1848,7 +1848,7 @@ void menuCheckButton()
 							// Go back to the previous menu
 							MenuVar.MenuSelectedOption = 0;
 							resetMenu();
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 						default:
@@ -1992,7 +1992,7 @@ void menuCheckButton()
 								{
 									// Go back to the previous menu
 									resetMenu();
-									MenuVar.CurrentMenuOption = enterPreviousMenu();
+									enterPreviousMenu();
 									break;
 								}
 								default:
@@ -2055,7 +2055,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						resetMenu();
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 						break;
 					}
 					default:
@@ -2219,7 +2219,7 @@ void menuCheckButton()
 							{
 								// Go back to the previous menu
 								resetMenu();
-								MenuVar.CurrentMenuOption = enterPreviousMenu();
+								enterPreviousMenu();
 								break;
 							}
 							default:
@@ -2318,7 +2318,7 @@ void menuCheckButton()
 							{
 								// Go back to the previous menu
 								resetMenu();
-								MenuVar.CurrentMenuOption = enterPreviousMenu();
+								enterPreviousMenu();
 								break;
 							}
 							default:
@@ -2374,7 +2374,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					resetMenu();
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -2445,7 +2445,7 @@ void menuCheckButton()
 					{
 						// Go back to the previous menu
 						MenuVar.MenuSelectedOption = 0;
-						MenuVar.CurrentMenuOption = enterPreviousMenu();
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -2471,7 +2471,7 @@ void menuCheckButton()
 				{
 					// Go back to the previous menu
 					MenuVar.MenuSelectedOption = 0;
-					MenuVar.CurrentMenuOption = enterPreviousMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -2615,7 +2615,7 @@ void menuCheckButton()
 						{
 							// Go back to the root
 							resetMenu();
-							MenuVar.CurrentMenuOption = enterPreviousMenu();
+							enterPreviousMenu();
 							break;
 						}
 						default:
@@ -2763,7 +2763,7 @@ void menuCheckButton()
 								{
 									// Go back to the root
 									resetMenu();
-									MenuVar.CurrentMenuOption = enterPreviousMenu();
+									enterPreviousMenu();
 									break;
 								}
 								default:

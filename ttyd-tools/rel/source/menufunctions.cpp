@@ -68,7 +68,7 @@ void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption)
 	}
 }
 
-uint8_t enterPreviousMenu()
+void enterPreviousMenu()
 {
 	uint32_t i = PrevMenuAndOption.CurrentIndex;
 	
@@ -80,7 +80,7 @@ uint8_t enterPreviousMenu()
 	
 	MenuVar.CurrentPage = PrevMenuAndOption.PreviousPage[i];
 	MenuVar.CurrentMenu = PrevMenuAndOption.PreviousMenu[i];
-	return PrevMenuAndOption.PreviousMenuOption[i];
+	MenuVar.CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[i];
 }
 
 void resetMenu()
