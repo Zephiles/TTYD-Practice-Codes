@@ -35,7 +35,7 @@ typedef struct CARDFileInfo {
 	int32_t 	length;
 	uint16_t 	iBlock;
 	uint16_t 	padding;
-} CARDFileInfo;
+} __attribute__((__packed__)) CARDFileInfo;
 
 typedef struct CARDStat {
 	char 		fileName[CARD_FILENAME_MAX];
@@ -44,6 +44,7 @@ typedef struct CARDStat {
 	uint8_t 	gameName[4];
 	uint8_t 	company[2];
 	uint8_t 	bannerFormat;
+	uint8_t 	padding;
 	uint32_t 	iconAddress;
 	uint16_t 	iconFormat;
 	uint16_t 	iconSpeed;
@@ -53,7 +54,7 @@ typedef struct CARDStat {
 	uint32_t 	offsetIcon[CARD_MAX_ICONS];
 	uint32_t 	offsetIconTlut;
 	uint32_t 	offsetData;
-} CARDStat;
+} __attribute__((__packed__)) CARDStat;
 
 typedef void (*CARDCallback)(int32_t channel, int32_t result);
 
