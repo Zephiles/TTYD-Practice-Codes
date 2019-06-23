@@ -516,7 +516,7 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 
 void drawSingleColumnMain()
 {
-	uint32_t tempTotalMenuOptions = Menu[CurrentMenu].TotalMenuOptions;
+	uint32_t tempTotalMenuOptions = Menu[MenuVar.CurrentMenu].TotalMenuOptions;
 	uint32_t tempCurrentPage = 0;
 	
 	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, false);
@@ -524,7 +524,7 @@ void drawSingleColumnMain()
 
 void drawSingleColumnSelectedOption()
 {
-	uint32_t tempTotalMenuOptions = Menu[CurrentMenu].TotalMenuOptions;
+	uint32_t tempTotalMenuOptions = Menu[MenuVar.CurrentMenu].TotalMenuOptions;
 	uint32_t tempCurrentPage = 0;
 	
 	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, true);
@@ -532,8 +532,8 @@ void drawSingleColumnSelectedOption()
 
 void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adjustSelectedOption)
 {
-	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempSelectedOption 	= SelectedOption;
+	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
+	uint32_t tempSelectedOption 	= MenuVar.SelectedOption;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t IndexStart 			= currentPage * maxOptionsPerPage;
 	
@@ -554,7 +554,7 @@ void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adj
 		bool CurrentOptionCheck;
 		if (tempSelectedOption == 0)
 		{
-			CurrentOptionCheck = CurrentMenuOption == i;
+			CurrentOptionCheck = MenuVar.CurrentMenuOption == i;
 		}
 		else if (adjustSelectedOption)
 		{
@@ -616,8 +616,8 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
 
 void drawInventoryIconAndTextColumns()
 {
-	uint32_t tempCurrentMenu = MenuSelectedOption;
-	uint32_t tempCurrentPage = CurrentPage;
+	uint32_t tempCurrentMenu = MenuVar.MenuSelectedOption;
+	uint32_t tempCurrentPage = MenuVar.CurrentPage;
 	
 	uint32_t Address_and_Size[2];
 	uint32_t *tempArray		= getPouchAddressAndSize(Address_and_Size);
@@ -728,7 +728,7 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
 {
 	uint32_t MaxIconsPerColumn 		= 10;
 	uint32_t MaxIconsPerPage 		= 20;
-	uint32_t newIndexStart 			= indexStart + (CurrentPage * MaxIconsPerPage);
+	uint32_t newIndexStart 			= indexStart + (MenuVar.CurrentPage * MaxIconsPerPage);
 	uint32_t IndexCounter 			= newIndexStart;
 	float tempScale;
 	
@@ -782,8 +782,8 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t s
 {
 	uint32_t MaxIconsPerColumn 		= 10;
 	uint32_t MaxIconsPerPage 		= 20;
-	uint32_t tempCurrentPage 		= CurrentPage;
-	uint32_t tempSelectedOption 	= SelectedOption;
+	uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
+	uint32_t tempSelectedOption 	= MenuVar.SelectedOption;
 	uint32_t newIndexStart 			= indexStart + (tempCurrentPage * MaxIconsPerPage);
 	uint32_t IndexCounter 			= newIndexStart;
 	
@@ -806,8 +806,8 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t s
 		
 		bool CurrentOptionCheck = (tempSelectedOption >= DUPLICATE) && 
 			(tempSelectedOption <= DELETE) && 
-				(FunctionReturnCode >= 0) && 
-					(CurrentMenuOption == IndexCounter);
+				(MenuVar.FunctionReturnCode >= 0) && 
+					(MenuVar.CurrentMenuOption == IndexCounter);
 		
 		TextColor = getSelectedTextColor(CurrentOptionCheck);
 		
@@ -888,7 +888,7 @@ void drawMarioSpecialMovesOptions()
 	IconPosition[IconPositionY] 	= PosY - 18;
 	
 	// Draw the icons and main text
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	int16_t SpecialMoveIcon;
 	
 	for (uint32_t i = 0; i < 8; i++)
@@ -965,7 +965,7 @@ void drawFollowersOptions()
 	
 	// Draw the main text
 	uint32_t tempStatsFollowerOptionsLinesSize = StatsFollowerOptionsLinesSize;
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	
 	for (uint32_t i = 0; i < tempStatsFollowerOptionsLinesSize; i++)
 	{
@@ -1069,7 +1069,7 @@ void drawMarioStats()
 			drawIcon(IconPosition, StatsMarioIcons[i], IconScale);
 			
 			// Draw the text
-			bool CurrentOptionCheck = (CurrentMenuOption == i);
+			bool CurrentOptionCheck = (MenuVar.CurrentMenuOption == i);
 			SelectionTextColor = getSelectedTextColor(CurrentOptionCheck);
 			
 			drawText(StatsMarioOptionsLines[i], PosX, PosY, Alpha, SelectionTextColor, TextScale);
@@ -1131,8 +1131,8 @@ void drawMarioStats()
 
 void drawPartnerStats()
 {
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
-	uint32_t tempSelectedOption = SelectedOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+	uint32_t tempSelectedOption = MenuVar.SelectedOption;
 	
 	// Create array for each stat to go in
 	int16_t PartnerStats[3];
@@ -1334,7 +1334,7 @@ void drawPartnerChangeYoshiColorOptions()
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Set the values for the text to use
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	PosX += 47;
 	PosY -= 54;
 	
@@ -1353,7 +1353,7 @@ void drawPartnerChangeYoshiColorOptions()
 void drawBattlesActorStats()
 {
 	// Get the starting address for the current actor
-	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
 	if (ActorAddress == 0)
 	{
 		return;
@@ -1413,7 +1413,7 @@ void drawBattlesActorStats()
 void drawBattlesActorsHeldItem()
 {
 	// Get the starting address for the current actor
-	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
 	if (ActorAddress == 0)
 	{
 		return;
@@ -1528,7 +1528,7 @@ void drawMemoryWatches()
 		return;
 	}
 	
-	uint32_t tempCurrentPage 		= CurrentPage;
+	uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
 	int32_t TotalMenuOptions 		= sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	int32_t MaxOptionsPerPage 		= 10;
 	int32_t IndexStart 				= tempCurrentPage * MaxOptionsPerPage;
@@ -1575,7 +1575,7 @@ void drawMemoryWatches()
 		drawText(OnOffText, PosX + TypeOffset, PosY, Alpha, Color, Scale);
 		
 		// Set the color of the address text
-		bool CurrentOptionCheck = (CurrentMenuOption == i) && (SelectedOption > 0);
+		bool CurrentOptionCheck = (MenuVar.CurrentMenuOption == i) && (MenuVar.SelectedOption > 0);
 		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		// Draw the current address
@@ -1591,9 +1591,9 @@ void drawMemoryWatches()
 
 void drawMemoryModifyList()
 {
-	uint32_t tempSelectedOption 		= SelectedOption;
-	uint32_t tempCurrentMenuOption 		= CurrentMenuOption;
-	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
+	uint32_t tempSelectedOption 		= MenuVar.SelectedOption;
+	uint32_t tempCurrentMenuOption 		= MenuVar.CurrentMenuOption;
+	uint32_t tempMenuSelectedOption 	= MenuVar.MenuSelectedOption;
 	uint32_t TotalOptions 				= MemoryModifyLinesSize;
 	
 	uint8_t Alpha 	= 0xFF;
@@ -1726,7 +1726,7 @@ void drawMemoryTypeList()
 	
 	// Draw the main text
 	uint32_t Size = MemoryTypeLinesSize;
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	
 	for (uint32_t i = 0; i < Size; i++)
 	{
@@ -1743,7 +1743,7 @@ void drawMemoryChangeWatchPosition()
 	// Check for button inputs
 	memoryChangeWatchPositionButtonControls();
 	
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
 	
 	// Draw the current watch
 	int32_t PosX 		= MemoryWatchPosition.PosX;
@@ -1787,9 +1787,9 @@ void drawMemoryWatchChangeAddressListWindow(int32_t posY)
 
 void drawMemoryChangeAddressList()
 {
-	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
-	uint32_t tempCurrentMenuOption 		= CurrentMenuOption;
-	uint32_t tempSelectedOption 		= SelectedOption;
+	uint32_t tempMenuSelectedOption 	= MenuVar.MenuSelectedOption;
+	uint32_t tempCurrentMenuOption 		= MenuVar.CurrentMenuOption;
+	uint32_t tempSelectedOption 		= MenuVar.SelectedOption;
 	
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
@@ -1881,7 +1881,7 @@ void drawMemoryChangeAddressList()
 
 void drawBattlesActorsList()
 {
-	uint32_t tempCurrentPage 		= CurrentPage;
+	uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
 	uint32_t TotalMenuOptions 		= 62; // Excluding System
 	uint32_t MaxOptionsPerPage 		= 18;
 	uint32_t IndexStart 			= tempCurrentPage * MaxOptionsPerPage;
@@ -1926,7 +1926,7 @@ void drawBattlesActorsList()
 			}
 		}
 		
-		if (CurrentMenuOption == i)
+		if (MenuVar.CurrentMenuOption == i)
 		{
 			Color = 0x5B59DEFF;
 		}
@@ -1947,14 +1947,14 @@ void drawBattlesActorsList()
 void drawBattlesStatusesList()
 {
 	// Get the starting address for the current actor
-	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
 	if (ActorAddress == 0)
 	{
 		return;
 	}
 	
 	uint32_t MaxOptionsPerPage 		= 12;
-	uint32_t IndexStart 			= CurrentPage * MaxOptionsPerPage;
+	uint32_t IndexStart 			= MenuVar.CurrentPage * MaxOptionsPerPage;
 	uint32_t TotalOptions 			= BattlesStatusesLinesSize;
 	
 	uint8_t Alpha 					= 0xFF;
@@ -2002,7 +2002,7 @@ void drawBattlesStatusesList()
 			return;
 		}
 		
-		bool CurrentOptionCheck = CurrentMenuOption == i;
+		bool CurrentOptionCheck = MenuVar.CurrentMenuOption == i;
 		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		if (CurrentOptionCheck)
@@ -2087,12 +2087,12 @@ void drawErrorWindow(const char *text, int32_t textPosX, int32_t windowWidth)
 
 void drawErrorMessage(const char *line)
 {
-	uint32_t tempTimer = Timer;
-	if ((FunctionReturnCode < 0) && (tempTimer > 0))
+	uint32_t tempTimer = MenuVar.Timer;
+	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
 	{
 		if (checkForClosingErrorMessage())
 		{
-			SelectedOption = 0;
+			MenuVar.SelectedOption = 0;
 			return;
 		}
 		
@@ -2110,8 +2110,8 @@ void drawErrorMessage(const char *line)
 
 void drawPartnerFollowerMessage(const char *message)
 {
-	uint32_t tempTimer = Timer;
-	if ((FunctionReturnCode < 0) && (tempTimer > 0))
+	uint32_t tempTimer = MenuVar.Timer;
+	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
 	{
 		if (checkForClosingErrorMessage())
 		{
@@ -2141,8 +2141,8 @@ void drawFollowersErrorMessage()
 
 void drawNotInBattleErrorMessage()
 {
-	uint32_t tempTimer = Timer;
-	if ((FunctionReturnCode < 0) && (tempTimer > 0))
+	uint32_t tempTimer = MenuVar.Timer;
+	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
 	{
 		if (checkForClosingErrorMessage())
 		{
@@ -2158,8 +2158,8 @@ void drawNotInBattleErrorMessage()
 
 void drawWarpsErrorMessage()
 {
-	uint32_t tempTimer = Timer;
-	if ((FunctionReturnCode < 0) && (tempTimer > 0))
+	uint32_t tempTimer = MenuVar.Timer;
+	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
 	{
 		if (checkForClosingErrorMessage())
 		{
@@ -2178,28 +2178,28 @@ void drawConfirmationWindow(const char *message)
 {
 	// Manage the D-Pad
 	uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	
 	if (ButtonInputTrg & PAD_DPAD_DOWN)
 	{
 		if (tempSecondaryMenuOption == 1)
 		{
-			SecondaryMenuOption = 0;
+			MenuVar.SecondaryMenuOption = 0;
 		}
 		else
 		{
-			SecondaryMenuOption = 1;
+			MenuVar.SecondaryMenuOption = 1;
 		}
 	}
 	else if (ButtonInputTrg & PAD_DPAD_UP)
 	{
 		if (tempSecondaryMenuOption == 0)
 		{
-			SecondaryMenuOption = 1;
+			MenuVar.SecondaryMenuOption = 1;
 		}
 		else
 		{
-			SecondaryMenuOption = 0;
+			MenuVar.SecondaryMenuOption = 0;
 		}
 	}
 	
@@ -2326,7 +2326,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	int32_t curve 	= 10;
 	int32_t height;
 	
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	
 	if (changingItem)
 	{
@@ -2363,7 +2363,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress Y to set the value to max\nPress Z to set the value to min\nPress A to confirm\nPress B to cancel";
 	drawText(HelpText, x, y, alpha, color, scale);
 	
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	y -= 100;
 	
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -2496,7 +2496,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 	
 	// Draw each digit of the number
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
 		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
@@ -2513,7 +2513,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 
 void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 {
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
 	
 	// Check for button inputs
 	uint32_t ReturnCode = adjustWatchValueControls(tempMenuSelectedOption);
@@ -2548,7 +2548,7 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
 	drawText(HelpText, x, y, alpha, color, scale);
 	
-	uint32_t tempMemoryWatchSecondaryValue = MemoryWatchSecondaryValue;
+	uint32_t tempMemoryWatchSecondaryValue = MenuVar.MemoryWatchSecondaryValue;
 	int32_t tempMemoryWatchSecondaryValueSigned;
 	y -= 100;
 	
@@ -2562,7 +2562,7 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		{
 			AmountOfNumbers = 8;
 			
-			switch (CurrentMenuOption)
+			switch (MenuVar.CurrentMenuOption)
 			{
 				case 0:
 				{
@@ -2630,7 +2630,7 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	drawText("0x", (x - 30), y, alpha, color, scale);
 	
 	// Draw each digit of the number
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	for (uint32_t i = 0; i < AmountOfNumbers; i++)
 	{
 		bool CurrentOptionCheck = tempSecondaryMenuOption == i;
@@ -2653,7 +2653,7 @@ void drawAddByIconMain(uint32_t currentMenu)
 	
 	// Draw the main window
 	int32_t UpperAndLowerBounds[2];
-	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuVar.MenuSelectedOption);
 	
 	int32_t LowerBound 			= UpperAndLowerBounds[0];
 	int32_t UpperBound 			= UpperAndLowerBounds[1];
@@ -2683,7 +2683,7 @@ void drawAddByIconMain(uint32_t currentMenu)
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the window for the current menu option
-	uint32_t tempCurrentMenuOption = SecondaryMenuOption;
+	uint32_t tempCurrentMenuOption = MenuVar.SecondaryMenuOption;
 	Color 	= 0x5B59DEC0;
 	PosY 	= 96 - ((tempCurrentMenuOption / MaxIconsPerRow) * IconSpaceOccupied);
 	Width 	= 29;
@@ -2971,7 +2971,7 @@ void drawCheatsChangeSequence()
 
 void drawCheatsBool(int32_t posY)
 {
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
 	
 	bool CheatActive = Cheat[tempMenuSelectedOption].Active;
 	const char *CurrentLine = CheatsLines[tempMenuSelectedOption];
@@ -3014,9 +3014,9 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	if (incrementCheatsBButtonCounter(ButtonInput))
 	{
 		// Close this menu
-		Timer 						= 0;
-		SelectedOption 				= 0;
-		ChangingCheatButtonCombo 	= false;
+		MenuVar.Timer 						= 0;
+		MenuVar.SelectedOption 				= 0;
+		MenuVar.ChangingCheatButtonCombo 	= false;
 		clearMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, (14 * sizeof(uint8_t)));
 		clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 		return;
@@ -3044,7 +3044,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	// Get the proper FPS for the timer
 	uint32_t FPS = getCurrentFPS();
 	
-	uint32_t tempTimer = Timer;
+	uint32_t tempTimer = MenuVar.Timer;
 	uint32_t second = (tempTimer / FPS) % 60;
 	uint32_t frame = tempTimer % FPS;
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -3088,8 +3088,8 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 		}
 		
 		// Close this menu
-		SelectedOption 				= 0;
-		ChangingCheatButtonCombo 	= false;
+		MenuVar.SelectedOption 				= 0;
+		MenuVar.ChangingCheatButtonCombo 	= false;
 		clearMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, (14 * sizeof(uint8_t)));
 		clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 	}
@@ -3119,7 +3119,7 @@ void drawCheatsForcedDropItem()
 	IconPosition[IconPositionY] 	= PosY;
 	IconPosition[2] 				= 0;
 	
-	int16_t tempForcedNPCItemDrop = ForcedNPCItemDrop;
+	int16_t tempForcedNPCItemDrop = MenuVar.ForcedNPCItemDrop;
 	drawIconFromItem(IconPosition, tempForcedNPCItemDrop, Scale);
 	
 	// Draw the text for the item
@@ -3202,7 +3202,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 	float Scale 	= 0.6;
 	uint32_t Color;
 	
-	uint32_t tempSelectedOption = SelectedOption;
+	uint32_t tempSelectedOption = MenuVar.SelectedOption;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	// Draw the main text
@@ -3212,7 +3212,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 		bool CurrentOptionCheck;
 		if (tempSelectedOption <= 1)
 		{
-			CurrentOptionCheck = CurrentMenuOption == i;
+			CurrentOptionCheck = MenuVar.CurrentMenuOption == i;
 		}
 		else
 		{
@@ -3299,10 +3299,10 @@ void drawCheatsClearArea()
 	uint32_t MaxOptionsPerRow 					= 4;
 	uint32_t PosXIncrementAmount 				= 50;
 	uint32_t tempPage 							= 0;
-	uint32_t tempSecondaryMenuOption 			= SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption 			= MenuVar.SecondaryMenuOption;
 	
 	bool CurrentlySelectingOption;
-	if (SelectedOption == SELECT_AREA)
+	if (MenuVar.SelectedOption == SELECT_AREA)
 	{
 		CurrentlySelectingOption = true;
 	}
@@ -3327,7 +3327,7 @@ void drawCheatsClearArea()
 	PosX = 0;
 	PosY = 160;
 	const char *String = "Current Area: ";
-	drawSingleLineFromStringAndArray(PosX, PosY, MenuSecondaryValue, 
+	drawSingleLineFromStringAndArray(PosX, PosY, MenuVar.MenuSecondaryValue, 
 		String, tempCheatsForceItemDropAreas);
 }
 
@@ -3344,10 +3344,10 @@ void drawWarpsOptions()
 	uint32_t MaxOptionsPerRow 					= 4;
 	uint32_t PosXIncrementAmount 				= 100;
 	uint32_t tempPage 							= 0;
-	uint32_t tempCurrentMenuOption 				= CurrentMenuOption;
+	uint32_t tempCurrentMenuOption 				= MenuVar.CurrentMenuOption;
 	
 	bool CurrentlySelectingOption;
-	if (SelectedOption == SELECT_WARP)
+	if (MenuVar.SelectedOption == SELECT_WARP)
 	{
 		CurrentlySelectingOption = true;
 	}
@@ -3432,7 +3432,7 @@ void drawWarpIndexEntranceList()
 	
 	// Draw the current page
 	int32_t PageNumberPosX = 150;
-	uint32_t tempCurrentPage = CurrentPage;
+	uint32_t tempCurrentPage = MenuVar.CurrentPage;
 	drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
 	
 	// Draw the entrances
@@ -3746,8 +3746,8 @@ void drawStickAngle()
 void drawMemoryWatchesOnOverworld()
 {
 	// Figure out which watches are going to be displayed
-	bool tempHideMenu = HideMenu;
-	uint32_t tempMenuSelectionOption = MenuSelectedOption;
+	bool tempHideMenu = MenuVar.HideMenu;
+	uint32_t tempMenuSelectionOption = MenuVar.MenuSelectedOption;
 	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	
 	uint32_t Color = 0xFFFFFFFF;
@@ -4155,7 +4155,7 @@ void drawSettingsCurrentWork()
 		}
 		default:
 		{
-			Timer = 0;
+			MenuVar.Timer = 0;
 			return;
 		}
 	}
@@ -4171,8 +4171,8 @@ void drawSettingsCurrentWork()
 	drawTextWithWindow(String, TextPosX, TextPosY, Alpha, TextColor, 
 		Scale, WindowWidth, WindowColor, WindowCurve);
 	
-	uint32_t tempTimer = Timer;
-	Timer = tempTimer - 1;
+	uint32_t tempTimer = MenuVar.Timer;
+	MenuVar.Timer = tempTimer - 1;
 }
 
 void drawHeapArrayErrors()

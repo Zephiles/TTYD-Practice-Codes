@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/item_data.h>
+
 #include <cstdint>
 
 namespace mod {
@@ -438,6 +440,38 @@ enum CUSTOM_BUTTON_IDS
 	START,
 };
 
+struct MenuVars
+{
+	bool HideMenu;
+	bool MenuIsDisplayed;
+	bool PreventClosingMenu;
+	bool ChangingCheatButtonCombo;
+	uint8_t CurrentMenu;
+	uint8_t CurrentMenuOption;
+	uint8_t MenuSelectedOption;
+	uint8_t SecondaryMenuOption;
+	uint8_t SelectedOption;
+	uint8_t CurrentPage;
+	uint8_t SecondaryPage;
+	int8_t FunctionReturnCode;
+	uint32_t Timer;
+	uint8_t MenuSelectionStates;
+	int32_t MenuSecondaryValue;
+	uint32_t MemoryWatchSecondaryValue;
+	uint8_t FrameCounter;
+	
+	// Variables used by cheats
+	bool ResetMarioProperties;
+	int16_t ForcedNPCItemDrop;
+	bool MarioFreeze;
+	uint16_t JumpStorageSetCounter;
+	
+	MenuVars()
+	{
+		ForcedNPCItemDrop = ttyd::item_data::Item::SleepySheep;
+	}
+};
+
 struct Menus
 {
 	uint8_t TotalMenuOptions;
@@ -618,6 +652,7 @@ struct MenuPrevMenuAndOption
 	uint8_t PreviousMenuOption[20];
 };
 
+extern MenuVars MenuVar;
 extern Menus Menu[27];
 extern Cheats Cheat[21];
 extern bool Displays[11];
@@ -691,29 +726,6 @@ extern const char *PointerText;
 #else
 extern const char ButtonInputDisplay[];
 #endif
-
-extern bool HideMenu;
-extern bool MenuIsDisplayed;
-extern bool PreventClosingMenu;
-extern bool ChangingCheatButtonCombo;
-extern uint8_t CurrentMenu;
-extern uint8_t CurrentMenuOption;
-extern uint8_t MenuSelectedOption;
-extern uint8_t SecondaryMenuOption;
-extern uint8_t SelectedOption;
-extern uint8_t CurrentPage;
-extern uint8_t SecondaryPage;
-extern int8_t FunctionReturnCode;
-extern uint32_t Timer;
-extern uint8_t MenuSelectionStates;
-extern int32_t MenuSecondaryValue;
-extern uint32_t MemoryWatchSecondaryValue;
-extern uint8_t FrameCounter;
-
-extern bool ResetMarioProperties;
-extern int16_t ForcedNPCItemDrop;
-extern bool MarioFreeze;
-extern uint16_t JumpStorageSetCounter;
 
 void initMenuVars();
 void setSettings();

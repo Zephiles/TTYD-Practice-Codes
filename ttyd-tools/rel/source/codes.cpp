@@ -63,7 +63,7 @@ int32_t forceNPCItemDrop(void *ptr)
 {
 	if (Cheat[FORCE_ITEM_DROP].Active)
 	{
-		return static_cast<int32_t>(ForcedNPCItemDrop);
+		return static_cast<int32_t>(MenuVar.ForcedNPCItemDrop);
 	}
 	
 	return *reinterpret_cast<int32_t *>(
@@ -135,7 +135,7 @@ void Mod::performBattleChecks()
 	}
 	
 	// Prevent all buttons from being pressed when the menu is open, exccept for R and X
-	if (MenuIsDisplayed)
+	if (MenuVar.MenuIsDisplayed)
 	{
 		if (!checkButtonComboEveryFrame(PAD_R) && 
 			!checkButtonComboEveryFrame(PAD_X))
@@ -154,15 +154,15 @@ void walkThroughMostObjects()
 	if (Cheat[WALK_THROUGH_WALLS].Active && 
 		checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo))
 	{
-		ResetMarioProperties = true;
+		MenuVar.ResetMarioProperties = true;
 		
 		// Set Mario's properties to be able to walk through most objects
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 		player->flags1 |= (1 << 10); // Turn on the 10 bit
 	}
-	else if (ResetMarioProperties)
+	else if (MenuVar.ResetMarioProperties)
 	{
-		ResetMarioProperties = false;
+		MenuVar.ResetMarioProperties = false;
 		
 		// Don't reset the properties if Vivian is currently being used
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
@@ -250,7 +250,7 @@ void saveAnywhere()
 	uint32_t SystemLevel = getSystemLevel();
 	if (!SaveAnywhere.ScriptIsRunning)
 	{
-		if (!Cheat[SAVE_ANYWHERE].Active || ChangingCheatButtonCombo)
+		if (!Cheat[SAVE_ANYWHERE].Active || MenuVar.ChangingCheatButtonCombo)
 		{
 			return;
 		}
@@ -356,7 +356,7 @@ void speedUpMario()
 	const uint8_t ValuesModified 			= 1;
 	const uint8_t ValuesShouldBeRestored 	= 2;
 	
-	if (!Cheat[SPEED_UP_MARIO].Active || ChangingCheatButtonCombo)
+	if (!Cheat[SPEED_UP_MARIO].Active || MenuVar.ChangingCheatButtonCombo)
 	{
 		// Check if the values should be restored
 		if (SpeedUpMario.ValuesChangedState > NoChanges)
@@ -505,7 +505,7 @@ void reloadRoom()
 	if (checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
 	{
 		// Prevent being able to reload the room if the menu is open or if currently in the spawn item menu
-		if (Cheat[RELOAD_ROOM].Active && !MenuIsDisplayed && !SpawnItem.InAdjustableValueMenu)
+		if (Cheat[RELOAD_ROOM].Active && !MenuVar.MenuIsDisplayed && !SpawnItem.InAdjustableValueMenu)
 		{
 			reloadRoomMain();
 		}
@@ -579,10 +579,10 @@ void bobberyEarly()
 {
 	if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kMapChange))
 	{
-		MarioFreeze = false;
+		MenuVar.MarioFreeze = false;
 	}
 	
-	if (MarioFreeze)
+	if (MenuVar.MarioFreeze)
 	{
 		float RopePosZ = *reinterpret_cast<float *>(
 			*reinterpret_cast<uint32_t *>(
@@ -629,7 +629,7 @@ void spawnItem()
 	}
 	
 	bool tempInAdjustableValueMenu = SpawnItem.InAdjustableValueMenu;
-	if (Cheat[SPAWN_ITEM].Active && !ChangingCheatButtonCombo)
+	if (Cheat[SPAWN_ITEM].Active && !MenuVar.ChangingCheatButtonCombo)
 	{
 		uint32_t SystemLevel = getSystemLevel();
 		if (checkIfInGame() && (SystemLevel != 15))
@@ -642,7 +642,7 @@ void spawnItem()
 				// Not open, so disable the pause menu, raise the system level, and open the menu
 				ttyd::win_main::winOpenDisable();
 				raiseSystemLevel();
-				SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
+				MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
 				SpawnItem.InAdjustableValueMenu = true;
 			}
 			
@@ -680,7 +680,7 @@ void spawnItem()
 							"C_Item%" PRIu16,
 							SpawnItem.SpawnItemCounter);
 						
-						ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuSecondaryValue, 16, 
+						ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
 							-1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
 						
 						// Enable the pause menu and lower the system level
@@ -873,19 +873,19 @@ void displayJumpStorageDetails()
 	if ((ButtonInputTrg & PAD_Y) == PAD_Y)
 	{
 		// Press Y to increment the counter
-		JumpStorageSetCounter++;
+		MenuVar.JumpStorageSetCounter++;
 	}
 	else if (ButtonInputTrg != 0)
 	{
 		// Reset the counter if a different button was pressed
-		JumpStorageSetCounter = 0;
+		MenuVar.JumpStorageSetCounter = 0;
 	}
 	
-	if (JumpStorageSetCounter == 3)
+	if (MenuVar.JumpStorageSetCounter == 3)
 	{
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 		player->flags3 |= 1 << 16; // Turn on the 16 bit
-		JumpStorageSetCounter = 0;
+		MenuVar.JumpStorageSetCounter = 0;
 	}
 	
 	drawFunctionOnDebugLayer(drawJumpStorageDetails);
@@ -920,8 +920,8 @@ void displayStickAngle()
 void displayMemoryWatches()
 {
 	// Make sure at least one watch is going to be displayed
-	bool tempHideMenu = HideMenu;
-	uint32_t tempMenuSelectionOption = MenuSelectedOption;
+	bool tempHideMenu = MenuVar.HideMenu;
+	uint32_t tempMenuSelectionOption = MenuVar.MenuSelectedOption;
 	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	
 	for (uint32_t i = 0; i < Size; i++)

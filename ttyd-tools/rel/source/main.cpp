@@ -233,7 +233,7 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 		const char *MapCheck = "gor_01";
 		if (compareStringToNextMap(MapCheck))
 		{
-			if (MarioFreeze)
+			if (MenuVar.MarioFreeze)
 			{
 				// Return an arbitrary string
 				return MapCheck;
@@ -251,7 +251,7 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 						int32_t MarPosY = static_cast<int32_t>(player->playerPosition[1]);
 						if (MarPosY >= 59)
 						{
-							MarioFreeze = true;
+							MenuVar.MarioFreeze = true;
 							
 							// Return an arbitrary string
 							return MapCheck;
@@ -750,7 +750,7 @@ void Mod::run()
 	
 	// Run each cheat function
 	// Only run button-based codes if currently not changing button combos
-	bool tempChangingCheatButtonCombo = ChangingCheatButtonCombo;
+	bool tempChangingCheatButtonCombo = MenuVar.ChangingCheatButtonCombo;
 	if (!tempChangingCheatButtonCombo)
 	{
 		walkThroughMostObjects();
@@ -773,7 +773,7 @@ void Mod::run()
 	// Run each display function
 	// Only run if the mod menu isn't currently open
 	// Run if currently repositioning watches
-	if (!MenuIsDisplayed || HideMenu)
+	if (!MenuVar.MenuIsDisplayed || MenuVar.HideMenu)
 	{
 		// Don't display some displays if the Guard/Superguard timings display is active
 		// Don't display some displays if current in the process of spawning an item
@@ -815,10 +815,10 @@ void Mod::run()
 		checkHeaps();
 	}
 	
-	uint32_t tempFrameCounter = FrameCounter;
+	uint32_t tempFrameCounter = MenuVar.FrameCounter;
 	if (tempFrameCounter > 0)
 	{
-		FrameCounter = tempFrameCounter - 1;
+		MenuVar.FrameCounter = tempFrameCounter - 1;
 	}
 	
 	// Call original function

@@ -1,8 +1,6 @@
 #include "global.h"
 #include "memcard.h"
 
-#include <ttyd/item_data.h>
-
 #include <cstdio>
 
 namespace mod {
@@ -1291,6 +1289,7 @@ const char ButtonInputDisplay[] =
 };
 #endif
 
+struct MenuVars MenuVar;
 struct Menus Menu[27];
 struct Cheats Cheat[21];
 bool Displays[11];
@@ -1317,30 +1316,6 @@ struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
-
-bool HideMenu 							= false;
-bool MenuIsDisplayed 					= false;
-bool PreventClosingMenu 				= false;
-bool ChangingCheatButtonCombo 			= false;
-uint8_t CurrentMenu 					= 0;
-uint8_t CurrentMenuOption 				= 0;
-uint8_t MenuSelectedOption 				= 0;
-uint8_t SecondaryMenuOption 			= 0;
-uint8_t SelectedOption 					= 0;
-uint8_t CurrentPage 					= 0;
-uint8_t SecondaryPage 					= 0;
-int8_t FunctionReturnCode 				= 0;
-uint32_t Timer 							= 0;
-uint8_t MenuSelectionStates 			= 0;
-int32_t MenuSecondaryValue 				= 0;
-uint32_t MemoryWatchSecondaryValue 		= 0;
-uint8_t FrameCounter 					= 0;
-
-// Variables used by cheats
-bool ResetMarioProperties 				= false;
-int16_t ForcedNPCItemDrop 				= ttyd::item_data::Item::SleepySheep;
-bool MarioFreeze 						= false;
-uint16_t JumpStorageSetCounter 			= 0;
 
 void initMenuVars()
 {

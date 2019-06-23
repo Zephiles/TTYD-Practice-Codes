@@ -27,7 +27,7 @@ namespace mod {
 
 void closeMenu()
 {
-	MenuIsDisplayed = false;
+	MenuVar.MenuIsDisplayed = false;
 	
 	resetMenuToRoot();
 	
@@ -41,23 +41,23 @@ void closeMenu()
 void closeSecondaryMenu()
 {
 	// Reset the current menu option
-	CurrentMenuOption = SelectedOption - 1;
+	MenuVar.CurrentMenuOption = MenuVar.SelectedOption - 1;
 	
 	// Close the menu
-	SelectedOption = 0;
+	MenuVar.SelectedOption = 0;
 	
 	// Reset the function return code
-	FunctionReturnCode = 0;
+	MenuVar.FunctionReturnCode = 0;
 }
 
 void enterNextMenu(uint32_t nextMenu, uint32_t currentMenuOption)
 {
 	uint32_t i = PrevMenuAndOption.CurrentIndex;
-	PrevMenuAndOption.PreviousPage[i] = CurrentPage;
-	PrevMenuAndOption.PreviousMenu[i] = CurrentMenu;
+	PrevMenuAndOption.PreviousPage[i] = MenuVar.CurrentPage;
+	PrevMenuAndOption.PreviousMenu[i] = MenuVar.CurrentMenu;
 	PrevMenuAndOption.PreviousMenuOption[i] = currentMenuOption;
 	
-	CurrentMenu = nextMenu;
+	MenuVar.CurrentMenu = nextMenu;
 	
 	uint32_t Size = sizeof(PrevMenuAndOption.PreviousPage) / 
 		sizeof(PrevMenuAndOption.PreviousPage[0]);
@@ -78,42 +78,42 @@ uint8_t enterPreviousMenu()
 		PrevMenuAndOption.CurrentIndex = i;
 	}
 	
-	CurrentPage = PrevMenuAndOption.PreviousPage[i];
-	CurrentMenu = PrevMenuAndOption.PreviousMenu[i];
+	MenuVar.CurrentPage = PrevMenuAndOption.PreviousPage[i];
+	MenuVar.CurrentMenu = PrevMenuAndOption.PreviousMenu[i];
 	return PrevMenuAndOption.PreviousMenuOption[i];
 }
 
 void resetMenu()
 {
-	CurrentPage 			= 0;
-	CurrentMenuOption 		= 0;
-	SecondaryMenuOption 	= 0;
-	SelectedOption 			= 0;
-	SecondaryPage 			= 0;
-	Timer 					= 0;
-	MenuSelectionStates 	= 0;
-	MenuSecondaryValue 		= 0;
+	MenuVar.CurrentPage 			= 0;
+	MenuVar.CurrentMenuOption 		= 0;
+	MenuVar.SecondaryMenuOption 	= 0;
+	MenuVar.SelectedOption 			= 0;
+	MenuVar.SecondaryPage 			= 0;
+	MenuVar.Timer 					= 0;
+	MenuVar.MenuSelectionStates 	= 0;
+	MenuVar.MenuSecondaryValue 		= 0;
 }
 
 void resetMenuToRoot()
 {
-	CurrentMenu 		= ROOT;
-	MenuSelectedOption 	= 0;
-	FunctionReturnCode 	= 0;
-	HideMenu 			= false;
+	MenuVar.CurrentMenu 		= ROOT;
+	MenuVar.MenuSelectedOption 	= 0;
+	MenuVar.FunctionReturnCode 	= 0;
+	MenuVar.HideMenu 			= false;
 	resetMenu();
 	
-	CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[0];
+	MenuVar.CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[0];
 	clearMemory(&PrevMenuAndOption, sizeof(PrevMenuAndOption));
 }
 
 void resetAndCloseSecondaryMenu()
 {
 	// Reset the value used by the secondary menus
-	MenuSecondaryValue = 0;
+	MenuVar.MenuSecondaryValue = 0;
 	
 	// Reset the timer
-	Timer = 0;
+	MenuVar.Timer = 0;
 	
 	// Reset the current menu option and then close the menu
 	closeSecondaryMenu();
@@ -122,7 +122,7 @@ void resetAndCloseSecondaryMenu()
 void resetImportantItemsPauseMenu()
 {
 	// Only run for the important items menu
-	if (MenuSelectedOption != INVENTORY_IMPORTANT)
+	if (MenuVar.MenuSelectedOption != INVENTORY_IMPORTANT)
 	{
 		// Not modifying important items, so do nothing
 		return;
@@ -230,12 +230,12 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 			*reinterpret_cast<bool *>(
 				PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
 			
-			Timer = 0;
+			MenuVar.Timer = 0;
 		}
 		else
 		{
-			FunctionReturnCode 	= NOT_IN_GAME;
-			Timer 				= secondsToFrames(3);
+			MenuVar.FunctionReturnCode 	= NOT_IN_GAME;
+			MenuVar.Timer 				= secondsToFrames(3);
 		}
 	}
 }
@@ -319,9 +319,9 @@ int32_t getTotalItems()
 
 void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 {
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
-	uint32_t tempMenuSelectionStates = MenuSelectionStates;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+	uint32_t tempMenuSelectionStates = MenuVar.MenuSelectionStates;
 	int32_t LowerBound = 0;
 	int32_t UpperBound = 0;
 	
@@ -678,7 +678,7 @@ uint32_t *getPouchAddressAndSize(uint32_t tempArray[2])
 	uint32_t tempAddressOffset;
 	uint32_t tempSize;
 	
-	switch (MenuSelectedOption)
+	switch (MenuVar.MenuSelectedOption)
 	{
 		case INVENTORY_STANDARD:
 		{
@@ -756,21 +756,21 @@ bool checkForItemsOnNextPage(uint32_t currentPage)
 
 bool checkForClosingErrorMessage()
 {
-	uint32_t tempTimer = Timer;
+	uint32_t tempTimer = MenuVar.Timer;
 	if (checkForDPADInput())
 	{
-		Timer 				= 0;
-		FunctionReturnCode 	= 0;
+		MenuVar.Timer 				= 0;
+		MenuVar.FunctionReturnCode 	= 0;
 		return true;
 	}
 	else
 	{
 		tempTimer--;
-		Timer = tempTimer;
+		MenuVar.Timer = tempTimer;
 		
 		if (tempTimer == 0)
 		{
-			FunctionReturnCode 	= 0;
+			MenuVar.FunctionReturnCode 	= 0;
 			return true;
 		}
 	}
@@ -780,7 +780,7 @@ bool checkForClosingErrorMessage()
 void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage)
 {
 	// Make sure that an option has already been selected
-	uint32_t tempSelectedOption = SelectedOption;
+	uint32_t tempSelectedOption = MenuVar.SelectedOption;
 	if (tempSelectedOption != 0)
 	{
 		// Make sure the number of items if valid
@@ -794,26 +794,26 @@ void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage)
 		if (TotalMenuOptions == 0)
 		{
 			// No items in the inventory, so reset the current page and leave
-			CurrentPage = 0;
+			MenuVar.CurrentPage = 0;
 			return;
 		}
 		
 		uint32_t TotalPages 			= 1 + ((TotalMenuOptions - 1) / maxOptionsPerPage); // Round up
-		uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
-		uint32_t tempCurrentPage 		= CurrentPage;
+		uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
+		uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
 		
 		if ((tempSelectedOption >= DUPLICATE) && 
 			(tempSelectedOption <= DELETE))
 		{
 			if (tempCurrentMenuOption > (TotalMenuOptions - 1))
 			{
-				CurrentMenuOption = TotalMenuOptions - 1;
+				MenuVar.CurrentMenuOption = TotalMenuOptions - 1;
 			}
 		}
 		
 		if (tempCurrentPage > (TotalPages - 1))
 		{
-			CurrentPage = TotalPages - 1;
+			MenuVar.CurrentPage = TotalPages - 1;
 		}
 	}
 	else
@@ -889,7 +889,7 @@ void setAdjustableValueToMax(uint32_t currentMenu)
 	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	
 	int32_t UpperBound = UpperAndLowerBounds[1];
-	MenuSecondaryValue = UpperBound;
+	MenuVar.MenuSecondaryValue = UpperBound;
 }
 
 void setAdjustableValueToMin(uint32_t currentMenu)
@@ -898,7 +898,7 @@ void setAdjustableValueToMin(uint32_t currentMenu)
 	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
 	
 	int32_t LowerBound = UpperAndLowerBounds[0];
-	MenuSecondaryValue = LowerBound;
+	MenuVar.MenuSecondaryValue = LowerBound;
 }
 
 uint32_t adjustableValueButtonControls(uint32_t currentMenu)
@@ -975,43 +975,43 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		Button = checkButtonSingleFrame();
 	}
 	
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	
 	switch (Button)
 	{
 		case DPADLEFT:
 		{
-			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+			uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 			if (tempSecondaryMenuOption == 0)
 			{
 				// Loop to the last option
-				SecondaryMenuOption = getHighestAdjustableValueDigit(currentMenu) - 1;
+				MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(currentMenu) - 1;
 			}
 			else
 			{
 				// Move left once
-				SecondaryMenuOption = tempSecondaryMenuOption - 1;
+				MenuVar.SecondaryMenuOption = tempSecondaryMenuOption - 1;
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADRIGHT:
 		{
-			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+			uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 			if (tempSecondaryMenuOption == (getHighestAdjustableValueDigit(currentMenu) - 1))
 			{
 				// Loop to the first option
-				SecondaryMenuOption = 0;
+				MenuVar.SecondaryMenuOption = 0;
 			}
 			else
 			{
 				// Move right once
-				SecondaryMenuOption = tempSecondaryMenuOption + 1;
+				MenuVar.SecondaryMenuOption = tempSecondaryMenuOption + 1;
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADDOWN:
@@ -1019,7 +1019,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 			// Decrement the current value for the current slot in the drawAddById function
 			adjustAddByIdValue(-1, currentMenu);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADUP:
@@ -1027,7 +1027,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 			// Increment the current value for the current slot in the drawAddById function
 			adjustAddByIdValue(1, currentMenu);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case Z:
@@ -1041,7 +1041,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				setAdjustableValueToMin(currentMenu);
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
@@ -1053,7 +1053,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				case INVENTORY_BADGES:
 				case INVENTORY_STORED_ITEMS:
 				{
-					switch (SelectedOption)
+					switch (MenuVar.SelectedOption)
 					{
 						case ADD_BY_ID:
 						{
@@ -1062,7 +1062,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 							{
 								setAddByIdValue(tempAddress);
 								
-								FrameCounter = 1;
+								MenuVar.FrameCounter = 1;
 								return ADDING_BY_ID;
 							}
 							else
@@ -1075,9 +1075,9 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 							if (getTotalItems() > 0)
 							{
 								changeItem();
-								MenuSelectionStates = 0;
+								MenuVar.MenuSelectionStates = 0;
 								
-								FrameCounter = 1;
+								MenuVar.FrameCounter = 1;
 								return Button;
 							}
 							else
@@ -1093,23 +1093,23 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				}
 				case CHEATS_CHANGE_SEQUENCE:
 				{
-					setSequencePosition(static_cast<uint32_t>(MenuSecondaryValue));
-					MenuSelectionStates = 0;
+					setSequencePosition(static_cast<uint32_t>(MenuVar.MenuSecondaryValue));
+					MenuVar.MenuSelectionStates = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case CHEATS_NPC_FORCE_DROP:
 				{
-					ForcedNPCItemDrop = static_cast<int16_t>(MenuSecondaryValue);
-					MenuSelectionStates = 0;
+					MenuVar.ForcedNPCItemDrop = static_cast<int16_t>(MenuVar.MenuSecondaryValue);
+					MenuVar.MenuSelectionStates = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case CHEATS_MANAGE_FLAGS_MAIN:
 				{
-					switch (MenuSelectionStates)
+					switch (MenuVar.MenuSelectionStates)
 					{
 						case SET_GSW:
 						case SET_GW:
@@ -1117,16 +1117,16 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						{
 							if (tempCurrentMenuOption == CHANGE_GLOBAL_WORD)
 							{
-								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuSecondaryValue);
+								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuVar.MenuSecondaryValue);
 							}
 							else
 							{
-								ManageFlags.ValueToSet = MenuSecondaryValue;
+								ManageFlags.ValueToSet = MenuVar.MenuSecondaryValue;
 							}
 							
-							SelectedOption = 0;
+							MenuVar.SelectedOption = 0;
 							
-							FrameCounter = 1;
+							MenuVar.FrameCounter = 1;
 							return Button;
 						}
 						case SET_GSWF:
@@ -1135,16 +1135,16 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						{
 							if (tempCurrentMenuOption == CHANGE_GLOBAL_FLAG)
 							{
-								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuSecondaryValue);
+								ManageFlags.FlagToSet = static_cast<uint16_t>(MenuVar.MenuSecondaryValue);
 							}
 							else
 							{
-								ManageFlags.ValueToSet = MenuSecondaryValue;
+								ManageFlags.ValueToSet = MenuVar.MenuSecondaryValue;
 							}
 							
-							SelectedOption = 0;
+							MenuVar.SelectedOption = 0;
 							
-							FrameCounter = 1;
+							MenuVar.FrameCounter = 1;
 							return Button;
 						}
 						default:
@@ -1156,41 +1156,41 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				case STATS_MARIO:
 				{
 					setMarioStatsValue(tempCurrentMenuOption + 1);
-					MenuSelectedOption = 0;
+					MenuVar.MenuSelectedOption = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case STATS_PARTNERS:
 				{
 					setPartnerStatsValue(tempCurrentMenuOption + 1);
-					MenuSelectedOption = 0;
+					MenuVar.MenuSelectedOption = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case BATTLES_CURRENT_ACTOR:
 				{
 					setBattlesActorValue(tempCurrentMenuOption + 1);
-					SelectedOption = 0;
+					MenuVar.SelectedOption = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case BATTLES_STATUSES:
 				{
 					setBattlesActorStatusValue(tempCurrentMenuOption);
-					SelectedOption = 0;
+					MenuVar.SelectedOption = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case WARPS:
 				{
 					ttyd::swdrv::swByteSet(1321, static_cast<uint32_t>(
-						MenuSecondaryValue - 1)); // GSW(1321)
+						MenuVar.MenuSecondaryValue - 1)); // GSW(1321)
 					
-					MenuSelectedOption = 0;
+					MenuVar.MenuSelectedOption = 0;
 					
 					// Warp to the currently selected map and close the menu
 					int32_t ReturnCode = warpToMap(tempCurrentMenuOption);
@@ -1206,8 +1206,8 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 						case NOT_IN_GAME:
 						{
-							FunctionReturnCode 	= ReturnCode;
-							Timer 				= secondsToFrames(3);
+							MenuVar.FunctionReturnCode 	= ReturnCode;
+							MenuVar.Timer 				= secondsToFrames(3);
 							break;
 						}
 						default:
@@ -1216,28 +1216,28 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						}
 					}
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case WARPS_INDEX:
 				{
 					if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 					{
-						WarpByIndex.MapId = static_cast<uint16_t>(MenuSecondaryValue);
+						WarpByIndex.MapId = static_cast<uint16_t>(MenuVar.MenuSecondaryValue);
 					}
 					else
 					{
-						WarpByIndex.EntranceId = static_cast<uint8_t>(MenuSecondaryValue);
+						WarpByIndex.EntranceId = static_cast<uint8_t>(MenuVar.MenuSecondaryValue);
 					}
 					
-					SelectedOption = 0;
+					MenuVar.SelectedOption = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				case SPAWN_ITEM_MENU_VALUE:
 				{
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				default:
@@ -1257,16 +1257,16 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case INVENTORY_BADGES:
 					case INVENTORY_STORED_ITEMS:
 					{
-						if (SelectedOption == ADD_BY_ID)
+						if (MenuVar.SelectedOption == ADD_BY_ID)
 						{
 							resetAndCloseSecondaryMenu();
 						}
-						else // (SelectedOption == CHANGE_BY_ID)
+						else // (MenuVar.SelectedOption == CHANGE_BY_ID)
 						{
-							MenuSelectionStates = 0;
+							MenuVar.MenuSelectionStates = 0;
 						}
 						
-						FrameCounter = 1;
+						MenuVar.FrameCounter = 1;
 						
 						if (!NoNumbersToDisplay)
 						{
@@ -1280,9 +1280,9 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case CHEATS_CHANGE_SEQUENCE:
 					case CHEATS_NPC_FORCE_DROP:
 					{
-						MenuSelectionStates = 0;
+						MenuVar.MenuSelectionStates = 0;
 						
-						FrameCounter = 1;
+						MenuVar.FrameCounter = 1;
 						
 						if (!NoNumbersToDisplay)
 						{
@@ -1297,9 +1297,9 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case STATS_PARTNERS:
 					case WARPS:
 					{
-						MenuSelectedOption = 0;
+						MenuVar.MenuSelectedOption = 0;
 						
-						FrameCounter = 1;
+						MenuVar.FrameCounter = 1;
 						
 						if (!NoNumbersToDisplay)
 						{
@@ -1315,9 +1315,9 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case BATTLES_STATUSES:
 					case WARPS_INDEX:
 					{
-						SelectedOption = 0;
+						MenuVar.SelectedOption = 0;
 						
-						FrameCounter = 1;
+						MenuVar.FrameCounter = 1;
 						
 						if (!NoNumbersToDisplay)
 						{
@@ -1346,7 +1346,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				setAdjustableValueToMax(currentMenu);
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1358,7 +1358,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 
 uint32_t addByIconButtonControls(uint32_t currentMenu)
 {
-	uint32_t tempSelectedOption = SelectedOption;
+	uint32_t tempSelectedOption = MenuVar.SelectedOption;
 	uint32_t Button = checkButtonSingleFrame();
 	
 	switch (Button)
@@ -1377,11 +1377,11 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			uint32_t tempTotalMenuOptions 	= UpperBound - LowerBound + 1;
 			uint32_t MaxOptionsPerPage 		= tempTotalMenuOptions;
 			
-			adjustMenuSelectionHorizontal(Button, SecondaryMenuOption, 
-				SecondaryPage, tempTotalMenuOptions, MaxOptionsPerPage, 
+			adjustMenuSelectionHorizontal(Button, MenuVar.SecondaryMenuOption, 
+				MenuVar.SecondaryPage, tempTotalMenuOptions, MaxOptionsPerPage, 
 					MaxOptionsPerRow, false);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
@@ -1393,7 +1393,7 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 				{
 					setAddByIconValue(tempAddress);
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return ADDING_BY_ICON;
 				}
 				else
@@ -1405,10 +1405,10 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			{
 				if (getTotalItems() > 0)
 				{
-					MenuSelectionStates = 0;
+					MenuVar.MenuSelectionStates = 0;
 					changeItem();
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					return Button;
 				}
 				else
@@ -1425,10 +1425,10 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			}
 			else // (tempSelectedOption == CHANGE_BY_ICON)
 			{
-				MenuSelectionStates = 0;
+				MenuVar.MenuSelectionStates = 0;
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1441,7 +1441,7 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 uint32_t memoryAddressTypeButtonControls()
 {
 	uint32_t Button = checkButtonSingleFrame();
-	uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	
 	switch (Button)
 	{
@@ -1454,16 +1454,16 @@ uint32_t memoryAddressTypeButtonControls()
 			uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 			uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 			
-			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
-				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+			adjustMenuSelectionVertical(Button, MenuVar.SecondaryMenuOption, 
+				MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
 					MaxOptionsPerRow, false);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
 		{
-			uint32_t tempMenuSelectedOption = MenuSelectedOption;
+			uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
 			MemoryWatch[tempMenuSelectedOption].Type = tempSecondaryMenuOption;
 			
 			// Make sure the address being read does not exceed 0x817FFFFF
@@ -1471,7 +1471,7 @@ uint32_t memoryAddressTypeButtonControls()
 				fixBaseAddress(tempMenuSelectedOption, reinterpret_cast<void *>(
 					MemoryWatch[tempMenuSelectedOption].Address)));
 			
-			SelectedOption = 0;
+			MenuVar.SelectedOption = 0;
 			
 			// Adjust the hex setting if necessary
 			switch (tempSecondaryMenuOption)
@@ -1488,14 +1488,14 @@ uint32_t memoryAddressTypeButtonControls()
 				}
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case B:
 		{
-			SelectedOption = 0;
+			MenuVar.SelectedOption = 0;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1507,7 +1507,7 @@ uint32_t memoryAddressTypeButtonControls()
 
 uint32_t memoryChangeWatchPositionButtonControls()
 {
-	uint32_t tempMenuSelectedOption = MenuSelectedOption;
+	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
 	bool CurrentlyAutoIncrementing = false;
 	uint32_t Button = 0;
 	
@@ -1605,7 +1605,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			int32_t PosX = MemoryWatchPosition.PosX;
 			MemoryWatchPosition.PosX = PosX - 1;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADRIGHT:
@@ -1613,7 +1613,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			int32_t PosX = MemoryWatchPosition.PosX;
 			MemoryWatchPosition.PosX = PosX + 1;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADUP:
@@ -1621,7 +1621,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			int32_t PosY = MemoryWatchPosition.PosY;
 			MemoryWatchPosition.PosY = PosY + 1;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADDOWN:
@@ -1629,7 +1629,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			int32_t PosY = MemoryWatchPosition.PosY;
 			MemoryWatchPosition.PosY = PosY - 1;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
@@ -1637,18 +1637,18 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			MemoryWatch[tempMenuSelectedOption].PosX = MemoryWatchPosition.PosX;
 			MemoryWatch[tempMenuSelectedOption].PosY = MemoryWatchPosition.PosY;
 			
-			SelectedOption = 0;
-			HideMenu = false;
+			MenuVar.SelectedOption = 0;
+			MenuVar.HideMenu = false;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case B:
 		{
-			SelectedOption = 0;
-			HideMenu = false;
+			MenuVar.SelectedOption = 0;
+			MenuVar.HideMenu = false;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1672,26 +1672,26 @@ uint32_t marioSpecialMovesButtonControls()
 			uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 			uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 			
-			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
-				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+			adjustMenuSelectionVertical(Button, MenuVar.SecondaryMenuOption, 
+				MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
 					MaxOptionsPerRow, false);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
 		{
 			uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-			*reinterpret_cast<int16_t *>(PouchPtr + 0x8C) ^= (1 << SecondaryMenuOption);
+			*reinterpret_cast<int16_t *>(PouchPtr + 0x8C) ^= (1 << MenuVar.SecondaryMenuOption);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case B:
 		{
-			MenuSelectedOption = 0;
+			MenuVar.MenuSelectedOption = 0;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1714,27 +1714,27 @@ uint32_t partnerChangeYoshiColorButtonControls()
 			uint32_t MaxOptionsPerPage = TotalMenuOptions;
 			uint32_t MaxOptionsPerRow = 1;
 			
-			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
-				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+			adjustMenuSelectionVertical(Button, MenuVar.SecondaryMenuOption, 
+				MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
 					MaxOptionsPerRow, false);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
 		{
-			setNewYoshiColorId(SecondaryMenuOption);
+			setNewYoshiColorId(MenuVar.SecondaryMenuOption);
 			
-			MenuSelectedOption = 0;
+			MenuVar.MenuSelectedOption = 0;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case B:
 		{
-			MenuSelectedOption = 0;
+			MenuVar.MenuSelectedOption = 0;
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1758,11 +1758,11 @@ uint32_t followersOptionsButtonControls()
 			uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 			uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 			
-			adjustMenuSelectionVertical(Button, SecondaryMenuOption, 
-				SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+			adjustMenuSelectionVertical(Button, MenuVar.SecondaryMenuOption, 
+				MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
 					MaxOptionsPerRow, false);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
@@ -1773,7 +1773,7 @@ uint32_t followersOptionsButtonControls()
 				removeFollowerFromOverworld();
 				
 				// Get the new follower
-				uint8_t NewFollower = SecondaryMenuOption + 8; // Start at the egg
+				uint8_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
 				
 				// Spawn the new follower
 				int32_t ReturnCode = ttyd::party::partyEntry2Hello(
@@ -1789,7 +1789,7 @@ uint32_t followersOptionsButtonControls()
 				
 				closeSecondaryMenu();
 				
-				FrameCounter = 1;
+				MenuVar.FrameCounter = 1;
 				return Button;
 			}
 			else
@@ -1801,7 +1801,7 @@ uint32_t followersOptionsButtonControls()
 		{
 			closeSecondaryMenu();
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		default:
@@ -1813,7 +1813,7 @@ uint32_t followersOptionsButtonControls()
 
 /*void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
 {
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	
 	if (tempMenuSecondaryValue == 0)
 	{
@@ -1825,12 +1825,12 @@ uint32_t followersOptionsButtonControls()
 		else if (valueChangedBy != 0)
 		{
 			// Loop to the end
-			MenuSecondaryValue = upperBound;
+			MenuVar.MenuSecondaryValue = upperBound;
 		}
 		else
 		{
 			// Set to the lower bound by default
-			MenuSecondaryValue = lowerBound;
+			MenuVar.MenuSecondaryValue = lowerBound;
 		}
 	}
 	else if (valueChangedBy != 0)
@@ -1871,7 +1871,7 @@ uint32_t followersOptionsButtonControls()
 				// 	NewValue += (LowerBoundsDigit * (1 * valueChangedBy));
 				// }
 				
-				MenuSecondaryValue = NewValue;
+				MenuVar.MenuSecondaryValue = NewValue;
 			}
 			else
 			{
@@ -1889,7 +1889,7 @@ uint32_t followersOptionsButtonControls()
 					}
 				}
 				
-				MenuSecondaryValue = NewValue;
+				MenuVar.MenuSecondaryValue = NewValue;
 			}
 		}
 		else
@@ -1910,7 +1910,7 @@ uint32_t followersOptionsButtonControls()
 					NewValue -= (1 * valueChangedBy);
 				}
 				
-				MenuSecondaryValue = NewValue;
+				MenuVar.MenuSecondaryValue = NewValue;
 			}
 			else
 			{
@@ -1929,7 +1929,7 @@ uint32_t followersOptionsButtonControls()
 					}
 				}
 				
-				MenuSecondaryValue = NewValue;
+				MenuVar.MenuSecondaryValue = NewValue;
 			}
 		}
 	}
@@ -1937,8 +1937,8 @@ uint32_t followersOptionsButtonControls()
 
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
 {
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue + valueChangedBy;
-	MenuSecondaryValue = tempMenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue + valueChangedBy;
+	MenuVar.MenuSecondaryValue = tempMenuSecondaryValue;
 	
 	if (tempMenuSecondaryValue == 0)
 	{
@@ -1950,29 +1950,29 @@ void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_
 		else if (valueChangedBy != 0)
 		{
 			// Loop to the end
-			MenuSecondaryValue = upperBound;
+			MenuVar.MenuSecondaryValue = upperBound;
 		}
 		else
 		{
 			// Set to the lower bound by default
-			MenuSecondaryValue = lowerBound;
+			MenuVar.MenuSecondaryValue = lowerBound;
 		}
 	}
 	else if (tempMenuSecondaryValue < lowerBound)
 	{
 		// Loop to the end
-		MenuSecondaryValue = upperBound;
+		MenuVar.MenuSecondaryValue = upperBound;
 	}
 	else if (tempMenuSecondaryValue > upperBound)
 	{
 		// Loop to the beginning
-		MenuSecondaryValue = lowerBound;
+		MenuVar.MenuSecondaryValue = lowerBound;
 	}
 }
 
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 {
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue + valueChangedBy;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue + valueChangedBy;
 	switch (currentMenu)
 	{
 		case CHEATS_NPC_FORCE_DROP:
@@ -1982,11 +1982,11 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 			{
 				if (valueChangedBy > 0)
 				{
-					MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
+					MenuVar.MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
 				}
 				else
 				{
-					MenuSecondaryValue = ttyd::item_data::Item::FreshJuice;
+					MenuVar.MenuSecondaryValue = ttyd::item_data::Item::FreshJuice;
 				}
 				return;
 			}
@@ -1994,17 +1994,17 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 		}
 		case BATTLES_CURRENT_ACTOR:
 		{
-			if (SelectedOption == CHANGE_HELD_ITEM)
+			if (MenuVar.SelectedOption == CHANGE_HELD_ITEM)
 			{
 				if (tempMenuSecondaryValue == ttyd::item_data::Item::TradeOff)
 				{
 					if (valueChangedBy > 0)
 					{
-						MenuSecondaryValue = tempMenuSecondaryValue + 1;
+						MenuVar.MenuSecondaryValue = tempMenuSecondaryValue + 1;
 					}
 					else
 					{
-						MenuSecondaryValue = tempMenuSecondaryValue - 1;
+						MenuVar.MenuSecondaryValue = tempMenuSecondaryValue - 1;
 					}
 					return;
 				}
@@ -2013,11 +2013,11 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 				{
 					if (valueChangedBy > 0)
 					{
-						MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
+						MenuVar.MenuSecondaryValue = ttyd::item_data::Item::PowerJump;
 					}
 					else
 					{
-						MenuSecondaryValue = ttyd::item_data::Item::Cake;
+						MenuVar.MenuSecondaryValue = ttyd::item_data::Item::Cake;
 					}
 					return;
 				}
@@ -2044,7 +2044,7 @@ void adjustAddByIdValue(int32_t value, uint32_t currentMenu)
 	uint32_t HighestDigit = getHighestAdjustableValueDigit(currentMenu);
 	int32_t newValue = value;
 	
-	for (uint32_t i = 0; i < (HighestDigit - SecondaryMenuOption - 1); i++)
+	for (uint32_t i = 0; i < (HighestDigit - MenuVar.SecondaryMenuOption - 1); i++)
 	{
 		newValue *= 10;
 	}
@@ -2156,7 +2156,7 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 	}
 	
 	uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	
 	if ((currentMenuOption >= PIANTAS_STORED) && 
 		(currentMenuOption <= CURRENT_PIANTAS))
@@ -2281,7 +2281,7 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 	uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(
 		getPartnerEnabledAddress());
 	
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	switch (currentMenuOption)
 	{
 		case PARTNER_HP:
@@ -2341,13 +2341,13 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 
 void setBattlesActorValue(uint32_t currentMenuOption)
 {
-	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
 	if (ActorAddress == 0)
 	{
 		return;
 	}
 	
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	switch (currentMenuOption)
 	{
 		case CHANGE_ACTOR_HP:
@@ -2424,7 +2424,7 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 
 void setBattlesActorStatusValue(uint32_t currentMenuOption)
 {
-	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuSelectedOption));
+	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
 	if (ActorAddress == 0)
 	{
 		return;
@@ -2447,7 +2447,7 @@ void setBattlesActorStatusValue(uint32_t currentMenuOption)
 	}
 	
 	*reinterpret_cast<int8_t *>(ActorAddress + (
-		0x118 + currentMenuOption + Counter)) = MenuSecondaryValue;
+		0x118 + currentMenuOption + Counter)) = MenuVar.MenuSecondaryValue;
 }
 
 uint8_t getSelectedOptionPartnerValue()
@@ -2460,8 +2460,8 @@ uint8_t getSelectedOptionPartnerValue()
 	const uint8_t Bobbery 		= 3;
 	const uint8_t Mowz 			= 7;
 	
-	uint32_t tempSelectedOption = SelectedOption;
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempSelectedOption = MenuVar.SelectedOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	uint32_t tempOption;
 	
 	if (tempSelectedOption == 0)
@@ -2544,7 +2544,7 @@ bool checkIfPartnerOutSelected()
 
 void setAddByIdValue(void *address)
 {
-	int32_t tempMenuSecondaryValue = MenuSecondaryValue;
+	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
 	*reinterpret_cast<int16_t *>(
 		reinterpret_cast<uint32_t>(address)) = tempMenuSecondaryValue;
 	
@@ -2555,10 +2555,10 @@ void setAddByIdValue(void *address)
 void setAddByIconValue(void *address)
 {
 	int32_t UpperAndLowerBounds[2];
-	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuVar.MenuSelectedOption);
 	
 	int32_t LowerBound 					= UpperAndLowerBounds[0];
-	uint32_t tempSecondaryMenuOption 	= SecondaryMenuOption;
+	uint32_t tempSecondaryMenuOption 	= MenuVar.SecondaryMenuOption;
 	int32_t NewItem = LowerBound + tempSecondaryMenuOption;
 	
 	*reinterpret_cast<int16_t *>(
@@ -2581,7 +2581,7 @@ void duplicateCurrentItem(void *address)
 	uint32_t tempAddress = tempArray[0];
 	
 	int16_t CurrentItem = *reinterpret_cast<int16_t *>(
-		tempAddress + (CurrentMenuOption * 0x2));
+		tempAddress + (MenuVar.CurrentMenuOption * 0x2));
 	
 	*reinterpret_cast<int16_t *>(
 		reinterpret_cast<uint32_t>(address)) = CurrentItem;
@@ -2602,7 +2602,7 @@ void deleteItem()
 	uint32_t tempAddress 	= tempArray[0];
 	uint32_t tempSize 		= tempArray[1];
 	
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	int16_t CurrentItem = *reinterpret_cast<int16_t *>(
 		tempAddress + (tempCurrentMenuOption * 0x2));
 	
@@ -2635,7 +2635,7 @@ int32_t changeItem()
 	
 	uint32_t tempAddress 			= tempArray[0];
 	
-	uint32_t CurrentItemAddress 	= tempAddress + (CurrentMenuOption * 0x2);
+	uint32_t CurrentItemAddress 	= tempAddress + (MenuVar.CurrentMenuOption * 0x2);
 	int16_t CurrentItem 			= *reinterpret_cast<int16_t *>(CurrentItemAddress);
 	
 	if (CurrentItem == 0)
@@ -2643,17 +2643,17 @@ int32_t changeItem()
 		return INVENTORY_EMPTY;
 	}
 	
-	if (SelectedOption == CHANGE_BY_ID)
+	if (MenuVar.SelectedOption == CHANGE_BY_ID)
 	{
 		setAddByIdValue(reinterpret_cast<void *>(CurrentItemAddress));
 	}
-	else // SelectedOption == CHANGE_BY_ICON
+	else // MenuVar.SelectedOption == CHANGE_BY_ICON
 	{
 		setAddByIconValue(reinterpret_cast<void *>(CurrentItemAddress));
 	}
 	
 	// Close the menu being used to select the new item
-	MenuSelectionStates = 0;
+	MenuVar.MenuSelectionStates = 0;
 	return 0;
 }
 
@@ -3289,7 +3289,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 		if (FoundDifference)
 		{
 			// New button(s) were pressed, so reset the timer
-			Timer = secondsToFrames(3);
+			MenuVar.Timer = secondsToFrames(3);
 			
 			// Copy the values from the current buttons held to the previous buttons held
 			copyMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
@@ -3300,9 +3300,9 @@ bool cheatsManageTimer(uint32_t buttonInput)
 		else
 		{
 			// Decrement the timer
-			uint32_t tempTimer = Timer;
+			uint32_t tempTimer = MenuVar.Timer;
 			tempTimer--;
-			Timer = tempTimer;
+			MenuVar.Timer = tempTimer;
 			
 			if (tempTimer == 0)
 			{
@@ -3317,7 +3317,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 	else
 	{
 		// No buttons are currently held, so reset the timer
-		Timer = secondsToFrames(3);
+		MenuVar.Timer = secondsToFrames(3);
 		return false;
 	}
 }
@@ -3362,7 +3362,7 @@ uint32_t checkButtonSingleFrame()
 
 /*void correctPageSingleColumn(uint32_t button, uint8_t &currentPage)
 {
-	uint32_t tempCurrentMenu 		= CurrentMenu;
+	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
 	uint32_t TotalPages = 1 + ((tempTotalMenuOptions - 1) / tempColumnSplitAmount); // Round up
@@ -3373,7 +3373,7 @@ uint32_t checkButtonSingleFrame()
 		return;
 	}
 	
-	uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
+	uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
 	uint32_t tempCurrentPage 		= currentPage;
 	
 	switch (button)
@@ -3423,21 +3423,21 @@ uint32_t checkButtonSingleFrame()
 
 void default_DPAD_Actions(uint32_t button)
 {
-	uint32_t tempCurrentMenu 		= CurrentMenu;
+	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
 	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
 	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount * tempTotalMenuColumns;
 	uint32_t MaxOptionsPerRow 		= tempTotalMenuColumns;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, tempTotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, tempTotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
 void adjustMenuNoPageEdit(uint32_t button)
 {
-	uint32_t tempCurrentMenu 		= CurrentMenu;
+	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t tempColumnSplitAmount 	= Menu[tempCurrentMenu].ColumnSplitAmount;
 	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
@@ -3446,7 +3446,7 @@ void adjustMenuNoPageEdit(uint32_t button)
 	uint8_t tempPage[1];
 	tempPage[0] 					= 0;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
 		tempPage[0], tempTotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
@@ -3454,7 +3454,7 @@ void adjustMenuNoPageEdit(uint32_t button)
 void adjustCheatsManageFlagsMainMenu(uint32_t button)
 {
 	uint32_t TotalMenuOptions;
-	switch (MenuSelectionStates)
+	switch (MenuVar.MenuSelectionStates)
 	{
 		case SET_GSW:
 		case SET_GW:
@@ -3478,7 +3478,7 @@ void adjustCheatsManageFlagsMainMenu(uint32_t button)
 	uint8_t tempPage[1];
 	tempPage[0] 					= 0;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
 		tempPage[0], TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
@@ -3494,19 +3494,19 @@ void adjustMenuSelectionInventory(uint32_t button)
 	
 	uint32_t MaxOptionsPerPage 			= 20;
 	uint32_t MaxOptionsPerRow 			= 2;
-	uint32_t tempMenuSelectedOption 	= MenuSelectedOption;
+	uint32_t tempMenuSelectedOption 	= MenuVar.MenuSelectedOption;
 	
 	if ((tempMenuSelectedOption == INVENTORY_BADGES) || 
 		(tempMenuSelectedOption == INVENTORY_STORED_ITEMS))
 	{
-		adjustMenuSelectionVertical(button, CurrentMenuOption, 
-			CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+		adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+			MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 				MaxOptionsPerRow, true);
 	}
 	else
 	{
-		adjustMenuSelectionHorizontal(button, CurrentMenuOption, 
-			CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+		adjustMenuSelectionHorizontal(button, MenuVar.CurrentMenuOption, 
+			MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 				MaxOptionsPerRow, true);
 	}
 }
@@ -3514,14 +3514,14 @@ void adjustMenuSelectionInventory(uint32_t button)
 /*void adjustAddByIconCurrentOption(uint32_t button)
 {
 	int32_t UpperAndLowerBounds[2];
-	getUpperAndLowerBounds(UpperAndLowerBounds, MenuSelectedOption);
+	getUpperAndLowerBounds(UpperAndLowerBounds, MenuVar.MenuSelectedOption);
 	
 	int32_t LowerBound 				= UpperAndLowerBounds[0];
 	int32_t UpperBound 				= UpperAndLowerBounds[1];
 	
 	uint32_t MaxIconsPerRow 		= 16;
 	
-	uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
+	uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
 	uint32_t tempTotalMenuOptions 	= UpperBound - LowerBound + 1;
 	uint32_t TotalRows 				= 1 + ((tempTotalMenuOptions - 1) / MaxIconsPerRow); // Round up
 	uint32_t TotalFreeSpaces 		= ((TotalRows * MaxIconsPerRow) - 1) - (tempTotalMenuOptions - 1);
@@ -3539,16 +3539,16 @@ void adjustMenuSelectionInventory(uint32_t button)
 				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
 				{
 					// Go to the furthest right option
-					CurrentMenuOption = tempCurrentMenuOption - TotalFreeSpaces;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption - TotalFreeSpaces;
 				}
 				else
 				{
-					CurrentMenuOption = tempCurrentMenuOption;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption;
 				}
 			}
 			else
 			{
-				CurrentMenuOption = tempCurrentMenuOption - 1;
+				MenuVar.CurrentMenuOption = tempCurrentMenuOption - 1;
 			}
 			break;
 		}
@@ -3557,7 +3557,7 @@ void adjustMenuSelectionInventory(uint32_t button)
 			if ((tempCurrentMenuOption % MaxIconsPerRow) == (MaxIconsPerRow - 1))
 			{
 				// Currently on the furthest right side, so go to the furthest left option
-				CurrentMenuOption = tempCurrentMenuOption - (MaxIconsPerRow - 1);
+				MenuVar.CurrentMenuOption = tempCurrentMenuOption - (MaxIconsPerRow - 1);
 			}
 			else
 			{
@@ -3567,11 +3567,11 @@ void adjustMenuSelectionInventory(uint32_t button)
 				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
 				{
 					// Go to the furthest left option
-					CurrentMenuOption = tempCurrentMenuOption - (MaxIconsPerRow - TotalFreeSpaces);
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption - (MaxIconsPerRow - TotalFreeSpaces);
 				}
 				else
 				{
-					CurrentMenuOption = tempCurrentMenuOption;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption;
 				}
 			}
 			break;
@@ -3583,11 +3583,11 @@ void adjustMenuSelectionInventory(uint32_t button)
 			if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
 			{
 				// Go to the top of the current column
-				CurrentMenuOption = tempCurrentMenuOption % MaxIconsPerRow;
+				MenuVar.CurrentMenuOption = tempCurrentMenuOption % MaxIconsPerRow;
 			}
 			else
 			{
-				CurrentMenuOption = tempCurrentMenuOption;
+				MenuVar.CurrentMenuOption = tempCurrentMenuOption;
 			}
 			break;
 		}
@@ -3603,16 +3603,16 @@ void adjustMenuSelectionInventory(uint32_t button)
 				if (tempCurrentMenuOption > (tempTotalMenuOptions - 1))
 				{
 					// Go to the option in the previous row
-					CurrentMenuOption = tempCurrentMenuOption - MaxIconsPerRow;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption - MaxIconsPerRow;
 				}
 				else
 				{
-					CurrentMenuOption = tempCurrentMenuOption;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption;
 				}
 			}
 			else
 			{
-				CurrentMenuOption = tempCurrentMenuOption - MaxIconsPerRow;
+				MenuVar.CurrentMenuOption = tempCurrentMenuOption - MaxIconsPerRow;
 			}
 			break;
 		}
@@ -3631,8 +3631,8 @@ void adjustCheatClearAreaFlagSelection(uint32_t button)
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 	
-	adjustMenuSelectionVertical(button, SecondaryMenuOption, 
-		SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.SecondaryMenuOption, 
+		MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
@@ -3644,8 +3644,8 @@ void adjustMarioStatsSelection(uint32_t button)
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, true);
 }
 
@@ -3670,8 +3670,8 @@ void adjustPartnerStatsSelection(uint32_t button)
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, true);
 }
 
@@ -3692,20 +3692,20 @@ void adjustMemoryWatchSelection(uint32_t button)
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t MaxOptionsPerPage = 10;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
 void adjustMemoryChangeAddressOrPointerSelection(uint32_t button)
 {
-	uint32_t TotalMenuOptions = MemoryWatch[MenuSelectedOption].AddressOffsetAmount + 1;
+	uint32_t TotalMenuOptions = MemoryWatch[MenuVar.MenuSelectedOption].AddressOffsetAmount + 1;
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t MaxOptionsPerPage = 11;
 	uint8_t tempPage[1];
 	tempPage[0] = 0;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
 		tempPage[0], TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
@@ -3725,8 +3725,8 @@ void adjustBattlesActorSelection(uint32_t button)
 		}
 	}
 	
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
-	uint32_t tempCurrentPage = CurrentPage;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+	uint32_t tempCurrentPage = MenuVar.CurrentPage;
 	
 	switch (button)
 	{
@@ -3739,8 +3739,8 @@ void adjustBattlesActorSelection(uint32_t button)
 				if (HighestSlot <= static_cast<int32_t>((tempCurrentPage + 1) * MaxOptionsPerPage))
 				{
 					// Go to the first page
-					CurrentMenuOption = 0;
-					CurrentPage = 0;
+					MenuVar.CurrentMenuOption = 0;
+					MenuVar.CurrentPage = 0;
 					return;
 				}
 			}
@@ -3762,8 +3762,8 @@ void adjustBattlesActorSelection(uint32_t button)
 						HighestSlot -= MaxOptionsPerPage;
 					}
 					
-					CurrentPage = tempCurrentPage;
-					CurrentMenuOption = tempCurrentMenuOption + MaxOptionsPerPage - 1;
+					MenuVar.CurrentPage = tempCurrentPage;
+					MenuVar.CurrentMenuOption = tempCurrentMenuOption + MaxOptionsPerPage - 1;
 					return;
 				}
 			}
@@ -3777,8 +3777,8 @@ void adjustBattlesActorSelection(uint32_t button)
 	
 	uint32_t MaxOptionsPerRow = 1;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
@@ -3789,8 +3789,8 @@ void adjustBattlesStatusSelection(uint32_t button)
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t MaxOptionsPerPage = 12;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
@@ -3802,14 +3802,14 @@ void adjustWarpsSelection(uint32_t button)
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
 	
-	adjustMenuSelectionVertical(button, CurrentMenuOption, 
-		CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
 }
 
 void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
 {
-	uint32_t tempCurrentPage = CurrentPage;
+	uint32_t tempCurrentPage = MenuVar.CurrentPage;
 	switch (button)
 	{
 		case DPADDOWN:
@@ -3835,7 +3835,7 @@ void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
 			// Make sure entrances exist on the next page
 			if ((MaxEntrancesPerPage * (tempCurrentPage + 1)) < TotalEntrances)
 			{
-				CurrentPage = tempCurrentPage + 1;
+				MenuVar.CurrentPage = tempCurrentPage + 1;
 			}
 			break;
 		}
@@ -3844,7 +3844,7 @@ void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
 			// Make sure the current page isn't already at 0
 			if (tempCurrentPage > 0)
 			{
-				CurrentPage = tempCurrentPage - 1;
+				MenuVar.CurrentPage = tempCurrentPage - 1;
 			}
 			break;
 		}

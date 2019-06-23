@@ -383,17 +383,17 @@ void deleteWatch(int32_t slot)
 	}
 	
 	// Make sure the currently selected option is valid
-	uint32_t tempCurrentMenuOption = CurrentMenuOption;
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	if (tempCurrentMenuOption > static_cast<uint32_t>(TotalMenuOptions))
 	{
-		CurrentMenuOption = tempCurrentMenuOption - 1;
+		MenuVar.CurrentMenuOption = tempCurrentMenuOption - 1;
 	}
 	
 	// Make sure the current page is valid
-	uint32_t tempCurrentPage = CurrentPage;
+	uint32_t tempCurrentPage = MenuVar.CurrentPage;
 	if ((tempCurrentPage * TotalOptionsPerPage) > static_cast<uint32_t>(TotalMenuOptions))
 	{
-		CurrentPage = tempCurrentPage - 1;
+		MenuVar.CurrentPage = tempCurrentPage - 1;
 	}
 }
 
@@ -405,8 +405,8 @@ void duplicateWatch(int32_t currentSlot, int32_t emptySlot)
 
 uint32_t adjustWatchValueControls(int32_t slot)
 {
-	uint32_t tempCurrentMenu 		= CurrentMenu;
-	uint32_t tempCurrentMenuOption 	= CurrentMenuOption;
+	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
+	uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
 	
 	// Get the amount of numbers to draw
 	bool NoNumbersToDisplay = false;
@@ -489,36 +489,36 @@ uint32_t adjustWatchValueControls(int32_t slot)
 	{
 		case DPADLEFT:
 		{
-			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+			uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 			if (tempSecondaryMenuOption == 0)
 			{
 				// Loop to the last option
-				SecondaryMenuOption = HighestDigit - 1;
+				MenuVar.SecondaryMenuOption = HighestDigit - 1;
 			}
 			else
 			{
 				// Move left once
-				SecondaryMenuOption = tempSecondaryMenuOption - 1;
+				MenuVar.SecondaryMenuOption = tempSecondaryMenuOption - 1;
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADRIGHT:
 		{
-			uint32_t tempSecondaryMenuOption = SecondaryMenuOption;
+			uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 			if (tempSecondaryMenuOption == (HighestDigit - 1))
 			{
 				// Loop to the first option
-				SecondaryMenuOption = 0;
+				MenuVar.SecondaryMenuOption = 0;
 			}
 			else
 			{
 				// Move right once
-				SecondaryMenuOption = tempSecondaryMenuOption + 1;
+				MenuVar.SecondaryMenuOption = tempSecondaryMenuOption + 1;
 			}
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADDOWN:
@@ -526,7 +526,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
 			// Decrement the current value for the current slot
 			adjustWatchTempValueAndBounds(slot, HighestDigit, -1);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case DPADUP:
@@ -534,7 +534,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
 			// Increment the current value for the current slot
 			adjustWatchTempValueAndBounds(slot, HighestDigit, 1);
 			
-			FrameCounter = 1;
+			MenuVar.FrameCounter = 1;
 			return Button;
 		}
 		case A:
@@ -550,21 +550,21 @@ uint32_t adjustWatchValueControls(int32_t slot)
 							// Modifying the address
 							// Make sure the address being read does not exceed 0x817FFFFF
 							MemoryWatch[slot].Address = reinterpret_cast<uint32_t>(
-								fixBaseAddress(slot, reinterpret_cast<void *>(MemoryWatchSecondaryValue)));
+								fixBaseAddress(slot, reinterpret_cast<void *>(MenuVar.MemoryWatchSecondaryValue)));
 							
-							MenuSelectionStates = 0;
+							MenuVar.MenuSelectionStates = 0;
 							
-							FrameCounter = 1;
+							MenuVar.FrameCounter = 1;
 							return Button;
 						}
 						default:
 						{
 							// Modifying the pointer offsets
 							MemoryWatch[slot].AddressOffset[tempCurrentMenuOption - 1] = 
-								static_cast<int32_t>(MemoryWatchSecondaryValue);
-							MenuSelectionStates = 0;
+								static_cast<int32_t>(MenuVar.MemoryWatchSecondaryValue);
+							MenuVar.MenuSelectionStates = 0;
 							
-							FrameCounter = 1;
+							MenuVar.FrameCounter = 1;
 							return Button;
 						}
 					}
@@ -583,9 +583,9 @@ uint32_t adjustWatchValueControls(int32_t slot)
 			{
 				case MEMORY_CHANGE_ADDRESS:
 				{
-					MenuSelectionStates = 0;
+					MenuVar.MenuSelectionStates = 0;
 					
-					FrameCounter = 1;
+					MenuVar.FrameCounter = 1;
 					
 					if (!NoNumbersToDisplay)
 					{
@@ -612,15 +612,15 @@ uint32_t adjustWatchValueControls(int32_t slot)
 
 void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t valueChangedBy)
 {
-	for (uint32_t i = 0; i < (highestDigit - SecondaryMenuOption - 1); i++)
+	for (uint32_t i = 0; i < (highestDigit - MenuVar.SecondaryMenuOption - 1); i++)
 	{
 		valueChangedBy *= 0x10;
 	}
 	
-	uint32_t tempMemoryWatchSecondaryValue = MemoryWatchSecondaryValue + valueChangedBy;
-	MemoryWatchSecondaryValue = tempMemoryWatchSecondaryValue;
+	uint32_t tempMemoryWatchSecondaryValue = MenuVar.MemoryWatchSecondaryValue + valueChangedBy;
+	MenuVar.MemoryWatchSecondaryValue = tempMemoryWatchSecondaryValue;
 	
-	switch (CurrentMenu)
+	switch (MenuVar.CurrentMenu)
 	{
 		case MEMORY_CHANGE_ADDRESS:
 		{
@@ -629,7 +629,7 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
 			int32_t UpperBoundSigned;
 			int32_t LowerBoundSigned;
 			
-			switch (CurrentMenuOption)
+			switch (MenuVar.CurrentMenuOption)
 			{
 				case 0:
 				{
@@ -643,12 +643,12 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
 					if (tempMemoryWatchSecondaryValue > UpperBoundUnsigned)
 					{
 						// Loop to the beginning
-						MemoryWatchSecondaryValue = LowerBoundUnsigned;
+						MenuVar.MemoryWatchSecondaryValue = LowerBoundUnsigned;
 					}
 					else if (tempMemoryWatchSecondaryValue < LowerBoundUnsigned)
 					{
 						// Loop to the end
-						MemoryWatchSecondaryValue = UpperBoundUnsigned;
+						MenuVar.MemoryWatchSecondaryValue = UpperBoundUnsigned;
 					}
 					break;
 				}
@@ -662,12 +662,12 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
 					if (tempMemoryWatchSecondaryValueSigned > UpperBoundSigned)
 					{
 						// Loop to the beginning
-						MemoryWatchSecondaryValue = static_cast<uint32_t>(LowerBoundSigned);
+						MenuVar.MemoryWatchSecondaryValue = static_cast<uint32_t>(LowerBoundSigned);
 					}
 					else if (tempMemoryWatchSecondaryValueSigned < LowerBoundSigned)
 					{
 						// Loop to the end
-						MemoryWatchSecondaryValue = static_cast<uint32_t>(UpperBoundSigned);
+						MenuVar.MemoryWatchSecondaryValue = static_cast<uint32_t>(UpperBoundSigned);
 					}
 					break;
 				}
