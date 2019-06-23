@@ -37,31 +37,6 @@ const char *InventoryOptionLines[] =
 	"Delete",
 };
 
-uint8_t CheatsOrder[] = 
-{
-	CHANGE_SEQUENCE,
-	WALK_THROUGH_WALLS,
-	SAVE_COORDINATES,
-	LOAD_COORDINATES,
-	SPAWN_ITEM,
-	SAVE_ANYWHERE,
-	TEXT_STORAGE,
-	TIME_STOP_TEXT_STORAGE,
-	SPEED_UP_MARIO,
-	DISABLE_BATTLES,
-	AUTO_ACTION_COMMANDS,
-	INFINITE_ITEM_USAGE,
-	RELOAD_ROOM,
-	LEVITATE,
-	LOCK_MARIO_HP_TO_MAX,
-	RUN_FROM_BATTLES,
-	DISABLE_MENU_SOUNDS,
-	BOBBERY_EARLY,
-	FORCE_ITEM_DROP,
-	CLEAR_AREA_FLAGS,
-	MANAGE_FLAGS,
-};
-
 const char *CheatsLines[] = 
 {
 	"Change Sequence",
@@ -537,13 +512,11 @@ const char *CheatsManageGlobalWordsOptions[]
 	"Change Value",
 	"Set New Value",
 };
-uint8_t CheatsManageGlobalWordsOptionsSize = sizeof(CheatsManageGlobalWordsOptions) / sizeof(CheatsManageGlobalWordsOptions[0]);
 
 const char *CheatsManageGlobalFlagsOptions[]
 {
 	"Toggle Value",
 };
-uint8_t CheatsManageGlobalFlagsOptionsSize = sizeof(CheatsManageGlobalFlagsOptions) / sizeof(CheatsManageGlobalFlagsOptions[0]);
 
 const char *CheatsClearAreaFlags[] = 
 {
@@ -576,7 +549,6 @@ const char *CheatsForceItemDropAreas[] =
 	"las",
 	"jon",
 };
-uint8_t CheatsForceItemDropAreasSize = sizeof(CheatsForceItemDropAreas) / sizeof(CheatsForceItemDropAreas[0]);
 
 const char *CheatsForceItemDropAreasFullNames[] = 
 {
@@ -631,48 +603,6 @@ const char *StatsMarioOptionsLines[] =
 	"Piantas Stored",
 	"Current Piantas",
 };
-uint8_t StatsMarioOptionsLinesSize = sizeof(StatsMarioOptionsLines) / sizeof(StatsMarioOptionsLines[0]);
-
-uint16_t StatsMarioIcons[] = 
-{
-	#ifdef TTYD_JP
-	395, // Coins
-	415, // HP
-	416, // FP
-	417, // BP
-	415, // Max HP
-	416, // Max FP
-	414, // Level
-	414, // Rank
-	396, // Star Points
-	397, // Star Pieces
-	258, // Shine Sprites
-	407, // Special Moves
-	146, // Star Power
-	146, // Max Star Power
-	382, // Shop Points
-	319, // Piantas Stored
-	319, // Current Piantas
-	#else
-	403, // Coins
-	423, // HP
-	424, // FP
-	425, // BP
-	423, // Max HP
-	424, // Max FP
-	422, // Level
-	422, // Rank
-	404, // Star Points
-	405, // Star Pieces
-	266, // Shine Sprites
-	415, // Special Moves
-	154, // Star Power
-	154, // Max Star Power
-	390, // Shop Points
-	327, // Piantas Stored
-	327, // Current Piantas
-	#endif
-};
 
 const char *MarioStatsSpecialMovesOptions[] = 
 {
@@ -685,7 +615,6 @@ const char *MarioStatsSpecialMovesOptions[] =
 	"Showstopper",
 	"Supernova",
 };
-uint8_t MarioStatsSpecialMovesOptionsSize = sizeof(MarioStatsSpecialMovesOptions) / sizeof(MarioStatsSpecialMovesOptions[0]);
 
 const char *StatsPartnerLines[] = 
 {
@@ -705,7 +634,6 @@ const char *StatsPartnerOptionsLines[] =
 	"Rank",
 	"Toggle",
 };
-uint8_t StatsPartnerOptionsLinesSize = sizeof(StatsPartnerOptionsLines) / sizeof(StatsPartnerOptionsLines[0]);
 
 const char *StatsYoshiColorOptionsLines[] = 
 {
@@ -717,7 +645,6 @@ const char *StatsYoshiColorOptionsLines[] =
 	"Black",
 	"White",
 };
-uint8_t StatsYoshiColorOptionsLinesSize = sizeof(StatsYoshiColorOptionsLines) / sizeof(StatsYoshiColorOptionsLines[0]);
 
 const char *StatsFollowerLines [] = 
 {
@@ -733,7 +660,6 @@ const char *StatsFollowerOptionsLines[] =
 	"Frankly",
 	"Gus",
 };
-uint8_t StatsFollowerOptionsLinesSize = sizeof(StatsFollowerOptionsLines) / sizeof(StatsFollowerOptionsLines[0]);
 
 const char *SettingsLines[] = 
 {
@@ -757,7 +683,6 @@ const char *MemoryModifyLines[] =
 	"Position",
 	"Display",
 };
-uint8_t MemoryModifyLinesSize = sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
 
 const char *MemoryTypeLines[] = 
 {
@@ -774,7 +699,6 @@ const char *MemoryTypeLines[] =
 	"float",
 	"double",
 };
-uint8_t MemoryTypeLinesSize = sizeof(MemoryTypeLines) / sizeof(MemoryTypeLines[0]);
 
 const char *MemoryChangeAddressLines[] = 
 {
@@ -1035,7 +959,6 @@ const char *BattlesCurrentActorStats[] =
 	"FP",
 	"Max FP",
 };
-uint8_t BattlesCurrentActorStatsSize = sizeof(BattlesCurrentActorStats) / sizeof(BattlesCurrentActorStats[0]);
 
 const char *BattlesStatusesLines[] = 
 {
@@ -1067,83 +990,6 @@ const char *BattlesStatusesLines[] =
 	"FP Regen Amount",
 	"Defeated Flag",
 };
-uint8_t BattlesStatusesLinesSize = sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
-
-uint16_t BattlesStatusesIcons[] = 
-{
-	#ifdef TTYD_JP
-	389, // Sleep
-	390, // Stop
-	371, // Dizzy
-	215, // Poison
-	215, // Poison Amount
-	401, // Confused
-	380, // Electrified
-	404, // Dodgy
-	15, // Burn
-	384, // Frozen
-	367, // Big/Shrink
-	367, // Big/Shrink Amount
-	47, // Attack Up/Down
-	47, // Attack Up/Down Amount
-	48, // Defense Up/Down
-	48, // Defense Up/Down Amount
-	37, // Charged
-	178, // Allergic
-	400, // Invisible
-	195, // Payback
-	418, // Fast
-	382, // Slow
-	378, // HP Regen
-	378, // HP Regen Amount
-	381, // FP Regen
-	381, // FP Regen Amount
-	354, // Defeated Flag
-	#else
-	397, // Sleep
-	398, // Stop
-	379, // Dizzy
-	223, // Poision
-	223, // Poison Amount
-	409, // Confused
-	388, // Electrified
-	412, // Dodgy
-	15, // Burn
-	392, // Frozen
-	375, // Big/Shrink
-	375, // Big/Shrink Amount
-	47, // Attack Up/Down
-	47, // Attack Up/Down Amount
-	48, // Defense Up/Down
-	48, // Defense Up/Down Amount
-	37, // Charged
-	186, // Allergic
-	408, // Invisible
-	203, // Payback
-	426, // Fast
-	390, // Slow
-	386, // HP Regen
-	386, // HP Regen Amount
-	389, // FP Regen
-	389, // FP Regen Amount
-	362, // Defeated Flag
-	#endif
-};
-
-uint8_t DisplaysOrder[] = 
-{
-	ONSCREEN_TIMER,
-	MARIO_COORDINATES,
-	JUMP_STORAGE,
-	BUTTON_INPUT_DISPLAY,
-	GUARD_SUPERGUARD_TIMINGS,
-	ART_ATTACK_HITBOXES,
-	YOSHI_SKIP,
-	PALACE_SKIP,
-	STICK_ANGLE,
-	MARIO_SPEED_XZ,
-	DPAD_OPTIONS_DISPLAY,
-};
 
 const char *DisplaysLines[] = 
 {
@@ -1172,7 +1018,6 @@ const char *OnScreenTimerOptions[] =
 	"Start/Pause/Resume Button Combo",
 	"Reset Button Combo",
 };
-uint8_t OnScreenTimerOptionsSize = sizeof(OnScreenTimerOptions) / sizeof(OnScreenTimerOptions[0]);
 
 const char *WarpLines[] = 
 {
@@ -1208,7 +1053,6 @@ const char *WarpDestinations[] =
 	"jon_0x",
 	"title",
 };
-uint8_t WarpDestinationsSize = sizeof(WarpDestinations) / sizeof(WarpDestinations[0]);
 
 const char *WarpDescriptions[] = 
 {
@@ -1288,6 +1132,163 @@ const char ButtonInputDisplay[] =
 	'S',
 };
 #endif
+
+uint8_t CheatsManageGlobalWordsOptionsSize 	= sizeof(CheatsManageGlobalWordsOptions) / sizeof(CheatsManageGlobalWordsOptions[0]);
+uint8_t CheatsManageGlobalFlagsOptionsSize 	= sizeof(CheatsManageGlobalFlagsOptions) / sizeof(CheatsManageGlobalFlagsOptions[0]);
+uint8_t CheatsForceItemDropAreasSize 		= sizeof(CheatsForceItemDropAreas) / sizeof(CheatsForceItemDropAreas[0]);
+uint8_t StatsMarioOptionsLinesSize 			= sizeof(StatsMarioOptionsLines) / sizeof(StatsMarioOptionsLines[0]);
+uint8_t MarioStatsSpecialMovesOptionsSize 	= sizeof(MarioStatsSpecialMovesOptions) / sizeof(MarioStatsSpecialMovesOptions[0]);
+uint8_t StatsPartnerOptionsLinesSize 		= sizeof(StatsPartnerOptionsLines) / sizeof(StatsPartnerOptionsLines[0]);
+uint8_t StatsYoshiColorOptionsLinesSize 	= sizeof(StatsYoshiColorOptionsLines) / sizeof(StatsYoshiColorOptionsLines[0]);
+uint8_t StatsFollowerOptionsLinesSize 		= sizeof(StatsFollowerOptionsLines) / sizeof(StatsFollowerOptionsLines[0]);
+uint8_t MemoryModifyLinesSize 				= sizeof(MemoryModifyLines) / sizeof(MemoryModifyLines[0]);
+uint8_t MemoryTypeLinesSize 				= sizeof(MemoryTypeLines) / sizeof(MemoryTypeLines[0]);
+uint8_t BattlesCurrentActorStatsSize 		= sizeof(BattlesCurrentActorStats) / sizeof(BattlesCurrentActorStats[0]);
+uint8_t BattlesStatusesLinesSize 			= sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
+uint8_t OnScreenTimerOptionsSize 			= sizeof(OnScreenTimerOptions) / sizeof(OnScreenTimerOptions[0]);
+uint8_t WarpDestinationsSize 				= sizeof(WarpDestinations) / sizeof(WarpDestinations[0]);
+
+uint8_t CheatsOrder[] = 
+{
+	CHANGE_SEQUENCE,
+	WALK_THROUGH_WALLS,
+	SAVE_COORDINATES,
+	LOAD_COORDINATES,
+	SPAWN_ITEM,
+	SAVE_ANYWHERE,
+	TEXT_STORAGE,
+	TIME_STOP_TEXT_STORAGE,
+	SPEED_UP_MARIO,
+	DISABLE_BATTLES,
+	AUTO_ACTION_COMMANDS,
+	INFINITE_ITEM_USAGE,
+	RELOAD_ROOM,
+	LEVITATE,
+	LOCK_MARIO_HP_TO_MAX,
+	RUN_FROM_BATTLES,
+	DISABLE_MENU_SOUNDS,
+	BOBBERY_EARLY,
+	FORCE_ITEM_DROP,
+	CLEAR_AREA_FLAGS,
+	MANAGE_FLAGS,
+};
+
+uint16_t StatsMarioIcons[] = 
+{
+	#ifdef TTYD_JP
+	395, // Coins
+	415, // HP
+	416, // FP
+	417, // BP
+	415, // Max HP
+	416, // Max FP
+	414, // Level
+	414, // Rank
+	396, // Star Points
+	397, // Star Pieces
+	258, // Shine Sprites
+	407, // Special Moves
+	146, // Star Power
+	146, // Max Star Power
+	382, // Shop Points
+	319, // Piantas Stored
+	319, // Current Piantas
+	#else
+	403, // Coins
+	423, // HP
+	424, // FP
+	425, // BP
+	423, // Max HP
+	424, // Max FP
+	422, // Level
+	422, // Rank
+	404, // Star Points
+	405, // Star Pieces
+	266, // Shine Sprites
+	415, // Special Moves
+	154, // Star Power
+	154, // Max Star Power
+	390, // Shop Points
+	327, // Piantas Stored
+	327, // Current Piantas
+	#endif
+};
+
+uint16_t BattlesStatusesIcons[] = 
+{
+	#ifdef TTYD_JP
+	389, // Sleep
+	390, // Stop
+	371, // Dizzy
+	215, // Poison
+	215, // Poison Amount
+	401, // Confused
+	380, // Electrified
+	404, // Dodgy
+	15, // Burn
+	384, // Frozen
+	367, // Big/Shrink
+	367, // Big/Shrink Amount
+	47, // Attack Up/Down
+	47, // Attack Up/Down Amount
+	48, // Defense Up/Down
+	48, // Defense Up/Down Amount
+	37, // Charged
+	178, // Allergic
+	400, // Invisible
+	195, // Payback
+	418, // Fast
+	382, // Slow
+	378, // HP Regen
+	378, // HP Regen Amount
+	381, // FP Regen
+	381, // FP Regen Amount
+	354, // Defeated Flag
+	#else
+	397, // Sleep
+	398, // Stop
+	379, // Dizzy
+	223, // Poision
+	223, // Poison Amount
+	409, // Confused
+	388, // Electrified
+	412, // Dodgy
+	15, // Burn
+	392, // Frozen
+	375, // Big/Shrink
+	375, // Big/Shrink Amount
+	47, // Attack Up/Down
+	47, // Attack Up/Down Amount
+	48, // Defense Up/Down
+	48, // Defense Up/Down Amount
+	37, // Charged
+	186, // Allergic
+	408, // Invisible
+	203, // Payback
+	426, // Fast
+	390, // Slow
+	386, // HP Regen
+	386, // HP Regen Amount
+	389, // FP Regen
+	389, // FP Regen Amount
+	362, // Defeated Flag
+	#endif
+};
+
+uint8_t DisplaysOrder[] = 
+{
+	ONSCREEN_TIMER,
+	MARIO_COORDINATES,
+	JUMP_STORAGE,
+	BUTTON_INPUT_DISPLAY,
+	GUARD_SUPERGUARD_TIMINGS,
+	ART_ATTACK_HITBOXES,
+	YOSHI_SKIP,
+	PALACE_SKIP,
+	STICK_ANGLE,
+	MARIO_SPEED_XZ,
+	DPAD_OPTIONS_DISPLAY,
+};
 
 struct MenuVars MenuVar;
 struct Menus Menu[27];
