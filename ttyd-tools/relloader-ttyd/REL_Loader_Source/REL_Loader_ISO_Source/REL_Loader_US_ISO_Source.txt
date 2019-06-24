@@ -130,7 +130,7 @@ mflr r14
 finishAsyncFunctionLoop:
 li r3,0 # Memory Card Slot A
 bl 0x2A8090 # CARDGetResultCode -- 0x46B4
-cmpwi r3,-1 # CARD_ERROR_BUSY
+cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
 mtlr r14
 blr

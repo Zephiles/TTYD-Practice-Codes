@@ -149,7 +149,7 @@ ori r3,r28,0xC744 # CARDGetResultCode
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
-cmpwi r3,-1 # CARD_ERROR_BUSY
+cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
 mtlr r14
 blr
