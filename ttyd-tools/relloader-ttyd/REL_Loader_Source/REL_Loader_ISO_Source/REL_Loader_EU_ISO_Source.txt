@@ -11,10 +11,13 @@ lis r31,0x8000
 li r30,0 # Used to check if a REL file is loaded or not
 
 # Check if a Memory Card is present
+checkForMemoryCard:
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
 bl 0x2AF074 # CARDProbeEx -- 0x459C
+cmpwi r3,-1 # CARD_RESULT_BUSY
+beq+ checkForMemoryCard
 cmpwi r3,0 # Make sure nothing is wrong with the card
 bne- exit
 
@@ -24,7 +27,7 @@ lwz r4,0x1C78(r13)
 lwz r4,0x4(r4) # Pointer to the Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
-bl 0x2AF75C # CARDMountAsync -- 0x45BC
+bl 0x2AF754 # CARDMountAsync -- 0x45C4
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- exit
@@ -40,7 +43,7 @@ mr r29,r3
 li r3,0 # Memory Card Slot A
 ori r4,r31,0x40DC # File Name
 mr r5,r29 # Pointer to CardFileInfo
-bl 0x2B0674 # CARDOpen -- 0x45E4
+bl 0x2B066C # CARDOpen -- 0x45EC
 cmpwi r3,0 # Check if something went wrong
 bne- freeCardFileInfo
 
@@ -57,7 +60,7 @@ mr r4,r27 # Pointer to the File Buffer
 li r5,0x200 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
 li r7,0 # Read Callback function (Want to avoid using, so NULL)
-bl 0x2B0DF8 # CARDReadAsync -- 0x4610
+bl 0x2B0DF0 # CARDReadAsync -- 0x4618
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
@@ -84,7 +87,7 @@ mr r4,r27 # Pointer to the File Buffer
 mr r5,r28 # Adjusted File Size
 li r6,0x2200 # Offset in the file to start reading from
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
-bl 0x2B0DB4 # CARDReadAsync -- 0x4654
+bl 0x2B0DAC # CARDReadAsync -- 0x465C
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
@@ -99,7 +102,7 @@ mr r28,r3
 # Link the functions in the REL
 mr r3,r27 # Pointer to the Module
 mr r4,r28 # Pointer to the BSS Area
-bl 0x29A2B8 # OSLink -- 0x4678
+bl 0x29A2B0 # OSLink -- 0x4680
 cmpwi r3,1 # Check if something went wrong
 bne- freeRemainingMemory
 
@@ -116,11 +119,11 @@ b closeCard
 # Function definitions, error handling, etc.
 freeMemory:
 li r3,0 # Heap to use
-b 0x2BB14 # __memFree -- 0x4698
+b 0x2BB0C # __memFree -- 0x46A0
 
 allocateMemory:
 li r3,0 # Heap to use
-b 0x2BB38 # __memAlloc -- 0x46A0
+b 0x2BB30 # __memAlloc -- 0x46A8
 
 finishAsyncFunction:
 cmpwi r3,0 # Check if something went wrong
@@ -129,7 +132,7 @@ mflr r14
 
 finishAsyncFunctionLoop:
 li r3,0 # Memory Card Slot A
-bl 0x2AC10C # CARDGetResultCode -- 0x46B4
+bl 0x2AC104 # CARDGetResultCode -- 0x46BC
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
 mtlr r14
@@ -137,7 +140,7 @@ blr
 
 freeRemainingMemory:
 mr r3,r27 # Pointer to the Module
-bl 0x29A4C0 # OSUnlink -- 0x46CC
+bl 0x29A4B8 # OSUnlink -- 0x46D4
 
 # Free the BSS Area and the File Buffer
 mr r4,r28 # Pointer to the BSS Area
@@ -149,7 +152,7 @@ bl freeMemory
 
 closeCard:
 mr r3,r29 # Pointer to CardFileInfo
-bl 0x2B0690 # CARDClose -- 0x46E4
+bl 0x2B0688 # CARDClose -- 0x46EC
 
 freeCardFileInfo:
 mr r4,r29
@@ -157,7 +160,7 @@ bl freeMemory
 
 # Unmount the Memory Card
 li r3,0 # Memory Card Slot A
-bl 0x2AF860 # CARDUnmount -- 0x46F4
+bl 0x2AF858 # CARDUnmount -- 0x46FC
 
 # Run the REL Prolog if the load was successful
 cmpwi r30,0
@@ -170,4 +173,4 @@ exit:
 li r3,0
 
 # Branch back to hooked function
-b 0x6C9EC # 800710F8 -- 0x470C
+b 0x6C9E4 # 800710F8 -- 0x4714

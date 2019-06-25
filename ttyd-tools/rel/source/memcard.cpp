@@ -24,7 +24,13 @@ int32_t finishAsyncFunction(int32_t returnCode)
 
 int32_t checkForMemoryCard()
 {
-	return gc::card::CARDProbeEx(CARD_SLOT_A, nullptr, nullptr);
+	int32_t ReturnCode;
+	do
+	{
+		ReturnCode = gc::card::CARDProbeEx(CARD_SLOT_A, nullptr, nullptr);
+	}
+	while (ReturnCode == CARD_RESULT_BUSY);
+	return ReturnCode;
 }
 
 int32_t mountCard()

@@ -6,23 +6,25 @@
 lis r31,0x8000
 lis r30,0x8003
 lis r29,0x8029
-lis r28,0x802A
-lis r27,0x802B
+lis r28,0x802B
 
-li r26,0 # Used to check if a REL file is loaded or not
+li r27,0 # Used to check if a REL file is loaded or not
 
 # Check if a Memory Card is present
-ori r3,r28,0xF594 # CARDProbeEx
+checkForMemoryCard:
+subi r3,r28,0xA6C # CARDProbeEx
 mtlr r3
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
 blrl
+cmpwi r3,-1 # CARD_RESULT_BUSY
+beq+ checkForMemoryCard
 cmpwi r3,0 # Make sure nothing is wrong with the card
 bne- exit
 
 # Mount the Memory Card
-ori r3,r28,0xFC9C # CARDMountAsync
+subi r3,r28,0x364 # CARDMountAsync
 mtlr r3
 li r3,0 # Memory Card Slot A
 lwz r4,0x1B98(r13)
@@ -39,14 +41,14 @@ li r4,20
 bl allocateMemory
 
 # Backup the returned address to be used for later
-mr r25,r3
+mr r26,r3
 
 # Open the file
-ori r3,r27,0x0BDC # CARDOpen
+ori r3,r28,0x0BDC # CARDOpen
 mtlr r3
 li r3,0 # Memory Card Slot A
 ori r4,r31,0x40DC # File Name
-mr r5,r25 # Pointer to CardFileInfo
+mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
 bne- freeCardFileInfo
@@ -56,13 +58,13 @@ li r4,0x200 # Bytes to allocate
 bl allocateMemory
 
 # Backup the returned address to be used for later
-mr r23,r3
+mr r24,r3
 
 # Read from the Card
-ori r3,r27,0x138C # CARDReadAsync
+ori r3,r28,0x138C # CARDReadAsync
 mtlr r3
-mr r3,r25 # Pointer to CardFileInfo
-mr r4,r23 # Pointer to the File Buffer
+mr r3,r26 # Pointer to CardFileInfo
+mr r4,r24 # Pointer to the File Buffer
 li r5,0x200 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
 li r7,0 # Read Callback function (Want to avoid using, so NULL)
@@ -72,27 +74,27 @@ cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
 
 # Get the file size and adjust it to be in multiples of 0x200 bytes
-lwz r24,0x40(r23) # File Size
-addi r24,r24,511
-rlwinm r24,r24,0,0,22
+lwz r25,0x40(r24) # File Size
+addi r25,r25,511
+rlwinm r25,r25,0,0,22
 
 # Free the 0x200 bytes from earlier
-mr r4,r23
+mr r4,r24
 bl freeMemory
 
 # Allocate more bytes based on the adjusted file size
-mr r4,r24
+mr r4,r25
 bl allocateMemory
 
 # Backup the returned address to be used for later
-mr r23,r3
+mr r24,r3
 
 # Read the REL Area of the file
-ori r3,r27,0x138C # CARDReadAsync
+ori r3,r28,0x138C # CARDReadAsync
 mtlr r3
-mr r3,r25 # Pointer to CardFileInfo
-mr r4,r23 # Pointer to the File Buffer
-mr r5,r24 # Adjusted File Size
+mr r3,r26 # Pointer to CardFileInfo
+mr r4,r24 # Pointer to the File Buffer
+mr r5,r25 # Adjusted File Size
 li r6,0x2200 # Offset in the file to start reading from
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
 blrl
@@ -101,27 +103,27 @@ cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
 
 # Get the BSS Area size and allocate memory for it
-lwz r4,0x20(r23)
+lwz r4,0x20(r24)
 bl allocateMemory
 
 # Backup the returned address to be used for later
-mr r24,r3
+mr r25,r3
 
 # Link the functions in the REL
 ori r3,r29,0xA8E4 # OSLink
 mtlr r3
-mr r3,r23 # Pointer to the Module
-mr r4,r24 # Pointer to the BSS Area
+mr r3,r24 # Pointer to the Module
+mr r4,r25 # Pointer to the BSS Area
 blrl
 cmpwi r3,1 # Check if something went wrong
 bne- freeRemainingMemory
 
 # Store the BSS Area and the Module
-stw r24,0x414C(r31) # Pointer to the BSS Area
-stw r23,0x4150(r31) # Pointer to the Module
+stw r25,0x414C(r31) # Pointer to the BSS Area
+stw r24,0x4150(r31) # Pointer to the Module
 
 # Get the REL Prolog Pointer
-lwz r26,0x34(r23)
+lwz r27,0x34(r24)
 
 # Done, so close and unmount the card
 b closeCard
@@ -145,7 +147,7 @@ bnelr-
 mflr r14
 
 finishAsyncFunctionLoop:
-ori r3,r28,0xC744 # CARDGetResultCode
+subi r3,r28,0x38BC # CARDGetResultCode
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
@@ -157,37 +159,37 @@ blr
 freeRemainingMemory:
 ori r3,r29,0xAB40 # OSUnlink
 mtlr r3
-mr r3,r23 # Pointer to the Module
+mr r3,r24 # Pointer to the Module
 blrl
 
 # Free the BSS Area and the File Buffer
-mr r4,r24 # Pointer to the BSS Area
+mr r4,r25 # Pointer to the BSS Area
 bl freeMemory
 
 freeCurrentMemoryArea:
-mr r4,r23 # Pointer to the File Buffer or the 0x200 Bytes Buffer
+mr r4,r24 # Pointer to the File Buffer or the 0x200 Bytes Buffer
 bl freeMemory
 
 closeCard:
-ori r3,r27,0x0CF8 # CARDClose
+ori r3,r28,0x0CF8 # CARDClose
 mtlr r3
-mr r3,r25 # Pointer to CardFileInfo
+mr r3,r26 # Pointer to CardFileInfo
 blrl
 
 freeCardFileInfo:
-mr r4,r25
+mr r4,r26
 bl freeMemory
 
 # Unmount the Memory Card
-ori r3,r28,0xFED8 # CARDUnmount
+subi r3,r28,0x128 # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
 
 # Run the REL Prolog if the load was successful
-cmpwi r26,0
+cmpwi r27,0
 beq- exit
-mtlr r26
+mtlr r27
 blrl
 
 exit:
