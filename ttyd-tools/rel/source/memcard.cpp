@@ -324,10 +324,13 @@ int32_t writeSettings(const char *settingsDescription,
 	char *MiscData = new char[FileSizeAdjusted];
 	clearMemory(MiscData, FileSizeAdjusted);
 	
-	// Copy the name, description, and file size into the memory
-	copyString(&MiscData[0], "Paper Mario");
-	copyString(&MiscData[0x20], settingsDescription);
-	*reinterpret_cast<uint32_t *>(&MiscData[0x40]) = FileSize;
+	// Set up the struct to hold the name, description, and file size to store
+	SaveFileDecriptionInfo *SaveFileInfo = reinterpret_cast<SaveFileDecriptionInfo *>(&MiscData[0]);
+	
+	// Copy the name, description, and file size
+	copyString(SaveFileInfo->Description1, "Paper Mario");
+	copyString(SaveFileInfo->Description2, settingsDescription);
+	SaveFileInfo->FileSize = FileSize;
 	
 	// Set up the struct to hold the variables to store
 	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);

@@ -631,6 +631,13 @@ struct SettingsStruct
 	MemoryWatchStruct MemoryWatchSettings[60];
 } __attribute__((__packed__));
 
+struct SaveFileDecriptionInfo
+{
+	char Description1[32];
+	char Description2[32];
+	uint32_t FileSize;
+} __attribute__((__packed__));
+
 struct WarpByIndexStruct
 {
 	bool RunIndexWarpCode;
