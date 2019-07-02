@@ -620,7 +620,7 @@ struct MemoryWatchStruct
 	bool Display;
 	int32_t PosX;
 	int32_t PosY;
-};
+} __attribute__((__packed__));
 
 struct SettingsStruct
 {
@@ -629,7 +629,7 @@ struct SettingsStruct
 	bool DisplaysActive[100];
 	uint16_t DisplaysButtonCombos[100];
 	MemoryWatchStruct MemoryWatchSettings[60];
-};
+} __attribute__((__packed__));
 
 struct WarpByIndexStruct
 {
