@@ -1,10 +1,10 @@
-#include "mod.h"
 #include "codes.h"
+#include "global.h"
 #include "commonfunctions.h"
+#include "mod.h"
+#include "menufunctions.h"
 #include "draw.h"
 #include "patch.h"
-#include "menufunctions.h"
-#include "global.h"
 
 #include <ttyd/item_data.h>
 #include <ttyd/system.h>

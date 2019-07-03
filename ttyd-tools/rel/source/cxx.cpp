@@ -1,5 +1,7 @@
 #include <ttyd/memory.h>
 
+#include <cstddef>
+
 void *operator new(std::size_t size)
 {
 	return ttyd::memory::__memAlloc(0, size);

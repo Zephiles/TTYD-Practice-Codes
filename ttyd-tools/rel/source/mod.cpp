@@ -17,8 +17,6 @@
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
 
-#include <cstdio>
-
 namespace mod {
 
 Mod *gMod = nullptr;

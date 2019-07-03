@@ -8,9 +8,9 @@ namespace ttyd::seq_logo {
 
 extern "C" {
 
-void seq_logoInit(seqdrv::SeqInfo *info);
-void seq_logoExit(seqdrv::SeqInfo *info);
-void seq_logoMain(seqdrv::SeqInfo *info);
+void seq_logoInit(ttyd::seqdrv::SeqInfo *info);
+void seq_logoExit(ttyd::seqdrv::SeqInfo *info);
+void seq_logoMain(ttyd::seqdrv::SeqInfo *info);
 
 }
 

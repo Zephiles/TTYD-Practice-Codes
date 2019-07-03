@@ -1,11 +1,11 @@
-#include "mod.h"
-#include "menu.h"
+#include "global.h"
 #include "commonfunctions.h"
 #include "menufunctions.h"
-#include "codes.h"
-#include "global.h"
 #include "draw.h"
+#include "mod.h"
 #include "patch.h"
+#include "menu.h"
+#include "codes.h"
 
 #include <gc/OSCache.h>
 #include <gc/OSAlloc.h>

@@ -1,10 +1,9 @@
-#include "mod.h"
 #include "draw.h"
 #include "global.h"
-#include "menufunctions.h"
 #include "commonfunctions.h"
-#include "codes.h"
+#include "menufunctions.h"
 #include "memorywatch.h"
+#include "codes.h"
 
 #include <gc/gx.h>
 #include <gc/ppc.h>

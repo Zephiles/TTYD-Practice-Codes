@@ -2,21 +2,17 @@
 #include "menufunctions.h"
 #include "global.h"
 #include "commonfunctions.h"
-#include "draw.h"
-#include "codes.h"
-#include "mod.h"
 #include "memcard.h"
 #include "memorywatch.h"
+#include "codes.h"
+#include "draw.h"
 
 #include <gc/card.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_party.h>
-#include <ttyd/mario_party.h>
 #include <ttyd/win_main.h>
-
-#include <cstdio>
 
 namespace mod {
 

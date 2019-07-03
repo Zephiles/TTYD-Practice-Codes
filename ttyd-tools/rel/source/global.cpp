@@ -1,8 +1,6 @@
 #include "global.h"
 #include "memcard.h"
 
-#include <cstdio>
-
 namespace mod {
 
 const char *VersionNumber = "v3.0.31";

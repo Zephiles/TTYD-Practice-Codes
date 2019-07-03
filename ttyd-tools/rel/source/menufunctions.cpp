@@ -1,8 +1,8 @@
 #include "menufunctions.h"
 #include "global.h"
 #include "commonfunctions.h"
-#include "memorywatch.h"
 #include "codes.h"
+#include "memorywatch.h"
 
 #include <ttyd/win_main.h>
 #include <ttyd/win_item.h>

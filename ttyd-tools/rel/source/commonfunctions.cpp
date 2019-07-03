@@ -1,5 +1,4 @@
 #include "commonfunctions.h"
-#include "global.h"
 
 #include <gc/OSCache.h>
 #include <ttyd/system.h>
@@ -13,7 +12,6 @@
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
 
-#include <cstdio>
 #include <cstring>
 
 namespace mod {

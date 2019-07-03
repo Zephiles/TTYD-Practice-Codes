@@ -8,12 +8,12 @@ extern "C" {
 
 // DCEnable
 // DCInvalidateRange
-void DCFlushRange(void *startAddress, uint32_t numberOfBytesToFlush);
+void DCFlushRange(void *startAddr, uint32_t nBytes);
 // DCStoreRange
 // DCFlushRangeNoSync
 // DCStoreRangeNoSync
 // DCZeroRange
-void ICInvalidateRange(void *startAddress, uint32_t numberOfBytesToInvalidate);
+void ICInvalidateRange(void *startAddr, uint32_t nBytes);
 // ICFlashInvalidate
 // ICEnable
 // __LCEnable

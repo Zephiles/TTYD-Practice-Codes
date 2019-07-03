@@ -5,8 +5,6 @@
 #include <gc/card.h>
 #include <ttyd/cardmgr.h>
 
-#include <cstdio>
-
 namespace mod {
 
 int32_t finishAsyncFunction(int32_t returnCode)
