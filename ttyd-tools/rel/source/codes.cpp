@@ -272,8 +272,8 @@ void saveAnywhere()
 				// Take away control from the player and start the Save script
 				setSystemLevel(SystemLevel + 1);
 				
-				SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(
-					ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0) + 0x15C);
+				uint32_t SaveScriptEvtEntry = reinterpret_cast<uint32_t>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0));
+				SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(SaveScriptEvtEntry + 0x15C);
 				
 				SaveAnywhere.ScriptIsRunning = true;
 				

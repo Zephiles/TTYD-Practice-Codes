@@ -36,8 +36,8 @@ bool evtCheckID(uint32_t threadID);
 // evtRestart
 // evtBrotherEntry
 // evtChildEntry
-uint32_t evtEntryType(void *event, uint32_t unk1, uint32_t unk2, uint32_t unk3);
-// evtEntry
+void *evtEntryType(void *event, uint8_t priority, uint32_t flags, uint32_t type);
+void *evtEntry(void *event, uint8_t priority, uint32_t flags);
 // evtEntryRunCheck
 // evtmgrReInit
 // evtmgrInit

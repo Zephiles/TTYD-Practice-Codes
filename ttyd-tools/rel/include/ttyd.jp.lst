@@ -349,7 +349,7 @@
 // 80036568:evtBrotherEntry
 // 80036850:evtChildEntry
 80036B84:evtEntryType
-// 80036E10:evtEntry
+80036E10:evtEntry
 // 8003709C:evtEntryRunCheck
 // 80037114:evtmgrReInit
 // 80037180:evtmgrInit
