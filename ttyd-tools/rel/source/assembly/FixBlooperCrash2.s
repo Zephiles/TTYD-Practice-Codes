@@ -39,5 +39,5 @@ lmw %r28,0x20(%sp)
 li %r3,2
 lwz %r0,0x34(%sp)
 mtlr %r0
-addi %sp,%sp,48
+addi %sp,%sp,0x30
 blr
