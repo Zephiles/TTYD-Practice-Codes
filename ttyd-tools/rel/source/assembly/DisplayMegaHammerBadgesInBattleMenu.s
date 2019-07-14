@@ -1,5 +1,4 @@
 .global StartDisplayMegaHammerBadgesBattleMenu
-.global BranchBackDisplayMegaHammerBadgesBattleMenu
 
 StartDisplayMegaHammerBadgesBattleMenu:
 stwu %sp,-0x10(%sp)
