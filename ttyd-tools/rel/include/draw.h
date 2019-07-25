@@ -58,13 +58,11 @@ void drawMemoryChangeAddressList();
 void drawBattlesActorsList();
 void drawBattlesStatusesList();
 
-void drawErrorWindow(const char *text, int32_t textPosX, int32_t textPosY, int32_t windowWidth);
-void drawErrorMessage(const char *line);
+void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY, int32_t windowWidth);
+void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t textPosY);
 void drawResolveFadesMessage();
-void drawWarpsErrorMessage();
-void drawPartnerFollowerMessage(const char *message);
-void drawPartnerErrorMessage();
-void drawFollowersErrorMessage();
+void drawWarpsErrorMessage(int32_t textPosY);
+void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner);
 void drawNotInBattleErrorMessage();
 void drawConfirmationWindow(const char *message);
 

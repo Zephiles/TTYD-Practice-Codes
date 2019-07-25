@@ -2912,14 +2912,18 @@ void drawMenu()
 						{
 							// Inventory is currently full
 							const char *CurrentLine = "The inventory is currently full.";
-							drawErrorMessage(CurrentLine);
+							int32_t TextPosX = -130;
+							int32_t TextPosY = 40;
+							drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 							break;
 						}
 						case INVENTORY_EMPTY:
 						{
 							// Inventory is currently empty
 							const char *CurrentLine = "The inventory is currently empty.";
-							drawErrorMessage(CurrentLine);
+							int32_t TextPosX = -130;
+							int32_t TextPosY = 40;
+							drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 							break;
 						}
 						default:
@@ -2949,7 +2953,9 @@ void drawMenu()
 						{
 							// Inventory is currently empty
 							const char *CurrentLine = "The inventory is currently empty.";
-							drawErrorMessage(CurrentLine);
+							int32_t TextPosX = -130;
+							int32_t TextPosY = 40;
+							drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 							break;
 						}
 						default:
@@ -3160,7 +3166,8 @@ void drawMenu()
 				uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
 				if (MenuVar.CurrentMenuOption == (FirstFreeSlot + AdditionalOptions))
 				{
-					drawPartnerErrorMessage();
+					int32_t PosY = 10;
+					drawPartnerFollowerMessage(PosY, true);
 				}
 			}
 			break;
@@ -3183,7 +3190,8 @@ void drawMenu()
 				(tempSelectedOption == BRING_OUT_FOLLOWER)) && 
 					(tempFunctionReturnCode < 0))
 			{
-				drawFollowersErrorMessage();
+				int32_t PosY = 50;
+				drawPartnerFollowerMessage(PosY, false);
 			}
 			break;
 		}
@@ -3211,13 +3219,17 @@ void drawMenu()
 				case ALL_SLOTS_EMPTY:
 				{
 					const char *CurrentLine = "All slots are currently empty.";
-					drawErrorMessage(CurrentLine);
+					int32_t TextPosX = -130;
+					int32_t TextPosY = 80;
+					drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 					break;
 				}
 				case NO_SLOTS_LEFT:
 				{
 					const char *CurrentLine = "There are no more free slots.";
-					drawErrorMessage(CurrentLine);
+					int32_t TextPosX = -130;
+					int32_t TextPosY = 80;
+					drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 					break;
 				}
 				default:
@@ -3427,7 +3439,8 @@ void drawMenu()
 			if ((tempSelectedOption == SELECT_WARP) && 
 				(tempFunctionReturnCode < 0))
 			{
-				drawWarpsErrorMessage();
+				int32_t PosY = -90;
+				drawWarpsErrorMessage(PosY);
 			}
 			break;
 		}
@@ -3451,7 +3464,8 @@ void drawMenu()
 			// Draw the error message if the player tried to warp while either not in the game or in a battle
 			if (tempFunctionReturnCode < 0)
 			{
-				drawWarpsErrorMessage();
+				int32_t PosY = -50;
+				drawWarpsErrorMessage(PosY);
 			}
 			break;
 		}

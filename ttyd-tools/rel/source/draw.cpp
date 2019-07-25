@@ -2070,7 +2070,7 @@ void drawBattlesStatusesList()
 	}
 }
 
-void drawErrorWindow(const char *text, int32_t textPosX, int32_t textPosY, int32_t windowWidth)
+void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY, int32_t windowWidth)
 {
 	// int32_t TextPosX 	= -200;
 	// int32_t TextPosY 	= 60;
@@ -2081,11 +2081,11 @@ void drawErrorWindow(const char *text, int32_t textPosX, int32_t textPosY, int32
 	uint32_t WindowColor 	= 0x151515F4;
 	int32_t WindowCurve 	= 20;
 	
-	drawTextWithWindow(text, textPosX, textPosY, Alpha, TextColor, 
+	drawTextWithWindow(message, textPosX, textPosY, Alpha, TextColor, 
 		Scale, windowWidth, WindowColor, WindowCurve);
 }
 
-void drawErrorMessage(const char *line)
+void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t textPosY)
 {
 	uint32_t tempTimer = MenuVar.Timer;
 	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
@@ -2096,12 +2096,12 @@ void drawErrorMessage(const char *line)
 			return;
 		}
 		
-		int32_t TextPosX 		= -130;
-		int32_t TextPosY 		= 60;
+		// int32_t TextPosX 	= -130;
+		// int32_t TextPosY 	= 60;
 		float Scale 			= 0.6;
-		int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(line, Scale));
+		int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(message, Scale));
 		
-		drawErrorWindow(line, TextPosX, TextPosY, WindowWidth);
+		drawErrorWindow(message, textPosX, textPosY, WindowWidth);
 	}
 	else
 	{
@@ -2109,7 +2109,7 @@ void drawErrorMessage(const char *line)
 	}
 }
 
-void drawPartnerFollowerMessage(const char *message)
+void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
 {
 	uint32_t tempTimer = MenuVar.Timer;
 	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
@@ -2119,26 +2119,27 @@ void drawPartnerFollowerMessage(const char *message)
 			return;
 		}
 		
+		// Get the text to use
+		const char *PartnerOrFollowerText;
+		if (drawForPartner)
+		{
+			PartnerOrFollowerText = "partner";
+		}
+		else
+		{
+			PartnerOrFollowerText = "follower";
+		}
+		
+		char *tempDisplayBuffer = DisplayBuffer;
+		sprintf(tempDisplayBuffer,
+			"To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
+			PartnerOrFollowerText);
+		
 		// Print error text if currently trying to spawn a partner/follower when not able to
-		int32_t PosX 			= -172;
-		int32_t PosY 			= 60;
+		int32_t TextPosX 		= -172;
 		int32_t WindowWidth 	= 375;
-		drawErrorWindow(message, PosX, PosY, WindowWidth);
+		drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
 	}
-}
-
-void drawPartnerErrorMessage()
-{
-	// Print error text if currently trying to spawn a partner when not able to
-	const char *CurrentLine = "To spawn a partner, you must have a file\nloaded and not be in a battle nor a\nscreen transition.";
-	drawPartnerFollowerMessage(CurrentLine);
-}
-
-void drawFollowersErrorMessage()
-{
-	// Print error text if currently trying to spawn a follower when not able to
-	const char *CurrentLine = "To spawn a follower, you must have a file\nloaded and not be in a battle nor a\nscreen transition.";
-	drawPartnerFollowerMessage(CurrentLine);
 }
 
 void drawNotInBattleErrorMessage()
@@ -2153,7 +2154,7 @@ void drawNotInBattleErrorMessage()
 		
 		const char *CurrentLine = "You must be in a battle to use the Battles menu.";
 		int32_t PosX 			= -205;
-		int32_t PosY 			= 60;
+		int32_t PosY 			= 0;
 		int32_t WindowWidth 	= 440;
 		drawErrorWindow(CurrentLine, PosX, PosY, WindowWidth);
 	}
@@ -2209,7 +2210,7 @@ void drawResolveFadesMessage()
 	}
 }
 
-void drawWarpsErrorMessage()
+void drawWarpsErrorMessage(int32_t textPosY)
 {
 	uint32_t tempTimer = MenuVar.Timer;
 	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
@@ -2221,10 +2222,9 @@ void drawWarpsErrorMessage()
 		
 		// Print error text if currently trying to warp when not able to
 		const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
-		int32_t PosX 			= -195;
-		int32_t PosY 			= 60;
+		int32_t TextPosX 		= -195;
 		int32_t WindowWidth 	= 415;
-		drawErrorWindow(CurrentLine, PosX, PosY, WindowWidth);
+		drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
 	}
 }
 
@@ -2812,7 +2812,9 @@ void drawAddByIcon(uint32_t currentMenu)
 	else
 	{
 		const char *CurrentLine = "The inventory is currently full.";
-		drawErrorMessage(CurrentLine);
+		int32_t TextPosX = -130;
+		int32_t TextPosY = 40;
+		drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 	}
 }
 
@@ -2825,7 +2827,9 @@ void drawAddById(uint32_t currentMenu)
 	else
 	{
 		const char *CurrentLine = "The inventory is currently full.";
-		drawErrorMessage(CurrentLine);
+		int32_t TextPosX = -130;
+		int32_t TextPosY = 40;
+		drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
 	}
 }
 
