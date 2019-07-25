@@ -33,6 +33,7 @@ uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu);
 int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy);
 void setAdjustableValueToMax(uint32_t currentMenu);
 void setAdjustableValueToMin(uint32_t currentMenu);
+
 uint32_t adjustableValueButtonControls(uint32_t currentMenu);
 uint32_t addByIconButtonControls(uint32_t currentMenu);
 uint32_t memoryAddressTypeButtonControls();
@@ -40,9 +41,11 @@ uint32_t memoryChangeWatchPositionButtonControls();
 uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
+
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);
 void adjustAddByIdValue(int32_t value, uint32_t currentMenu);
+
 uint32_t getMarioStatsValueOffset(uint32_t currentMenuOption);
 void setMarioStatsValue(uint32_t currentMenuOption);
 void setPartnerStatsValue(uint32_t currentMenuOption);
@@ -51,11 +54,14 @@ void setBattlesActorStatusValue(uint32_t currentMenuOption);
 uint8_t getSelectedOptionPartnerValue();
 void *getPartnerEnabledAddress();
 bool checkIfPartnerOutSelected();
+
 void setAddByIdValue(void *address);
 void setAddByIconValue(void *address);
 void duplicateCurrentItem(void *address);
 void deleteItem();
 int32_t changeItem();
+
+int32_t resolveFade(uint32_t index);
 ttyd::evtmgr::EvtWork *getCurrentEventWork();
 int32_t getGW(uint32_t gw);
 void setGW(uint32_t gw, uint32_t value);
@@ -77,6 +83,7 @@ uint32_t checkButtonSingleFrame();
 // void correctPageSingleColumn(uint32_t button, uint8_t &currentPage)
 void default_DPAD_Actions(uint32_t button);
 void adjustMenuNoPageEdit(uint32_t button);
+void adjustCheatsResolveFadesSelection(uint32_t button);
 void adjustCheatsManageFlagsMainMenu(uint32_t button);
 void adjustMenuSelectionInventory(uint32_t button);
 void adjustCheatClearAreaFlagSelection(uint32_t button);

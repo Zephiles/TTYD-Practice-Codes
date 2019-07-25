@@ -16,6 +16,7 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/battle.h>
+#include <ttyd/fadedrv.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/system.h>
 #include <ttyd/mapdata.h>
@@ -770,7 +771,7 @@ bool checkForClosingErrorMessage()
 		
 		if (tempTimer == 0)
 		{
-			MenuVar.FunctionReturnCode 	= 0;
+			MenuVar.FunctionReturnCode = 0;
 			return true;
 		}
 	}
@@ -2657,6 +2658,178 @@ int32_t changeItem()
 	return 0;
 }
 
+int32_t resolveFade(uint32_t index)
+{
+	// Check if the current fade is active
+	ttyd::fadedrv::FadeEntry *FadeEntry = &ttyd::fadedrv::gpFadeWork->entry[index];
+	
+	bool FadeIsActive = FadeEntry->flags & (1 << 0); // Check if 0 bit is active
+	if (!FadeIsActive)
+	{
+		return FADE_NOT_ACTIVE;
+	}
+	
+	// Check if the selected fade needs to be resolved
+	ttyd::fadedrv::FadeType Type = FadeEntry->fadeType;
+	
+	switch (Type)
+	{
+		case ttyd::fadedrv::FadeType::kBlackMarioHeadFadeOut:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackMarioHeadFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackCircleFadeOut:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackCircleFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackCircleFadeOut2:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackCircleFadeIn2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackCircleFadeOut3:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackCircleFadeIn3;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackFadeOut:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackFadeOut2:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackFadeIn2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBlackStatic:
+		case ttyd::fadedrv::FadeType::kBlackFadeOut3:
+		{
+			Type = ttyd::fadedrv::FadeType::kBlackFadeIn3;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kWhiteFadeOut:
+		{
+			Type = ttyd::fadedrv::FadeType::kWhiteFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kWhiteFadeOut2:
+		{
+			Type = ttyd::fadedrv::FadeType::kWhiteFadeIn2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kWhiteFadeOut3:
+		{
+			Type = ttyd::fadedrv::FadeType::kWhiteFadeIn3;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kCurtainPullDown:
+		{
+			Type = ttyd::fadedrv::FadeType::kCurtainPullUp;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kCurtainPullLeft:
+		{
+			Type = ttyd::fadedrv::FadeType::kCurtainPullRight;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kCurtainStatic:
+		case ttyd::fadedrv::FadeType::kCurtainPullLeft2:
+		{
+			Type = ttyd::fadedrv::FadeType::kCurtainPullRight2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainClose:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainClosedStatic:
+		{
+			Type = ttyd::fadedrv::FadeType::kTitleScreenCurtainOpen;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainOpen:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainOpenStatic:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainAppearGradual:
+		{
+			Type = ttyd::fadedrv::FadeType::kTitleScreenCurtainLeaveGradual;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainOpen2:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainOpenStatic2:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainAppearGradual2:
+		{
+			Type = ttyd::fadedrv::FadeType::kTitleScreenCurtainLeaveGradual2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainClosed2:
+		case ttyd::fadedrv::FadeType::kTitleScreenCurtainClosedStatic2:
+		{
+			Type = ttyd::fadedrv::FadeType::kTitleScreenCurtainOpen2;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kEnterPipeFromUp:
+		{
+			Type = ttyd::fadedrv::FadeType::kExitPipeFromUp;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kEnterPipeFromDown:
+		{
+			Type = ttyd::fadedrv::FadeType::kExitPipeFromDown;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kEnterPipeFromLeft:
+		{
+			Type = ttyd::fadedrv::FadeType::kExitPipeFromLeft;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kEnterPipeFromRight:
+		{
+			Type = ttyd::fadedrv::FadeType::kExitPipeFromRight;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kFreezeScreen:
+		{
+			Type = ttyd::fadedrv::FadeType::kUnfreezeScreenPullTopRight;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kMarioHeadFadeOut:
+		case ttyd::fadedrv::FadeType::kMarioHeadStaticBlinking:
+		{
+			Type = ttyd::fadedrv::FadeType::kMarioHeadFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kPeachHeadFadeOut:
+		case ttyd::fadedrv::FadeType::kPeachHeadStatic:
+		{
+			Type = ttyd::fadedrv::FadeType::kPeachHeadFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kBowserHeadFadeOut:
+		case ttyd::fadedrv::FadeType::kBowserHeadStatic:
+		{
+			Type = ttyd::fadedrv::FadeType::kBowserHeadFadeIn;
+			break;
+		}
+		case ttyd::fadedrv::FadeType::kCurtainPullLeft3:
+		{
+			Type = ttyd::fadedrv::FadeType::kCurtainPullRight3;
+			break;
+		}
+		default:
+		{
+			// The selected fade does not need to be resolved
+			return FADE_DONT_RESOLVE;
+		}
+	}
+	
+	// Resolve the selected fade
+	uint32_t Color = 0x000000FF;
+	int32_t Duration = 0;
+	
+	ttyd::fadedrv::fadeEntry(Type, Duration, reinterpret_cast<uint8_t *>(&Color));
+	return FADE_RESOLVE_SUCCESS;
+}
+
 ttyd::evtmgr::EvtWork *getCurrentEventWork()
 {
 	return ttyd::evtmgr::evtGetWork();
@@ -3443,6 +3616,19 @@ void adjustMenuNoPageEdit(uint32_t button)
 	uint32_t tempTotalMenuColumns 	= Menu[tempCurrentMenu].TotalMenuColumns;
 	uint32_t MaxOptionsPerPage 		= tempColumnSplitAmount * tempTotalMenuColumns;
 	uint32_t MaxOptionsPerRow 		= tempTotalMenuColumns;
+	uint8_t tempPage[1];
+	tempPage[0] 					= 0;
+	
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		tempPage[0], tempTotalMenuOptions, MaxOptionsPerPage, 
+			MaxOptionsPerRow, false);
+}
+
+void adjustCheatsResolveFadesSelection(uint32_t button)
+{
+	uint32_t tempTotalMenuOptions 	= 5;
+	uint32_t MaxOptionsPerPage 		= tempTotalMenuOptions;
+	uint32_t MaxOptionsPerRow 		= 1;
 	uint8_t tempPage[1];
 	tempPage[0] 					= 0;
 	

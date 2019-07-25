@@ -58,8 +58,9 @@ void drawMemoryChangeAddressList();
 void drawBattlesActorsList();
 void drawBattlesStatusesList();
 
-void drawErrorWindow(const char *text, int32_t textPosX, int32_t windowWidth);
+void drawErrorWindow(const char *text, int32_t textPosX, int32_t textPosY, int32_t windowWidth);
 void drawErrorMessage(const char *line);
+void drawResolveFadesMessage();
 void drawWarpsErrorMessage();
 void drawPartnerFollowerMessage(const char *message);
 void drawPartnerErrorMessage();
@@ -98,6 +99,7 @@ void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description);
 void drawChangeButtonCombo(uint16_t &currentButtonCombo);
 void drawCheatsForcedDropItem();
+void drawCheatsResolveFades();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
 void drawWarpsOptions();

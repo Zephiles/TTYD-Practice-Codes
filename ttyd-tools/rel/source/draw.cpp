@@ -18,6 +18,7 @@
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/system.h>
 #include <ttyd/event.h>
+#include <ttyd/fadedrv.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/mario.h>
 #include <ttyd/itemdrv.h>
@@ -2069,10 +2070,10 @@ void drawBattlesStatusesList()
 	}
 }
 
-void drawErrorWindow(const char *text, int32_t textPosX, int32_t windowWidth)
+void drawErrorWindow(const char *text, int32_t textPosX, int32_t textPosY, int32_t windowWidth)
 {
-	// int32_t TextPosX 		= -200;
-	int32_t TextPosY 		= 60;
+	// int32_t TextPosX 	= -200;
+	// int32_t TextPosY 	= 60;
 	uint8_t Alpha 			= 0xFF;
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	float Scale 			= 0.6;
@@ -2080,7 +2081,7 @@ void drawErrorWindow(const char *text, int32_t textPosX, int32_t windowWidth)
 	uint32_t WindowColor 	= 0x151515F4;
 	int32_t WindowCurve 	= 20;
 	
-	drawTextWithWindow(text, textPosX, TextPosY, Alpha, TextColor, 
+	drawTextWithWindow(text, textPosX, textPosY, Alpha, TextColor, 
 		Scale, windowWidth, WindowColor, WindowCurve);
 }
 
@@ -2096,10 +2097,11 @@ void drawErrorMessage(const char *line)
 		}
 		
 		int32_t TextPosX 		= -130;
+		int32_t TextPosY 		= 60;
 		float Scale 			= 0.6;
 		int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(line, Scale));
 		
-		drawErrorWindow(line, TextPosX, WindowWidth);
+		drawErrorWindow(line, TextPosX, TextPosY, WindowWidth);
 	}
 	else
 	{
@@ -2119,8 +2121,9 @@ void drawPartnerFollowerMessage(const char *message)
 		
 		// Print error text if currently trying to spawn a partner/follower when not able to
 		int32_t PosX 			= -172;
+		int32_t PosY 			= 60;
 		int32_t WindowWidth 	= 375;
-		drawErrorWindow(message, PosX, WindowWidth);
+		drawErrorWindow(message, PosX, PosY, WindowWidth);
 	}
 }
 
@@ -2150,8 +2153,59 @@ void drawNotInBattleErrorMessage()
 		
 		const char *CurrentLine = "You must be in a battle to use the Battles menu.";
 		int32_t PosX 			= -205;
+		int32_t PosY 			= 60;
 		int32_t WindowWidth 	= 440;
-		drawErrorWindow(CurrentLine, PosX, WindowWidth);
+		drawErrorWindow(CurrentLine, PosX, PosY, WindowWidth);
+	}
+}
+
+void drawResolveFadesMessage()
+{
+	int32_t tempFunctionReturnCode = MenuVar.FunctionReturnCode;
+	uint32_t tempTimer = MenuVar.Timer;
+	
+	if ((tempFunctionReturnCode != 0) && (tempTimer > 0))
+	{
+		if (checkForClosingErrorMessage())
+		{
+			return;
+		}
+		
+		int32_t TextPosX;
+		int32_t WindowWidth;
+		const char *Message;
+		
+		switch (tempFunctionReturnCode)
+		{
+			case FADE_RESOLVE_SUCCESS:
+			{
+				TextPosX = -188;
+				WindowWidth = 404;
+				Message = "The selected fade was successfully resolved.";
+				break;
+			}
+			case FADE_NOT_ACTIVE:
+			{
+				TextPosX = -135;
+				WindowWidth = 299;
+				Message = "The selected fade is not active.";
+				break;
+			}
+			case FADE_DONT_RESOLVE:
+			{
+				TextPosX = -205;
+				WindowWidth = 440;
+				Message = "The selected fade does not need to be resolved.";
+				break;
+			}
+			default:
+			{
+				return;
+			}
+		}
+		
+		int32_t TextPosY = 0;
+		drawErrorWindow(Message, TextPosX, TextPosY, WindowWidth);
 	}
 }
 
@@ -2168,8 +2222,9 @@ void drawWarpsErrorMessage()
 		// Print error text if currently trying to warp when not able to
 		const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
 		int32_t PosX 			= -195;
+		int32_t PosY 			= 60;
 		int32_t WindowWidth 	= 415;
-		drawErrorWindow(CurrentLine, PosX, WindowWidth);
+		drawErrorWindow(CurrentLine, PosX, PosY, WindowWidth);
 	}
 }
 
@@ -3127,6 +3182,71 @@ void drawCheatsForcedDropItem()
 	const char *ItemName = getItemName(tempForcedNPCItemDrop);
 	
 	drawText(ItemName, PosX, PosY, Alpha, Color, Scale);
+}
+
+void drawCheatsResolveFades()
+{
+	// Draw the text explaining how to clear a fade
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 180;
+	float Scale = 0.6;
+	
+	const int32_t PosYStart = PosY;
+	
+	const char *ExplainText = "Select a fade to resolve, if applicable.";
+	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 40;
+	
+	// Draw each fade entry
+	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+	char *tempDisplayBuffer = DisplayBuffer;
+	uint32_t MaxFadeEntries = 5;
+	
+	// Draw each slot number
+	for (uint32_t i = 0; i < MaxFadeEntries; i++)
+	{
+		sprintf(tempDisplayBuffer,
+			"Slot %" PRIu32 ":",
+			i + 1);
+		
+		bool CurrentOptionCheck = tempCurrentMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
+	// Draw each value
+	ttyd::fadedrv::FadeWork *FadeWork = ttyd::fadedrv::gpFadeWork;
+	PosX += 60;
+	PosY = PosYStart - 40;
+	
+	for (uint32_t i = 0; i < MaxFadeEntries; i++)
+	{
+		// Check if the current fade is active
+		ttyd::fadedrv::FadeEntry *FadeEntry = &FadeWork->entry[i];
+		bool FadeIsActive = FadeEntry->flags & (1 << 0); // Check if 0 bit is active
+		
+		if (FadeIsActive)
+		{
+			sprintf(tempDisplayBuffer,
+				"%" PRId32,
+				static_cast<int32_t>(FadeEntry->fadeType));
+			
+			Color = 0xFFFFFFFF;
+			drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		}
+		else
+		{
+			const char *String = "None";
+			Color = 0x4B4B4BFF;
+			drawText(String, PosX, PosY, Alpha, Color, Scale);
+		}
+		
+		PosY -= 20;
+	}
 }
 
 void drawCheatsManageFlagsMain(uint32_t currentMenu)

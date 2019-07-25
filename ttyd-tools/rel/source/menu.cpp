@@ -546,6 +546,11 @@ void menuCheckButton()
 							MenuToEnter = CHEATS_NPC_FORCE_DROP;
 							break;
 						}
+						case RESOLVE_FADES:
+						{
+							MenuToEnter = CHEATS_RESOLVE_FADES;
+							break;
+						}
 						case MANAGE_FLAGS:
 						{
 							MenuToEnter = CHEATS_MANAGE_FLAGS;
@@ -736,6 +741,39 @@ void menuCheckButton()
 						MenuVar.MenuSelectedOption = 0;
 						enterPreviousMenu();
 					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_RESOLVE_FADES:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustCheatsResolveFadesSelection(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					// Resolve the selected fade
+					int32_t ReturnCode = resolveFade(tempCurrentMenuOption);
+					MenuVar.FunctionReturnCode = static_cast<int8_t>(ReturnCode);
+					MenuVar.Timer = secondsToFrames(3);
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
+					MenuVar.FunctionReturnCode = 0;
+					MenuVar.MenuSelectedOption = 0;
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -3021,6 +3059,17 @@ void drawMenu()
 			if (tempMenuSelectionStates == ITEM_DROP_CHANGE_BY_ID)
 			{
 				drawAdjustableValue(true, tempCurrentMenu);
+			}
+			break;
+		}
+		case CHEATS_RESOLVE_FADES:
+		{
+			// Draw the text for the options
+			drawCheatsResolveFades();
+			
+			if (tempFunctionReturnCode != 0)
+			{
+				drawResolveFadesMessage();
 			}
 			break;
 		}

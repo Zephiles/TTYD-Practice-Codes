@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.31";
+const char *VersionNumber = "v3.0.32";
 
 const char *RootLines[] = 
 {
@@ -56,6 +56,7 @@ const char *CheatsLines[] =
 	"Disable Pause Menu/Z Menu Sounds",
 	"Bobbery Early",
 	"Force NPC Item Drop",
+	"Resolve Fades",
 	"Manage Flags",
 	"Clear Area Flags",
 };
@@ -1146,31 +1147,6 @@ uint8_t BattlesStatusesLinesSize 			= sizeof(BattlesStatusesLines) / sizeof(Batt
 uint8_t OnScreenTimerOptionsSize 			= sizeof(OnScreenTimerOptions) / sizeof(OnScreenTimerOptions[0]);
 uint8_t WarpDestinationsSize 				= sizeof(WarpDestinations) / sizeof(WarpDestinations[0]);
 
-uint8_t CheatsOrder[] = 
-{
-	CHANGE_SEQUENCE,
-	WALK_THROUGH_WALLS,
-	SAVE_COORDINATES,
-	LOAD_COORDINATES,
-	SPAWN_ITEM,
-	SAVE_ANYWHERE,
-	TEXT_STORAGE,
-	TIME_STOP_TEXT_STORAGE,
-	SPEED_UP_MARIO,
-	DISABLE_BATTLES,
-	AUTO_ACTION_COMMANDS,
-	INFINITE_ITEM_USAGE,
-	RELOAD_ROOM,
-	LEVITATE,
-	LOCK_MARIO_HP_TO_MAX,
-	RUN_FROM_BATTLES,
-	DISABLE_MENU_SOUNDS,
-	BOBBERY_EARLY,
-	FORCE_ITEM_DROP,
-	CLEAR_AREA_FLAGS,
-	MANAGE_FLAGS,
-};
-
 uint16_t StatsMarioIcons[] = 
 {
 	#ifdef TTYD_JP
@@ -1273,6 +1249,32 @@ uint16_t BattlesStatusesIcons[] =
 	#endif
 };
 
+uint8_t CheatsOrder[] = 
+{
+	CHANGE_SEQUENCE,
+	WALK_THROUGH_WALLS,
+	SAVE_COORDINATES,
+	LOAD_COORDINATES,
+	SPAWN_ITEM,
+	SAVE_ANYWHERE,
+	TEXT_STORAGE,
+	TIME_STOP_TEXT_STORAGE,
+	SPEED_UP_MARIO,
+	DISABLE_BATTLES,
+	AUTO_ACTION_COMMANDS,
+	INFINITE_ITEM_USAGE,
+	RELOAD_ROOM,
+	LEVITATE,
+	LOCK_MARIO_HP_TO_MAX,
+	RUN_FROM_BATTLES,
+	DISABLE_MENU_SOUNDS,
+	BOBBERY_EARLY,
+	FORCE_ITEM_DROP,
+	CLEAR_AREA_FLAGS,
+	MANAGE_FLAGS,
+	RESOLVE_FADES,
+};
+
 uint8_t DisplaysOrder[] = 
 {
 	ONSCREEN_TIMER,
@@ -1289,8 +1291,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[27];
-struct Cheats Cheat[21];
+struct Menus Menu[28];
+struct Cheats Cheat[22];
 bool Displays[11];
 char DisplayBuffer[256];
 char HeapBuffer[512];

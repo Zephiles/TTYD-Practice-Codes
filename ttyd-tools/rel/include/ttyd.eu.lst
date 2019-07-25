@@ -161,7 +161,7 @@
 // 80013D54:fadeInit
 // 80013E68:_callback
 // data
-8042AF40:fadeDrvWorkPointer
+8042AF40:gpFadeWork
 
 // icondrv.o
 // 80019060:iconNumberDispGx3D

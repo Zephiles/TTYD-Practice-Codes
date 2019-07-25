@@ -474,7 +474,7 @@ void reloadRoomMain()
 	setSeqMapChange(tempNewMap, tempNewBero);
 	
 	// Reset the black screen fade effect set when loading into a room via a pipe
-	*reinterpret_cast<uint16_t *>(ttyd::fadedrv::fadeDrvWorkPointer) &= ~(1 << 15); // Turn off the 15 bit
+	*reinterpret_cast<uint16_t *>(ttyd::fadedrv::gpFadeWork) &= ~(1 << 15); // Turn off the 15 bit
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
 	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
