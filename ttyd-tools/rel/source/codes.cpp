@@ -12,7 +12,6 @@
 #include <ttyd/evtmgr.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/seq_mapchange.h>
-#include <ttyd/fadedrv.h>
 #include <ttyd/camdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
@@ -473,8 +472,16 @@ void reloadRoomMain()
 	copyString(tempNewMap, ttyd::seq_mapchange::NextMap);
 	setSeqMapChange(tempNewMap, tempNewBero);
 	
-	// Reset the black screen fade effect set when loading into a room via a pipe
-	*reinterpret_cast<uint16_t *>(ttyd::fadedrv::gpFadeWork) &= ~(1 << 15); // Turn off the 15 bit
+	// Resolve any necessary fades, as they can sometimes cause issues if not resolved, such as black screens
+	// Only resolve the fades if not currently in a screen transition
+	if (!checkForSpecificSeq(MapChange))
+	{
+		uint32_t MaxFadeEntries = 5;
+		for (uint32_t i = 0; i < MaxFadeEntries; i++)
+		{
+			resolveFade(i);
+		}
+	}
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
 	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
