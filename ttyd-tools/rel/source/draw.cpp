@@ -2138,6 +2138,11 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
 		// Print error text if currently trying to spawn a partner/follower when not able to
 		int32_t TextPosX 		= -172;
 		int32_t WindowWidth 	= 375;
+		
+		#ifdef TTYD_JP
+		WindowWidth -= 1;
+		#endif
+		
 		drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
 	}
 }
@@ -2153,10 +2158,16 @@ void drawNotInBattleErrorMessage()
 		}
 		
 		const char *CurrentLine = "You must be in a battle to use the Battles menu.";
-		int32_t PosX 			= -205;
-		int32_t PosY 			= 0;
+		int32_t TextPosX 		= -205;
+		int32_t TextPosY 		= 0;
 		int32_t WindowWidth 	= 440;
-		drawErrorWindow(CurrentLine, PosX, PosY, WindowWidth);
+		
+		#ifdef TTYD_JP
+		TextPosX += 6;
+		WindowWidth -= 13;
+		#endif
+		
+		drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
 	}
 }
 
@@ -2183,6 +2194,11 @@ void drawResolveFadesMessage()
 				TextPosX = -188;
 				WindowWidth = 404;
 				Message = "The selected fade was successfully resolved.";
+				
+				#ifdef TTYD_JP
+				TextPosX += 2;
+				WindowWidth -= 2;
+				#endif
 				break;
 			}
 			case FADE_NOT_ACTIVE:
@@ -2190,6 +2206,11 @@ void drawResolveFadesMessage()
 				TextPosX = -135;
 				WindowWidth = 299;
 				Message = "The selected fade is not active.";
+				
+				#ifdef TTYD_JP
+				TextPosX += 5;
+				WindowWidth -= 9;
+				#endif
 				break;
 			}
 			case FADE_DONT_RESOLVE:
@@ -2197,6 +2218,11 @@ void drawResolveFadesMessage()
 				TextPosX = -205;
 				WindowWidth = 440;
 				Message = "The selected fade does not need to be resolved.";
+				
+				#ifdef TTYD_JP
+				TextPosX += 5;
+				WindowWidth -= 11;
+				#endif
 				break;
 			}
 			default:
@@ -2205,7 +2231,7 @@ void drawResolveFadesMessage()
 			}
 		}
 		
-		int32_t TextPosY = 0;
+		int32_t TextPosY = 5;
 		drawErrorWindow(Message, TextPosX, TextPosY, WindowWidth);
 	}
 }
@@ -2224,6 +2250,12 @@ void drawWarpsErrorMessage(int32_t textPosY)
 		const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
 		int32_t TextPosX 		= -195;
 		int32_t WindowWidth 	= 415;
+		
+		#ifdef TTYD_JP
+		TextPosX += 8;
+		WindowWidth -= 13;
+		#endif
+		
 		drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
 	}
 }
@@ -2274,6 +2306,10 @@ void drawConfirmationWindow(const char *message)
 	PosX += 70;
 	PosY -= 40;
 	
+	#ifdef TTYD_JP
+	PosX += 7;
+	#endif
+	
 	drawText(message, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the yes/no options
@@ -2281,6 +2317,10 @@ void drawConfirmationWindow(const char *message)
 	PosY -= 110;
 	Scale = 0.8;
 	const char *Option;
+	
+	#ifdef TTYD_JP
+	PosX -= 5;
+	#endif
 	
 	for (uint32_t i = 0; i < 2; i++)
 	{
