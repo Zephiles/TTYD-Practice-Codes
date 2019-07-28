@@ -771,29 +771,29 @@ void checkIfAreaFlagsShouldBeCleared()
 
 void getStickAngleString(char *stringOut)
 {
-	int32_t tempStickX = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
-	int32_t tempStickY = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
+	int32_t StickXInt = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
+	int32_t StickYInt = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
 	
 	// Check if the stick is at the neutral position
-	if ((tempStickX == 0) && (tempStickY == 0))
+	if ((StickXInt == 0) && (StickYInt == 0))
 	{
 		// The stick is currently at the neutral position
 		copyString(stringOut, "Neutral");
 		return;
 	}
 	
-	if (tempStickX > 127)
+	if (StickXInt > 127)
 	{
-		tempStickX -= 256;
+		StickXInt -= 256;
 	}
 	
-	if (tempStickY > 127)
+	if (StickYInt > 127)
 	{
-		tempStickY -= 256;
+		StickYInt -= 256;
 	}
 	
-	double StickX = static_cast<double>(tempStickX);
-	double StickY = static_cast<double>(tempStickY);
+	double StickX = static_cast<double>(StickXInt);
+	double StickY = static_cast<double>(StickYInt);
 	const double PI = 3.14159265358979323846;
 	
 	double StickAngle = (atan2(StickX, StickY)) * (180 / PI);
@@ -802,7 +802,11 @@ void getStickAngleString(char *stringOut)
 		StickAngle += 360;
 	}
 	
-	sprintf(stringOut, "%.2f", StickAngle);
+	sprintf(stringOut, 
+		"%.2f  %" PRId32 "  %" PRId32, 
+		StickAngle, 
+		StickXInt, 
+		StickYInt);
 }
 
 void displaySequenceInPauseMenu()

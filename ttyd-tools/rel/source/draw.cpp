@@ -3895,7 +3895,7 @@ void drawStickAngle()
 		PosY += 20;
 	}
 	
-	char StickAngleString[12];
+	char StickAngleString[32];
 	getStickAngleString(StickAngleString);
 	
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -3958,7 +3958,7 @@ void drawYoshiSkipDetails()
 	}
 	
 	// Draw the text
-	char StickAngleString[12];
+	char StickAngleString[32];
 	getStickAngleString(StickAngleString);
 	
 	char *tempDisplayBuffer = DisplayBuffer;
