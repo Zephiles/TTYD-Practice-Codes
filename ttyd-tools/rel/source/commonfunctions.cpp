@@ -16,7 +16,7 @@
 
 namespace mod {
 
-bool checkButtonCombo(uint16_t combo)
+bool checkButtonCombo(uint32_t combo)
 {
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 	if ((ButtonInput & combo) == combo)
@@ -30,7 +30,7 @@ bool checkButtonCombo(uint16_t combo)
 	return false;
 }
 
-bool checkButtonComboEveryFrame(uint16_t combo)
+bool checkButtonComboEveryFrame(uint32_t combo)
 {
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 	if ((ButtonInput & combo) == combo)

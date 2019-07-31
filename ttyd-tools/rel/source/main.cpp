@@ -52,8 +52,8 @@ extern "C" {
 
 void *preventPreBattleSoftlock(void *fbatPointer)
 {
-	uint16_t ReloadRoomCombo 	= PAD_L | PAD_B;
-	uint16_t OpenMenuCombo 		= PAD_L | PAD_START;
+	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
+	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
 	
 	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
 	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
@@ -298,7 +298,7 @@ void displayTitleScreenAndFileSelectScreenInfo()
 int32_t Mod::pauseMenuPreventUnpause(void *pauseMenuPointer)
 {
 	// Prevent unpausing if L is being held
-	uint16_t OpenMenuCombo 	= PAD_L | PAD_START;
+	uint32_t OpenMenuCombo = PAD_L | PAD_START;
 	
 	if (checkButtonComboEveryFrame(OpenMenuCombo))
 	{

@@ -3077,7 +3077,7 @@ void drawCheatsBool(int32_t posY)
 	drawBoolOnOrOff(CheatActive, CurrentLine, posY);
 }
 
-void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description)
+void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description)
 {
 	uint8_t Alpha 	= 0xFF;
 	uint32_t Color 	= 0xFFFFFFFF;
@@ -3162,12 +3162,11 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	drawText(CurrentLine, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the currently held buttons
-	uint16_t NewButtonCombo = static_cast<uint16_t>(ButtonInput);
 	uint8_t *tempButtonArray = CheatsDisplayButtons.CheatsCurrentButtonsHeld;
 	
 	// Clear the memory, so that the previous results do not interfere with the new results
 	clearMemory(tempButtonArray, (14 * sizeof(uint8_t)));
-	getButtonsPressed(tempButtonArray, NewButtonCombo);
+	getButtonsPressed(tempButtonArray, ButtonInput);
 	
 	char ButtonString[128];
 	createButtonStringArray(tempButtonArray, ButtonString, sizeof(ButtonString));
@@ -3180,9 +3179,9 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	{
 		// The timer reached 0, so set the currently held buttons to the current button combo for the cheat
 		// Make sure the button combo isn't L + Start
-		if (NewButtonCombo != (PAD_L | PAD_START))
+		if (ButtonInput != (PAD_L | PAD_START))
 		{
-			currentButtonCombo = NewButtonCombo;
+			currentButtonCombo = static_cast<uint16_t>(ButtonInput);
 		}
 		
 		// Close this menu

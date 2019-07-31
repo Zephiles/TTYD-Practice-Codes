@@ -94,7 +94,7 @@ bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePositio
 
 void drawCheatsChangeSequence();
 void drawCheatsBool(int32_t posY);
-void drawButtonCombo(uint16_t buttonCombo, int32_t posY, const char *description);
+void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description);
 void drawChangeButtonCombo(uint16_t &currentButtonCombo);
 void drawCheatsForcedDropItem();
 void drawCheatsResolveFades();

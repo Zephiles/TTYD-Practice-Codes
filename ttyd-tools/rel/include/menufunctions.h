@@ -72,8 +72,8 @@ void cheatClearAreaFlags(uint32_t currentMenuOption);
 const char *getMapFromIndex(int32_t index);
 int32_t getMapIndex();
 
-// void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo);
-void getButtonsPressed(uint8_t *buttonArrayOut, uint16_t currentButtonCombo);
+// void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
+void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t stringOutSize);
 bool incrementCheatsBButtonCounter(uint32_t buttonInput);
 bool cheatsManageTimer(uint32_t buttonInput);

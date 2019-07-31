@@ -3480,7 +3480,7 @@ void drawMenu()
 void enableOrDisableMenu()
 {
 	// Check for user input
-	uint16_t OpenMenuCombo = PAD_L | PAD_START;
+	uint32_t OpenMenuCombo = PAD_L | PAD_START;
 	bool tempMenuIsDisplayed = MenuVar.MenuIsDisplayed;
 	
 	if (checkButtonCombo(OpenMenuCombo) && !MenuVar.PreventClosingMenu && !MenuVar.ChangingCheatButtonCombo)

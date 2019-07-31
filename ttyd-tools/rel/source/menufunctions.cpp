@@ -3194,7 +3194,7 @@ int32_t getMapIndex()
 	return -1;
 }
 
-/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
+/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)
 {
 	uint32_t Counter = 0;
 	uint32_t Size = 1;
@@ -3249,7 +3249,7 @@ int32_t getMapIndex()
 	}
 }*/
 
-/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
+/*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)
 {
 	if (!buttonArrayOut)
 	{
@@ -3262,7 +3262,7 @@ int32_t getMapIndex()
 	getButtonsPressed(buttonArrayOut, currentButtonCombo);
 }*/
 
-void getButtonsPressed(uint8_t *buttonArrayOut, uint16_t currentButtonCombo)
+void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)
 {
 	uint32_t Counter = 1;
 	uint32_t Size = 0;

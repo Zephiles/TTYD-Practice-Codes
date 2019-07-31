@@ -8,8 +8,8 @@ namespace mod {
 
 extern "C" {
 
-bool checkButtonCombo(uint16_t combo);
-bool checkButtonComboEveryFrame(uint16_t combo);
+bool checkButtonCombo(uint32_t combo);
+bool checkButtonComboEveryFrame(uint32_t combo);
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq);
 bool checkIfInGame();
 void *getCurrentRELPointer();
