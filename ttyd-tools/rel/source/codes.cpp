@@ -461,6 +461,17 @@ void reloadRoomMain()
 		return;
 	}
 	
+	// Resolve any necessary fades, as they can sometimes cause issues if not resolved, such as black screens
+	// Only resolve the fades if not currently in a screen transition
+	if (checkForSpecificSeq(Game))
+	{
+		uint32_t MaxFadeEntries = 5;
+		for (uint32_t i = 0; i < MaxFadeEntries; i++)
+		{
+			resolveFade(i);
+		}
+	}
+	
 	// A separate address for NextBero is needed, as the original value will be cleared during the reloading process
 	// The game will crash if NextMap is used directly in seqSetSeq, so a separate address must be used instead
 	// NewBero and NewMap need to be global variables
@@ -471,17 +482,6 @@ void reloadRoomMain()
 	copyString(tempNewBero, ttyd::seq_mapchange::NextBero);
 	copyString(tempNewMap, ttyd::seq_mapchange::NextMap);
 	setSeqMapChange(tempNewMap, tempNewBero);
-	
-	// Resolve any necessary fades, as they can sometimes cause issues if not resolved, such as black screens
-	// Only resolve the fades if not currently in a screen transition
-	if (!checkForSpecificSeq(MapChange))
-	{
-		uint32_t MaxFadeEntries = 5;
-		for (uint32_t i = 0; i < MaxFadeEntries; i++)
-		{
-			resolveFade(i);
-		}
-	}
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
 	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
