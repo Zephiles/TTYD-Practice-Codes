@@ -4129,6 +4129,58 @@ void drawPalaceSkipDetails()
 	}
 }
 
+void drawBlimpTicketSkipDetails()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= -95;
+	float Scale 			= 0.75;
+	
+	// Move the text up if the input display is active
+	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Mario Speed XZ display is active
+	if (Displays[MARIO_SPEED_XZ])
+	{
+		PosY += 20;
+	}
+	
+	// Draw the text
+	char StickAngleString[32];
+	getStickAngleString(StickAngleString);
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"URT: %" PRIu32 "\nSUT: %" PRIu32 "\nStickAngle: %s",
+		BlimpTicketSkip.UpRightTimer,
+		BlimpTicketSkip.StraightUpTimer,
+		StickAngleString);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Draw Mario's coordinates if they're not already drawn
+	if (!Displays[MARIO_COORDINATES])
+	{
+		drawMarioCoordinates();
+	}
+	
+	// Increment the up-right timer
+	if (!BlimpTicketSkip.UpRightTimerStopped)
+	{
+		BlimpTicketSkip.UpRightTimer++;
+	}
+	
+	// Increment the straight-up timer
+	if (!BlimpTicketSkip.StraightUpTimerStopped)
+	{
+		BlimpTicketSkip.StraightUpTimer++;
+	}
+}
+
 void drawActionCommandsTiming()
 {
 	if (!Displays[GUARD_SUPERGUARD_TIMINGS])

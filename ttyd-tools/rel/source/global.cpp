@@ -1003,6 +1003,7 @@ const char *DisplaysLines[] =
 	"Art Attack Hitboxes",
 	"Yoshi Skip",
 	"Palace Skip",
+	"Blimp Ticket Skip",
 };
 
 const char *OnScreenTimerOptionsLines[] = 
@@ -1288,12 +1289,13 @@ uint8_t DisplaysOrder[] =
 	STICK_ANGLE,
 	MARIO_SPEED_XZ,
 	DPAD_OPTIONS_DISPLAY,
+	BLIMP_TICKET_SKIP,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[28];
 struct Cheats Cheat[22];
-bool Displays[11];
+bool Displays[12];
 char DisplayBuffer[256];
 char HeapBuffer[512];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1312,6 +1314,7 @@ struct ClearAreaFlagsStruct ClearAreaFlags;
 struct ClearCacheForBattlesStruct ClearCacheForBattles;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
+struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;

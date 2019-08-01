@@ -784,6 +784,7 @@ void Mod::run()
 			{
 				displayYoshiSkipDetails();
 				displayPalaceSkipDetails();
+				displayBlimpTicketSkipDetails();
 			}
 			
 			// Run each display function that isn't button-based

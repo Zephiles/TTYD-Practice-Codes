@@ -19,6 +19,7 @@ void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();
 void checkIfAreaFlagsShouldBeCleared();
+double getStickAngle(int32_t stickXYOut[2]); // If the X and Y values are not wanted, then pass in nullptr
 void getStickAngleString(char *stringOut);
 
 void displaySequenceInPauseMenu();
@@ -32,6 +33,7 @@ void displayMemoryWatches();
 
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
+void displayBlimpTicketSkipDetails();
 void actionCommandsTimingsInit();
 void displayActionCommandsTiming();
 

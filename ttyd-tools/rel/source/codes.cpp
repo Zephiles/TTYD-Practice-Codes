@@ -769,7 +769,7 @@ void checkIfAreaFlagsShouldBeCleared()
 	}
 }
 
-void getStickAngleString(char *stringOut)
+double getStickAngle(int32_t stickXYOut[2])
 {
 	int32_t StickXInt = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
 	int32_t StickYInt = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
@@ -778,8 +778,12 @@ void getStickAngleString(char *stringOut)
 	if ((StickXInt == 0) && (StickYInt == 0))
 	{
 		// The stick is currently at the neutral position
-		copyString(stringOut, "Neutral");
-		return;
+		if (stickXYOut)
+		{
+			stickXYOut[0] = 0;
+			stickXYOut[1] = 0;
+		}
+		return -1000;
 	}
 	
 	if (StickXInt > 127)
@@ -792,6 +796,13 @@ void getStickAngleString(char *stringOut)
 		StickYInt -= 256;
 	}
 	
+	// Store the individual stick values if desired
+	if (stickXYOut)
+	{
+		stickXYOut[0] = StickXInt;
+		stickXYOut[1] = StickYInt;
+	}
+	
 	double StickX = static_cast<double>(StickXInt);
 	double StickY = static_cast<double>(StickYInt);
 	const double PI = 3.14159265358979323846;
@@ -802,11 +813,27 @@ void getStickAngleString(char *stringOut)
 		StickAngle += 360;
 	}
 	
+	return StickAngle;
+}
+
+void getStickAngleString(char *stringOut)
+{
+	int32_t StickXYAngles[2];
+	double StickAngle = getStickAngle(StickXYAngles);
+	
+	// Check if the stick is at the neutral position
+	if (StickAngle == -1000)
+	{
+		// The stick is currently at the neutral position
+		copyString(stringOut, "Neutral");
+		return;
+	}
+	
 	sprintf(stringOut, 
 		"%.2f  %" PRId32 "  %" PRId32, 
 		StickAngle, 
-		StickXInt, 
-		StickYInt);
+		StickXYAngles[0], 
+		StickXYAngles[1]);
 }
 
 void displaySequenceInPauseMenu()
@@ -921,6 +948,12 @@ void displayStickAngle()
 	
 	// Don't display if the Yoshi Skip display is active
 	if (Displays[YOSHI_SKIP])
+	{
+		return;
+	}
+	
+	// Don't display if the Blimp Ticket Skip display is active
+	if (Displays[BLIMP_TICKET_SKIP])
 	{
 		return;
 	}
@@ -1057,8 +1090,73 @@ void displayPalaceSkipDetails()
 	drawFunctionOnDebugLayer(drawPalaceSkipDetails);
 }
 
-int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1, 
-	uint32_t unk2, uint32_t unk3)
+void displayBlimpTicketSkipDetails()
+{
+	if (!Displays[BLIMP_TICKET_SKIP])
+	{
+		return;
+	}
+	
+	uint32_t SystemLevel = getSystemLevel();
+	if (SystemLevel == 15)
+	{
+		// Stop upon pausing
+		BlimpTicketSkip.UpRightTimerStopped 	= true;
+		BlimpTicketSkip.StraightUpTimerStopped 	= true;
+		BlimpTicketSkip.TimersPaused 			= true;
+	}
+	else if ((SystemLevel == 0) && BlimpTicketSkip.TimersPaused)
+	{
+		// Reset and Start when unpausing
+		BlimpTicketSkip.UpRightTimer 			= 0;
+		BlimpTicketSkip.StraightUpTimer 		= 0;
+		BlimpTicketSkip.TimersPaused 			= false;
+		BlimpTicketSkip.UpRightTimerStopped 	= false;
+		BlimpTicketSkip.StraightUpTimerStopped 	= false;
+	}
+	
+	#ifdef TTYD_JP
+	double UpRightAngleStart = 25;
+	#else
+	double UpRightAngleStart = 27;
+	#endif
+	
+	double StickAngle = getStickAngle(nullptr);
+	if (StickAngle >= UpRightAngleStart)
+	{
+		// Stop the up-right timer when the angle held reaches or exceeds 25
+		BlimpTicketSkip.UpRightTimerStopped = true;
+	}
+	else if (StickAngle == 0)
+	{
+		// Stop the straight-up timer when the angle held is 0
+		BlimpTicketSkip.StraightUpTimerStopped = true;
+	}
+	
+	if (checkButtonComboEveryFrame(PAD_Y))
+	{
+		// Hold Y to increment the counter
+		BlimpTicketSkip.ResetTimer++;
+	}
+	else
+	{
+		BlimpTicketSkip.ResetTimer = 0;
+	}
+	
+	if (BlimpTicketSkip.ResetTimer > secondsToFrames(2))
+	{
+		// Reset the timers when button is held for 2 seconds
+		BlimpTicketSkip.UpRightTimer 			= 0;
+		BlimpTicketSkip.StraightUpTimer 		= 0;
+		BlimpTicketSkip.ResetTimer 				= 0;
+		BlimpTicketSkip.UpRightTimerStopped 	= true;
+		BlimpTicketSkip.StraightUpTimerStopped 	= true;
+	}
+	
+	drawFunctionOnDebugLayer(drawBlimpTicketSkipDetails);
+}
+
+int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1, uint32_t unk2, uint32_t unk3)
 {
 	if (Cheat[DISABLE_MENU_SOUNDS].Active)
 	{
