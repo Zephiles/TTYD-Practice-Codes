@@ -873,6 +873,10 @@ void drawMarioSpecialMovesOptions()
 	PosX += 30;
 	PosY -= 25;
 	
+	#ifdef TTYD_JP
+	PosX -= 1;
+	#endif
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Set the values for the text to use
@@ -959,10 +963,18 @@ void drawFollowersOptions()
 	PosX += 30;
 	PosY -= 25;
 	
+	#ifdef TTYD_JP
+	PosX -= 1;
+	#endif
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	PosX += 45;
 	PosY -= 54;
+	
+	#ifdef TTYD_JP
+	PosX += 4;
+	#endif
 	
 	// Draw the main text
 	uint32_t tempStatsFollowerOptionsLinesSize = StatsFollowerOptionsLinesSize;
@@ -1331,12 +1343,20 @@ void drawPartnerChangeYoshiColorOptions()
 	PosX += 30;
 	PosY -= 25;
 	
+	#ifdef TTYD_JP
+	PosX -= 1;
+	#endif
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Set the values for the text to use
 	uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
 	PosX += 47;
 	PosY -= 54;
+	
+	#ifdef TTYD_JP
+	PosX += 2;
+	#endif
 	
 	uint32_t Size = StatsYoshiColorOptionsLinesSize;
 	for (uint32_t i = 0; i < Size; i++)
@@ -1720,9 +1740,17 @@ void drawMemoryTypeList()
 	PosX += 30;
 	PosY -= 25;
 	
+	#ifdef TTYD_JP
+	PosX -= 1;
+	#endif
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	PosX += 42;
 	PosY -= 50;
+	
+	#ifdef TTYD_JP
+	PosX += 3;
+	#endif
 	
 	// Draw the main text
 	uint32_t Size = MemoryTypeLinesSize;
@@ -1779,9 +1807,14 @@ void drawMemoryWatchChangeAddressListWindow(int32_t posY)
 	uint32_t WindowColor = 0x151515E0;
 	int32_t WindowPosX = -245;
 	int32_t WindowPosY = posY;
-	int32_t Width = 373;
+	int32_t Width = 379;
 	int32_t Height = 15;
 	int32_t Curve = 0;
+	
+	#ifdef TTYD_JP
+	Width -= 16;
+	#endif
+	
 	drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
 }
 
@@ -2119,29 +2152,35 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
 			return;
 		}
 		
+		int32_t TextPosX = -172;
+		int32_t WindowWidth = 375;
+		
 		// Get the text to use
 		const char *PartnerOrFollowerText;
 		if (drawForPartner)
 		{
 			PartnerOrFollowerText = "partner";
+			
+			#ifdef TTYD_JP
+			TextPosX += 3;
+			WindowWidth -= 7;
+			#endif
 		}
 		else
 		{
 			PartnerOrFollowerText = "follower";
+			
+			#ifdef TTYD_JP
+			WindowWidth -= 1;
+			#endif
 		}
 		
+		// Print error text if currently trying to spawn a partner/follower when not able to
 		char *tempDisplayBuffer = DisplayBuffer;
+		
 		sprintf(tempDisplayBuffer,
 			"To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
 			PartnerOrFollowerText);
-		
-		// Print error text if currently trying to spawn a partner/follower when not able to
-		int32_t TextPosX 		= -172;
-		int32_t WindowWidth 	= 375;
-		
-		#ifdef TTYD_JP
-		WindowWidth -= 1;
-		#endif
 		
 		drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
 	}
@@ -2420,6 +2459,11 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	int32_t curve 	= 10;
 	int32_t height;
 	
+	#ifdef TTYD_JP
+	PosX += 4;
+	width -= 6;
+	#endif
+	
 	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	
 	if (changingItem)
@@ -2572,7 +2616,14 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	
 	x += 166;
 	y -= 30;
+	
+	#ifdef TTYD_JP
+	scale = 1;
+	x -= 1;
+	y += 3;
+	#else
 	scale = 0.9;
+	#endif
 	
 	// Calculate the X offset
 	int32_t tempPosX = 0;
@@ -2586,7 +2637,13 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	if (NumberIsNegative)
 	{
 		// Draw the negative sign
-		drawText("-", (x - 10), y, alpha, color, scale);
+		int32_t NegativeSignOffset = 10;
+		
+		#ifdef TTYD_JP
+		NegativeSignOffset += 2;
+		#endif
+		
+		drawText("-", (x - NegativeSignOffset), y, alpha, color, scale);
 	}
 	
 	// Draw each digit of the number
@@ -2630,6 +2687,11 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	int32_t width 	= 377;
 	int32_t curve 	= 10;
 	int32_t height 	= 148;
+	
+	#ifdef TTYD_JP
+	PosX += 4;
+	width -= 6;
+	#endif
 	
 	drawWindow(color, PosX, y, width, height, curve);
 	
@@ -2684,8 +2746,15 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	// Set up array for each digit of the number
 	uint8_t AdjustableValue[AmountOfNumbers];
 	
-	x 		+= 173;
-	scale 	= 0.9;
+	x += 180;
+	
+	#ifdef TTYD_JP
+	scale = 1;
+	x -= 1;
+	y += 2;
+	#else
+	scale = 0.9;
+	#endif
 	
 	// Calculate the X offset
 	int32_t tempPosX = 0;
@@ -2708,7 +2777,13 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		}
 		
 		// Draw the negative sign
-		drawText("-", (x - 40), y, alpha, color, scale);	
+		int32_t NegativeSignOffset = 40;
+		
+		#ifdef TTYD_JP
+		NegativeSignOffset += 2;
+		#endif
+		
+		drawText("-", (x - NegativeSignOffset), y, alpha, color, scale);
 	}
 	else
 	{
@@ -2774,6 +2849,11 @@ void drawAddByIconMain(uint32_t currentMenu)
 	PosY 					= 145;
 	Color 					= 0xFFFFFFFF;
 	const char *HelpText 	= "Press A to confirm\nPress B to cancel";
+	
+	#ifdef TTYD_JP
+	PosX -= 2;
+	#endif
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the window for the current menu option
@@ -3132,10 +3212,11 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	// Draw the help text
 	uint8_t Alpha 			= 0xFF;
 	float Scale 			= 0.6;
-	PosX 					+= 60;
+	PosX 					+= 65;
 	PosY 					-= 30;
 	Color 					= 0xFFFFFFFF;
 	const char *HelpText 	= "Hold the button(s) for 3 seconds to set the\nnew button combo\n\nPress B three times in succession to cancel";
+	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the timer
