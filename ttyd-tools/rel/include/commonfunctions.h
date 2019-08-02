@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ttyd/seqdrv.h>
+#include <ttyd/party.h>
 
 #include <cstdint>
 
@@ -41,6 +42,7 @@ void removePartnerFromOverworld();
 void removeFollowerFromOverworld();
 uint32_t getCurrentYoshiColorId();
 void setNewYoshiColorId(uint32_t colorId);
+void spawnFollower(ttyd::party::PartyMembers followerId);
 bool checkIfBadgeEquipped(int16_t badge);
 void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();

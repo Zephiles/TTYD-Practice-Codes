@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ttyd/party.h>
 #include <ttyd/evtmgr.h>
 
 #include <cstdint>
@@ -51,7 +52,7 @@ void setMarioStatsValue(uint32_t currentMenuOption);
 void setPartnerStatsValue(uint32_t currentMenuOption);
 void setBattlesActorValue(uint32_t currentMenuOption);
 void setBattlesActorStatusValue(uint32_t currentMenuOption);
-uint8_t getSelectedOptionPartnerValue();
+ttyd::party::PartyMembers getSelectedOptionPartnerValue();
 void *getPartnerEnabledAddress();
 bool checkIfPartnerOutSelected();
 

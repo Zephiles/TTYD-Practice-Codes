@@ -43,7 +43,8 @@ void StartFixBlooperCrash2();
 void StartPreventTextboxSelection();
 void StartDrawArtAttackHitboxes();
 void StartDisableDPadOptionsDisplay();
-void StartFixEvtMapBlendSetFlagCrash();
+void StartFixEvtMapBlendSetFlagPartnerCrash();
+void StartFixEvtMapBlendSetFlagFollowerCrash();
 
 }
 
@@ -198,19 +199,19 @@ uint32_t fixRoomProblems()
 	return 512;
 }
 
-void *fixEvtMapBlendSetFlagCrash(void *partnerPtr)
+void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
 {
 	// Bring out a partner if no partner is currently out
 	if (!partnerPtr)
 	{
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		uint8_t PreviousPartnerOut = player->prevFollowerId[0];
+		ttyd::party::PartyMembers PreviousPartnerOut = player->prevFollowerId[0];
 
 		// Check if a partner was previously out
-		if (PreviousPartnerOut != 0)
+		if (PreviousPartnerOut != ttyd::party::PartyMembers::kNone)
 		{
 			// A partner was previously out, so bring them back out
-			ttyd::mario_party::marioPartyHello(static_cast<ttyd::party::PartyMembers>(PreviousPartnerOut));
+			ttyd::mario_party::marioPartyHello(PreviousPartnerOut);
 		}
 		else
 		{
@@ -223,6 +224,34 @@ void *fixEvtMapBlendSetFlagCrash(void *partnerPtr)
 	else
 	{
 		return partnerPtr;
+	}
+}
+
+void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr)
+{
+	// Bring out a follower if no follower is currently out
+	if (!followerPtr)
+	{
+		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+		ttyd::party::PartyMembers PreviousFollowerOut = player->prevFollowerId[1];
+
+		// Check if a follower was previously out
+		if (PreviousFollowerOut != ttyd::party::PartyMembers::kNone)
+		{
+			// A follower was previously out, so bring them back out
+			spawnFollower(PreviousFollowerOut);
+		}
+		else
+		{
+			// No follower was previously out, so bring out Gus
+			spawnFollower(ttyd::party::PartyMembers::kGus);
+		}
+		
+		return getFollowerPointer();
+	}
+	else
+	{
+		return followerPtr;
 	}
 }
 
@@ -609,75 +638,78 @@ void writeStandardBranch(void *address, void functionStart(), void functionBranc
 void initAddressOverwrites()
 {
 	#ifdef TTYD_US
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800465CC);
-	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800448CC);
-	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80123CA4);
-	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004EC10);
-	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009B2C);
-	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x80008FE8);
-	void *PauseMenuPartnerMenuAddress 			= reinterpret_cast<void *>(0x801649A0);
-	void *PauseMenuBadgeMenuAddress 			= reinterpret_cast<void *>(0x80164A44);
-	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x800411D0);
-	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800ABCD8);
-	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x800816F4);
-	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x80122BA4);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80122BB8);
-	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x8010F810);
-	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010F888);
-	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800D214C);
-	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80428BC0);
-	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8025E4A4);
-	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x8025E4A8);
-	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800087C8);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x80231928);
-	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013D148);
-	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x800389C4);
+	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x800465CC);
+	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800448CC);
+	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80123CA4);
+	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004EC10);
+	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009B2C);
+	void *DebugModeShowBuildDateAddress 				= reinterpret_cast<void *>(0x80008FE8);
+	void *PauseMenuPartnerMenuAddress 					= reinterpret_cast<void *>(0x801649A0);
+	void *PauseMenuBadgeMenuAddress 					= reinterpret_cast<void *>(0x80164A44);
+	void *ReplaceJumpAnimAddress 						= reinterpret_cast<void *>(0x800411D0);
+	void *PreventImportantItemCutscenesAddress 			= reinterpret_cast<void *>(0x800ABCD8);
+	void *msgWindowMrAddress 							= reinterpret_cast<void *>(0x800816F4);
+	void *DisplayBattleMenuJumpAddress 					= reinterpret_cast<void *>(0x80122BA4);
+	void *DisplayBattleMenuHammerAddress 				= reinterpret_cast<void *>(0x80122BB8);
+	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010F810);
+	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010F888);
+	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D214C);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x80428BC0);
+	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8025E4A4);
+	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x8025E4A8);
+	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800087C8);
+	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x80231928);
+	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013D148);
+	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
+	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
 	#elif defined TTYD_JP
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x80045F28);
-	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x80044228);
-	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x8011E7DC);
-	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004DFB0);
-	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x8000999C);
-	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x80008EB8);
-	void *PauseMenuPartnerMenuAddress 			= reinterpret_cast<void *>(0x8015EFBC);
-	void *PauseMenuBadgeMenuAddress 			= reinterpret_cast<void *>(0x8015F060);
-	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x80040B34);
-	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800AA01C);
-	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x80080B6C);
-	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x8011D6DC);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x8011D6F0);
-	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x8010A724);
-	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x8010A79C);
-	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800CE01C);
-	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x80422618);
-	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x800086F0);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x8022C278);
-	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x80137C1C);
-	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038328);
+	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x80045F28);
+	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x80044228);
+	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
+	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004DFB0);
+	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x8000999C);
+	void *DebugModeShowBuildDateAddress 				= reinterpret_cast<void *>(0x80008EB8);
+	void *PauseMenuPartnerMenuAddress 					= reinterpret_cast<void *>(0x8015EFBC);
+	void *PauseMenuBadgeMenuAddress 					= reinterpret_cast<void *>(0x8015F060);
+	void *ReplaceJumpAnimAddress 						= reinterpret_cast<void *>(0x80040B34);
+	void *PreventImportantItemCutscenesAddress 			= reinterpret_cast<void *>(0x800AA01C);
+	void *msgWindowMrAddress 							= reinterpret_cast<void *>(0x80080B6C);
+	void *DisplayBattleMenuJumpAddress 					= reinterpret_cast<void *>(0x8011D6DC);
+	void *DisplayBattleMenuHammerAddress 				= reinterpret_cast<void *>(0x8011D6F0);
+	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010A724);
+	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010A79C);
+	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800CE01C);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x80422618);
+	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800086F0);
+	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x8022C278);
+	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x80137C1C);
+	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
+	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
 	#elif defined TTYD_EU
-	void *PreventPreBattleSoftlockAddress 		= reinterpret_cast<void *>(0x800466B4);
-	void *DisableBattlesAddress 				= reinterpret_cast<void *>(0x800449B4);
-	void *AllowRunningFromBattlesAddress 		= reinterpret_cast<void *>(0x80124BE4);
-	void *ForceNPCItemDropAddress 				= reinterpret_cast<void *>(0x8004ECDC);
-	void *DebugModeInitialzeAddress 			= reinterpret_cast<void *>(0x80009CF0);
-	void *DebugModeShowBuildDateAddress 		= reinterpret_cast<void *>(0x800091B4);
-	void *PauseMenuPartnerMenuAddress 			= reinterpret_cast<void *>(0x80166490);
-	void *PauseMenuBadgeMenuAddress 			= reinterpret_cast<void *>(0x80166534);
-	void *ReplaceJumpAnimAddress 				= reinterpret_cast<void *>(0x800412B8);
-	void *PreventImportantItemCutscenesAddress 	= reinterpret_cast<void *>(0x800AD0A8);
-	void *msgWindowMrAddress 					= reinterpret_cast<void *>(0x800829b0);
-	void *DisplayBattleMenuJumpAddress 			= reinterpret_cast<void *>(0x80123AE4);
-	void *DisplayBattleMenuHammerAddress 		= reinterpret_cast<void *>(0x80123AF8);
-	void *FixBlooperCrash1Address 				= reinterpret_cast<void *>(0x801106E8);
-	void *FixBlooperCrash2Address 				= reinterpret_cast<void *>(0x80110760);
-	void *PreventTextboxSelectionAddress 		= reinterpret_cast<void *>(0x800D2F44);
-	void *BacktraceScreenFontSizeAddress 		= reinterpret_cast<void *>(0x804356C8);
-	void *BacktraceScreenPPCHaltBranchAddress 	= reinterpret_cast<void *>(0x8026207C);
-	void *BacktraceScreenEndBranchAddress 		= reinterpret_cast<void *>(0x80262080);
-	void *FixRoomProblemsAddress 				= reinterpret_cast<void *>(0x80008994);
-	void *ArtAttackHitboxesAddress 				= reinterpret_cast<void *>(0x802353b8);
-	void *DisableDPadOptionsDisplayAddress 		= reinterpret_cast<void *>(0x8013EC30);
-	void *FixEvtMapBlendSetFlagCrashAddress 	= reinterpret_cast<void *>(0x80038AAC);
+	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x800466B4);
+	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800449B4);
+	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
+	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004ECDC);
+	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009CF0);
+	void *DebugModeShowBuildDateAddress 				= reinterpret_cast<void *>(0x800091B4);
+	void *PauseMenuPartnerMenuAddress 					= reinterpret_cast<void *>(0x80166490);
+	void *PauseMenuBadgeMenuAddress 					= reinterpret_cast<void *>(0x80166534);
+	void *ReplaceJumpAnimAddress 						= reinterpret_cast<void *>(0x800412B8);
+	void *PreventImportantItemCutscenesAddress 			= reinterpret_cast<void *>(0x800AD0A8);
+	void *msgWindowMrAddress 							= reinterpret_cast<void *>(0x800829b0);
+	void *DisplayBattleMenuJumpAddress 					= reinterpret_cast<void *>(0x80123AE4);
+	void *DisplayBattleMenuHammerAddress 				= reinterpret_cast<void *>(0x80123AF8);
+	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x801106E8);
+	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x80110760);
+	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D2F44);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x804356C8);
+	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8026207C);
+	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x80262080);
+	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x80008994);
+	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x802353b8);
+	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013EC30);
+	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
+	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
 	#endif
 	
 	patch::writeBranchLR(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(StartPreventPreBattleSoftlock));
@@ -706,7 +738,9 @@ void initAddressOverwrites()
 	
 	patch::writeBranchLR(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
 	
-	patch::writeBranchLR(FixEvtMapBlendSetFlagCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagCrash));
+	patch::writeBranchLR(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
+	
+	patch::writeBranchLR(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

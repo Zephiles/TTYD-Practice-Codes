@@ -16,6 +16,7 @@
 #include <ttyd/item_data.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/evt_yuugijou.h>
+#include <ttyd/party.h>
 #include <ttyd/system.h>
 #include <ttyd/event.h>
 #include <ttyd/fadedrv.h>
@@ -1161,11 +1162,10 @@ void drawPartnerStats()
 	}
 	
 	// Draw the color text for Yoshi
-	const uint32_t YoshiPartner = 4;
-	uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+	ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
 	
 	uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
-	if (CurrentPartner == YoshiPartner)
+	if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 	{
 		bool CurrentOptionCheck = (tempCurrentMenuOption == FirstFreeSlot) && (tempSelectedOption > 0);
 		Color = getSelectedTextColor(CurrentOptionCheck);
@@ -1189,7 +1189,7 @@ void drawPartnerStats()
 	
 	// Draw the option
 	uint32_t AdditionalOptions = 0;
-	if (CurrentPartner == YoshiPartner)
+	if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 	{
 		// Add an extra line for Yoshi
 		AdditionalOptions++;
@@ -1225,7 +1225,7 @@ void drawPartnerStats()
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw Yoshi's color
-	if (CurrentPartner == YoshiPartner)
+	if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 	{
 		// Get the current Yoshi color
 		uint32_t YoshiColorId = getCurrentYoshiColorId();

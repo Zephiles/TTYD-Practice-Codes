@@ -6,7 +6,8 @@ namespace ttyd::party {
 
 enum class PartyMembers : uint8_t
 {
-	kGoombella = 1,
+	kNone = 0,
+	kGoombella,
 	kKoops,
 	kBobbery,
 	kYoshi,

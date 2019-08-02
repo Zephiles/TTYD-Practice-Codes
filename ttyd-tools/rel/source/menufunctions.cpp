@@ -223,9 +223,7 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 				PartnerEnabledAddress + 1) = true;
 			
 			// Bring the partner out
-			ttyd::mario_party::marioPartyEntry(
-				static_cast<ttyd::party::PartyMembers>(
-					getSelectedOptionPartnerValue()));
+			ttyd::mario_party::marioPartyEntry(getSelectedOptionPartnerValue());
 			
 			// Restore the value of the enabled bool
 			*reinterpret_cast<bool *>(
@@ -1770,23 +1768,11 @@ uint32_t followersOptionsButtonControls()
 		{
 			if (checkIfInGame())
 			{
-				// If a follower is out, remove them
-				removeFollowerFromOverworld();
-				
-				// Get the new follower
+				// Get the follower id to use
 				uint8_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
 				
 				// Spawn the new follower
-				int32_t ReturnCode = ttyd::party::partyEntry2Hello(
-					static_cast<ttyd::party::PartyMembers>(NewFollower));
-				
-				// Set specific bytes
-				if (ReturnCode >= 0)
-				{
-					ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-					player->wFollowerFlags[1] = ReturnCode;
-					player->prevFollowerId[1] = NewFollower;
-				}
+				spawnFollower(static_cast<ttyd::party::PartyMembers>(NewFollower));
 				
 				closeSecondaryMenu();
 				
@@ -2451,16 +2437,8 @@ void setBattlesActorStatusValue(uint32_t currentMenuOption)
 		0x118 + currentMenuOption + Counter)) = MenuVar.MenuSecondaryValue;
 }
 
-uint8_t getSelectedOptionPartnerValue()
+ttyd::party::PartyMembers getSelectedOptionPartnerValue()
 {
-	const uint8_t Goombella 	= 1;
-	const uint8_t Koops 		= 2;
-	const uint8_t Flurrie 		= 5;
-	const uint8_t Yoshi 		= 4;
-	const uint8_t Vivian 		= 6;
-	const uint8_t Bobbery 		= 3;
-	const uint8_t Mowz 			= 7;
-	
 	uint32_t tempSelectedOption = MenuVar.SelectedOption;
 	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	uint32_t tempOption;
@@ -2478,35 +2456,35 @@ uint8_t getSelectedOptionPartnerValue()
 	{
 		case 1:
 		{
-			return Goombella;
+			return ttyd::party::PartyMembers::kGoombella;
 		}
 		case 2:
 		{
-			return Koops;
+			return ttyd::party::PartyMembers::kKoops;
 		}
 		case 3:
 		{
-			return Flurrie;
+			return ttyd::party::PartyMembers::kFlurrie;
 		}
 		case 4:
 		{
-			return Yoshi;
+			return ttyd::party::PartyMembers::kYoshi;
 		}
 		case 5:
 		{
-			return Vivian;
+			return ttyd::party::PartyMembers::kVivian;
 		}
 		case 6:
 		{
-			return Bobbery;
+			return ttyd::party::PartyMembers::kBobbery;
 		}
 		case 7:
 		{
-			return Mowz;
+			return ttyd::party::PartyMembers::kMsMowz;
 		}
 		default:
 		{
-			return 0;
+			return ttyd::party::PartyMembers::kNone;
 		}
 	}
 }
@@ -2514,7 +2492,7 @@ uint8_t getSelectedOptionPartnerValue()
 void *getPartnerEnabledAddress()
 {
 	uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-	uint32_t CurrentPartnerValue = getSelectedOptionPartnerValue();
+	uint8_t CurrentPartnerValue = static_cast<uint8_t>(getSelectedOptionPartnerValue());
 	uint32_t PartnerEnabledAddress = PouchPtr + (CurrentPartnerValue * 0xE);
 	return reinterpret_cast<void *>(PartnerEnabledAddress);
 }
@@ -2527,8 +2505,8 @@ bool checkIfPartnerOutSelected()
 		return false;
 	}
 	
-	uint8_t CurrentPartnerOut = *reinterpret_cast<uint8_t *>(PartnerPointer + 0x31);
-	if (CurrentPartnerOut == 0)
+	ttyd::party::PartyMembers CurrentPartnerOut = *reinterpret_cast<ttyd::party::PartyMembers *>(PartnerPointer + 0x31);
+	if (CurrentPartnerOut == ttyd::party::PartyMembers::kNone)
 	{
 		return false;
 	}
@@ -3841,9 +3819,8 @@ void adjustPartnerStatsSelection(uint32_t button)
 	uint32_t TotalMenuOptions = tempStatsPartnerOptionsLinesSize;
 	
 	// Add the necessary extra lines
-	const uint32_t YoshiPartner = 4;
-	uint32_t CurrentPartner = getSelectedOptionPartnerValue();
-	if (CurrentPartner == YoshiPartner)
+	ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
+	if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 	{
 		TotalMenuOptions += 2;
 	}

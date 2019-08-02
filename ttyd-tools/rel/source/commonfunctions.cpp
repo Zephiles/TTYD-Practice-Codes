@@ -11,6 +11,7 @@
 #include <ttyd/party.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/mario.h>
 
 #include <cstring>
 
@@ -284,6 +285,23 @@ void setNewYoshiColorId(uint32_t colorId)
 	
 	const uint32_t YoshiPartnerId = 4;
 	ttyd::mario_pouch::pouchSetPartyColor(YoshiPartnerId, colorId);
+}
+
+void spawnFollower(ttyd::party::PartyMembers followerId)
+{
+	// If a follower is out, remove them
+	removeFollowerFromOverworld();
+	
+	// Spawn the new follower
+	int32_t ReturnCode = ttyd::party::partyEntry2Hello(followerId);
+	
+	// Set specific bytes
+	if (ReturnCode >= 0)
+	{
+		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+		player->wFollowerFlags[1] = static_cast<uint8_t>(ReturnCode);
+		player->prevFollowerId[1] = followerId;
+	}
 }
 
 bool checkIfBadgeEquipped(int16_t badge)

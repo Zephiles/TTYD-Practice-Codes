@@ -13,6 +13,7 @@
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_party.h>
 #include <ttyd/win_main.h>
+#include <ttyd/party.h>
 
 namespace mod {
 
@@ -1330,9 +1331,8 @@ void menuCheckButton()
 										case TOGGLE + 1:
 										{
 											// Check if currently on Yoshi
-											const uint32_t YoshiPartner = 4;
-											uint32_t CurrentPartner = getSelectedOptionPartnerValue();
-											if (CurrentPartner == YoshiPartner)
+											ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
+											if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 											{
 												MenuVar.MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_COLORS;
 												uint32_t CurrentColorId = getCurrentYoshiColorId();
@@ -1357,9 +1357,8 @@ void menuCheckButton()
 										case TOGGLE + 2:
 										{
 											// This option should only be available for Yoshi
-											const uint32_t YoshiPartner = 4;
-											uint32_t CurrentPartner = getSelectedOptionPartnerValue();
-											if (CurrentPartner == YoshiPartner)
+											ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
+											if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 											{
 												partnerMenuRemoveOrBringOut(reinterpret_cast<void *>(PartnerEnabledAddress));
 											}
@@ -3153,11 +3152,10 @@ void drawMenu()
 			// Draw the error message if the player tried to spawn a partner while either not in the game or in a battle
 			if (tempFunctionReturnCode < 0)
 			{
-				const uint32_t YoshiPartner = 4;
-				uint32_t CurrentPartner = getSelectedOptionPartnerValue();
+				ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
 				
 				uint32_t AdditionalOptions = 0;
-				if (CurrentPartner == YoshiPartner)
+				if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
 				{
 					// Add an extra line for Yoshi
 					AdditionalOptions++;

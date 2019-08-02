@@ -1124,7 +1124,7 @@ void displayBlimpTicketSkipDetails()
 	double StickAngle = getStickAngle(nullptr);
 	if (StickAngle >= UpRightAngleStart)
 	{
-		// Stop the up-right timer when the angle held reaches or exceeds 25
+		// Stop the up-right timer when the angle held reaches or exceeds 25 for JP, or 27 for US/EU
 		BlimpTicketSkip.UpRightTimerStopped = true;
 	}
 	else if (StickAngle == 0)

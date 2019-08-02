@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/party.h>
+
 #include <cstdint>
 
 namespace ttyd::mario {
@@ -97,7 +99,7 @@ struct Player
 	uint8_t gap_210[52];
 	uint8_t unk_244;
 	uint8_t wFollowerFlags[2];
-	uint8_t prevFollowerId[2];
+	ttyd::party::PartyMembers prevFollowerId[2];
 	uint8_t unk_249;
 	uint16_t wPauseButtonBuffer;
 	uint16_t unk_24c;
