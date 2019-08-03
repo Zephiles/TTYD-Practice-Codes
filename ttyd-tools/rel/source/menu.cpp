@@ -2496,8 +2496,41 @@ void menuCheckButton()
 				case A:
 				{
 					// Flip the bool for the current display
-					bool DisplayActive = Displays[tempMenuSelectedOption];
-					Displays[tempMenuSelectedOption] = !DisplayActive;
+					bool DisplayActive = !Displays[tempMenuSelectedOption];
+					Displays[tempMenuSelectedOption] = DisplayActive;
+					
+					// Exit if the display was turned off
+					if (!DisplayActive)
+					{
+						break;
+					}
+					
+					// If one of the trick displays was turned on, then turn off the other trick displays
+					switch (tempMenuSelectedOption)
+					{
+						case YOSHI_SKIP:
+						{
+							Displays[PALACE_SKIP] = false;
+							Displays[BLIMP_TICKET_SKIP] = false;
+							break;
+						}
+						case PALACE_SKIP:
+						{
+							Displays[YOSHI_SKIP] = false;
+							Displays[BLIMP_TICKET_SKIP] = false;
+							break;
+						}
+						case BLIMP_TICKET_SKIP:
+						{
+							Displays[YOSHI_SKIP] = false;
+							Displays[PALACE_SKIP] = false;
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
 					break;
 				}
 				case B:
