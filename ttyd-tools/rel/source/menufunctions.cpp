@@ -5,6 +5,7 @@
 #include "memorywatch.h"
 
 #include <ttyd/win_main.h>
+#include <ttyd/mariost.h>
 #include <ttyd/win_item.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/item_data.h>
@@ -130,7 +131,7 @@ void resetImportantItemsPauseMenu()
 	}
 	
 	// Only run if the pause menu is currently open
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (SystemLevel != 15)
 	{
 		// The pause menu is not open, so do nothing
@@ -177,10 +178,10 @@ void raiseSystemLevel()
 	// Raise the System Level if not in a battle
 	if (checkIfInGame())
 	{
-		uint32_t SystemLevel = getSystemLevel();
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 		
 		// Increase the System Level by 1
-		setSystemLevel(SystemLevel + 1);
+		ttyd::mariost::marioStSystemLevel(SystemLevel + 1);
 	}
 }
 
@@ -189,12 +190,12 @@ void lowerSystemLevel()
 	// Lower the System Level if not in a battle
 	if (checkIfInGame())
 	{
-		uint32_t SystemLevel = getSystemLevel();
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 		if (SystemLevel > 0)
 		{
 			// Decrease the System Level by 1
 			// Only decrease if not already at 0
-			setSystemLevel(SystemLevel - 1);
+			ttyd::mariost::marioStSystemLevel(SystemLevel - 1);
 		}
 	}
 }
@@ -2808,33 +2809,28 @@ int32_t resolveFade(uint32_t index)
 	return FADE_RESOLVE_SUCCESS;
 }
 
-ttyd::evtmgr::EvtWork *getCurrentEventWork()
-{
-	return ttyd::evtmgr::evtGetWork();
-}
-
 int32_t getGW(uint32_t gw)
 {
-	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
 	return EventWork->gwData[gw];
 }
 
 void setGW(uint32_t gw, uint32_t value)
 {
-	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
 	EventWork->gwData[gw] = value;
 }
 
 bool getGF(uint32_t gf)
 {
-	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
 	uint32_t Size = sizeof(uint32_t) * 8;
 	return (EventWork->gfData[gf / Size] >> (gf % Size)) & 1;
 }
 
 void setGF(uint32_t gf)
 {
-	ttyd::evtmgr::EvtWork *EventWork = getCurrentEventWork();
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
 	uint32_t Size = sizeof(uint32_t) * 8;
 	EventWork->gfData[gf / Size] ^= (1 << (gf % Size)); // Toggle the bit
 }
@@ -3201,7 +3197,7 @@ int32_t getMapIndex()
 				clearMemory(tempButtonArray, ((Size + 1) * sizeof(uint8_t)));
 				
 				// Copy the contents of the old array to the new array
-				copyMemory(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
+				memcpy(tempButtonArray, buttonArrayOut, ((Size - 1) * sizeof(uint8_t)));
 				
 				// Delete the old array
 				delete[] (buttonArrayOut);
@@ -3347,7 +3343,7 @@ void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t str
 		if (i == 0)
 		{
 			// Set the initial button pressed
-			copyString(stringOut, ButtonText);
+			strcpy(stringOut, ButtonText);
 		}
 		else
 		{
@@ -3357,7 +3353,7 @@ void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t str
 				ButtonText);
 			
 			// Make sure adding the new text will not result in an overflow
-			uint32_t CurrentTextSize = getStringSize(stringOut);
+			uint32_t CurrentTextSize = strlen(stringOut);
 			uint32_t TotalTextSize = CurrentTextSize + static_cast<uint32_t>(NewTextSize) + 1;
 			
 			if (TotalTextSize > stringOutSize)
@@ -3443,7 +3439,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 			MenuVar.Timer = secondsToFrames(3);
 			
 			// Copy the values from the current buttons held to the previous buttons held
-			copyMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
+			memcpy(CheatsDisplayButtons.CheatsPreviousButtonsHeld, 
 				CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 			
 			return false;

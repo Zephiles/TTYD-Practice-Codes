@@ -1,11 +1,10 @@
 #pragma once
 
-#include "commonfunctions.h"
-
 #include <cstdint>
 
 namespace mod::patch {
 
+void clear_DC_IC_Cache(void *ptr, uint32_t size);
 void writeBranch(void *ptr, void *destination);
 void writeBranchLR(void *ptr, void *destination);
 void writeBranchMain(void *ptr, void *destination, uint32_t branch);

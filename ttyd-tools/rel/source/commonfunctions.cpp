@@ -1,6 +1,5 @@
 #include "commonfunctions.h"
 
-#include <gc/OSCache.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/mariost.h>
@@ -174,23 +173,13 @@ void setSequencePosition(uint32_t value)
 
 void setNextMap(const char *map)
 {
-	copyString(ttyd::seq_mapchange::NextMap, map);
+	strcpy(ttyd::seq_mapchange::NextMap, map);
 	strncpy(ttyd::seq_mapchange::NextArea, map, 3);
 }
 
 void setNextBero(const char *bero)
 {
-	copyString(ttyd::seq_mapchange::NextBero, bero);
-}
-
-char *copyString(char *destination, const char *source)
-{
-	return strcpy(destination, source);
-}
-
-void *copyMemory(void *destination, const void *source, uint32_t size)
-{
-	return memcpy(destination, source, size);
+	strcpy(ttyd::seq_mapchange::NextBero, bero);
 }
 
 bool compareStrings(const char *str1, const char *str2)
@@ -198,7 +187,7 @@ bool compareStrings(const char *str1, const char *str2)
 	return strcmp(str1, str2) == 0;
 }
 
-bool compareStringsSize(const char *str1, const char *str2, uint32_t size)
+bool compareStringsSize(const char *str1, const char *str2, size_t size)
 {
 	return strncmp(str1, str2, size) == 0;
 }
@@ -208,62 +197,37 @@ bool compareStringToNextMap(const char *str)
 	return compareStrings(str, ttyd::seq_mapchange::NextMap);
 }
 
-uint32_t getStringSize(const char *str)
-{
-	return strlen(str);
-}
-
-uint32_t getSystemLevel()
-{
-	return ttyd::mariost::marioStGetSystemLevel();
-}
-
-void setSystemLevel(uint32_t value)
-{
-	ttyd::mariost::marioStSystemLevel(value);
-}
-
 void setSeqMapChange(const char *map, const char *bero)
 {
 	ttyd::seqdrv::seqSetSeq(ttyd::seqdrv::SeqIndex::kMapChange, map, bero);
 }
 
-void *clearMemory(void *destination, uint32_t size)
+void *clearMemory(void *destination, std::size_t size)
 {
 	return memset(destination, 0, size);
 }
 
-int32_t getPartnerID()
-{
-	return ttyd::mario_party::marioGetPartyId();
-}
-
-int32_t getFollowerID()
-{
-	return ttyd::mario_party::marioGetExtraPartyId();
-}
-
 void *getPartnerPointer()
 {
-	int32_t PartyID = getPartnerID();
+	int32_t PartyID = ttyd::mario_party::marioGetPartyId();
 	return ttyd::party::partyGetPtr(PartyID);
 }
 
 void *getFollowerPointer()
 {
-	int32_t FollowerID = getFollowerID();
+	int32_t FollowerID = ttyd::mario_party::marioGetExtraPartyId();
 	return ttyd::party::partyGetPtr(FollowerID);
 }
 
 void removePartnerFromOverworld()
 {
-	int32_t PartyID = getPartnerID();
+	int32_t PartyID = ttyd::mario_party::marioGetPartyId();
 	ttyd::party::partyKill2(PartyID);
 }
 
 void removeFollowerFromOverworld()
 {
-	int32_t FollowerID = getFollowerID();
+	int32_t FollowerID = ttyd::mario_party::marioGetExtraPartyId();
 	ttyd::party::partyKill2(FollowerID);
 }
 
@@ -333,12 +297,6 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	{
 		ttyd::swdrv::swClear(i);
 	}
-}
-
-void clear_DC_IC_Cache(void *ptr, uint32_t size)
-{
-	gc::OSCache::DCFlushRange(ptr, size);
-	gc::OSCache::ICInvalidateRange(ptr, size);
 }
 
 bool checkIfPointerIsValid(void *ptr)

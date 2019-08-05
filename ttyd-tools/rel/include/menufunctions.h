@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ttyd/party.h>
-#include <ttyd/evtmgr.h>
 
 #include <cstdint>
 
@@ -63,7 +62,6 @@ void deleteItem();
 int32_t changeItem();
 
 int32_t resolveFade(uint32_t index);
-ttyd::evtmgr::EvtWork *getCurrentEventWork();
 int32_t getGW(uint32_t gw);
 void setGW(uint32_t gw, uint32_t value);
 bool getGF(uint32_t gf);

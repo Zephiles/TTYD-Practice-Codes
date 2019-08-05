@@ -506,8 +506,8 @@ void addTextToHeapArray(char *text)
 	char *tempHeapBuffer = HeapBuffer;
 	
 	// Make sure adding the new text will not result in an overflow
-	uint32_t NewTextSize = getStringSize(text);
-	uint32_t CurrentHeapSize = getStringSize(tempHeapBuffer);
+	uint32_t NewTextSize = strlen(text);
+	uint32_t CurrentHeapSize = strlen(tempHeapBuffer);
 	
 	uint32_t NewHeapSize = CurrentHeapSize + NewTextSize + 1;
 	uint32_t MaxHeapSize = sizeof(HeapBuffer);

@@ -25,6 +25,7 @@
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
 
+#include <cstring>
 #include <cstdio>
 #include <cinttypes>
 
@@ -382,9 +383,9 @@ void drawStringMultiline(float x, float y, const char *text, float scale)
 	increment = static_cast<float>(tempIncrementValue);
 	
 	// Copy the text to a temporary array, as it will be modified
-	uint32_t textSize = getStringSize(text);
+	uint32_t textSize = strlen(text);
 	char tempText[textSize + 1];
-	copyString(tempText, text);
+	strcpy(tempText, text);
 	
 	// Get the index for the next line
 	uint32_t index = getNextLineIndex(tempText);

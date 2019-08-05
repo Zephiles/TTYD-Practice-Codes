@@ -7,6 +7,7 @@
 #include "patch.h"
 
 #include <ttyd/item_data.h>
+#include <ttyd/mariost.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
@@ -21,8 +22,8 @@
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
-#include <ttyd/mariost.h>
 
+#include <cstring>
 #include <cstdio>
 #include <cinttypes>
 #include <cmath>
@@ -246,7 +247,7 @@ void loadMarioAndPartnerPositions()
 
 void saveAnywhere()
 {
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (!SaveAnywhere.ScriptIsRunning)
 	{
 		if (!Cheat[SAVE_ANYWHERE].Active || MenuVar.ChangingCheatButtonCombo)
@@ -269,7 +270,7 @@ void saveAnywhere()
 				#endif
 				
 				// Take away control from the player and start the Save script
-				setSystemLevel(SystemLevel + 1);
+				ttyd::mariost::marioStSystemLevel(SystemLevel + 1);
 				
 				uint32_t SaveScriptEvtEntry = reinterpret_cast<uint32_t>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0));
 				SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(SaveScriptEvtEntry + 0x15C);
@@ -298,7 +299,7 @@ void saveAnywhere()
 		// Only lower the system level if it's not currently at 0
 		if (SystemLevel > 0)
 		{
-			setSystemLevel(SystemLevel - 1);
+			ttyd::mariost::marioStSystemLevel(SystemLevel - 1);
 		}
 	}
 }
@@ -428,10 +429,10 @@ void checkIfSystemLevelShouldBeLowered()
 	if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kGame))
 	{
 		// Only lower the system level if it's not currently at 0
-		uint32_t SystemLevel = getSystemLevel();
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 		if (SystemLevel > 0)
 		{
-			setSystemLevel(0);
+			ttyd::mariost::marioStSystemLevel(0);
 		}
 	}
 	else
@@ -479,15 +480,15 @@ void reloadRoomMain()
 	char *tempNewBero = ReloadRoom.NewBero;
 	char *tempNewMap = ReloadRoom.NewMap;
 	
-	copyString(tempNewBero, ttyd::seq_mapchange::NextBero);
-	copyString(tempNewMap, ttyd::seq_mapchange::NextMap);
+	strcpy(tempNewBero, ttyd::seq_mapchange::NextBero);
+	strcpy(tempNewMap, ttyd::seq_mapchange::NextMap);
 	setSeqMapChange(tempNewMap, tempNewBero);
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
 	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
 	*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 	
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (SystemLevel == 0)
 	{
 		return;
@@ -503,7 +504,7 @@ void reloadRoomMain()
 	// Enable sound effects, set the default camera id for Mario, and give back control to the player
 	ttyd::pmario_sound::psndClearFlag(0x80);
 	ttyd::mario_cam::marioSetCamId(4);
-	setSystemLevel(0);
+	ttyd::mariost::marioStSystemLevel(0);
 	ReloadRoom.SystemLevelShouldBeLowered = true;
 }
 
@@ -638,7 +639,7 @@ void spawnItem()
 	bool tempInAdjustableValueMenu = SpawnItem.InAdjustableValueMenu;
 	if (Cheat[SPAWN_ITEM].Active && !MenuVar.ChangingCheatButtonCombo)
 	{
-		uint32_t SystemLevel = getSystemLevel();
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 		if (checkIfInGame() && (SystemLevel != 15))
 		{
 			// Currently not in a battle and the pause menu is not open
@@ -825,7 +826,7 @@ void getStickAngleString(char *stringOut)
 	if (StickAngle == -1000)
 	{
 		// The stick is currently at the neutral position
-		copyString(stringOut, "Neutral");
+		strcpy(stringOut, "Neutral");
 		return;
 	}
 	
@@ -838,7 +839,7 @@ void getStickAngleString(char *stringOut)
 
 void displaySequenceInPauseMenu()
 {
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (SystemLevel != 15)
 	{
 		return;
@@ -1048,7 +1049,7 @@ void displayPalaceSkipDetails()
 		return;
 	}
 	
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (SystemLevel == 15)
 	{
 		// Stop upon pausing
@@ -1097,7 +1098,7 @@ void displayBlimpTicketSkipDetails()
 		return;
 	}
 	
-	uint32_t SystemLevel = getSystemLevel();
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (SystemLevel == 15)
 	{
 		// Stop upon pausing
@@ -1471,7 +1472,7 @@ uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
 			reinterpret_cast<uint32_t>(
 				ttyd::mariost::globalWorkPointer) + 0x11C);
 		
-		copyString(NextBeroGSW, ChosenEntranceName);
+		strcpy(NextBeroGSW, ChosenEntranceName);
 		setNextBero(ChosenEntranceName);
 	}
 	

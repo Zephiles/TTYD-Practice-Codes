@@ -5,6 +5,8 @@
 #include <gc/card.h>
 #include <ttyd/cardmgr.h>
 
+#include <cstring>
+
 namespace mod {
 
 int32_t finishAsyncFunction(int32_t returnCode)
@@ -214,7 +216,7 @@ int32_t loadSettings(const char *settingsFileName)
 	}
 	
 	// Get the Memory Watches
-	copyMemory(MemoryWatch, Settings->MemoryWatchSettings, sizeof(MemoryWatch));
+	memcpy(MemoryWatch, Settings->MemoryWatchSettings, sizeof(MemoryWatch));
 	
 	delete[] (MiscData);
 	return CARD_RESULT_READY;
@@ -329,8 +331,8 @@ int32_t writeSettings(const char *settingsDescription,
 	SaveFileDecriptionInfo *SaveFileInfo = reinterpret_cast<SaveFileDecriptionInfo *>(&MiscData[0]);
 	
 	// Copy the name, description, and file size
-	copyString(SaveFileInfo->Description1, "Paper Mario");
-	copyString(SaveFileInfo->Description2, settingsDescription);
+	strcpy(SaveFileInfo->Description1, "Paper Mario");
+	strcpy(SaveFileInfo->Description2, settingsDescription);
 	SaveFileInfo->FileSize = FileSize;
 	
 	// Set up the struct to hold the variables to store
@@ -362,7 +364,7 @@ int32_t writeSettings(const char *settingsDescription,
 	}
 	
 	// Copy the Memory Watches
-	copyMemory(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
+	memcpy(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
 	
 	// Write the data to the file
 	ReturnCode = writeToFileOnCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000);

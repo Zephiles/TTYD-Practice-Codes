@@ -11,6 +11,7 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/mariost.h>
 #include <ttyd/win_party.h>
 #include <ttyd/win_main.h>
 #include <ttyd/party.h>
@@ -1319,7 +1320,7 @@ void menuCheckButton()
 											*AddressToChange = !*AddressToChange;
 											
 											// Reset the partner menu if the pause menu is open
-											uint32_t SystemLevel = getSystemLevel();
+											uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 											if (SystemLevel == 15)
 											{
 												void *PauseMenuPointer = ttyd::win_main::winGetPtr();

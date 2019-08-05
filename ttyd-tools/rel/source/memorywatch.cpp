@@ -8,6 +8,7 @@
 
 #include <cstdio>
 #include <cinttypes>
+#include <cstring>
 
 namespace mod {
 
@@ -369,7 +370,7 @@ void deleteWatch(int32_t slot)
 	if (slot < TotalMenuOptions)
 	{
 		uint32_t Size = sizeof(MemoryWatch[0]) * (TotalMenuOptions - slot);
-		copyMemory(&MemoryWatch[slot], &MemoryWatch[slot + 1], Size);
+		memcpy(&MemoryWatch[slot], &MemoryWatch[slot + 1], Size);
 	}
 	
 	clearMemory(&MemoryWatch[TotalMenuOptions], sizeof(MemoryWatch[0]));
@@ -400,7 +401,7 @@ void deleteWatch(int32_t slot)
 void duplicateWatch(int32_t currentSlot, int32_t emptySlot)
 {
 	uint32_t Size = sizeof(MemoryWatch[0]);
-	copyMemory(&MemoryWatch[emptySlot], &MemoryWatch[currentSlot], Size);
+	memcpy(&MemoryWatch[emptySlot], &MemoryWatch[currentSlot], Size);
 }
 
 uint32_t adjustWatchValueControls(int32_t slot)
