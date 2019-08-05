@@ -1259,7 +1259,8 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					{
 						if (MenuVar.SelectedOption == ADD_BY_ID)
 						{
-							resetAndCloseSecondaryMenu();
+							MenuVar.Timer = 0;
+							closeSecondaryMenu();
 						}
 						else // (MenuVar.SelectedOption == CHANGE_BY_ID)
 						{

@@ -218,6 +218,7 @@ void menuCheckButton()
 								{
 									if (getFreeSlotPointer())
 									{
+										MenuVar.MenuSecondaryValue 		= 0;
 										MenuVar.SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempMenuSelectedOption) - 1;
 										MenuVar.Timer 					= 0;
 										MenuVar.SelectedOption 			= CurrentMenuOptionCheck;
