@@ -774,6 +774,7 @@ void menuCheckButton()
 				case B:
 				{
 					// Go back to the previous menu
+					MenuVar.Timer = 0;
 					MenuVar.FunctionReturnCode = 0;
 					MenuVar.MenuSelectedOption = 0;
 					enterPreviousMenu();
