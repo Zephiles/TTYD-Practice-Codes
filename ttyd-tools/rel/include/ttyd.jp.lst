@@ -721,6 +721,11 @@
 // 80083748:msgLoad
 // 800839B0:msgInit
 
+// database.o
+80083F9C:setupDataBase
+80084604:setupDataCheck
+800846C0:setupDataLoad
+
 // swdrv.o
 800847B8:_swByteGet
 800847C8:_swByteSet
