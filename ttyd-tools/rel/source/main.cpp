@@ -113,8 +113,7 @@ uint32_t fixBlooperCrash1(uint32_t unkValue, void *battleUnitPointer)
 	return 2;
 }
 
-void preventTextboxOptionSelection(char *currentText, void *storeAddress, 
-	int32_t selectedOption)
+void preventTextboxOptionSelection(char *currentText, void *storeAddress, int32_t selectedOption)
 {
 	int32_t NewOption;
 	// const int32_t FirstOption = 0;
@@ -321,7 +320,7 @@ void displayTitleScreenAndFileSelectScreenInfo()
 			// Draw the file select screen info
 			drawFunctionOn2DLayer(drawFileSelectScreenInfo);
 		}
-	}	
+	}
 }
 
 int32_t Mod::pauseMenuPreventUnpause(void *pauseMenuPointer)
@@ -450,7 +449,7 @@ void performRELPatches()
 	
 	// Make sure a REL file is currently loaded
 	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
-	if (Current_REL_Loaded_Pointer == 0)
+	if (!Current_REL_Loaded_Pointer)
 	{
 		return;
 	}
@@ -547,7 +546,7 @@ void checkHeaps()
 			}
 			
 			// Sanity check size
-			if (currentChunk->size > 0x17FFFFF)
+			if (currentChunk->size >= 0x1800000)
 			{
 				valid = false;
 				break;
@@ -591,7 +590,7 @@ void checkHeaps()
 		}
 		
 		// Sanity check size
-		if (currentChunk->usedSize > 0x17FFFFF)
+		if (currentChunk->usedSize >= 0x1800000)
 		{
 			valid = false;
 			break;
@@ -622,17 +621,6 @@ void checkHeaps()
 	{
 		drawFunctionOnDebugLayer(drawHeapArrayErrors);
 	}
-}
-
-void writeStandardBranch(void *address, void functionStart(), void functionBranchBack())
-{
-	void *tempFunctionStart 		= reinterpret_cast<void *>(functionStart);
-	void *tempFunctionBranchBack 	= reinterpret_cast<void *>(functionBranchBack);
-	void *branchBackAddress 		= reinterpret_cast<void *>(
-		(reinterpret_cast<uint32_t>(address) + 0x4));
-	
-	patch::writeBranch(address, tempFunctionStart);
-	patch::writeBranch(tempFunctionBranchBack, branchBackAddress);
 }
 
 void initAddressOverwrites()

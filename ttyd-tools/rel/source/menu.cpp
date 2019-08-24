@@ -2138,7 +2138,7 @@ void menuCheckButton()
 								{
 									case CLEAR_HELD_ITEM:
 									{
-										if (ActorAddress == 0)
+										if (!ActorAddress)
 										{
 											break;
 										}
@@ -2181,7 +2181,7 @@ void menuCheckButton()
 									}
 									default:
 									{
-										if (ActorAddress == 0)
+										if (!ActorAddress)
 										{
 											break;
 										}
@@ -2303,7 +2303,7 @@ void menuCheckButton()
 							uint32_t ActorAddress = reinterpret_cast<uint32_t>(
 								getActorPointer(tempMenuSelectedOption));
 							
-							if (ActorAddress == 0)
+							if (!ActorAddress)
 							{
 								break;
 							}

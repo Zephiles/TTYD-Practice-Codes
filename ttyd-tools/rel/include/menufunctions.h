@@ -26,6 +26,7 @@ int32_t getTotalItems();
 void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu);
 uint32_t *getPouchAddressAndSize(uint32_t tempArray[2]);
 bool checkForItemsOnNextPage(uint32_t currentPage);
+bool checkErrorMessageReqs();
 bool checkForClosingErrorMessage();
 
 void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage);

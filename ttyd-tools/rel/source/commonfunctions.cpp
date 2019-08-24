@@ -19,42 +19,31 @@ namespace mod {
 bool checkButtonCombo(uint32_t combo)
 {
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-	if ((ButtonInput & combo) == combo)
+	if ((ButtonInput & combo) != combo)
 	{
-		uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
-		if (ButtonInputTrg & combo)
-		{
-			return true;
-		}
+		return false;
 	}
-	return false;
+	
+	uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
+	return ButtonInputTrg & combo;
 }
 
 bool checkButtonComboEveryFrame(uint32_t combo)
 {
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
-	if ((ButtonInput & combo) == combo)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (ButtonInput & combo) == combo;
 }
 
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq)
 {
 	ttyd::seqdrv::SeqIndex NextSeq = ttyd::seqdrv::seqGetNextSeq();
-	if (NextSeq == wantedSeq)
+	if (NextSeq != wantedSeq)
 	{
-		ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
-		if (CurrentSeq == wantedSeq)
-		{
-			return true;
-		}
+		return false;
 	}
-	return false;
+	
+	ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
+	return CurrentSeq == wantedSeq;
 }
 
 bool checkIfInGame()
@@ -62,32 +51,33 @@ bool checkIfInGame()
 	ttyd::seqdrv::SeqIndex NextSeq = ttyd::seqdrv::seqGetNextSeq();
 	ttyd::seqdrv::SeqIndex Game = ttyd::seqdrv::SeqIndex::kGame;
 	
-	if (NextSeq == Game)
+	if (NextSeq != Game)
 	{
-		ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
-		if (CurrentSeq == Game)
-		{
-			uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
-			if (Current_REL_Loaded_Pointer != 0)
-			{
-				#ifdef TTYD_US
-				const uint32_t DMO = 0x4;
-				#elif defined TTYD_JP
-				const uint32_t DMO = 0x5;
-				#elif defined TTYD_EU
-				const uint32_t DMO = 0x5;
-				#endif
-				
-				uint32_t Current_REL_Id = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
-				if (Current_REL_Id != DMO)
-				{
-					// Currently not in the intro
-					return true;
-				}
-			}
-		}
+		return false;
 	}
-	return false;
+	
+	ttyd::seqdrv::SeqIndex CurrentSeq = ttyd::seqdrv::seqGetSeq();
+	if (CurrentSeq != Game)
+	{
+		return false;
+	}
+	
+	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
+	if (!Current_REL_Loaded_Pointer)
+	{
+		return false;
+	}
+	
+	#ifdef TTYD_US
+	const uint32_t DMO = 0x4;
+	#elif defined TTYD_JP
+	const uint32_t DMO = 0x5;
+	#elif defined TTYD_EU
+	const uint32_t DMO = 0x5;
+	#endif
+	
+	uint32_t Current_REL_Id = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
+	return Current_REL_Id != DMO;
 }
 
 void *getCurrentRELPointer()

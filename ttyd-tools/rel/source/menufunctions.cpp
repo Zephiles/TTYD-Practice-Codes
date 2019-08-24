@@ -570,7 +570,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		case BATTLES_CURRENT_ACTOR:
 		{
 			uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(tempMenuSelectedOption));
-			if (ActorAddress == 0)
+			if (!ActorAddress)
 			{
 				break;
 			}
@@ -607,7 +607,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 		case BATTLES_STATUSES:
 		{
 			uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(tempMenuSelectedOption));
-			if (ActorAddress == 0)
+			if (!ActorAddress)
 			{
 				break;
 			}
@@ -743,15 +743,27 @@ bool checkForItemsOnNextPage(uint32_t currentPage)
 		return false;
 	}
 	
-	if (CurrentItem != 0)
-	{
-		// Found an item
-		return true;
-	}
-	else
+	return CurrentItem != 0;
+}
+
+bool checkErrorMessageReqs()
+{
+	if (MenuVar.FunctionReturnCode >= 0)
 	{
 		return false;
 	}
+	
+	if (MenuVar.Timer == 0)
+	{
+		return false;
+	}
+	
+	if (checkForClosingErrorMessage())
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 bool checkForClosingErrorMessage()
@@ -781,45 +793,43 @@ void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage)
 {
 	// Make sure that an option has already been selected
 	uint32_t tempSelectedOption = MenuVar.SelectedOption;
-	if (tempSelectedOption != 0)
-	{
-		// Make sure the number of items if valid
-		int32_t tempTotalMenuOptions = getTotalItems();
-		if (tempTotalMenuOptions == NULL_PTR)
-		{
-			return;
-		}
-		
-		uint32_t TotalMenuOptions = static_cast<uint32_t>(tempTotalMenuOptions);
-		if (TotalMenuOptions == 0)
-		{
-			// No items in the inventory, so reset the current page and leave
-			MenuVar.CurrentPage = 0;
-			return;
-		}
-		
-		uint32_t TotalPages 			= 1 + ((TotalMenuOptions - 1) / maxOptionsPerPage); // Round up
-		uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
-		uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
-		
-		if ((tempSelectedOption >= DUPLICATE) && 
-			(tempSelectedOption <= DELETE))
-		{
-			if (tempCurrentMenuOption > (TotalMenuOptions - 1))
-			{
-				MenuVar.CurrentMenuOption = TotalMenuOptions - 1;
-			}
-		}
-		
-		if (tempCurrentPage > (TotalPages - 1))
-		{
-			MenuVar.CurrentPage = TotalPages - 1;
-		}
-	}
-	else
+	if (tempSelectedOption == 0)
 	{
 		// No option is currently selected, so do nothing
 		return;
+	}
+	
+	// Make sure the number of items if valid
+	int32_t tempTotalMenuOptions = getTotalItems();
+	if (tempTotalMenuOptions == NULL_PTR)
+	{
+		return;
+	}
+	
+	uint32_t TotalMenuOptions = static_cast<uint32_t>(tempTotalMenuOptions);
+	if (TotalMenuOptions == 0)
+	{
+		// No items in the inventory, so reset the current page and leave
+		MenuVar.CurrentPage = 0;
+		return;
+	}
+	
+	uint32_t TotalPages 			= 1 + ((TotalMenuOptions - 1) / maxOptionsPerPage); // Round up
+	uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
+	uint32_t tempCurrentPage 		= MenuVar.CurrentPage;
+	
+	if ((tempSelectedOption >= DUPLICATE) && 
+		(tempSelectedOption <= DELETE))
+	{
+		if (tempCurrentMenuOption > (TotalMenuOptions - 1))
+		{
+			MenuVar.CurrentMenuOption = TotalMenuOptions - 1;
+		}
+	}
+	
+	if (tempCurrentPage > (TotalPages - 1))
+	{
+		MenuVar.CurrentPage = TotalPages - 1;
 	}
 }
 
@@ -1058,32 +1068,28 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						case ADD_BY_ID:
 						{
 							void *tempAddress = getFreeSlotPointer();
-							if (tempAddress)
-							{
-								setAddByIdValue(tempAddress);
-								
-								MenuVar.FrameCounter = 1;
-								return ADDING_BY_ID;
-							}
-							else
+							if (!tempAddress)
 							{
 								return 0;
 							}
+							
+							setAddByIdValue(tempAddress);
+							
+							MenuVar.FrameCounter = 1;
+							return ADDING_BY_ID;
 						}
 						case CHANGE_BY_ID:
 						{
-							if (getTotalItems() > 0)
-							{
-								changeItem();
-								MenuVar.MenuSelectionStates = 0;
-								
-								MenuVar.FrameCounter = 1;
-								return Button;
-							}
-							else
+							if (getTotalItems() <= 0)
 							{
 								return 0;
 							}
+							
+							changeItem();
+							MenuVar.MenuSelectionStates = 0;
+							
+							MenuVar.FrameCounter = 1;
+							return Button;
 						}
 						default:
 						{
@@ -1390,32 +1396,28 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 			if (tempSelectedOption == ADD_BY_ICON)
 			{
 				void *tempAddress = getFreeSlotPointer();
-				if (tempAddress)
-				{
-					setAddByIconValue(tempAddress);
-					
-					MenuVar.FrameCounter = 1;
-					return ADDING_BY_ICON;
-				}
-				else
+				if (!tempAddress)
 				{
 					return 0;
 				}
+				
+				setAddByIconValue(tempAddress);
+				
+				MenuVar.FrameCounter = 1;
+				return ADDING_BY_ICON;
 			}
 			else // (tempSelectedOption == CHANGE_BY_ICON)
 			{
-				if (getTotalItems() > 0)
-				{
-					MenuVar.MenuSelectionStates = 0;
-					changeItem();
-					
-					MenuVar.FrameCounter = 1;
-					return Button;
-				}
-				else
+				if (getTotalItems() <= 0)
 				{
 					return 0;
 				}
+				
+				MenuVar.MenuSelectionStates = 0;
+				changeItem();
+				
+				MenuVar.FrameCounter = 1;
+				return Button;
 			}
 		}
 		case B:
@@ -1768,23 +1770,21 @@ uint32_t followersOptionsButtonControls()
 		}
 		case A:
 		{
-			if (checkIfInGame())
-			{
-				// Get the follower id to use
-				uint8_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
-				
-				// Spawn the new follower
-				spawnFollower(static_cast<ttyd::party::PartyMembers>(NewFollower));
-				
-				closeSecondaryMenu();
-				
-				MenuVar.FrameCounter = 1;
-				return Button;
-			}
-			else
+			if (!checkIfInGame())
 			{
 				return 0;
 			}
+			
+			// Get the follower id to use
+			uint8_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
+			
+			// Spawn the new follower
+			spawnFollower(static_cast<ttyd::party::PartyMembers>(NewFollower));
+			
+			closeSecondaryMenu();
+			
+			MenuVar.FrameCounter = 1;
+			return Button;
 		}
 		case B:
 		{
@@ -2331,7 +2331,7 @@ void setPartnerStatsValue(uint32_t currentMenuOption)
 void setBattlesActorValue(uint32_t currentMenuOption)
 {
 	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
-	if (ActorAddress == 0)
+	if (!ActorAddress)
 	{
 		return;
 	}
@@ -2390,8 +2390,7 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 			const uint32_t MarioId 	= 222;
 			const uint32_t MowzId 	= 230;
 			
-			if ((CurrentActorId >= MarioId) && 
-				(CurrentActorId <= MowzId))
+			if ((CurrentActorId >= MarioId) && (CurrentActorId <= MowzId))
 			{
 				break;
 			}
@@ -2414,7 +2413,7 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 void setBattlesActorStatusValue(uint32_t currentMenuOption)
 {
 	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
-	if (ActorAddress == 0)
+	if (!ActorAddress)
 	{
 		return;
 	}
@@ -2502,7 +2501,7 @@ void *getPartnerEnabledAddress()
 bool checkIfPartnerOutSelected()
 {
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer == 0)
+	if (!PartnerPointer)
 	{
 		return false;
 	}
@@ -2513,14 +2512,7 @@ bool checkIfPartnerOutSelected()
 		return false;
 	}
 	
-	if (CurrentPartnerOut == getSelectedOptionPartnerValue())
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return CurrentPartnerOut == getSelectedOptionPartnerValue();
 }
 
 void setAddByIdValue(void *address)
@@ -3452,14 +3444,7 @@ bool cheatsManageTimer(uint32_t buttonInput)
 			tempTimer--;
 			MenuVar.Timer = tempTimer;
 			
-			if (tempTimer == 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return tempTimer == 0;
 		}
 	}
 	else
@@ -3842,7 +3827,7 @@ void adjustMemoryWatchSelection(uint32_t button)
 	
 	for (uint32_t i = 0; i < Size; i++)
 	{
-		if (MemoryWatch[i].Address == 0)
+		if (!MemoryWatch[i].Address)
 		{
 			break;
 		}

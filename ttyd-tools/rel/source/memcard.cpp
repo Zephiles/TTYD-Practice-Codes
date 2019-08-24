@@ -99,7 +99,7 @@ int32_t setFileStatus(int32_t fileNum, gc::card::CARDStat *stat)
 
 int32_t loadSettings(const char *settingsFileName)
 {
-	// Load the settings file
+	// Make sure a memory card is inserted into slot A
 	int32_t ReturnCode = checkForMemoryCard();
 	if (ReturnCode != CARD_RESULT_READY)
 	{
@@ -225,7 +225,7 @@ int32_t loadSettings(const char *settingsFileName)
 int32_t writeSettings(const char *settingsDescription, 
 	const char *settingsFileName, const char *relFileName)
 {
-	// Load the settings file
+	// Make sure a memory card is inserted into slot A
 	int32_t ReturnCode = checkForMemoryCard();
 	if (ReturnCode != CARD_RESULT_READY)
 	{

@@ -357,7 +357,7 @@ void deleteWatch(int32_t slot)
 	
 	for (int32_t i = 0; i < TotalSlots; i++)
 	{
-		if (MemoryWatch[i].Address == 0)
+		if (!MemoryWatch[i].Address)
 		{
 			break;
 		}

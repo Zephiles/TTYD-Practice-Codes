@@ -703,25 +703,27 @@ void drawInventoryIconAndTextColumns()
 	}
 	
 	// Draw the L and/or R buttons if appropriate
-	if (tempCurrentMenu != INVENTORY_STANDARD)
+	if (tempCurrentMenu == INVENTORY_STANDARD)
 	{
-		float L_and_R_buttons_scale = 0.5;
-		
-		// Draw the L button if currently not on the first page
-		if (tempCurrentPage > 0)
-		{
-			IconPosition[IconPositionY] = 155;
-			int16_t iconNum = ButtonL;
-			drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
-		}
-		
-		// Draw the R button if more items are on the next page
-		if (checkForItemsOnNextPage(tempCurrentPage))
-		{
-			IconPosition[IconPositionY] = -175;
-			int16_t iconNum = ButtonR;
-			drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
-		}
+		return;
+	}
+	
+	float L_and_R_buttons_scale = 0.5;
+	
+	// Draw the L button if currently not on the first page
+	if (tempCurrentPage > 0)
+	{
+		IconPosition[IconPositionY] = 155;
+		int16_t iconNum = ButtonL;
+		drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
+	}
+	
+	// Draw the R button if more items are on the next page
+	if (checkForItemsOnNextPage(tempCurrentPage))
+	{
+		IconPosition[IconPositionY] = -175;
+		int16_t iconNum = ButtonR;
+		drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
 	}
 }
 
@@ -818,37 +820,6 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t s
 		posY -= 30;
 		IndexCounter += indexIncrement;
 	}
-}
-
-void iconViewer()
-{
-	// Set up array to use for displaying icons
-	int32_t IconPosition[3];
-	const int32_t IconPositionX 	= 0;
-	const int32_t IconPositionY 	= 1;
-	IconPosition[2] 				= 0;
-	IconPosition[IconPositionX] 	= 0;
-	IconPosition[IconPositionY] 	= 0;
-	
-	static int16_t tempValue = 0;
-	
-	if (checkButtonCombo(PAD_DPAD_LEFT))
-	{
-		tempValue--;
-	}
-	else if (checkButtonCombo(PAD_DPAD_RIGHT))
-	{
-		tempValue++;
-	}
-	
-	drawIcon(IconPosition, tempValue, 0.6);
-	
-	char *tempDisplayBuffer = DisplayBuffer;
-	sprintf(tempDisplayBuffer,
-		"%" PRId16,
-		tempValue);
-	
-	drawText(tempDisplayBuffer, 0, 60, 0xFF, 0xFFFFFFFF, 0.8);
 }
 
 void drawMarioSpecialMovesOptions()
@@ -1310,7 +1281,7 @@ void drawPartnerStats()
 	
 	// Check if a partner is out or not
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer == 0)
+	if (!PartnerPointer)
 	{
 		// Draw text explaining that no partner is currently out
 		const char *String = "No partner is currently out";
@@ -1375,7 +1346,7 @@ void drawBattlesActorStats()
 {
 	// Get the starting address for the current actor
 	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
-	if (ActorAddress == 0)
+	if (!ActorAddress)
 	{
 		return;
 	}
@@ -1435,7 +1406,7 @@ void drawBattlesActorsHeldItem()
 {
 	// Get the starting address for the current actor
 	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
-	if (ActorAddress == 0)
+	if (!ActorAddress)
 	{
 		return;
 	}
@@ -1510,7 +1481,7 @@ void drawCurrentFollowerOut()
 	uint32_t FollowerPointer = reinterpret_cast<uint32_t>(getFollowerPointer());
 	const char *String;
 	
-	if (FollowerPointer == 0)
+	if (!FollowerPointer)
 	{
 		String = "None";
 	}
@@ -1544,7 +1515,7 @@ void drawCurrentFollowerOut()
 void drawMemoryWatches()
 {
 	// Make sure there's at least one watch to draw
-	if (MemoryWatch[0].Address == 0)
+	if (!MemoryWatch[0].Address)
 	{
 		return;
 	}
@@ -1940,7 +1911,7 @@ void drawBattlesActorsList()
 		bool SlotIsEmpty = false;
 		const char *CurrentActorString;
 		
-		if (CurrentActorPointer == 0)
+		if (!CurrentActorPointer)
 		{
 			CurrentActorString = "Empty Slot";
 			SlotIsEmpty = true;
@@ -1982,7 +1953,7 @@ void drawBattlesStatusesList()
 {
 	// Get the starting address for the current actor
 	uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(MenuVar.MenuSelectedOption));
-	if (ActorAddress == 0)
+	if (!ActorAddress)
 	{
 		return;
 	}
@@ -2121,8 +2092,7 @@ void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY, in
 
 void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t textPosY)
 {
-	uint32_t tempTimer = MenuVar.Timer;
-	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
+	if ((MenuVar.FunctionReturnCode < 0) && (MenuVar.Timer > 0))
 	{
 		if (checkForClosingErrorMessage())
 		{
@@ -2145,159 +2115,152 @@ void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t tex
 
 void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
 {
-	uint32_t tempTimer = MenuVar.Timer;
-	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
+	if (!checkErrorMessageReqs())
 	{
-		if (checkForClosingErrorMessage())
-		{
-			return;
-		}
-		
-		int32_t TextPosX = -172;
-		int32_t WindowWidth = 375;
-		
-		// Get the text to use
-		const char *PartnerOrFollowerText;
-		if (drawForPartner)
-		{
-			PartnerOrFollowerText = "partner";
-			
-			#ifdef TTYD_JP
-			TextPosX += 3;
-			WindowWidth -= 7;
-			#endif
-		}
-		else
-		{
-			PartnerOrFollowerText = "follower";
-			
-			#ifdef TTYD_JP
-			WindowWidth -= 1;
-			#endif
-		}
-		
-		// Print error text if currently trying to spawn a partner/follower when not able to
-		char *tempDisplayBuffer = DisplayBuffer;
-		
-		sprintf(tempDisplayBuffer,
-			"To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
-			PartnerOrFollowerText);
-		
-		drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
+		return;
 	}
+	
+	int32_t TextPosX = -172;
+	int32_t WindowWidth = 375;
+	
+	// Get the text to use
+	const char *PartnerOrFollowerText;
+	if (drawForPartner)
+	{
+		PartnerOrFollowerText = "partner";
+		
+		#ifdef TTYD_JP
+		TextPosX += 3;
+		WindowWidth -= 7;
+		#endif
+	}
+	else
+	{
+		PartnerOrFollowerText = "follower";
+		
+		#ifdef TTYD_JP
+		WindowWidth -= 1;
+		#endif
+	}
+	
+	// Print error text if currently trying to spawn a partner/follower when not able to
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	sprintf(tempDisplayBuffer,
+		"To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
+		PartnerOrFollowerText);
+	
+	drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
 }
 
 void drawNotInBattleErrorMessage()
 {
-	uint32_t tempTimer = MenuVar.Timer;
-	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
+	if (!checkErrorMessageReqs())
 	{
-		if (checkForClosingErrorMessage())
-		{
-			return;
-		}
-		
-		const char *CurrentLine = "You must be in a battle to use the Battles menu.";
-		int32_t TextPosX 		= -205;
-		int32_t TextPosY 		= 0;
-		int32_t WindowWidth 	= 440;
-		
-		#ifdef TTYD_JP
-		TextPosX += 6;
-		WindowWidth -= 13;
-		#endif
-		
-		drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
+		return;
 	}
+	
+	const char *CurrentLine = "You must be in a battle to use the Battles menu.";
+	int32_t TextPosX 		= -205;
+	int32_t TextPosY 		= 0;
+	int32_t WindowWidth 	= 440;
+	
+	#ifdef TTYD_JP
+	TextPosX += 6;
+	WindowWidth -= 13;
+	#endif
+	
+	drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
 }
 
 void drawResolveFadesMessage()
 {
 	int32_t tempFunctionReturnCode = MenuVar.FunctionReturnCode;
-	uint32_t tempTimer = MenuVar.Timer;
-	
-	if ((tempFunctionReturnCode != 0) && (tempTimer > 0))
+	if (tempFunctionReturnCode == 0)
 	{
-		if (checkForClosingErrorMessage())
+		return;
+	}
+	
+	if (MenuVar.Timer == 0)
+	{
+		return;
+	}
+	
+	if (checkForClosingErrorMessage())
+	{
+		return;
+	}
+	
+	int32_t TextPosX;
+	int32_t WindowWidth;
+	const char *Message;
+	
+	switch (tempFunctionReturnCode)
+	{
+		case FADE_RESOLVE_SUCCESS:
+		{
+			TextPosX = -188;
+			WindowWidth = 404;
+			Message = "The selected fade was successfully resolved.";
+			
+			#ifdef TTYD_JP
+			TextPosX += 2;
+			WindowWidth -= 2;
+			#endif
+			break;
+		}
+		case FADE_NOT_ACTIVE:
+		{
+			TextPosX = -135;
+			WindowWidth = 299;
+			Message = "The selected fade is not active.";
+			
+			#ifdef TTYD_JP
+			TextPosX += 5;
+			WindowWidth -= 9;
+			#endif
+			break;
+		}
+		case FADE_DONT_RESOLVE:
+		{
+			TextPosX = -205;
+			WindowWidth = 440;
+			Message = "The selected fade does not need to be resolved.";
+			
+			#ifdef TTYD_JP
+			TextPosX += 5;
+			WindowWidth -= 11;
+			#endif
+			break;
+		}
+		default:
 		{
 			return;
 		}
-		
-		int32_t TextPosX;
-		int32_t WindowWidth;
-		const char *Message;
-		
-		switch (tempFunctionReturnCode)
-		{
-			case FADE_RESOLVE_SUCCESS:
-			{
-				TextPosX = -188;
-				WindowWidth = 404;
-				Message = "The selected fade was successfully resolved.";
-				
-				#ifdef TTYD_JP
-				TextPosX += 2;
-				WindowWidth -= 2;
-				#endif
-				break;
-			}
-			case FADE_NOT_ACTIVE:
-			{
-				TextPosX = -135;
-				WindowWidth = 299;
-				Message = "The selected fade is not active.";
-				
-				#ifdef TTYD_JP
-				TextPosX += 5;
-				WindowWidth -= 9;
-				#endif
-				break;
-			}
-			case FADE_DONT_RESOLVE:
-			{
-				TextPosX = -205;
-				WindowWidth = 440;
-				Message = "The selected fade does not need to be resolved.";
-				
-				#ifdef TTYD_JP
-				TextPosX += 5;
-				WindowWidth -= 11;
-				#endif
-				break;
-			}
-			default:
-			{
-				return;
-			}
-		}
-		
-		int32_t TextPosY = 5;
-		drawErrorWindow(Message, TextPosX, TextPosY, WindowWidth);
 	}
+	
+	int32_t TextPosY = 5;
+	drawErrorWindow(Message, TextPosX, TextPosY, WindowWidth);
 }
 
 void drawWarpsErrorMessage(int32_t textPosY)
 {
-	uint32_t tempTimer = MenuVar.Timer;
-	if ((MenuVar.FunctionReturnCode < 0) && (tempTimer > 0))
+	if (!checkErrorMessageReqs())
 	{
-		if (checkForClosingErrorMessage())
-		{
-			return;
-		}
-		
-		// Print error text if currently trying to warp when not able to
-		const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
-		int32_t TextPosX 		= -195;
-		int32_t WindowWidth 	= 415;
-		
-		#ifdef TTYD_JP
-		TextPosX += 8;
-		WindowWidth -= 13;
-		#endif
-		
-		drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
+		return;
 	}
+	
+	// Print error text if currently trying to warp when not able to
+	const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
+	int32_t TextPosX 		= -195;
+	int32_t WindowWidth 	= 415;
+	
+	#ifdef TTYD_JP
+	TextPosX += 8;
+	WindowWidth -= 13;
+	#endif
+	
+	drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
 }
 
 void drawConfirmationWindow(const char *message)
@@ -2392,8 +2355,8 @@ void drawSingleLineFromArray(int32_t posX, int32_t posY,
 	drawText(CurrentLine, posX, posY, Alpha, Color, Scale);
 }
 
-void drawSingleLineFromStringAndValue(int32_t posX, int32_t posY, 
-	const char *line, int32_t value)
+void drawSingleLineFromStringAndValue(int32_t posX, 
+	int32_t posY, const char *line, int32_t value)
 {
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
@@ -2552,8 +2515,6 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		
 		#ifdef TTYD_JP
 		char StageNameBuffer[8];
-		clearMemory(StageNameBuffer, sizeof(StageNameBuffer));
-		
 		getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, 
 			static_cast<uint32_t>(tempMenuSecondaryValue));
 		#else
@@ -3006,66 +2967,63 @@ bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePositio
 	
 	#ifdef TTYD_JP
 	// Make sure the Sequence value is valid
-	if (sequencePosition <= 406)
+	if (sequencePosition > 406)
 	{
-		if ((sequencePosition >= 0) && (sequencePosition <= 22))
-		{
-			StageName = "Opening";
-		}
-		else if ((sequencePosition >= 403) && (sequencePosition <= 406))
-		{
-			StageName = "Ending";
-		}
-		else
-		{
-			int32_t StageNumber;
-			if ((sequencePosition >= 23) && (sequencePosition <= 70))
-			{
-				StageNumber = 1;
-			}
-			else if ((sequencePosition >= 71) && (sequencePosition <= 126))
-			{
-				StageNumber = 2;
-			}
-			else if ((sequencePosition >= 127) && (sequencePosition <= 177))
-			{
-				StageNumber = 3;
-			}
-			else if ((sequencePosition >= 178) && (sequencePosition <= 229))
-			{
-				StageNumber = 4;
-			}
-			else if ((sequencePosition >= 230) && (sequencePosition <= 281))
-			{
-				StageNumber = 5;
-			}
-			else if ((sequencePosition >= 282) && (sequencePosition <= 351))
-			{
-				StageNumber = 6;
-			}
-			else if ((sequencePosition >= 352) && (sequencePosition <= 381))
-			{
-				StageNumber = 7;
-			}
-			else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
-			{
-				StageNumber = 8;
-			}
-			
-			sprintf(stageNameBuffer,
-				"Stage %" PRId32,
-				StageNumber);
-			
-			StageName = stageNameBuffer;
-		}
-		
-		EventName = CheatsEventNames[sequencePosition];
+		return false;
+	}
+	
+	if ((sequencePosition >= 0) && (sequencePosition <= 22))
+	{
+		StageName = "Opening";
+	}
+	else if ((sequencePosition >= 403) && (sequencePosition <= 406))
+	{
+		StageName = "Ending";
 	}
 	else
 	{
-		// Current value exceeds the max
-		return false;
+		int32_t StageNumber;
+		if ((sequencePosition >= 23) && (sequencePosition <= 70))
+		{
+			StageNumber = 1;
+		}
+		else if ((sequencePosition >= 71) && (sequencePosition <= 126))
+		{
+			StageNumber = 2;
+		}
+		else if ((sequencePosition >= 127) && (sequencePosition <= 177))
+		{
+			StageNumber = 3;
+		}
+		else if ((sequencePosition >= 178) && (sequencePosition <= 229))
+		{
+			StageNumber = 4;
+		}
+		else if ((sequencePosition >= 230) && (sequencePosition <= 281))
+		{
+			StageNumber = 5;
+		}
+		else if ((sequencePosition >= 282) && (sequencePosition <= 351))
+		{
+			StageNumber = 6;
+		}
+		else if ((sequencePosition >= 352) && (sequencePosition <= 381))
+		{
+			StageNumber = 7;
+		}
+		else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
+		{
+			StageNumber = 8;
+		}
+		
+		sprintf(stageNameBuffer,
+			"Stage %" PRId32,
+			StageNumber);
+		
+		StageName = stageNameBuffer;
 	}
+	
+	EventName = CheatsEventNames[sequencePosition];
 	#else
 	uint16_t tempSequencePosition = static_cast<uint16_t>(sequencePosition);
 	int32_t NumberOfStages = ttyd::event::eventStgNum();
@@ -3126,8 +3084,6 @@ void drawCheatsChangeSequence()
 	
 	#ifdef TTYD_JP
 	char StageNameBuffer[8];
-	clearMemory(StageNameBuffer, sizeof(StageNameBuffer));
-	
 	if (!getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, SequencePosition))
 	#else
 	if (!getSequenceStageAndEvent(StageAndEventNames, SequencePosition))
@@ -3257,21 +3213,23 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	drawText(ButtonString, PosX, PosY, Alpha, Color, Scale);
 	
 	// Decrement the timer and check to see if it's at 0
-	if (cheatsManageTimer(ButtonInput))
+	if (!cheatsManageTimer(ButtonInput))
 	{
-		// The timer reached 0, so set the currently held buttons to the current button combo for the cheat
-		// Make sure the button combo isn't L + Start
-		if (ButtonInput != (PAD_L | PAD_START))
-		{
-			currentButtonCombo = static_cast<uint16_t>(ButtonInput);
-		}
-		
-		// Close this menu
-		MenuVar.SelectedOption 				= 0;
-		MenuVar.ChangingCheatButtonCombo 	= false;
-		clearMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, (14 * sizeof(uint8_t)));
-		clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
+		return;
 	}
+	
+	// The timer reached 0, so set the currently held buttons to the current button combo for the cheat
+	// Make sure the button combo isn't L + Start
+	if (ButtonInput != (PAD_L | PAD_START))
+	{
+		currentButtonCombo = static_cast<uint16_t>(ButtonInput);
+	}
+	
+	// Close this menu
+	MenuVar.SelectedOption 				= 0;
+	MenuVar.ChangingCheatButtonCombo 	= false;
+	clearMemory(CheatsDisplayButtons.CheatsPreviousButtonsHeld, (14 * sizeof(uint8_t)));
+	clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 }
 
 void drawCheatsForcedDropItem()
@@ -4069,7 +4027,7 @@ void drawPalaceSkipDetails()
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
 	float PartnerPosY;
 	
-	if (PartnerPointer != 0)
+	if (PartnerPointer)
 	{
 		// A partner is out, so set PartnerPosY
 		PartnerPosY = *reinterpret_cast<float *>(PartnerPointer + 0x58 + 0x4);
@@ -4113,16 +4071,15 @@ void drawPalaceSkipDetails()
 	
 	for (uint32_t i = 0; i < 32; i++)
 	{
-		uint32_t Coin = 121;
-		uint32_t Heart = 123;
-		uint32_t Flower = 124;
-		
-		uint32_t tempItem;
+		int32_t tempItem;
 		uint16_t tempItemAction;
 		uint16_t tempBit;
 		
 		tempItem = *reinterpret_cast<uint32_t *>(FieldItemsAddress + 0x4);
-		if ((tempItem == 0) || (tempItem == Coin) || (tempItem == Heart) || (tempItem == Flower))
+		
+		if ((tempItem == 0) || (tempItem == ttyd::item_data::Item::Coin) || 
+			(tempItem == ttyd::item_data::Item::HeartFromBattlesDropped) || 
+				(tempItem == ttyd::item_data::Item::FlowerFromBattlesDropped))
 		{
 			// Don't want this item, so go to the next one
 			FieldItemsAddress += 0x98;

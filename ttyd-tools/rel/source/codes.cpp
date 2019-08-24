@@ -85,7 +85,7 @@ void Mod::performBattleChecks()
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
 	uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
 	
-	if (MarioBattlePointer != 0)
+	if (MarioBattlePointer)
 	{
 		// Check to see if the Auto Action Commands cheat is active or not
 		if (Cheat[AUTO_ACTION_COMMANDS].Active)
@@ -95,7 +95,7 @@ void Mod::performBattleChecks()
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
 				
-				if (PartnerBattlePointer != 0)
+				if (PartnerBattlePointer)
 				{
 					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
 				}
@@ -104,7 +104,7 @@ void Mod::performBattleChecks()
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
 				
-				if (PartnerBattlePointer != 0)
+				if (PartnerBattlePointer)
 				{
 					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
 				}
@@ -117,7 +117,7 @@ void Mod::performBattleChecks()
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
 				
-				if (PartnerBattlePointer != 0)
+				if (PartnerBattlePointer)
 				{
 					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
 				}
@@ -126,7 +126,7 @@ void Mod::performBattleChecks()
 			{
 				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
 				
-				if (PartnerBattlePointer != 0)
+				if (PartnerBattlePointer)
 				{
 					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
 				}
@@ -198,16 +198,18 @@ void saveMarioAndPartnerPositions()
 	MarioPartnerPositions.MarioPosition[6] = player->wPlayerDirection;
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer)
+	if (!PartnerPointer)
 	{
-		MarioPartnerPositions.PartnerPosition[0] = *reinterpret_cast<float *>(PartnerPointer + 0x58); // Partner Coordinate X
-		MarioPartnerPositions.PartnerPosition[1] = *reinterpret_cast<float *>(PartnerPointer + 0x5C); // Partner Coordinate Y
-		MarioPartnerPositions.PartnerPosition[2] = *reinterpret_cast<float *>(PartnerPointer + 0x60); // Partner Coordinate Z
-		MarioPartnerPositions.PartnerPosition[3] = *reinterpret_cast<float *>(PartnerPointer + 0xFC); // Partner Angle Current
-		MarioPartnerPositions.PartnerPosition[4] = *reinterpret_cast<float *>(PartnerPointer + 0x100); // Partner Angle
-		MarioPartnerPositions.PartnerPosition[5] = *reinterpret_cast<float *>(PartnerPointer + 0x10C); // Partner Direction Current
-		MarioPartnerPositions.PartnerPosition[6] = *reinterpret_cast<float *>(PartnerPointer + 0x110); // Partner Direction
+		return;
 	}
+	
+	MarioPartnerPositions.PartnerPosition[0] = *reinterpret_cast<float *>(PartnerPointer + 0x58); // Partner Coordinate X
+	MarioPartnerPositions.PartnerPosition[1] = *reinterpret_cast<float *>(PartnerPointer + 0x5C); // Partner Coordinate Y
+	MarioPartnerPositions.PartnerPosition[2] = *reinterpret_cast<float *>(PartnerPointer + 0x60); // Partner Coordinate Z
+	MarioPartnerPositions.PartnerPosition[3] = *reinterpret_cast<float *>(PartnerPointer + 0xFC); // Partner Angle Current
+	MarioPartnerPositions.PartnerPosition[4] = *reinterpret_cast<float *>(PartnerPointer + 0x100); // Partner Angle
+	MarioPartnerPositions.PartnerPosition[5] = *reinterpret_cast<float *>(PartnerPointer + 0x10C); // Partner Direction Current
+	MarioPartnerPositions.PartnerPosition[6] = *reinterpret_cast<float *>(PartnerPointer + 0x110); // Partner Direction
 }
 
 void loadMarioAndPartnerPositions()
@@ -233,73 +235,83 @@ void loadMarioAndPartnerPositions()
 	player->wPlayerDirection 			= MarioPartnerPositions.MarioPosition[6];
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer)
+	if (!PartnerPointer)
 	{
-		*reinterpret_cast<float *>(PartnerPointer + 0x58) 	= MarioPartnerPositions.PartnerPosition[0]; // Partner Coordinate X
-		*reinterpret_cast<float *>(PartnerPointer + 0x5C) 	= MarioPartnerPositions.PartnerPosition[1]; // Partner Coordinate Y
-		*reinterpret_cast<float *>(PartnerPointer + 0x60) 	= MarioPartnerPositions.PartnerPosition[2]; // Partner Coordinate Z
-		*reinterpret_cast<float *>(PartnerPointer + 0xFC) 	= MarioPartnerPositions.PartnerPosition[3]; // Partner Angle Current
-		*reinterpret_cast<float *>(PartnerPointer + 0x100) 	= MarioPartnerPositions.PartnerPosition[4]; // Partner Angle
-		*reinterpret_cast<float *>(PartnerPointer + 0x10C) 	= MarioPartnerPositions.PartnerPosition[5]; // Partner Direction Current
-		*reinterpret_cast<float *>(PartnerPointer + 0x110) 	= MarioPartnerPositions.PartnerPosition[6]; // Partner Direction
+		return;
 	}
+	
+	*reinterpret_cast<float *>(PartnerPointer + 0x58) 	= MarioPartnerPositions.PartnerPosition[0]; // Partner Coordinate X
+	*reinterpret_cast<float *>(PartnerPointer + 0x5C) 	= MarioPartnerPositions.PartnerPosition[1]; // Partner Coordinate Y
+	*reinterpret_cast<float *>(PartnerPointer + 0x60) 	= MarioPartnerPositions.PartnerPosition[2]; // Partner Coordinate Z
+	*reinterpret_cast<float *>(PartnerPointer + 0xFC) 	= MarioPartnerPositions.PartnerPosition[3]; // Partner Angle Current
+	*reinterpret_cast<float *>(PartnerPointer + 0x100) 	= MarioPartnerPositions.PartnerPosition[4]; // Partner Angle
+	*reinterpret_cast<float *>(PartnerPointer + 0x10C) 	= MarioPartnerPositions.PartnerPosition[5]; // Partner Direction Current
+	*reinterpret_cast<float *>(PartnerPointer + 0x110) 	= MarioPartnerPositions.PartnerPosition[6]; // Partner Direction
 }
 
 void saveAnywhere()
 {
-	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
 	if (!SaveAnywhere.ScriptIsRunning)
 	{
-		if (!Cheat[SAVE_ANYWHERE].Active || MenuVar.ChangingCheatButtonCombo)
+		// Save script is not currently running
+		if (!Cheat[SAVE_ANYWHERE].Active)
 		{
 			return;
 		}
 		
-		// Save script is not currently running
-		if (checkButtonCombo(Cheat[SAVE_ANYWHERE].ButtonCombo))
+		if (MenuVar.ChangingCheatButtonCombo)
 		{
-			// Make sure a file is currently loaded, and that the pause menu is not currently open
-			if (checkIfInGame() && (SystemLevel != 15))
-			{
-				#ifdef TTYD_US
-				void *SaveScript = reinterpret_cast<void *>(0x803BAC3C);
-				#elif defined TTYD_JP
-				void *SaveScript = reinterpret_cast<void *>(0x803B68BC);
-				#elif defined TTYD_EU
-				void *SaveScript = reinterpret_cast<void *>(0x803C6C4C);
-				#endif
-				
-				// Take away control from the player and start the Save script
-				ttyd::mariost::marioStSystemLevel(SystemLevel + 1);
-				
-				uint32_t SaveScriptEvtEntry = reinterpret_cast<uint32_t>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0));
-				SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(SaveScriptEvtEntry + 0x15C);
-				
-				SaveAnywhere.ScriptIsRunning = true;
-				
-				// Only turn the key off if it's not already off
-				if (ttyd::mario::marioKeyOffChk() == 0)
-				{
-					ttyd::mario::marioKeyOff();
-				}
-			}
+			return;
+		}
+		
+		if (!checkButtonCombo(Cheat[SAVE_ANYWHERE].ButtonCombo))
+		{
+			return;
+		}
+		
+		// Make sure a file is currently loaded, and that the pause menu is not currently open
+		if (!checkIfInGame())
+		{
+			return;
+		}
+		
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
+		if (SystemLevel == 15)
+		{
+			return;
+		}
+		
+		#ifdef TTYD_US
+		void *SaveScript = reinterpret_cast<void *>(0x803BAC3C);
+		#elif defined TTYD_JP
+		void *SaveScript = reinterpret_cast<void *>(0x803B68BC);
+		#elif defined TTYD_EU
+		void *SaveScript = reinterpret_cast<void *>(0x803C6C4C);
+		#endif
+		
+		// Take away control from the player and start the Save script
+		uint32_t SaveScriptEvtEntry = reinterpret_cast<uint32_t>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0));
+		SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(SaveScriptEvtEntry + 0x15C);
+		
+		SaveAnywhere.ScriptIsRunning = true;
+		raiseSystemLevel();
+		
+		// Only turn the key off if it's not already off
+		if (ttyd::mario::marioKeyOffChk() == 0)
+		{
+			ttyd::mario::marioKeyOff();
 		}
 	}
 	else if (!ttyd::evtmgr::evtCheckID(SaveAnywhere.ThreadID))
 	{
 		// Save Script is no longer running, so give back control to the player
 		SaveAnywhere.ScriptIsRunning = false;
+		lowerSystemLevel();
 		
 		// Only turn the key on if it's not already on
 		if (ttyd::mario::marioKeyOffChk() != 0)
 		{
 			ttyd::mario::marioKeyOn();
-		}
-		
-		// Only lower the system level if it's not currently at 0
-		if (SystemLevel > 0)
-		{
-			ttyd::mariost::marioStSystemLevel(SystemLevel - 1);
 		}
 	}
 }
@@ -317,7 +329,7 @@ void setTextStorage()
 	}
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer != 0)
+	if (PartnerPointer)
 	{
 		*reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 0;
 	}
@@ -336,7 +348,7 @@ void setTimeStopTextStorage()
 	}
 	
 	uint32_t PartnerPointer = reinterpret_cast<uint32_t>(getPartnerPointer());
-	if (PartnerPointer != 0)
+	if (PartnerPointer)
 	{
 		*reinterpret_cast<uint8_t *>(PartnerPointer + 0x39) = 21;
 	}
@@ -531,15 +543,17 @@ void reloadRoom()
 	ttyd::seqdrv::SeqIndex NextSeq 		= ttyd::seqdrv::seqGetNextSeq();
 	ttyd::seqdrv::SeqIndex MapChange 	= ttyd::seqdrv::SeqIndex::kMapChange;
 	
-	if (NextSeq == MapChange)
+	if (NextSeq != MapChange)
 	{
-		// Reset the System Level
-		ReloadRoom.SystemLevelShouldBeLowered = true;
-		
-		// Reset the camera - mainly for the black bars at the top and bottom of the screen
-		uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
-		*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
+		return;
 	}
+	
+	// Reset the System Level
+	ReloadRoom.SystemLevelShouldBeLowered = true;
+	
+	// Reset the camera - mainly for the black bars at the top and bottom of the screen
+	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
+	*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 }
 
 void levitate()
@@ -565,22 +579,21 @@ void lockMarioHPToMax()
 		return;
 	}
 	
-	uint32_t PouchAddress = reinterpret_cast<uint32_t>(
-		ttyd::mario_pouch::pouchGetPtr());
+	uint32_t PouchAddress = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
 	
 	uint32_t MarioHPAddress = PouchAddress + 0x70;
 	int16_t MarioMaxHP = *reinterpret_cast<int16_t *>(PouchAddress + 0x72);
 	*reinterpret_cast<int16_t *>(MarioHPAddress) = MarioMaxHP; // Copy Max HP to Current HP
 	
 	uint32_t MarioBattleAddress = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-	if (MarioBattleAddress != 0)
+	if (!MarioBattleAddress)
 	{
-		uint32_t BattleMarioHPAddress = MarioBattleAddress + 0x10C;
-		int16_t BattleMarioMaxHP = *reinterpret_cast<int16_t *>(
-			MarioBattleAddress + 0x108);
-		
-		*reinterpret_cast<int16_t *>(BattleMarioHPAddress) = BattleMarioMaxHP; // Copy Battle Max HP to Current Battle HP
+		return;
 	}
+	
+	uint32_t BattleMarioHPAddress = MarioBattleAddress + 0x10C;
+	int16_t BattleMarioMaxHP = *reinterpret_cast<int16_t *>(MarioBattleAddress + 0x108);
+	*reinterpret_cast<int16_t *>(BattleMarioHPAddress) = BattleMarioMaxHP; // Copy Battle Max HP to Current Battle HP
 }
 
 void bobberyEarly()
@@ -619,14 +632,16 @@ void bobberyEarly()
 	// Turn off GSWF(3137)
 	ttyd::swdrv::swClear(3137);
 	
-	if (compareStringToNextMap("muj_05"))
+	if (!compareStringToNextMap("muj_05"))
 	{
-		const uint32_t NPCSlot6 = 5;
-		uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot6));
-		
-		// Allow the Ember to be refought
-		*reinterpret_cast<uint8_t *>(NPCAddress + 0x1D7) = 0;
+		return;
 	}
+	
+	const uint32_t NPCSlot6 = 5;
+	uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot6));
+	
+	// Allow the Ember to be refought
+	*reinterpret_cast<uint8_t *>(NPCAddress + 0x1D7) = 0;
 }
 
 void spawnItem()
@@ -639,90 +654,91 @@ void spawnItem()
 	bool tempInAdjustableValueMenu = SpawnItem.InAdjustableValueMenu;
 	if (Cheat[SPAWN_ITEM].Active && !MenuVar.ChangingCheatButtonCombo)
 	{
-		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-		if (checkIfInGame() && (SystemLevel != 15))
+		if (!checkIfInGame())
 		{
-			// Currently not in a battle and the pause menu is not open
-			// Check to see if the adjustable value menu is open or not
-			if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo) && 
-				!tempInAdjustableValueMenu)
+			return;
+		}
+		
+		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
+		if (SystemLevel == 15)
+		{
+			return;
+		}
+		
+		// Currently not in a battle and the pause menu is not open
+		// Check to see if the adjustable value menu is open or not
+		if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo) && !tempInAdjustableValueMenu)
+		{
+			// Not open, so disable the pause menu, raise the system level, and open the menu
+			ttyd::win_main::winOpenDisable();
+			raiseSystemLevel();
+			MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
+			SpawnItem.InAdjustableValueMenu = true;
+		}
+		
+		if (!tempInAdjustableValueMenu)
+		{
+			return;
+		}
+		
+		// Check for button inputs for the menu
+		uint32_t PressedButton = adjustableValueButtonControls(SPAWN_ITEM_MENU_VALUE);
+		switch (PressedButton)
+		{
+			case A:
 			{
-				// Not open, so disable the pause menu, raise the system level, and open the menu
-				ttyd::win_main::winOpenDisable();
-				raiseSystemLevel();
-				MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
-				SpawnItem.InAdjustableValueMenu = true;
-			}
-			
-			if (tempInAdjustableValueMenu)
-			{
-				// Check for button inputs for the menu
-				uint32_t PressedButton = adjustableValueButtonControls(SPAWN_ITEM_MENU_VALUE);
-				switch (PressedButton)
+				// Spawn the current item
+				ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+				float CoordinateXAdjustment;
+				
+				if (player->wPlayerDirection <= 0)
 				{
-					case A:
-					{
-						// Spawn the current item
-						ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-						float CoordinateXAdjustment;
-						
-						if (player->wPlayerDirection <= 0)
-						{
-							// Mario is facing left
-							CoordinateXAdjustment = -30;
-						}
-						else
-						{
-							// Mario is facing right
-							CoordinateXAdjustment = 30;
-						}
-						
-						float ItemCoordinateX = player->playerPosition[0] + CoordinateXAdjustment;
-						float ItemCoordinateY = player->playerPosition[1];
-						float ItemCoordinateZ = player->playerPosition[2];
-						
-						SpawnItem.SpawnItemCounter++;
-						
-						char *tempDisplayBuffer = DisplayBuffer;
-						sprintf(tempDisplayBuffer,
-							"C_Item%" PRIu16,
-							SpawnItem.SpawnItemCounter);
-						
-						ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
-							-1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
-						
-						// Enable the pause menu and lower the system level
-						SpawnItem.InAdjustableValueMenu = false;
-						ttyd::win_main::winOpenEnable();
-						lowerSystemLevel();
-						return;
-					}
-					case B:
-					{
-						// Enable the pause menu and lower the system level
-						SpawnItem.InAdjustableValueMenu = false;
-						ttyd::win_main::winOpenEnable();
-						lowerSystemLevel();
-						return;
-					}
-					case NO_NUMBERS_TO_DISPLAY:
-					{
-						// There are no digits of the number to display
-						SpawnItem.InAdjustableValueMenu = false;
-						ttyd::win_main::winOpenEnable();
-						lowerSystemLevel();
-						return;
-					}
-					default:
-					{
-						break;
-					}
+					// Mario is facing left
+					CoordinateXAdjustment = -30;
+				}
+				else
+				{
+					// Mario is facing right
+					CoordinateXAdjustment = 30;
 				}
 				
-				// Draw the menu
-				drawFunctionOnDebugLayer(drawAdjustableValueSpawnItem);
+				float ItemCoordinateX = player->playerPosition[0] + CoordinateXAdjustment;
+				float ItemCoordinateY = player->playerPosition[1];
+				float ItemCoordinateZ = player->playerPosition[2];
+				
+				SpawnItem.SpawnItemCounter++;
+				
+				char *tempDisplayBuffer = DisplayBuffer;
+				sprintf(tempDisplayBuffer,
+					"C_Item%" PRIu16,
+					SpawnItem.SpawnItemCounter);
+				
+				ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
+					-1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
+				
+				// Enable the pause menu and lower the system level
+				SpawnItem.InAdjustableValueMenu = false;
+				ttyd::win_main::winOpenEnable();
+				lowerSystemLevel();
+				return;
+			}
+			case B:
+			case NO_NUMBERS_TO_DISPLAY:
+			{
+				// Enable the pause menu and lower the system level
+				SpawnItem.InAdjustableValueMenu = false;
+				ttyd::win_main::winOpenEnable();
+				lowerSystemLevel();
+				return;
+			}
+			default:
+			{
+				break;
 			}
 		}
+		
+		// Draw the menu
+		drawFunctionOnDebugLayer(drawAdjustableValueSpawnItem);
 	}
 	else if (tempInAdjustableValueMenu)
 	{
@@ -971,19 +987,21 @@ void displayMemoryWatches()
 	
 	for (uint32_t i = 0; i < Size; i++)
 	{
-		if (MemoryWatch[i].Display)
+		if (!MemoryWatch[i].Display)
 		{
-			// Check to see if this watch is currently being repositioned
-			if (tempHideMenu && (tempMenuSelectionOption == i))
-			{
-				// This watch is currently being repositioned, so do not draw it
-			}
-			else
-			{
-				// At least one watch is being draw
-				drawFunctionOnDebugLayer(drawMemoryWatchesOnOverworld);
-				return;
-			}
+			continue;
+		}
+		
+		// Check to see if this watch is currently being repositioned
+		if (tempHideMenu && (tempMenuSelectionOption == i))
+		{
+			// This watch is currently being repositioned, so do not draw it
+		}
+		else
+		{
+			// At least one watch is being drawn
+			drawFunctionOnDebugLayer(drawMemoryWatchesOnOverworld);
+			return;
 		}
 	}
 }
@@ -1188,7 +1206,7 @@ void actionCommandsTimingsInit()
 		
 		// Check to see if the attack will be automatically guarded/superguarded or not
 		uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-		if (MarioBattlePointer != 0)
+		if (MarioBattlePointer)
 		{
 			#ifdef TTYD_US
 			const uint32_t DebugBadgeAddressOffset = 0x307;
