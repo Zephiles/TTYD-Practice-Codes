@@ -33,12 +33,10 @@ int32_t getFileStatus(int32_t fileNum, gc::card::CARDStat *stat);
 
 int32_t setFileStatus(int32_t fileNum, gc::card::CARDStat *stat);
 
-int32_t loadSettings(const char *settingsFileName);
+int32_t createSettingsFile(gc::card::CARDFileInfo *settingsFileInfo);
 
-int32_t writeSettings(const char *settingsDescription, 
-	const char *settingsFileName, const char *relFileName);
+int32_t saveSettings();
 
-int32_t createSettingsFile(const char *settingsFileName, 
-	const char *relFileName, gc::card::CARDFileInfo *settingsFileInfo);
+int32_t loadSettings();
 
 }

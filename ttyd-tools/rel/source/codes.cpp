@@ -706,12 +706,13 @@ void spawnItem()
 				float ItemCoordinateY = player->playerPosition[1];
 				float ItemCoordinateZ = player->playerPosition[2];
 				
-				SpawnItem.SpawnItemCounter++;
-				
 				char *tempDisplayBuffer = DisplayBuffer;
+				uint32_t tempTimer = SpawnItem.SpawnItemCounter;
+				SpawnItem.SpawnItemCounter = tempTimer + 1;
+				
 				sprintf(tempDisplayBuffer,
-					"C_Item%" PRIu16,
-					SpawnItem.SpawnItemCounter);
+					"C_Item%" PRIu32,
+					tempTimer);
 				
 				ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
 					-1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);

@@ -97,7 +97,265 @@ int32_t setFileStatus(int32_t fileNum, gc::card::CARDStat *stat)
 	return finishAsyncFunction(ReturnCode);
 }
 
-int32_t loadSettings(const char *settingsFileName)
+int32_t createSettingsFile(gc::card::CARDFileInfo *settingsFileInfo)
+{
+	// Get the banner and icon data from the desired REL file
+	gc::card::CARDFileInfo FileInfo;
+	int32_t ReturnCode = openFileFromCard(MenuSettings.RelFileName, &FileInfo);
+	
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Set up the memory for the banner and icon data to go in
+	char *BannerIconData = new char[0x2000];
+	
+	// Get the banner and icon data
+	ReturnCode = readFromFileOnCard(&FileInfo, BannerIconData, 0x2000, 0);
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		closeFileFromCard(&FileInfo);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Close the current REL file
+	ReturnCode = closeFileFromCard(&FileInfo);
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Get the size of the new file
+	uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
+	uint32_t FileSize = 0x2000 + SettingsStructSize + 0x200;
+	
+	// Adjust the file size to be in multiples of 0x2000, rounding up
+	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
+	
+	// Create the new file
+	const char *SettingsFileName = MenuSettings.SettingsFileName;
+	ReturnCode = createFileOnCard(SettingsFileName, FileSizeAdjusted, &FileInfo);
+	
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Get the stats for the new file
+	gc::card::CARDStat CardStat;
+	int32_t FileNumber = FileInfo.fileNum;
+	
+	ReturnCode = getFileStatus(FileNumber, &CardStat);
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Modify the stats for the new file
+	CardStat.bannerFormat 		= 2;
+	CardStat.iconAddress 		= 0;
+	CardStat.iconFormat 		= 2;
+	CardStat.iconSpeed 			= 3;
+	CardStat.commentAddress 	= 0x2000;
+	
+	// Set the stats for the new file
+	ReturnCode = setFileStatus(FileNumber, &CardStat);
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Open the new file
+	ReturnCode = openFileFromCard(SettingsFileName, settingsFileInfo);
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		delete[] (BannerIconData);
+		unmountCard();
+		return ReturnCode;
+	}
+	
+	// Write the banner and icon data to the new file
+	ReturnCode = writeToFileOnCard(settingsFileInfo, BannerIconData, 0x2000, 0);
+	
+	// Delete the data for the icon and banner, as they are not needed anymore
+	delete[] (BannerIconData);
+	
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		closeFileFromCard(settingsFileInfo);
+		unmountCard();
+	}
+	
+	return ReturnCode;
+}
+
+int32_t saveSettings()
+{
+	// Make sure a memory card is inserted into slot A
+	int32_t ReturnCode = checkForMemoryCard();
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		return ReturnCode;
+	}
+	
+	// Mount the memory card in slot A
+	ReturnCode = mountCard();
+	if (ReturnCode != CARD_RESULT_READY)
+	{
+		return ReturnCode;
+	}
+	
+	// Get the size thats going to be written
+	uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
+	
+	// Adjust the file size to be in multiples of 0x2000, rounding up
+	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
+	
+	// Open the settings file if it exists
+	gc::card::CARDFileInfo FileInfo;
+	const char *SettingsFileName = MenuSettings.SettingsFileName;
+	
+	ReturnCode = openFileFromCard(SettingsFileName, &FileInfo);
+	
+	switch (ReturnCode)
+	{
+		case CARD_RESULT_READY:
+		{
+			// Set up the array to hold the area of the file that contains the size
+			char *FileData = new char[0x200];
+			
+			// Get the data from the area that holds the size
+			ReturnCode = readFromFileOnCard(&FileInfo, FileData, 0x200, 0x2000);
+			if (ReturnCode != CARD_RESULT_READY)
+			{
+				delete[] (FileData);
+				closeFileFromCard(&FileInfo);
+				unmountCard();
+				return ReturnCode;
+			}
+			
+			// Get the size of the file
+			uint32_t StoredFileSize = *reinterpret_cast<uint32_t *>(&FileData[0x40]);
+			
+			// Delete the data that holds the size, as it's not needed anymore
+			delete[] (FileData);
+			
+			// Adjust the file size to be in multiples of 0x2000, rounding up
+			uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
+			
+			// Make sure the size being written does not exceed the current size
+			if (FileSizeAdjusted > StoredFileSizeAdjusted)
+			{
+				// The new size exceeds the current size, so a new file must be created
+				// Close the file
+				ReturnCode = closeFileFromCard(&FileInfo);
+				if (ReturnCode != CARD_RESULT_READY)
+				{
+					unmountCard();
+					return ReturnCode;
+				}
+				
+				// Delete the current file
+				ReturnCode = deleteFileOnCard(SettingsFileName);
+				if (ReturnCode != CARD_RESULT_READY)
+				{
+					unmountCard();
+					return ReturnCode;
+				}
+				
+				// Make the new file
+				// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
+				ReturnCode = createSettingsFile(&FileInfo);
+				if (ReturnCode != CARD_RESULT_READY)
+				{
+					return ReturnCode;
+				}
+			}
+			break;
+		}
+		case CARD_RESULT_NOFILE:
+		{
+			// Settings file does not exist, so create it
+			// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
+			ReturnCode = createSettingsFile(&FileInfo);
+			if (ReturnCode != CARD_RESULT_READY)
+			{
+				return ReturnCode;
+			}
+			break;
+		}
+		default:
+		{
+			unmountCard();
+			return ReturnCode;
+		}
+	}
+	
+	// Set up the memory to be written to the file
+	char *MiscData = new char[FileSizeAdjusted];
+	clearMemory(MiscData, FileSizeAdjusted);
+	
+	// Set up the struct to hold the name, description, and file size to store
+	SaveFileDecriptionInfo *SaveFileInfo = reinterpret_cast<SaveFileDecriptionInfo *>(&MiscData[0]);
+	
+	// Copy the name, description, and file size
+	strcpy(SaveFileInfo->Description1, "Paper Mario");
+	strcpy(SaveFileInfo->Description2, MenuSettings.SettingsDescription);
+	SaveFileInfo->FileSize = FileSize;
+	
+	// Set up the struct to hold the variables to store
+	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
+	
+	// Copy the desired variables to the struct
+	// Copy the Cheats bools and button combos
+	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
+	for (uint32_t i = 0; i < CheatsSize; i++)
+	{
+		uint32_t CurrentIndex 			= CheatsOrder[i];
+		Settings->CheatsActive[i] 		= Cheat[CurrentIndex].Active;
+		Settings->CheatButtonCombos[i] 	= Cheat[CurrentIndex].ButtonCombo;
+	}
+	
+	// Copy the Displays bools
+	uint32_t DisplaysSize = sizeof(Displays);
+	for (uint32_t i = 0; i < DisplaysSize; i++)
+	{
+		uint32_t CurrentIndex 			= DisplaysOrder[i];
+		Settings->DisplaysActive[i] 	= Displays[CurrentIndex];
+	}
+	
+	// Copy the On-Screen Timer button combos
+	uint32_t OnScreenTimerSize = sizeof(OnScreenTimer.ButtonCombo) / sizeof(OnScreenTimer.ButtonCombo[0]);
+	for (uint32_t i = 0; i < OnScreenTimerSize; i++)
+	{
+		Settings->DisplaysButtonCombos[ONSCREEN_TIMER + i] = OnScreenTimer.ButtonCombo[i];
+	}
+	
+	// Copy the Memory Watches
+	memcpy(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
+	
+	// Write the data to the file
+	ReturnCode = writeToFileOnCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000);
+	
+	delete[] (MiscData);
+	closeFileFromCard(&FileInfo);
+	unmountCard();
+	return ReturnCode;
+}
+
+int32_t loadSettings()
 {
 	// Make sure a memory card is inserted into slot A
 	int32_t ReturnCode = checkForMemoryCard();
@@ -115,7 +373,7 @@ int32_t loadSettings(const char *settingsFileName)
 	
 	// Open the settings file
 	gc::card::CARDFileInfo FileInfo;
-	ReturnCode = openFileFromCard(settingsFileName, &FileInfo);
+	ReturnCode = openFileFromCard(MenuSettings.SettingsFileName, &FileInfo);
 	
 	if (ReturnCode != CARD_RESULT_READY)
 	{
@@ -220,262 +478,6 @@ int32_t loadSettings(const char *settingsFileName)
 	
 	delete[] (MiscData);
 	return CARD_RESULT_READY;
-}
-
-int32_t writeSettings(const char *settingsDescription, 
-	const char *settingsFileName, const char *relFileName)
-{
-	// Make sure a memory card is inserted into slot A
-	int32_t ReturnCode = checkForMemoryCard();
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		return ReturnCode;
-	}
-	
-	// Mount the memory card in slot A
-	ReturnCode = mountCard();
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		return ReturnCode;
-	}
-	
-	// Get the size thats going to be written
-	uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
-	
-	// Adjust the file size to be in multiples of 0x2000, rounding up
-	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
-	
-	// Open the settings file if it exists
-	gc::card::CARDFileInfo FileInfo;
-	ReturnCode = openFileFromCard(settingsFileName, &FileInfo);
-	
-	switch (ReturnCode)
-	{
-		case CARD_RESULT_READY:
-		{
-			// Set up the array to hold the area of the file that contains the size
-			char *FileData = new char[0x200];
-			
-			// Get the data from the area that holds the size
-			ReturnCode = readFromFileOnCard(&FileInfo, FileData, 0x200, 0x2000);
-			if (ReturnCode != CARD_RESULT_READY)
-			{
-				delete[] (FileData);
-				closeFileFromCard(&FileInfo);
-				unmountCard();
-				return ReturnCode;
-			}
-			
-			// Get the size of the file
-			uint32_t StoredFileSize = *reinterpret_cast<uint32_t *>(&FileData[0x40]);
-			
-			// Delete the data that holds the size, as it's not needed anymore
-			delete[] (FileData);
-			
-			// Adjust the file size to be in multiples of 0x2000, rounding up
-			uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
-			
-			// Make sure the size being written does not exceed the current size
-			if (FileSizeAdjusted > StoredFileSizeAdjusted)
-			{
-				// The new size exceeds the current size, so a new file must be created
-				// Close the file
-				ReturnCode = closeFileFromCard(&FileInfo);
-				if (ReturnCode != CARD_RESULT_READY)
-				{
-					unmountCard();
-					return ReturnCode;
-				}
-				
-				// Delete the current file
-				ReturnCode = deleteFileOnCard(settingsFileName);
-				if (ReturnCode != CARD_RESULT_READY)
-				{
-					unmountCard();
-					return ReturnCode;
-				}
-				
-				// Make the new file
-				// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
-				ReturnCode = createSettingsFile(settingsFileName, relFileName, &FileInfo);
-				if (ReturnCode != CARD_RESULT_READY)
-				{
-					return ReturnCode;
-				}
-			}
-			break;
-		}
-		case CARD_RESULT_NOFILE:
-		{
-			// Settings file does not exist, so create it
-			// createSettingsFile keeps the file open, but closes and unmounts if it fails to create the file
-			ReturnCode = createSettingsFile(settingsFileName, relFileName, &FileInfo);
-			if (ReturnCode != CARD_RESULT_READY)
-			{
-				return ReturnCode;
-			}
-			break;
-		}
-		default:
-		{
-			unmountCard();
-			return ReturnCode;
-		}
-	}
-	
-	// Set up the memory to be written to the file
-	char *MiscData = new char[FileSizeAdjusted];
-	clearMemory(MiscData, FileSizeAdjusted);
-	
-	// Set up the struct to hold the name, description, and file size to store
-	SaveFileDecriptionInfo *SaveFileInfo = reinterpret_cast<SaveFileDecriptionInfo *>(&MiscData[0]);
-	
-	// Copy the name, description, and file size
-	strcpy(SaveFileInfo->Description1, "Paper Mario");
-	strcpy(SaveFileInfo->Description2, settingsDescription);
-	SaveFileInfo->FileSize = FileSize;
-	
-	// Set up the struct to hold the variables to store
-	SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
-	
-	// Copy the desired variables to the struct
-	// Copy the Cheats bools and button combos
-	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
-	for (uint32_t i = 0; i < CheatsSize; i++)
-	{
-		uint32_t CurrentIndex 			= CheatsOrder[i];
-		Settings->CheatsActive[i] 		= Cheat[CurrentIndex].Active;
-		Settings->CheatButtonCombos[i] 	= Cheat[CurrentIndex].ButtonCombo;
-	}
-	
-	// Copy the Displays bools
-	uint32_t DisplaysSize = sizeof(Displays);
-	for (uint32_t i = 0; i < DisplaysSize; i++)
-	{
-		uint32_t CurrentIndex 			= DisplaysOrder[i];
-		Settings->DisplaysActive[i] 	= Displays[CurrentIndex];
-	}
-	
-	// Copy the On-Screen Timer button combos
-	uint32_t OnScreenTimerSize = sizeof(OnScreenTimer.ButtonCombo) / sizeof(OnScreenTimer.ButtonCombo[0]);
-	for (uint32_t i = 0; i < OnScreenTimerSize; i++)
-	{
-		Settings->DisplaysButtonCombos[ONSCREEN_TIMER + i] = OnScreenTimer.ButtonCombo[i];
-	}
-	
-	// Copy the Memory Watches
-	memcpy(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
-	
-	// Write the data to the file
-	ReturnCode = writeToFileOnCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000);
-	
-	delete[] (MiscData);
-	closeFileFromCard(&FileInfo);
-	unmountCard();
-	return ReturnCode;
-}
-
-int32_t createSettingsFile(const char *settingsFileName, 
-	const char *relFileName, gc::card::CARDFileInfo *settingsFileInfo)
-{
-	// Get the banner and icon data from the desired REL file
-	gc::card::CARDFileInfo FileInfo;
-	int32_t ReturnCode = openFileFromCard(relFileName, &FileInfo);
-	
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Set up the memory for the banner and icon data to go in
-	char *BannerIconData = new char[0x2000];
-	
-	// Get the banner and icon data
-	ReturnCode = readFromFileOnCard(&FileInfo, BannerIconData, 0x2000, 0);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		closeFileFromCard(&FileInfo);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Close the current REL file
-	ReturnCode = closeFileFromCard(&FileInfo);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Get the size of the new file
-	uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
-	uint32_t FileSize = 0x2000 + SettingsStructSize + 0x200;
-	
-	// Adjust the file size to be in multiples of 0x2000, rounding up
-	uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
-	
-	// Create the new file
-	ReturnCode = createFileOnCard(settingsFileName, FileSizeAdjusted, &FileInfo);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Get the stats for the new file
-	gc::card::CARDStat CardStat;
-	int32_t FileNumber = FileInfo.fileNum;
-	
-	ReturnCode = getFileStatus(FileNumber, &CardStat);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Modify the stats for the new file
-	CardStat.bannerFormat 		= 2;
-	CardStat.iconAddress 		= 0;
-	CardStat.iconFormat 		= 2;
-	CardStat.iconSpeed 			= 3;
-	CardStat.commentAddress 	= 0x2000;
-	
-	// Set the stats for the new file
-	ReturnCode = setFileStatus(FileNumber, &CardStat);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Open the new file
-	ReturnCode = openFileFromCard(settingsFileName, settingsFileInfo);
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		delete[] (BannerIconData);
-		unmountCard();
-		return ReturnCode;
-	}
-	
-	// Write the banner and icon data to the new file
-	ReturnCode = writeToFileOnCard(settingsFileInfo, BannerIconData, 0x2000, 0);
-	
-	// Delete the data for the icon and banner, as they are not needed anymore
-	delete[] (BannerIconData);
-	
-	if (ReturnCode != CARD_RESULT_READY)
-	{
-		closeFileFromCard(settingsFileInfo);
-		unmountCard();
-	}
-	
-	return ReturnCode;
 }
 
 }

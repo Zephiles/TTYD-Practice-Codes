@@ -1511,8 +1511,7 @@ void menuCheckButton()
 					{
 						case LOAD_SETTINGS:
 						{
-							int32_t ReturnCode = loadSettings(MenuSettings.SettingsFileName);
-							
+							int32_t ReturnCode = loadSettings();
 							switch (ReturnCode)
 							{
 								case CARD_RESULT_READY:
@@ -1538,9 +1537,7 @@ void menuCheckButton()
 						}
 						case SAVE_SETTINGS:
 						{
-							int32_t ReturnCode = writeSettings(MenuSettings.SettingsDescription, 
-								MenuSettings.SettingsFileName, MenuSettings.RelFileName);
-							
+							int32_t ReturnCode = saveSettings();
 							switch (ReturnCode)
 							{
 								case CARD_RESULT_READY:

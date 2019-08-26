@@ -1419,26 +1419,14 @@ void initMenuVars()
 	Menu[WARPS_INDEX].ColumnSplitAmount 				= Menu[WARPS_INDEX].TotalMenuOptions;
 	Menu[WARPS_INDEX].Line 								= WarpIndexLines;
 	
-	MenuSettings.SettingsFileName = "rel_settings";
-	
-	#ifdef TTYD_US
-	MenuSettings.SettingsDescription = "Practice Codes Settings (US)";
-	#elif defined TTYD_JP
-	MenuSettings.SettingsDescription = "Practice Codes Settings (JP)";
-	#elif defined TTYD_EU
-	MenuSettings.SettingsDescription = "Practice Codes Settings (EU)";
-	#endif
-	
-	MenuSettings.RelFileName = "rel";
-	
 	// Set the initial settings
-	setSettings();
+	setInitialSettings();
 	
 	// Load the custom settings from the settings file if it exists
-	loadSettings(MenuSettings.SettingsFileName);
+	loadSettings();
 }
 
-void setSettings()
+void setInitialSettings()
 {
 	// Set the Cheats bools
 	Cheat[WALK_THROUGH_WALLS].Active 			= false;

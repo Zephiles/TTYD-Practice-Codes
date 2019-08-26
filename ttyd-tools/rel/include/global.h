@@ -561,7 +561,7 @@ struct ReloadRoomStruct
 
 struct SpawnItems
 {
-	uint16_t SpawnItemCounter;
+	uint32_t SpawnItemCounter;
 	bool InAdjustableValueMenu;
 };
 
@@ -581,7 +581,7 @@ struct ClearCacheForBattlesStruct
 struct TrickDisplay
 {
 	uint32_t MainTimer;
-	uint16_t ResetTimer;
+	uint32_t ResetTimer;
 	bool TimerPaused;
 	bool TimerStopped;
 	
@@ -595,7 +595,7 @@ struct BlimpTicketSkipStruct
 {
 	uint32_t UpRightTimer;
 	uint32_t StraightUpTimer;
-	uint16_t ResetTimer;
+	uint32_t ResetTimer;
 	bool TimersPaused;
 	bool UpRightTimerStopped;
 	bool StraightUpTimerStopped;
@@ -634,6 +634,21 @@ struct MemoryCardStruct
 	const char *SettingsFileName;
 	const char *SettingsDescription;
 	const char *RelFileName;
+	
+	MemoryCardStruct()
+	{
+		SettingsFileName = "rel_settings";
+		
+		#ifdef TTYD_US
+		SettingsDescription = "Practice Codes Settings (US)";
+		#elif defined TTYD_JP
+		SettingsDescription = "Practice Codes Settings (JP)";
+		#elif defined TTYD_EU
+		SettingsDescription = "Practice Codes Settings (EU)";
+		#endif
+		
+		RelFileName = "rel";
+	}
 };
 
 struct MemoryWatchStruct
@@ -764,7 +779,7 @@ extern const char ButtonInputDisplay[];
 #endif
 
 void initMenuVars();
-void setSettings();
+void setInitialSettings();
 void initAddressOverwrites();
 
 }
