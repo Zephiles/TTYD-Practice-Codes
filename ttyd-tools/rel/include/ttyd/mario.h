@@ -39,7 +39,7 @@ struct Player
 	uint32_t unk_44;
 	uint32_t wYawnTimer;
 	uint16_t wInvincibleTimer;
-	uint16_t unk_4e;
+	int16_t unk_4e;
 	uint16_t wAirTimer;
 	uint16_t pad_52;
 	uint8_t gap_54[40];
@@ -84,7 +84,9 @@ struct Player
 	uint32_t unk_1b4;
 	float wPlayerCollisionBox[3];
 	float wPlayerCollisionRelated[3];
-	uint8_t gap_1d0[20];
+	uint8_t gap_1d0[8];
+	void *touchNpcPtr;
+	uint8_t gap_1dc[8];
 	void *wObjInteract;
 	void *wObjStandOn;
 	void *wObjJumpFrom;
@@ -96,7 +98,9 @@ struct Player
 	void *wObjHammer;
 	void *wObjHazardRespawn;
 	void *wUnkObj6;
-	uint8_t gap_210[52];
+	uint8_t gap_210[24];
+	float playerGravity;
+	uint8_t gap_22c[24];
 	uint8_t unk_244;
 	uint8_t wFollowerFlags[2];
 	ttyd::party::PartyMembers prevFollowerId[2];
