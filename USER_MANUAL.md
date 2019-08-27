@@ -112,3 +112,11 @@ There are several other changes that have been made outside of the menu:
 3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
 4. Holding Y while using Art Attack will pause the timer that is used to check how long you are able to use it for.
 5. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
+6. Several crashes have been fixed/prevented:
+   * Petalburg intro cutscene - Mario will not have any greeting animation.
+   * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the Sequence is past 338, then the Sequence will be set to 338.
+   * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated.
+   * If the Endless Room has been completed, and you enter it when the Sequence is at 385, then the room will be set to an incomplete state.
+   * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn Gus.
+   * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
+7. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
