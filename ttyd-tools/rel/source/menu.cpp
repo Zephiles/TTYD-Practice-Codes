@@ -1481,6 +1481,7 @@ void menuCheckButton()
 					if (tempSelectedOption == 0)
 					{
 						// Go back to the previous menu
+						MenuVar.FunctionReturnCode = 0;
 						resetMenu();
 						enterPreviousMenu();
 					}
@@ -1564,7 +1565,7 @@ void menuCheckButton()
 				}
 				case B:
 				{
-					// Go back to the root
+					// Go back to the previous menu
 					resetMenu();
 					enterPreviousMenu();
 					break;
@@ -1771,6 +1772,7 @@ void menuCheckButton()
 						case 0:
 						{
 							// Go back to the previous menu
+							MenuVar.FunctionReturnCode = 0;
 							resetMenu();
 							enterPreviousMenu();
 							break;
@@ -2686,7 +2688,7 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							// Go back to the root
+							// Go back to the previous menu
 							resetMenu();
 							enterPreviousMenu();
 							break;
@@ -2786,7 +2788,8 @@ void menuCheckButton()
 					{
 						case 0:
 						{
-							// Go back to the root
+							// Go back to the previous menu
+							MenuVar.FunctionReturnCode = 0;
 							resetMenu();
 							enterPreviousMenu();
 							break;
@@ -2930,7 +2933,8 @@ void menuCheckButton()
 							{
 								case 0:
 								{
-									// Go back to the root
+									// Go back to the previous menu
+									MenuVar.FunctionReturnCode = 0;
 									resetMenu();
 									enterPreviousMenu();
 									break;
