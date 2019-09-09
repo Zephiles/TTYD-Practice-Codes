@@ -772,7 +772,7 @@
 // 80095724:marioClearJumpPara
 // 80095758:marioChgMot2
 // 800957D0:marioChgMotSub
-// 800958D8:marioChgMot
+800958D8:marioChgMot
 // 80095998:marioMotion
 // 800959FC:marioBoots
 // 80095BB8:marioChkTalkable
