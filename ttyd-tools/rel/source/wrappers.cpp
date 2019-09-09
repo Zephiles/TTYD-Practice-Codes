@@ -2,6 +2,7 @@
 #include <ttyd/seqdrv.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
+#include <ttyd/event.h>
 
 #include <cstdint>
 #include <cstdio>
@@ -35,6 +36,8 @@ extern "C"
 	void *__real_pouchGetPtr();
 	void __real_btlGetScreenPoint(float pos[3], float posOut[3]);
 	ttyd::evtmgr::EvtWork *__real_evtGetWork();
+	int32_t __real_eventStgNum();
+	ttyd::event::EventStageDescription *__real_eventStgDtPtr(int32_t stageId);
 	void *__real_winGetPtr();
 	void __real_winOpenEnable();
 	int32_t __real_CARDClose(gc::card::CARDFileInfo *fileInfo);
@@ -196,6 +199,18 @@ extern "C"
 	__attribute__((noinline)) ttyd::evtmgr::EvtWork *__wrap_evtGetWork()
 	{
 		return __real_evtGetWork();
+	}
+	
+	// eventStgNum
+	__attribute__((noinline)) int32_t __wrap_eventStgNum()
+	{
+		return __real_eventStgNum();
+	}
+	
+	// eventStgDtPtr
+	ttyd::event::EventStageDescription *__wrap_eventStgDtPtr(int32_t stageId)
+	{
+		return __real_eventStgDtPtr(stageId);
 	}
 	
 	// winGetPtr

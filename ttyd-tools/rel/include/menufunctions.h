@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global.h"
+
 #include <ttyd/party.h>
 
 #include <cstdint>
@@ -71,6 +73,24 @@ int32_t getGlobalFlagValue(uint32_t currentMenu, uint32_t flag);
 void cheatClearAreaFlags(uint32_t currentMenuOption);
 const char *getMapFromIndex(int32_t index);
 int32_t getMapIndex();
+
+int32_t getTotalStageEvents();
+bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2]);
+bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
+bool getEventMapAndBero(int32_t index, const char *arrayOut[2]);
+const char *getPartyName(ttyd::party::PartyMembers partyId);
+bool getEventDetails(int32_t index, WarpByEventStruct *warpByEvent);
+bool initStageEvents(int32_t index);
+
+#ifdef TTYD_JP
+bool getStageString(char *stageNameBuffer, uint32_t sequencePosition);
+#endif
+
+#ifdef TTYD_JP
+bool getSequenceStageAndEvent(const char *arrayOut[2], char *stageNameBuffer, uint32_t sequencePosition);
+#else
+bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition);
+#endif
 
 // void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);

@@ -27,7 +27,9 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 
 void drawSingleColumnMain();
 void drawSingleColumnSelectedOption();
-void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adjustSelectedOption);
+
+void drawSingleColumn(int32_t posY, uint32_t maxOptionsPerPage, 
+	uint32_t currentPage, bool adjustSelectedOption);
 
 void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMenuOption, 
 	uint32_t currentPage, uint32_t size, uint32_t maxOptionsPerPage, 
@@ -86,12 +88,6 @@ void drawVersionNumber(int32_t posX, int32_t posY);
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
 
-#ifdef TTYD_JP
-bool getSequenceStageAndEvent(const char **returnArray, char *stageNameBuffer, uint32_t sequencePosition);
-#else
-bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePosition);
-#endif
-
 void drawCheatsChangeSequence();
 void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description);
@@ -101,6 +97,7 @@ void drawCheatsResolveFades();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
 void drawWarpsOptions();
+void drawWarpByEventDetails();
 void drawWarpIndexMapAndEntrance();
 void drawWarpIndexEntranceList();
 void drawOnScreenTimerButtonCombos();

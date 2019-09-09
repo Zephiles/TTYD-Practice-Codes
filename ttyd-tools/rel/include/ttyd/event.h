@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/party.h>
+
 #include <cstdint>
 
 namespace ttyd::event {
@@ -7,8 +9,7 @@ namespace ttyd::event {
 struct EventStageEventDescription
 {
 	uint8_t entryMotionType;
-	uint8_t party0Id;
-	uint8_t party1Id;
+	ttyd::party::PartyMembers partyId[2];
 	uint8_t pad_3;
 	uint16_t gsw0; // Sequence Position
 	uint16_t pad_6;
@@ -29,7 +30,7 @@ struct EventStageDescription
 	char *nameEn;
 	#endif
 	EventStageEventDescription *pEvents;
-	uint32_t eventCount;
+	int32_t eventCount;
 } __attribute__((__packed__));
 
 extern "C" {

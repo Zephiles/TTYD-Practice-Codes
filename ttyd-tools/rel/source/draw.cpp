@@ -520,29 +520,32 @@ void drawSingleColumnMain()
 {
 	uint32_t tempTotalMenuOptions = Menu[MenuVar.CurrentMenu].TotalMenuOptions;
 	uint32_t tempCurrentPage = 0;
+	int32_t PosY = 180;
 	
-	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, false);
+	drawSingleColumn(PosY, tempTotalMenuOptions, tempCurrentPage, false);
 }
 
 void drawSingleColumnSelectedOption()
 {
 	uint32_t tempTotalMenuOptions = Menu[MenuVar.CurrentMenu].TotalMenuOptions;
 	uint32_t tempCurrentPage = 0;
+	int32_t PosY = 180;
 	
-	drawSingleColumn(tempTotalMenuOptions, tempCurrentPage, true);
+	drawSingleColumn(PosY, tempTotalMenuOptions, tempCurrentPage, true);
 }
 
-void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adjustSelectedOption)
+void drawSingleColumn(int32_t posY, uint32_t maxOptionsPerPage, 
+	uint32_t currentPage, bool adjustSelectedOption)
 {
 	uint32_t tempCurrentMenu 		= MenuVar.CurrentMenu;
 	uint32_t tempSelectedOption 	= MenuVar.SelectedOption;
 	uint32_t tempTotalMenuOptions 	= Menu[tempCurrentMenu].TotalMenuOptions;
 	uint32_t IndexStart 			= currentPage * maxOptionsPerPage;
 	
-	uint8_t Alpha 	= 0xFF;
-	int32_t PosX 	= -232;
-	int32_t PosY 	= 180;
-	float Scale 	= 0.6;
+	uint8_t Alpha 		= 0xFF;
+	int32_t PosX 		= -232;
+	// int32_t PosY 	= 180;
+	float Scale 		= 0.6;
 	uint32_t Color;
 	
 	for (uint32_t i = IndexStart; i < (IndexStart + maxOptionsPerPage); i++)
@@ -569,8 +572,8 @@ void drawSingleColumn(uint32_t maxOptionsPerPage, uint32_t currentPage, bool adj
 		
 		const char *CurrentLine = Menu[tempCurrentMenu].Line[i];
 		Color = getSelectedTextColor(CurrentOptionCheck);
-		drawText(CurrentLine, PosX, PosY, Alpha, Color, Scale);
-		PosY -= 20;
+		drawText(CurrentLine, PosX, posY, Alpha, Color, Scale);
+		posY -= 20;
 	}
 }
 
@@ -2438,6 +2441,11 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	{
 		height = 235;
 	}
+	else if (currentMenu == WARPS_EVENT)
+	{
+		y += 62;
+		height = 330;
+	}
 	else if (currentMenu == WARPS_INDEX)
 	{
 		if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
@@ -2534,6 +2542,30 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		drawText(String, x, NamesPosY, alpha, color, scale);
 		
 		y -= 60;
+	}
+	else if (currentMenu == WARPS_EVENT)
+	{
+		const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
+		drawText(Details, x, y - 35, alpha, color, scale);
+		
+		// Draw the details for the current event
+		WarpByEventStruct WarpByEvent;
+		if (getEventDetails(tempMenuSecondaryValue, &WarpByEvent))
+		{
+			char *tempDisplayBuffer = DisplayBuffer;
+			sprintf(tempDisplayBuffer,
+				"%s\n%s\n%" PRIu16 "\n%s\n%s\n%s\n%s",
+				WarpByEvent.Stage,
+				WarpByEvent.Event,
+				WarpByEvent.SequencePosition,
+				WarpByEvent.Partner,
+				WarpByEvent.Follower,
+				WarpByEvent.Map,
+				WarpByEvent.Bero);
+			
+			drawText(tempDisplayBuffer, x + 100, y - 35, alpha, color, scale);
+		}
+		y -= 152;
 	}
 	else if ((currentMenu == WARPS_INDEX) && 
 		((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP))
@@ -2954,111 +2986,6 @@ void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
 	
 	posY -= 20;
 	drawText(StringValue, PosX, posY, Alpha, Color, Scale);
-}
-
-#ifdef TTYD_JP
-bool getSequenceStageAndEvent(const char **returnArray, char *stageNameBuffer, uint32_t sequencePosition)
-#else
-bool getSequenceStageAndEvent(const char **returnArray, uint32_t sequencePosition)
-#endif
-{
-	const char *StageName = nullptr;
-	const char *EventName = nullptr;
-	
-	#ifdef TTYD_JP
-	// Make sure the Sequence value is valid
-	if (sequencePosition > 406)
-	{
-		return false;
-	}
-	
-	if ((sequencePosition >= 0) && (sequencePosition <= 22))
-	{
-		StageName = "Opening";
-	}
-	else if ((sequencePosition >= 403) && (sequencePosition <= 406))
-	{
-		StageName = "Ending";
-	}
-	else
-	{
-		int32_t StageNumber;
-		if ((sequencePosition >= 23) && (sequencePosition <= 70))
-		{
-			StageNumber = 1;
-		}
-		else if ((sequencePosition >= 71) && (sequencePosition <= 126))
-		{
-			StageNumber = 2;
-		}
-		else if ((sequencePosition >= 127) && (sequencePosition <= 177))
-		{
-			StageNumber = 3;
-		}
-		else if ((sequencePosition >= 178) && (sequencePosition <= 229))
-		{
-			StageNumber = 4;
-		}
-		else if ((sequencePosition >= 230) && (sequencePosition <= 281))
-		{
-			StageNumber = 5;
-		}
-		else if ((sequencePosition >= 282) && (sequencePosition <= 351))
-		{
-			StageNumber = 6;
-		}
-		else if ((sequencePosition >= 352) && (sequencePosition <= 381))
-		{
-			StageNumber = 7;
-		}
-		else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
-		{
-			StageNumber = 8;
-		}
-		
-		sprintf(stageNameBuffer,
-			"Stage %" PRId32,
-			StageNumber);
-		
-		StageName = stageNameBuffer;
-	}
-	
-	EventName = CheatsEventNames[sequencePosition];
-	#else
-	uint16_t tempSequencePosition = static_cast<uint16_t>(sequencePosition);
-	int32_t NumberOfStages = ttyd::event::eventStgNum();
-	bool FoundName = false;
-	
-	for (int32_t i = 0; i < NumberOfStages; ++i)
-	{
-		ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
-		for (uint32_t j = 0; j < StageDesc->eventCount; ++j)
-		{
-			const ttyd::event::EventStageEventDescription &EventDesc = StageDesc->pEvents[j];
-			if (EventDesc.gsw0 >= tempSequencePosition)
-			{
-				StageName = StageDesc->nameEn;
-				EventName = EventDesc.nameEn;
-				FoundName = true;
-				break;
-			}
-		}
-		
-		if (FoundName)
-		{
-			break;
-		}
-	}
-	
-	if (!FoundName)
-	{
-		return false;
-	}
-	#endif
-	
-	returnArray[0] = StageName;
-	returnArray[1] = EventName;
-	return true;
 }
 
 void drawCheatsChangeSequence()
@@ -3540,7 +3467,7 @@ void drawWarpsOptions()
 	const char **tempWarpDestinations 			= WarpDestinations;
 	
 	int32_t PosX 								= -232;
-	int32_t PosY 								= 120;
+	int32_t PosY 								= 100;
 	uint32_t Size 								= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerPage 					= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerRow 					= 4;
@@ -3569,6 +3496,44 @@ void drawWarpsOptions()
 		drawSingleLineFromArray(PosX, PosY, 
 			tempCurrentMenuOption, WarpDescriptions);
 	}
+}
+
+void drawWarpByEventDetails()
+{
+	// Draw the text explaining that warping with this menu will clear all game states
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 180;
+	float Scale = 0.6;
+	
+	const char *ExplainText = "Note: Warping via this menu will clear all game states.";
+	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 100;
+	
+	// Draw the labels for the details for the current event
+	const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
+	drawText(Details, PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the details for the current event
+	WarpByEventStruct WarpByEvent;
+	if (!getEventDetails(MenuVar.WarpByEventCurrentIndex, &WarpByEvent))
+	{
+		return;
+	}
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"%s\n%s\n%" PRIu16 "\n%s\n%s\n%s\n%s",
+		WarpByEvent.Stage,
+		WarpByEvent.Event,
+		WarpByEvent.SequencePosition,
+		WarpByEvent.Partner,
+		WarpByEvent.Follower,
+		WarpByEvent.Map,
+		WarpByEvent.Bero);
+	
+	drawText(tempDisplayBuffer, PosX + 100, PosY, Alpha, Color, Scale);
 }
 
 void drawWarpIndexMapAndEntrance()

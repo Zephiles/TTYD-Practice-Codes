@@ -734,7 +734,7 @@
 800858B4:swGet
 800858FC:swSet
 // 8008593C:swReInit
-// 80085980:swInit
+80085980:swInit
 
 // seq_logo.o
 // 800859F8:progDisp
@@ -745,6 +745,44 @@
 80086D6C:seq_logoMain
 8008746C:seq_logoExit
 800874B0:seq_logoInit
+
+// mario_motion.o
+// 80091904:mot_bottomless
+// 80091E24:mot_dummy
+// 80091E44:mot_partyUse
+// 80091E64:mot_shadow
+// 80091FA8:mot_kaze
+// 800921EC:marioChgMotJump2
+// 800922C4:marioRollChgChk
+// 80092450:marioChkRub
+// 80092458:marioChkItemMotion
+// 80092624:marioChkTransform
+// 80092814:marioChkJump
+// 80092A3C:mot_getItem
+// 80092A94:mot_talk
+// 80092C94:marioLandOn
+// 80093910:marioFall
+// 80093D38:marioJump
+// 80094020:marioMakeJumpPara
+// 80094098:marioGetFallSpd
+// 8009412C:marioSetFallPara
+// 800941BC:marioSetJumpPara
+// 800943A8:marioClearJumpPara
+// 800943DC:marioChgMot2
+// 80094454:marioChgMotSub
+// 8009455C:marioChgMot
+// 8009461C:marioMotion
+// 80094680:marioBoots
+// 80094830:marioChkTalkable
+// 800948EC:marioChkItemGetMotion
+// 8009497C:marioChgSmallJumpMotion
+// 80094A88:marioChgJumpStandMotion
+// 80094C40:marioChgRollMotion
+80094C70:marioChgShipMotion
+// 80094C90:marioChgGetItemMotion
+// 80094D90:marioChgTalkMotion
+80094E48:marioChgStayMotion
+// 80094F28:marioChgMoveMotion
 
 // itemdrv.o
 // text
@@ -1554,7 +1592,7 @@
 80140FB8:marioGetExtraPartyId
 80141050:marioGetPartyId
 // 801410E8:marioGetParty
-// 80141198:marioPartyKill
+80141198:marioPartyKill
 80141204:marioPartyGoodbye
 8014124C:marioPartyHello
 801412FC:marioPartyEntry

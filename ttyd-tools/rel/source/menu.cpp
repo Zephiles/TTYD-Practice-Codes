@@ -2591,6 +2591,13 @@ void menuCheckButton()
 									MenuVar.SelectedOption 		= CurrentMenuOptionCheck;
 									break;
 								}
+								case WARP_BY_EVENT:
+								{
+									// Enter the next menu
+									enterNextMenu(WARPS_EVENT, tempCurrentMenuOption);
+									resetMenu();
+									break;
+								}
 								case WARP_BY_INDEX:
 								{
 									// Enter the next menu
@@ -2702,6 +2709,103 @@ void menuCheckButton()
 			}
 			break;
 		}
+		case WARPS_EVENT:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					if (tempSelectedOption == 0)
+					{
+						adjustMenuNoPageEdit(CurrentButton);
+					}
+					break;
+				}
+				case A:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+							switch (CurrentMenuOptionCheck)
+							{
+								case EVENT_SELECT_EVENT:
+								{
+									MenuVar.SelectedOption = CurrentMenuOptionCheck;
+									MenuVar.MenuSecondaryValue = MenuVar.WarpByEventCurrentIndex;
+									MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+									MenuVar.Timer = 0;
+									break;
+								}
+								case EVENT_WARP_NOW:
+								{
+									int32_t ReturnCode = warpToMapByEvent(MenuVar.WarpByEventCurrentIndex);
+									switch (ReturnCode)
+									{
+										case UNKNOWN_BEHAVIOR:
+										{
+											break;
+										}
+										case SUCCESS:
+										{
+											closeMenu();
+											return;
+										}
+										case NOT_IN_GAME:
+										{
+											MenuVar.FunctionReturnCode 	= ReturnCode;
+											MenuVar.Timer 				= secondsToFrames(3);
+											break;
+										}
+										default:
+										{
+											break;
+										}
+									}
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							// Go back to the root
+							resetMenu();
+							enterPreviousMenu();
+							break;
+						}
+						default:
+						{
+							closeSecondaryMenu();
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
 		case WARPS_INDEX:
 		{
 			switch (CurrentButton)
@@ -2775,7 +2879,6 @@ void menuCheckButton()
 										}
 										default:
 										{
-											
 											MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(
 												tempCurrentMenu) - 1;
 											
@@ -3029,11 +3132,12 @@ void drawMenu()
 		{
 			// Draw the text for the options
 			uint32_t MaxOptionsPerPage = 18;
-			drawSingleColumn(MaxOptionsPerPage, tempCurrentPage, false);
+			int32_t PosY = 180;
+			drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, false);
 			
 			// Draw the page number
 			int32_t PosX = 150;
-			int32_t PosY = 180;
+			// int32_t PosY = 180;
 			drawPageNumber(PosX, PosY, tempCurrentPage);
 			break;
 		}
@@ -3471,6 +3575,29 @@ void drawMenu()
 				(tempFunctionReturnCode < 0))
 			{
 				int32_t PosY = -90;
+				drawWarpsErrorMessage(PosY);
+			}
+			break;
+		}
+		case WARPS_EVENT:
+		{
+			// Draw the text for the options
+			uint32_t MaxOptionsPerPage = Menu[tempCurrentMenu].TotalMenuOptions;
+			int32_t PosY = 140;
+			drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, true);
+			
+			// Draw the event details
+			drawWarpByEventDetails();
+			
+			if (tempSelectedOption > 0)
+			{
+				drawAdjustableValue(false, tempCurrentMenu);
+			}
+			
+			// Draw the error message if the player tried to warp while either not in the game or in a battle
+			if (tempFunctionReturnCode < 0)
+			{
+				int32_t PosY = -50;
 				drawWarpsErrorMessage(PosY);
 			}
 			break;

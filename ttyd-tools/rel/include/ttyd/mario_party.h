@@ -16,7 +16,7 @@ void partyJoin(ttyd::party::PartyMembers id);
 int32_t marioGetExtraPartyId();
 int32_t marioGetPartyId();
 // marioGetParty
-// marioPartyKill
+void marioPartyKill();
 int32_t marioPartyGoodbye();
 int32_t marioPartyHello(ttyd::party::PartyMembers id);
 int32_t marioPartyEntry(ttyd::party::PartyMembers id);

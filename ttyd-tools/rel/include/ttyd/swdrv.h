@@ -17,7 +17,7 @@ void swClear(uint32_t gswf);
 bool swGet(uint32_t gswf);
 void swSet(uint32_t gswf);
 // swReInit
-// swInit
+void swInit();
 
 }
 

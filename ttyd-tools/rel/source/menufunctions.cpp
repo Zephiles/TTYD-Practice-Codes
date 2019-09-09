@@ -21,9 +21,12 @@
 #include <ttyd/evtmgr.h>
 #include <ttyd/system.h>
 #include <ttyd/mapdata.h>
+#include <ttyd/event.h>
+#include <ttyd/mario_motion.h>
 
 #include <cstdio>
 #include <cstring>
+#include <cinttypes>
 
 namespace mod {
 
@@ -643,6 +646,12 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 			UpperBound = 100;
 			break;
 		}
+		case WARPS_EVENT:
+		{
+			// LowerBound = 0;
+			UpperBound = getTotalStageEvents() - 1;
+			break;
+		}
 		case WARPS_INDEX:
 		{
 			if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
@@ -1225,6 +1234,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					MenuVar.FrameCounter = 1;
 					return Button;
 				}
+				case WARPS_EVENT:
+				{
+					MenuVar.WarpByEventCurrentIndex = MenuVar.MenuSecondaryValue;
+					MenuVar.SelectedOption = 0;
+					
+					MenuVar.FrameCounter = 1;
+					return Button;
+				}
 				case WARPS_INDEX:
 				{
 					if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
@@ -1320,6 +1337,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					case CHEATS_MANAGE_FLAGS_MAIN:
 					case BATTLES_CURRENT_ACTOR:
 					case BATTLES_STATUSES:
+					case WARPS_EVENT:
 					case WARPS_INDEX:
 					{
 						MenuVar.SelectedOption = 0;
@@ -3159,6 +3177,427 @@ int32_t getMapIndex()
 		}
 	}
 	return -1;
+}
+
+int32_t getTotalStageEvents()
+{
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	int32_t TotalEvents = 0;
+	
+	for (int32_t i = 0; i < NumberOfStages; ++i)
+	{
+		ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(i);
+		TotalEvents += Stage->eventCount;
+	}
+	
+	return TotalEvents;
+}
+
+bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2])
+{
+	if ((index < 0) || (index >= getTotalStageEvents()))
+	{
+		return false;
+	}
+
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	int32_t StageStartIndex = 0;
+	
+	for (int32_t s = 0; s < NumberOfStages; ++s)
+	{
+		ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(s);
+		int32_t StageEventCount = TargetStage->eventCount;
+		
+		if ((index >= StageStartIndex) && (index < (StageStartIndex + StageEventCount)))
+		{
+			arrayOut[0] = s; // StageId
+			arrayOut[1] = index - StageStartIndex; // EventId
+			return true;
+		}
+
+		StageStartIndex += StageEventCount;
+	}
+	
+	return false;
+}
+
+bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
+{
+	if ((stageId < 0) || (stageId >= ttyd::event::eventStgNum()))
+	{
+		return false;
+	}
+	
+	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(stageId);
+	if ((eventId < 0) || (eventId >= TargetStage->eventCount))
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+bool getEventMapAndBero(int32_t index, const char *arrayOut[2])
+{
+	int32_t StageAndEventIds[2];
+	if (!indexToStageAndEvent(index, StageAndEventIds))
+	{
+		return false;
+	}
+	
+	int32_t StageId = StageAndEventIds[0];
+	int32_t EventId = StageAndEventIds[1];
+	
+	if (!checkForValidStageAndEvent(StageId, EventId))
+	{
+		return false;
+	}
+	
+	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
+	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
+	
+	arrayOut[0] = TargetEvent->map;
+	arrayOut[1] = TargetEvent->bero;
+	return true;
+}
+
+const char *getPartyName(ttyd::party::PartyMembers partyId)
+{
+	switch (partyId)
+	{
+		case ttyd::party::PartyMembers::kNone:
+		{
+			return "None";
+		}
+		case ttyd::party::PartyMembers::kGoombella:
+		{
+			return "Goombella";
+		}
+		case ttyd::party::PartyMembers::kKoops:
+		{
+			return "Koops";
+		}
+		case ttyd::party::PartyMembers::kBobbery:
+		{
+			return "Bobbery";
+		}
+		case ttyd::party::PartyMembers::kYoshi:
+		{
+			return "Yoshi";
+		}
+		case ttyd::party::PartyMembers::kFlurrie:
+		{
+			return "Flurrie";
+		}
+		case ttyd::party::PartyMembers::kVivian:
+		{
+			return "Vivian";
+		}
+		case ttyd::party::PartyMembers::kMsMowz:
+		{
+			return "Ms. Mowz";
+		}
+		case ttyd::party::PartyMembers::kEgg:
+		{
+			return "Egg";
+		}
+		case ttyd::party::PartyMembers::kFlavio:
+		{
+			return "Flavio";
+		}
+		case ttyd::party::PartyMembers::kPunio:
+		{
+			return "Punio";
+		}
+		case ttyd::party::PartyMembers::kFrankly:
+		{
+			return "Frankly";
+		}
+		case ttyd::party::PartyMembers::kGus:
+		{
+			return "Gus";
+		}
+		case ttyd::party::PartyMembers::kGoombellaFollower:
+		{
+			return "Goombella (Follower)";
+		}
+		case ttyd::party::PartyMembers::kKoopsFollower:
+		{
+			return "Koops (Follower)";
+		}
+		case ttyd::party::PartyMembers::kBobberyFollower:
+		{
+			return "Bobbery (Follower)";
+		}
+		case ttyd::party::PartyMembers::kYoshiFollower:
+		{
+			return "Yoshi (Follower)";
+		}
+		case ttyd::party::PartyMembers::kFlurrieFollower:
+		{
+			return "Flurrie (Follower)";
+		}
+		case ttyd::party::PartyMembers::kVivianFollower:
+		{
+			return "Vivian (Follower)";
+		}
+		case ttyd::party::PartyMembers::kMsMowzFollower:
+		{
+			return "Ms. Mowz (Follower)";
+		}
+		default:
+		{
+			return "";
+		}
+	}
+} 
+
+bool getEventDetails(int32_t index, WarpByEventStruct *warpByEvent)
+{
+	int32_t StageAndEventIds[2];
+	if (!indexToStageAndEvent(index, StageAndEventIds))
+	{
+		return false;
+	}
+	
+	int32_t StageId = StageAndEventIds[0];
+	int32_t EventId = StageAndEventIds[1];
+	
+	if (!checkForValidStageAndEvent(StageId, EventId))
+	{
+		return false;
+	}
+	
+	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
+	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
+	
+	#ifdef TTYD_JP
+	char *StageNameBuffer = warpByEvent->Stage;
+	if (!getStageString(StageNameBuffer, TargetEvent->gsw0))
+	{
+		StageNameBuffer[0] = '\0';
+	}
+	
+	if (index < static_cast<int32_t>(WarpsEventNamesSize))
+	{
+		warpByEvent->Event = WarpsEventNames[index];
+	}
+	else
+	{
+		warpByEvent->Event = "";
+	}
+	#else
+	warpByEvent->Stage = 				TargetStage->nameEn;
+	warpByEvent->Event = 				TargetEvent->nameEn;
+	#endif
+	
+	warpByEvent->Partner = 				getPartyName(TargetEvent->partyId[0]);
+	warpByEvent->Follower = 			getPartyName(TargetEvent->partyId[1]);
+	warpByEvent->Map = 					TargetEvent->map;
+	warpByEvent->Bero = 				TargetEvent->bero;
+	warpByEvent->SequencePosition = 	TargetEvent->gsw0;
+	return true;
+}
+
+bool initStageEvents(int32_t index)
+{
+	int32_t StageAndEventIds[2];
+	if (!indexToStageAndEvent(index, StageAndEventIds))
+	{
+		return false;
+	}
+	
+	int32_t StageId = StageAndEventIds[0];
+	int32_t EventId = StageAndEventIds[1];
+	
+	if (!checkForValidStageAndEvent(StageId, EventId))
+	{
+		return false;
+	}
+	
+	// Clear all current states
+	ttyd::swdrv::swInit();
+	
+	// Run the init functions for each event, up to the current one
+	for (int32_t s = 0; s <= StageId; ++s)
+	{
+		ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(s);
+		int32_t lastEvent = (s == StageId ? EventId : (Stage->eventCount - 1));
+		
+		for (int32_t e = 0; e <= lastEvent; ++e)
+		{
+			void (*initFunction)() = Stage->pEvents[e].pfnInit;
+			if (initFunction)
+			{
+				initFunction();
+			}
+		}
+	}
+	
+	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
+	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
+	
+	// Set the Sequence to the value for the current event
+    setSequencePosition(TargetEvent->gsw0);
+	
+	switch (TargetEvent->entryMotionType)
+	{
+		case 0:
+		{
+			ttyd::mario_motion::marioChgStayMotion();
+			break;
+		}
+		case 1:
+		{
+			ttyd::mario_motion::marioChgShipMotion();
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+	
+	// Remove any partners and followers that are currently out from the overworld
+	ttyd::mario_party::marioPartyKill();
+	
+	// Reset the previous partner and follower ids
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	player->prevFollowerId[0] = ttyd::party::PartyMembers::kNone;
+	player->prevFollowerId[1] = ttyd::party::PartyMembers::kNone;
+	
+	// Spawn the partner for the current event
+	ttyd::party::PartyMembers PartnerId = TargetEvent->partyId[0];
+	if (PartnerId != ttyd::party::PartyMembers::kNone)
+	{
+		ttyd::mario_party::marioPartyEntry(PartnerId);
+	}
+	
+	// Spawn the follower for the current event
+	ttyd::party::PartyMembers FollowerId = TargetEvent->partyId[1];
+	if (FollowerId != ttyd::party::PartyMembers::kNone)
+	{
+		ttyd::mario_party::marioPartyEntry(FollowerId);
+	}
+	
+	return true;
+}
+
+#ifdef TTYD_JP
+bool getStageString(char *stageNameBuffer, uint32_t sequencePosition)
+{
+	// Make sure the Sequence value is valid
+	if (sequencePosition > 406)
+	{
+		return false;
+	}
+	
+	if ((sequencePosition >= 0) && (sequencePosition <= 22))
+	{
+		strcpy(stageNameBuffer, "Opening");
+		return true;
+	}
+	
+	if ((sequencePosition >= 403) && (sequencePosition <= 406))
+	{
+		strcpy(stageNameBuffer, "Ending");
+		return true;
+	}
+	
+	uint32_t StageNumber;
+	if ((sequencePosition >= 23) && (sequencePosition <= 70))
+	{
+		StageNumber = 1;
+	}
+	else if ((sequencePosition >= 71) && (sequencePosition <= 126))
+	{
+		StageNumber = 2;
+	}
+	else if ((sequencePosition >= 127) && (sequencePosition <= 177))
+	{
+		StageNumber = 3;
+	}
+	else if ((sequencePosition >= 178) && (sequencePosition <= 229))
+	{
+		StageNumber = 4;
+	}
+	else if ((sequencePosition >= 230) && (sequencePosition <= 281))
+	{
+		StageNumber = 5;
+	}
+	else if ((sequencePosition >= 282) && (sequencePosition <= 351))
+	{
+		StageNumber = 6;
+	}
+	else if ((sequencePosition >= 352) && (sequencePosition <= 381))
+	{
+		StageNumber = 7;
+	}
+	else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
+	{
+		StageNumber = 8;
+	}
+	
+	sprintf(stageNameBuffer,
+		"Stage %" PRIu32,
+		StageNumber);
+	
+	return true;
+}
+#endif
+
+#ifdef TTYD_JP
+bool getSequenceStageAndEvent(const char *arrayOut[2], char *stageNameBuffer, uint32_t sequencePosition)
+#else
+bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition)
+#endif
+{
+	const char *StageName = nullptr;
+	const char *EventName = nullptr;
+	
+	#ifdef TTYD_JP
+	if (!getStageString(stageNameBuffer, sequencePosition))
+	{
+		return false;
+	}
+	
+	StageName = stageNameBuffer;
+	EventName = CheatsEventNames[sequencePosition];
+	#else
+	uint16_t tempSequencePosition = static_cast<uint16_t>(sequencePosition);
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	bool FoundName = false;
+	
+	for (int32_t i = 0; i < NumberOfStages; ++i)
+	{
+		ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
+		for (int32_t j = 0; j < StageDesc->eventCount; ++j)
+		{
+			const ttyd::event::EventStageEventDescription &EventDesc = StageDesc->pEvents[j];
+			if (EventDesc.gsw0 >= tempSequencePosition)
+			{
+				StageName = StageDesc->nameEn;
+				EventName = EventDesc.nameEn;
+				FoundName = true;
+				break;
+			}
+		}
+		
+		if (FoundName)
+		{
+			break;
+		}
+	}
+	
+	if (!FoundName)
+	{
+		return false;
+	}
+	#endif
+	
+	arrayOut[0] = StageName;
+	arrayOut[1] = EventName;
+	return true;
 }
 
 /*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)

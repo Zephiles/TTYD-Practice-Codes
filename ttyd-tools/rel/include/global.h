@@ -35,6 +35,7 @@ enum MENU_NAMES
 	BATTLES_STATUSES,
 	DISPLAYS_ONSCREEN_TIMER,
 	DISPLAYS_NO_BUTTON_COMBO,
+	WARPS_EVENT,
 	WARPS_INDEX,
 };
 
@@ -363,6 +364,7 @@ enum ONSCREEN_TIMER_BUTTON_CODES
 enum WARPS_OPTIONS
 {
 	SELECT_WARP = 1,
+	WARP_BY_EVENT,
 	WARP_BY_INDEX,
 };
 
@@ -398,6 +400,12 @@ enum WARPS_SELECTION_OPTIONS
 enum WARPS_IN_ADJUSTABLE_VALUE_MENU_OPTIONS
 {
 	SELECTING_VALUE = 1,
+};
+
+enum WARPS_EVENT_OPTIONS
+{
+	EVENT_SELECT_EVENT = 1,
+	EVENT_WARP_NOW,
 };
 
 enum WARPS_INDEX_OPTIONS
@@ -470,11 +478,12 @@ struct MenuVars
 	uint32_t MemoryWatchSecondaryValue;
 	uint8_t FrameCounter;
 	
-	// Variables used by cheats
+	// Variables used by other stuff
 	bool ResetMarioProperties;
 	int16_t ForcedNPCItemDrop;
 	bool MarioFreeze;
 	uint16_t JumpStorageSetCounter;
+	int32_t WarpByEventCurrentIndex;
 	
 	MenuVars()
 	{
@@ -679,6 +688,22 @@ struct SaveFileDecriptionInfo
 	uint32_t FileSize;
 } __attribute__((__packed__));
 
+struct WarpByEventStruct
+{
+	#ifdef TTYD_JP
+	char Stage[8];
+	#else
+	const char *Stage;
+	#endif
+	
+	const char *Event;
+	const char *Partner;
+	const char *Follower;
+	const char *Map;
+	const char *Bero;
+	uint16_t SequencePosition;
+};
+
 struct WarpByIndexStruct
 {
 	bool RunIndexWarpCode;
@@ -701,7 +726,7 @@ struct MenuPrevMenuAndOption
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[28];
+extern Menus Menu[29];
 extern Cheats Cheat[22];
 extern bool Displays[12];
 extern char DisplayBuffer[256];
@@ -772,8 +797,10 @@ extern uint8_t WarpDestinationsSize;
 
 #ifdef TTYD_JP
 extern const char *CheatsEventNames[];
+extern const char *WarpsEventNames[];
 extern const char *ButtonInputDisplay[];
 extern const char *PointerText;
+extern uint16_t WarpsEventNamesSize;
 #else
 extern const char ButtonInputDisplay[];
 #endif

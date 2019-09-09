@@ -1420,6 +1420,46 @@ int32_t warpToMap(uint32_t value)
 	return SUCCESS;
 }
 
+int32_t warpToMapByEvent(int32_t index)
+{
+	// Make sure the player is currently in the game
+	if (!checkIfInGame())
+	{
+		return NOT_IN_GAME;
+	}
+	
+	const char *MapAndBero[2];
+	if (!getEventMapAndBero(index, MapAndBero))
+	{
+		return UNKNOWN_BEHAVIOR;
+	}
+	
+	if (!initStageEvents(index))
+	{
+		return UNKNOWN_BEHAVIOR;
+	}
+	
+	// Make sure the new map and bero are valid
+	const char *NewMap = MapAndBero[0];
+	if (NewMap)
+	{
+		setNextMap(NewMap);
+	}
+	
+	const char *NewBero = MapAndBero[1];
+	if (NewBero)
+	{
+		setNextBero(NewBero);
+	}
+	else
+	{
+		setNextBero("");
+	}
+	
+	reloadRoomMain();
+	return SUCCESS;
+}
+
 int32_t warpToMapByString(const char *map)
 {
 	// Make sure the player is currently in the game

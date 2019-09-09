@@ -38,6 +38,7 @@ void actionCommandsTimingsInit();
 void displayActionCommandsTiming();
 
 int32_t warpToMap(uint32_t value);
+int32_t warpToMapByEvent(int32_t index);
 int32_t warpToMapByString(const char *map);
 
 }
