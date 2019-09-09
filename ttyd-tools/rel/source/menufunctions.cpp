@@ -23,6 +23,7 @@
 #include <ttyd/mapdata.h>
 #include <ttyd/event.h>
 #include <ttyd/mario_motion.h>
+#include <ttyd/evt_pouch.h>
 
 #include <cstdio>
 #include <cstring>
@@ -3479,6 +3480,19 @@ bool initStageEvents(int32_t index)
 	{
 		ttyd::mario_party::marioPartyEntry(FollowerId);
 	}
+	
+	// Perform a full recovery for Mario and the partners
+	ttyd::mario_pouch::pouchReviseMarioParam(); // May not necessary to call, as other init functions call it
+	ttyd::evt_pouch::evt_pouch_mario_recovery();
+	
+	/* Must call pouchRevisePartyParam to properly set each partner's stats, 
+	otherwise they will each have a maximum of 10 HP */
+	ttyd::mario_pouch::pouchRevisePartyParam();
+	ttyd::evt_pouch::evt_pouch_all_party_recovery();
+	
+	// Make sure the values are properly changed when entering a battle
+	ClearCacheForBattles.MarioStatsShouldBeCleared = true;
+	ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 	
 	return true;
 }

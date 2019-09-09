@@ -1322,6 +1322,38 @@
 // 800EE664:stg0_05_init
 // 800EE688:stg0_00_init
 
+// evt_pouch.o
+// 800F07D0:evt_pouch_get_yoshiname
+// 800F081C:evt_pouch_set_yoshiname
+// 800F084C:evt_pouch_open_mail
+// 800F087C:evt_pouch_receive_mail
+// 800F08AC:evt_pouch_majinai_set
+// 800F08DC:evt_pouch_get_equipbadgecnt
+// 800F0928:evt_pouch_get_havebadgecnt
+// 800F0974:evt_pouch_get_haveitemcnt
+800F09C0:evt_pouch_all_party_recovery
+800F0A24:evt_pouch_mario_recovery
+// 800F0A5C:evt_pouch_party_left
+// 800F0A8C:evt_pouch_party_join
+// 800F0ABC:evt_pouch_set_ap
+// 800F0AEC:evt_pouch_get_max_ap
+// 800F0B38:evt_pouch_set_hp
+// 800F0B68:evt_pouch_get_hp
+// 800F0BB4:evt_pouch_check_item
+// 800F0C08:evt_pouch_remove_keepitem
+// 800F0C9C:evt_pouch_add_keepitem
+// 800F0D0C:evt_pouch_remove_item_index
+// 800F0DA8:evt_pouch_remove_item
+// 800F0E20:evt_pouch_add_item
+// 800F0E90:evt_pouch_get_starstone
+// 800F0EC0:evt_pouch_add_starpiece
+// 800F0EF0:evt_pouch_get_starpiece
+// 800F0F3C:evt_pouch_set_supercoin
+// 800F0F6C:evt_pouch_get_supercoin
+// 800F0FB8:evt_pouch_set_coin
+// 800F0FE8:evt_pouch_add_coin
+// 800F1018:evt_pouch_get_coin
+
 // battle.o
 // text
 // 800F74B4:BattleConsumeReserveItem

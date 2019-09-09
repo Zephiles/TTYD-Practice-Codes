@@ -1,5 +1,6 @@
 #include <gc/card.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/party.h>
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/event.h>
@@ -32,6 +33,7 @@ extern "C"
 	void __real_marioStSystemLevel(uint32_t level);
 	int32_t __real_marioGetPartyId();
 	int32_t __real_marioGetExtraPartyId();
+	void __real_marioPartyEntry(ttyd::party::PartyMembers id);
 	ttyd::mario::Player *__real_marioGetPtr();
 	void *__real_pouchGetPtr();
 	void __real_btlGetScreenPoint(float pos[3], float posOut[3]);
@@ -175,6 +177,12 @@ extern "C"
 	__attribute__((noinline)) int32_t __wrap_marioGetExtraPartyId()
 	{
 		return __real_marioGetExtraPartyId();
+	}
+	
+	// marioPartyEntry
+	void __wrap_marioPartyEntry(ttyd::party::PartyMembers id)
+	{
+		__real_marioPartyEntry(id);
 	}
 	
 	// marioGetPtr
