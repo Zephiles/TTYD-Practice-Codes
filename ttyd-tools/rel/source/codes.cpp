@@ -1428,25 +1428,22 @@ int32_t warpToMapByEvent(int32_t index)
 		return NOT_IN_GAME;
 	}
 	
-	const char *MapAndBero[2];
-	if (!getEventMapAndBero(index, MapAndBero))
+	WarpByEventDetailsStruct WarpByEventDetails;
+	if (!getEventDetails(index, &WarpByEventDetails))
 	{
 		return UNKNOWN_BEHAVIOR;
 	}
 	
-	if (!initStageEvents(index))
-	{
-		return UNKNOWN_BEHAVIOR;
-	}
+	WarpByEvent.ShouldInit = true;
 	
 	// Make sure the new map and bero are valid
-	const char *NewMap = MapAndBero[0];
-	if (NewMap)
+	const char *NewMap = WarpByEventDetails.Map;
+	if (NewMap && (NewMap[0] != '\0'))
 	{
 		setNextMap(NewMap);
 	}
 	
-	const char *NewBero = MapAndBero[1];
+	const char *NewBero = WarpByEventDetails.Bero;
 	if (NewBero)
 	{
 		setNextBero(NewBero);

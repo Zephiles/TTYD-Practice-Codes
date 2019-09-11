@@ -2545,26 +2545,8 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 	else if (currentMenu == WARPS_EVENT)
 	{
-		const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
-		drawText(Details, x, y - 35, alpha, color, scale);
-		
 		// Draw the details for the current event
-		WarpByEventStruct WarpByEvent;
-		if (getEventDetails(tempMenuSecondaryValue, &WarpByEvent))
-		{
-			char *tempDisplayBuffer = DisplayBuffer;
-			sprintf(tempDisplayBuffer,
-				"%s\n%s\n%" PRIu16 "\n%s\n%s\n%s\n%s",
-				WarpByEvent.Stage,
-				WarpByEvent.Event,
-				WarpByEvent.SequencePosition,
-				WarpByEvent.Partner,
-				WarpByEvent.Follower,
-				WarpByEvent.Map,
-				WarpByEvent.Bero);
-			
-			drawText(tempDisplayBuffer, x + 100, y - 35, alpha, color, scale);
-		}
+		drawEventDetails(x, y - 35, tempMenuSecondaryValue);
 		y -= 152;
 	}
 	else if ((currentMenu == WARPS_INDEX) && 
@@ -3498,7 +3480,95 @@ void drawWarpsOptions()
 	}
 }
 
-void drawWarpByEventDetails()
+void drawEventDetails(int32_t posX, int32_t posY, int32_t index)
+{
+	// Draw the labels for the details for the current event
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	float Scale = 0.6;
+	
+	const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
+	drawText(Details, posX, posY, Alpha, Color, Scale);
+	
+	// Draw the values for the details for the current event
+	WarpByEventDetailsStruct WarpByEventDetails;
+	if (!getEventDetails(index, &WarpByEventDetails))
+	{
+		return;
+	}
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	posX += 100;
+	
+	// Draw the values for the stage, event, and sequence
+	sprintf(tempDisplayBuffer,
+		"%s\n%s\n%" PRIu16,
+		WarpByEventDetails.Stage,
+		WarpByEventDetails.Event,
+		WarpByEventDetails.SequencePosition);
+	
+	drawText(tempDisplayBuffer, posX, posY, Alpha, Color, Scale);
+	posY -= 60;
+	
+	// Draw the value for the partner
+	const char *PartnerString = WarpByEventDetails.Partner;
+	if (!compareStrings(PartnerString, "None"))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(PartnerString, posX, posY, Alpha, Color, Scale);
+	posY -= 20;
+	
+	// Draw the value for the follower
+	const char *FollowerString = WarpByEventDetails.Follower;
+	if (!compareStrings(FollowerString, "None"))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(FollowerString, posX, posY, Alpha, Color, Scale);
+	posY -= 20;
+	
+	// Draw the value for the map
+	const char *Map = WarpByEventDetails.Map;
+	if (Map && (Map[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		Map = "None";
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(Map, posX, posY, Alpha, Color, Scale);
+	posY -= 20;
+	
+	// Draw the value for the bero
+	const char *Bero = WarpByEventDetails.Bero;
+	if (Bero && (Bero[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		Bero = "None";
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(Bero, posX, posY, Alpha, Color, Scale);
+}
+
+void drawWarpByEventMenuDetails()
 {
 	// Draw the text explaining that warping with this menu will clear all game states
 	uint32_t Color = 0xFFFFFFFF;
@@ -3511,29 +3581,8 @@ void drawWarpByEventDetails()
 	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
 	PosY -= 100;
 	
-	// Draw the labels for the details for the current event
-	const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
-	drawText(Details, PosX, PosY, Alpha, Color, Scale);
-	
 	// Draw the details for the current event
-	WarpByEventStruct WarpByEvent;
-	if (!getEventDetails(MenuVar.WarpByEventCurrentIndex, &WarpByEvent))
-	{
-		return;
-	}
-	
-	char *tempDisplayBuffer = DisplayBuffer;
-	sprintf(tempDisplayBuffer,
-		"%s\n%s\n%" PRIu16 "\n%s\n%s\n%s\n%s",
-		WarpByEvent.Stage,
-		WarpByEvent.Event,
-		WarpByEvent.SequencePosition,
-		WarpByEvent.Partner,
-		WarpByEvent.Follower,
-		WarpByEvent.Map,
-		WarpByEvent.Bero);
-	
-	drawText(tempDisplayBuffer, PosX + 100, PosY, Alpha, Color, Scale);
+	drawEventDetails(PosX, PosY, WarpByEvent.CurrentIndex);
 }
 
 void drawWarpIndexMapAndEntrance()

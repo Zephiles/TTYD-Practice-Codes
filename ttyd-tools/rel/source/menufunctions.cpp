@@ -1237,7 +1237,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				}
 				case WARPS_EVENT:
 				{
-					MenuVar.WarpByEventCurrentIndex = MenuVar.MenuSecondaryValue;
+					WarpByEvent.CurrentIndex = MenuVar.MenuSecondaryValue;
 					MenuVar.SelectedOption = 0;
 					
 					MenuVar.FrameCounter = 1;
@@ -3180,88 +3180,6 @@ int32_t getMapIndex()
 	return -1;
 }
 
-int32_t getTotalStageEvents()
-{
-	int32_t NumberOfStages = ttyd::event::eventStgNum();
-	int32_t TotalEvents = 0;
-	
-	for (int32_t i = 0; i < NumberOfStages; ++i)
-	{
-		ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(i);
-		TotalEvents += Stage->eventCount;
-	}
-	
-	return TotalEvents;
-}
-
-bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2])
-{
-	if ((index < 0) || (index >= getTotalStageEvents()))
-	{
-		return false;
-	}
-
-	int32_t NumberOfStages = ttyd::event::eventStgNum();
-	int32_t StageStartIndex = 0;
-	
-	for (int32_t s = 0; s < NumberOfStages; ++s)
-	{
-		ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(s);
-		int32_t StageEventCount = TargetStage->eventCount;
-		
-		if ((index >= StageStartIndex) && (index < (StageStartIndex + StageEventCount)))
-		{
-			arrayOut[0] = s; // StageId
-			arrayOut[1] = index - StageStartIndex; // EventId
-			return true;
-		}
-
-		StageStartIndex += StageEventCount;
-	}
-	
-	return false;
-}
-
-bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
-{
-	if ((stageId < 0) || (stageId >= ttyd::event::eventStgNum()))
-	{
-		return false;
-	}
-	
-	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(stageId);
-	if ((eventId < 0) || (eventId >= TargetStage->eventCount))
-	{
-		return false;
-	}
-	
-	return true;
-}
-
-bool getEventMapAndBero(int32_t index, const char *arrayOut[2])
-{
-	int32_t StageAndEventIds[2];
-	if (!indexToStageAndEvent(index, StageAndEventIds))
-	{
-		return false;
-	}
-	
-	int32_t StageId = StageAndEventIds[0];
-	int32_t EventId = StageAndEventIds[1];
-	
-	if (!checkForValidStageAndEvent(StageId, EventId))
-	{
-		return false;
-	}
-	
-	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
-	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
-	
-	arrayOut[0] = TargetEvent->map;
-	arrayOut[1] = TargetEvent->bero;
-	return true;
-}
-
 const char *getPartyName(ttyd::party::PartyMembers partyId)
 {
 	switch (partyId)
@@ -3351,9 +3269,111 @@ const char *getPartyName(ttyd::party::PartyMembers partyId)
 			return "";
 		}
 	}
-} 
+}
 
-bool getEventDetails(int32_t index, WarpByEventStruct *warpByEvent)
+int32_t getTotalStageEvents()
+{
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	int32_t TotalEvents = 0;
+	
+	for (int32_t i = 0; i < NumberOfStages; ++i)
+	{
+		const ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(i);
+		TotalEvents += Stage->eventCount;
+	}
+	
+	return TotalEvents;
+}
+
+bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2])
+{
+	if ((index < 0) || (index >= getTotalStageEvents()))
+	{
+		return false;
+	}
+
+	int32_t NumberOfStages = ttyd::event::eventStgNum();
+	int32_t StageStartIndex = 0;
+	
+	for (int32_t s = 0; s < NumberOfStages; ++s)
+	{
+		const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(s);
+		int32_t StageEventCount = TargetStage->eventCount;
+		
+		if ((index >= StageStartIndex) && (index < (StageStartIndex + StageEventCount)))
+		{
+			arrayOut[0] = s; // StageId
+			arrayOut[1] = index - StageStartIndex; // EventId
+			return true;
+		}
+
+		StageStartIndex += StageEventCount;
+	}
+	
+	return false;
+}
+
+uint16_t getGsw0ForEvent(int32_t stageId, int32_t eventId)
+{
+	if ((stageId <= 0) && (eventId <= 0))
+	{
+		 return 0;
+	}
+	
+	if (!checkForValidStageAndEvent(stageId, eventId))
+	{
+		return 0;
+	}
+	
+	const ttyd::event::EventStageDescription &CurrentStage = *ttyd::event::eventStgDtPtr(stageId);
+	uint16_t CurrentSequencePosition = CurrentStage.pEvents[eventId].gsw0;
+	uint16_t NewSequencePosition;
+	
+	while (1)
+	{
+		if (eventId <= 0)
+		{
+			stageId--;
+			const ttyd::event::EventStageDescription &NewStage = *ttyd::event::eventStgDtPtr(stageId);
+			eventId = NewStage.eventCount - 1;
+			NewSequencePosition = NewStage.pEvents[eventId].gsw0;
+		}
+		else
+		{
+			const ttyd::event::EventStageDescription &NewStage = *ttyd::event::eventStgDtPtr(stageId);
+			eventId--;
+			NewSequencePosition = NewStage.pEvents[eventId].gsw0;
+		}
+		
+		if (NewSequencePosition < CurrentSequencePosition)
+		{
+			return NewSequencePosition;
+		}
+		
+		if ((stageId <= 0) && (eventId <= 0))
+		{
+			 return 0;
+		}
+	}
+}
+
+bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
+{
+	if ((stageId < 0) || (stageId >= ttyd::event::eventStgNum()))
+	{
+		return false;
+	}
+	
+	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(stageId);
+	if ((eventId < 0) || (eventId >= TargetStage->eventCount))
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails)
 {
 	int32_t StageAndEventIds[2];
 	if (!indexToStageAndEvent(index, StageAndEventIds))
@@ -3373,39 +3393,48 @@ bool getEventDetails(int32_t index, WarpByEventStruct *warpByEvent)
 	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
 	
 	#ifdef TTYD_JP
-	char *StageNameBuffer = warpByEvent->Stage;
-	if (!getStageString(StageNameBuffer, TargetEvent->gsw0))
+	char *StageNameBuffer = warpByEventDetails->Stage;
+	if (!getStageString(StageNameBuffer, getGsw0ForEvent(StageId, EventId)))
 	{
 		StageNameBuffer[0] = '\0';
 	}
 	
 	if (index < static_cast<int32_t>(WarpsEventNamesSize))
 	{
-		warpByEvent->Event = WarpsEventNames[index];
+		warpByEventDetails->Event = WarpsEventNames[index];
 	}
 	else
 	{
-		warpByEvent->Event = "";
+		warpByEventDetails->Event = "";
 	}
 	#else
-	warpByEvent->Stage = 				TargetStage->nameEn;
-	warpByEvent->Event = 				TargetEvent->nameEn;
+	warpByEventDetails->Stage = 			TargetStage->nameEn;
+	warpByEventDetails->Event = 			TargetEvent->nameEn;
 	#endif
 	
-	warpByEvent->Partner = 				getPartyName(TargetEvent->partyId[0]);
-	warpByEvent->Follower = 			getPartyName(TargetEvent->partyId[1]);
-	warpByEvent->Map = 					TargetEvent->map;
-	warpByEvent->Bero = 				TargetEvent->bero;
-	warpByEvent->SequencePosition = 	TargetEvent->gsw0;
+	warpByEventDetails->Partner = 			getPartyName(TargetEvent->partyId[0]);
+	warpByEventDetails->Follower = 			getPartyName(TargetEvent->partyId[1]);
+	warpByEventDetails->Map = 				TargetEvent->map;
+	warpByEventDetails->Bero = 				TargetEvent->bero;
+	warpByEventDetails->SequencePosition = 	getGsw0ForEvent(StageId, EventId);
 	return true;
 }
 
-bool initStageEvents(int32_t index)
+void *initStageEvents()
 {
-	int32_t StageAndEventIds[2];
-	if (!indexToStageAndEvent(index, StageAndEventIds))
+	if (!WarpByEvent.ShouldInit)
 	{
-		return false;
+		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
+		return ttyd::mariost::globalWorkPointer;
+	}
+	
+	WarpByEvent.ShouldInit = false;
+	int32_t StageAndEventIds[2];
+	
+	if (!indexToStageAndEvent(WarpByEvent.CurrentIndex, StageAndEventIds))
+	{
+		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
+		return ttyd::mariost::globalWorkPointer;
 	}
 	
 	int32_t StageId = StageAndEventIds[0];
@@ -3413,16 +3442,17 @@ bool initStageEvents(int32_t index)
 	
 	if (!checkForValidStageAndEvent(StageId, EventId))
 	{
-		return false;
+		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
+		return ttyd::mariost::globalWorkPointer;
 	}
 	
 	// Clear all current states
 	ttyd::swdrv::swInit();
 	
-	// Run the init functions for each event, up to the current one
+	// Run the init functions for each event, up to and including the current one
 	for (int32_t s = 0; s <= StageId; ++s)
 	{
-		ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(s);
+		const ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(s);
 		int32_t lastEvent = (s == StageId ? EventId : (Stage->eventCount - 1));
 		
 		for (int32_t e = 0; e <= lastEvent; ++e)
@@ -3435,12 +3465,16 @@ bool initStageEvents(int32_t index)
 		}
 	}
 	
+	// Set the Sequence to the value for the current event
+	setSequencePosition(getGsw0ForEvent(StageId, EventId));
+	
+	// Reset Mario's motion
+	ttyd::mario_motion::marioChgMot(ttyd::mario_motion::MarioMotions::kNone);
+	
 	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
 	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
 	
-	// Set the Sequence to the value for the current event
-    setSequencePosition(TargetEvent->gsw0);
-	
+	// Set Mario's motion
 	switch (TargetEvent->entryMotionType)
 	{
 		case 0:
@@ -3494,7 +3528,8 @@ bool initStageEvents(int32_t index)
 	ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 	ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 	
-	return true;
+	// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
+	return ttyd::mariost::globalWorkPointer;
 }
 
 #ifdef TTYD_JP
@@ -3584,7 +3619,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	
 	for (int32_t i = 0; i < NumberOfStages; ++i)
 	{
-		ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
+		const ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
 		for (int32_t j = 0; j < StageDesc->eventCount; ++j)
 		{
 			const ttyd::event::EventStageEventDescription &EventDesc = StageDesc->pEvents[j];

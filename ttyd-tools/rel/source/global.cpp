@@ -1827,6 +1827,7 @@ struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct DisplayActionCommandTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
+struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
 

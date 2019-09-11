@@ -2596,6 +2596,7 @@ void menuCheckButton()
 								case WARP_BY_EVENT:
 								{
 									// Enter the next menu
+									// WarpByEvent.CurrentIndex = 0;
 									enterNextMenu(WARPS_EVENT, tempCurrentMenuOption);
 									resetMenu();
 									break;
@@ -2736,14 +2737,14 @@ void menuCheckButton()
 								case EVENT_SELECT_EVENT:
 								{
 									MenuVar.SelectedOption = CurrentMenuOptionCheck;
-									MenuVar.MenuSecondaryValue = MenuVar.WarpByEventCurrentIndex;
+									MenuVar.MenuSecondaryValue = WarpByEvent.CurrentIndex;
 									MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
 									MenuVar.Timer = 0;
 									break;
 								}
 								case EVENT_WARP_NOW:
 								{
-									int32_t ReturnCode = warpToMapByEvent(MenuVar.WarpByEventCurrentIndex);
+									int32_t ReturnCode = warpToMapByEvent(WarpByEvent.CurrentIndex);
 									switch (ReturnCode)
 									{
 										case UNKNOWN_BEHAVIOR:
@@ -3591,7 +3592,7 @@ void drawMenu()
 			drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, true);
 			
 			// Draw the event details
-			drawWarpByEventDetails();
+			drawWarpByEventMenuDetails();
 			
 			if (tempSelectedOption > 0)
 			{

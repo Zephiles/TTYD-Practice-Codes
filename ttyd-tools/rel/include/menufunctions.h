@@ -74,13 +74,13 @@ void cheatClearAreaFlags(uint32_t currentMenuOption);
 const char *getMapFromIndex(int32_t index);
 int32_t getMapIndex();
 
+const char *getPartyName(ttyd::party::PartyMembers partyId);
 int32_t getTotalStageEvents();
 bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2]);
 bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
-bool getEventMapAndBero(int32_t index, const char *arrayOut[2]);
-const char *getPartyName(ttyd::party::PartyMembers partyId);
-bool getEventDetails(int32_t index, WarpByEventStruct *warpByEvent);
-bool initStageEvents(int32_t index);
+uint16_t getGsw0ForEvent(int32_t stageId, int32_t eventId);
+bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails);
+void *initStageEvents();
 
 #ifdef TTYD_JP
 bool getStageString(char *stageNameBuffer, uint32_t sequencePosition);

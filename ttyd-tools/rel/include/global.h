@@ -483,7 +483,6 @@ struct MenuVars
 	int16_t ForcedNPCItemDrop;
 	bool MarioFreeze;
 	uint16_t JumpStorageSetCounter;
-	int32_t WarpByEventCurrentIndex;
 	
 	MenuVars()
 	{
@@ -690,6 +689,12 @@ struct SaveFileDecriptionInfo
 
 struct WarpByEventStruct
 {
+	int32_t CurrentIndex;
+	bool ShouldInit;
+};
+
+struct WarpByEventDetailsStruct
+{
 	#ifdef TTYD_JP
 	char Stage[8];
 	#else
@@ -751,6 +756,7 @@ extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern DisplayActionCommandTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
+extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
 
