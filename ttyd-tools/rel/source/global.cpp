@@ -475,7 +475,6 @@ const char *CheatsEventNames[] =
 	"Epilogue",
 	"End Credits",
 	"Return to Rogueport",
-	"Rogueport",
 };
 #endif
 

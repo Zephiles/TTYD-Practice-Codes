@@ -3536,7 +3536,7 @@ void *initStageEvents()
 bool getStageString(char *stageNameBuffer, uint32_t sequencePosition)
 {
 	// Make sure the Sequence value is valid
-	if (sequencePosition > 406)
+	if (sequencePosition > 405)
 	{
 		return false;
 	}
@@ -3547,7 +3547,7 @@ bool getStageString(char *stageNameBuffer, uint32_t sequencePosition)
 		return true;
 	}
 	
-	if ((sequencePosition >= 403) && (sequencePosition <= 406))
+	if ((sequencePosition >= 403) && (sequencePosition <= 405))
 	{
 		strcpy(stageNameBuffer, "Ending");
 		return true;
