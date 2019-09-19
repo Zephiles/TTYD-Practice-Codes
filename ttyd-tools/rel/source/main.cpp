@@ -780,7 +780,6 @@ void Mod::run()
 	bool tempChangingCheatButtonCombo = MenuVar.ChangingCheatButtonCombo;
 	if (!tempChangingCheatButtonCombo)
 	{
-		walkThroughMostObjects();
 		saveMarioAndPartnerPositions();
 		loadMarioAndPartnerPositions();
 		setTextStorage();
@@ -790,6 +789,7 @@ void Mod::run()
 	}
 	
 	// Run each cheat function that isn't button-based
+	walkThroughMostObjects(); // Needs to always run due to a variable constantly being checked
 	saveAnywhere(); // Needs to always run due to the script taking more than one frame
 	speedUpMario(); // Needs to always run due to Mario's base speed constantly being set
 	reloadRoom(); // Needs to always run due to the extra code that always does some failsafe checking
