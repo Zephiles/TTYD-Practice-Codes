@@ -3595,19 +3595,50 @@ void drawWarpIndexMapAndEntrance()
 	
 	const char *String = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	PosX += 170;
+	PosY -= 60;
 	
 	const char *MapName = getMapFromIndex(static_cast<int32_t>(WarpByIndex.MapId));
 	uint32_t EntranceId = WarpByIndex.EntranceId;
 	
+	// Draw the new map and entrance
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"%s\n%s\n\n%s\n%" PRIu32,
-		ttyd::seq_mapchange::NextMap,
-		ttyd::seq_mapchange::NextBero,
+		"%s\n%" PRIu32,
 		MapName,
 		EntranceId);
 	
-	drawText(tempDisplayBuffer, PosX + 170, PosY, Alpha, Color, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+	PosY += 60;
+	
+	// Draw the current map
+	const char *NextMap = ttyd::seq_mapchange::NextMap;
+	if (NextMap && (NextMap[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		NextMap = "None";
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(NextMap, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 20;
+	
+	// Draw the current bero
+	const char *NextBero = ttyd::seq_mapchange::NextBero;
+	if (NextBero && (NextBero[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		NextBero = "None";
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(NextBero, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawWarpIndexEntranceList()
@@ -3630,21 +3661,39 @@ void drawWarpIndexEntranceList()
 	
 	const char *HelpText = "Press B to close this window\nPress D-Pad Up/Down to adjust the page";
 	drawText(HelpText, PosX + 72, PosY, Alpha, Color, Scale);
-	
-	// Draw the current map
 	PosX = -232;
 	PosY -= 55;
 	
 	const char *String = "Current Map\nCurrent Entrance";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	
-	char *tempDisplayBuffer = DisplayBuffer;
-	sprintf(tempDisplayBuffer,
-		"%s\n%s",
-		ttyd::seq_mapchange::NextMap,
-		ttyd::seq_mapchange::NextBero);
+	// Draw the current map
+	const char *NextMap = ttyd::seq_mapchange::NextMap;
+	if (NextMap && (NextMap[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		NextMap = "None";
+		Color = 0x4B4B4BFF;
+	}
 	
-	drawText(tempDisplayBuffer, PosX + 170, PosY, Alpha, Color, Scale);
+	drawText(NextMap, PosX + 170, PosY, Alpha, Color, Scale);
+	
+	// Draw the current bero
+	const char *NextBero = ttyd::seq_mapchange::NextBero;
+	if (NextBero && (NextBero[0] != '\0'))
+	{
+		Color = 0xFFFFFFFF;
+	}
+	else
+	{
+		NextBero = "None";
+		Color = 0x4B4B4BFF;
+	}
+	
+	drawText(NextBero, PosX + 170, PosY - 20, Alpha, Color, Scale);
 	
 	// Draw the current page
 	int32_t PageNumberPosX = 150;
@@ -3653,6 +3702,7 @@ void drawWarpIndexEntranceList()
 	
 	// Draw the entrances
 	const char **tempEntranceArray = WarpByIndex.EntranceList;
+	Color = 0xFFFFFFFF;
 	PosY -= 60;
 	
 	// Make sure at least one entrance exists
@@ -3667,6 +3717,7 @@ void drawWarpIndexEntranceList()
 	uint32_t MaxEntrancesPerPage = 12;
 	uint32_t Index = MaxEntrancesPerPage * tempCurrentPage;
 	
+	char *tempDisplayBuffer = DisplayBuffer;
 	for (uint32_t i = Index; i < (Index + MaxEntrancesPerPage); i++)
 	{
 		if (i >= MaxSlotsInArray)
