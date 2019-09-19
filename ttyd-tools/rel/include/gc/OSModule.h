@@ -6,9 +6,9 @@ namespace gc::OSModule {
 
 struct OSModuleInfo
 {
-	uint32_t moduleId;
-	OSModuleInfo *nextModule;
-	OSModuleInfo *prevModule;
+	uint32_t id;
+	OSModuleInfo *next;
+	OSModuleInfo *prev;
 	uint32_t numSections;
 	uint32_t sectionInfoOffset;
 	uint32_t nameOffset;

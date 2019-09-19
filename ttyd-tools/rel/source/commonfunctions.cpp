@@ -77,7 +77,7 @@ bool checkIfInGame()
 	const uint32_t DMO = 0x5;
 	#endif
 	
-	return CurrentRelModuleInfo->moduleId != DMO;
+	return CurrentRelModuleInfo->id != DMO;
 }
 
 gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo()

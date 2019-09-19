@@ -183,8 +183,8 @@ void Mod::performBattleChecks()
 void walkThroughMostObjects()
 {
 	if (Cheat[WALK_THROUGH_WALLS].Active && 
-			checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo) && 
-				!MenuVar.ChangingCheatButtonCombo)
+		checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo) && 
+			!MenuVar.ChangingCheatButtonCombo)
 	{
 		MenuVar.ResetMarioProperties = true;
 		

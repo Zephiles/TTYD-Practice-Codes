@@ -470,7 +470,7 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 	#endif
 	
 	uint32_t CurrentRelModuleInfoRaw = reinterpret_cast<uint32_t>(CurrentRelModuleInfo);
-	switch (CurrentRelModuleInfo->moduleId)
+	switch (CurrentRelModuleInfo->id)
 	{
 		case LAS:
 		{
