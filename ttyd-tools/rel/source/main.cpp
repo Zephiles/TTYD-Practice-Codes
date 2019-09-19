@@ -440,19 +440,16 @@ int32_t Mod::fixMarioKeyOn()
 	return mPFN_marioKeyOn_trampoline();
 }
 
-void performRELPatches()
+bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 {
-	// Only run during screen transitions
-	if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kMapChange))
-	{
-		return;
-	}
+	// Call the original function immediately, as the REL file should be linked before applying patches
+	const bool Result = mPFN_OSLink_trampoline(newModule, bss);
 	
 	// Make sure a REL file is currently loaded
 	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
 	if (!Current_REL_Loaded_Pointer)
 	{
-		return;
+		return Result;
 	}
 	
 	#ifdef TTYD_US
@@ -472,8 +469,8 @@ void performRELPatches()
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
 	#endif
 	
-	uint32_t CurrentREL = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
-	switch (CurrentREL)
+	uint32_t ModuleId = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
+	switch (ModuleId)
 	{
 		case LAS:
 		{
@@ -492,11 +489,11 @@ void performRELPatches()
 						SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
 							SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset) = 400;
 			}
-			return;
+			return Result;
 		}
 		default:
 		{
-			return;
+			return Result;
 		}
 	}
 }
@@ -774,9 +771,6 @@ void Mod::run()
 {
 	// Display the title screen and file select screen info
 	displayTitleScreenAndFileSelectScreenInfo();
-	
-	// Perform any necessaery REL patches
-	performRELPatches();
 	
 	// Check if the menu should be enabled or disabled
 	// Prevent checking it if currently in the process of spawning an item

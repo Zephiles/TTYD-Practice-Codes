@@ -3,6 +3,7 @@
 #include "codes.h"
 #include "patch.h"
 
+#include <gc/OSModule.h>
 #include <ttyd/mariost.h>
 #include <ttyd/battle_pad.h>
 #include <ttyd/win_root.h>
@@ -98,6 +99,12 @@ void Mod::init()
 		ttyd::mario::marioKeyOn, []()
 	{
 		return gMod->fixMarioKeyOn();
+	});
+	
+	mPFN_OSLink_trampoline = patch::hookFunction(
+		gc::OSModule::OSLink, [](gc::OSModule::OSModuleInfo *newModule, void *bss)
+	{
+		return gMod->performRelPatches(newModule, bss);
 	});
 
 	// Initialize typesetting early

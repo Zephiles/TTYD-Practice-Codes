@@ -76,8 +76,8 @@ bool checkIfInGame()
 	const uint32_t DMO = 0x5;
 	#endif
 	
-	uint32_t Current_REL_Id = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
-	return Current_REL_Id != DMO;
+	uint32_t ModuleId = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
+	return ModuleId != DMO;
 }
 
 void *getCurrentRELPointer()

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/OSModule.h>
+
 #include <cstdint>
 
 namespace mod {
@@ -21,6 +23,7 @@ private:
 	uint32_t pauseArtAttackTimer();
 	uint32_t setIndexWarpEntrance(void *, uint32_t);
 	int32_t fixMarioKeyOn();
+	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -36,6 +39,7 @@ private:
 	uint32_t (*mPFN_scissor_timer_main_trampoline)() = nullptr;
 	uint32_t (*mPFN_evt_bero_get_info_trampoline)(void *, uint32_t) = nullptr;
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
+	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
 };
 
 }

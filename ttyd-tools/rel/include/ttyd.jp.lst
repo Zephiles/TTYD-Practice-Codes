@@ -1895,6 +1895,16 @@
 // w_atan2.c
 8026C588:atan2
 
+// OSLink.c
+// 8029453C:OSNotifyLink
+// 80294540:OSNotifyUnlink
+// 80294544:Relocate
+// 80294800:Link
+80294AE0:OSLink
+// 80294B04:Undo
+// 80294D3C:OSUnlink
+// 80294F10:__OSModuleInit
+
 // OSAlloc.c
 // text
 // 802903E8:DLInsert
