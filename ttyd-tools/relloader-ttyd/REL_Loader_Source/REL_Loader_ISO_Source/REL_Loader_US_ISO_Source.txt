@@ -15,24 +15,24 @@ li r30,0 # Used to check if a REL file is loaded or not
 lis r29,0x000F
 ori r29,r29,0x4240 # Check 1,000,000 times
 
-checkForMemoryCard:
+checkForMemoryCardLoop:
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
 bl 0x2AAFF0 # CARDProbeEx -- 0x45A4
-cmpwi r3,0 # Continue if nothing is wrong with the card and it is not currently busy
-beq- mountMemoryCard
-
-# Exit if something is wrong with the card
 cmpwi r3,-1 # CARD_RESULT_BUSY
-bne- exit
+bne- exitCheckForMemoryCardLoop
 
 # Exit if the limit has been reached
 subic. r29,r29,1
-bgt+ checkForMemoryCard
+bgt+ checkForMemoryCardLoop
 b exit
 
-mountMemoryCard:
+exitCheckForMemoryCardLoop:
+cmpwi r3,0 # Check if something went wrong
+bne- exit
+
+# Mount the Memory Card
 li r3,0 # Memory Card Slot A
 lwz r4,0x1B98(r13)
 lwz r4,0x4(r4) # Pointer to the Work Area
