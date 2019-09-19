@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gc/OSModule.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/party.h>
 
@@ -14,7 +15,7 @@ bool checkButtonCombo(uint32_t combo);
 bool checkButtonComboEveryFrame(uint32_t combo);
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq);
 bool checkIfInGame();
-void *getCurrentRELPointer();
+gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo();
 void *getBattleWorkPointer();
 void *getMarioBattlePointer();
 void *getPartnerBattlePointer();

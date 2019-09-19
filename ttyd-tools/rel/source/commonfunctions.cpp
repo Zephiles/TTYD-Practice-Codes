@@ -1,5 +1,6 @@
 #include "commonfunctions.h"
 
+#include <gc/OSModule.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/mariost.h>
@@ -62,8 +63,8 @@ bool checkIfInGame()
 		return false;
 	}
 	
-	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
-	if (!Current_REL_Loaded_Pointer)
+	gc::OSModule::OSModuleInfo *CurrentRelModuleInfo = getCurrentRelModuleInfo();
+	if (!CurrentRelModuleInfo)
 	{
 		return false;
 	}
@@ -76,13 +77,12 @@ bool checkIfInGame()
 	const uint32_t DMO = 0x5;
 	#endif
 	
-	uint32_t ModuleId = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
-	return ModuleId != DMO;
+	return CurrentRelModuleInfo->moduleId != DMO;
 }
 
-void *getCurrentRELPointer()
+gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo()
 {
-	return *reinterpret_cast<uint32_t **>(
+	return *reinterpret_cast<gc::OSModule::OSModuleInfo **>(
 		reinterpret_cast<uint32_t>(
 			ttyd::mariost::globalWorkPointer) + 0x15C);
 }

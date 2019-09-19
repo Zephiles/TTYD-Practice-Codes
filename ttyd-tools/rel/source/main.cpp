@@ -446,8 +446,8 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 	const bool Result = mPFN_OSLink_trampoline(newModule, bss);
 	
 	// Make sure a REL file is currently loaded
-	uint32_t Current_REL_Loaded_Pointer = reinterpret_cast<uint32_t>(getCurrentRELPointer());
-	if (!Current_REL_Loaded_Pointer)
+	gc::OSModule::OSModuleInfo *CurrentRelModuleInfo = getCurrentRelModuleInfo();
+	if (!CurrentRelModuleInfo)
 	{
 		return Result;
 	}
@@ -469,8 +469,8 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
 	#endif
 	
-	uint32_t ModuleId = *reinterpret_cast<uint32_t *>(Current_REL_Loaded_Pointer);
-	switch (ModuleId)
+	uint32_t CurrentRelModuleInfoRaw = reinterpret_cast<uint32_t>(CurrentRelModuleInfo);
+	switch (CurrentRelModuleInfo->moduleId)
 	{
 		case LAS:
 		{
@@ -479,13 +479,13 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 				// Make changes to the function that spawns the textboxes, to prevent the standard heap from being corrupted
 				// Change the loop count from 10 to 5
 				*reinterpret_cast<uint32_t *>(
-					Current_REL_Loaded_Pointer + 
+					CurrentRelModuleInfoRaw + 
 						SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
 							SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset) = 5;
 				
 				// Wait for 400ms instead of 200ms at the end of the loop
 				*reinterpret_cast<uint32_t *>(
-					Current_REL_Loaded_Pointer + 
+					CurrentRelModuleInfoRaw + 
 						SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
 							SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset) = 400;
 			}
