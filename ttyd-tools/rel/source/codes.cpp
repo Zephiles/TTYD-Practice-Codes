@@ -35,16 +35,26 @@ extern "C" {
 
 uint32_t disableBattles(void *ptr)
 {
-	if (Cheat[DISABLE_BATTLES].Active)
+	uint32_t unkVal = *reinterpret_cast<uint32_t *>(
+		reinterpret_cast<uint32_t>(ptr) + 0x4);
+	
+	if (!Cheat[DISABLE_BATTLES].Active)
 	{
-		if (checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
-		{
-			return 0;
-		}
+		return unkVal;
 	}
 	
-	return *reinterpret_cast<uint32_t *>(
-		reinterpret_cast<uint32_t>(ptr) + 0x4);
+	// Don't disable if currently changing button combos
+	if (MenuVar.ChangingCheatButtonCombo)
+	{
+		return unkVal;
+	}
+	
+	if (!checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
+	{
+		return unkVal;
+	}
+	
+	return 0;
 }
 
 uint32_t allowRunningFromBattles(void *ptr)
