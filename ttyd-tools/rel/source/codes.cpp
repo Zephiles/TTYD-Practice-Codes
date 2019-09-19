@@ -70,6 +70,27 @@ int32_t forceNPCItemDrop(void *ptr)
 		reinterpret_cast<uint32_t>(ptr) + 0x23C);
 }
 
+void *fallThroughMostObjects(void *ptr)
+{
+	if (!Cheat[FALL_THROUGH_FLOORS].Active)
+	{
+		return ptr;
+	}
+	
+	// Don't fall if currently changing button combos
+	if (MenuVar.ChangingCheatButtonCombo)
+	{
+		return ptr;
+	}
+	
+	if (!checkButtonComboEveryFrame(Cheat[FALL_THROUGH_FLOORS].ButtonCombo))
+	{
+		return ptr;
+	}
+	
+	return nullptr;
+}
+
 }
 
 void Mod::performBattleChecks()

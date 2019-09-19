@@ -67,6 +67,7 @@ enum CHEATS_OPTIONS
 {
 	CHANGE_SEQUENCE = 0,
 	WALK_THROUGH_WALLS,
+	FALL_THROUGH_FLOORS,
 	SAVE_COORDINATES,
 	LOAD_COORDINATES,
 	SPAWN_ITEM,
@@ -732,7 +733,7 @@ struct MenuPrevMenuAndOption
 
 extern MenuVars MenuVar;
 extern Menus Menu[29];
-extern Cheats Cheat[22];
+extern Cheats Cheat[23];
 extern bool Displays[12];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];

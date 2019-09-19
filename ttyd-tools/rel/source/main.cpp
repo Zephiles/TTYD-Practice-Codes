@@ -45,6 +45,7 @@ void StartDrawArtAttackHitboxes();
 void StartDisableDPadOptionsDisplay();
 void StartFixEvtMapBlendSetFlagPartnerCrash();
 void StartFixEvtMapBlendSetFlagFollowerCrash();
+void StartFallThroughMostObjects();
 
 }
 
@@ -651,6 +652,8 @@ void initAddressOverwrites()
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800080E4);
+	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008E9DC);
+	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
 	#elif defined TTYD_JP
 	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x80044228);
@@ -675,6 +678,8 @@ void initAddressOverwrites()
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x80008054);
+	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008D428);
+	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
 	#elif defined TTYD_EU
 	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800449B4);
@@ -701,6 +706,8 @@ void initAddressOverwrites()
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800082BC);
+	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008FD38);
+	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
 	#endif
 	
 	patch::writeBranchLR(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(StartPreventPreBattleSoftlock));
@@ -734,6 +741,10 @@ void initAddressOverwrites()
 	patch::writeBranchLR(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
 	
 	patch::writeBranchLR(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
+	
+	patch::writeBranchLR(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjects));
+	
+	patch::writeBranchLR(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjects));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

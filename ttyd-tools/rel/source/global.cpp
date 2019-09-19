@@ -39,6 +39,7 @@ const char *CheatsLines[] =
 {
 	"Change Sequence",
 	"Walk Through Most Objects",
+	"Fall Through Most Objects",
 	"Save Coordinates",
 	"Load Coordinates",
 	"Spawn Item",
@@ -1782,6 +1783,7 @@ uint8_t CheatsOrder[] =
 	CLEAR_AREA_FLAGS,
 	MANAGE_FLAGS,
 	RESOLVE_FADES,
+	FALL_THROUGH_FLOORS,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1802,7 +1804,7 @@ uint8_t DisplaysOrder[] =
 
 struct MenuVars MenuVar;
 struct Menus Menu[29];
-struct Cheats Cheat[22];
+struct Cheats Cheat[23];
 bool Displays[12];
 char DisplayBuffer[256];
 char HeapBuffer[512];
@@ -1943,6 +1945,7 @@ void setInitialSettings()
 {
 	// Set the Cheats bools
 	Cheat[WALK_THROUGH_WALLS].Active 			= false;
+	Cheat[FALL_THROUGH_FLOORS].Active 			= false;
 	// Cheat[SAVE_COORDINATES].Active 			= false;
 	// Cheat[LOAD_COORDINATES].Active 			= false;
 	Cheat[SAVE_ANYWHERE].Active 				= false;
@@ -1963,6 +1966,7 @@ void setInitialSettings()
 	
 	// Set the Cheats button combos
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
+	Cheat[FALL_THROUGH_FLOORS].ButtonCombo 		= PAD_Y | PAD_Z;
 	Cheat[SAVE_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_LEFT;
 	Cheat[LOAD_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_UP;
 	Cheat[SAVE_ANYWHERE].ButtonCombo 			= PAD_Y | PAD_B;

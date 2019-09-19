@@ -520,6 +520,7 @@ void menuCheckButton()
 							break;
 						}
 						case WALK_THROUGH_WALLS:
+						case FALL_THROUGH_FLOORS:
 						case SAVE_COORDINATES:
 						case LOAD_COORDINATES:
 						case SPAWN_ITEM:
