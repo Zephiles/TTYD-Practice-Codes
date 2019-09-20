@@ -448,17 +448,26 @@ void speedUpMario()
 
 bool Mod::infiniteItemUsage(int16_t item, uint32_t index)
 {
-	if (Cheat[INFINITE_ITEM_USAGE].Active)
+	if (!Cheat[INFINITE_ITEM_USAGE].Active)
 	{
-		if (checkButtonComboEveryFrame(Cheat[INFINITE_ITEM_USAGE].ButtonCombo))
-		{
-			// Prevent the function from running
-			return false;
-		}
+		// Call original function
+		return mPFN_pouchRemoveItemIndex_trampoline(item, index);
 	}
 	
-	// Call original function
-	return mPFN_pouchRemoveItemIndex_trampoline(item, index);
+	if (MenuVar.ChangingCheatButtonCombo)
+	{
+		// Call original function
+		return mPFN_pouchRemoveItemIndex_trampoline(item, index);
+	}
+	
+	if (!checkButtonComboEveryFrame(Cheat[INFINITE_ITEM_USAGE].ButtonCombo))
+	{
+		// Call original function
+		return mPFN_pouchRemoveItemIndex_trampoline(item, index);
+	}
+	
+	// Prevent the function from running
+	return false;
 }
 
 void checkIfSystemLevelShouldBeLowered()
