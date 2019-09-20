@@ -1804,7 +1804,7 @@
 // 80234DE0:scissor_init
 // 80234E54:scissor_disp_region
 // 80235154:scissor_offscreen
-// 80235194:scissor_disp_control
+80235194:scissor_disp_control
 // 802353CC:scissor_capture
 // 80235434:scissor_ofscreen_ok
 // 80235498:scissor_damage_sub2

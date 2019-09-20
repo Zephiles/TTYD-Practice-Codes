@@ -12,7 +12,7 @@ extern "C" {
 // scissor_init
 // scissor_disp_region
 // scissor_offscreen
-// scissor_disp_control
+void scissor_disp_control(uint32_t camId);
 // scissor_capture
 // scissor_ofscreen_ok
 // scissor_damage_sub2

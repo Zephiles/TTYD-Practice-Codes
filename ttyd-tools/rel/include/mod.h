@@ -25,6 +25,7 @@ private:
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
 	void *preventPreBattleSoftlock(uint32_t, void *);
+	void drawArtAttackHitboxes(uint32_t);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -42,6 +43,7 @@ private:
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
 	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
+	void (*mPFN_scissor_disp_control_trampoline)(uint32_t) = nullptr;
 };
 
 }

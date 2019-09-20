@@ -40,7 +40,6 @@ void StartDisplayMegaHammerBadgesBattleMenu();
 void StartFixBlooperCrash1();
 void StartFixBlooperCrash2();
 void StartPreventTextboxSelection();
-void StartDrawArtAttackHitboxes();
 void StartDisableDPadOptionsDisplay();
 void StartFixEvtMapBlendSetFlagPartnerCrash();
 void StartFixEvtMapBlendSetFlagFollowerCrash();
@@ -651,7 +650,6 @@ void initAddressOverwrites()
 	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8025E4A4);
 	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x8025E4A8);
 	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800087C8);
-	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x80231928);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013D148);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
@@ -676,7 +674,6 @@ void initAddressOverwrites()
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800CE01C);
 	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x80422618);
 	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800086F0);
-	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x8022C278);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x80137C1C);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
@@ -703,7 +700,6 @@ void initAddressOverwrites()
 	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8026207C);
 	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x80262080);
 	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x80008994);
-	void *ArtAttackHitboxesAddress 						= reinterpret_cast<void *>(0x802353b8);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013EC30);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
@@ -731,8 +727,6 @@ void initAddressOverwrites()
 	patch::writeBranchLR(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
 	
 	patch::writeBranchLR(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
-	
-	patch::writeBranchLR(ArtAttackHitboxesAddress, reinterpret_cast<void *>(StartDrawArtAttackHitboxes));
 	
 	patch::writeBranchLR(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
 	

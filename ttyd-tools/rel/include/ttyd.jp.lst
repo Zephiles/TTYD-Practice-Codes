@@ -1800,7 +1800,7 @@
 // 8022BCA0:scissor_init
 // 8022BD14:scissor_disp_region
 // 8022C014:scissor_offscreen
-// 8022C054:scissor_disp_control
+8022C054:scissor_disp_control
 // 8022C28C:scissor_capture
 // 8022C2F4:scissor_ofscreen_ok
 // 8022C358:scissor_damage_sub2

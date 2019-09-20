@@ -113,6 +113,12 @@ void Mod::init()
 	{
 		return gMod->preventPreBattleSoftlock(flags, unk);
 	});
+	
+	mPFN_scissor_disp_control_trampoline = patch::hookFunction(
+		ttyd::sac_scissor::scissor_disp_control, [](uint32_t camId)
+	{
+		return gMod->drawArtAttackHitboxes(camId);
+	});
 
 	// Initialize typesetting early
 	ttyd::fontmgr::fontmgrTexSetup();
