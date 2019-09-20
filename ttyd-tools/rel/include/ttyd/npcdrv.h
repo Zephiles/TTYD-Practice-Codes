@@ -36,7 +36,7 @@ extern "C" {
 // npcCheckInterrupt
 // _npcHitCheckHammerAllMotion
 // _npcHitCheckSphere
-// fbatHitCheck
+void *fbatHitCheck(uint32_t flags, void *unk);
 // fbatHitCheckAll
 // fbatNpcTalkCheck
 // npcGroupDead

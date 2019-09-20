@@ -396,7 +396,7 @@
 // 800441E0:npcCheckInterrupt
 // 80044414:_npcHitCheckHammerAllMotion
 // 8004479C:_npcHitCheckSphere
-// 80044914:fbatHitCheck
+80044914:fbatHitCheck
 // 800466EC:fbatHitCheckAll
 // 80046714:fbatNpcTalkCheck
 // 80046774:npcGroupDead

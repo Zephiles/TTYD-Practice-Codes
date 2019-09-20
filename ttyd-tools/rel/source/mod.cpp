@@ -14,6 +14,7 @@
 #include <ttyd/sac_scissor.h>
 #include <ttyd/evt_bero.h>
 #include <ttyd/mario.h>
+#include <ttyd/npcdrv.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -105,6 +106,12 @@ void Mod::init()
 		gc::OSModule::OSLink, [](gc::OSModule::OSModuleInfo *newModule, void *bss)
 	{
 		return gMod->performRelPatches(newModule, bss);
+	});
+	
+	mPFN_fbatHitCheck_trampoline = patch::hookFunction(
+		ttyd::npcdrv::fbatHitCheck, [](uint32_t flags, void *unk)
+	{
+		return gMod->preventPreBattleSoftlock(flags, unk);
 	});
 
 	// Initialize typesetting early

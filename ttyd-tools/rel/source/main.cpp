@@ -31,7 +31,6 @@ namespace mod {
 // Assembly overwrite functions
 extern "C" {
 
-void StartPreventPreBattleSoftlock();
 void StartDisableBattles();
 void StartReplaceJumpFallAnim();
 void StartAllowRunningFromBattles();
@@ -51,23 +50,6 @@ void StartFallThroughMostObjects();
 
 // Functions accessed by assembly overwrites
 extern "C" {
-
-void *preventPreBattleSoftlock(void *fbatPointer)
-{
-	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
-	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
-	
-	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
-	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
-		checkButtonComboEveryFrame(OpenMenuCombo))
-	{
-		return nullptr;
-	}
-	else
-	{
-		return fbatPointer;
-	}
-}
 
 bool displayMegaJumpBadgeInMenu(uint32_t checkBit)
 {
@@ -321,6 +303,26 @@ void displayTitleScreenAndFileSelectScreenInfo()
 			// Draw the file select screen info
 			drawFunctionOn2DLayer(drawFileSelectScreenInfo);
 		}
+	}
+}
+
+void *Mod::preventPreBattleSoftlock(uint32_t flags, void *unk)
+{
+	// Call the original function immediately
+	void *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
+	
+	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
+	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
+	
+	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
+	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
+		checkButtonComboEveryFrame(OpenMenuCombo))
+	{
+		return nullptr;
+	}
+	else
+	{
+		return Result;
 	}
 }
 
@@ -624,7 +626,6 @@ void checkHeaps()
 void initAddressOverwrites()
 {
 	#ifdef TTYD_US
-	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x800465CC);
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800448CC);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004EC10);
@@ -652,7 +653,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008E9DC);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
 	#elif defined TTYD_JP
-	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x80045F28);
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x80044228);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004DFB0);
@@ -678,7 +678,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008D428);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
 	#elif defined TTYD_EU
-	void *PreventPreBattleSoftlockAddress 				= reinterpret_cast<void *>(0x800466B4);
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800449B4);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004ECDC);
@@ -706,8 +705,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008FD38);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
 	#endif
-	
-	patch::writeBranchLR(PreventPreBattleSoftlockAddress, reinterpret_cast<void *>(StartPreventPreBattleSoftlock));
 	
 	patch::writeBranchLR(DisableBattlesAddress, reinterpret_cast<void *>(StartDisableBattles));
 	

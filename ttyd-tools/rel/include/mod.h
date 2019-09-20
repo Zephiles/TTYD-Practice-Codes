@@ -24,6 +24,7 @@ private:
 	uint32_t setIndexWarpEntrance(void *, uint32_t);
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
+	void *preventPreBattleSoftlock(uint32_t, void *);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -40,6 +41,7 @@ private:
 	uint32_t (*mPFN_evt_bero_get_info_trampoline)(void *, uint32_t) = nullptr;
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
+	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
 };
 
 }
