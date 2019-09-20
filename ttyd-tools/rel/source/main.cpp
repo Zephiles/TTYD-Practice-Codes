@@ -408,6 +408,12 @@ const char *Mod::getCustomMessage(const char *key)
 
 uint32_t Mod::pauseArtAttackTimer()
 {
+	if (!Displays[ART_ATTACK_HITBOXES])
+	{
+		// Call original function
+		return mPFN_scissor_timer_main_trampoline();
+	}
+	
 	// Prevent the function from running if Y is being held
 	if (checkButtonComboEveryFrame(PAD_Y))
 	{
