@@ -113,63 +113,63 @@ void Mod::performBattleChecks()
 	const uint32_t DebugBadgeAddressOffset = 0x30B;
 	#endif
 	
+	// Make sure Mario is in the battle before making any changes
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-	uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
 	
 	if (MarioBattlePointer)
 	{
+		auto setDebugBadgeAddressesValue = [MarioBattlePointer](uint8_t value)
+		{
+			// Set the value for Mario
+			*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = value;
+			
+			// Set the value for the partner
+			uint32_t PartnerBattlePointer = reinterpret_cast<uint32_t>(getPartnerBattlePointer());
+			if (PartnerBattlePointer)
+			{
+				*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = value;
+			}
+		};
+		
 		// Check to see if the Auto Action Commands cheat is active or not
 		if (Cheat[AUTO_ACTION_COMMANDS].Active)
 		{
-			if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo) || 
-				checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
+			// Check to see if currently changing button combos
+			if (!MenuVar.ChangingCheatButtonCombo)
 			{
-				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
-				
-				if (PartnerBattlePointer)
+				if (checkButtonComboEveryFrame(Cheat[AUTO_ACTION_COMMANDS].ButtonCombo) || 
+					checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
 				{
-					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
+					setDebugBadgeAddressesValue(1);
 				}
+				else
+				{
+					setDebugBadgeAddressesValue(0);
+				}
+			}
+			else if (checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
+			{
+				setDebugBadgeAddressesValue(1);
 			}
 			else
 			{
-				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
-				
-				if (PartnerBattlePointer)
-				{
-					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
-				}
+				setDebugBadgeAddressesValue(0);
 			}
+		}
+		else if (checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
+		{
+			setDebugBadgeAddressesValue(1);
 		}
 		else
 		{
-			// Check if the Debug Badge is equipped or not
-			if (checkIfBadgeEquipped(ttyd::item_data::Item::DebugBadge))
-			{
-				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 1;
-				
-				if (PartnerBattlePointer)
-				{
-					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 1;
-				}
-			}
-			else
-			{
-				*reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset) = 0;
-				
-				if (PartnerBattlePointer)
-				{
-					*reinterpret_cast<uint8_t *>(PartnerBattlePointer + DebugBadgeAddressOffset) = 0;
-				}
-			}
+			setDebugBadgeAddressesValue(0);
 		}
 	}
 	
 	// Prevent all buttons from being pressed when the menu is open, exccept for R and X
 	if (MenuVar.MenuIsDisplayed)
 	{
-		if (!checkButtonComboEveryFrame(PAD_R) && 
-			!checkButtonComboEveryFrame(PAD_X))
+		if (!checkButtonComboEveryFrame(PAD_R) && !checkButtonComboEveryFrame(PAD_X))
 		{
 			// The menu is open and neither R nor X are being pressed, so prevent the function from running
 			return;
