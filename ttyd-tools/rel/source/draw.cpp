@@ -3613,7 +3613,7 @@ void drawWarpIndexMapAndEntrance()
 	
 	// Draw the current map
 	const char *NextMap = ttyd::seq_mapchange::NextMap;
-	if (NextMap && (NextMap[0] != '\0'))
+	if (NextMap[0] != '\0')
 	{
 		Color = 0xFFFFFFFF;
 	}
@@ -3628,7 +3628,7 @@ void drawWarpIndexMapAndEntrance()
 	
 	// Draw the current bero
 	const char *NextBero = ttyd::seq_mapchange::NextBero;
-	if (NextBero && (NextBero[0] != '\0'))
+	if (NextBero[0] != '\0')
 	{
 		Color = 0xFFFFFFFF;
 	}
@@ -3669,7 +3669,7 @@ void drawWarpIndexEntranceList()
 	
 	// Draw the current map
 	const char *NextMap = ttyd::seq_mapchange::NextMap;
-	if (NextMap && (NextMap[0] != '\0'))
+	if (NextMap[0] != '\0')
 	{
 		Color = 0xFFFFFFFF;
 	}
@@ -3683,7 +3683,7 @@ void drawWarpIndexEntranceList()
 	
 	// Draw the current bero
 	const char *NextBero = ttyd::seq_mapchange::NextBero;
-	if (NextBero && (NextBero[0] != '\0'))
+	if (NextBero[0] != '\0')
 	{
 		Color = 0xFFFFFFFF;
 	}
