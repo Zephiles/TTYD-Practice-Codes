@@ -632,6 +632,7 @@ void initAddressOverwrites()
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800080E4);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008E9DC);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
+	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021A30C);
 	#elif defined TTYD_JP
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x80044228);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
@@ -656,6 +657,7 @@ void initAddressOverwrites()
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x80008054);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008D428);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
+	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x80215668);
 	#elif defined TTYD_EU
 	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800449B4);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
@@ -682,6 +684,7 @@ void initAddressOverwrites()
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800082BC);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008FD38);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
+	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021DD9C);
 	#endif
 	
 	patch::writeBranchLR(DisableBattlesAddress, reinterpret_cast<void *>(StartDisableBattles));
@@ -712,9 +715,11 @@ void initAddressOverwrites()
 	
 	patch::writeBranchLR(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
 	
-	patch::writeBranchLR(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjects));
+	patch::writeBranchLR(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
 	
-	patch::writeBranchLR(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjects));
+	patch::writeBranchLR(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+	
+	patch::writeBranchLR(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

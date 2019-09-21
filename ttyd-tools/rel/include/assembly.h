@@ -20,7 +20,8 @@ void StartPreventTextboxSelection();
 void StartDisableDPadOptionsDisplay();
 void StartFixEvtMapBlendSetFlagPartnerCrash();
 void StartFixEvtMapBlendSetFlagFollowerCrash();
-void StartFallThroughMostObjects();
+void StartFallThroughMostObjectsStandard();
+void StartFallThroughMostObjectsBowser();
 
 // Functions accessed by assembly overwrites
 // main.cpp
