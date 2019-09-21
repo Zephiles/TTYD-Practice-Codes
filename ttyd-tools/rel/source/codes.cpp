@@ -5,6 +5,7 @@
 #include "menufunctions.h"
 #include "draw.h"
 #include "patch.h"
+#include "assembly.h"
 
 #include <ttyd/item_data.h>
 #include <ttyd/mariost.h>
@@ -29,9 +30,6 @@
 #include <cmath>
 
 namespace mod {
-
-// Functions accessed by assembly overwrites
-extern "C" {
 
 uint32_t disableBattles(void *ptr)
 {
@@ -99,8 +97,6 @@ void *fallThroughMostObjects(void *ptr)
 	}
 	
 	return nullptr;
-}
-
 }
 
 void Mod::performBattleChecks()

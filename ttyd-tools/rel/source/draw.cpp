@@ -5,6 +5,7 @@
 #include "memorywatch.h"
 #include "codes.h"
 #include "mod.h"
+#include "assembly.h"
 
 #include <gc/gx.h>
 #include <gc/ppc.h>
@@ -32,9 +33,6 @@
 
 namespace mod {
 
-// Functions accessed by assembly overwrites
-extern "C" {
-
 bool disableDPadOptionsDisplay(uint16_t unkVar)
 {
 	if (!Displays[DPAD_OPTIONS_DISPLAY])
@@ -43,8 +41,6 @@ bool disableDPadOptionsDisplay(uint16_t unkVar)
 	}
 	
 	return (unkVar & (1 << 8)); // Check the 8 bit
-}
-
 }
 
 void drawFunctionOnDebugLayer(void (*func)())

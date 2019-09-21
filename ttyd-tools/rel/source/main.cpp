@@ -6,6 +6,7 @@
 #include "patch.h"
 #include "menu.h"
 #include "codes.h"
+#include "assembly.h"
 
 #include <gc/OSCache.h>
 #include <gc/OSAlloc.h>
@@ -27,28 +28,6 @@
 #include <cstring>
 
 namespace mod {
-
-// Assembly overwrite functions
-extern "C" {
-
-void StartDisableBattles();
-void StartReplaceJumpFallAnim();
-void StartAllowRunningFromBattles();
-void StartForceNPCItemDrop();
-void StartDisplayMegaJumpBadgeBattleMenu();
-void StartDisplayMegaHammerBadgesBattleMenu();
-void StartFixBlooperCrash1();
-void StartFixBlooperCrash2();
-void StartPreventTextboxSelection();
-void StartDisableDPadOptionsDisplay();
-void StartFixEvtMapBlendSetFlagPartnerCrash();
-void StartFixEvtMapBlendSetFlagFollowerCrash();
-void StartFallThroughMostObjects();
-
-}
-
-// Functions accessed by assembly overwrites
-extern "C" {
 
 bool displayMegaJumpBadgeInMenu(uint32_t checkBit)
 {
@@ -274,8 +253,6 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 	return jumpFallString;
 }
 
-}
-
 void displayTitleScreenAndFileSelectScreenInfo()
 {
 	if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kTitle))
@@ -314,8 +291,7 @@ void *Mod::preventPreBattleSoftlock(uint32_t flags, void *unk)
 	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
 	
 	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
-	if (checkButtonComboEveryFrame(ReloadRoomCombo) || 
-		checkButtonComboEveryFrame(OpenMenuCombo))
+	if (checkButtonComboEveryFrame(ReloadRoomCombo) || checkButtonComboEveryFrame(OpenMenuCombo))
 	{
 		return nullptr;
 	}
