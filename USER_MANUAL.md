@@ -39,26 +39,27 @@ This menu allows you to modify your entire inventory, including standard items, 
 ### Cheats
 1. **Change Sequence** allows you to change the current Sequence value, which is the value used to tell what part of the game you're currently at. For clarification, the stage and event listed for the current Sequence value is effectively what has just been cleared, which differs from the **Warp By Event** menu, which is explained in the Warps section.
 2. **Walk Through Most Objects** allows you to walk through most objects. It does now allow walking through NPCs. The button combination must be held for this code to work.
-3. **Save Coordinates** allows you to save Mario's and your partner's current positions, directions, and angles.
-4. **Load Coordinates** allows you to load the positions, directions, and angles saved from the previous code.
-5. **Spawn Item** allows you to spawn any item into the field.
-6. **Save Anywhere** allows you to save the game at any location, even if a save block is not present in the current room.
-7. **Text Storage** sets a specific value that causes Text Storage to be active. A partner is required to be out for this code to have an effect.
-8. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
-9. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
-10. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
-11. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
-12. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
-13. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
-14. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
-15. **Lock Mario's HP To Max** locks Mario's current HP to the max.
-16. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
-17. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
-18. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
-19. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
-20. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
-21. **Manage Flags** allows you to manually change a lot of the important flags in the game.
-22. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+3. **Fall Through Most Objects** allows you to fall through most floors/objects. It does now allow falling through NPCs. The button combination must be held for this code to work.
+4. **Save Coordinates** allows you to save Mario's and your partner's current positions, directions, and angles.
+5. **Load Coordinates** allows you to load the positions, directions, and angles saved from the previous code.
+6. **Spawn Item** allows you to spawn any item into the field.
+7. **Save Anywhere** allows you to save the game at any location, even if a save block is not present in the current room.
+8. **Text Storage** sets a specific value that causes Text Storage to be active. A partner is required to be out for this code to have an effect.
+9. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
+10. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
+11. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
+12. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
+13. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
+14. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
+15. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
+16. **Lock Mario's HP To Max** locks Mario's current HP to the max.
+17. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
+18. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+19. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+20. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+21. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+22. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+23. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
@@ -67,9 +68,9 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 ### Settings
 This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The current settings included are as follows:
 * Which cheats are active
-* Cheats button combos
+* Cheats button combinations
 * Which displays are active
-* Displays button combos
+* Displays button combinations
 * Memory watches (See below)
 
 ### Memory
@@ -94,7 +95,7 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
    * How many frames early you pressed A or B. It should be noted that nothing will be displayed if the button was pressed very early (more than 6 or so frames for guards, and more than 12 or so frames for superguards).
    * Whether you pressed too many buttons in a short period of time for the guard/superguard to be accepted.
    * Whether the attack can be superguarded or not (will only be displayed if you tried to superguard it).
-9. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack.
+9. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack. While this display is active, you can hold Y while using Art Attack to pause the timer that is used to check how long you are able to use it for.
 10. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
 11. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
 12. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding Y for two seconds.
@@ -117,13 +118,12 @@ There are several other changes that have been made outside of the menu:
 1. The build date on the title screen is always displayed.
 2. The current Sequence value is displayed in the pause menu next to Mario's stats.
 3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
-4. Holding Y while using Art Attack will pause the timer that is used to check how long you are able to use it for.
-5. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
-6. Several crashes have been fixed/prevented:
+4. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
+5. Several crashes have been fixed/prevented:
    * Petalburg intro cutscene - Mario will not have any greeting animation.
    * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the Sequence is past 338, then the Sequence will be set to 338.
    * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated.
    * If the Endless Room has been completed, and you enter it when the Sequence is at 385, then the room will be set to an incomplete state.
    * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn Gus.
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
-7. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
+6. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
