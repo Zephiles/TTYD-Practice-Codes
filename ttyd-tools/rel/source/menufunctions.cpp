@@ -1219,6 +1219,8 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						case SUCCESS:
 						{
 							closeMenu();
+							Button = NO_NUMBERS_TO_DISPLAY; // Force the adjustable menu to not display
+							break;
 						}
 						case NOT_IN_GAME:
 						{
