@@ -31,28 +31,34 @@
 
 namespace mod {
 
-uint32_t disableBattles(void *ptr)
+void *Mod::disableBattles(uint32_t flags, void *unk)
 {
-	uint32_t unkVal = *reinterpret_cast<uint32_t *>(
-		reinterpret_cast<uint32_t>(ptr) + 0x4);
+	// Call the original function immediately
+	void *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
 	
-	if (!Cheat[DISABLE_BATTLES].Active)
+	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
+	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
+	
+	// Prevent entering a non-cutscene battle if opening the menu
+	if (checkButtonComboEveryFrame(OpenMenuCombo))
 	{
-		return unkVal;
+		return nullptr;
+	}
+	else if (!MenuVar.ChangingCheatButtonCombo)
+	{
+		// Prevent entering a non-cutscene battle if reloading the room
+		if (checkButtonComboEveryFrame(ReloadRoomCombo))
+		{
+			return nullptr;
+		}
+		else if (Cheat[DISABLE_BATTLES].Active && 
+			checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
+		{
+			return nullptr;
+		}
 	}
 	
-	// Don't disable if currently changing button combos
-	if (MenuVar.ChangingCheatButtonCombo)
-	{
-		return unkVal;
-	}
-	
-	if (!checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
-	{
-		return unkVal;
-	}
-	
-	return 0;
+	return Result;
 }
 
 uint32_t allowRunningFromBattles(void *ptr)

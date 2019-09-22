@@ -282,29 +282,6 @@ void displayTitleScreenAndFileSelectScreenInfo()
 	}
 }
 
-void *Mod::preventPreBattleSoftlock(uint32_t flags, void *unk)
-{
-	// Call the original function immediately
-	void *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
-	
-	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
-	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
-	
-	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
-	if (checkButtonComboEveryFrame(OpenMenuCombo))
-	{
-		return nullptr;
-	}
-	else if (!MenuVar.ChangingCheatButtonCombo && checkButtonComboEveryFrame(ReloadRoomCombo))
-	{
-		return nullptr;
-	}
-	else
-	{
-		return Result;
-	}
-}
-
 int32_t Mod::pauseMenuPreventUnpause(void *pauseMenuPointer)
 {
 	// Prevent unpausing if L is being held
@@ -611,7 +588,6 @@ void checkHeaps()
 void initAddressOverwrites()
 {
 	#ifdef TTYD_US
-	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800448CC);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004EC10);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009B2C);
@@ -638,7 +614,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021A30C);
 	#elif defined TTYD_JP
-	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x80044228);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004DFB0);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x8000999C);
@@ -663,7 +638,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x80215668);
 	#elif defined TTYD_EU
-	void *DisableBattlesAddress 						= reinterpret_cast<void *>(0x800449B4);
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004ECDC);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009CF0);
@@ -690,8 +664,6 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021DD9C);
 	#endif
-	
-	patch::writeBranchLR(DisableBattlesAddress, reinterpret_cast<void *>(StartDisableBattles));
 	
 	patch::writeBranchLR(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
 	

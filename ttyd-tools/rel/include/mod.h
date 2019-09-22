@@ -24,7 +24,7 @@ private:
 	uint32_t setIndexWarpEntrance(void *, uint32_t);
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
-	void *preventPreBattleSoftlock(uint32_t, void *);
+	void *disableBattles(uint32_t, void *);
 	void drawArtAttackHitboxes(uint32_t);
 
 private:

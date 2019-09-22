@@ -8,7 +8,6 @@ extern "C" {
 
 // Assembly overwrite functions
 // main.cpp
-void StartDisableBattles();
 void StartReplaceJumpFallAnim();
 void StartAllowRunningFromBattles();
 void StartForceNPCItemDrop();
@@ -35,7 +34,6 @@ void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr);
 const char *replaceJumpFallAnim(char *jumpFallString);
 
 // codes.cpp
-uint32_t disableBattles(void *ptr);
 uint32_t allowRunningFromBattles(void *ptr);
 int32_t forceNPCItemDrop(void *ptr);
 void *fallThroughMostObjects(void *ptr);
