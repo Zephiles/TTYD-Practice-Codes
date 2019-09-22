@@ -179,8 +179,8 @@ void Mod::performBattleChecks()
 void walkThroughMostObjects()
 {
 	if (Cheat[WALK_THROUGH_WALLS].Active && 
-		checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo) && 
-			!MenuVar.ChangingCheatButtonCombo)
+		!MenuVar.ChangingCheatButtonCombo && 
+			checkButtonComboEveryFrame(Cheat[WALK_THROUGH_WALLS].ButtonCombo))
 	{
 		MenuVar.ResetMarioProperties = true;
 		
@@ -559,7 +559,7 @@ void reloadRoomMain()
 
 void reloadRoom()
 {
-	if (checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
+	if (!MenuVar.ChangingCheatButtonCombo && checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
 	{
 		// Prevent being able to reload the room if the menu is open or if currently in the spawn item menu
 		if (Cheat[RELOAD_ROOM].Active && !MenuVar.MenuIsDisplayed && !SpawnItem.InAdjustableValueMenu)

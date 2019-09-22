@@ -291,7 +291,11 @@ void *Mod::preventPreBattleSoftlock(uint32_t flags, void *unk)
 	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
 	
 	// Prevent entering a non-cutscene battle if either reloading the room or opening the menu
-	if (checkButtonComboEveryFrame(ReloadRoomCombo) || checkButtonComboEveryFrame(OpenMenuCombo))
+	if (checkButtonComboEveryFrame(OpenMenuCombo))
+	{
+		return nullptr;
+	}
+	else if (!MenuVar.ChangingCheatButtonCombo && checkButtonComboEveryFrame(ReloadRoomCombo))
 	{
 		return nullptr;
 	}
@@ -789,7 +793,7 @@ void Mod::run()
 		// Don't display some displays if current in the process of spawning an item
 		if ((DisplayActionCommands.DisplayTimer == 0) && !CurrentlySpawningItem)
 		{
-			// Only run button-based codes if currently not changing button combos
+			// Only run button-based displays if currently not changing button combos
 			if (!tempChangingCheatButtonCombo)
 			{
 				displayYoshiSkipDetails();
@@ -804,7 +808,7 @@ void Mod::run()
 			displayMemoryWatches();
 		}
 		
-		// Only run button-based codes if currently not changing button combos
+		// Only run button-based displays if currently not changing button combos
 		if (!tempChangingCheatButtonCombo)
 		{
 			// Don't display some displays if current in the process of spawning an item
