@@ -347,7 +347,6 @@ void menuCheckButton()
 								// Inventory is currently empty
 								MenuVar.FunctionReturnCode 	= INVENTORY_EMPTY;
 								MenuVar.Timer 				= secondsToFrames(3);
-								MenuVar.SelectedOption 		= tempCurrentMenuOption;
 							}
 							break;
 						}
@@ -382,7 +381,6 @@ void menuCheckButton()
 								// Inventory is currently empty
 								MenuVar.FunctionReturnCode 	= INVENTORY_EMPTY;
 								MenuVar.Timer 				= secondsToFrames(3);
-								MenuVar.SelectedOption 		= tempCurrentMenuOption;
 							}
 							break;
 						}
@@ -428,7 +426,6 @@ void menuCheckButton()
 								// Inventory is currently empty
 								MenuVar.FunctionReturnCode 	= INVENTORY_EMPTY;
 								MenuVar.Timer 				= secondsToFrames(3);
-								MenuVar.SelectedOption 		= tempCurrentMenuOption;
 							}
 							break;
 						}
@@ -451,7 +448,6 @@ void menuCheckButton()
 								// Inventory is currently empty
 								MenuVar.FunctionReturnCode 	= INVENTORY_EMPTY;
 								MenuVar.Timer 				= secondsToFrames(3);
-								MenuVar.SelectedOption 		= tempCurrentMenuOption;
 							}
 							break;
 						}
