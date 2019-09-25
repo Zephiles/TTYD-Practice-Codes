@@ -23,6 +23,7 @@
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
+#include <ttyd/battle_unit.h>
 
 #include <cstring>
 #include <cstdio>
@@ -1241,7 +1242,7 @@ void actionCommandsTimingsInit()
 	// Credits to Jdaster64 for writing the original code for this
 	DisplayActionCommands.Trampoline = patch::hookFunction(
 	ttyd::battle_ac::BattleActionCommandCheckDefence, [](
-		void *battleUnitPtr, void *attackParams)
+		void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
 	{
 		if (!Displays[GUARD_SUPERGUARD_TIMINGS])
 		{
@@ -1329,10 +1330,9 @@ void actionCommandsTimingsInit()
 		else if (Last_B_Frame > -1)
 		{
 			// Check if the attack can be superguarded or not
-			uint8_t SuperguardCheck = *reinterpret_cast<uint8_t *>(
-				reinterpret_cast<uint32_t>(attackParams) + 0x13);
+			int8_t GuardTypesCheck = attackParams->guardTypesAllowed;
 			
-			if (SuperguardCheck > 0)
+			if (GuardTypesCheck > 0)
 			{
 				// Print how many frames early the player pressed B
 				DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;

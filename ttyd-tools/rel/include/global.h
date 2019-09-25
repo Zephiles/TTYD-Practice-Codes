@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ttyd/item_data.h>
+#include <ttyd/battle_unit.h>
 
 #include <cstdint>
 
@@ -630,7 +631,7 @@ struct OnScreenTimerDisplay
 
 struct DisplayActionCommandTiming
 {
-	int32_t (*Trampoline)(void *, void *);
+	int32_t (*Trampoline)(void *, ttyd::battle_unit::AttackParams *);
 	uint16_t DisplayTimer;
 	uint8_t TypeToDraw;
 	int8_t Last_A_Frame;

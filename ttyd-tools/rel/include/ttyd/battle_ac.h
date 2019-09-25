@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/battle_unit.h>
+
 #include <cstdint>
 
 namespace ttyd::battle_ac {
@@ -17,7 +19,7 @@ uint8_t BattleActionCommandGetDifficulty(void *battleWorkPtr);
 // BattleActionCommandResetDefenceResult
 // BattleActionCommandGetDefenceResult
 uint32_t BattleACPadCheckRecordTrigger(uint32_t frame, uint32_t button);
-int32_t BattleActionCommandCheckDefence(void *battleUnitPtr, void *attackParams);
+int32_t BattleActionCommandCheckDefence(void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams);
 // BattleActionCommandStop
 // BattleActionCommandStart
 // BattleActionCommandSetup

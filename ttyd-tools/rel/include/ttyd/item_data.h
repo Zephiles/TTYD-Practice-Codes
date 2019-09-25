@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/battle_unit.h>
+
 #include <cstdint>
 
 namespace ttyd::item_data {
@@ -348,7 +350,7 @@ enum Item : int16_t
 
 struct ItemData
 {
-	const char *itemStringId;	// Used for recipe lookups, etc.
+	const char *itemStringId; // Used for recipe lookups, etc.
 	const char *itemNameMsg;
 	const char *itemDescMsg;
 	const char *itemDescMenuMsg;
@@ -364,7 +366,7 @@ struct ItemData
 	uint8_t unk_0x1f;
 	int16_t iconId;
 	uint16_t unk_0x22;
-	void *attackParams;
+	ttyd::battle_unit::AttackParams *attackParams;
 } __attribute__((__packed__));
 
 extern "C" {
