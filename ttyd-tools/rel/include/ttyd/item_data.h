@@ -348,23 +348,23 @@ enum Item : int16_t
 
 struct ItemData
 {
-	const char* 	itemStringId;	// Used for recipe lookups, etc.
-	const char* 	itemNameMsg;
-	const char* 	itemDescMsg;
-	const char* 	itemDescMenuMsg;
-	uint16_t 		unk_0x10;
-	int16_t			typeSortOrder; // For "By Type" ordering
-	int16_t			buyPrice;
-	int16_t			discountPrice;
-	int16_t			starPiecePrice;
-	int16_t 		sellPrice;
-	int8_t 			bpCost;
-	int8_t 			hpRestored;
-	int8_t 			fpRestored;
-	uint8_t 		unk_0x1f;
-	int16_t 		iconId;
-	uint16_t 		unk_0x22;
-	void* 			attackParams;
+	const char *itemStringId;	// Used for recipe lookups, etc.
+	const char *itemNameMsg;
+	const char *itemDescMsg;
+	const char *itemDescMenuMsg;
+	uint16_t unk_0x10;
+	int16_t typeSortOrder; // For "By Type" ordering
+	int16_t buyPrice;
+	int16_t discountPrice;
+	int16_t starPiecePrice;
+	int16_t sellPrice;
+	int8_t bpCost;
+	int8_t hpRestored;
+	int8_t fpRestored;
+	uint8_t unk_0x1f;
+	int16_t iconId;
+	uint16_t unk_0x22;
+	void *attackParams;
 } __attribute__((__packed__));
 
 extern "C" {
