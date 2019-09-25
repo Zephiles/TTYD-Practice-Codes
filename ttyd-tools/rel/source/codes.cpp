@@ -22,8 +22,8 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
-#include <ttyd/battle_ac.h>
 #include <ttyd/battle_unit.h>
+#include <ttyd/battle_ac.h>
 
 #include <cstring>
 #include <cstdio>
@@ -1237,118 +1237,113 @@ int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1, uint32_t unk2, ui
 	return mPFN_SoundEfxPlayEx_trampoline(soundId, unk1, unk2, unk3);
 }
 
-void actionCommandsTimingsInit()
+int32_t Mod::displayActionCommandsTimingHook(void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
 {
-	// Credits to Jdaster64 for writing the original code for this
-	DisplayActionCommands.Trampoline = patch::hookFunction(
-	ttyd::battle_ac::BattleActionCommandCheckDefence, [](
-		void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
+	// Credits to Jdaster64 for writing the original code for this function
+	if (!Displays[GUARD_SUPERGUARD_TIMINGS])
 	{
-		if (!Displays[GUARD_SUPERGUARD_TIMINGS])
+		return mPFN_BattleActionCommandCheckDefence_trampoline(battleUnitPtr, attackParams);
+	}
+	
+	// Check to see if the attack will be automatically guarded/superguarded or not
+	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+	if (MarioBattlePointer)
+	{
+		#ifdef TTYD_US
+		const uint32_t DebugBadgeAddressOffset = 0x307;
+		#elif defined TTYD_JP
+		const uint32_t DebugBadgeAddressOffset = 0x303;
+		#elif defined TTYD_EU
+		const uint32_t DebugBadgeAddressOffset = 0x30B;
+		#endif
+		
+		uint8_t DebugBadgeCheck = *reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset);
+		if (DebugBadgeCheck > 0)
 		{
-			return DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
+			// The attack will be automatically guarded/superguarded
+			return mPFN_BattleActionCommandCheckDefence_trampoline(battleUnitPtr, attackParams);
+		}
+	}
+	
+	// Reset the values checked when drawing the text
+	DisplayActionCommands.TypeToDraw 	= 0;
+	DisplayActionCommands.Last_A_Frame 	= -1;
+	DisplayActionCommands.Last_B_Frame 	= -1;
+	
+	int32_t Last_A_Frame 	= -1;
+	int32_t Last_B_Frame 	= -1;
+	int32_t ButtonPresses 	= 0;
+	
+	for (int32_t Frame = 0; Frame < 15; ++Frame)
+	{
+		if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_A))
+		{
+			Last_A_Frame = Frame;
+			++ButtonPresses;
 		}
 		
-		// Check to see if the attack will be automatically guarded/superguarded or not
-		uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
-		if (MarioBattlePointer)
+		if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_B))
 		{
-			#ifdef TTYD_US
-			const uint32_t DebugBadgeAddressOffset = 0x307;
-			#elif defined TTYD_JP
-			const uint32_t DebugBadgeAddressOffset = 0x303;
-			#elif defined TTYD_EU
-			const uint32_t DebugBadgeAddressOffset = 0x30B;
-			#endif
-			
-			uint8_t DebugBadgeCheck = *reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset);
-			if (DebugBadgeCheck > 0)
-			{
-				// The attack will be automatically guarded/superguarded
-				return DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
-			}
+			Last_B_Frame = Frame;
+			++ButtonPresses;
 		}
+	}
+	
+	const int32_t DefenseResult = mPFN_BattleActionCommandCheckDefence_trampoline(battleUnitPtr, attackParams);
+	
+	const uint32_t SuccessfulTiming 		= 1;
+	const uint32_t PressedTooManyButtons 	= 2;
+	const uint32_t PressedTooEarly 			= 3;
+	const uint32_t CannotBeSuperguarded 	= 4;
+	
+	if (DefenseResult == 4)
+	{
+		// Successful Guard; print Last_A_Frame
+		DisplayActionCommands.Last_A_Frame 		= Last_A_Frame;
+		DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
+		DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+	}
+	else if (DefenseResult == 5)
+	{
+		// Successful Superguard; print Last_B_Frame
+		DisplayActionCommands.Last_B_Frame 		= Last_B_Frame;
+		DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
+		DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+	}
+	else if (ButtonPresses > 1) // Unsuccessful, otherwise...
+	{
+		// Hit too many buttons in last 15 frames
+		DisplayActionCommands.TypeToDraw 		= PressedTooManyButtons;
+		DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
+	}
+	else if (Last_A_Frame > -1)
+	{
+		// Print how many frames early the player pressed A
+		DisplayActionCommands.Last_A_Frame 	= Last_A_Frame;
+		DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
+		DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
+	}
+	else if (Last_B_Frame > -1)
+	{
+		// Check if the attack can be superguarded or not
+		int8_t GuardTypesCheck = attackParams->guardTypesAllowed;
 		
-		// Reset the values checked when drawing the text
-		DisplayActionCommands.TypeToDraw 	= 0;
-		DisplayActionCommands.Last_A_Frame 	= -1;
-		DisplayActionCommands.Last_B_Frame 	= -1;
-		
-		int32_t Last_A_Frame 	= -1;
-		int32_t Last_B_Frame 	= -1;
-		int32_t ButtonPresses 	= 0;
-		
-		for (int32_t Frame = 0; Frame < 15; ++Frame)
+		if (GuardTypesCheck > 0)
 		{
-			if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_A))
-			{
-				Last_A_Frame = Frame;
-				++ButtonPresses;
-			}
-			
-			if (ttyd::battle_ac::BattleACPadCheckRecordTrigger(Frame, PAD_B))
-			{
-				Last_B_Frame = Frame;
-				++ButtonPresses;
-			}
-		}
-		
-		const int32_t DefenseResult = DisplayActionCommands.Trampoline(battleUnitPtr, attackParams);
-		
-		const uint32_t SuccessfulTiming 		= 1;
-		const uint32_t PressedTooManyButtons 	= 2;
-		const uint32_t PressedTooEarly 			= 3;
-		const uint32_t CannotBeSuperguarded 	= 4;
-		
-		if (DefenseResult == 4)
-		{
-			// Successful Guard; print Last_A_Frame
-			DisplayActionCommands.Last_A_Frame 		= Last_A_Frame;
-			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
-			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
-		}
-		else if (DefenseResult == 5)
-		{
-			// Successful Superguard; print Last_B_Frame
-			DisplayActionCommands.Last_B_Frame 		= Last_B_Frame;
-			DisplayActionCommands.TypeToDraw 		= SuccessfulTiming;
-			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
-		}
-		else if (ButtonPresses > 1) // Unsuccessful, otherwise...
-		{
-			// Hit too many buttons in last 15 frames
-			DisplayActionCommands.TypeToDraw 		= PressedTooManyButtons;
-			DisplayActionCommands.DisplayTimer 		= secondsToFrames(3);
-		}
-		else if (Last_A_Frame > -1)
-		{
-			// Print how many frames early the player pressed A
-			DisplayActionCommands.Last_A_Frame 	= Last_A_Frame;
+			// Print how many frames early the player pressed B
+			DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
 			DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
 			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
 		}
-		else if (Last_B_Frame > -1)
+		else
 		{
-			// Check if the attack can be superguarded or not
-			int8_t GuardTypesCheck = attackParams->guardTypesAllowed;
-			
-			if (GuardTypesCheck > 0)
-			{
-				// Print how many frames early the player pressed B
-				DisplayActionCommands.Last_B_Frame 	= Last_B_Frame;
-				DisplayActionCommands.TypeToDraw 	= PressedTooEarly;
-				DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
-			}
-			else
-			{
-				// The attack cannot be superguarded, so print the text saying so
-				DisplayActionCommands.TypeToDraw 	= CannotBeSuperguarded;
-				DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
-			}
+			// The attack cannot be superguarded, so print the text saying so
+			DisplayActionCommands.TypeToDraw 	= CannotBeSuperguarded;
+			DisplayActionCommands.DisplayTimer 	= secondsToFrames(3);
 		}
-		
-		return DefenseResult;
-	});
+	}
+	
+	return DefenseResult;
 }
 
 void displayActionCommandsTiming()

@@ -34,7 +34,6 @@ void displayMemoryWatches();
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
 void displayBlimpTicketSkipDetails();
-void actionCommandsTimingsInit();
 void displayActionCommandsTiming();
 
 int32_t warpToMap(uint32_t value);

@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.37";
+const char *VersionNumber = "v3.0.38";
 
 const char *RootLines[] = 
 {
@@ -1826,7 +1826,7 @@ struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
-struct DisplayActionCommandTiming DisplayActionCommands;
+struct DisplayActionCommandsTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
 struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;

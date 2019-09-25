@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gc/OSModule.h>
+#include <ttyd/battle_unit.h>
 
 #include <cstdint>
 
@@ -26,6 +27,7 @@ private:
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
 	void *disableBattles(uint32_t, void *);
 	void drawArtAttackHitboxes(uint32_t);
+	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -44,6 +46,9 @@ private:
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
 	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
 	void (*mPFN_scissor_disp_control_trampoline)(uint32_t) = nullptr;
+	
+	int32_t (*mPFN_BattleActionCommandCheckDefence_trampoline)(
+		void *, ttyd::battle_unit::AttackParams *) = nullptr;
 };
 
 }

@@ -1,6 +1,5 @@
 #include "mod.h"
 #include "global.h"
-#include "codes.h"
 #include "patch.h"
 
 #include <gc/OSModule.h>
@@ -15,6 +14,8 @@
 #include <ttyd/evt_bero.h>
 #include <ttyd/mario.h>
 #include <ttyd/npcdrv.h>
+#include <ttyd/battle_ac.h>
+#include <ttyd/battle_unit.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -39,7 +40,6 @@ void Mod::init()
 	gMod = this;
 	initMenuVars();
 	initAddressOverwrites();
-	actionCommandsTimingsInit();
 	
 	mPFN_marioStMain_trampoline = patch::hookFunction(
 		ttyd::mariost::marioStMain, []()
@@ -118,6 +118,13 @@ void Mod::init()
 		ttyd::sac_scissor::scissor_disp_control, [](uint32_t camId)
 	{
 		return gMod->drawArtAttackHitboxes(camId);
+	});
+	
+	mPFN_BattleActionCommandCheckDefence_trampoline = patch::hookFunction(
+		ttyd::battle_ac::BattleActionCommandCheckDefence, [](
+			void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
+	{
+		return gMod->displayActionCommandsTimingHook(battleUnitPtr, attackParams);
 	});
 
 	// Initialize typesetting early

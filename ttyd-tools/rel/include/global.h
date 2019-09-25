@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ttyd/item_data.h>
-#include <ttyd/battle_unit.h>
 
 #include <cstdint>
 
@@ -629,9 +628,8 @@ struct OnScreenTimerDisplay
 	}
 };
 
-struct DisplayActionCommandTiming
+struct DisplayActionCommandsTiming
 {
-	int32_t (*Trampoline)(void *, ttyd::battle_unit::AttackParams *);
 	uint16_t DisplayTimer;
 	uint8_t TypeToDraw;
 	int8_t Last_A_Frame;
@@ -756,7 +754,7 @@ extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
-extern DisplayActionCommandTiming DisplayActionCommands;
+extern DisplayActionCommandsTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
 extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
