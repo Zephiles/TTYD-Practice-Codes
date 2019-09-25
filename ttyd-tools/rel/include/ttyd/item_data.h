@@ -226,7 +226,7 @@ enum Item : int16_t
 	TrialStew = 						218,
 	CouplesCake = 						219,
 	InkySauce = 						220,
-	Omelettemeal = 						221,
+	OmeletteMeal = 						221,
 	KoopaTea = 							222,
 	Koopasta = 							223,
 	SpicyPasta = 						224,
