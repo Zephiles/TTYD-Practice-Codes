@@ -108,6 +108,7 @@ This menu allows you to warp to various places around the game. You have three s
      * Upon warping, all current game states will be cleared. This means that all flags related to the game story will be cleared. This also completely clears everything that is tracked in the pause menu.
      * After everything has been cleared, every upgrade/important item/partner/etc. that you should have gotten up to and including the current event will be given to you automatically.
      * The Sequence value set by this option differs from the **Change Sequence** cheat above, in that this option sets the Sequence to what is about to happen, not what has already happened.
+     * The **Keep Standard Inventory** option allows you to keep the standard items that you currently have when warping to an event. If this is disabled, then all of your standard items will be removed.
 3. **Warp By Index** Allows you to manually choose any map, as well as the entrance used when warping to said map. Additionally, the **View Current Map Entrances** shows you which value goes to which entrance in the current map. Due to limitations, it is currently impossible to fetch the list of entrances for any other maps besides the one you're currently in.
    * Notes about manually choosing a warp:
      * If an invalid entrance is used, then Mario will be placed at/near the center of the chosen map.
