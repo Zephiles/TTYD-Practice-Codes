@@ -18,10 +18,10 @@
 #include <ttyd/mario.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/party.h>
+#include <ttyd/memory.h>
 #include <ttyd/seq_title.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/sac_scissor.h>
-#include <ttyd/memory.h>
 
 #include <cstdio>
 #include <cinttypes>
@@ -212,6 +212,22 @@ void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr)
 	else
 	{
 		return followerPtr;
+	}
+}
+
+void *preventPouchInitMemoryLeak(uint32_t heap, uint32_t size)
+{
+	// Check if the memory has already been allocated or not
+	void *PouchPtr = ttyd::mario_pouch::pouchGetPtr();
+	if (!PouchPtr)
+	{
+		// The memory has not been allocated, so allocate it
+		return ttyd::memory::__memAlloc(heap, size);
+	}
+	else
+	{
+		// The memory has already been allocated, so clear it
+		return clearMemory(PouchPtr, size);
 	}
 }
 
@@ -609,6 +625,7 @@ void initAddressOverwrites()
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013D148);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
+	void *PreventPouchInitMemoryLeakAddress 			= reinterpret_cast<void *>(0x800D59DC);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800080E4);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008E9DC);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
@@ -633,6 +650,7 @@ void initAddressOverwrites()
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x80137C1C);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
+	void *PreventPouchInitMemoryLeakAddress 			= reinterpret_cast<void *>(0x800D17A8);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x80008054);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008D428);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
@@ -659,6 +677,7 @@ void initAddressOverwrites()
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013EC30);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
+	void *PreventPouchInitMemoryLeakAddress 			= reinterpret_cast<void *>(0x800D67E4);
 	void *InitStageEventsAddress 						= reinterpret_cast<void *>(0x800082BC);
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008FD38);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
@@ -688,6 +707,8 @@ void initAddressOverwrites()
 	patch::writeBranchLR(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
 	
 	patch::writeBranchLR(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
+	
+	patch::writeBranchLR(PreventPouchInitMemoryLeakAddress, reinterpret_cast<void *>(preventPouchInitMemoryLeak));
 	
 	patch::writeBranchLR(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
 	
