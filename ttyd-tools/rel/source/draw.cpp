@@ -3406,7 +3406,29 @@ void drawWarpByEventMenuDetails()
 	
 	const char *ExplainText = "Note: Warping via this menu will clear all game states.";
 	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
-	PosY -= 100;
+	PosY -= 60;
+	
+	// Draw the text for whether the standard inventory is being kept or not
+	const char *String;
+	if (WarpByEvent.ShouldKeepInventory)
+	{
+		Color = 0x1BBE23FF;
+		String = "Yes";
+	}
+	else
+	{
+		Color = 0xFF1414FF;
+		String = "No";
+	}
+	
+	int32_t tempPosX = PosX + 222;
+	
+	#ifdef TTYD_JP
+	tempPosX -= 10;
+	#endif
+	
+	drawText(String, tempPosX, PosY, Alpha, Color, Scale);
+	PosY -= 60;
 	
 	// Draw the details for the current event
 	drawEventDetails(PosX, PosY, WarpByEvent.CurrentIndex);

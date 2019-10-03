@@ -406,6 +406,7 @@ enum WARPS_IN_ADJUSTABLE_VALUE_MENU_OPTIONS
 enum WARPS_EVENT_OPTIONS
 {
 	EVENT_SELECT_EVENT = 1,
+	EVENT_KEEP_INVENTORY,
 	EVENT_WARP_NOW,
 };
 
@@ -690,7 +691,13 @@ struct SaveFileDecriptionInfo
 struct WarpByEventStruct
 {
 	int32_t CurrentIndex;
+	bool ShouldKeepInventory;
 	bool ShouldInit;
+	
+	WarpByEventStruct()
+	{
+		ShouldKeepInventory = true;
+	}
 };
 
 struct WarpByEventDetailsStruct

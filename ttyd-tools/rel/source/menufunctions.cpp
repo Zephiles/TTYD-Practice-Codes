@@ -3433,7 +3433,8 @@ void *initStageEvents()
 	WarpByEvent.ShouldInit = false;
 	int32_t StageAndEventIds[2];
 	
-	if (!indexToStageAndEvent(WarpByEvent.CurrentIndex, StageAndEventIds))
+	int32_t CurrentIndex = WarpByEvent.CurrentIndex;
+	if (!indexToStageAndEvent(CurrentIndex, StageAndEventIds))
 	{
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 		return ttyd::mariost::globalWorkPointer;
@@ -3446,6 +3447,19 @@ void *initStageEvents()
 	{
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 		return ttyd::mariost::globalWorkPointer;
+	}
+	
+	// Back up the standard inventory if desired
+	int16_t StandardInventory[20];
+	void *StandardInventoryStartPtr = nullptr;
+	
+	bool ShouldKeepInventory = WarpByEvent.ShouldKeepInventory;
+	if (ShouldKeepInventory)
+	{
+		StandardInventoryStartPtr = reinterpret_cast<void *>(
+			reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr()) + 0x192);
+		
+		memcpy(StandardInventory, StandardInventoryStartPtr, sizeof(StandardInventory));
 	}
 	
 	// Clear all current states
@@ -3464,6 +3478,21 @@ void *initStageEvents()
 			{
 				initFunction();
 			}
+		}
+	}
+	
+	// Restore the standard inventory if desired
+	if (ShouldKeepInventory)
+	{
+		memcpy(StandardInventoryStartPtr, StandardInventory, sizeof(StandardInventory));
+		
+		/* If the player warped to the event with the index of 278, then they should be 
+			given a Coconut, as it is used to get the Chuckola Cola from Flavio*/
+		
+		if (CurrentIndex == 278)
+		{
+			// Only add the item if the player has a free inventory slot for it
+			ttyd::mario_pouch::pouchGetItem(ttyd::item_data::Item::Coconut);
 		}
 	}
 	

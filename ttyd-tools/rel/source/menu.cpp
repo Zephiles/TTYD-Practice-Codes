@@ -2739,6 +2739,13 @@ void menuCheckButton()
 									MenuVar.Timer = 0;
 									break;
 								}
+								case EVENT_KEEP_INVENTORY:
+								{
+									// Flip the bool
+									bool ShouldKeepInventory = WarpByEvent.ShouldKeepInventory;
+									WarpByEvent.ShouldKeepInventory = !ShouldKeepInventory;
+									break;
+								}
 								case EVENT_WARP_NOW:
 								{
 									int32_t ReturnCode = warpToMapByEvent(WarpByEvent.CurrentIndex);

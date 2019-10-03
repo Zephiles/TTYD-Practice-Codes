@@ -1589,6 +1589,7 @@ const char *WarpDescriptions[] =
 const char *WarpEventLines[] = 
 {
 	"Select Event",
+	"Keep Standard Inventory",
 	"Warp",
 };
 
