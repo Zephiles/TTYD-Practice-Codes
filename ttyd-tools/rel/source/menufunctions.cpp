@@ -3496,6 +3496,28 @@ void *initStageEvents()
 		}
 	}
 	
+	// Set specific flags if desired
+	if (WarpByEvent.ShouldSetFlags)
+	{
+		// Set up the flags to set
+		static const uint16_t FlagsToSet[] = 
+		{
+			0, // Shop tutorial
+			37, // Got first email
+			38, // Read any email
+			233, // Save block tutorial
+			234, // Recovery block tutorial
+			235, // Item tutorial
+		};
+		
+		// Set the flags
+		uint32_t Size = sizeof(FlagsToSet) / sizeof(FlagsToSet[0]);
+		for (uint32_t i = 0; i < Size; i++)
+		{
+			ttyd::swdrv::swSet(FlagsToSet[i]);
+		}
+	}
+	
 	// Set the Sequence to the value for the current event
 	setSequencePosition(getGsw0ForEvent(StageId, EventId));
 	

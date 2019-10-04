@@ -3408,7 +3408,7 @@ void drawWarpByEventMenuDetails()
 	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
 	PosY -= 60;
 	
-	// Draw the text for whether the standard inventory is being kept or not
+	// Draw the text for whether the standard inventory should be kept or not
 	const char *String;
 	if (WarpByEvent.ShouldKeepInventory)
 	{
@@ -3421,11 +3421,26 @@ void drawWarpByEventMenuDetails()
 		String = "No";
 	}
 	
-	int32_t tempPosX = PosX + 222;
+	int32_t tempPosX = PosX + 232;
 	
 	#ifdef TTYD_JP
 	tempPosX -= 10;
 	#endif
+	
+	drawText(String, tempPosX, PosY, Alpha, Color, Scale);
+	PosY -= 20;
+	
+	// Draw the text for whether specific flags should be set or not
+	if (WarpByEvent.ShouldSetFlags)
+	{
+		Color = 0x1BBE23FF;
+		String = "Yes";
+	}
+	else
+	{
+		Color = 0xFF1414FF;
+		String = "No";
+	}
 	
 	drawText(String, tempPosX, PosY, Alpha, Color, Scale);
 	PosY -= 60;

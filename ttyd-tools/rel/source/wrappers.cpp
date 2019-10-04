@@ -29,6 +29,7 @@ extern "C"
 	uint32_t __real_swByteGet(uint32_t gsw);
 	void __real_swByteSet(uint32_t gsw, uint32_t value);
 	void __real_swClear(uint32_t gswf);
+	void __real_swSet(uint32_t gswf);
 	uint32_t __real_marioStGetSystemLevel();
 	void __real_marioStSystemLevel(uint32_t level);
 	int32_t __real_marioGetPartyId();
@@ -153,6 +154,12 @@ extern "C"
 	__attribute__((noinline)) void __wrap_swClear(uint32_t gswf)
 	{
 		__real_swClear(gswf);
+	}
+	
+	// swSet
+	__attribute__((noinline)) void __wrap_swSet(uint32_t gswf)
+	{
+		__real_swSet(gswf);
 	}
 	
 	// marioStGetSystemLevel

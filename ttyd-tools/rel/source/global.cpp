@@ -1590,6 +1590,7 @@ const char *WarpEventLines[] =
 {
 	"Select Event",
 	"Keep Standard Inventory",
+	"Set Flags",
 	"Warp",
 };
 

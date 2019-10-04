@@ -407,6 +407,7 @@ enum WARPS_EVENT_OPTIONS
 {
 	EVENT_SELECT_EVENT = 1,
 	EVENT_KEEP_INVENTORY,
+	EVENT_SET_FLAGS,
 	EVENT_WARP_NOW,
 };
 
@@ -692,11 +693,13 @@ struct WarpByEventStruct
 {
 	int32_t CurrentIndex;
 	bool ShouldKeepInventory;
+	bool ShouldSetFlags;
 	bool ShouldInit;
 	
 	WarpByEventStruct()
 	{
 		ShouldKeepInventory = true;
+		ShouldSetFlags = true;
 	}
 };
 
