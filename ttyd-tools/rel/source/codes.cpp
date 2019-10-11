@@ -15,6 +15,7 @@
 #include <ttyd/seqdrv.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/camdrv.h>
+#include <ttyd/dispdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
 #include <ttyd/mario_pouch.h>
@@ -541,7 +542,7 @@ void reloadRoomMain()
 	setSeqMapChange(tempNewMap, tempNewBero);
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
-	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
+	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
 	*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 	
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
@@ -553,8 +554,8 @@ void reloadRoomMain()
 	// Only run the following if the system level is not 0
 	if (SystemLevel == 15)
 	{
-		// Currently in pause menu, so re-enable the camera
-		ttyd::camdrv::camDispOn(4);
+		// Currently in pause menu, so re-enable the 3D camera
+		ttyd::camdrv::camDispOn(ttyd::dispdrv::CameraId::k3d);
 	}
 	
 	// Enable sound effects, set the default camera id for Mario, and give back control to the player
@@ -596,7 +597,7 @@ void reloadRoom()
 	ReloadRoom.SystemLevelShouldBeLowered = true;
 	
 	// Reset the camera - mainly for the black bars at the top and bottom of the screen
-	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(8));
+	uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
 	*reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
 }
 

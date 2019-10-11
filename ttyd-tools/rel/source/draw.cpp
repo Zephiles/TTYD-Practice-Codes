@@ -4429,10 +4429,10 @@ void drawFileSelectScreenInfo()
 	drawText(String, PosX, PosY, Alpha, TextColor, Scale);
 }
 
-void Mod::drawArtAttackHitboxes(uint32_t camId)
+void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
 {
-	// Call the original function immediately
-	mPFN_scissor_disp_control_trampoline(camId);
+	// Call the original function immediately, as several functions need to run for the lines to be drawn properly
+	mPFN_scissor_disp_control_trampoline(cameraId);
 	
 	if (!Displays[ART_ATTACK_HITBOXES])
 	{

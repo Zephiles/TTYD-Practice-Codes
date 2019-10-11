@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/dispdrv.h>
+
 #include <cstdint>
 
 namespace ttyd::sac_scissor {
@@ -12,7 +14,7 @@ extern "C" {
 // scissor_init
 // scissor_disp_region
 // scissor_offscreen
-void scissor_disp_control(uint32_t camId);
+void scissor_disp_control(ttyd::dispdrv::CameraId cameraId);
 // scissor_capture
 // scissor_ofscreen_ok
 // scissor_damage_sub2

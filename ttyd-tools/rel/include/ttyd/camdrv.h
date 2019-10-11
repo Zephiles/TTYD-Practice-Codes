@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/dispdrv.h>
+
 #include <cstdint>
 
 namespace ttyd::camdrv {
@@ -14,7 +16,7 @@ extern "C" {
 // camCtrlOff
 // camCtrlOn
 // camDispOff
-void camDispOn(uint32_t camId);
+void camDispOn(ttyd::dispdrv::CameraId cameraId);
 // camSetMode
 // camEffMain
 // cam3dImgMain
@@ -22,7 +24,7 @@ void camDispOn(uint32_t camId);
 // camSetCurNo
 // camGetCurNo
 // camGetCurPtr
-void *camGetPtr(uint32_t camId);
+void *camGetPtr(ttyd::dispdrv::CameraId cameraId);
 // camUnLoadRoad
 // camLoadRoad
 // camDraw

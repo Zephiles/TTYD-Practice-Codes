@@ -14,6 +14,7 @@
 #include <ttyd/evt_bero.h>
 #include <ttyd/mario.h>
 #include <ttyd/npcdrv.h>
+#include <ttyd/dispdrv.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/fontmgr.h>
@@ -115,9 +116,9 @@ void Mod::init()
 	});
 	
 	mPFN_scissor_disp_control_trampoline = patch::hookFunction(
-		ttyd::sac_scissor::scissor_disp_control, [](uint32_t camId)
+		ttyd::sac_scissor::scissor_disp_control, [](ttyd::dispdrv::CameraId cameraId)
 	{
-		return gMod->drawArtAttackHitboxes(camId);
+		return gMod->drawArtAttackHitboxes(cameraId);
 	});
 	
 	mPFN_BattleActionCommandCheckDefence_trampoline = patch::hookFunction(

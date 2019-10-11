@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gc/OSModule.h>
+#include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
 
 #include <cstdint>
@@ -26,7 +27,7 @@ private:
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
 	void *disableBattles(uint32_t, void *);
-	void drawArtAttackHitboxes(uint32_t);
+	void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
 
 private:
@@ -45,7 +46,7 @@ private:
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
 	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
-	void (*mPFN_scissor_disp_control_trampoline)(uint32_t) = nullptr;
+	void (*mPFN_scissor_disp_control_trampoline)(ttyd::dispdrv::CameraId) = nullptr;
 	
 	int32_t (*mPFN_BattleActionCommandCheckDefence_trampoline)(
 		void *, ttyd::battle_unit::AttackParams *) = nullptr;
