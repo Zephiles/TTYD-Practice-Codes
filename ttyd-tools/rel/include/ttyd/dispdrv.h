@@ -4,7 +4,8 @@
 
 namespace ttyd::dispdrv {
 
-enum class DisplayLayer : uint8_t
+// May want to move this enum class to camdrv.h at some point
+enum class CameraId : uint8_t
 {
 	kOffscreen = 0,
 	kOffscreen2,
@@ -21,14 +22,14 @@ enum class DisplayLayer : uint8_t
 	kDebug3d,
 };
 
-typedef void (*PFN_dispCallback)(DisplayLayer layerId, void *user);
+typedef void (*PFN_dispCallback)(CameraId cameraId, void *user);
 
 struct DisplayWork
 {
-	DisplayLayer layer;
+	CameraId cameraId;
 	uint8_t renderMode;
 	uint16_t padding_2;
-	float unk_4;
+	float order;
 	PFN_dispCallback callback;
 	void *user;
 } __attribute__((__packed__));
@@ -37,9 +38,9 @@ extern "C" {
 
 void dispInit();
 void dispReInit();
-void dispEntry(DisplayLayer layerId, uint8_t renderMode, PFN_dispCallback callback, void *user);
+void dispEntry(CameraId cameraId, uint8_t renderMode, float order, PFN_dispCallback callback, void *user);
 void dispSort();
-void dispDraw(DisplayLayer layerId);
+void dispDraw(CameraId cameraId);
 // float dispCalcZ(void *vecUnk);
 DisplayWork *dispGetCurWork();
 

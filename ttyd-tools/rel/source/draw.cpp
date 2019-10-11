@@ -45,8 +45,8 @@ bool disableDPadOptionsDisplay(uint16_t unkVar)
 
 void drawFunctionOnDebugLayer(void (*func)())
 {
-	ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::kDebug3d, 0, 
-		[](ttyd::dispdrv::DisplayLayer layerId, void *user)
+	ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::kDebug3d, 2, 0.f, 
+		[](ttyd::dispdrv::CameraId cameraId, void *user)
 	{
 		reinterpret_cast<void (*)()>(user)();
 	}, reinterpret_cast<void *>(func));
@@ -54,8 +54,8 @@ void drawFunctionOnDebugLayer(void (*func)())
 
 void drawFunctionOn2DLayer(void (*func)())
 {
-	ttyd::dispdrv::dispEntry(ttyd::dispdrv::DisplayLayer::k2d, 0, 
-		[](ttyd::dispdrv::DisplayLayer layerId, void *user)
+	ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::k2d, 2, 0.f, 
+		[](ttyd::dispdrv::CameraId cameraId, void *user)
 	{
 		reinterpret_cast<void (*)()>(user)();
 	}, reinterpret_cast<void *>(func));
