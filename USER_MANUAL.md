@@ -108,7 +108,7 @@ This menu allows you to warp to various places around the game. You have three s
      * Upon warping, all current game states will be cleared. This means that all flags related to the game story will be cleared. This also completely clears everything that is tracked in the pause menu.
      * After everything has been cleared, every upgrade/important item/partner/etc. that you should have gotten up to and including the current event will be given to you automatically.
      * The Sequence value set by this option differs from the **Change Sequence** cheat above, in that this option sets the Sequence to what is about to happen, not what has already happened.
-     * The **Keep Inventory** option allows you to keep the standard items and badges that you currently have when warping to an event. If this is disabled, then all of your standard items and badges will be removed.
+     * The **Keep Inventory** option allows you to keep the standard items and badges that you currently have when warping to an event. If this is disabled, then all of your standard items and badges will be removed. Due to your BP being reset, all of the badges will be unequipped. The exception to this is Attack FX R, which will be equipped automatically if you're warping directly to the Hooktail fight.
      * The **Set Flags** option allows you to set specific flags upon warping to an event. If this is disabled, then the only flags that will be set are the ones that are set by the events.
        * The flags that are set are for the following:
          * Shop tutorial
