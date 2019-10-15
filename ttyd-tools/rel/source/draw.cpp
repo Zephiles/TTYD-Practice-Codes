@@ -3421,10 +3421,10 @@ void drawWarpByEventMenuDetails()
 		String = "No";
 	}
 	
-	int32_t tempPosX = PosX + 232;
+	int32_t tempPosX = PosX + 147;
 	
 	#ifdef TTYD_JP
-	tempPosX -= 10;
+	tempPosX -= 4;
 	#endif
 	
 	drawText(String, tempPosX, PosY, Alpha, Color, Scale);

@@ -703,6 +703,12 @@ struct WarpByEventStruct
 	}
 };
 
+struct WarpByEventInventoryStruct
+{
+	int16_t StandardItems[20];
+	int16_t Badges[200];
+};
+
 struct WarpByEventDetailsStruct
 {
 	#ifdef TTYD_JP

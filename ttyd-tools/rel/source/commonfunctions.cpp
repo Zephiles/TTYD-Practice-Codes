@@ -263,6 +263,11 @@ bool checkIfBadgeEquipped(int16_t badge)
 	return ttyd::mario_pouch::pouchEquipCheckBadge(badge) > 0;
 }
 
+bool checkIfHaveItem(int16_t item)
+{
+	return ttyd::mario_pouch::pouchCheckItem(item) > 0;
+}
+
 void recheckJumpAndHammerLevels()
 {
 	ttyd::mario_pouch::pouchGetJumpLv();

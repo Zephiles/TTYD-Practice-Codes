@@ -2225,7 +2225,7 @@ void setMarioStatsValue(uint32_t currentMenuOption)
 		{
 			// Reset the value for entering battles
 			int16_t MaxFP = *reinterpret_cast<int16_t *>(PouchPtr + 0x76);
-			*reinterpret_cast<int16_t *>(PouchPtr + 0x76 + 0x1A) = MaxFP;	
+			*reinterpret_cast<int16_t *>(PouchPtr + 0x76 + 0x1A) = MaxFP;
 			
 			// Prevent the current value from exceeding the max value
 			int16_t CurrentFP = *reinterpret_cast<int16_t *>(PouchPtr + 0x74);
@@ -3449,17 +3449,29 @@ void *initStageEvents()
 		return ttyd::mariost::globalWorkPointer;
 	}
 	
-	// Back up the standard inventory if desired
-	int16_t StandardInventory[20];
-	void *StandardInventoryStartPtr = nullptr;
+	// Back up the inventory if desired
+	WarpByEventInventoryStruct *WarpByEventInventory = nullptr;
+	int16_t *StandardInventoryStart = nullptr;
+	int16_t *BadgesInventoryStart = nullptr;
 	
 	bool ShouldKeepInventory = WarpByEvent.ShouldKeepInventory;
 	if (ShouldKeepInventory)
 	{
-		StandardInventoryStartPtr = reinterpret_cast<void *>(
-			reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr()) + 0x192);
+		WarpByEventInventory = new WarpByEventInventoryStruct;
 		
-		memcpy(StandardInventory, StandardInventoryStartPtr, sizeof(StandardInventory));
+		uint32_t PouchPtrRaw = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+		StandardInventoryStart = reinterpret_cast<int16_t *>(PouchPtrRaw + 0x192);
+		BadgesInventoryStart = reinterpret_cast<int16_t *>(PouchPtrRaw + 0x1FA);
+		
+		// Back up the standard inventory
+		memcpy(WarpByEventInventory->StandardItems, 
+			StandardInventoryStart, 
+			sizeof(WarpByEventInventory->StandardItems));
+		
+		// Back up the badges
+		memcpy(WarpByEventInventory->Badges, 
+			BadgesInventoryStart, 
+			sizeof(WarpByEventInventory->Badges));
 	}
 	
 	// Clear all current states
@@ -3484,16 +3496,84 @@ void *initStageEvents()
 	// Restore the standard inventory if desired
 	if (ShouldKeepInventory)
 	{
-		memcpy(StandardInventoryStartPtr, StandardInventory, sizeof(StandardInventory));
+		auto addItemToInventory = [](int16_t *inventoryStart, uint32_t totalSlots, int16_t item)
+		{
+			for (uint32_t i = 0; i < totalSlots; i++)
+			{
+				if (inventoryStart[i] == 0)
+				{
+					inventoryStart[i] = item;
+					break;
+				}
+			}
+		};
+		
+		// Restore the standard inventory
+		memcpy(StandardInventoryStart, 
+			WarpByEventInventory->StandardItems, 
+			sizeof(WarpByEventInventory->StandardItems));
+		
+		// Restore the badges
+		memcpy(BadgesInventoryStart, 
+			WarpByEventInventory->Badges, 
+			sizeof(WarpByEventInventory->Badges));
+		
+		delete WarpByEventInventory;
+		
+		// Add any items or badges that the player should have gotten
+		
+		/* If the player warped to an event that is 58 or higher, then they should be given 
+			Attack FX R, Power Bounce, Multibounce, and Power Smash. Attack FX R should also
+			be equipped if going to fight Hooktail.*/
+		if (CurrentIndex >= 58)
+		{
+			// Set up the badges to give
+			static const int16_t BadgesToGive[] = 
+			{
+				ttyd::item_data::Item::AttackFXR,
+				ttyd::item_data::Item::PowerBounce,
+				ttyd::item_data::Item::Multibounce,
+				ttyd::item_data::Item::PowerSmash,
+			};
+			
+			// Give the badges
+			// Only give the badges if the player does not have them already
+			uint32_t Size = sizeof(BadgesToGive) / sizeof(BadgesToGive[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				int16_t CurrentBadge = BadgesToGive[i];
+				if (!checkIfHaveItem(CurrentBadge))
+				{
+					addItemToInventory(BadgesInventoryStart, 200, CurrentBadge);
+				}
+			}
+			
+			// Unequip Attack FX R if it's equipped, as the new badge order may cause it to break
+			ttyd::mario_pouch::pouchUnEquipBadgeID(ttyd::item_data::Item::AttackFXR);
+			
+			// Re-equip Attack FX R if currently going to fight Hooktail
+			if (CurrentIndex == 58)
+			{
+				ttyd::mario_pouch::pouchEquipBadgeID(ttyd::item_data::Item::AttackFXR);
+			}
+		}
 		
 		/* If the player warped to the event with the index of 278, then they should be 
 			given a Coconut, as it is used to get the Chuckola Cola from Flavio*/
-		
 		if (CurrentIndex == 278)
 		{
-			// Only add the item if the player has a free inventory slot for it
-			ttyd::mario_pouch::pouchGetItem(ttyd::item_data::Item::Coconut);
-		}
+			// Only give the Coconut if the player doesn't have one already
+			if (!checkIfHaveItem(ttyd::item_data::Item::Coconut))
+			{
+				uint32_t TotalSlots = 10;
+				if (checkIfHaveItem(ttyd::item_data::Item::StrangeSack))
+				{
+					TotalSlots = 20;
+				}
+				
+				addItemToInventory(StandardInventoryStart, TotalSlots, ttyd::item_data::Item::Coconut);
+			}
+		};
 	}
 	
 	// Set specific flags if desired
@@ -3569,7 +3649,7 @@ void *initStageEvents()
 	}
 	
 	// Perform a full recovery for Mario and the partners
-	ttyd::mario_pouch::pouchReviseMarioParam(); // May not necessary to call, as other init functions call it
+	ttyd::mario_pouch::pouchReviseMarioParam();
 	ttyd::evt_pouch::evt_pouch_mario_recovery();
 	
 	/* Must call pouchRevisePartyParam to properly set each partner's stats, 

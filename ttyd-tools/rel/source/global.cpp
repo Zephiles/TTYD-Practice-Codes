@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.38";
+const char *VersionNumber = "v3.0.39";
 
 const char *RootLines[] = 
 {
@@ -1589,7 +1589,7 @@ const char *WarpDescriptions[] =
 const char *WarpEventLines[] = 
 {
 	"Select Event",
-	"Keep Standard Inventory",
+	"Keep Inventory",
 	"Set Flags",
 	"Warp",
 };

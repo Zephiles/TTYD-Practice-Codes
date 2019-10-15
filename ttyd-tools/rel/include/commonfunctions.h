@@ -39,6 +39,7 @@ uint32_t getCurrentYoshiColorId();
 void setNewYoshiColorId(uint32_t colorId);
 void spawnFollower(ttyd::party::PartyMembers followerId);
 bool checkIfBadgeEquipped(int16_t badge);
+bool checkIfHaveItem(int16_t item);
 void recheckJumpAndHammerLevels();
 uint32_t getCurrentPitFloor();
 uint32_t getCurrentFPS();

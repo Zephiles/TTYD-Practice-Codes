@@ -931,8 +931,8 @@
 // 800D31C8:pouchGetKpaCoin
 // 800D31D4:pouchMajinaiInit
 // 800D3204:pouchArriveBadge
-// 800D3234:pouchUnEquipBadgeID
-// 800D328C:pouchEquipBadgeID
+800D3234:pouchUnEquipBadgeID
+800D328C:pouchEquipBadgeID
 // 800D32E0:pouchEquipCheckBadgeIndex
 800D3300:pouchEquipCheckBadge
 // 800D33C8:pouchUnEquipBadgeIndex
