@@ -228,7 +228,7 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 				PartnerEnabledAddress + 1) = true;
 			
 			// Bring the partner out
-			ttyd::mario_party::marioPartyEntry(getSelectedOptionPartnerValue());
+			spawnPartnerOrFollower(getSelectedOptionPartnerValue());
 			
 			// Restore the value of the enabled bool
 			*reinterpret_cast<bool *>(
@@ -1797,10 +1797,10 @@ uint32_t followersOptionsButtonControls()
 			}
 			
 			// Get the follower id to use
-			uint8_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
+			uint32_t NewFollower = MenuVar.SecondaryMenuOption + 8; // Start at the egg
 			
 			// Spawn the new follower
-			spawnFollower(static_cast<ttyd::party::PartyMembers>(NewFollower));
+			spawnPartnerOrFollower(static_cast<ttyd::party::PartyMembers>(NewFollower));
 			
 			closeSecondaryMenu();
 			
@@ -3638,14 +3638,14 @@ void *initStageEvents()
 	ttyd::party::PartyMembers PartnerId = TargetEvent->partyId[0];
 	if (PartnerId != ttyd::party::PartyMembers::kNone)
 	{
-		ttyd::mario_party::marioPartyEntry(PartnerId);
+		spawnPartnerOrFollower(PartnerId);
 	}
 	
 	// Spawn the follower for the current event
 	ttyd::party::PartyMembers FollowerId = TargetEvent->partyId[1];
 	if (FollowerId != ttyd::party::PartyMembers::kNone)
 	{
-		ttyd::mario_party::marioPartyEntry(FollowerId);
+		spawnPartnerOrFollower(FollowerId);
 	}
 	
 	// Perform a full recovery for Mario and the partners

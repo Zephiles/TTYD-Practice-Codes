@@ -903,7 +903,7 @@
 // 800BC89C:partyEntryHello
 // 800BC8EC:partySetForceMove
 // 800BC934:partyStop
-// 800BC958:partyRun
+800BC958:partyRun
 // 800BC988:partyCtrlOn
 // 800BC9C0:partyCtrlOff
 // 800BC9F8:partyChgPaper

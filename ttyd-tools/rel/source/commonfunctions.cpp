@@ -241,21 +241,19 @@ void setNewYoshiColorId(uint32_t colorId)
 	ttyd::mario_pouch::pouchSetPartyColor(YoshiPartnerId, colorId);
 }
 
-void spawnFollower(ttyd::party::PartyMembers followerId)
+void spawnPartnerOrFollower(ttyd::party::PartyMembers partyId)
 {
-	// If a follower is out, remove them
-	removeFollowerFromOverworld();
+	// Spawn the partner/follower
+	int32_t PartySlotId = ttyd::mario_party::marioPartyEntry(partyId);
 	
-	// Spawn the new follower
-	int32_t ReturnCode = ttyd::party::partyEntry2Hello(followerId);
-	
-	// Set specific bytes
-	if (ReturnCode >= 0)
+	// Make sure the partner/follower spawned properly
+	if (PartySlotId < 0)
 	{
-		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		player->wFollowerFlags[1] = static_cast<uint8_t>(ReturnCode);
-		player->prevFollowerId[1] = followerId;
+		return;
 	}
+	
+	// Make sure the partner/follower is moving
+	ttyd::party::partyRun(ttyd::party::partyGetPtr(PartySlotId));
 }
 
 bool checkIfBadgeEquipped(int16_t badge)

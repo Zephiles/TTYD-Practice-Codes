@@ -171,12 +171,12 @@ void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
 		if (PreviousPartnerOut != ttyd::party::PartyMembers::kNone)
 		{
 			// A partner was previously out, so bring them back out
-			ttyd::mario_party::marioPartyHello(PreviousPartnerOut);
+			spawnPartnerOrFollower(PreviousPartnerOut);
 		}
 		else
 		{
 			// No partner was previously out, so bring out Goombella
-			ttyd::mario_party::marioPartyHello(ttyd::party::PartyMembers::kGoombella);
+			spawnPartnerOrFollower(ttyd::party::PartyMembers::kGoombella);
 		}
 		
 		return getPartnerPointer();
@@ -199,12 +199,12 @@ void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr)
 		if (PreviousFollowerOut != ttyd::party::PartyMembers::kNone)
 		{
 			// A follower was previously out, so bring them back out
-			spawnFollower(PreviousFollowerOut);
+			spawnPartnerOrFollower(PreviousFollowerOut);
 		}
 		else
 		{
 			// No follower was previously out, so bring out Gus
-			spawnFollower(ttyd::party::PartyMembers::kGus);
+			spawnPartnerOrFollower(ttyd::party::PartyMembers::kGus);
 		}
 		
 		return getFollowerPointer();

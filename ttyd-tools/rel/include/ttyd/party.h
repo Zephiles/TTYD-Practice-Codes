@@ -81,7 +81,7 @@ int32_t partyKill2(int32_t partyId);
 // partyEntryHello
 // partySetForceMove
 // partyStop
-// partyRun
+void partyRun(void *partyPtr);
 // partyCtrlOn
 // partyCtrlOff
 // partyChgPaper

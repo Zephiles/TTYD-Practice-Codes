@@ -37,7 +37,7 @@ void removePartnerFromOverworld();
 void removeFollowerFromOverworld();
 uint32_t getCurrentYoshiColorId();
 void setNewYoshiColorId(uint32_t colorId);
-void spawnFollower(ttyd::party::PartyMembers followerId);
+void spawnPartnerOrFollower(ttyd::party::PartyMembers partyId);
 bool checkIfBadgeEquipped(int16_t badge);
 bool checkIfHaveItem(int16_t item);
 void recheckJumpAndHammerLevels();

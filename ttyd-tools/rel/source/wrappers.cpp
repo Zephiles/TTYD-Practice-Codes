@@ -34,8 +34,8 @@ extern "C"
 	void __real_marioStSystemLevel(uint32_t level);
 	int32_t __real_marioGetPartyId();
 	int32_t __real_marioGetExtraPartyId();
-	void __real_marioPartyEntry(ttyd::party::PartyMembers id);
 	ttyd::mario::Player *__real_marioGetPtr();
+	void *__real_partyGetPtr(int32_t partyId);
 	void *__real_pouchGetPtr();
 	void __real_btlGetScreenPoint(float pos[3], float posOut[3]);
 	ttyd::evtmgr::EvtWork *__real_evtGetWork();
@@ -186,16 +186,16 @@ extern "C"
 		return __real_marioGetExtraPartyId();
 	}
 	
-	// marioPartyEntry
-	void __wrap_marioPartyEntry(ttyd::party::PartyMembers id)
-	{
-		__real_marioPartyEntry(id);
-	}
-	
 	// marioGetPtr
 	__attribute__((noinline)) ttyd::mario::Player *__wrap_marioGetPtr()
 	{
 		return __real_marioGetPtr();
+	}
+	
+	// partyGetPtr
+	__attribute__((noinline)) void *__wrap_partyGetPtr(int32_t partyId)
+	{
+		return __real_partyGetPtr(partyId);
 	}
 	
 	// pouchGetPtr
