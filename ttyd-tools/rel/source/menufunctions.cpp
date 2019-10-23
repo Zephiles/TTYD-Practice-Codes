@@ -3182,9 +3182,9 @@ int32_t getMapIndex()
 	return -1;
 }
 
-const char *getPartyName(ttyd::party::PartyMembers partyId)
+const char *getPartyName(ttyd::party::PartyMembers id)
 {
-	switch (partyId)
+	switch (id)
 	{
 		case ttyd::party::PartyMembers::kNone:
 		{

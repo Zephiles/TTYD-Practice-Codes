@@ -13,13 +13,13 @@ extern "C" {
 // partyChkJoin
 void partyLeft(ttyd::party::PartyMembers id);
 void partyJoin(ttyd::party::PartyMembers id);
-int32_t marioGetExtraPartyId();
-int32_t marioGetPartyId();
+ttyd::party::PartySlotId marioGetExtraPartyId();
+ttyd::party::PartySlotId marioGetPartyId();
 // marioGetParty
 void marioPartyKill();
 int32_t marioPartyGoodbye();
-int32_t marioPartyHello(ttyd::party::PartyMembers id);
-int32_t marioPartyEntry(ttyd::party::PartyMembers id);
+ttyd::party::PartySlotId marioPartyHello(ttyd::party::PartyMembers id);
+ttyd::party::PartySlotId marioPartyEntry(ttyd::party::PartyMembers id);
 // marioUseParty
 
 }

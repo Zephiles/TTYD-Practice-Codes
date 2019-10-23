@@ -32,10 +32,10 @@ extern "C"
 	void __real_swSet(uint32_t gswf);
 	uint32_t __real_marioStGetSystemLevel();
 	void __real_marioStSystemLevel(uint32_t level);
-	int32_t __real_marioGetPartyId();
-	int32_t __real_marioGetExtraPartyId();
+	ttyd::party::PartySlotId __real_marioGetPartyId();
+	ttyd::party::PartySlotId __real_marioGetExtraPartyId();
 	ttyd::mario::Player *__real_marioGetPtr();
-	void *__real_partyGetPtr(int32_t partyId);
+	void *__real_partyGetPtr(ttyd::party::PartySlotId partySlotId);
 	void *__real_pouchGetPtr();
 	void __real_btlGetScreenPoint(float pos[3], float posOut[3]);
 	ttyd::evtmgr::EvtWork *__real_evtGetWork();
@@ -175,13 +175,13 @@ extern "C"
 	}
 	
 	// marioGetPartyId
-	__attribute__((noinline)) int32_t __wrap_marioGetPartyId()
+	__attribute__((noinline)) ttyd::party::PartySlotId __wrap_marioGetPartyId()
 	{
 		return __real_marioGetPartyId();
 	}
 	
 	// marioGetExtraPartyId
-	__attribute__((noinline)) int32_t __wrap_marioGetExtraPartyId()
+	__attribute__((noinline)) ttyd::party::PartySlotId __wrap_marioGetExtraPartyId()
 	{
 		return __real_marioGetExtraPartyId();
 	}
@@ -193,9 +193,9 @@ extern "C"
 	}
 	
 	// partyGetPtr
-	__attribute__((noinline)) void *__wrap_partyGetPtr(int32_t partyId)
+	__attribute__((noinline)) void *__wrap_partyGetPtr(ttyd::party::PartySlotId partySlotId)
 	{
-		return __real_partyGetPtr(partyId);
+		return __real_partyGetPtr(partySlotId);
 	}
 	
 	// pouchGetPtr

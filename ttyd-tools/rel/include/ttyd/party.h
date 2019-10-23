@@ -4,6 +4,13 @@
 
 namespace ttyd::party {
 
+enum class PartySlotId : int32_t
+{
+	kNone = -1,
+	kParty,
+	kFollower,
+};
+
 enum class PartyMembers : uint8_t
 {
 	kNone = 0,
@@ -68,12 +75,12 @@ extern "C" {
 // partyReInit
 // partyInit
 // partyEntry2Pos
-int32_t partyEntry2Hello(PartyMembers id);
+PartySlotId partyEntry2Hello(PartyMembers id);
 // partyEntry2
 // partyEntryMain
 // partyGetHeight
 // yoshiSetColor
-int32_t partyKill2(int32_t partyId);
+int32_t partyKill2(PartySlotId id);
 // partyKill
 // partyGoodbye
 // partyEntryPos
@@ -91,7 +98,7 @@ void partyRun(void *partyPtr);
 // partyPaperOff
 // partyPaperOn
 // anotherPartyGetPtr
-void *partyGetPtr(int32_t partyId);
+void *partyGetPtr(PartySlotId id);
 
 }
 

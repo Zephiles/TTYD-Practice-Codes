@@ -199,26 +199,26 @@ void *clearMemory(void *destination, std::size_t size)
 
 void *getPartnerPointer()
 {
-	int32_t PartyID = ttyd::mario_party::marioGetPartyId();
-	return ttyd::party::partyGetPtr(PartyID);
+	ttyd::party::PartySlotId Id = ttyd::mario_party::marioGetPartyId();
+	return ttyd::party::partyGetPtr(Id);
 }
 
 void *getFollowerPointer()
 {
-	int32_t FollowerID = ttyd::mario_party::marioGetExtraPartyId();
-	return ttyd::party::partyGetPtr(FollowerID);
+	ttyd::party::PartySlotId Id = ttyd::mario_party::marioGetExtraPartyId();
+	return ttyd::party::partyGetPtr(Id);
 }
 
 void removePartnerFromOverworld()
 {
-	int32_t PartyID = ttyd::mario_party::marioGetPartyId();
-	ttyd::party::partyKill2(PartyID);
+	ttyd::party::PartySlotId Id = ttyd::mario_party::marioGetPartyId();
+	ttyd::party::partyKill2(Id);
 }
 
 void removeFollowerFromOverworld()
 {
-	int32_t FollowerID = ttyd::mario_party::marioGetExtraPartyId();
-	ttyd::party::partyKill2(FollowerID);
+	ttyd::party::PartySlotId Id = ttyd::mario_party::marioGetExtraPartyId();
+	ttyd::party::partyKill2(Id);
 }
 
 uint32_t getCurrentYoshiColorId()
@@ -241,13 +241,13 @@ void setNewYoshiColorId(uint32_t colorId)
 	ttyd::mario_pouch::pouchSetPartyColor(YoshiPartnerId, colorId);
 }
 
-void spawnPartnerOrFollower(ttyd::party::PartyMembers partyId)
+void spawnPartnerOrFollower(ttyd::party::PartyMembers id)
 {
 	// Spawn the partner/follower
-	int32_t PartySlotId = ttyd::mario_party::marioPartyEntry(partyId);
+	ttyd::party::PartySlotId PartySlotId = ttyd::mario_party::marioPartyEntry(id);
 	
 	// Make sure the partner/follower spawned properly
-	if (PartySlotId < 0)
+	if (PartySlotId <= ttyd::party::PartySlotId::kNone)
 	{
 		return;
 	}

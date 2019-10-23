@@ -74,7 +74,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption);
 const char *getMapFromIndex(int32_t index);
 int32_t getMapIndex();
 
-const char *getPartyName(ttyd::party::PartyMembers partyId);
+const char *getPartyName(ttyd::party::PartyMembers id);
 int32_t getTotalStageEvents();
 bool indexToStageAndEvent(int32_t index, int32_t arrayOut[2]);
 bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
