@@ -29,7 +29,6 @@
 #include <cstring>
 #include <cstdio>
 #include <cinttypes>
-#include <cmath>
 
 namespace mod {
 
@@ -830,73 +829,6 @@ void checkIfAreaFlagsShouldBeCleared()
 			ClearAreaFlags.StartClearingFlags = false;
 		}
 	}
-}
-
-double getStickAngle(int32_t stickXYOut[2])
-{
-	int32_t StickXInt = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
-	int32_t StickYInt = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
-	
-	// Check if the stick is at the neutral position
-	if ((StickXInt == 0) && (StickYInt == 0))
-	{
-		// The stick is currently at the neutral position
-		if (stickXYOut)
-		{
-			stickXYOut[0] = 0;
-			stickXYOut[1] = 0;
-		}
-		return -1000;
-	}
-	
-	if (StickXInt > 127)
-	{
-		StickXInt -= 256;
-	}
-	
-	if (StickYInt > 127)
-	{
-		StickYInt -= 256;
-	}
-	
-	// Store the individual stick values if desired
-	if (stickXYOut)
-	{
-		stickXYOut[0] = StickXInt;
-		stickXYOut[1] = StickYInt;
-	}
-	
-	double StickX = static_cast<double>(StickXInt);
-	double StickY = static_cast<double>(StickYInt);
-	const double PI = 3.14159265358979323846;
-	
-	double StickAngle = (atan2(StickX, StickY)) * (180 / PI);
-	if (StickAngle < 0)
-	{
-		StickAngle += 360;
-	}
-	
-	return StickAngle;
-}
-
-void getStickAngleString(char *stringOut)
-{
-	int32_t StickXYAngles[2];
-	double StickAngle = getStickAngle(StickXYAngles);
-	
-	// Check if the stick is at the neutral position
-	if (StickAngle == -1000)
-	{
-		// The stick is currently at the neutral position
-		strcpy(stringOut, "Neutral");
-		return;
-	}
-	
-	sprintf(stringOut, 
-		"%.2f  %" PRId32 "  %" PRId32, 
-		StickAngle, 
-		StickXYAngles[0], 
-		StickXYAngles[1]);
 }
 
 void displaySequenceInPauseMenu()

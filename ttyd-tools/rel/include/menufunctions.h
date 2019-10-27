@@ -92,6 +92,9 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], char *stageNameBuffer, ui
 bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition);
 #endif
 
+double getStickAngle(int32_t stickXYOut[2]); // If the X and Y values are not wanted, then pass in nullptr
+void getStickAngleString(char *stringOut);
+
 // void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t stringOutSize);

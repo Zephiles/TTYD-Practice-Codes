@@ -3,7 +3,6 @@
 #include "commonfunctions.h"
 #include "menufunctions.h"
 #include "memorywatch.h"
-#include "codes.h"
 #include "mod.h"
 #include "assembly.h"
 
