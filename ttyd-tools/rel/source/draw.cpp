@@ -1681,21 +1681,23 @@ void drawMemoryChangeAddressList()
 		// Draw the offset being applied
 		// Check if the value is negative
 		int32_t tempOffset = MemoryWatch[tempMenuSelectedOption].AddressOffset[i - 1];
+		
+		const char *Format;
 		if (tempOffset < 0)
 		{
-			// Conver the value to negative
+			// Convert the value to negative
 			tempOffset = -tempOffset;
 			
-			sprintf(tempDisplayBuffer,
-				"-0x%" PRIX32,
-				tempOffset);
+			Format = "-0x%" PRIX32;
 		}
 		else
 		{
-			sprintf(tempDisplayBuffer,
-				"0x%" PRIX32,
-				tempOffset);
+			Format = "0x%" PRIX32;
 		}
+		
+		sprintf(tempDisplayBuffer,
+			Format,
+			tempOffset);
 		
 		drawText(tempDisplayBuffer, PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
 		
@@ -3808,6 +3810,13 @@ void drawButtonInputs()
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 	char *tempDisplayBuffer = DisplayBuffer;
 	
+	const char *Format;
+	#ifdef TTYD_JP
+	Format = "%s";
+	#else
+	Format = "%c";
+	#endif
+	
 	uint32_t Counter = 0;
 	for (uint32_t i = 0; i < 13; i++)
 	{
@@ -3819,15 +3828,9 @@ void drawButtonInputs()
 		
 		if (ButtonInput & (1 << i))
 		{
-			#ifdef TTYD_JP
 			sprintf(tempDisplayBuffer,
-				"%s",
+				Format,
 				ButtonInputDisplay[Counter]);
-			#else
-			sprintf(tempDisplayBuffer,
-				"%c",
-				ButtonInputDisplay[Counter]);
-			#endif
 			
 			drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 		}

@@ -17,7 +17,7 @@ int32_t getEmptyWatchSlot()
 	int32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	for (int32_t i = 0; i < Size; i++)
 	{
-		if (MemoryWatch[i].Address == 0)
+		if (!MemoryWatch[i].Address)
 		{
 			return i;
 		}
@@ -112,6 +112,7 @@ const char *getValueString(int32_t slot)
 	bool ShowAsHex = MemoryWatch[slot].ShowAsHex;
 	char *tempDisplayBuffer = DisplayBuffer;
 	
+	const char *Format;
 	switch (MemoryWatch[slot].Type)
 	{
 		case string:
@@ -139,29 +140,27 @@ const char *getValueString(int32_t slot)
 			// Handle the value as unsigned
 			uint64_t CurrentTimeUnsigned = static_cast<uint64_t>(CurrentTime);
 			
-			uint32_t hour = CurrentTimeUnsigned / 3600 / FPS;
-			uint32_t minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
-			uint32_t second = (CurrentTimeUnsigned / FPS) % 60;
-			uint32_t frame = CurrentTimeUnsigned % FPS;
+			uint32_t Hour = CurrentTimeUnsigned / 3600 / FPS;
+			uint32_t Minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
+			uint32_t Second = (CurrentTimeUnsigned / FPS) % 60;
+			uint32_t Frame = CurrentTimeUnsigned % FPS;
 			
 			if (ValueIsPositive)
 			{
-				sprintf(tempDisplayBuffer,
-					"%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
-					hour,
-					minute,
-					second,
-					frame);
+				Format = "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
-					hour,
-					minute,
-					second,
-					frame);
+				Format = "-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Hour,
+				Minute,
+				Second,
+				Frame);
+			
 			return tempDisplayBuffer;
 		}
 		case s8:
@@ -169,16 +168,17 @@ const char *getValueString(int32_t slot)
 			int8_t Value = *reinterpret_cast<int8_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%02" PRIX8,
-					Value);
+				Format = "0x%02" PRIX8;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRId8,
-					Value);
+				Format = "%" PRId8;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case s16:
@@ -186,16 +186,17 @@ const char *getValueString(int32_t slot)
 			int16_t Value = *reinterpret_cast<int16_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%04" PRIX16,
-					Value);
+				Format = "0x%04" PRIX16;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRId16,
-					Value);
+				Format = "%" PRId16;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case s32:
@@ -203,16 +204,17 @@ const char *getValueString(int32_t slot)
 			int32_t Value = *reinterpret_cast<int32_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%08" PRIX32,
-					Value);
+				Format = "0x%08" PRIX32;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRId32,
-					Value);
+				Format = "%" PRId32;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case s64:
@@ -220,16 +222,17 @@ const char *getValueString(int32_t slot)
 			int64_t Value = *reinterpret_cast<int64_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%016" PRIX64,
-					Value);
+				Format = "0x%016" PRIX64;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRId64,
-					Value);
+				Format = "%" PRId64;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case u8:
@@ -237,16 +240,17 @@ const char *getValueString(int32_t slot)
 			uint8_t Value = *reinterpret_cast<uint8_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%02" PRIX8,
-					Value);
+				Format = "0x%02" PRIX8;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRIu8,
-					Value);
+				Format = "%" PRIu8;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case u16:
@@ -254,16 +258,17 @@ const char *getValueString(int32_t slot)
 			uint16_t Value = *reinterpret_cast<uint16_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%04" PRIX16,
-					Value);
+				Format = "0x%04" PRIX16;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRIu16,
-					Value);
+				Format = "%" PRIu16;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case u32:
@@ -271,16 +276,17 @@ const char *getValueString(int32_t slot)
 			uint32_t Value = *reinterpret_cast<uint32_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%08" PRIX32,
-					Value);
+				Format = "0x%08" PRIX32;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRIu32,
-					Value);
+				Format = "%" PRIu32;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case u64:
@@ -288,16 +294,17 @@ const char *getValueString(int32_t slot)
 			uint64_t Value = *reinterpret_cast<uint64_t *>(Address);
 			if (ShowAsHex)
 			{
-				sprintf(tempDisplayBuffer,
-					"0x%016" PRIX64,
-					Value);
+				Format = "0x%016" PRIX64;
 			}
 			else
 			{
-				sprintf(tempDisplayBuffer,
-					"%" PRIu64,
-					Value);
+				Format = "%" PRIu64;
 			}
+			
+			sprintf(tempDisplayBuffer,
+				Format,
+				Value);
+			
 			return tempDisplayBuffer;
 		}
 		case f32:
