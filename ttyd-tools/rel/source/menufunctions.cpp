@@ -7,6 +7,7 @@
 #include <ttyd/win_main.h>
 #include <ttyd/mariost.h>
 #include <ttyd/win_item.h>
+#include <ttyd/win_party.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/item_data.h>
 #include <ttyd/msgdrv.h>
@@ -149,16 +150,35 @@ void resetImportantItemsPauseMenu()
 	uint32_t ImportantItemsSubMenu = *reinterpret_cast<uint32_t *>(
 		reinterpret_cast<uint32_t>(PauseMenuPointer) + 0x210);
 	
-	// Reset the item menu
+	// Clear the item menu
 	ttyd::win_item::winItemExit(PauseMenuPointer);
 	
-	// Re-init the menu
+	// Re-init the item menu
 	ttyd::win_item::winItemInit(PauseMenuPointer);
 	
 	// Restore the submenu
 	*reinterpret_cast<uint32_t *>(
 		reinterpret_cast<uint32_t>(PauseMenuPointer) + 
 			0x210) = ImportantItemsSubMenu;
+}
+
+void resetPartnerPauseMenu()
+{
+	// Only run if the pause menu is currently open
+	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
+	if (SystemLevel != 15)
+	{
+		// The pause menu is not open, so do nothing
+		return;
+	}
+	
+	void *PauseMenuPointer = ttyd::win_main::winGetPtr();
+	
+	// Clear the party menu
+	ttyd::win_party::winPartyExit(PauseMenuPointer);
+	
+	// Re-init the party menu
+	ttyd::win_party::winPartyInit(PauseMenuPointer);
 }
 
 void recheckUpgradesBattles(int32_t item)
@@ -1749,6 +1769,9 @@ uint32_t partnerChangeYoshiColorButtonControls()
 		case A:
 		{
 			setNewYoshiColorId(MenuVar.SecondaryMenuOption);
+			
+			// Reset the partner menu
+			resetPartnerPauseMenu();
 			
 			MenuVar.MenuSelectedOption = 0;
 			

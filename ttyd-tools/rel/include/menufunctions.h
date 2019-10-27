@@ -16,6 +16,7 @@ void resetMenu();
 void resetMenuToRoot();
 void resetAndCloseSecondaryMenu();
 void resetImportantItemsPauseMenu();
+void resetPartnerPauseMenu();
 void recheckUpgradesBattles(int32_t item);
 
 void raiseSystemLevel();
