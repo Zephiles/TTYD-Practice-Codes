@@ -119,8 +119,14 @@ enum CHEATS_RESOLVE_FADES_RETURN_VALUES
 
 enum CHEATS_LOCK_FLAGS_SELECTION
 {
-	LOCK_CURRENT_FLAGS = 1,
-	SET_NEW_AREA,
+	LOCK_GSW_FLAGS = 1,
+	LOCK_GSWF_FLAGS,
+	LOCK_GW_FLAGS,
+	LOCK_GF_FLAGS,
+	LOCK_LSW_FLAGS,
+	LOCK_LSWF_FLAGS,
+	SET_NEW_LSW_AREA,
+	SET_NEW_LSWF_AREA,
 };
 
 enum CHEATS_MANAGE_FLAGS_SELECTION
@@ -600,8 +606,20 @@ struct ClearCacheForBattlesStruct
 
 struct LockFlagsStruct
 {
-	uint8_t *FlagsToLockMemory;
-	char AreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
+	/*
+	uint8_t *GSWsMemory; // 0x800
+	uint8_t *GSWFsMemory; // 0x400
+	uint8_t *GWsMemory; // 0x80
+	uint8_t *GFsMemory; // 0xC
+	uint8_t *LSWsMemory; // 0x400
+	uint8_t *LSWFsMemory; // 0x40
+	*/
+	
+	bool MemoryRegionLocked[6];
+	uint8_t *MemoryRegion[6];
+	uint32_t SequencePosition;
+	char LSWsAreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
+	char LSWFsAreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
 };
 
 struct TrickDisplay

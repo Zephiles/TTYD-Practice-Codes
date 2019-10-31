@@ -3075,42 +3075,73 @@ void drawCheatsResolveFades()
 
 void drawCheatsLockFlags()
 {
-	// Draw the text indicating which area has its flags locked
-	uint32_t Color = 0xFFFFFFFF;
+	// Draw the Yes/No text for each option
 	uint8_t Alpha = 0xFF;
 	int32_t PosX = -232;
-	int32_t PosY = 60;
+	int32_t PosY = 180;
 	float Scale = 0.6;
+	uint32_t Color;
 	
-	const char *String = "Current Area Local Flags Locked";
+	const char *String;
+	
+	uint32_t Size = sizeof(LockFlags.MemoryRegionLocked) / sizeof(LockFlags.MemoryRegionLocked[0]);
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		getYesNoTextAndColor(LockFlags.MemoryRegionLocked[i], &String, &Color);
+		drawText(String, PosX + 120, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	PosY -= 60;
+	
+	auto getAreaText = [](char *stringOut, char *areaLocked, bool flag)
+	{
+		// Make sure the current area with its flags locked is valid
+		if (!flag || areaLocked[0] == '\0')
+		{
+			strcpy(stringOut, "None");
+			return static_cast<uint32_t>(0x4B4B4BFF);
+		}
+		else
+		{
+			strcpy(stringOut, areaLocked);
+			
+			// Check to see if the current area is one that can have its flags cleared
+			const char **tempAreaText = CheatsClearAreaFlagsAreas;
+			uint32_t Size = CheatsClearAreaFlagsAreasSize;
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				if (compareStrings(areaLocked, tempAreaText[i]))
+				{
+					strcpy(stringOut, CheatsClearAreaFlagsAreasFullNames[i]);
+					break;
+				}
+			}
+		}
+		return static_cast<uint32_t>(0xFFFFFFFF);
+	};
+	
+	// Draw the text indicating which area has its LSW flags locked
+	Color = 0xFFFFFFFF;
+	String = "Current Area LSW Flags Locked";
 	drawText(String, PosX, PosY, Alpha, Color, Scale);
 	PosY -= 20;
 	
-	// Get the text for which area has its flags locked
+	// Get the text for which area has its LSW flags locked
 	char CurrentAreaLockedText[64];
-	char *tempAreaLockedText = LockFlags.AreaLocked;
+	Color = getAreaText(CurrentAreaLockedText, LockFlags.LSWsAreaLocked, LockFlags.MemoryRegionLocked[4]);
 	
-	// Make sure the current area with its flags locked is valid
-	if (!Cheat[LOCK_FLAGS].Active || tempAreaLockedText[0] == '\0')
-	{
-		strcpy(CurrentAreaLockedText, "None");
-	}
-	else
-	{
-		strcpy(CurrentAreaLockedText, tempAreaLockedText);
-		
-		// Check to see if the current area is one that can have its flags cleared
-		const char **tempAreaText = CheatsClearAreaFlagsAreas;
-		uint32_t Size = CheatsClearAreaFlagsAreasSize;
-		for (uint32_t i = 0; i < Size; i++)
-		{
-			if (compareStrings(tempAreaLockedText, tempAreaText[i]))
-			{
-				strcpy(CurrentAreaLockedText, CheatsClearAreaFlagsAreasFullNames[i]);
-				break;
-			}
-		}
-	}
+	// Draw the text for which area has its flags locked
+	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 40;
+	
+	// Draw the text indicating which area has its LSWF flags locked
+	Color = 0xFFFFFFFF;
+	String = "Current Area LSWF Flags Locked";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 20;
+	
+	// Get the text for which area has its LSWF flags locked
+	Color = getAreaText(CurrentAreaLockedText, LockFlags.LSWFsAreaLocked, LockFlags.MemoryRegionLocked[5]);
 	
 	// Draw the text for which area has its flags locked
 	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);

@@ -10,6 +10,7 @@
 #include <ttyd/win_party.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/item_data.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/mario_party.h>
 #include <ttyd/party.h>
@@ -263,6 +264,82 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 			MenuVar.Timer 				= secondsToFrames(3);
 		}
 	}
+}
+
+bool lockFlagsMenuBackUpStandardFlags(bool &flag, uint8_t *&memoryRegion, uint32_t size, uint32_t offset)
+{
+	// Flip the bool
+	bool FlagsLocked = !flag;
+	flag = FlagsLocked;
+	
+	uint8_t *tempMemory = memoryRegion;
+	if (FlagsLocked)
+	{
+		// Allocate memory for the flags if memory is not allocated already
+		if (!tempMemory)
+		{
+			tempMemory = new uint8_t[size];
+			memoryRegion = tempMemory;
+		}
+		
+		// Back up the memory
+		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + offset);
+		memcpy(&tempMemory[0], MemoryStart, size);
+	}
+	else if (tempMemory)
+	{
+		// Clear the memory for the flags if memory is currently allocated for them
+		delete[] (tempMemory);
+		memoryRegion = nullptr;
+	}
+	
+	return FlagsLocked;
+}
+
+bool lockFlagsMenuBackUpGWOrGFFlags(bool &flag, uint8_t *&dstMemoryRegion, void *srcMemoryRegion, uint32_t size)
+{
+	// Flip the bool
+	bool FlagsLocked = !flag;
+	flag = FlagsLocked;
+	
+	uint8_t *tempMemory = dstMemoryRegion;
+	if (FlagsLocked)
+	{
+		// Allocate memory for the flags if memory is not allocated already
+		if (!tempMemory)
+		{
+			tempMemory = new uint8_t[size];
+			dstMemoryRegion = tempMemory;
+		}
+		
+		// Back up the memory
+		memcpy(&tempMemory[0], srcMemoryRegion, size);
+	}
+	else if (tempMemory)
+	{
+		// Clear the memory for the flags if memory is currently allocated for them
+		delete[] (tempMemory);
+		dstMemoryRegion = nullptr;
+	}
+	
+	return FlagsLocked;
+}
+
+bool lockFlagsMenuSetNewArea(bool flag, uint8_t *memoryRegion, char *area, uint32_t size, uint32_t offset)
+{
+	// Only run if the bool is currently on
+	if (flag && memoryRegion)
+	{
+		// Back up the LSWFs
+		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + offset);
+		memcpy(&memoryRegion[0], MemoryStart, size);
+		
+		// Update the area for the flags to be locked
+		strcpy(area, ttyd::seq_mapchange::NextArea);
+	}
+	return flag;
 }
 
 const char *getItemName(int16_t item)

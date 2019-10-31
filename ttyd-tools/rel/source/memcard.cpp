@@ -323,15 +323,9 @@ int32_t saveSettings()
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
-		uint32_t CurrentIndex = CheatsOrder[i];
-		
-		// Don't update the bool for the Lock Flags code
-		if (CurrentIndex != LOCK_FLAGS)
-		{
-			Settings->CheatsActive[i] = Cheat[CurrentIndex].Active;
-		}
-		
-		Settings->CheatButtonCombos[i] = Cheat[CurrentIndex].ButtonCombo;
+		uint32_t CurrentIndex 			= CheatsOrder[i];
+		Settings->CheatsActive[i] 		= Cheat[CurrentIndex].Active;
+		Settings->CheatButtonCombos[i] 	= Cheat[CurrentIndex].ButtonCombo;
 	}
 	
 	// Copy the Displays bools
@@ -447,13 +441,8 @@ int32_t loadSettings()
 	uint32_t CheatsSize = sizeof(Cheat) / sizeof(Cheat[0]);
 	for (uint32_t i = 0; i < CheatsSize; i++)
 	{
-		uint32_t CurrentIndex = CheatsOrder[i];
-		
-		// Don't update the bool for the Lock Flags code
-		if (CurrentIndex != LOCK_FLAGS)
-		{
-			Cheat[CurrentIndex].Active = Settings->CheatsActive[i];
-		}
+		uint32_t CurrentIndex 		= CheatsOrder[i];
+		Cheat[CurrentIndex].Active 	= Settings->CheatsActive[i];
 		
 		// Make sure the button combo is valid, so that new button combos are not overwritten with 0
 		uint16_t ButtonCombo = Settings->CheatButtonCombos[i];

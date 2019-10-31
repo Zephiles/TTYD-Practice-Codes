@@ -802,62 +802,115 @@ void menuCheckButton()
 				}
 				case A:
 				{
-					uint8_t *tempFlagsToLockMemory = LockFlags.FlagsToLockMemory;
-					uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-					
 					uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
 					switch (CurrentMenuOptionCheck)
 					{
-						case LOCK_CURRENT_FLAGS:
+						case LOCK_GSW_FLAGS:
 						{
-							// Flip the bool for the current cheat
-							bool CheatActive = !Cheat[tempMenuSelectedOption].Active;
-							Cheat[tempMenuSelectedOption].Active = CheatActive;
+							// Back up the main memory
+							uint32_t Size = 0x800;
+							uint32_t Offset = 0x578;
+							lockFlagsMenuBackUpStandardFlags(LockFlags.MemoryRegionLocked[0], LockFlags.MemoryRegion[0], Size, Offset);
 							
-							if (CheatActive)
+							// Back up the Sequence Position if the code was enabled
+							if (LockFlags.MemoryRegionLocked[0])
 							{
-								// Allocate memory for the flags if memory is not allocated already
-								if (!tempFlagsToLockMemory)
-								{
-									tempFlagsToLockMemory = new uint8_t[0x44C];
-									LockFlags.FlagsToLockMemory = tempFlagsToLockMemory;
-								}
-								
-								// Back up the GSWFs
-								void *GSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0x178);
-								memcpy(tempFlagsToLockMemory, GSWFsAddresses, 0x400);
-								
-								// Back up the LSWFs
-								void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
-								memcpy(&tempFlagsToLockMemory[0x400], LSWFsAddresses, 0x40);
-								
-								// Update the area for the flags to be locked
-								strcpy(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea);
-								
-								// Back up the GFs
-								ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
-								memcpy(&tempFlagsToLockMemory[0x440], EventWork->gfData, sizeof(EventWork->gfData));
-							}
-							else if (tempFlagsToLockMemory)
-							{
-								// Clear the memory for the flags if memory is currently allocated for them
-								delete[] (tempFlagsToLockMemory);
-								LockFlags.FlagsToLockMemory = nullptr;
+								LockFlags.SequencePosition = getSequencePosition();
 							}
 							break;
 						}
-						case SET_NEW_AREA:
+						case LOCK_GSWF_FLAGS:
 						{
-							// Only run if the code is currently active
-							if (Cheat[tempMenuSelectedOption].Active && tempFlagsToLockMemory)
+							// Back up the main memory
+							uint32_t Size = 0x400;
+							uint32_t Offset = 0x178;
+							lockFlagsMenuBackUpStandardFlags(LockFlags.MemoryRegionLocked[1], LockFlags.MemoryRegion[1], Size, Offset);
+							break;
+						}
+						case LOCK_GW_FLAGS:
+						{
+							// Back up the main memory
+							ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+							void *SourceMemoryRegion = EventWork->gwData;
+							uint32_t Size = 0x80;
+							
+							lockFlagsMenuBackUpGWOrGFFlags(LockFlags.MemoryRegionLocked[2], 
+								LockFlags.MemoryRegion[2], SourceMemoryRegion, Size);
+							break;
+						}
+						case LOCK_GF_FLAGS:
+						{
+							// Back up the main memory
+							ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+							void *SourceMemoryRegion = EventWork->gfData;
+							uint32_t Size = 0xC;
+							
+							lockFlagsMenuBackUpGWOrGFFlags(LockFlags.MemoryRegionLocked[3], 
+								LockFlags.MemoryRegion[3], SourceMemoryRegion, Size);
+							break;
+						}
+						case LOCK_LSW_FLAGS:
+						{
+							// Back up the main memory
+							uint32_t Size = 0x400;
+							uint32_t Offset = 0xDB8;
+							
+							bool LockLSWs = lockFlagsMenuBackUpStandardFlags(
+								LockFlags.MemoryRegionLocked[4], 
+								LockFlags.MemoryRegion[4], 
+								Size, 
+								Offset);
+							
+							// Update the area for the flags to be locked
+							// Only update if the bool is currently on
+							if (LockLSWs)
 							{
-								// Back up the LSWFs
-								void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
-								memcpy(&tempFlagsToLockMemory[0x400], LSWFsAddresses, 0x40);
-								
-								// Update the area for the flags to be locked
-								strcpy(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea);
+								strcpy(LockFlags.LSWsAreaLocked, ttyd::seq_mapchange::NextArea);
 							}
+							break;
+						}
+						case LOCK_LSWF_FLAGS:
+						{
+							// Back up the main memory
+							uint32_t Size = 0x40;
+							uint32_t Offset = 0xD78;
+							
+							bool LockLSWFs = lockFlagsMenuBackUpStandardFlags(
+								LockFlags.MemoryRegionLocked[5], 
+								LockFlags.MemoryRegion[5], 
+								Size, 
+								Offset);
+							
+							// Update the area for the flags to be locked
+							// Only update if the bool is currently on
+							if (LockLSWFs)
+							{
+								strcpy(LockFlags.LSWFsAreaLocked, ttyd::seq_mapchange::NextArea);
+							}
+							break;
+						}
+						case SET_NEW_LSW_AREA:
+						{
+							uint32_t Size = 0x400;
+							uint32_t Offset = 0xDB8;
+							
+							lockFlagsMenuSetNewArea(LockFlags.MemoryRegionLocked[4], 
+								LockFlags.MemoryRegion[4], 
+								LockFlags.LSWsAreaLocked, 
+								Size, 
+								Offset);
+							break;
+						}
+						case SET_NEW_LSWF_AREA:
+						{
+							uint32_t Size = 0x40;
+							uint32_t Offset = 0xD78;
+							
+							lockFlagsMenuSetNewArea(LockFlags.MemoryRegionLocked[5], 
+								LockFlags.MemoryRegion[5], 
+								LockFlags.LSWFsAreaLocked, 
+								Size, 
+								Offset);
 							break;
 						}
 						default:
@@ -3326,10 +3379,6 @@ void drawMenu()
 		{
 			// Draw the text for the options
 			drawSingleColumnMain();
-			
-			// Draw the bool
-			int32_t PosY = 120;
-			drawCheatsBool(PosY);
 			
 			// Draw the text for which area flags are locked
 			drawCheatsLockFlags();

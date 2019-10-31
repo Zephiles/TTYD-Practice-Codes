@@ -1017,8 +1017,14 @@ const char *CheatsManageGlobalWordsOptions[]
 
 const char *CheatsLockFlagsOptions[]
 {
-	"Toggle Value",
-	"Set New Area",
+	"Lock GSWs",
+	"Lock GSWFs",
+	"Lock GWs",
+	"Lock GFs",
+	"Lock LSWs",
+	"Lock LSWFs",
+	"Set New LSW Area",
+	"Set New LSWF Area",
 };
 
 const char *CheatsManageGlobalFlagsOptions[]

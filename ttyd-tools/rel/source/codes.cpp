@@ -831,36 +831,110 @@ void checkIfAreaFlagsShouldBeCleared()
 	}
 }
 
+void lockFlagsStandard(bool flag, uint8_t *memoryRegion, uint32_t size, uint32_t offset)
+{
+	if (!flag)
+	{
+		return;
+	}
+	
+	if (!memoryRegion)
+	{
+		return;
+	}
+	
+	// Restore the memory
+	uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+	void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + offset);
+	memcpy(MemoryStart, memoryRegion, size);
+}
+
+void lockFlagsGWsOrGFs(bool flag, void *dstMemoryRegion, uint8_t *srcMemoryRegion, uint32_t size)
+{
+	if (!flag)
+	{
+		return;
+	}
+	
+	if (!dstMemoryRegion)
+	{
+		return;
+	}
+	
+	memcpy(dstMemoryRegion, srcMemoryRegion, size);
+}
+
+void lockFlagsLSWsOrLSWFs(char *area, bool flag, uint8_t *memoryRegion, uint32_t size, uint32_t offset)
+{
+	if (!flag)
+	{
+		return;
+	}
+	
+	// Only restore if currently in the original area where the code was enabled
+	if (!compareStrings(area, ttyd::seq_mapchange::NextArea))
+	{
+		return;
+	}
+	
+	lockFlagsStandard(flag, memoryRegion, size, offset);
+}
+
 void lockFlags()
 {
-	if (!Cheat[LOCK_FLAGS].Active)
-	{
-		return;
-	}
+	uint32_t Index = 0;
 	
-	uint8_t *tempFlagsToLockMemory = LockFlags.FlagsToLockMemory;
-	if (!tempFlagsToLockMemory)
-	{
-		return;
-	}
+	// Restore the GSWs
+	uint32_t Size = 0x800;
+	uint32_t Offset = 0x578;
+	bool tempFlag = LockFlags.MemoryRegionLocked[Index];
+	lockFlagsStandard(tempFlag, LockFlags.MemoryRegion[Index], Size, Offset);
 	
-	uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+	// Restore the Sequence Position if the code is enabled
+	if (tempFlag)
+	{
+		setSequencePosition(LockFlags.SequencePosition);
+	}
+	Index++;
 	
 	// Restore the GSWFs
-	void *GSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0x178);
-	memcpy(GSWFsAddresses, tempFlagsToLockMemory, 0x400);
+	Size = 0x400;
+	Offset = 0x178;
+	lockFlagsStandard(LockFlags.MemoryRegionLocked[Index], LockFlags.MemoryRegion[Index], Size, Offset);
+	Index++;
+	
+	// Restore the GWs
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+	Size = 0x80;
+	lockFlagsGWsOrGFs(LockFlags.MemoryRegionLocked[Index], EventWork->gwData, LockFlags.MemoryRegion[Index], Size);
+	Index++;
 	
 	// Restore the GFs
-	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
-	memcpy(EventWork->gfData, &tempFlagsToLockMemory[0x440], sizeof(EventWork->gfData));
+	Size = 0xC;
+	lockFlagsGWsOrGFs(LockFlags.MemoryRegionLocked[Index], EventWork->gfData, LockFlags.MemoryRegion[Index], Size);
+	Index++;
+	
+	// Restore the LSWs
+	Size = 0x400;
+	Offset = 0xDB8;
+	
+	lockFlagsLSWsOrLSWFs(LockFlags.LSWsAreaLocked, 
+		LockFlags.MemoryRegionLocked[Index], 
+		LockFlags.MemoryRegion[Index], 
+		Size, 
+		Offset);
+	
+	Index++;
 	
 	// Restore the LSWFs
-	// Only restore if currently in the original area where the code was enabled
-	if (compareStrings(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea))
-	{
-		void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
-		memcpy(LSWFsAddresses, &tempFlagsToLockMemory[0x400], 0x40);
-	}
+	Size = 0x40;
+	Offset = 0xD78;
+	
+	lockFlagsLSWsOrLSWFs(LockFlags.LSWFsAreaLocked, 
+		LockFlags.MemoryRegionLocked[Index], 
+		LockFlags.MemoryRegion[Index], 
+		Size, 
+		Offset);
 }
 
 void displaySequenceInPauseMenu()
