@@ -58,8 +58,10 @@ This menu allows you to modify your entire inventory, including standard items, 
 19. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
 20. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
 21. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
-22. **Manage Flags** allows you to manually change a lot of the important flags in the game.
-23. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+22. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+    * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on if not in use.
+23. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+24. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
