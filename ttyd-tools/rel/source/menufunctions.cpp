@@ -2922,6 +2922,28 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5567, 5584);
+			
+			// Clear misc flags not part of the standard gor memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				9, // Post-Chapter 3 Koopie Koo Email
+				10, // Post-Chapter 4 Petuni Email
+				11, // Email from Boo after Chapter 5 Intermission
+				14, // Real Zip Toad Email after Chapter 6
+				20, // RDM #4 Email after Chapter 5
+				23, // Koopook Email after Chapter 2
+				24, // Email from Pine T. Jr. after Chapter 3
+				25, // Email from Jolene after Zess Trouble
+				26, // Email from Bub-ulber after Mowz Trouble
+				27, // Eve Email after Chapter 6
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_TIK:
@@ -2934,6 +2956,19 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5585, 5597);
+			
+			// Clear misc flags not part of the standard tik memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				16, // RDM #7 Email after Chapter 7
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_HEI:
@@ -2952,6 +2987,19 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5601, 5602);
+			
+			// Clear misc flags not part of the standard nok memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				7, // Frankly Email at right side of town
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_GON:
@@ -2976,6 +3024,19 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5608, 5611);
+			
+			// Clear misc flags not part of the standard win memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				17, // RDM #1 Email after getting Flurrie
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_MRI:
@@ -3000,6 +3061,21 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5618, 5627);
+			
+			// Clear misc flags not part of the standard tou memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				18, // RDM #2 Email after getting Egg
+				250, // RDM #2 Email after getting Egg
+				251, // RDM #4 Email after Chapter 5
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_USU:
@@ -3063,6 +3139,19 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 		{
 			// Clear the regular flags
 			clearGSWFsRange(3574, 3575);
+			
+			// Clear misc flags not part of the standard hom memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				13, // King K. Email after fixing drawbridge
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_RSH:
@@ -3075,6 +3164,20 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5648, 5652);
+			
+			// Clear misc flags not part of the standard rsh memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				12, // Email from Pa-Patch on Day 3
+				21, // RDM #5 Email on second day
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_EKI:
@@ -3099,6 +3202,20 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5654, 5657);
+			
+			// Clear misc flags not part of the standard pik memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				22, // RDM #6 Email after Goldbob cannon
+				252, // RDM #6 Email after Goldbob cannon
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_BOM:
@@ -3111,6 +3228,19 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 			
 			// Clear the Star Pieces
 			clearGSWFsRange(5658, 5663);
+			
+			// Clear misc flags not part of the standard bom memory area
+			// Set up the flags to clear
+			static const uint16_t FlagsToClear[] = 
+			{
+				15, // Rawk Hawk Email after General White quest
+			};
+			
+			uint32_t Size = sizeof(FlagsToClear) / sizeof(FlagsToClear[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToClear[i]);
+			}
 			break;
 		}
 		case AREA_MOO:
