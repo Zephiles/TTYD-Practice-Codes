@@ -23,6 +23,7 @@ enum MENU_NAMES
 	CHEATS_NO_BUTTON_COMBO,
 	CHEATS_NPC_FORCE_DROP,
 	CHEATS_RESOLVE_FADES,
+	CHEATS_LOCK_FLAGS,
 	CHEATS_MANAGE_FLAGS,
 	CHEATS_MANAGE_FLAGS_MAIN,
 	CHEATS_CLEAR_AREA_FLAGS,
@@ -86,6 +87,7 @@ enum CHEATS_OPTIONS
 	BOBBERY_EARLY,
 	FORCE_ITEM_DROP,
 	RESOLVE_FADES,
+	LOCK_FLAGS,
 	MANAGE_FLAGS,
 	CLEAR_AREA_FLAGS,
 };
@@ -112,6 +114,13 @@ enum CHEATS_RESOLVE_FADES_RETURN_VALUES
 	FADE_NOT_ACTIVE = -2,
 	FADE_DONT_RESOLVE,
 	FADE_RESOLVE_SUCCESS = 1,
+};
+
+
+enum CHEATS_LOCK_FLAGS_SELECTION
+{
+	LOCK_CURRENT_FLAGS = 1,
+	SET_NEW_AREA,
 };
 
 enum CHEATS_MANAGE_FLAGS_SELECTION
@@ -589,6 +598,12 @@ struct ClearCacheForBattlesStruct
 	bool PartnerStatsShouldBeCleared;
 };
 
+struct LockFlagsStruct
+{
+	uint8_t *FlagsToLockMemory;
+	char AreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
+};
+
 struct TrickDisplay
 {
 	uint32_t MainTimer;
@@ -747,8 +762,8 @@ struct MenuPrevMenuAndOption
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[29];
-extern Cheats Cheat[23];
+extern Menus Menu[30];
+extern Cheats Cheat[24];
 extern bool Displays[12];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];
@@ -766,6 +781,7 @@ extern ReloadRoomStruct ReloadRoom;
 extern SpawnItems SpawnItem;
 extern ClearAreaFlagsStruct ClearAreaFlags;
 extern ClearCacheForBattlesStruct ClearCacheForBattles;
+extern LockFlagsStruct LockFlags;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
@@ -783,8 +799,8 @@ extern uint8_t DisplaysOrder[];
 
 extern const char *VersionNumber;
 extern const char *CheatsLines[];
-extern const char *CheatsForceItemDropAreas[];
-extern const char *CheatsForceItemDropAreasFullNames[];
+extern const char *CheatsClearAreaFlagsAreas[];
+extern const char *CheatsClearAreaFlagsAreasFullNames[];
 extern const char *CheatsManageGlobalWordsOptions[];
 extern const char *CheatsManageGlobalFlagsOptions[];
 extern const char *StatsMarioOptionsLines[];
@@ -804,7 +820,7 @@ extern const char *WarpDescriptions[];
 
 extern uint8_t CheatsManageGlobalWordsOptionsSize;
 extern uint8_t CheatsManageGlobalFlagsOptionsSize;
-extern uint8_t CheatsForceItemDropAreasSize;
+extern uint8_t CheatsClearAreaFlagsAreasSize;
 extern uint8_t StatsMarioOptionsLinesSize;
 extern uint8_t MarioStatsSpecialMovesOptionsSize;
 extern uint8_t StatsPartnerOptionsLinesSize;

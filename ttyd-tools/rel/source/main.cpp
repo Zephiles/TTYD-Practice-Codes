@@ -776,6 +776,7 @@ void Mod::run()
 	bobberyEarly();
 	checkIfAreaFlagsShouldBeCleared();
 	checkIfSystemLevelShouldBeLowered();
+	lockFlags();
 	
 	// Run each display function
 	// Only run if the mod menu isn't currently open

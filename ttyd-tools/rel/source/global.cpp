@@ -58,6 +58,7 @@ const char *CheatsLines[] =
 	"Bobbery Early",
 	"Force NPC Item Drop",
 	"Resolve Fades",
+	"Lock Flags",
 	"Manage Flags",
 	"Clear Area Flags",
 };
@@ -1014,6 +1015,12 @@ const char *CheatsManageGlobalWordsOptions[]
 	"Set New Value",
 };
 
+const char *CheatsLockFlagsOptions[]
+{
+	"Toggle Value",
+	"Set New Area",
+};
+
 const char *CheatsManageGlobalFlagsOptions[]
 {
 	"Toggle Value",
@@ -1025,7 +1032,7 @@ const char *CheatsClearAreaFlags[] =
 	"Clear Flags",
 };
 
-const char *CheatsForceItemDropAreas[] = 
+const char *CheatsClearAreaFlagsAreas[] = 
 {
 	"gor",
 	"tik",
@@ -1051,7 +1058,7 @@ const char *CheatsForceItemDropAreas[] =
 	"jon",
 };
 
-const char *CheatsForceItemDropAreasFullNames[] = 
+const char *CheatsClearAreaFlagsAreasFullNames[] = 
 {
 	"Rogueport",
 	"Rogueport Sewers",
@@ -1646,7 +1653,7 @@ const char ButtonInputDisplay[] =
 
 uint8_t CheatsManageGlobalWordsOptionsSize 	= sizeof(CheatsManageGlobalWordsOptions) / sizeof(CheatsManageGlobalWordsOptions[0]);
 uint8_t CheatsManageGlobalFlagsOptionsSize 	= sizeof(CheatsManageGlobalFlagsOptions) / sizeof(CheatsManageGlobalFlagsOptions[0]);
-uint8_t CheatsForceItemDropAreasSize 		= sizeof(CheatsForceItemDropAreas) / sizeof(CheatsForceItemDropAreas[0]);
+uint8_t CheatsClearAreaFlagsAreasSize 		= sizeof(CheatsClearAreaFlagsAreas) / sizeof(CheatsClearAreaFlagsAreas[0]);
 uint8_t StatsMarioOptionsLinesSize 			= sizeof(StatsMarioOptionsLines) / sizeof(StatsMarioOptionsLines[0]);
 uint8_t MarioStatsSpecialMovesOptionsSize 	= sizeof(MarioStatsSpecialMovesOptions) / sizeof(MarioStatsSpecialMovesOptions[0]);
 uint8_t StatsPartnerOptionsLinesSize 		= sizeof(StatsPartnerOptionsLines) / sizeof(StatsPartnerOptionsLines[0]);
@@ -1786,6 +1793,7 @@ uint8_t CheatsOrder[] =
 	MANAGE_FLAGS,
 	RESOLVE_FADES,
 	FALL_THROUGH_FLOORS,
+	LOCK_FLAGS,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1805,8 +1813,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[29];
-struct Cheats Cheat[23];
+struct Menus Menu[30];
+struct Cheats Cheat[24];
 bool Displays[12];
 char DisplayBuffer[256];
 char HeapBuffer[512];
@@ -1824,6 +1832,7 @@ struct ReloadRoomStruct ReloadRoom;
 struct SpawnItems SpawnItem;
 struct ClearAreaFlagsStruct ClearAreaFlags;
 struct ClearCacheForBattlesStruct ClearCacheForBattles;
+struct LockFlagsStruct LockFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
@@ -1867,6 +1876,10 @@ void initMenuVars()
 	Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions 		= sizeof(CheatsForceItemDropOptionsLines) / sizeof(CheatsForceItemDropOptionsLines[0]);
 	Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount 		= Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
 	Menu[CHEATS_NPC_FORCE_DROP].Line 					= CheatsForceItemDropOptionsLines;
+	
+	Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions 			= sizeof(CheatsLockFlagsOptions) / sizeof(CheatsLockFlagsOptions[0]);
+	Menu[CHEATS_LOCK_FLAGS].ColumnSplitAmount 			= Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions;
+	Menu[CHEATS_LOCK_FLAGS].Line 						= CheatsLockFlagsOptions;
 	
 	Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions 			= sizeof(CheatsManageFlagsOptions) / sizeof(CheatsManageFlagsOptions[0]);
 	Menu[CHEATS_MANAGE_FLAGS].ColumnSplitAmount 		= Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions;
@@ -1950,6 +1963,7 @@ void setInitialSettings()
 	Cheat[FALL_THROUGH_FLOORS].Active 			= false;
 	// Cheat[SAVE_COORDINATES].Active 			= false;
 	// Cheat[LOAD_COORDINATES].Active 			= false;
+	Cheat[SPAWN_ITEM].Active 					= false;
 	Cheat[SAVE_ANYWHERE].Active 				= false;
 	// Cheat[TEXT_STORAGE].Active 				= false;
 	// Cheat[TIME_STOP_TEXT_STORAGE].Active 	= false;
@@ -1961,16 +1975,17 @@ void setInitialSettings()
 	// Cheat[LEVITATE].Active 					= false;
 	Cheat[LOCK_MARIO_HP_TO_MAX].Active 			= false;
 	Cheat[RUN_FROM_BATTLES].Active 				= false;
-	Cheat[SPAWN_ITEM].Active 					= false;
 	// Cheat[DISABLE_MENU_SOUNDS].Active 		= false;
 	// Cheat[BOBBERY_EARLY].Active 				= false;
 	Cheat[FORCE_ITEM_DROP].Active 				= false;
+	Cheat[LOCK_FLAGS].Active 					= false;
 	
 	// Set the Cheats button combos
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
 	Cheat[FALL_THROUGH_FLOORS].ButtonCombo 		= PAD_Y | PAD_Z;
 	Cheat[SAVE_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_LEFT;
 	Cheat[LOAD_COORDINATES].ButtonCombo 		= PAD_L | PAD_DPAD_UP;
+	Cheat[SPAWN_ITEM].ButtonCombo 				= PAD_L | PAD_DPAD_DOWN;
 	Cheat[SAVE_ANYWHERE].ButtonCombo 			= PAD_Y | PAD_B;
 	Cheat[TEXT_STORAGE].ButtonCombo 			= PAD_L | PAD_X;
 	Cheat[TIME_STOP_TEXT_STORAGE].ButtonCombo 	= PAD_L | PAD_R;
@@ -1980,7 +1995,6 @@ void setInitialSettings()
 	Cheat[INFINITE_ITEM_USAGE].ButtonCombo 		= PAD_Y;
 	Cheat[RELOAD_ROOM].ButtonCombo 				= PAD_L | PAD_B;
 	Cheat[LEVITATE].ButtonCombo 				= PAD_L | PAD_A;
-	Cheat[SPAWN_ITEM].ButtonCombo 				= PAD_L | PAD_DPAD_DOWN;
 	
 	// Set the Displays bools
 	// Displays[ONSCREEN_TIMER] 		= true;
@@ -1994,6 +2008,7 @@ void setInitialSettings()
 	// Displays[ART_ATTACK_HITBOXES] 	= true;
 	// Displays[YOSHI_SKIP] 			= true;
 	// Displays[PALACE_SKIP] 			= true;
+	// Displays[BLIMP_TICKET_SKIP] 		= true;
 	
 	// Set the Displays button combos
 	OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 	= PAD_L | PAD_Z;

@@ -3069,6 +3069,49 @@ void drawCheatsResolveFades()
 	}
 }
 
+void drawCheatsLockFlags()
+{
+	// Draw the text indicating which area has its flags locked
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 60;
+	float Scale = 0.6;
+	
+	const char *String = "Current Area Local Flags Locked";
+	drawText(String, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 20;
+	
+	// Get the text for which area has its flags locked
+	char CurrentAreaLockedText[64];
+	char *tempAreaLockedText = LockFlags.AreaLocked;
+	
+	// Make sure the current area with its flags locked is valid
+	if (!Cheat[LOCK_FLAGS].Active || tempAreaLockedText[0] == '\0')
+	{
+		strcpy(CurrentAreaLockedText, "None");
+	}
+	else
+	{
+		strcpy(CurrentAreaLockedText, tempAreaLockedText);
+		
+		// Check to see if the current area is one that can have its flags cleared
+		const char **tempAreaText = CheatsClearAreaFlagsAreas;
+		uint32_t Size = CheatsClearAreaFlagsAreasSize;
+		for (uint32_t i = 0; i < Size; i++)
+		{
+			if (compareStrings(tempAreaLockedText, tempAreaText[i]))
+			{
+				strcpy(CurrentAreaLockedText, CheatsClearAreaFlagsAreasFullNames[i]);
+				break;
+			}
+		}
+	}
+	
+	// Draw the text for which area has its flags locked
+	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);
+}
+
 void drawCheatsManageFlagsMain(uint32_t currentMenu)
 {
 	bool ChangingWord = false;
@@ -3228,13 +3271,13 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
 void drawCheatsClearArea()
 {
 	// Draw the main text
-	uint32_t tempCheatsForceItemDropAreasSize 	= CheatsForceItemDropAreasSize;
-	const char **tempCheatsForceItemDropAreas 	= CheatsForceItemDropAreas;
+	uint32_t tempCheatsClearAreaFlagsAreasSize 	= CheatsClearAreaFlagsAreasSize;
+	const char **tempCheatsClearAreaFlagsAreas 	= CheatsClearAreaFlagsAreas;
 	
 	int32_t PosX 								= -232;
 	int32_t PosY 								= 120;
-	uint32_t Size 								= tempCheatsForceItemDropAreasSize;
-	uint32_t MaxOptionsPerPage 					= tempCheatsForceItemDropAreasSize;
+	uint32_t Size 								= tempCheatsClearAreaFlagsAreasSize;
+	uint32_t MaxOptionsPerPage 					= tempCheatsClearAreaFlagsAreasSize;
 	uint32_t MaxOptionsPerRow 					= 4;
 	uint32_t PosXIncrementAmount 				= 50;
 	uint32_t tempPage 							= 0;
@@ -3252,14 +3295,14 @@ void drawCheatsClearArea()
 	
 	drawMultipleColumnsVertical(PosX, PosY, tempSecondaryMenuOption, tempPage, 
 		Size, MaxOptionsPerPage, MaxOptionsPerRow, CurrentlySelectingOption, 
-			PosXIncrementAmount, tempCheatsForceItemDropAreas);
+			PosXIncrementAmount, tempCheatsClearAreaFlagsAreas);
 	
 	// Draw the description for the current option
 	if (CurrentlySelectingOption)
 	{
 		PosY -= 140;
 		drawSingleLineFromArray(PosX, PosY, tempSecondaryMenuOption, 
-			CheatsForceItemDropAreasFullNames);
+			CheatsClearAreaFlagsAreasFullNames);
 	}
 	
 	// Draw the current area selected
@@ -3267,7 +3310,7 @@ void drawCheatsClearArea()
 	PosY = 160;
 	const char *String = "Current Area: ";
 	drawSingleLineFromStringAndArray(PosX, PosY, MenuVar.MenuSecondaryValue, 
-		String, tempCheatsForceItemDropAreas);
+		String, tempCheatsClearAreaFlagsAreas);
 }
 
 void drawWarpsOptions()

@@ -19,6 +19,7 @@ void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();
 void checkIfAreaFlagsShouldBeCleared();
+void lockFlags();
 
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();

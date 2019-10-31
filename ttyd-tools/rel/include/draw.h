@@ -94,6 +94,7 @@ void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description
 void drawChangeButtonCombo(uint16_t &currentButtonCombo);
 void drawCheatsForcedDropItem();
 void drawCheatsResolveFades();
+void drawCheatsLockFlags();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
 void drawWarpsOptions();

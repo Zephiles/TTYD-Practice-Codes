@@ -8,10 +8,12 @@
 #include "draw.h"
 
 #include <gc/card.h>
+#include <ttyd/mariost.h>
+#include <ttyd/seq_mapchange.h>
+#include <ttyd/evtmgr.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
-#include <ttyd/mariost.h>
 #include <ttyd/win_main.h>
 #include <ttyd/party.h>
 
@@ -550,6 +552,11 @@ void menuCheckButton()
 							MenuToEnter = CHEATS_RESOLVE_FADES;
 							break;
 						}
+						case LOCK_FLAGS:
+						{
+							MenuToEnter = CHEATS_LOCK_FLAGS;
+							break;
+						}
 						case MANAGE_FLAGS:
 						{
 							MenuToEnter = CHEATS_MANAGE_FLAGS;
@@ -772,6 +779,97 @@ void menuCheckButton()
 					// Go back to the previous menu
 					MenuVar.Timer = 0;
 					MenuVar.FunctionReturnCode = 0;
+					MenuVar.MenuSelectedOption = 0;
+					enterPreviousMenu();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_LOCK_FLAGS:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustMenuNoPageEdit(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					uint8_t *tempFlagsToLockMemory = LockFlags.FlagsToLockMemory;
+					uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+					
+					uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+					switch (CurrentMenuOptionCheck)
+					{
+						case LOCK_CURRENT_FLAGS:
+						{
+							// Flip the bool for the current cheat
+							bool CheatActive = !Cheat[tempMenuSelectedOption].Active;
+							Cheat[tempMenuSelectedOption].Active = CheatActive;
+							
+							if (CheatActive)
+							{
+								// Allocate memory for the flags if memory is not allocated already
+								if (!tempFlagsToLockMemory)
+								{
+									tempFlagsToLockMemory = new uint8_t[0x44C];
+									LockFlags.FlagsToLockMemory = tempFlagsToLockMemory;
+								}
+								
+								// Back up the GSWFs
+								void *GSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0x178);
+								memcpy(tempFlagsToLockMemory, GSWFsAddresses, 0x400);
+								
+								// Back up the LSWFs
+								void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
+								memcpy(&tempFlagsToLockMemory[0x400], LSWFsAddresses, 0x40);
+								
+								// Update the area for the flags to be locked
+								strcpy(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea);
+								
+								// Back up the GFs
+								ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+								memcpy(&tempFlagsToLockMemory[0x440], EventWork->gfData, sizeof(EventWork->gfData));
+							}
+							else if (tempFlagsToLockMemory)
+							{
+								// Clear the memory for the flags if memory is currently allocated for them
+								delete[] (tempFlagsToLockMemory);
+								LockFlags.FlagsToLockMemory = nullptr;
+							}
+							break;
+						}
+						case SET_NEW_AREA:
+						{
+							// Only run if the code is currently active
+							if (Cheat[tempMenuSelectedOption].Active && tempFlagsToLockMemory)
+							{
+								// Back up the LSWFs
+								void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
+								memcpy(&tempFlagsToLockMemory[0x400], LSWFsAddresses, 0x40);
+								
+								// Update the area for the flags to be locked
+								strcpy(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea);
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
 					MenuVar.MenuSelectedOption = 0;
 					enterPreviousMenu();
 					break;
@@ -3222,6 +3320,19 @@ void drawMenu()
 			{
 				drawResolveFadesMessage();
 			}
+			break;
+		}
+		case CHEATS_LOCK_FLAGS:
+		{
+			// Draw the text for the options
+			drawSingleColumnMain();
+			
+			// Draw the bool
+			int32_t PosY = 120;
+			drawCheatsBool(PosY);
+			
+			// Draw the text for which area flags are locked
+			drawCheatsLockFlags();
 			break;
 		}
 		case CHEATS_MANAGE_FLAGS_MAIN:

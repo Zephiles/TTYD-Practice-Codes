@@ -3815,6 +3815,9 @@ void *initStageEvents()
 	ClearCacheForBattles.MarioStatsShouldBeCleared = true;
 	ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
 	
+	// Override any flags set in this function if the previous flags were locked
+	lockFlags();
+	
 	// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 	return ttyd::mariost::globalWorkPointer;
 }
@@ -4613,8 +4616,8 @@ void adjustMenuSelectionInventory(uint32_t button)
 
 void adjustCheatClearAreaFlagSelection(uint32_t button)
 {
-	uint32_t tempCheatsForceItemDropAreasSize = CheatsForceItemDropAreasSize;
-	uint32_t TotalMenuOptions = tempCheatsForceItemDropAreasSize;
+	uint32_t tempCheatsClearAreaFlagsAreasSize = CheatsClearAreaFlagsAreasSize;
+	uint32_t TotalMenuOptions = tempCheatsClearAreaFlagsAreasSize;
 	uint32_t MaxOptionsPerRow = 4;
 	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
 	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;

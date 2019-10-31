@@ -831,6 +831,38 @@ void checkIfAreaFlagsShouldBeCleared()
 	}
 }
 
+void lockFlags()
+{
+	if (!Cheat[LOCK_FLAGS].Active)
+	{
+		return;
+	}
+	
+	uint8_t *tempFlagsToLockMemory = LockFlags.FlagsToLockMemory;
+	if (!tempFlagsToLockMemory)
+	{
+		return;
+	}
+	
+	uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+	
+	// Restore the GSWFs
+	void *GSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0x178);
+	memcpy(GSWFsAddresses, tempFlagsToLockMemory, 0x400);
+	
+	// Restore the GFs
+	ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+	memcpy(EventWork->gfData, &tempFlagsToLockMemory[0x440], sizeof(EventWork->gfData));
+	
+	// Restore the LSWFs
+	// Only restore if currently in the original area where the code was enabled
+	if (compareStrings(LockFlags.AreaLocked, ttyd::seq_mapchange::NextArea))
+	{
+		void *LSWFsAddresses = reinterpret_cast<void *>(GlobalWorkPtrRaw + 0xD78);
+		memcpy(LSWFsAddresses, &tempFlagsToLockMemory[0x400], 0x40);
+	}
+}
+
 void displaySequenceInPauseMenu()
 {
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
