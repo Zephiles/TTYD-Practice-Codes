@@ -297,6 +297,20 @@ void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *col
 	}
 }
 
+void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut)
+{
+	if (valueToCheck)
+	{
+		*textOut = "Yes";
+		*colorOut = 0x1BBE23FF; // Green
+	}
+	else
+	{
+		*textOut = "No";
+		*colorOut = 0xFF1414FF; // Red
+	}
+}
+
 uint32_t getSelectedTextColor(bool valueToCheck)
 {
 	if (valueToCheck)
@@ -1467,17 +1481,7 @@ void drawMemoryModifyList()
 			{
 				// Draw the Yes/No text for whether the watch is shown as hex or not
 				const char *YesNoText;
-				if (MemoryWatch[tempMenuSelectedOption].ShowAsHex)
-				{
-					YesNoText = "Yes";
-					Color = 0x1BBE23FF;
-				}
-				else
-				{
-					YesNoText = "No";
-					Color = 0xFF1414FF;
-				}
-				
+				getYesNoTextAndColor(MemoryWatch[tempMenuSelectedOption].ShowAsHex, &YesNoText, &Color);
 				drawText(YesNoText, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
 				break;
 			}
@@ -3454,16 +3458,7 @@ void drawWarpByEventMenuDetails()
 	
 	// Draw the text for whether the standard inventory should be kept or not
 	const char *String;
-	if (WarpByEvent.ShouldKeepInventory)
-	{
-		Color = 0x1BBE23FF;
-		String = "Yes";
-	}
-	else
-	{
-		Color = 0xFF1414FF;
-		String = "No";
-	}
+	getYesNoTextAndColor(WarpByEvent.ShouldKeepInventory, &String, &Color);
 	
 	int32_t tempPosX = PosX + 147;
 	
@@ -3475,17 +3470,7 @@ void drawWarpByEventMenuDetails()
 	PosY -= 20;
 	
 	// Draw the text for whether specific flags should be set or not
-	if (WarpByEvent.ShouldSetFlags)
-	{
-		Color = 0x1BBE23FF;
-		String = "Yes";
-	}
-	else
-	{
-		Color = 0xFF1414FF;
-		String = "No";
-	}
-	
+	getYesNoTextAndColor(WarpByEvent.ShouldSetFlags, &String, &Color);
 	drawText(String, tempPosX, PosY, Alpha, Color, Scale);
 	PosY -= 60;
 	

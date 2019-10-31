@@ -20,6 +20,7 @@ void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha,
 
 uint16_t getMessageWidth(const char *text, float scale);
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
+void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
 uint32_t getSelectedTextColor(bool valueToCheck);
 
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
