@@ -23,9 +23,9 @@ void raiseSystemLevel();
 void lowerSystemLevel();
 
 void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress);
-bool lockFlagsMenuBackUpStandardFlags(bool &flag, uint8_t *&memoryRegion, uint32_t size, uint32_t offset);
-bool lockFlagsMenuBackUpGWOrGFFlags(bool &flag, uint8_t *&dstMemoryRegion, void *srcMemoryRegion, uint32_t size);
-bool lockFlagsMenuSetNewArea(bool flag, uint8_t *memoryRegion, char *area, uint32_t size, uint32_t offset);
+void lockFlagsMenuBackUpFlags(uint32_t index);
+void lockFlagsMenuSetNewArea(uint32_t index);
+char *lockFlagsMenuGetAreaLockedString(uint32_t index);
 const char *getItemName(int16_t item);
 void *getFreeSlotPointer();
 int32_t getTotalItems();

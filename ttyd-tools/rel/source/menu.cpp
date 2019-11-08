@@ -10,7 +10,6 @@
 #include <gc/card.h>
 #include <ttyd/mariost.h>
 #include <ttyd/seq_mapchange.h>
-#include <ttyd/evtmgr.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
@@ -808,109 +807,49 @@ void menuCheckButton()
 						case LOCK_GSW_FLAGS:
 						{
 							// Back up the main memory
-							uint32_t Size = 0x800;
-							uint32_t Offset = 0x578;
-							lockFlagsMenuBackUpStandardFlags(LockFlags.MemoryRegionLocked[0], LockFlags.MemoryRegion[0], Size, Offset);
-							
-							// Back up the Sequence Position if the code was enabled
-							if (LockFlags.MemoryRegionLocked[0])
-							{
-								LockFlags.SequencePosition = getSequencePosition();
-							}
+							lockFlagsMenuBackUpFlags(GSW);
 							break;
 						}
 						case LOCK_GSWF_FLAGS:
 						{
 							// Back up the main memory
-							uint32_t Size = 0x400;
-							uint32_t Offset = 0x178;
-							lockFlagsMenuBackUpStandardFlags(LockFlags.MemoryRegionLocked[1], LockFlags.MemoryRegion[1], Size, Offset);
+							lockFlagsMenuBackUpFlags(GSWF);
 							break;
 						}
 						case LOCK_GW_FLAGS:
 						{
 							// Back up the main memory
-							ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
-							void *SourceMemoryRegion = EventWork->gwData;
-							uint32_t Size = 0x80;
-							
-							lockFlagsMenuBackUpGWOrGFFlags(LockFlags.MemoryRegionLocked[2], 
-								LockFlags.MemoryRegion[2], SourceMemoryRegion, Size);
+							lockFlagsMenuBackUpFlags(GW);
 							break;
 						}
 						case LOCK_GF_FLAGS:
 						{
 							// Back up the main memory
-							ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
-							void *SourceMemoryRegion = EventWork->gfData;
-							uint32_t Size = 0xC;
-							
-							lockFlagsMenuBackUpGWOrGFFlags(LockFlags.MemoryRegionLocked[3], 
-								LockFlags.MemoryRegion[3], SourceMemoryRegion, Size);
+							lockFlagsMenuBackUpFlags(GF);
 							break;
 						}
 						case LOCK_LSW_FLAGS:
 						{
 							// Back up the main memory
-							uint32_t Size = 0x400;
-							uint32_t Offset = 0xDB8;
-							
-							bool LockLSWs = lockFlagsMenuBackUpStandardFlags(
-								LockFlags.MemoryRegionLocked[4], 
-								LockFlags.MemoryRegion[4], 
-								Size, 
-								Offset);
-							
-							// Update the area for the flags to be locked
-							// Only update if the bool is currently on
-							if (LockLSWs)
-							{
-								strcpy(LockFlags.LSWsAreaLocked, ttyd::seq_mapchange::NextArea);
-							}
+							lockFlagsMenuBackUpFlags(LSW);
 							break;
 						}
 						case LOCK_LSWF_FLAGS:
 						{
 							// Back up the main memory
-							uint32_t Size = 0x40;
-							uint32_t Offset = 0xD78;
-							
-							bool LockLSWFs = lockFlagsMenuBackUpStandardFlags(
-								LockFlags.MemoryRegionLocked[5], 
-								LockFlags.MemoryRegion[5], 
-								Size, 
-								Offset);
-							
-							// Update the area for the flags to be locked
-							// Only update if the bool is currently on
-							if (LockLSWFs)
-							{
-								strcpy(LockFlags.LSWFsAreaLocked, ttyd::seq_mapchange::NextArea);
-							}
+							lockFlagsMenuBackUpFlags(LSWF);
 							break;
 						}
 						case SET_NEW_LSW_AREA:
 						{
-							uint32_t Size = 0x400;
-							uint32_t Offset = 0xDB8;
-							
-							lockFlagsMenuSetNewArea(LockFlags.MemoryRegionLocked[4], 
-								LockFlags.MemoryRegion[4], 
-								LockFlags.LSWsAreaLocked, 
-								Size, 
-								Offset);
+							// Back up the main memory and set the new area
+							lockFlagsMenuSetNewArea(LSW);
 							break;
 						}
 						case SET_NEW_LSWF_AREA:
 						{
-							uint32_t Size = 0x40;
-							uint32_t Offset = 0xD78;
-							
-							lockFlagsMenuSetNewArea(LockFlags.MemoryRegionLocked[5], 
-								LockFlags.MemoryRegion[5], 
-								LockFlags.LSWFsAreaLocked, 
-								Size, 
-								Offset);
+							// Back up the main memory and set the new area
+							lockFlagsMenuSetNewArea(LSWF);
 							break;
 						}
 						default:

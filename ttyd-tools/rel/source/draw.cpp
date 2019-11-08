@@ -3128,7 +3128,7 @@ void drawCheatsLockFlags()
 	
 	// Get the text for which area has its LSW flags locked
 	char CurrentAreaLockedText[64];
-	Color = getAreaText(CurrentAreaLockedText, LockFlags.LSWsAreaLocked, LockFlags.MemoryRegionLocked[4]);
+	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSW), LockFlags.MemoryRegionLocked[LSW]);
 	
 	// Draw the text for which area has its flags locked
 	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);
@@ -3141,7 +3141,7 @@ void drawCheatsLockFlags()
 	PosY -= 20;
 	
 	// Get the text for which area has its LSWF flags locked
-	Color = getAreaText(CurrentAreaLockedText, LockFlags.LSWFsAreaLocked, LockFlags.MemoryRegionLocked[5]);
+	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSWF), LockFlags.MemoryRegionLocked[LSWF]);
 	
 	// Draw the text for which area has its flags locked
 	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);

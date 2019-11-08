@@ -129,6 +129,16 @@ enum CHEATS_LOCK_FLAGS_SELECTION
 	SET_NEW_LSWF_AREA,
 };
 
+enum CHEATS_LOCK_FLAGS_INDEXES
+{
+	GSW = 0,
+	GSWF,
+	GW,
+	GF,
+	LSW,
+	LSWF,
+};
+
 enum CHEATS_MANAGE_FLAGS_SELECTION
 {
 	SET_GSW = 1,
@@ -606,20 +616,31 @@ struct ClearCacheForBattlesStruct
 
 struct LockFlagsStruct
 {
-	/*
-	uint8_t *GSWsMemory; // 0x800
-	uint8_t *GSWFsMemory; // 0x400
-	uint8_t *GWsMemory; // 0x80
-	uint8_t *GFsMemory; // 0xC
-	uint8_t *LSWsMemory; // 0x400
-	uint8_t *LSWFsMemory; // 0x40
-	*/
-	
 	bool MemoryRegionLocked[6];
 	uint8_t *MemoryRegion[6];
-	uint32_t SequencePosition;
-	char LSWsAreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
-	char LSWFsAreaLocked[4]; // 3 bytes for the area, 1 byte for NULL
+	uint16_t Size[6];
+	uint16_t Offset[6];
+	char AreaLocked[2][4]; // 3 bytes for the area, 1 byte for NULL
+	uint16_t SequencePosition;
+	
+	LockFlagsStruct()
+	{
+		Size[GSW] 		= 0x800;
+		Offset[GSW] 	= 0x578;
+		
+		Size[GSWF] 		= 0x400;
+		Offset[GSWF] 	= 0x178;
+		
+		Size[GW] 		= 0x80;
+		
+		Size[GF] 		= 0xC;
+		
+		Size[LSW] 		= 0x400;
+		Offset[LSW] 	= 0xDB8;
+		
+		Size[LSWF] 		= 0x40;
+		Offset[LSWF] 	= 0xD78;
+	}
 };
 
 struct TrickDisplay

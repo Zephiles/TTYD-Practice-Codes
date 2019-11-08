@@ -266,80 +266,115 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 	}
 }
 
-bool lockFlagsMenuBackUpStandardFlags(bool &flag, uint8_t *&memoryRegion, uint32_t size, uint32_t offset)
+void lockFlagsMenuBackUpFlags(uint32_t index)
 {
 	// Flip the bool
-	bool FlagsLocked = !flag;
-	flag = FlagsLocked;
+	bool *Flag = &LockFlags.MemoryRegionLocked[index];
+	bool FlagsLocked = !*Flag;
+	*Flag = FlagsLocked;
 	
-	uint8_t *tempMemory = memoryRegion;
+	uint8_t *tempMemory = LockFlags.MemoryRegion[index];
 	if (FlagsLocked)
 	{
 		// Allocate memory for the flags if memory is not allocated already
+		uint32_t Size = LockFlags.Size[index];
 		if (!tempMemory)
 		{
-			tempMemory = new uint8_t[size];
-			memoryRegion = tempMemory;
+			tempMemory = new uint8_t[Size];
+			LockFlags.MemoryRegion[index] = tempMemory;
 		}
 		
 		// Back up the memory
-		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + offset);
-		memcpy(&tempMemory[0], MemoryStart, size);
+		if ((index == GW) || (index == GF))
+		{
+			// Back up the GWs or GFs
+			ttyd::evtmgr::EvtWork *EventWork = ttyd::evtmgr::evtGetWork();
+			void *SourceMemoryStart;
+			
+			if (index == GW)
+			{
+				// Back up the GWs
+				SourceMemoryStart = EventWork->gwData;
+			}
+			else // index == GF
+			{
+				// Back up the GFs
+				SourceMemoryStart = EventWork->gfData;
+			}
+			
+			memcpy(&tempMemory[0], SourceMemoryStart, Size);
+		}
+		else
+		{
+			// Back up the standard flags
+			uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
+			void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + LockFlags.Offset[index]);
+			memcpy(&tempMemory[0], MemoryStart, Size);
+		}
+		
+		// Do other stuff depending on the index
+		switch (index)
+		{
+			case GSW:
+			{
+				// Back up the Sequence Position
+				LockFlags.SequencePosition = static_cast<uint16_t>(getSequencePosition());
+				break;
+			}
+			case LSW:
+			case LSWF:
+			{
+				// Update the area for the flags to be locked
+				char *Area = lockFlagsMenuGetAreaLockedString(index);
+				strcpy(Area, ttyd::seq_mapchange::NextArea);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 	}
 	else if (tempMemory)
 	{
 		// Clear the memory for the flags if memory is currently allocated for them
 		delete[] (tempMemory);
-		memoryRegion = nullptr;
+		LockFlags.MemoryRegion[index] = nullptr;
 	}
-	
-	return FlagsLocked;
 }
 
-bool lockFlagsMenuBackUpGWOrGFFlags(bool &flag, uint8_t *&dstMemoryRegion, void *srcMemoryRegion, uint32_t size)
-{
-	// Flip the bool
-	bool FlagsLocked = !flag;
-	flag = FlagsLocked;
-	
-	uint8_t *tempMemory = dstMemoryRegion;
-	if (FlagsLocked)
-	{
-		// Allocate memory for the flags if memory is not allocated already
-		if (!tempMemory)
-		{
-			tempMemory = new uint8_t[size];
-			dstMemoryRegion = tempMemory;
-		}
-		
-		// Back up the memory
-		memcpy(&tempMemory[0], srcMemoryRegion, size);
-	}
-	else if (tempMemory)
-	{
-		// Clear the memory for the flags if memory is currently allocated for them
-		delete[] (tempMemory);
-		dstMemoryRegion = nullptr;
-	}
-	
-	return FlagsLocked;
-}
-
-bool lockFlagsMenuSetNewArea(bool flag, uint8_t *memoryRegion, char *area, uint32_t size, uint32_t offset)
+void lockFlagsMenuSetNewArea(uint32_t index)
 {
 	// Only run if the bool is currently on
-	if (flag && memoryRegion)
+	bool Flag = LockFlags.MemoryRegionLocked[index];
+	uint8_t *tempMemory = LockFlags.MemoryRegion[index];
+	
+	if (Flag && tempMemory)
 	{
 		// Back up the LSWFs
 		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + offset);
-		memcpy(&memoryRegion[0], MemoryStart, size);
+		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + LockFlags.Offset[index]);
+		memcpy(&tempMemory[0], MemoryStart, LockFlags.Size[index]);
 		
 		// Update the area for the flags to be locked
-		strcpy(area, ttyd::seq_mapchange::NextArea);
+		char *Area = lockFlagsMenuGetAreaLockedString(index);
+		strcpy(Area, ttyd::seq_mapchange::NextArea);
 	}
-	return flag;
+}
+
+char *lockFlagsMenuGetAreaLockedString(uint32_t index)
+{
+	uint32_t AreaLockedIndex;
+	if (index == LSW)
+	{
+		AreaLockedIndex = 0;
+	}
+	else
+	{
+		AreaLockedIndex = 1;
+	}
+	
+	return LockFlags.AreaLocked[AreaLockedIndex];
 }
 
 const char *getItemName(int16_t item)
