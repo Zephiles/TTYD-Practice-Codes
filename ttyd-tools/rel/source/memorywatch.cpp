@@ -126,15 +126,18 @@ const char *getValueString(int32_t slot)
 			uint32_t FPS = getCurrentFPS();
 			
 			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
-			bool ValueIsPositive = true;
 			
 			// Check if the value is negative
 			if (CurrentTime < 0)
 			{
-				ValueIsPositive = false;
-				
 				// Convert the number to positive
 				CurrentTime = -CurrentTime;
+				
+				Format = "-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
+			}
+			else
+			{
+				Format = "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
 			}
 			
 			// Handle the value as unsigned
@@ -144,15 +147,6 @@ const char *getValueString(int32_t slot)
 			uint32_t Minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
 			uint32_t Second = (CurrentTimeUnsigned / FPS) % 60;
 			uint32_t Frame = CurrentTimeUnsigned % FPS;
-			
-			if (ValueIsPositive)
-			{
-				Format = "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
-			}
-			else
-			{
-				Format = "-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
-			}
 			
 			sprintf(tempDisplayBuffer,
 				Format,
