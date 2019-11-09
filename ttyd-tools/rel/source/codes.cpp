@@ -833,22 +833,25 @@ void checkIfAreaFlagsShouldBeCleared()
 
 void lockFlags()
 {
-	uint32_t Size = sizeof(LockFlags.MemoryRegionLocked) / sizeof(LockFlags.MemoryRegionLocked[0]);
+	uint32_t Size = sizeof(LockFlags.Region) / sizeof(LockFlags.Region[0]);
 	for (uint32_t Index = 0; Index < Size; Index++)
 	{
-		if (!LockFlags.MemoryRegionLocked[Index])
+		// Get the region to work with
+		LockFlagsRegion *Region = &LockFlags.Region[Index];
+		
+		if (!Region->MemoryRegionLocked)
 		{
 			continue;
 		}
 		
-		uint8_t *tempMemory = LockFlags.MemoryRegion[Index];
+		uint8_t *tempMemory = Region->MemoryRegion;
 		if (!tempMemory)
 		{
 			continue;
 		}
 		
 		// Restore the memory
-		uint32_t Size = LockFlags.Size[Index];
+		uint32_t Size = Region->Size;
 		if ((Index == GW) || (Index == GF))
 		{
 			// Restore the GWs or GFs
@@ -898,7 +901,7 @@ void lockFlags()
 			
 			// Restore the standard flags
 			uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-			void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + LockFlags.Offset[Index]);
+			void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + Region->Offset);
 			memcpy(MemoryStart, &tempMemory[0], Size);
 		}
 	}

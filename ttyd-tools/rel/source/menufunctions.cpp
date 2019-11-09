@@ -270,20 +270,22 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 
 void lockFlagsMenuBackUpFlags(uint32_t index)
 {
-	// Flip the bool
-	bool *Flag = &LockFlags.MemoryRegionLocked[index];
-	bool FlagsLocked = !*Flag;
-	*Flag = FlagsLocked;
+	// Get the region to work with
+	LockFlagsRegion *Region = &LockFlags.Region[index];
 	
-	uint8_t *tempMemory = LockFlags.MemoryRegion[index];
+	// Flip the bool
+	bool FlagsLocked = !Region->MemoryRegionLocked;
+	Region->MemoryRegionLocked = FlagsLocked;
+	
+	uint8_t *tempMemory = Region->MemoryRegion;
 	if (FlagsLocked)
 	{
 		// Allocate memory for the flags if memory is not allocated already
-		uint32_t Size = LockFlags.Size[index];
+		uint32_t Size = Region->Size;
 		if (!tempMemory)
 		{
 			tempMemory = new uint8_t[Size];
-			LockFlags.MemoryRegion[index] = tempMemory;
+			Region->MemoryRegion = tempMemory;
 		}
 		
 		// Back up the memory
@@ -310,7 +312,7 @@ void lockFlagsMenuBackUpFlags(uint32_t index)
 		{
 			// Back up the standard flags
 			uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-			void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + LockFlags.Offset[index]);
+			void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + Region->Offset);
 			memcpy(&tempMemory[0], MemoryStart, Size);
 		}
 		
@@ -341,22 +343,25 @@ void lockFlagsMenuBackUpFlags(uint32_t index)
 	{
 		// Clear the memory for the flags if memory is currently allocated for them
 		delete[] (tempMemory);
-		LockFlags.MemoryRegion[index] = nullptr;
+		Region->MemoryRegion = nullptr;
 	}
 }
 
 void lockFlagsMenuSetNewArea(uint32_t index)
 {
+	// Get the region to work with
+	LockFlagsRegion *Region = &LockFlags.Region[index];
+	
 	// Only run if the bool is currently on
-	bool Flag = LockFlags.MemoryRegionLocked[index];
-	uint8_t *tempMemory = LockFlags.MemoryRegion[index];
+	bool Flag = Region->MemoryRegionLocked;
+	uint8_t *tempMemory = Region->MemoryRegion;
 	
 	if (Flag && tempMemory)
 	{
 		// Back up the LSWFs
 		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
-		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + LockFlags.Offset[index]);
-		memcpy(&tempMemory[0], MemoryStart, LockFlags.Size[index]);
+		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + Region->Offset);
+		memcpy(&tempMemory[0], MemoryStart, Region->Size);
 		
 		// Update the area for the flags to be locked
 		char *Area = lockFlagsMenuGetAreaLockedString(index);

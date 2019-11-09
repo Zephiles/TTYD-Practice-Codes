@@ -3084,10 +3084,10 @@ void drawCheatsLockFlags()
 	
 	const char *String;
 	
-	uint32_t Size = sizeof(LockFlags.MemoryRegionLocked) / sizeof(LockFlags.MemoryRegionLocked[0]);
+	uint32_t Size = sizeof(LockFlags.Region) / sizeof(LockFlags.Region[0]);
 	for (uint32_t i = 0; i < Size; i++)
 	{
-		getYesNoTextAndColor(LockFlags.MemoryRegionLocked[i], &String, &Color);
+		getYesNoTextAndColor(LockFlags.Region[i].MemoryRegionLocked, &String, &Color);
 		drawText(String, PosX + 120, PosY, Alpha, Color, Scale);
 		PosY -= 20;
 	}
@@ -3128,7 +3128,7 @@ void drawCheatsLockFlags()
 	
 	// Get the text for which area has its LSW flags locked
 	char CurrentAreaLockedText[64];
-	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSW), LockFlags.MemoryRegionLocked[LSW]);
+	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSW), LockFlags.Region[LSW].MemoryRegionLocked);
 	
 	// Draw the text for which area has its flags locked
 	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);
@@ -3141,7 +3141,7 @@ void drawCheatsLockFlags()
 	PosY -= 20;
 	
 	// Get the text for which area has its LSWF flags locked
-	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSWF), LockFlags.MemoryRegionLocked[LSWF]);
+	Color = getAreaText(CurrentAreaLockedText, lockFlagsMenuGetAreaLockedString(LSWF), LockFlags.Region[LSWF].MemoryRegionLocked);
 	
 	// Draw the text for which area has its flags locked
 	drawText(CurrentAreaLockedText, PosX, PosY, Alpha, Color, Scale);
@@ -3779,6 +3779,12 @@ void drawFrameCounter()
 	int32_t PosY 		= -160;
 	float Scale 		= 0.8;
 	
+	#ifdef TTYD_JP
+	PosX 	+= 5;
+	PosY 	+= 2;
+	Scale 	+= 0.05;
+	#endif
+	
 	// Move the timer up if Mario's Coordinates are currently displayed
 	// Don't move up if the input display is active
 	if (!Displays[BUTTON_INPUT_DISPLAY])
@@ -3800,12 +3806,6 @@ void drawFrameCounter()
 		PosY += 2;
 		#endif
 	}
-	
-	#ifdef TTYD_JP
-	PosX 	+= 5;
-	PosY 	+= 2;
-	Scale 	+= 0.05;
-	#endif
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	

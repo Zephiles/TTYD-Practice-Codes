@@ -615,32 +615,37 @@ struct ClearCacheForBattlesStruct
 	bool PartnerStatsShouldBeCleared;
 };
 
+struct LockFlagsRegion
+{
+	uint8_t *MemoryRegion;
+	uint16_t Size;
+	uint16_t Offset;
+	bool MemoryRegionLocked;
+};
+
 struct LockFlagsStruct
 {
-	bool MemoryRegionLocked[6];
-	uint8_t *MemoryRegion[6];
-	uint16_t Size[6];
-	uint16_t Offset[6];
+	LockFlagsRegion Region[6];
 	char AreaLocked[2][4]; // 3 bytes for the area, 1 byte for NULL
 	uint16_t SequencePosition;
 	
 	LockFlagsStruct()
 	{
-		Size[GSW] 		= 0x800;
-		Offset[GSW] 	= 0x578;
+		Region[GSW].Size 		= 0x800;
+		Region[GSW].Offset 		= 0x578;
 		
-		Size[GSWF] 		= 0x400;
-		Offset[GSWF] 	= 0x178;
+		Region[GSWF].Size 		= 0x400;
+		Region[GSWF].Offset 	= 0x178;
 		
-		Size[GW] 		= 0x80;
+		Region[GW].Size 		= 0x80;
 		
-		Size[GF] 		= 0xC;
+		Region[GF].Size 		= 0xC;
 		
-		Size[LSW] 		= 0x400;
-		Offset[LSW] 	= 0xDB8;
+		Region[LSW].Size 		= 0x400;
+		Region[LSW].Offset 		= 0xDB8;
 		
-		Size[LSWF] 		= 0x40;
-		Offset[LSWF] 	= 0xD78;
+		Region[LSWF].Size 		= 0x40;
+		Region[LSWF].Offset 	= 0xD78;
 	}
 };
 
