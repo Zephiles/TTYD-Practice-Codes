@@ -2883,7 +2883,7 @@ void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description
 	// ButtonArray = nullptr;
 }
 
-void drawChangeButtonCombo(uint16_t &currentButtonCombo)
+void drawChangeButtonCombo(uint16_t *currentButtonCombo)
 {
 	// Check for if this menu should be closed or not
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
@@ -2963,7 +2963,7 @@ void drawChangeButtonCombo(uint16_t &currentButtonCombo)
 	// Make sure the button combo isn't L + Start
 	if (ButtonInput != (PAD_L | PAD_START))
 	{
-		currentButtonCombo = static_cast<uint16_t>(ButtonInput);
+		*currentButtonCombo = static_cast<uint16_t>(ButtonInput);
 	}
 	
 	// Close this menu
@@ -3669,14 +3669,14 @@ void drawWarpIndexEntranceList()
 	}
 }
 
-void drawOnScreenTimerButtonCombos()
+void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo)
 {
 	int32_t PosY = 40;
 	uint32_t tempOnScreenTimerOptionsSize = OnScreenTimerOptionsSize;
 	
 	for (uint32_t i = 0; i < tempOnScreenTimerOptionsSize; i++)
 	{
-		drawButtonCombo(OnScreenTimer.ButtonCombo[i], PosY, OnScreenTimerOptions[i]);
+		drawButtonCombo(buttonCombo[i], PosY, OnScreenTimerOptions[i]);
 		PosY -= 60;
 	}
 }
@@ -3726,10 +3726,40 @@ void drawSequenceInPauseMenu()
 
 void drawOnScreenTimer()
 {
+	uint32_t TextColor 	= 0xFFFFFFFF;
+	uint8_t Alpha 		= 0xFF;
+	int32_t PosX 		= 105;
+	int32_t PosY 		= -160;
+	float Scale 		= 0.8;
+	
+	#ifdef TTYD_JP
+	PosX 	+= 5;
+	PosY 	+= 2;
+	Scale 	+= 0.05;
+	#endif
+	
+	// Move the timer up if Mario's Coordinates are currently displayed
+	// Don't move up if the input display is active
+	if (!Displays[BUTTON_INPUT_DISPLAY])
+	{
+		if (Displays[MARIO_COORDINATES] || 
+			Displays[PALACE_SKIP] || 
+			Displays[YOSHI_SKIP])
+		{
+			PosY += 20;
+		}
+	}
+	
+	char *CurrentTimeString = getTimeString(DisplayBuffer, OnScreenTimer.MainTimer);
+	drawText(CurrentTimeString, PosX, PosY, Alpha, TextColor, Scale);
+}
+
+void drawFrameCounter()
+{
 	// Get the proper FPS for the timer
 	uint32_t FPS = getCurrentFPS();
 	
-	uint32_t tempTimer = OnScreenTimer.MainTimer;
+	uint32_t tempTimer = FrameCounter.MainTimer;
 	uint32_t hour = tempTimer / 3600 / FPS;
 	uint32_t minute = (tempTimer / 60 / FPS) % 60;
 	uint32_t second = (tempTimer / FPS) % 60;
@@ -3761,6 +3791,16 @@ void drawOnScreenTimer()
 		}
 	}
 	
+	// Move the timer up if the On-Screen Timer is displayed
+	if (Displays[ONSCREEN_TIMER])
+	{
+		PosY += 20;
+		
+		#ifdef TTYD_JP
+		PosY += 2;
+		#endif
+	}
+	
 	#ifdef TTYD_JP
 	PosX 	+= 5;
 	PosY 	+= 2;
@@ -3769,9 +3809,9 @@ void drawOnScreenTimer()
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	
-	if (!OnScreenTimer.TimerPaused)
+	if (!FrameCounter.TimerPaused)
 	{
-		OnScreenTimer.MainTimer++;
+		FrameCounter.MainTimer++;
 	}
 }
 

@@ -1508,6 +1508,7 @@ const char *BattlesStatusesLines[] =
 const char *DisplaysLines[] = 
 {
 	"On-Screen Timer",
+	"Frame Counter",
 	"Mario's Coordinates",
 	"Mario's Speed XZ",
 	"Jump Storage",
@@ -1816,12 +1817,13 @@ uint8_t DisplaysOrder[] =
 	MARIO_SPEED_XZ,
 	DPAD_OPTIONS_DISPLAY,
 	BLIMP_TICKET_SKIP,
+	ONSCREEN_TIMER_FRAME_COUNTER,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[30];
 struct Cheats Cheat[24];
-bool Displays[12];
+bool Displays[13];
 char DisplayBuffer[256];
 char HeapBuffer[512];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1843,6 +1845,7 @@ struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
+struct OnScreenTimerDisplayFrameCounter FrameCounter;
 struct DisplayActionCommandsTiming DisplayActionCommands;
 struct MemoryCardStruct MenuSettings;
 struct WarpByEventStruct WarpByEvent;
@@ -1984,7 +1987,6 @@ void setInitialSettings()
 	// Cheat[DISABLE_MENU_SOUNDS].Active 		= false;
 	// Cheat[BOBBERY_EARLY].Active 				= false;
 	Cheat[FORCE_ITEM_DROP].Active 				= false;
-	Cheat[LOCK_FLAGS].Active 					= false;
 	
 	// Set the Cheats button combos
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
@@ -2003,22 +2005,25 @@ void setInitialSettings()
 	Cheat[LEVITATE].ButtonCombo 				= PAD_L | PAD_A;
 	
 	// Set the Displays bools
-	// Displays[ONSCREEN_TIMER] 		= true;
-	// Displays[MARIO_COORDINATES] 		= true;
-	// Displays[MARIO_SPEED_XZ] 		= true;
-	// Displays[JUMP_STORAGE] 			= true;
-	// Displays[BUTTON_INPUT_DISPLAY] 	= true;
-	// Displays[STICK_ANGLE] 			= true;
-	// Displays[DPAD_OPTIONS_DISPLAY] 	= true;
-	Displays[GUARD_SUPERGUARD_TIMINGS] 	= true;
-	// Displays[ART_ATTACK_HITBOXES] 	= true;
-	// Displays[YOSHI_SKIP] 			= true;
-	// Displays[PALACE_SKIP] 			= true;
-	// Displays[BLIMP_TICKET_SKIP] 		= true;
+	// Displays[ONSCREEN_TIMER] 				= true;
+	// Displays[ONSCREEN_TIMER_FRAME_COUNTER] 	= true;
+	// Displays[MARIO_COORDINATES] 				= true;
+	// Displays[MARIO_SPEED_XZ] 				= true;
+	// Displays[JUMP_STORAGE] 					= true;
+	// Displays[BUTTON_INPUT_DISPLAY] 			= true;
+	// Displays[STICK_ANGLE] 					= true;
+	// Displays[DPAD_OPTIONS_DISPLAY] 			= true;
+	Displays[GUARD_SUPERGUARD_TIMINGS] 			= true;
+	// Displays[ART_ATTACK_HITBOXES] 			= true;
+	// Displays[YOSHI_SKIP] 					= true;
+	// Displays[PALACE_SKIP] 					= true;
+	// Displays[BLIMP_TICKET_SKIP] 				= true;
 	
 	// Set the Displays button combos
 	OnScreenTimer.ButtonCombo[START_PAUSE_RESUME] 	= PAD_L | PAD_Z;
 	OnScreenTimer.ButtonCombo[RESET] 				= PAD_L | PAD_DPAD_RIGHT;
+	FrameCounter.ButtonCombo[START_PAUSE_RESUME] 	= PAD_L | PAD_Z;
+	FrameCounter.ButtonCombo[RESET] 				= PAD_L | PAD_DPAD_RIGHT;
 }
 
 }

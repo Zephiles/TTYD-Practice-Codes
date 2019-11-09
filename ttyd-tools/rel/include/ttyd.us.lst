@@ -1895,16 +1895,6 @@
 // w_atan2.c
 802725A0:atan2
 
-// OSLink.c
-// 8029A340:OSNotifyLink
-// 8029A344:OSNotifyUnlink
-// 8029A348:Relocate
-// 8029A604:Link
-8029A8E4:OSLink
-// 8029A908:Undo
-// 8029AB40:OSUnlink
-// 8029AD14:__OSModuleInit
-
 // OSAlloc.c
 // text
 // 80296400:DLInsert
@@ -1938,6 +1928,23 @@
 // 80296B8C:L2GlobalInvalidate
 // 80296C24:DMAErrorHandler
 // 80296D84:__OSCacheInit
+
+// OSLink.c
+// 8029A340:OSNotifyLink
+// 8029A344:OSNotifyUnlink
+// 8029A348:Relocate
+// 8029A604:Link
+8029A8E4:OSLink
+// 8029A908:Undo
+// 8029AB40:OSUnlink
+// 8029AD14:__OSModuleInit
+
+// OSTime.c
+8029D84C:OSGetTime
+// 8029D864:OSGetTick
+// 8029D86C:__OSGetSystemTime
+// 8029D8D0:GetDates
+// 8029DA6C:OSTicksToCalendarTime
 
 // CARDBios.c
 // 802AB4A4:__CARDDefaultApiCallback

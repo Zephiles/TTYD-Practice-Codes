@@ -3,7 +3,6 @@
 #include "commonfunctions.h"
 #include "menufunctions.h"
 
-#include <gc/os.h>
 #include <ttyd/system.h>
 
 #include <cstdio>
@@ -121,41 +120,8 @@ const char *getValueString(int32_t slot)
 		}
 		case time:
 		{
-			uint32_t ConsoleBusSpeed = gc::os::OSBusClock;
-			uint32_t TimeBase = ConsoleBusSpeed / 4;
-			uint32_t FPS = getCurrentFPS();
-			
-			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address) / (TimeBase / FPS);
-			
-			// Check if the value is negative
-			if (CurrentTime < 0)
-			{
-				// Convert the number to positive
-				CurrentTime = -CurrentTime;
-				
-				Format = "-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
-			}
-			else
-			{
-				Format = "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
-			}
-			
-			// Handle the value as unsigned
-			uint64_t CurrentTimeUnsigned = static_cast<uint64_t>(CurrentTime);
-			
-			uint32_t Hour = CurrentTimeUnsigned / 3600 / FPS;
-			uint32_t Minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
-			uint32_t Second = (CurrentTimeUnsigned / FPS) % 60;
-			uint32_t Frame = CurrentTimeUnsigned % FPS;
-			
-			sprintf(tempDisplayBuffer,
-				Format,
-				Hour,
-				Minute,
-				Second,
-				Frame);
-			
-			return tempDisplayBuffer;
+			int64_t CurrentTime = *reinterpret_cast<int64_t *>(Address);
+			return getTimeString(tempDisplayBuffer, CurrentTime);
 		}
 		case s8:
 		{

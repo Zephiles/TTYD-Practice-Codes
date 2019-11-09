@@ -23,6 +23,7 @@ void lockFlags();
 
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
+void displayFrameCounter();
 void displayMarioCoordinatesBoolCheck();
 void displayMarioSpeedXZ();
 void displayJumpStorageDetails();

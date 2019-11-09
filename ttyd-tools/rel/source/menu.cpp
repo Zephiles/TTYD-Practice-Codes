@@ -2469,6 +2469,7 @@ void menuCheckButton()
 					switch (tempCurrentMenuOption)
 					{
 						case ONSCREEN_TIMER:
+						case ONSCREEN_TIMER_FRAME_COUNTER:
 						{
 							MenuToEnter = DISPLAYS_ONSCREEN_TIMER;
 							break;
@@ -2520,9 +2521,24 @@ void menuCheckButton()
 							{
 								case ONSCREEN_TIMER_TURN_ON_OR_OFF:
 								{
-									// Flip the bool for the current cheat
-									bool DisplayActive = Displays[tempMenuSelectedOption];
-									Displays[tempMenuSelectedOption] = !DisplayActive;
+									// Flip the bool for the current display
+									bool DisplayActive = !Displays[tempMenuSelectedOption];
+									Displays[tempMenuSelectedOption] = DisplayActive;
+									
+									if (DisplayActive)
+									{
+										// Reset the timer
+										if (tempMenuSelectedOption == ONSCREEN_TIMER)
+										{
+											OnScreenTimer.MainTimer = 0;
+											OnScreenTimer.TimerPaused = true;
+										}
+										else // tempMenuSelectedOption == ONSCREEN_TIMER_FRAME_COUNTER
+										{
+											FrameCounter.MainTimer = 0;
+											FrameCounter.TimerPaused = true;
+										}
+									}
 									break;
 								}
 								case CHANGE_START_PAUSE_RESUME_BUTTON_COMBO:
@@ -2542,7 +2558,7 @@ void menuCheckButton()
 						}
 						default:
 						{
-							// Currently changing a cheat button combo, so do nothing
+							// Currently changing a display button combo, so do nothing
 							break;
 						}
 					}
@@ -3271,7 +3287,7 @@ void drawMenu()
 			
 			if (tempSelectedOption == CHANGE_BUTTON_COMBO)
 			{
-				drawChangeButtonCombo(*CurrentButtonCombo);
+				drawChangeButtonCombo(CurrentButtonCombo);
 			}
 			break;
 		}
@@ -3641,14 +3657,23 @@ void drawMenu()
 			int32_t PosY = 100;
 			drawBoolOnOrOff(CurrentDisplay, CurrentLine, PosY);
 			
+			uint16_t *ButtonComboSource;
+			if (tempMenuSelectedOption == ONSCREEN_TIMER)
+			{
+				ButtonComboSource = OnScreenTimer.ButtonCombo;
+			}
+			else // tempMenuSelectedOption == ONSCREEN_TIMER_FRAME_COUNTER
+			{
+				ButtonComboSource = FrameCounter.ButtonCombo;
+			}
+			
 			// Draw each button combo
-			drawOnScreenTimerButtonCombos();
+			drawOnScreenTimerButtonCombos(ButtonComboSource);
 			
 			if ((tempSelectedOption >= CHANGE_START_PAUSE_RESUME_BUTTON_COMBO) && 
 				(tempSelectedOption <= CHANGE_RESET_BUTTON_COMBO))
 			{
-				drawChangeButtonCombo(OnScreenTimer.ButtonCombo[
-					tempSelectedOption - OnScreenTimerOptionsSize]);
+				drawChangeButtonCombo(&ButtonComboSource[tempSelectedOption - OnScreenTimerOptionsSize]);
 			}
 			break;
 		}

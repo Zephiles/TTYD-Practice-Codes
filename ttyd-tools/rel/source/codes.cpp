@@ -948,6 +948,27 @@ void displayOnScreenTimer()
 	drawFunctionOnDebugLayer(drawOnScreenTimer);
 }
 
+void displayFrameCounter()
+{
+	if (!Displays[ONSCREEN_TIMER_FRAME_COUNTER])
+	{
+		return;
+	}
+	
+	if (checkButtonCombo(FrameCounter.ButtonCombo[START_PAUSE_RESUME]))
+	{
+		FrameCounter.TimerPaused = !FrameCounter.TimerPaused;
+	}
+	else if (checkButtonCombo(FrameCounter.ButtonCombo[RESET]))
+	{
+		// Reset the timer
+		FrameCounter.TimerPaused = true;
+		FrameCounter.MainTimer = 0;
+	}
+	
+	drawFunctionOnDebugLayer(drawFrameCounter);
+}
+
 void displayMarioCoordinatesBoolCheck()
 {
 	if (!Displays[MARIO_COORDINATES])

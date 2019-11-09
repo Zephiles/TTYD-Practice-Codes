@@ -747,6 +747,9 @@ void Mod::run()
 	// Display the title screen and file select screen info
 	displayTitleScreenAndFileSelectScreenInfo();
 	
+	// Update the On-Screen Timer variables if the display is on
+	updateOnScreenTimerVars();
+	
 	// Check if the menu should be enabled or disabled
 	// Prevent checking it if currently in the process of spawning an item
 	bool CurrentlySpawningItem = SpawnItem.InAdjustableValueMenu;
@@ -809,6 +812,7 @@ void Mod::run()
 			if (!CurrentlySpawningItem)
 			{
 				displayOnScreenTimer();
+				displayFrameCounter();
 				displayJumpStorageDetails();
 			}
 			

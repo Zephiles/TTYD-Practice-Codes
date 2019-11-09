@@ -343,6 +343,13 @@ int32_t saveSettings()
 		Settings->DisplaysButtonCombos[ONSCREEN_TIMER + i] = OnScreenTimer.ButtonCombo[i];
 	}
 	
+	// Copy the Frame Counter button combos
+	uint32_t FrameCounterSize = sizeof(FrameCounter.ButtonCombo) / sizeof(FrameCounter.ButtonCombo[0]);
+	for (uint32_t i = 0; i < FrameCounterSize; i++)
+	{
+		Settings->DisplaysButtonCombos[OnScreenTimerSize + ONSCREEN_TIMER + i] = FrameCounter.ButtonCombo[i];
+	}
+	
 	// Copy the Memory Watches
 	memcpy(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
 	
@@ -470,6 +477,19 @@ int32_t loadSettings()
 		if (ButtonCombo)
 		{
 			OnScreenTimer.ButtonCombo[i] = ButtonCombo;
+		}
+	}
+	
+	// Get the Frame Counter button combos
+	uint32_t FrameCounterSize = sizeof(FrameCounter.ButtonCombo) / sizeof(FrameCounter.ButtonCombo[0]);
+	for (uint32_t i = 0; i < FrameCounterSize; i++)
+	{
+		uint16_t ButtonCombo = Settings->DisplaysButtonCombos[OnScreenTimerSize + ONSCREEN_TIMER + i];
+		
+		// Make sure the button combo is valid, so that new button combos are not overwritten with 0
+		if (ButtonCombo)
+		{
+			FrameCounter.ButtonCombo[i] = ButtonCombo;
 		}
 	}
 	

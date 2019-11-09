@@ -4,6 +4,8 @@
 #include "codes.h"
 #include "memorywatch.h"
 
+#include <gc/os.h>
+#include <gc/OSTime.h>
 #include <ttyd/win_main.h>
 #include <ttyd/mariost.h>
 #include <ttyd/win_item.h>
@@ -4116,6 +4118,67 @@ void getStickAngleString(char *stringOut)
 		StickAngle, 
 		StickXYAngles[0], 
 		StickXYAngles[1]);
+}
+
+char *getTimeString(char *stringOut, int64_t time)
+{
+	uint32_t ConsoleBusSpeed = gc::os::OSBusClock;
+	uint32_t TimeBase = ConsoleBusSpeed / 4;
+	uint32_t FPS = getCurrentFPS();
+	
+	int64_t CurrentTime = time / (TimeBase / FPS);
+	
+	// Check if the value is negative
+	const char *Format;
+	if (CurrentTime < 0)
+	{
+		// Convert the number to positive
+		CurrentTime = -CurrentTime;
+		
+		Format = "-%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
+	}
+	else
+	{
+		Format = "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32;
+	}
+	
+	// Handle the value as unsigned
+	uint64_t CurrentTimeUnsigned = static_cast<uint64_t>(CurrentTime);
+	
+	uint32_t Hour = CurrentTimeUnsigned / 3600 / FPS;
+	uint32_t Minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
+	uint32_t Second = (CurrentTimeUnsigned / FPS) % 60;
+	uint32_t Frame = CurrentTimeUnsigned % FPS;
+	
+	sprintf(stringOut,
+		Format,
+		Hour,
+		Minute,
+		Second,
+		Frame);
+	
+	return stringOut;
+}
+
+void updateOnScreenTimerVars()
+{
+	if (!Displays[ONSCREEN_TIMER])
+	{
+		return;
+	}
+	
+	int64_t CurrentFrameTime = gc::OSTime::OSGetTime();
+	
+	if (!OnScreenTimer.TimerPaused && 
+		(!MenuVar.MenuIsDisplayed || MenuVar.HideMenu) && 
+		!SpawnItem.InAdjustableValueMenu && 
+		!MenuVar.ChangingCheatButtonCombo)
+	{
+		int64_t IncrementAmount = CurrentFrameTime - OnScreenTimer.PreviousFrameTime;
+		OnScreenTimer.MainTimer += IncrementAmount;
+	}
+	
+	OnScreenTimer.PreviousFrameTime = CurrentFrameTime;
 }
 
 /*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)

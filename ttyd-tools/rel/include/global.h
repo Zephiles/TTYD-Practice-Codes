@@ -356,6 +356,7 @@ enum BATTLES_STATUSES_SELECTION
 enum DISPLAYS_OPTIONS
 {
 	ONSCREEN_TIMER = 0,
+	ONSCREEN_TIMER_FRAME_COUNTER,
 	MARIO_COORDINATES,
 	MARIO_SPEED_XZ,
 	JUMP_STORAGE,
@@ -674,11 +675,24 @@ struct BlimpTicketSkipStruct
 
 struct OnScreenTimerDisplay
 {
-	uint32_t MainTimer;
+	int64_t MainTimer;
+	int64_t PreviousFrameTime;
 	uint16_t ButtonCombo[2];
 	bool TimerPaused;
 	
 	OnScreenTimerDisplay()
+	{
+		TimerPaused = true;
+	}
+};
+
+struct OnScreenTimerDisplayFrameCounter
+{
+	uint32_t MainTimer;
+	uint16_t ButtonCombo[2];
+	bool TimerPaused;
+	
+	OnScreenTimerDisplayFrameCounter()
 	{
 		TimerPaused = true;
 	}
@@ -803,7 +817,7 @@ struct MenuPrevMenuAndOption
 extern MenuVars MenuVar;
 extern Menus Menu[30];
 extern Cheats Cheat[24];
-extern bool Displays[12];
+extern bool Displays[13];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];
 extern MemoryWatchStruct MemoryWatch[60];
@@ -825,6 +839,7 @@ extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
+extern OnScreenTimerDisplayFrameCounter FrameCounter;
 extern DisplayActionCommandsTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
 extern WarpByEventStruct WarpByEvent;

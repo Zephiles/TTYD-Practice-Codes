@@ -98,6 +98,8 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 
 double getStickAngle(int32_t stickXYOut[2]); // If the X and Y values are not wanted, then pass in nullptr
 void getStickAngleString(char *stringOut);
+char *getTimeString(char *stringOut, int64_t time);
+void updateOnScreenTimerVars();
 
 // void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
