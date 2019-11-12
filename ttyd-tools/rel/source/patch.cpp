@@ -27,7 +27,7 @@ void writeBranch(void *ptr, void *destination)
 	writeBranchMain(ptr, destination, branch);
 }
 
-void writeBranchLR(void *ptr, void *destination)
+void writeBranchBL(void *ptr, void *destination)
 {
 	uint32_t branch = 0x48000001; // bl
 	writeBranchMain(ptr, destination, branch);

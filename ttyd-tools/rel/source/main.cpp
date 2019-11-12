@@ -684,39 +684,39 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021DD9C);
 	#endif
 	
-	patch::writeBranchLR(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
+	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
 	
-	patch::writeBranchLR(ForceNPCItemDropAddress, reinterpret_cast<void *>(StartForceNPCItemDrop));
+	patch::writeBranchBL(ForceNPCItemDropAddress, reinterpret_cast<void *>(StartForceNPCItemDrop));
 	
-	patch::writeBranchLR(ReplaceJumpAnimAddress, reinterpret_cast<void *>(StartReplaceJumpFallAnim));
+	patch::writeBranchBL(ReplaceJumpAnimAddress, reinterpret_cast<void *>(StartReplaceJumpFallAnim));
 	
-	patch::writeBranchLR(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(StartDisplayMegaJumpBadgeBattleMenu));
+	patch::writeBranchBL(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(StartDisplayMegaJumpBadgeBattleMenu));
 	
-	patch::writeBranchLR(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(StartDisplayMegaHammerBadgesBattleMenu));
+	patch::writeBranchBL(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(StartDisplayMegaHammerBadgesBattleMenu));
 	
-	patch::writeBranchLR(FixBlooperCrash1Address, reinterpret_cast<void *>(StartFixBlooperCrash1));
+	patch::writeBranchBL(FixBlooperCrash1Address, reinterpret_cast<void *>(StartFixBlooperCrash1));
 	
-	patch::writeBranchLR(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
+	patch::writeBranchBL(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
 	
-	patch::writeBranchLR(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
+	patch::writeBranchBL(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
 	
-	patch::writeBranchLR(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
+	patch::writeBranchBL(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
 	
-	patch::writeBranchLR(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
+	patch::writeBranchBL(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
 	
-	patch::writeBranchLR(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
+	patch::writeBranchBL(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
 	
-	patch::writeBranchLR(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
+	patch::writeBranchBL(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
 	
-	patch::writeBranchLR(PreventPouchInitMemoryLeakAddress, reinterpret_cast<void *>(preventPouchInitMemoryLeak));
+	patch::writeBranchBL(PreventPouchInitMemoryLeakAddress, reinterpret_cast<void *>(preventPouchInitMemoryLeak));
 	
-	patch::writeBranchLR(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
+	patch::writeBranchBL(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
 	
-	patch::writeBranchLR(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+	patch::writeBranchBL(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
 	
-	patch::writeBranchLR(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+	patch::writeBranchBL(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
 	
-	patch::writeBranchLR(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
+	patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
