@@ -358,7 +358,7 @@ void lockFlagsMenuSetNewArea(uint32_t index)
 	
 	if (Flag && tempMemory)
 	{
-		// Back up the LSWFs
+		// Back up the standard flags
 		uint32_t GlobalWorkPtrRaw = reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer);
 		void *MemoryStart = reinterpret_cast<void *>(GlobalWorkPtrRaw + Region->Offset);
 		memcpy(&tempMemory[0], MemoryStart, Region->Size);
@@ -4174,13 +4174,18 @@ void updateOnScreenTimerVars()
 	
 	int64_t CurrentFrameTime = gc::OSTime::OSGetTime();
 	
-	if (!OnScreenTimer.TimerPaused && 
+	// Make sure the previous frame time has a value set
+	int64_t PreviousFrameTime = OnScreenTimer.PreviousFrameTime;
+	if (PreviousFrameTime != 0)
+	{
+		if (!OnScreenTimer.TimerPaused && 
 		(!MenuVar.MenuIsDisplayed || MenuVar.HideMenu) && 
 		!SpawnItem.InAdjustableValueMenu && 
 		!MenuVar.ChangingCheatButtonCombo)
-	{
-		int64_t IncrementAmount = CurrentFrameTime - OnScreenTimer.PreviousFrameTime;
-		OnScreenTimer.MainTimer += IncrementAmount;
+		{
+			int64_t IncrementAmount = CurrentFrameTime - PreviousFrameTime;
+			OnScreenTimer.MainTimer += IncrementAmount;
+		}
 	}
 	
 	OnScreenTimer.PreviousFrameTime = CurrentFrameTime;
