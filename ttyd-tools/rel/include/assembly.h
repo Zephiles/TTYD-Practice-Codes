@@ -7,20 +7,19 @@ namespace mod {
 extern "C" {
 
 // Assembly overwrite functions
-// main.cpp
-void StartReplaceJumpFallAnim();
-void StartAllowRunningFromBattles();
-void StartForceNPCItemDrop();
-void StartDisplayMegaJumpBadgeBattleMenu();
-void StartDisplayMegaHammerBadgesBattleMenu();
-void StartFixBlooperCrash1();
-void StartFixBlooperCrash2();
-void StartPreventTextboxSelection();
-void StartDisableDPadOptionsDisplay();
-void StartFixEvtMapBlendSetFlagPartnerCrash();
-void StartFixEvtMapBlendSetFlagFollowerCrash();
-void StartFallThroughMostObjectsStandard();
-void StartFallThroughMostObjectsBowser();
+void asmReplaceJumpFallAnim();
+void asmAllowRunningFromBattles();
+void asmForceNPCItemDrop();
+void asmDisplayMegaJumpBadgeBattleMenu();
+void asmDisplayMegaHammerBadgesBattleMenu();
+void asmFixBlooperCrash1();
+void asmFixBlooperCrash2();
+void asmPreventTextboxSelection();
+void asmDisableDPadOptionsDisplay();
+void asmFixEvtMapBlendSetFlagPartnerCrash();
+void asmFixEvtMapBlendSetFlagFollowerCrash();
+void asmFallThroughMostObjectsStandard();
+void asmFallThroughMostObjectsBowser();
 
 // Functions accessed by assembly overwrites
 // main.cpp

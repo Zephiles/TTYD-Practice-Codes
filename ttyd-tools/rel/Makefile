@@ -41,7 +41,7 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR)).$(VERSION)
 BUILD		:=	build.$(VERSION)
-SOURCES		:=	source $(wildcard source/*)
+SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 

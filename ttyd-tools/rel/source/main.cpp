@@ -684,39 +684,39 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021DD9C);
 	#endif
 	
-	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
+	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(asmAllowRunningFromBattles));
 	
-	patch::writeBranchBL(ForceNPCItemDropAddress, reinterpret_cast<void *>(StartForceNPCItemDrop));
+	patch::writeBranchBL(ForceNPCItemDropAddress, reinterpret_cast<void *>(asmForceNPCItemDrop));
 	
-	patch::writeBranchBL(ReplaceJumpAnimAddress, reinterpret_cast<void *>(StartReplaceJumpFallAnim));
+	patch::writeBranchBL(ReplaceJumpAnimAddress, reinterpret_cast<void *>(asmReplaceJumpFallAnim));
 	
-	patch::writeBranchBL(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(StartDisplayMegaJumpBadgeBattleMenu));
+	patch::writeBranchBL(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(asmDisplayMegaJumpBadgeBattleMenu));
 	
-	patch::writeBranchBL(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(StartDisplayMegaHammerBadgesBattleMenu));
+	patch::writeBranchBL(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(asmDisplayMegaHammerBadgesBattleMenu));
 	
-	patch::writeBranchBL(FixBlooperCrash1Address, reinterpret_cast<void *>(StartFixBlooperCrash1));
+	patch::writeBranchBL(FixBlooperCrash1Address, reinterpret_cast<void *>(asmFixBlooperCrash1));
 	
-	patch::writeBranchBL(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
+	patch::writeBranchBL(FixBlooperCrash2Address, reinterpret_cast<void *>(asmFixBlooperCrash2));
 	
-	patch::writeBranchBL(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
+	patch::writeBranchBL(PreventTextboxSelectionAddress, reinterpret_cast<void *>(asmPreventTextboxSelection));
 	
 	patch::writeBranchBL(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
 	
-	patch::writeBranchBL(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
+	patch::writeBranchBL(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(asmDisableDPadOptionsDisplay));
 	
-	patch::writeBranchBL(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
+	patch::writeBranchBL(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(asmFixEvtMapBlendSetFlagPartnerCrash));
 	
-	patch::writeBranchBL(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
+	patch::writeBranchBL(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(asmFixEvtMapBlendSetFlagFollowerCrash));
 	
 	patch::writeBranchBL(PreventPouchInitMemoryLeakAddress, reinterpret_cast<void *>(preventPouchInitMemoryLeak));
 	
 	patch::writeBranchBL(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
 	
-	patch::writeBranchBL(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+	patch::writeBranchBL(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(asmFallThroughMostObjectsStandard));
 	
-	patch::writeBranchBL(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+	patch::writeBranchBL(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(asmFallThroughMostObjectsStandard));
 	
-	patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
+	patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(asmFallThroughMostObjectsBowser));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
