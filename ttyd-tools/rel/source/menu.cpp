@@ -2531,6 +2531,7 @@ void menuCheckButton()
 										if (tempMenuSelectedOption == ONSCREEN_TIMER)
 										{
 											OnScreenTimer.MainTimer = 0;
+											OnScreenTimer.PreviousFrameTime = 0;
 											OnScreenTimer.TimerPaused = true;
 										}
 										else // tempMenuSelectedOption == ONSCREEN_TIMER_FRAME_COUNTER
