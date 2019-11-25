@@ -358,10 +358,10 @@
 
 // mapdata.o
 // text
-// 800390C0:relSetBtlAddr
-// 80039170:relSetEvtAddr
-// 800392C8:areaDataPtr
-// 80039360:mapDataPtr
+800390C0:relSetBtlAddr
+80039170:relSetEvtAddr
+800392C8:areaDataPtr
+80039360:mapDataPtr
 // data
 80311524:worldData
 

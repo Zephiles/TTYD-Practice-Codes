@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/database.h>
+
 #include <cstdint>
 
 namespace ttyd::mapdata {
@@ -48,10 +50,10 @@ static_assert(sizeof(WorldData) == 0x108);
 
 extern "C" {
 
-// relSetBtlAddr
-// relSetEvtAddr
-// areaDataPtr
-// mapDataPtr
+void relSetBtlAddr(const char *areaName, const void *battleInfos, const ttyd::database::DatabaseDefinition *nameToInfoIdTable);
+void relSetEvtAddr(const char *mapName, const void *pInitEvtCode);
+void **areaDataPtr(const char *areaName);
+void **mapDataPtr(const char *mapName);
 
 extern WorldData worldData;
 
