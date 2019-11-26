@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gc/OSModule.h>
+#include <ttyd/evtmgr.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
 
@@ -23,7 +24,7 @@ private:
 	int32_t preventMenuSounds(int32_t, uint32_t, uint32_t, uint32_t);
 	const char *getCustomMessage(const char *);
 	uint32_t pauseArtAttackTimer();
-	uint32_t setIndexWarpEntrance(void *, uint32_t);
+	uint32_t setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *, uint32_t);
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
 	void *disableBattles(uint32_t, void *);
@@ -42,7 +43,7 @@ private:
 	
 	const char *(*mPFN_msgSearch_trampoline)(const char *) = nullptr;
 	uint32_t (*mPFN_scissor_timer_main_trampoline)() = nullptr;
-	uint32_t (*mPFN_evt_bero_get_info_trampoline)(void *, uint32_t) = nullptr;
+	uint32_t (*mPFN_evt_bero_get_info_trampoline)(ttyd::evtmgr::EvtEntry *, uint32_t) = nullptr;
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
 	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;

@@ -579,7 +579,7 @@ struct MarioPartnerPositionsStruct
 
 struct SaveAnywhereStruct
 {
-	uint32_t ThreadID;
+	int32_t ThreadID;
 	bool ScriptIsRunning;
 };
 

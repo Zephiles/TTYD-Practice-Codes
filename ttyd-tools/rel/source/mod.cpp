@@ -12,6 +12,7 @@
 #include <ttyd/msgdrv.h>
 #include <ttyd/sac_scissor.h>
 #include <ttyd/evt_bero.h>
+#include <ttyd/evtmgr.h>
 #include <ttyd/mario.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/dispdrv.h>
@@ -92,9 +93,9 @@ void Mod::init()
 	});
 	
 	mPFN_evt_bero_get_info_trampoline = patch::hookFunction(
-		ttyd::evt_bero::evt_bero_get_info, [](void *event, uint32_t waitMode)
+		ttyd::evt_bero::evt_bero_get_info, [](ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode)
 	{
-		return gMod->setIndexWarpEntrance(event, waitMode);
+		return gMod->setIndexWarpEntrance(evt, waitMode);
 	});
 	
 	mPFN_marioKeyOn_trampoline = patch::hookFunction(

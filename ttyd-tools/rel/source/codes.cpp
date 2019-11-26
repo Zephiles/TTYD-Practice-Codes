@@ -317,16 +317,16 @@ void saveAnywhere()
 		}
 		
 		#ifdef TTYD_US
-		void *SaveScript = reinterpret_cast<void *>(0x803BAC3C);
+		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803BAC3C);
 		#elif defined TTYD_JP
-		void *SaveScript = reinterpret_cast<void *>(0x803B68BC);
+		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803B68BC);
 		#elif defined TTYD_EU
-		void *SaveScript = reinterpret_cast<void *>(0x803C6C4C);
+		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803C6C4C);
 		#endif
 		
 		// Take away control from the player and start the Save script
-		uint32_t SaveScriptEvtEntry = reinterpret_cast<uint32_t>(ttyd::evtmgr::evtEntryType(SaveScript, 0, 0, 0));
-		SaveAnywhere.ThreadID = *reinterpret_cast<uint32_t *>(SaveScriptEvtEntry + 0x15C);
+		ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(SaveScriptEvtCode, 0, 0, 0);
+		SaveAnywhere.ThreadID = SaveScriptEvt->threadId;
 		
 		SaveAnywhere.ScriptIsRunning = true;
 		raiseSystemLevel();
@@ -1539,14 +1539,13 @@ int32_t warpToMapByString(const char *map)
 	return SUCCESS;
 }
 
-uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
+uint32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode)
 {
 	// Clear the array holding the loading zone names
 	clearMemory(WarpByIndex.EntranceList, sizeof(WarpByIndex.EntranceList));
 	
 	// Get the start of the loading zone addresses
-	uint32_t eventLZAddresses = *reinterpret_cast<uint32_t *>(
-		reinterpret_cast<uint32_t>(event) + 0x9C);
+	uint32_t eventLZAddresses = static_cast<uint32_t>(evt->lwData[0]);
 	
 	// Copy each loading zone to the array
 	const char **tempEntranceArray = WarpByIndex.EntranceList;
@@ -1601,7 +1600,7 @@ uint32_t Mod::setIndexWarpEntrance(void *event, uint32_t waitMode)
 	}
 	
 	// Call original function
-	return mPFN_evt_bero_get_info_trampoline(event, waitMode);
+	return mPFN_evt_bero_get_info_trampoline(evt, waitMode);
 }
 
 }
