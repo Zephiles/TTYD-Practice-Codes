@@ -5034,12 +5034,15 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 					&ImageWidth);
 				
 				// Set up and load the texture object
+				uint16_t SheetWidth = tempFontData->sheetWidth;
+				uint16_t SheetHeight = tempFontData->sheetHeight;
+				
 				gc::gx::GXTexObj TexObj;
 				gc::gx::GXInitTexObj(
 					&TexObj, 
 					Image, 
-					tempFontData->sheetWidth, 
-					tempFontData->sheetHeight, 
+					SheetWidth, 
+					SheetHeight, 
 					static_cast<gc::gx::GXTexFmt>(tempFontData->sheetFormat), 
 					gc::gx::GXTexWrapMode::GX_CLAMP, 
 					gc::gx::GXTexWrapMode::GX_CLAMP, 
@@ -5052,8 +5055,8 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				gc::mtx::mtx34 MtxTextImage;
 				gc::mtx::PSMTXScale(
 					MtxTextImage, 
-					1.f / static_cast<float>(tempFontData->sheetWidth), 
-					1.f / static_cast<float>(tempFontData->sheetHeight), 
+					1.f / static_cast<float>(SheetWidth), 
+					1.f / static_cast<float>(SheetHeight), 
 					1.f);
 				
 				gc::gx::GXLoadTexMtxImm(
@@ -5082,15 +5085,18 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 					4);
 				
 				// Get the positions for the images and text
+				uint16_t CellWidth = tempFontData->cellWidth;
+				uint16_t CellHeight = tempFontData->cellHeight;
+				
 				int16_t ImagePosLeft = static_cast<int16_t>(ImagePosX);
-				int16_t ImagePosRight = static_cast<int16_t>(ImagePosLeft + tempFontData->cellWidth);
+				int16_t ImagePosRight = static_cast<int16_t>(ImagePosLeft + CellWidth);
 				int16_t ImagePosTop = static_cast<int16_t>(ImagePosY);
-				int16_t ImagePosBottom = static_cast<int16_t>(ImagePosTop + tempFontData->cellHeight);
+				int16_t ImagePosBottom = static_cast<int16_t>(ImagePosTop + CellHeight);
 				
 				int16_t TextPosLeft = static_cast<int16_t>(textPosX);
-				int16_t TextPosRight = static_cast<int16_t>(TextPosLeft + tempFontData->cellWidth);
+				int16_t TextPosRight = static_cast<int16_t>(TextPosLeft + CellWidth);
 				int16_t TextPosTop = static_cast<int16_t>(textPosY);
-				int16_t TextPosBottom = static_cast<int16_t>(TextPosTop + tempFontData->cellHeight);
+				int16_t TextPosBottom = static_cast<int16_t>(TextPosTop + CellHeight);
 				
 				// Draw the images and text
 				gc::ppc::writeGatherPipe.s16 = TextPosLeft;
