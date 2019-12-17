@@ -16,6 +16,8 @@ struct OSModuleInfo
 	uint32_t version;
 } __attribute__((__packed__));
 
+static_assert(sizeof(OSModuleInfo) == 0x20);
+
 extern "C" {
 
 // OSNotifyLink

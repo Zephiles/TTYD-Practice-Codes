@@ -15,7 +15,7 @@ struct SmartAllocationData
 	uint32_t unusedSize;
 	SmartAllocationData *pNext;
 	SmartAllocationData *pPrev;
-} __attribute__((__packed__)); // size 0x1C
+} __attribute__((__packed__));
 
 struct SmartWork
 {
@@ -27,7 +27,7 @@ struct SmartWork
 	SmartAllocationData *pFirstFree;
 	SmartAllocationData *pLastFree;
 	uint32_t lastFrameFreeCount;
-} __attribute__((__packed__)); // size 0xE01C
+} __attribute__((__packed__));
 
 enum SmartAllocationGroup
 {
@@ -37,6 +37,9 @@ enum SmartAllocationGroup
 	kSingleFrame,
 	kDoubleFrame,
 };
+
+static_assert(sizeof(SmartAllocationData) == 0x1C);
+static_assert(sizeof(SmartWork) == 0xE01C);
 
 extern "C" {
 

@@ -66,8 +66,6 @@ struct EvtEntry
 	int32_t unk_1ac;
 } __attribute__((__packed__));
 
-static_assert(sizeof(EvtEntry) == 0x1B0);
-
 struct EvtWork
 {
 	int32_t entryCount;
@@ -78,6 +76,7 @@ struct EvtWork
 	int64_t currentEvtTime;
 } __attribute__((__packed__));
 
+static_assert(sizeof(EvtEntry) == 0x1B0);
 static_assert(sizeof(EvtWork) == 0xA0);
 
 extern "C" {

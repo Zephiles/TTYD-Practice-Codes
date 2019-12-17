@@ -369,6 +369,8 @@ struct ItemData
 	ttyd::battle_unit::AttackParams *attackParams;
 } __attribute__((__packed__));
 
+static_assert(sizeof(ItemData) == 0x28);
+
 extern "C" {
 
 extern ItemData itemDataTable[];

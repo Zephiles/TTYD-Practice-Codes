@@ -28,16 +28,16 @@ namespace gc::card {
 #define CARD_RESULT_CANCELED 		-14		// Card operation canceled
 #define CARD_RESULT_FATAL_ERROR 	-128	// Fatal error, non-recoverable
 
-typedef struct CARDFileInfo {
+struct CARDFileInfo {
 	int32_t 	channel;
 	int32_t 	fileNum;
 	int32_t 	offset;
 	int32_t 	length;
 	uint16_t 	iBlock;
 	uint16_t 	padding;
-} __attribute__((__packed__)) CARDFileInfo;
+} __attribute__((__packed__));
 
-typedef struct CARDStat {
+struct CARDStat {
 	char 		fileName[CARD_FILENAME_MAX];
 	uint32_t	length;
 	uint32_t	time;
@@ -54,9 +54,12 @@ typedef struct CARDStat {
 	uint32_t 	offsetIcon[CARD_MAX_ICONS];
 	uint32_t 	offsetIconTlut;
 	uint32_t 	offsetData;
-} __attribute__((__packed__)) CARDStat;
+} __attribute__((__packed__));
 
 typedef void (*CARDCallback)(int32_t channel, int32_t result);
+
+static_assert(sizeof(CARDFileInfo) == 0x14);
+static_assert(sizeof(CARDStat) == 0x6C);
 
 extern "C" {
 

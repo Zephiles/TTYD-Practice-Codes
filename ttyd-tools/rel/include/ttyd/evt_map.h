@@ -85,7 +85,7 @@ EVT_DECLARE_USER_FUNC(evt_map_get_flush_color, 5)
 EVT_DECLARE_USER_FUNC(check, 1)
 
 // check2(int &is_not_riding)
-// Checks if the player is not riding the mapobj with the nammed passed in LW(1).
+// Checks if the player is not riding the mapobj with the name passed in LW(1).
 EVT_DECLARE_USER_FUNC(check2, 1)
 
 // evt_map_entry_airport_harbor(int mode, char *mapobj_name, int w_unknown)

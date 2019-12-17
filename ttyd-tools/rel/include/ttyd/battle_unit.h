@@ -143,6 +143,8 @@ struct AttackParams
 	uint8_t unk_0xbf;
 } __attribute__((__packed__));
 
+static_assert(sizeof(AttackParams) == 0xC0);
+
 extern "C" {
 
 // BtlUnit_CheckShadowGuard

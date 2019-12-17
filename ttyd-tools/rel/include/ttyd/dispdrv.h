@@ -34,6 +34,8 @@ struct DisplayWork
 	void *user;
 } __attribute__((__packed__));
 
+static_assert(sizeof(DisplayWork) == 0x10);
+
 extern "C" {
 
 void dispInit();

@@ -33,6 +33,14 @@ struct EventStageDescription
 	int32_t eventCount;
 } __attribute__((__packed__));
 
+#ifdef TTYD_JP
+static_assert(sizeof(EventStageEventDescription) == 0x1C);
+static_assert(sizeof(EventStageDescription) == 0xC);
+#else
+static_assert(sizeof(EventStageEventDescription) == 0x20);
+static_assert(sizeof(EventStageDescription) == 0x10);
+#endif
+
 extern "C" {
 
 int32_t eventStgNum();

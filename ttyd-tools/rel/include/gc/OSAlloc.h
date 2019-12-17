@@ -18,6 +18,9 @@ struct HeapInfo
 	ChunkInfo *firstUsed;
 } __attribute__((__packed__));
 
+static_assert(sizeof(ChunkInfo) == 0xC);
+static_assert(sizeof(HeapInfo) == 0xC);
+
 extern "C" {
 
 // DLInsert

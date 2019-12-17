@@ -10,6 +10,8 @@ struct DatabaseDefinition
 	int32_t id;
 } __attribute__((__packed__));
 
+static_assert(sizeof(DatabaseDefinition) == 0x8);
+
 extern "C" {
 
 void setupDataLoad(const char *mapName);

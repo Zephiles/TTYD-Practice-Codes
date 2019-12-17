@@ -36,6 +36,7 @@ struct SeqWork
 	uint8_t unk_8[24];
 } __attribute__((__packed__));
 
+static_assert(sizeof(SeqInfo) == 0x20);
 static_assert(sizeof(SeqWork) == 0x20);
 
 extern "C" {
