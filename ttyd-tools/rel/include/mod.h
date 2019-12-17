@@ -27,7 +27,7 @@ private:
 	uint32_t pauseArtAttackTimer();
 	uint32_t setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *, uint32_t);
 	int32_t fixMarioKeyOn();
-	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
+	bool performRelAndMapPatches(gc::OSModule::OSModuleInfo *, void *);
 	void *disableBattles(uint32_t, void *);
 	void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);

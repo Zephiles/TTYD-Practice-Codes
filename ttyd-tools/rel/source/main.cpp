@@ -110,55 +110,6 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress, int32_
 		reinterpret_cast<uint32_t>(storeAddress) + 0x9C) = NewOption;
 }
 
-uint32_t fixRoomProblems()
-{
-	uint32_t SequencePosition = getSequencePosition();
-	
-	if (compareStringToNextMap("nok_00"))
-	{
-		// Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past slot 10
-		// Check if the cutscene is going to play
-		if (SequencePosition < 26)
-		{
-			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
-			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
-			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
-		}
-	}
-	else if (compareStringToNextMap("rsh_05_a"))
-	{
-		// Prevent the game from crashing if the player enters rsh_05_a with the Sequence past 338
-		if (SequencePosition > 338)
-		{
-			// Set the Sequence to 338 to prevent the crash
-			setSequencePosition(338);
-		}
-	}
-	else if (compareStringToNextMap("aji_13"))
-	{
-		// Prevent the game from crashing if the conveyor belt has not been activated
-		// Set GW(11) to 0 upon entering the room to prevent the crash
-		setGW(11, 0);
-	}
-	else if (compareStringToNextMap("las_08"))
-	{
-		// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
-		if (SequencePosition == 385)
-		{
-			// Check if GSW(1121) is currently at 7
-			uint32_t GSW_1121 = ttyd::swdrv::swByteGet(1121);
-			if (GSW_1121 == 7)
-			{
-				// Lower the value to 6 to prevent the game from crashing
-				ttyd::swdrv::swByteSet(1121, 6);
-			}
-		}
-	}
-	
-	// The overwritten instruction sets r3 to 512, so return 512
-	return 512;
-}
-
 void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
 {
 	// Bring out a partner if no partner is currently out
@@ -420,8 +371,57 @@ int32_t Mod::fixMarioKeyOn()
 	return mPFN_marioKeyOn_trampoline();
 }
 
-bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
+void fixRoomProblems()
 {
+	uint32_t SequencePosition = getSequencePosition();
+	
+	if (compareStringToNextMap("nok_00"))
+	{
+		// Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past slot 10
+		// Check if the cutscene is going to play
+		if (SequencePosition < 26)
+		{
+			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
+			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
+			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
+		}
+	}
+	else if (compareStringToNextMap("rsh_05_a"))
+	{
+		// Prevent the game from crashing if the player enters rsh_05_a with the Sequence past 338
+		if (SequencePosition > 338)
+		{
+			// Set the Sequence to 338 to prevent the crash
+			setSequencePosition(338);
+		}
+	}
+	else if (compareStringToNextMap("aji_13"))
+	{
+		// Prevent the game from crashing if the conveyor belt has not been activated
+		// Set GW(11) to 0 upon entering the room to prevent the crash
+		setGW(11, 0);
+	}
+	else if (compareStringToNextMap("las_08"))
+	{
+		// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
+		if (SequencePosition == 385)
+		{
+			// Check if GSW(1121) is currently at 7
+			uint32_t GSW_1121 = ttyd::swdrv::swByteGet(1121);
+			if (GSW_1121 == 7)
+			{
+				// Lower the value to 6 to prevent the game from crashing
+				ttyd::swdrv::swByteSet(1121, 6);
+			}
+		}
+	}
+}
+
+bool Mod::performRelAndMapPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
+{
+	// Check to see if any fixes need to be applied to specific maps
+	fixRoomProblems();
+	
 	// Call the original function immediately, as the REL file should be linked before applying patches
 	const bool Result = mPFN_OSLink_trampoline(newModule, bss);
 	
@@ -618,7 +618,6 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010F810);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010F888);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D214C);
-	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800087C8);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013D148);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
@@ -642,7 +641,6 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010A724);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010A79C);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800CE01C);
-	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x800086F0);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x80137C1C);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
@@ -666,7 +664,6 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x801106E8);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x80110760);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D2F44);
-	void *FixRoomProblemsAddress 						= reinterpret_cast<void *>(0x80008994);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013EC30);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
@@ -692,8 +689,6 @@ void initAddressOverwrites()
 	patch::writeBranchBL(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
 	
 	patch::writeBranchBL(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
-	
-	patch::writeBranchBL(FixRoomProblemsAddress, reinterpret_cast<void *>(fixRoomProblems));
 	
 	patch::writeBranchBL(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
 	
