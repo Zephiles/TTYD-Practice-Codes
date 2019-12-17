@@ -109,7 +109,7 @@ void Mod::init()
 	mPFN_OSLink_trampoline = patch::hookFunction(
 		gc::OSModule::OSLink, [](gc::OSModule::OSModuleInfo *newModule, void *bss)
 	{
-		return gMod->performRelAndMapPatches(newModule, bss);
+		return gMod->performRelPatches(newModule, bss);
 	});
 	
 	mPFN_fbatHitCheck_trampoline = patch::hookFunction(

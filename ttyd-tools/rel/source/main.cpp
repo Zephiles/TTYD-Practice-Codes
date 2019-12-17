@@ -1,3 +1,4 @@
+#include "main.h"
 #include "global.h"
 #include "commonfunctions.h"
 #include "menufunctions.h"
@@ -108,6 +109,52 @@ void preventTextboxOptionSelection(char *currentText, void *storeAddress, int32_
 	
 	*reinterpret_cast<int32_t *>(
 		reinterpret_cast<uint32_t>(storeAddress) + 0x9C) = NewOption;
+}
+
+void fixRoomProblems() // Gets called in initStageEvents
+{
+	uint32_t SequencePosition = getSequencePosition();
+	
+	if (compareStringToNextMap("nok_00"))
+	{
+		// Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past slot 10
+		// Check if the cutscene is going to play
+		if (SequencePosition < 26)
+		{
+			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
+			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
+			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
+		}
+	}
+	else if (compareStringToNextMap("rsh_05_a"))
+	{
+		// Prevent the game from crashing if the player enters rsh_05_a with the Sequence past 338
+		if (SequencePosition > 338)
+		{
+			// Set the Sequence to 338 to prevent the crash
+			setSequencePosition(338);
+		}
+	}
+	else if (compareStringToNextMap("aji_13"))
+	{
+		// Prevent the game from crashing if the conveyor belt has not been activated
+		// Set GW(11) to 0 upon entering the room to prevent the crash
+		setGW(11, 0);
+	}
+	else if (compareStringToNextMap("las_08"))
+	{
+		// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
+		if (SequencePosition == 385)
+		{
+			// Check if GSW(1121) is currently at 7
+			uint32_t GSW_1121 = ttyd::swdrv::swByteGet(1121);
+			if (GSW_1121 == 7)
+			{
+				// Lower the value to 6 to prevent the game from crashing
+				ttyd::swdrv::swByteSet(1121, 6);
+			}
+		}
+	}
 }
 
 void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
@@ -371,57 +418,8 @@ int32_t Mod::fixMarioKeyOn()
 	return mPFN_marioKeyOn_trampoline();
 }
 
-void fixRoomProblems()
+bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 {
-	uint32_t SequencePosition = getSequencePosition();
-	
-	if (compareStringToNextMap("nok_00"))
-	{
-		// Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past slot 10
-		// Check if the cutscene is going to play
-		if (SequencePosition < 26)
-		{
-			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
-			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
-			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
-		}
-	}
-	else if (compareStringToNextMap("rsh_05_a"))
-	{
-		// Prevent the game from crashing if the player enters rsh_05_a with the Sequence past 338
-		if (SequencePosition > 338)
-		{
-			// Set the Sequence to 338 to prevent the crash
-			setSequencePosition(338);
-		}
-	}
-	else if (compareStringToNextMap("aji_13"))
-	{
-		// Prevent the game from crashing if the conveyor belt has not been activated
-		// Set GW(11) to 0 upon entering the room to prevent the crash
-		setGW(11, 0);
-	}
-	else if (compareStringToNextMap("las_08"))
-	{
-		// Prevent the game from crashing if the player entered las_08 with the Sequence as 385 and GSW(1121) at 7
-		if (SequencePosition == 385)
-		{
-			// Check if GSW(1121) is currently at 7
-			uint32_t GSW_1121 = ttyd::swdrv::swByteGet(1121);
-			if (GSW_1121 == 7)
-			{
-				// Lower the value to 6 to prevent the game from crashing
-				ttyd::swdrv::swByteSet(1121, 6);
-			}
-		}
-	}
-}
-
-bool Mod::performRelAndMapPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
-{
-	// Check to see if any fixes need to be applied to specific maps
-	fixRoomProblems();
-	
 	// Call the original function immediately, as the REL file should be linked before applying patches
 	const bool Result = mPFN_OSLink_trampoline(newModule, bss);
 	
@@ -716,7 +714,7 @@ void initAddressOverwrites()
 	
 	*reinterpret_cast<uint32_t *>(msgWindowMrAddress) 						= 0x38830001; // addi r4,r3,1
 	
-	// Set the initial value for the debug mode variable, to allow backtrace screens before the title sequence begins
+	// Set the initial value for the debug mode variable
 	*reinterpret_cast<int32_t *>(
 		reinterpret_cast<uint32_t>(
 			ttyd::seq_title::seqTitleWorkPointer2) + 0x30) = -1;

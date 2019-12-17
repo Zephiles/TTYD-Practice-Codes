@@ -3,6 +3,7 @@
 #include "commonfunctions.h"
 #include "codes.h"
 #include "memorywatch.h"
+#include "main.h"
 
 #include <gc/os.h>
 #include <gc/OSTime.h>
@@ -3697,6 +3698,9 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
 
 void *initStageEvents()
 {
+	// Check to see if any fixes need to be applied to specific maps
+	fixRoomProblems();
+	
 	if (!WarpByEvent.ShouldInit)
 	{
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
