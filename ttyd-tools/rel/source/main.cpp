@@ -219,15 +219,15 @@ void *preventPouchInitMemoryLeak(uint32_t heap, uint32_t size)
 {
 	// Check if the memory has already been allocated or not
 	void *PouchPtr = ttyd::mario_pouch::pouchGetPtr();
-	if (!PouchPtr)
+	if (PouchPtr)
 	{
-		// The memory has not been allocated, so allocate it
-		return ttyd::memory::__memAlloc(heap, size);
+		// The memory has already been allocated
+		return PouchPtr;
 	}
 	else
 	{
-		// The memory has already been allocated, so clear it
-		return clearMemory(PouchPtr, size);
+		// The memory has not been allocated, so allocate it
+		return ttyd::memory::__memAlloc(heap, size);
 	}
 }
 
