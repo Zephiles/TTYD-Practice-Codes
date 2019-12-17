@@ -47,7 +47,7 @@ void psndClearFlag(uint16_t unkBit);
 // psndStopAllFadeOut
 // psndSetPosDirListener
 // psndPushGroup
-// psndExit
+void psndExit();
 // psndMainInt
 // psndMain
 // psndInit

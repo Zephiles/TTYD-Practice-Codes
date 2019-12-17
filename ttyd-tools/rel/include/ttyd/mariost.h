@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/OSContext.h>
+
 #include <cstdint>
 
 namespace ttyd::mariost {
@@ -14,6 +16,8 @@ uint32_t marioStGetSystemLevel();
 void viPostCallback(uint32_t retraceCount);
 void gcDvdCheckThread();
 void gcRumbleCheck();
+void systemErrorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar);
+// setupErrorHandler
 
 extern void *globalWorkPointer;
 

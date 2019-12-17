@@ -48,7 +48,7 @@ void __memFree(uint32_t heap, void *ptr);
 // _mapAllocTail
 // _mapFree
 // smartInit
-// smartReInit
+void smartReInit();
 void smartAutoFree(uint32_t group);
 void smartFree(SmartAllocationData *pAlloc);
 SmartAllocationData *smartAlloc(uint32_t size, uint32_t group);

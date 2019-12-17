@@ -7,6 +7,9 @@ namespace mod {
 extern "C" {
 
 // Assembly overwrite functions
+// mod.cpp
+void StartErrorHandlerEnableFPU();
+
 // main.cpp
 void StartReplaceJumpFallAnim();
 void StartAllowRunningFromBattles();
@@ -40,6 +43,7 @@ void *fallThroughMostObjects(void *ptr);
 
 // draw.cpp
 bool disableDPadOptionsDisplay(uint16_t unkVar);
+void StartErrorHandlerInterrupts();
 
 }
 

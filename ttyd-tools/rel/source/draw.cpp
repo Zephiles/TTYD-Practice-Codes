@@ -8,6 +8,12 @@
 
 #include <gc/gx.h>
 #include <gc/ppc.h>
+#include <gc/OSContext.h>
+#include <gc/OSFont.h>
+#include <gc/DEMOPad.h>
+#include <gc/DEMOInit.h>
+#include <gc/mtx.h>
+#include <gc/vi.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/icondrv.h>
@@ -25,6 +31,8 @@
 #include <ttyd/battle_ac.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_disp.h>
+#include <ttyd/pmario_sound.h>
+#include <ttyd/memory.h>
 
 #include <cstring>
 #include <cstdio>
@@ -4699,6 +4707,633 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
 			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[0];
 			gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[1];
 			gc::ppc::writeGatherPipe.f32 = 0;
+		}
+	}
+}
+
+void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
+{
+	// Get the OS error
+	const char *OSError = nullptr;
+	if (error == 3)
+	{
+		// ISI error
+		OSError = "---- OS_ERROR_ISI ----";
+	}
+	else if (error < 3)
+	{
+		// DSI error
+		OSError = "---- OS_ERROR_DSI ----";
+	}
+	else if (error == 6)
+	{
+		// Program error
+		OSError = "---- OS_ERROR_PROGRAM ----";
+	}
+	
+	// Reinit the smart heap
+	ttyd::memory::smartReInit();
+	
+	// Init memory for the strings
+	ttyd::memory::SmartAllocationData *ErrorHandlerStringsMemory = 
+		ttyd::memory::smartAlloc(sizeof(ErrorHandlerStrings), 0);
+	
+	// Set up a temporary local variable to use for getting the strings memory
+	ErrorHandlerStrings *ErrorHandler = reinterpret_cast<ErrorHandlerStrings *>(ErrorHandlerStringsMemory->pMemory);
+	
+	// Get the context address
+	sprintf(ErrorHandler->ContextAddress, 
+		"---- Context 0x%08" PRIX32 " ----", 
+		reinterpret_cast<uint32_t>(context));
+	
+	// Register names
+	static const char *RegisterNames[] = 
+	{
+		"r0",
+		"r1",
+		"r2",
+		"r3",
+		"r4",
+		"r5",
+		"r6",
+		"r7",
+		"r8",
+		"r9",
+		"r10",
+		"r11",
+		"r12",
+		"r13",
+		"r14",
+		"r15",
+		"r16",
+		"r17",
+		"r18",
+		"r19",
+		"r20",
+		"r21",
+		"r22",
+		"r23",
+		"r24",
+		"r25",
+		"r26",
+		"r27",
+		"r28",
+		"r29",
+		"r30",
+		"r31",
+	};
+	
+	// Get the register values
+	uint32_t RegisterNamesSize = sizeof(RegisterNames) / sizeof(RegisterNames[0]);
+	for (uint32_t i = 0; i < RegisterNamesSize; i++)
+	{
+		sprintf(ErrorHandler->RegisterValues[i],
+			"0x%08" PRIX32,
+			context->gpr[i]);
+	}
+	
+	// Additional register names
+	static const char *AdditionalRegisterNames[] = 
+	{
+		"LR",
+		"SRR0",
+		"DSISR",
+		"CR",
+		"SRR1",
+		"DAR",
+	};
+	
+	// Get the additional register values
+	// Get the LR value
+	uint32_t j = 0;
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		context->lr);
+	
+	// Get the SRR0 value
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		context->srr0);
+	
+	// Get the DSISR value
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		dsisr);
+	
+	// Get the CR value
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		context->cr);
+	
+	// Get the SRR1 value
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		context->srr1);
+	
+	// Get the DAR value
+	sprintf(ErrorHandler->AdditionalRegisterValues[j++],
+		"0x%08" PRIX32,
+		dar);
+	
+	// Address, Back Chains, and LR Saves names
+	static const char *AddressHeaderNames[] = 
+	{
+		"Address",
+		"Back Chain",
+		"LR Save",
+	};
+	
+	// Get the addresses, back chains, and LR saves
+	// Loop through the addresses and fill in the address, back chain, and LR save fields
+	uint32_t *CurrentContext = reinterpret_cast<uint32_t *>(context->gpr[1]);
+	uint32_t AddressCount = 1; // Will be used to determine how many lines to draw later
+	
+	for (uint32_t i = 0; CurrentContext && 
+		(reinterpret_cast<uint32_t>(CurrentContext) != 0xFFFFFFFF) && (i++ < MAX_LEVELS);
+		CurrentContext = reinterpret_cast<uint32_t *>(*CurrentContext))
+	{
+		// Get the address
+		sprintf(ErrorHandler->AddressList[i], 
+			"0x%08" PRIX32, 
+			reinterpret_cast<uint32_t>(CurrentContext));
+		
+		// Get the back chain
+		sprintf(ErrorHandler->AddressList[i + MAX_LEVELS], 
+			"0x%08" PRIX32, 
+			CurrentContext[0]);
+		
+		// Get the LR save
+		sprintf(ErrorHandler->AddressList[(i + MAX_LEVELS) * 2], 
+			"0x%08" PRIX32, 
+			CurrentContext[1]);
+		
+		AddressCount++;
+	}
+	
+	// Get the instruction where the error occured, as well as the invalid address
+	const char *Format = "Instruction at 0x%" PRIX32 "\n(read from SRR0) attempted to access\ninvalid address 0x%" PRIX32 " (read from DAR)";
+	sprintf(ErrorHandler->InstructionAndAddress, 
+		Format, 
+		context->srr0, 
+		dar);
+	
+	// Disable audio
+	ttyd::pmario_sound::psndExit();
+	
+	// Fill FPU context
+	gc::OSContext::OSFillFPUContext(context);
+	
+	// Allow interrupts
+	StartErrorHandlerInterrupts();
+	
+	// Init memory for the font data
+	ttyd::memory::SmartAllocationData *FontDataMemory;
+	
+	uint32_t CurrentFontEncode = gc::OSFont::OSGetFontEncode();
+	if (CurrentFontEncode == 0)
+	{
+		// ANSI
+		FontDataMemory = ttyd::memory::smartAlloc(0x20120, 0);
+	}
+	else
+	{
+		// SJIS
+		FontDataMemory = ttyd::memory::smartAlloc(0x120F00, 0);
+	}
+	
+	// Init the font data
+	gc::OSFont::OSInitFont(reinterpret_cast<gc::OSFont::OSFontHeader *>(FontDataMemory->pMemory));
+	
+	// Init the DEMO pad
+	gc::DEMOPad::DEMOPadInit();
+	
+	// Various other init stuff
+	// Clear EFB
+	uint32_t CopyClearColor = 0x000000FF;
+	gc::gx::GXSetCopyClear(
+		reinterpret_cast<uint8_t *>(&CopyClearColor), 
+		0x00FFFFFF);
+	
+	gc::gx::GXCopyDisp(
+		gc::DEMOInit::DEMOGetCurrentBuffer(), 
+		true);
+	
+	// Set the visible screen region
+	gc::gx::GXSetViewport(0.f, 0.f, 608.f, 480.f, 0.f, 1.f);
+	gc::gx::GXSetScissor(0, 0, 608, 480);
+	
+	// Set matrices up to screen coordinates system
+	gc::mtx::mtx44 MtxProjection;
+	gc::mtx::C_MTXOrtho(
+		MtxProjection, 
+		0.f, 
+		608.f, 
+		0.f, 
+		480.f, 
+		0.f, 
+		1.f);
+	
+	gc::gx::GXSetProjection(
+		MtxProjection, 
+		gc::gx::GXProjectionType::GX_ORTHOGRAPHIC);
+	
+	// Set the pixel processing mode
+	gc::gx::GXSetZMode(
+		true, 
+		gc::gx::GXCompare::GX_LEQUAL, 
+		true);
+	
+	// Set the TEV parameters to replace the color
+	gc::gx::GXSetNumChans(0);
+	gc::gx::GXSetNumTevStages(1);
+	
+	gc::gx::GXSetTevOp(
+		gc::gx::GXTevStageID::GX_TEVSTAGE0, 
+		gc::gx::GXTevMode::GX_REPLACE);
+	
+	gc::gx::GXSetTevOrder(
+		gc::gx::GXTevStageID::GX_TEVSTAGE0, 
+		gc::gx::GXTexCoordID::GX_TEXCOORD0, 
+		gc::gx::GXTexMapID::GX_TEXMAP0, 
+		gc::gx::GXChannelID::GX_COLOR_NULL);
+	
+	// Set the number of texture coordinates
+	gc::gx::GXSetNumTexGens(1);
+	
+	// Specify specific texgen options
+	gc::gx::GXSetTexCoordGen2(
+		gc::gx::GXTexCoordID::GX_TEXCOORD0, 
+		gc::gx::GXTexGenType::GX_TG_MTX2x4, 
+		gc::gx::GXTexGenSrc::GX_TG_TEX0, 
+		gc::gx::GXTexMtx::GX_TEXMTX0, 
+		false, 
+		125);
+	
+	// Translucent mode
+	gc::gx::GXSetBlendMode(
+		gc::gx::GXBlendMode::GX_BM_BLEND, 
+		gc::gx::GXBlendFactor::GX_BL_ONE, 
+		gc::gx::GXBlendFactor::GX_BL_ONE, 
+		gc::gx::GXLogicOperation::GX_LO_CLEAR);
+	
+	// Set up vertex descriptors
+	gc::gx::GXClearVtxDesc();
+	
+	gc::gx::GXSetVtxDesc(
+		gc::gx::GXAttribute::GX_VA_POS, 
+		gc::gx::GXAttributeType::GX_DIRECT);
+	
+	gc::gx::GXSetVtxDesc(
+		gc::gx::GXAttribute::GX_VA_TEX0, 
+		gc::gx::GXAttributeType::GX_DIRECT);
+	
+	gc::gx::GXSetVtxAttrFmt(
+		gc::gx::GXVtxFmt::GX_VTXFMT0, 
+		gc::gx::GXAttribute::GX_VA_POS, 
+		gc::gx::GXComponentContents::GX_POS_XYZ, 
+		gc::gx::GXComponentType::GX_S16, 
+		0);
+	
+	gc::gx::GXSetVtxAttrFmt(
+		gc::gx::GXVtxFmt::GX_VTXFMT0, 
+		gc::gx::GXAttribute::GX_VA_TEX0, 
+		gc::gx::GXComponentContents::GX_POS_XYZ, 
+		gc::gx::GXComponentType::GX_S16, 
+		0);
+	
+	// Set up an auto function for drawing each string
+	auto drawString = [=](int32_t textPosX, int32_t textPosY, const char *text, float fontScale)
+	{
+		const int32_t OriginalTextPosX = textPosX;
+		int32_t PosYIncrementAmount = 24;
+		uint32_t i = 0;
+		
+		gc::OSFont::OSFontHeader *tempFontData = reinterpret_cast<gc::OSFont::OSFontHeader *>(FontDataMemory->pMemory);
+		
+		while (text[i] != '\0')
+		{
+			if (text[i] == '\n')
+			{
+				// Go to the next line
+				textPosX = OriginalTextPosX;
+				textPosY += PosYIncrementAmount;
+				i++;
+			}
+			else
+			{
+				void *Image;
+				int32_t ImagePosX;
+				int32_t ImagePosY;
+				int32_t ImageWidth;
+				
+				gc::OSFont::OSGetFontTexture(
+					&text[i], 
+					&Image, 
+					&ImagePosX, 
+					&ImagePosY, 
+					&ImageWidth);
+				
+				// Set up and load the texture object
+				gc::gx::GXTexObj TexObj;
+				gc::gx::GXInitTexObj(
+					&TexObj, 
+					Image, 
+					tempFontData->sheetWidth, 
+					tempFontData->sheetHeight, 
+					static_cast<gc::gx::GXTexFmt>(tempFontData->sheetFormat), 
+					gc::gx::GXTexWrapMode::GX_CLAMP, 
+					gc::gx::GXTexWrapMode::GX_CLAMP, 
+					false);
+				
+				gc::gx::GXLoadTexObj(
+					&TexObj, 
+					gc::gx::GXTexMapID::GX_TEXMAP0);
+				
+				gc::mtx::mtx34 MtxTextImage;
+				gc::mtx::PSMTXScale(
+					MtxTextImage, 
+					1.f / static_cast<float>(tempFontData->sheetWidth), 
+					1.f / static_cast<float>(tempFontData->sheetHeight), 
+					1.f);
+				
+				gc::gx::GXLoadTexMtxImm(
+					MtxTextImage, 
+					gc::gx::GXTexMtx::GX_TEXMTX0, 
+					gc::gx::GXTexMtxType::GX_MTX2x4);
+				
+				// Set up the matrix to use for the text
+				gc::mtx::mtx34 MtxFontSize;
+				gc::mtx::PSMTXScale(
+					MtxFontSize, 
+					fontScale, 
+					fontScale, 
+					1.f);
+				
+				gc::gx::GXLoadPosMtxImm(
+					MtxFontSize, 
+					gc::gx::GXPosNormMtx::GX_PNMTX0);
+				
+				gc::gx::GXSetCurrentMtx(gc::gx::GXPosNormMtx::GX_PNMTX0);
+				
+				// Start the drawing process
+				gc::gx::GXBegin(
+					gc::gx::GXPrimitive::GX_QUADS, 
+					gc::gx::GXVtxFmt::GX_VTXFMT0, 
+					4);
+				
+				// Get the positions for the images and text
+				int16_t ImagePosLeft = static_cast<int16_t>(ImagePosX);
+				int16_t ImagePosRight = static_cast<int16_t>(ImagePosLeft + tempFontData->cellWidth);
+				int16_t ImagePosTop = static_cast<int16_t>(ImagePosY);
+				int16_t ImagePosBottom = static_cast<int16_t>(ImagePosTop + tempFontData->cellHeight);
+				
+				int16_t TextPosLeft = static_cast<int16_t>(textPosX);
+				int16_t TextPosRight = static_cast<int16_t>(TextPosLeft + tempFontData->cellWidth);
+				int16_t TextPosTop = static_cast<int16_t>(textPosY);
+				int16_t TextPosBottom = static_cast<int16_t>(TextPosTop + tempFontData->cellHeight);
+				
+				// Draw the images and text
+				gc::ppc::writeGatherPipe.s16 = TextPosLeft;
+				gc::ppc::writeGatherPipe.s16 = TextPosTop;
+				gc::ppc::writeGatherPipe.s16 = 0;
+				
+				gc::ppc::writeGatherPipe.s16 = ImagePosLeft;
+				gc::ppc::writeGatherPipe.s16 = ImagePosTop;
+				gc::ppc::writeGatherPipe.s16 = TextPosRight;
+				gc::ppc::writeGatherPipe.s16 = TextPosTop;
+				gc::ppc::writeGatherPipe.s16 = 0;
+				
+				gc::ppc::writeGatherPipe.s16 = ImagePosRight;
+				gc::ppc::writeGatherPipe.s16 = ImagePosTop;
+				gc::ppc::writeGatherPipe.s16 = TextPosRight;
+				gc::ppc::writeGatherPipe.s16 = TextPosBottom;
+				gc::ppc::writeGatherPipe.s16 = 0;
+				
+				gc::ppc::writeGatherPipe.s16 = ImagePosRight;
+				gc::ppc::writeGatherPipe.s16 = ImagePosBottom;
+				gc::ppc::writeGatherPipe.s16 = TextPosLeft;
+				gc::ppc::writeGatherPipe.s16 = TextPosBottom;
+				gc::ppc::writeGatherPipe.s16 = 0;
+				
+				gc::ppc::writeGatherPipe.s16 = ImagePosLeft;
+				gc::ppc::writeGatherPipe.s16 = ImagePosBottom;
+				
+				textPosX += ImageWidth;
+				i++;
+			}
+		}
+	};
+	
+	// Reset the temporary local variable to use for getting the strings memory
+	ErrorHandler = reinterpret_cast<ErrorHandlerStrings *>(ErrorHandlerStringsMemory->pMemory);
+	
+	int32_t PosX = 50;
+	int32_t PosY = 50;
+	float FontScale = 0.65f;
+	
+	// Main draw loop
+	while (1)
+	{
+		uint32_t FirstRetraceCount = gc::vi::VIGetRetraceCount();
+		
+		const int32_t AddressesIncrement = 130;
+		int32_t PosYIncrementAmount = 24;
+		
+		// Get the current button inputs
+		ttyd::system::makeKey();
+		
+		// Check to see if the text should be moved
+		// Allow for both a left/right and an up/down at the same time
+		if (checkButtonComboEveryFrame(PAD_DPAD_LEFT))
+		{
+			PosX -= 5;
+		}
+		else if (checkButtonComboEveryFrame(PAD_DPAD_RIGHT))
+		{
+			PosX += 5;
+		}
+		
+		if (checkButtonComboEveryFrame(PAD_DPAD_DOWN))
+		{
+			PosY -= 5;
+		}
+		else if (checkButtonComboEveryFrame(PAD_DPAD_UP))
+		{
+			PosY += 5;
+		}
+		
+		// Check to see if the font size should be changed
+		if (checkButtonCombo(PAD_A))
+		{
+			FontScale += 0.05f;
+		}
+		else if (checkButtonCombo(PAD_B))
+		{
+			FontScale -= 0.05f;
+		}
+		
+		int32_t NewPosX = PosX;
+		int32_t NewPosY = PosY;
+		
+		// Draw the help text
+		const char *HelpText = "Press/hold the D-Pad to move the text\nPress A to zoom in\nPress B to zoom out";
+		drawString(NewPosX, NewPosY, HelpText, FontScale);
+		NewPosY += PosYIncrementAmount * 4;
+		
+		// Draw the register OSError if it is valid
+		if (OSError)
+		{
+			drawString(NewPosX, NewPosY, OSError, FontScale);
+			NewPosY += PosYIncrementAmount;
+		}
+		
+		// Draw the context address
+		drawString(NewPosX, NewPosY, ErrorHandler->ContextAddress, FontScale);
+		NewPosY += PosYIncrementAmount;
+		
+		// Draw the registers and values in 3 columns
+		uint32_t TotalRowsZeroIndexed = (RegisterNamesSize - 1) / 3;
+		uint32_t Counter = 0;
+		int32_t tempPosX = NewPosX;
+		int32_t tempPosY = NewPosY;
+		
+		for (uint32_t i = 0; i < RegisterNamesSize; i++)
+		{
+			// Draw the register names
+			drawString(tempPosX, tempPosY, RegisterNames[i], FontScale);
+			
+			// Draw the register values
+			drawString(tempPosX + 40, tempPosY, ErrorHandler->RegisterValues[i], FontScale);
+			
+			if (Counter >= TotalRowsZeroIndexed)
+			{
+				// Go to the next column
+				tempPosX += 170;
+				tempPosY = NewPosY;
+				Counter = 0;
+			}
+			else
+			{
+				tempPosY += PosYIncrementAmount;
+				Counter++;
+			}
+		}
+		NewPosY += (PosYIncrementAmount * 11) + PosYIncrementAmount;
+		
+		// Draw the additional registers and values in 2 columns
+		uint32_t SecondRowAdjustment = 0;
+		uint32_t AdditionalRegisterNamesSize = sizeof(AdditionalRegisterNames) / sizeof(AdditionalRegisterNames[0]);
+		TotalRowsZeroIndexed = (AdditionalRegisterNamesSize - 1) / 2;
+		
+		Counter = 0;
+		tempPosX = NewPosX;
+		tempPosY = NewPosY;
+		
+		for (uint32_t i = 0; i < AdditionalRegisterNamesSize; i++)
+		{
+			// Draw the additional register names
+			drawString(tempPosX, tempPosY, AdditionalRegisterNames[i], FontScale);
+			
+			// Draw the additional register values
+			drawString(tempPosX + 65 - SecondRowAdjustment, tempPosY, 
+				ErrorHandler->AdditionalRegisterValues[i], FontScale);
+			
+			if (Counter >= TotalRowsZeroIndexed)
+			{
+				// Go to the next column
+				tempPosX += 190;
+				tempPosY = NewPosY;
+				Counter = 0;
+				
+				// Decrement the second row
+				if (SecondRowAdjustment == 0)
+				{
+					SecondRowAdjustment += 10;
+				}
+			}
+			else
+			{
+				tempPosY += PosYIncrementAmount;
+				Counter++;
+			}
+		}
+		NewPosY += (PosYIncrementAmount * 3) + PosYIncrementAmount;
+		
+		// Draw the names for the addresses, back chains, and LR saves in 3 columns
+		tempPosX = NewPosX;
+		
+		uint32_t AddressHeaderNamesSize = sizeof(AddressHeaderNames) / sizeof(AddressHeaderNames[0]);
+		for (uint32_t i = 0; i < AddressHeaderNamesSize; i++)
+		{
+			drawString(tempPosX, NewPosY, AddressHeaderNames[i], FontScale);
+			tempPosX += AddressesIncrement;
+		}
+		
+		// Draw the addresses, back chains, and LR saves in 3 columns
+		tempPosY = NewPosY;
+		
+		for (uint32_t i = 0; i < AddressCount; i++)
+		{
+			// Draw the addresses
+			drawString(NewPosX, tempPosY, ErrorHandler->AddressList[i], FontScale);
+			
+			// Draw the back chains
+			drawString(NewPosX + AddressesIncrement, tempPosY, 
+				ErrorHandler->AddressList[i + MAX_LEVELS], FontScale);
+			
+			// Draw the LR saves
+			drawString(NewPosX + (AddressesIncrement * 2), tempPosY, 
+				ErrorHandler->AddressList[(i + MAX_LEVELS) * 2], FontScale);
+			
+			tempPosY += PosYIncrementAmount;
+		}
+		NewPosY += (AddressCount * PosYIncrementAmount) + PosYIncrementAmount;
+		
+		// Draw the instruction where the error occured, as well as the invalid address
+		drawString(NewPosX, NewPosY, ErrorHandler->InstructionAndAddress, FontScale);
+		
+		// Various post-drawing stuff
+		gc::gx::GXSetZMode(
+			true, 
+			gc::gx::GXCompare::GX_LEQUAL, 
+			true);
+		
+		gc::gx::GXSetColorUpdate(true);
+		
+		gc::gx::GXSetAlphaCompare(
+			gc::gx::GXCompare::GX_ALWAYS, 
+			0, 
+			gc::gx::GXAlphaOperation::GX_AOP_OR, 
+			gc::gx::GXCompare::GX_ALWAYS, 
+			0);
+		
+		gc::gx::GXSetAlphaUpdate(true);
+		
+		gc::gx::GXCopyDisp(
+			gc::DEMOInit::DemoCurrentBuffer, 
+			true);
+		
+		gc::vi::VISetNextFrameBuffer(gc::DEMOInit::DemoCurrentBuffer);
+		gc::vi::VISetBlack(false);
+		gc::vi::VIFlush();
+		
+		// Wait for retrace
+		uint32_t CurrentRetraceCount;
+		do
+		{
+			CurrentRetraceCount = gc::vi::VIGetRetraceCount();
+		}
+		while (FirstRetraceCount == CurrentRetraceCount);
+		
+		// Set the new DEMO buffer
+		void *DemoFrameBuffer1 = gc::DEMOInit::DemoFrameBuffer1;
+		if (gc::DEMOInit::DemoCurrentBuffer == DemoFrameBuffer1)
+		{
+			gc::DEMOInit::DemoCurrentBuffer = gc::DEMOInit::DemoFrameBuffer2;
+		}
+		else
+		{
+			gc::DEMOInit::DemoCurrentBuffer = DemoFrameBuffer1;
 		}
 	}
 }

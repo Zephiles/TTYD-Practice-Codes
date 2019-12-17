@@ -1,8 +1,10 @@
 #include "mod.h"
 #include "global.h"
 #include "patch.h"
+#include "assembly.h"
 
 #include <gc/OSModule.h>
+#include <gc/OSContext.h>
 #include <ttyd/mariost.h>
 #include <ttyd/battle_pad.h>
 #include <ttyd/win_root.h>
@@ -127,6 +129,15 @@ void Mod::init()
 			void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
 	{
 		return gMod->displayActionCommandsTimingHook(battleUnitPtr, attackParams);
+	});
+	
+	mPFN_systemErrorHandler_trampoline = patch::hookFunction(
+		ttyd::mariost::systemErrorHandler, [](uint16_t error, 
+			gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
+	{
+		// Enable the FPU registers
+		StartErrorHandlerEnableFPU();
+		gMod->errorHandler(error, context, dsisr, dar);
 	});
 
 	// Initialize typesetting early

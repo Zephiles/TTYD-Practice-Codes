@@ -819,6 +819,16 @@ struct MenuPrevMenuAndOption
 	uint8_t PreviousMenuOption[20];
 };
 
+struct ErrorHandlerStrings
+{
+	#define MAX_LEVELS 16
+	char ContextAddress[32];
+	char RegisterValues[32][11];
+	char AdditionalRegisterValues[6][11];
+	char AddressList[MAX_LEVELS * 3][11];
+	char InstructionAndAddress[128];
+};
+
 extern MenuVars MenuVar;
 extern Menus Menu[30];
 extern Cheats Cheat[24];

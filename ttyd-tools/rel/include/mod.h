@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gc/OSModule.h>
+#include <gc/OSContext.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
@@ -30,6 +31,7 @@ private:
 	void *disableBattles(uint32_t, void *);
 	void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
+	void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -51,6 +53,9 @@ private:
 	
 	int32_t (*mPFN_BattleActionCommandCheckDefence_trampoline)(
 		void *, ttyd::battle_unit::AttackParams *) = nullptr;
+	
+	void (*mPFN_systemErrorHandler_trampoline)(uint16_t, 
+		gc::OSContext::OSContext *, uint32_t, uint32_t) = nullptr;
 };
 
 }

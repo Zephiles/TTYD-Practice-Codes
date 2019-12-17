@@ -306,6 +306,27 @@
 // data
 80418560:seqWork
 
+// DEMOInit.o
+// text
+// 8002DD1C:__DEMODiagnoseHang
+// 8002DF34:__NoHangDoneRender
+// 8002E380:__NoHangRetraceCallback
+// 8002E41C:DEMOEnableGPHangWorkaround
+8002E504:DEMOGetCurrentBuffer
+// 8002E50C:DEMOGetRenderModeObj
+// 8002E514:DEMODoneRender
+// 8002E5F8:DEMOBeforeRender
+// 8002E6E4:DEMOInit
+// data
+804185A0:DemoCurrentBuffer
+804185A4:DemoFrameBuffer2
+804185A8:DemoFrameBuffer1
+
+// DEMOPad.o
+8002EA18:DEMOPadInit
+// 8002EAA0:DEMOPadRead
+// 8002EB60:DEMOPadCopy
+
 // memory.o
 // text
 // unused:smartGetWorkPtr
@@ -601,6 +622,8 @@
 8006E66C:marioStDisp
 8006E694:marioStMain
 8006E8CC:marioStInit
+80257EF4:systemErrorHandler
+// 80258500:setupErrorHandler
 // data
 80410310:globalWorkPointer
 
@@ -1069,7 +1092,7 @@
 // 800D7C74:psndStopAllFadeOut
 // 800D7D90:psndSetPosDirListener
 // 800D7DB8:psndPushGroup
-// 800D7E40:psndExit
+800D7E40:psndExit
 // 800D7E70:psndMainInt
 // 800D7E9C:psndMain
 // 800D7EF0:psndInit
@@ -1965,6 +1988,34 @@
 // 80290E20:DMAErrorHandler
 // 80290F80:__OSCacheInit
 
+// OSContext.c
+// 80291074:__OSLoadFPUContext
+// 80291198:__OSSaveFPUContext
+// 802912C0:OSSaveFPUContext
+// 802912C8:OSSetCurrentContext
+// 80291324:OSGetCurrentContext
+// 80291330:OSSaveContext
+// 802913B0:OSLoadContext
+// 80291488:OSGetStackPointer
+// 80291490:OSClearContext
+// 802914B4:OSInitContext
+// 80291570:OSDumpContext
+// 80291818:OSSwitchFPUContext
+// 8029189C:__OSContextInit
+802918E4:OSFillFPUContext
+
+// OSFont.c
+// 80292A1C:GetFontCode
+// 80292B90:Decode
+80292D04:OSGetFontEncode
+// 80292D68:ReadFont
+// 8029308C:OSLoadFont
+// 802931CC:ParseStringS
+// 80293308:OSGetFontTexel
+// 802935A8:ExpandFontSheet
+80293954:OSInitFont
+80293B60:OSGetFontTexture
+
 // OSLink.c
 // 8029453C:OSNotifyLink
 // 80294540:OSNotifyUnlink
@@ -1981,6 +2032,71 @@
 // 80297A68:__OSGetSystemTime
 // 80297ACC:GetDates
 // 80297C68:OSTicksToCalendarTime
+
+// mtx.a
+// 80297F00:PSMTXIdentity
+// 80297F2C:PSMTXCopy
+// 80297F60:PSMTXConcat
+// 8029802C:PSMTXInverse
+// 80298124:PSMTXInvXpose
+// 802981EC:PSMTXRotRad
+// 8029825C:PSMTXRotTrig
+// 8029830C:__PSMTXRotAxisRadInternal
+// 802983BC:PSMTXRotAxisRad
+// 8029842C:PSMTXTrans
+// 80298460:PSMTXTransApply
+802984AC:PSMTXScale
+// 802984D4:PSMTXScaleApply
+// 8029852C:C_MTXLookAt
+// 802986B8:C_MTXLightFrustum
+// 8029874C:C_MTXLightPerspective
+// 80298818:C_MTXLightOrtho
+// 802988A0:PSMTXMultVec
+// 802988F4:PSMTXMultVecSR
+// 80298948:C_MTXFrustum
+// 802989E4:C_MTXPerspective
+80298AB4:C_MTXOrtho
+// 80298B4C:PSMTX44Copy
+// 80298B90:PSMTX44Concat
+// 80298C94:PSMTX44Trans
+// 80298CD0:PSMTX44Scale
+// 80298D04:PSMTX44MultVec
+// 80298D7C:PSVECAdd
+// 80298DA0:PSVECSubtract
+// 80298DC4:PSVECScale
+// 80298DE0:PSVECNormalize
+// 80298E24:PSVECSquareMag
+// 80298E3C:PSVECMag
+// 80298E80:PSVECDotProduct
+// 80298EA0:PSVECCrossProduct
+// 80298EDC:C_VECHalfAngle
+// 80298FB4:C_VECReflect
+// 80299088:PSVECSquareDistance
+// 802990B0:PSVECDistance
+
+// vi.c
+// 8029D6FC:__VIRetraceHandler
+// 8029D970:VISetPreRetraceCallback
+// 8029D9B4:VISetPostRetraceCallback
+// 8029D9F8:getTiming
+// 8029DAA0:__VIInit
+// 8029DCA4:VIInit
+// 8029E154:VIWaitForRetrace
+// 8029E1A8:setFbbRegs
+// 8029E47C:setVerticalRegs
+// 8029E61C:VIConfigure
+8029EE24:VIFlush
+8029EF54:VISetNextFrameBuffer
+8029EFC0:VISetBlack
+8029F03C:VIGetRetraceCount
+// 8029F044:GetCurrentDisplayPosition
+// 8029F080:getCurrentFieldEvenOdd
+// 8029F0E8:VIGetNextField
+// 8029F184:VIGetCurrentLine
+// 8029F21C:VIGetTvFormat
+// 8029F284:VIGetDTVStatus
+// 8029F2C0:__VIDisplayPositionToXY
+// 8029F4DC:__VIGetCurrentPosition
 
 // CARDBios.c
 // 802A56A0:__CARDDefaultApiCallback
@@ -2102,7 +2218,52 @@
 // CARDNet.c
 // 802AC108:CARDGetSerialNo
 
-// GXGeometry.c
+// gx.a
+// 802AC1CC:__GXDefaultTexRegionCallback
+// 802AC2C8:__GXDefaultTlutRegionCallback
+// 802AC2EC:__GXShutdown
+// 802AC47C:__GXInitRevisionBits
+// 802AC620:GXInit
+// 802ACC20:__GXInitGX
+// 802AD558:GXCPInterruptHandler
+// 802AD68C:GXInitFifoBase
+// 802AD6F8:GXInitFifoPtrs
+// 802AD768:GXInitFifoLimits
+// 802AD774:GXSetCPUFifo
+// 802AD89C:GXSetGPFifo
+// 802ADA14:GXSaveCPUFifo
+// 802ADA48:__GXSaveCPUFifoAux
+// 802ADB10:GXGetGPStatus
+// 802ADB60:GXGetFifoBase
+// 802ADB68:GXGetFifoSize
+// 802ADB70:GXSetBreakPtCallback
+// 802ADBB4:__GXFifoInit
+// 802ADC00:__GXFifoReadEnable
+// 802ADC24:__GXFifoReadDisable
+// 802ADC48:__GXFifoLink
+// 802ADC7C:__GXWriteFifoIntEnable
+// 802ADCAC:__GXWriteFifoIntReset
+// 802ADCDC:__GXCleanGPFifo
+// 802ADDDC:GXGetCPUFifo
+// 802ADDE4:GXGetGPFifo
+// 802ADDEC:GXGetOverflowCount
+// 802ADDF4:GXResetOverflowCount
+802ADE04:GXSetVtxDesc
+// 802AE070:GXSetVtxDescv
+// 802AE2F8:__GXSetVCD
+// 802AE3B4:__GXCalculateVLim
+// 802AE4D8:GXGetVtxDesc
+// 802AE68C:GXGetVtxDescv
+802AE71C:GXClearVtxDesc
+802AE754:GXSetVtxAttrFmt
+// 802AE9B0:GXSetVtxAttrFmtv
+// 802AEC30:__GXSetVAT
+// 802AECB8:GXGetVtxAttrFmt
+// 802AEF38:GXGetVtxAttrFmtv
+// 802AEFAC:GXSetArray
+// 802AEFF0:GXInvalidateVtxCache
+802AF000:GXSetTexCoordGen2
+802AF280:GXSetNumTexGens
 // 802AFBE8:__GXSetDirtyState
 802AFC68:GXBegin
 // 802AFD38:__GXSendFlushPrim
@@ -2113,8 +2274,22 @@
 // 802AFEB0:GXGetCullMode
 // 802AFECC:GXSetCoPlanar
 // 802AFF00:__GXSetGenMode
-
-// GXLight.c
+// 802AFF24:GXAdjustForOverscan
+// 802B0068:GXSetDispCopySrc
+// 802B00E4:GXSetTexCopySrc
+// 802B0160:GXSetDispCopyDst
+// 802B0194:GXSetTexCopyDst
+// 802B02C4:GXSetDispCopyFrame2Field
+// 802B02E8:GXSetCopyClamp
+// 802B0340:GXGetYScaleFactor
+// 802B0578:GXSetDispCopyYScale
+802B0644:GXSetCopyClear
+// 802B06BC:GXSetCopyFilter
+// 802B08C4:GXSetDispCopyGamma
+802B08D8:GXCopyDisp
+// 802B0A40:GXCopyTex
+// 802B0BCC:GXClearBoundingBox
+// 802B0C04:GXReadBoundingBox
 // 802B0C38:GXInitLightAttn
 // 802B0C54:GXInitLightSpot
 // 802B0DE4:GXInitLightDistAttn
@@ -2124,8 +2299,80 @@
 // 802B0EEC:GXLoadLightObjImm
 // 802B0F68:GXSetChanAmbColor
 802B1050:GXSetChanMatColor
-// 802B1138:GXSetNumChans
+802B1138:GXSetNumChans
 // 802B1174:GXSetChanCtrl
+// 802B1224:__GXGetTexTileShift
+// 802B1288:GXGetTexBufferSize
+// 802B13E4:__GetImageTileCount
+802B14AC:GXInitTexObj
+// 802B16F8:GXInitTexObjCI
+// 802B1740:GXInitTexObjLOD
+// 802B18A4:GXInitTexObjData
+// 802B18B4:GXGetTexObjData
+// 802B18C0:GXGetTexObjWidth
+// 802B18D0:GXGetTexObjHeight
+// 802B18E0:GXGetTexObjFmt
+// 802B18E8:GXGetTexObjMipMap
+// 802B1900:GXLoadTexObjPreLoaded
+802B1A7C:GXLoadTexObj
+// 802B1AD0:GXInitTlutObj
+// 802B1B08:GXLoadTlut
+// 802B1BA0:GXInitTexCacheRegion
+// 802B1C94:GXInitTexPreLoadRegion
+// 802B1D18:GXInitTlutRegion
+// 802B1D50:GXInvalidateTexAll
+// 802B1D98:GXSetTexRegionCallback
+// 802B1DAC:GXSetTlutRegionCallback
+// 802B1DC0:GXPreLoadEntireTexture
+// 802B2024:__SetSURegs
+// 802B20C4:__GXSetSUTexRegs
+// 802B2240:__GXSetTmemConfig
+802B2AD0:GXSetTevOp
+// 802B2B5C:GXSetTevColorIn
+// 802B2BA0:GXSetTevAlphaIn
+// 802B2BE4:GXSetTevColorOp
+// 802B2C4C:GXSetTevAlphaOp
+// 802B2CB4:GXSetTevColor
+// 802B2D14:GXSetTevColorS10
+// 802B2D78:GXSetTevKColor
+// 802B2DDC:GXSetTevKColorSel
+// 802B2E38:GXSetTevKAlphaSel
+// 802B2E94:GXSetTevSwapMode
+// 802B2EDC:GXSetTevSwapModeTable
+802B2F5C:GXSetAlphaCompare
+// 802B2FA0:GXSetZTexture
+802B302C:GXSetTevOrder
+802B31C8:GXSetNumTevStages
+// 802B31F0:GXSetFog
+// 802B3404:GXSetFogRangeAdj
+802B3528:GXSetBlendMode
+802B357C:GXSetColorUpdate
+802B35A8:GXSetAlphaUpdate
+802B35D4:GXSetZMode
+// 802B3608:GXSetZCompLoc
+// 802B363C:GXSetPixelFmt
+// 802B3710:GXSetDither
+// 802B373C:GXSetDstAlpha
+// 802B3778:GXSetFieldMask
+// 802B37B0:GXSetFieldMode
+// 802B420C:GXProject
+802B4380:GXSetProjection
+// 802B4424:GXSetProjectionv
+// 802B44B0:GXGetProjectionv
+802B44F8:GXLoadPosMtxImm
+// 802B4548:GXLoadNrmMtxImm
+802B4598:GXSetCurrentMtx
+802B45CC:GXLoadTexMtxImm
+// 802B4680:__GXSetViewport
+// 802B4710:GXSetViewportJitter
+802B4768:GXSetViewport
+// 802B47B0:GXGetViewportv
+// 802B47D4:GXSetZScaleOffset
+802B4840:GXSetScissor
+// 802B48B8:GXGetScissor
+// 802B4900:GXSetScissorBoxOffset
+// 802B4940:GXSetClipMode
+// 802B4968:__GXSetMatrixIndex
 
 // item_data.o
 // data
