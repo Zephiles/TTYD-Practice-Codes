@@ -642,7 +642,7 @@ void menuCheckButton()
 							uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
 							switch (CurrentMenuOptionCheck)
 							{
-								case TURN_ON_OR_OFF:
+								case CHEATS_STANDARD_TURN_ON_OR_OFF:
 								{
 									// Flip the bool for the current cheat
 									bool CheatActive = Cheat[tempMenuSelectedOption].Active;
