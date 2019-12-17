@@ -2101,7 +2101,7 @@
 // 802A9140:__VIDisplayPositionToXY
 // 802A935C:__VIGetCurrentPosition
 
-// CARDBios.c
+// card.a
 // 802AF520:__CARDDefaultApiCallback
 // 802AF524:__CARDSyncCallback
 // 802AF558:__CARDExtHandler
@@ -2130,36 +2130,26 @@
 // 802B09D8:OnReset
 // 802B0A28:CARDSetFastMode
 // 802B0A5C:CARDGetFastMode
-
-// CARDUnlock.c
 // 802B0A78:bitrev
 // 802B0BE4:ReadArrayUnlock
 // 802B0D28:DummyLen
 // 802B0DEC:__CARDUnlock
 // 802B1944:InitCallback
 // 802B19B4:DoneCallback
-
-// CARDRdwr.c
 // 802B1CD8:BlockReadCallback
 // 802B1DB4:__CARDRead
 // 802B1E18:BlockWriteCallback
 // 802B1F00:__CARDWrite
-
-// CARDBlock.c
 // 802B1F68:__CARDGetFatBlock
 // 802B1F70:WriteCallback
 // 802B2044:EraseCallback
 // 802B210C:__CARDAllocBlock
 // 802B2224:__CARDFreeBlock
 // 802B22C0:__CARDUpdateFatBlock
-
-// CARDDir.c
 // 802B236C:__CARDGetDirBlock
 // 802B2374:WriteCallback
 // 802B2444:EraseCallback
 // 802B250C:__CARDUpdateDir
-
-// CARDCheck.c
 // 802B25D0:__CARDCheckSum
 // 802B2780:VerifyID
 // 802B2A04:VerifyDir
@@ -2167,8 +2157,6 @@
 // 802B2EC8:__CARDVerify
 // 802B2F54:CARDCheckExAsync
 // 802B34E4:CARDCheckAsync
-
-// CARDMount.c
 // 802B350C:IsCard
 // 802B35D8:CARDProbe
 802B3610:CARDProbeEx
@@ -2177,13 +2165,9 @@
 802B3D18:CARDMountAsync
 // 802B3EB8:DoUnmount
 802B3F54:CARDUnmount
-
-// CARDFormat.c
 // 802B4000:FormatCallback
 // 802B4144:__CARDFormatRegionAsync
 // 802B479C:CARDFormatAsync
-
-// CARDOpen.c
 // 802B47E4:__CARDCompareFileName
 // 802B484C:__CARDAccess
 // 802B48E0:__CARDIsWritable
@@ -2192,33 +2176,21 @@
 802B4C58:CARDOpen
 802B4D74:CARDClose
 // 802B4DC8:__CARDIsOpened
-
-// CARDCreate.c
 // 802B4DD0:CreateCallbackFat
 802B4F00:CARDCreateAsync
-
-// CARDRead.c
 // 802B5120:__CARDSeek
 // 802B52D8:ReadCallback
 802B5408:CARDReadAsync
 // 802B554C:CARDCancel
-
-// CARDWrite.c
 // 802B55D8:WriteCallback
 // 802B5748:EraseCallback
 802B57F8:CARDWriteAsync
-
-// CARDDelete.c
 // 802B590C:DeleteCallback
 // 802B59B0:CARDDeleteAsync
 802B5AC0:CARDDelete
-
-// CARDStat.c
 // 802B5B08:UpdateIconOffsets
 802B5D00:CARDGetStatus
 802B5E14:CARDSetStatusAsync
-
-// CARDNet.c
 // 802B5F88:CARDGetSerialNo
 
 // gx.a
