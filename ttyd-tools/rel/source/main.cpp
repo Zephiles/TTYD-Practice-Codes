@@ -497,9 +497,72 @@ void addTextToHeapArray(char *text)
 	strcat(tempHeapBuffer, text);
 }
 
+void *checkIndividualStandardHeap(gc::OSAlloc::ChunkInfo *start)
+{
+	gc::OSAlloc::ChunkInfo *currentChunk = nullptr;
+	gc::OSAlloc::ChunkInfo *prevChunk = nullptr;
+	
+	for (currentChunk = start; currentChunk; currentChunk = currentChunk->next)
+	{
+		// Check pointer sanity
+		if (!checkIfPointerIsValid(currentChunk))
+		{
+			return currentChunk;
+		}
+		
+		// Sanity check size
+		if (currentChunk->size >= 0x1800000)
+		{
+			return currentChunk;
+		}
+
+		// Check linked list integrity
+		if (prevChunk != currentChunk->prev)
+		{
+			return currentChunk;
+		}
+
+		prevChunk = currentChunk;
+	}
+	
+	return nullptr;
+}
+
+void *checkIndividualSmartHeap(ttyd::memory::SmartAllocationData *start)
+{
+	ttyd::memory::SmartAllocationData *currentChunk = nullptr;
+	ttyd::memory::SmartAllocationData *prevChunk = nullptr;
+	
+	for (currentChunk = start; currentChunk; currentChunk = currentChunk->pNext)
+	{
+		// Check pointer sanity
+		if (!checkIfPointerIsValid(currentChunk))
+		{
+			return currentChunk;
+		}
+		
+		// Sanity check size
+		if (currentChunk->usedSize >= 0x1800000)
+		{
+			return currentChunk;
+		}
+
+		// Check linked list integrity
+		if (prevChunk != currentChunk->pPrev)
+		{
+			return currentChunk;
+		}
+		
+		prevChunk = currentChunk;
+	}
+	
+	return nullptr;
+}
+
 void checkHeaps()
 {
 	char *tempDisplayBuffer = DisplayBuffer;
+	uint32_t currentChunk = 0;
 	
 	// Check the standard heaps
 	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
@@ -507,43 +570,29 @@ void checkHeaps()
 	
 	for (int32_t i = 0; i < TotalHeaps; i++)
 	{
+		// Check the used entries
 		const gc::OSAlloc::HeapInfo &heap = HeapArray[i];
-		bool valid = true;
 		
-		gc::OSAlloc::ChunkInfo *currentChunk = nullptr;
-		gc::OSAlloc::ChunkInfo *prevChunk = nullptr;
-		for (currentChunk = heap.firstUsed; currentChunk; currentChunk = currentChunk->next)
-		{
-			// Check pointer sanity
-			if (!checkIfPointerIsValid(currentChunk))
-			{
-				valid = false;
-				break;
-			}
-			
-			// Sanity check size
-			if (currentChunk->size >= 0x1800000)
-			{
-				valid = false;
-				break;
-			}
-
-			// Check linked list integrity
-			if (prevChunk != currentChunk->prev)
-			{
-				valid = false;
-				break;
-			}
-
-			prevChunk = currentChunk;
-		}
-		
-		if (!valid)
+		currentChunk = reinterpret_cast<uint32_t>(checkIndividualStandardHeap(heap.firstUsed));
+		if (currentChunk)
 		{
 			sprintf(tempDisplayBuffer,
-				"Standard Heap %" PRId32 " corrupt at 0x%08" PRIX32 "\n",
+				"Main Heap %" PRId32 " (used) corrupt at 0x%08" PRIX32 "\n",
 				i,
-				reinterpret_cast<uint32_t>(currentChunk));
+				currentChunk);
+			
+			// Add the text to the heap buffer
+			addTextToHeapArray(tempDisplayBuffer);
+		}
+		
+		// Check the free entries
+		currentChunk = reinterpret_cast<uint32_t>(checkIndividualStandardHeap(heap.firstFree));
+		if (currentChunk)
+		{
+			sprintf(tempDisplayBuffer,
+				"Main Heap %" PRId32 " (free) corrupt at 0x%08" PRIX32 "\n",
+				i,
+				currentChunk);
 			
 			// Add the text to the heap buffer
 			addTextToHeapArray(tempDisplayBuffer);
@@ -552,41 +601,26 @@ void checkHeaps()
 	
 	// Check the smart heap
 	ttyd::memory::SmartWork *SmartWorkPtr = ttyd::memory::smartWorkPointer;
-	bool valid = true;
 	
-	ttyd::memory::SmartAllocationData *currentChunk = nullptr;
-	ttyd::memory::SmartAllocationData *prevChunk = nullptr;
-	for (currentChunk = SmartWorkPtr->pFirstUsed; currentChunk; currentChunk = currentChunk->pNext)
-	{
-		// Check pointer sanity
-		if (!checkIfPointerIsValid(currentChunk))
-		{
-			valid = false;
-			break;
-		}
-		
-		// Sanity check size
-		if (currentChunk->usedSize >= 0x1800000)
-		{
-			valid = false;
-			break;
-		}
-
-		// Check linked list integrity
-		if (prevChunk != currentChunk->pPrev)
-		{
-			valid = false;
-			break;
-		}
-		
-		prevChunk = currentChunk;
-	}
-	
-	if (!valid)
+	// Check the used entries
+	currentChunk = reinterpret_cast<uint32_t>(checkIndividualSmartHeap(SmartWorkPtr->pFirstUsed));
+	if (currentChunk)
 	{
 		sprintf(tempDisplayBuffer,
-			"Smart Heap corrupt at 0x%08" PRIX32 "\n",
-			reinterpret_cast<uint32_t>(currentChunk));
+			"Smart Heap (used) corrupt at 0x%08" PRIX32 "\n",
+			currentChunk);
+		
+		// Add the text to the heap buffer
+		addTextToHeapArray(tempDisplayBuffer);
+	}
+	
+	// Check the free entries
+	currentChunk = reinterpret_cast<uint32_t>(checkIndividualSmartHeap(SmartWorkPtr->pFirstFree));
+	if (currentChunk)
+	{
+		sprintf(tempDisplayBuffer,
+			"Smart Heap (free) corrupt at 0x%08" PRIX32 "\n",
+			currentChunk);
 		
 		// Add the text to the heap buffer
 		addTextToHeapArray(tempDisplayBuffer);
