@@ -800,7 +800,7 @@ struct ErrorHandlerStrings
 {
 	#define MAX_LEVELS 32
 	char ContextAddress[32];
-	char RegisterValues[32][11];
+	char GeneralRegisterValues[32][11];
 	char AdditionalRegisterValues[6][11];
 	char AddressList[MAX_LEVELS * 3][11];
 	char InstructionAndAddress[128];

@@ -41,7 +41,7 @@ int32_t forceNPCItemDrop(void *ptr);
 void *fallThroughMostObjects(void *ptr);
 
 // draw.cpp
-bool disableDPadOptionsDisplay(uint16_t unkVar);
+bool disableDPadOptionsDisplay(uint16_t unkVar);;
 void StartErrorHandlerInterrupts();
 
 }

@@ -4746,48 +4746,13 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		"---- Context 0x%08" PRIX32 " ----", 
 		reinterpret_cast<uint32_t>(context));
 	
-	// Register names
-	static const char *RegisterNames[] = 
-	{
-		"r0",
-		"r1",
-		"r2",
-		"r3",
-		"r4",
-		"r5",
-		"r6",
-		"r7",
-		"r8",
-		"r9",
-		"r10",
-		"r11",
-		"r12",
-		"r13",
-		"r14",
-		"r15",
-		"r16",
-		"r17",
-		"r18",
-		"r19",
-		"r20",
-		"r21",
-		"r22",
-		"r23",
-		"r24",
-		"r25",
-		"r26",
-		"r27",
-		"r28",
-		"r29",
-		"r30",
-		"r31",
-	};
+	// Get the general purpose register values
+	uint32_t GeneralRegistersSize = sizeof(ErrorHandler->GeneralRegisterValues) / 
+		sizeof(ErrorHandler->GeneralRegisterValues[0]);
 	
-	// Get the register values
-	uint32_t RegisterNamesSize = sizeof(RegisterNames) / sizeof(RegisterNames[0]);
-	for (uint32_t i = 0; i < RegisterNamesSize; i++)
+	for (uint32_t i = 0; i < GeneralRegistersSize; i++)
 	{
-		sprintf(ErrorHandler->RegisterValues[i],
+		sprintf(ErrorHandler->GeneralRegisterValues[i],
 			"0x%08" PRIX32,
 			context->gpr[i]);
 	}
@@ -5182,8 +5147,8 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		int32_t NewPosY = PosY;
 		
 		// Draw the help text
-		const char *HelpText = "Press/hold the D-Pad to move the text\nPress A to zoom in\nPress B to zoom out";
-		drawString(NewPosX, NewPosY, HelpText, FontScale);
+		const char *Text = "Press/hold the D-Pad to move the text\nPress A to zoom in\nPress B to zoom out";
+		drawString(NewPosX, NewPosY, Text, FontScale);
 		NewPosY += PosYIncrementAmount * 4;
 		
 		// Draw the register OSError if it is valid
@@ -5197,19 +5162,21 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		drawString(NewPosX, NewPosY, ErrorHandler->ContextAddress, FontScale);
 		NewPosY += PosYIncrementAmount;
 		
-		// Draw the registers and values in 3 columns
-		uint32_t TotalRowsZeroIndexed = (RegisterNamesSize - 1) / 3;
+		// Draw the general purpose registers and values in 3 columns
+		uint32_t TotalRowsZeroIndexed = (GeneralRegistersSize - 1) / 3;
 		uint32_t Counter = 0;
 		int32_t tempPosX = NewPosX;
 		int32_t tempPosY = NewPosY;
 		
-		for (uint32_t i = 0; i < RegisterNamesSize; i++)
+		char NameBuffer[4];
+		for (uint32_t i = 0; i < GeneralRegistersSize; i++)
 		{
-			// Draw the register names
-			drawString(tempPosX, tempPosY, RegisterNames[i], FontScale);
+			// Draw the general purpose register names
+			sprintf(NameBuffer, "r%" PRIu32, i);
+			drawString(tempPosX, tempPosY, NameBuffer, FontScale);
 			
-			// Draw the register values
-			drawString(tempPosX + 40, tempPosY, ErrorHandler->RegisterValues[i], FontScale);
+			// Draw the general purpose register values
+			drawString(tempPosX + 40, tempPosY, ErrorHandler->GeneralRegisterValues[i], FontScale);
 			
 			if (Counter >= TotalRowsZeroIndexed)
 			{
@@ -5224,7 +5191,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				Counter++;
 			}
 		}
-		NewPosY += (PosYIncrementAmount * 11) + PosYIncrementAmount;
+		NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
 		
 		// Draw the additional registers and values in 2 columns
 		uint32_t SecondRowAdjustment = 0;
@@ -5263,7 +5230,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				Counter++;
 			}
 		}
-		NewPosY += (PosYIncrementAmount * 3) + PosYIncrementAmount;
+		NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
 		
 		// Draw the names for the addresses, back chains, and LR saves in 3 columns
 		tempPosX = NewPosX;
