@@ -4718,7 +4718,8 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	
 	// Init memory for the strings
 	ttyd::memory::SmartAllocationData *ErrorHandlerStringsMemory = 
-		ttyd::memory::smartAlloc(sizeof(ErrorHandlerStrings), 0);
+		ttyd::memory::smartAlloc(sizeof(ErrorHandlerStrings), 
+		ttyd::memory::SmartAllocationGroup::kNone);
 	
 	// Set up a temporary local variable to use for getting the strings memory
 	ErrorHandlerStrings *ErrorHandler = reinterpret_cast<ErrorHandlerStrings *>(ErrorHandlerStringsMemory->pMemory);
@@ -4886,12 +4887,14 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	if (CurrentFontEncode == 0)
 	{
 		// ANSI
-		FontDataMemory = ttyd::memory::smartAlloc(0x20120, 0);
+		FontDataMemory = ttyd::memory::smartAlloc(0x20120, 
+			ttyd::memory::SmartAllocationGroup::kNone);
 	}
 	else
 	{
 		// SJIS
-		FontDataMemory = ttyd::memory::smartAlloc(0x120F00, 0);
+		FontDataMemory = ttyd::memory::smartAlloc(0x120F00, 
+			ttyd::memory::SmartAllocationGroup::kNone);
 	}
 	
 	// Init the font data
