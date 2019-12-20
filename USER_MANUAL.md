@@ -141,3 +141,9 @@ There are several other changes that have been made outside of the menu:
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
 6. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
 7. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
+8. In the event that the game crashes, a custom-made error handler will be displayed automatically. The main purpose of this is to display specific values that were present just before the crash occurred, as well as the exact address at which the game crashed. The controls for how to use it will be displayed automatically, and are as follows:
+   * Press/hold the D-Pad to move the text
+   * Press X to go to the next page
+   * Press Y to go to the previous page
+   * Press A to zoom in
+   * Press B to zoom out
