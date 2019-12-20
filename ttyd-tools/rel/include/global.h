@@ -799,8 +799,11 @@ struct MenuPrevMenuAndOption
 struct ErrorHandlerStrings
 {
 	#define MAX_LEVELS 32
+	const char *OSError;
 	char ContextAddress[32];
 	char GeneralRegisterValues[32][11];
+	char FloatRegisterValues[32][19];
+	char PairedSinglesValues[32][19];
 	char AdditionalRegisterValues[6][11];
 	char AddressList[MAX_LEVELS * 3][11];
 	char InstructionAndAddress[128];

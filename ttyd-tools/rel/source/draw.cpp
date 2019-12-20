@@ -4713,24 +4713,6 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
 
 void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
 {
-	// Get the OS error
-	const char *OSError = nullptr;
-	if (error == 3)
-	{
-		// ISI error
-		OSError = "---- OS_ERROR_ISI ----";
-	}
-	else if (error < 3)
-	{
-		// DSI error
-		OSError = "---- OS_ERROR_DSI ----";
-	}
-	else if (error == 6)
-	{
-		// Program error
-		OSError = "---- OS_ERROR_PROGRAM ----";
-	}
-	
 	// Reinit the smart heap
 	ttyd::memory::smartReInit();
 	
@@ -4740,6 +4722,23 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	
 	// Set up a temporary local variable to use for getting the strings memory
 	ErrorHandlerStrings *ErrorHandler = reinterpret_cast<ErrorHandlerStrings *>(ErrorHandlerStringsMemory->pMemory);
+	
+	// Get the OS error
+	if (error == 3)
+	{
+		// ISI error
+		ErrorHandler->OSError = "---- OS_ERROR_ISI ----";
+	}
+	else if (error < 3)
+	{
+		// DSI error
+		ErrorHandler->OSError = "---- OS_ERROR_DSI ----";
+	}
+	else if (error == 6)
+	{
+		// Program error
+		ErrorHandler->OSError = "---- OS_ERROR_PROGRAM ----";
+	}
 	
 	// Get the context address
 	sprintf(ErrorHandler->ContextAddress, 
@@ -4842,11 +4841,40 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		context->srr0, 
 		dar);
 	
-	// Disable audio
-	ttyd::pmario_sound::psndExit();
-	
 	// Fill FPU context
 	gc::OSContext::OSFillFPUContext(context);
+	
+	// Get the float register values
+	uint32_t FloatRegistersSize = sizeof(ErrorHandler->FloatRegisterValues) / 
+		sizeof(ErrorHandler->FloatRegisterValues[0]);
+	
+	for (uint32_t i = 0; i < FloatRegistersSize; i++)
+	{
+		uint64_t *Address = reinterpret_cast<uint64_t *>(&context->fpr[i]);
+		sprintf(ErrorHandler->FloatRegisterValues[i],
+			"0x%016" PRIX64,
+			*Address);
+	}
+	
+	// Get the paired singles
+	uint32_t PairedSinglesSize = sizeof(ErrorHandler->PairedSinglesValues) / 
+		sizeof(ErrorHandler->PairedSinglesValues[0]);
+	
+	// Only get them if they are enabled
+	bool PairedSinglesEnabled = StartErrorHandlerCheckPairedSinglesEnabled();
+	if (PairedSinglesEnabled)
+	{
+		for (uint32_t i = 0; i < PairedSinglesSize; i++)
+		{
+			uint64_t *Address = reinterpret_cast<uint64_t *>(&context->psf[i]);
+			sprintf(ErrorHandler->PairedSinglesValues[i],
+				"0x%016" PRIX64,
+				*Address);
+		}
+	}
+	
+	// Disable audio
+	ttyd::pmario_sound::psndExit();
 	
 	// Allow interrupts
 	StartErrorHandlerInterrupts();
@@ -4971,18 +4999,17 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	{
 		const int32_t OriginalTextPosX = textPosX;
 		int32_t PosYIncrementAmount = 24;
-		uint32_t i = 0;
 		
 		gc::OSFont::OSFontHeader *tempFontData = reinterpret_cast<gc::OSFont::OSFontHeader *>(FontDataMemory->pMemory);
 		
-		while (text[i] != '\0')
+		while (text[0] != '\0')
 		{
-			if (text[i] == '\n')
+			if (text[0] == '\n')
 			{
 				// Go to the next line
+				text++;
 				textPosX = OriginalTextPosX;
 				textPosY += PosYIncrementAmount;
-				i++;
 			}
 			else
 			{
@@ -4991,8 +5018,8 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				int32_t ImagePosY;
 				int32_t ImageWidth;
 				
-				gc::OSFont::OSGetFontTexture(
-					&text[i], 
+				text = gc::OSFont::OSGetFontTexture(
+					&text[0], 
 					&Image, 
 					&ImagePosX, 
 					&ImagePosY, 
@@ -5090,7 +5117,6 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				gc::ppc::writeGatherPipe.s16 = ImagePosBottom;
 				
 				textPosX += ImageWidth;
-				i++;
 			}
 		}
 	};
@@ -5100,6 +5126,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	
 	int32_t PosX = 50;
 	int32_t PosY = 50;
+	uint32_t PageNumber = 0;
 	float FontScale = 0.65f;
 	
 	// Main draw loop
@@ -5107,8 +5134,9 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	{
 		uint32_t FirstRetraceCount = gc::vi::VIGetRetraceCount();
 		
+		const int32_t RegisterValueIncrement = 40;
 		const int32_t AddressesIncrement = 130;
-		int32_t PosYIncrementAmount = 24;
+		const int32_t PosYIncrementAmount = 24;
 		
 		// Get the current button inputs
 		ttyd::system::makeKey();
@@ -5117,11 +5145,11 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		// Allow for both a left/right and an up/down at the same time
 		if (checkButtonComboEveryFrame(PAD_DPAD_LEFT))
 		{
-			PosX -= 5;
+			PosX -= 3;
 		}
 		else if (checkButtonComboEveryFrame(PAD_DPAD_RIGHT))
 		{
-			PosX += 5;
+			PosX += 3;
 		}
 		
 		if (checkButtonComboEveryFrame(PAD_DPAD_DOWN))
@@ -5143,127 +5171,235 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 			FontScale -= 0.05f;
 		}
 		
+		// Check to see if the page number should be changed
+		if (checkButtonCombo(PAD_X))
+		{
+			// Increment
+			if (PageNumber < 2)
+			{
+				PageNumber++;
+			}
+			else
+			{
+				PageNumber = 0;
+			}
+		}
+		else if (checkButtonCombo(PAD_Y))
+		{
+			// Decrement
+			if (static_cast<int32_t>(PageNumber) <= 0)
+			{
+				PageNumber = 2;
+			}
+			else
+			{
+				PageNumber--;
+			}
+		}
+		
 		int32_t NewPosX = PosX;
 		int32_t NewPosY = PosY;
 		
+		int32_t tempPosX;
+		int32_t tempPosY;
+		
 		// Draw the help text
-		const char *Text = "Press/hold the D-Pad to move the text\nPress A to zoom in\nPress B to zoom out";
+		const char *Text = "Press/hold the D-Pad to move the text\nPress X to go to the next page\nPress Y to go to the previous page\nPress A to zoom in\nPress B to zoom out";
 		drawString(NewPosX, NewPosY, Text, FontScale);
-		NewPosY += PosYIncrementAmount * 4;
 		
-		// Draw the register OSError if it is valid
-		if (OSError)
+		// Draw the page number
+		char MiscBuffer[7];
+		sprintf(MiscBuffer, "Page %" PRIu32, PageNumber + 1);
+		drawString(NewPosX + 400, NewPosY, MiscBuffer, FontScale);
+		NewPosY += PosYIncrementAmount * 6;
+		
+		if (PageNumber == 0)
 		{
-			drawString(NewPosX, NewPosY, OSError, FontScale);
+			// Draw the register OSError if it is valid
+			const char *OSError = ErrorHandler->OSError;
+			if (OSError)
+			{
+				drawString(NewPosX, NewPosY, OSError, FontScale);
+				NewPosY += PosYIncrementAmount;
+			}
+			
+			// Draw the context address
+			drawString(NewPosX, NewPosY, ErrorHandler->ContextAddress, FontScale);
 			NewPosY += PosYIncrementAmount;
-		}
-		
-		// Draw the context address
-		drawString(NewPosX, NewPosY, ErrorHandler->ContextAddress, FontScale);
-		NewPosY += PosYIncrementAmount;
-		
-		// Draw the general purpose registers and values in 3 columns
-		uint32_t TotalRowsZeroIndexed = (GeneralRegistersSize - 1) / 3;
-		uint32_t Counter = 0;
-		int32_t tempPosX = NewPosX;
-		int32_t tempPosY = NewPosY;
-		
-		char NameBuffer[4];
-		for (uint32_t i = 0; i < GeneralRegistersSize; i++)
-		{
-			// Draw the general purpose register names
-			sprintf(NameBuffer, "r%" PRIu32, i);
-			drawString(tempPosX, tempPosY, NameBuffer, FontScale);
 			
-			// Draw the general purpose register values
-			drawString(tempPosX + 40, tempPosY, ErrorHandler->GeneralRegisterValues[i], FontScale);
+			// Draw the general purpose registers and values in 3 columns
+			tempPosX = NewPosX;
+			tempPosY = NewPosY;
 			
-			if (Counter >= TotalRowsZeroIndexed)
+			uint32_t TotalRowsZeroIndexed = (GeneralRegistersSize - 1) / 3;
+			uint32_t Counter = 0;
+			
+			for (uint32_t i = 0; i < GeneralRegistersSize; i++)
 			{
-				// Go to the next column
-				tempPosX += 170;
-				tempPosY = NewPosY;
-				Counter = 0;
-			}
-			else
-			{
-				tempPosY += PosYIncrementAmount;
-				Counter++;
-			}
-		}
-		NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
-		
-		// Draw the additional registers and values in 2 columns
-		uint32_t SecondRowAdjustment = 0;
-		uint32_t AdditionalRegisterNamesSize = sizeof(AdditionalRegisterNames) / sizeof(AdditionalRegisterNames[0]);
-		TotalRowsZeroIndexed = (AdditionalRegisterNamesSize - 1) / 2;
-		
-		Counter = 0;
-		tempPosX = NewPosX;
-		tempPosY = NewPosY;
-		
-		for (uint32_t i = 0; i < AdditionalRegisterNamesSize; i++)
-		{
-			// Draw the additional register names
-			drawString(tempPosX, tempPosY, AdditionalRegisterNames[i], FontScale);
-			
-			// Draw the additional register values
-			drawString(tempPosX + 65 - SecondRowAdjustment, tempPosY, 
-				ErrorHandler->AdditionalRegisterValues[i], FontScale);
-			
-			if (Counter >= TotalRowsZeroIndexed)
-			{
-				// Go to the next column
-				tempPosX += 190;
-				tempPosY = NewPosY;
-				Counter = 0;
+				// Draw the general purpose register names
+				sprintf(MiscBuffer, "r%" PRIu32, i);
+				drawString(tempPosX, tempPosY, MiscBuffer, FontScale);
 				
-				// Decrement the second row
-				if (SecondRowAdjustment == 0)
+				// Draw the general purpose register values
+				drawString(tempPosX + RegisterValueIncrement, tempPosY, ErrorHandler->GeneralRegisterValues[i], FontScale);
+				
+				if (Counter >= TotalRowsZeroIndexed)
 				{
-					SecondRowAdjustment += 10;
+					// Go to the next column
+					tempPosX += 170;
+					tempPosY = NewPosY;
+					Counter = 0;
+				}
+				else
+				{
+					tempPosY += PosYIncrementAmount;
+					Counter++;
 				}
 			}
-			else
+			NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
+			
+			// Draw the additional registers and values in 2 columns
+			uint32_t SecondRowAdjustment = 0;
+			uint32_t AdditionalRegisterNamesSize = sizeof(AdditionalRegisterNames) / sizeof(AdditionalRegisterNames[0]);
+			TotalRowsZeroIndexed = (AdditionalRegisterNamesSize - 1) / 2;
+			
+			Counter = 0;
+			tempPosX = NewPosX;
+			tempPosY = NewPosY;
+			
+			for (uint32_t i = 0; i < AdditionalRegisterNamesSize; i++)
 			{
+				// Draw the additional register names
+				drawString(tempPosX, tempPosY, AdditionalRegisterNames[i], FontScale);
+				
+				// Draw the additional register values
+				drawString(tempPosX + 65 - SecondRowAdjustment, tempPosY, 
+					ErrorHandler->AdditionalRegisterValues[i], FontScale);
+				
+				if (Counter >= TotalRowsZeroIndexed)
+				{
+					// Go to the next column
+					tempPosX += 190;
+					tempPosY = NewPosY;
+					Counter = 0;
+					
+					// Decrement the second row
+					if (SecondRowAdjustment == 0)
+					{
+						SecondRowAdjustment += 10;
+					}
+				}
+				else
+				{
+					tempPosY += PosYIncrementAmount;
+					Counter++;
+				}
+			}
+			NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
+			
+			// Draw the names for the addresses, back chains, and LR saves in 3 columns
+			tempPosX = NewPosX;
+			
+			uint32_t AddressHeaderNamesSize = sizeof(AddressHeaderNames) / sizeof(AddressHeaderNames[0]);
+			for (uint32_t i = 0; i < AddressHeaderNamesSize; i++)
+			{
+				drawString(tempPosX, NewPosY, AddressHeaderNames[i], FontScale);
+				tempPosX += AddressesIncrement;
+			}
+			
+			// Draw the addresses, back chains, and LR saves in 3 columns
+			tempPosY = NewPosY;
+			
+			for (uint32_t i = 0; i < AddressCount; i++)
+			{
+				// Draw the addresses
+				drawString(NewPosX, tempPosY, ErrorHandler->AddressList[i], FontScale);
+				
+				// Draw the back chains
+				drawString(NewPosX + AddressesIncrement, tempPosY, 
+					ErrorHandler->AddressList[i + MAX_LEVELS], FontScale);
+				
+				// Draw the LR saves
+				drawString(NewPosX + (AddressesIncrement * 2), tempPosY, 
+					ErrorHandler->AddressList[(i + MAX_LEVELS) * 2], FontScale);
+				
 				tempPosY += PosYIncrementAmount;
-				Counter++;
+			}
+			NewPosY += (AddressCount * PosYIncrementAmount) + PosYIncrementAmount;
+			
+			// Draw the instruction where the error occured, as well as the invalid address
+			drawString(NewPosX, NewPosY, ErrorHandler->InstructionAndAddress, FontScale);
+		}
+		else if (PageNumber == 1)
+		{
+			// Draw the float registers and values in 2 columns
+			tempPosX = NewPosX;
+			tempPosY = NewPosY;
+			
+			uint32_t TotalRowsZeroIndexed = (FloatRegistersSize - 1) / 2;
+			uint32_t Counter = 0;
+			
+			for (uint32_t i = 0; i < FloatRegistersSize; i++)
+			{
+				// Draw the float register names
+				sprintf(MiscBuffer, "f%" PRIu32, i);
+				drawString(tempPosX, tempPosY, MiscBuffer, FontScale);
+				
+				// Draw the float register values
+				drawString(tempPosX + RegisterValueIncrement, tempPosY, 
+					ErrorHandler->FloatRegisterValues[i], FontScale);
+				
+				if (Counter >= TotalRowsZeroIndexed)
+				{
+					// Go to the next column
+					tempPosX += 290;
+					tempPosY = NewPosY;
+					Counter = 0;
+				}
+				else
+				{
+					tempPosY += PosYIncrementAmount;
+					Counter++;
+				}
 			}
 		}
-		NewPosY += (PosYIncrementAmount * TotalRowsZeroIndexed) + (PosYIncrementAmount * 2);
-		
-		// Draw the names for the addresses, back chains, and LR saves in 3 columns
-		tempPosX = NewPosX;
-		
-		uint32_t AddressHeaderNamesSize = sizeof(AddressHeaderNames) / sizeof(AddressHeaderNames[0]);
-		for (uint32_t i = 0; i < AddressHeaderNamesSize; i++)
+		else // if (PageNumber >= 2)
 		{
-			drawString(tempPosX, NewPosY, AddressHeaderNames[i], FontScale);
-			tempPosX += AddressesIncrement;
+			// Draw the paired singles
+			// Only draw them if they are enabled
+			if (PairedSinglesEnabled)
+			{
+				tempPosX = NewPosX;
+				tempPosY = NewPosY;
+				
+				uint32_t TotalRowsZeroIndexed = (PairedSinglesSize - 1) / 2;
+				uint32_t Counter = 0;
+				
+				for (uint32_t i = 0; i < PairedSinglesSize; i++)
+				{
+					// Draw the paired singles names
+					sprintf(MiscBuffer, "p%" PRIu32, i);
+					drawString(tempPosX, tempPosY, MiscBuffer, FontScale);
+					
+					// Draw the paired singles values
+					drawString(tempPosX + RegisterValueIncrement + 5, tempPosY, 
+						ErrorHandler->PairedSinglesValues[i], FontScale);
+					
+					if (Counter >= TotalRowsZeroIndexed)
+					{
+						// Go to the next column
+						tempPosX += 290;
+						tempPosY = NewPosY;
+						Counter = 0;
+					}
+					else
+					{
+						tempPosY += PosYIncrementAmount;
+						Counter++;
+					}
+				}
+			}
 		}
-		
-		// Draw the addresses, back chains, and LR saves in 3 columns
-		tempPosY = NewPosY;
-		
-		for (uint32_t i = 0; i < AddressCount; i++)
-		{
-			// Draw the addresses
-			drawString(NewPosX, tempPosY, ErrorHandler->AddressList[i], FontScale);
-			
-			// Draw the back chains
-			drawString(NewPosX + AddressesIncrement, tempPosY, 
-				ErrorHandler->AddressList[i + MAX_LEVELS], FontScale);
-			
-			// Draw the LR saves
-			drawString(NewPosX + (AddressesIncrement * 2), tempPosY, 
-				ErrorHandler->AddressList[(i + MAX_LEVELS) * 2], FontScale);
-			
-			tempPosY += PosYIncrementAmount;
-		}
-		NewPosY += (AddressCount * PosYIncrementAmount) + PosYIncrementAmount;
-		
-		// Draw the instruction where the error occured, as well as the invalid address
-		drawString(NewPosX, NewPosY, ErrorHandler->InstructionAndAddress, FontScale);
 		
 		// Various post-drawing stuff
 		gc::gx::GXSetZMode(
