@@ -2,6 +2,7 @@
 
 #include <gc/OSModule.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/npcdrv.h>
 #include <ttyd/party.h>
 
 #include <cstdint>
@@ -20,7 +21,7 @@ void *getBattleWorkPointer();
 void *getMarioBattlePointer();
 void *getPartnerBattlePointer();
 void *getActorPointer(uint32_t slot);
-void *getNPCFieldWorkPointer(uint32_t npcSlot);
+ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot);
 uint32_t secondsToFrames(uint32_t seconds);
 uint32_t getSequencePosition();
 void setSequencePosition(uint32_t value);

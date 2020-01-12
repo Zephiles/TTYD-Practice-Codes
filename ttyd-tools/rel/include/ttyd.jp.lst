@@ -418,79 +418,190 @@
 80304224:worldData
 
 // npcdrv.o
-// 8004289C:fbatPreventMarioEventChk
-// 800428D0:npcCheckBlow
-// 80042A10:npcCalcScore
-// 80042B18:fbatSandersBombTriggerOn
-// 80042B2C:npcKoopaModeMobjBoundDeadCheck
-// 80042BF4:npcKoopaModeEncountCheck
-// 80042D70:npcClearDeadInfo
-// 80042DA4:npcGetBackItemEntry
+8004289C:fbatPreventMarioEventChk
+800428D0:npcCheckBlow
+80042A10:npcCalcScore
+80042B18:fbatSandersBombTriggerOn
+80042B2C:npcKoopaModeMobjBoundDeadCheck
+80042BF4:npcKoopaModeEncountCheck
+80042D70:npcClearDeadInfo
+80042DA4:npcGetBackItemEntry
 // 80042E38:_majinai_effect
 // 80042EF0:_check
-// 80042F60:npcExecAllReglEvt
-// 80043020:npcWaitAllInitEvtEnd
-// 800430F4:npcExecAllInitEvt
-// 800431C0:dbGetDefData
-// 80043230:npcSetLink
-// 8004323C:npcSetSlave
-// 80043250:npcSetBtlSetupWork
-// 80043260:npcGetBtlSetupWork
-// 80043270:npcBlurOff
-// 80043314:npcBlurOn
-// 80043430:npcSetColor
-// 800434BC:npcStartForOneEvent
-// 80043524:npcStartForEvent
-// 800435D4:npcStopForOneEvent
-// 80043634:npcStopForEvent
-// 800436DC:npcSetBattleInfo
-// 800437D4:npcSetupBattleInfo
-// 80043A54:npcCheckInterrupt
+80042F60:npcExecAllReglEvt
+80043020:npcWaitAllInitEvtEnd
+800430F4:npcExecAllInitEvt
+800431C0:dbGetDefData
+80043230:npcSetLink
+8004323C:npcSetSlave
+80043250:npcSetBtlSetupWork
+80043260:npcGetBtlSetupWork
+80043270:npcBlurOff
+80043314:npcBlurOn
+80043430:npcSetColor
+800434BC:npcStartForOneEvent
+80043524:npcStartForEvent
+800435D4:npcStopForOneEvent
+80043634:npcStopForEvent
+800436DC:npcSetBattleInfo
+800437D4:npcSetupBattleInfo
+80043A54:npcCheckInterrupt
 // 80043C88:_npcHitCheckHammerAllMotion
 // 80044010:_npcHitCheckSphere
 80044188:fbatHitCheck
-// 80045F60:fbatHitCheckAll
-// 80045F88:fbatNpcTalkCheck
-// 80045FE8:npcGroupDead
+80045F60:fbatHitCheckAll
+80045F88:fbatNpcTalkCheck
+80045FE8:npcGroupDead
 // 8004602C:_npcGroupDead
 // 80046388:_npcDead
-// 800463D4:fbatBattleMode
-// 80046A30:fbatTalkMode
-// 80046BD0:fbatEncountCheck
+800463D4:fbatBattleMode
+80046A30:fbatTalkMode
+80046BD0:fbatEncountCheck
 // 80047750:_fbatFirstAttackAnnouceDisp
-// 8004791C:fbatSetAttackAnnounceEnable
-// 80047930:fbatSetAttackAnnounce
-// 80047A28:fbatChangeMode
+8004791C:fbatSetAttackAnnounceEnable
+80047930:fbatSetAttackAnnounce
+80047A28:fbatChangeMode
 80047A38:fbatGetPointer
-// 80047A44:npcNearDistCheck
-// 80047BB4:npcHitCheckSide
-// 800484CC:npcTransRytoFaceDir
-// 80048508:npcTuningRy
+80047A44:npcNearDistCheck
+80047BB4:npcHitCheckSide
+800484CC:npcTransRytoFaceDir
+80048508:npcTuningRy
 // 80048538:npcMoveG
 // 80048760:npcCheckHitMarioSide
-// 80048CD8:npcSetStayPose
-// 80048E30:npcSetTalkPose
-// 80048F88:npcSetMarioAutoTalkPose
-// 80048FC8:npcNameToPtr_NoAssert
-// 80049074:npcNameToPtr
-// 80049110:npcMain
-// 8004AA0C:npcDeleteGroup
+80048CD8:npcSetStayPose
+80048E30:npcSetTalkPose
+80048F88:npcSetMarioAutoTalkPose
+80048FC8:npcNameToPtr_NoAssert
+80049074:npcNameToPtr
+80049110:npcMain
+8004AA0C:npcDeleteGroup
 // 8004AA50:_npcDeleteGroup
-// 8004ACF4:npcDelete
-// 8004AE14:npcGetTribe
-// 8004AE80:npcEntry
-// 8004B0D0:npcGetReactionOfLivingBody
-// 8004B0E8:npcReset
-// 8004B15C:npcInit
+8004ACF4:npcDelete
+8004AE14:npcGetTribe
+8004AE80:npcEntry
+8004B0D0:npcGetReactionOfLivingBody
+8004B0E8:npcReset
+8004B15C:npcInit
 // 8004B228:npcDisp_blur
 // 8004B514:npcDisp_offscreen
 // 8004B820:npcDisp_offscreen_xlu
 // 8004BAF8:npcDisp
 // 8004BDCC:npcDisp_xlu
 // 8004C06C:mtx_setup
-// 8004C324:npcRecoveryFiledNpc
-// 8004C444:npcReleaseFiledNpc
+8004C324:npcRecoveryFiledNpc
+8004C444:npcReleaseFiledNpc
 8004C558:npcGetWorkPtr
+
+// evt_npc.o
+8004C574:evt_npc_release_filednpc
+8004C5D4:evt_npc_sound_data_set
+8004C6E0:evt_npc_sound_data_reset
+8004C76C:evt_fbat_trans_floor_position
+8004C8B4:evt_npc_kamek_kemuri2
+8004C9B4:evt_npc_kamek_kemuri1
+8004CA48:evt_npc_kamek_move_position
+// 8004D168:_kamek_houki_kemuri
+8004D26C:evt_npc_calc_score
+8004D2B8:evt_npc_get_kpencount_type
+8004D314:evt_npc_majo_disp_off
+8004D54C:evt_npc_majo_disp_on
+8004D8A8:evt_npc_set_autotalkpose
+8004D960:evt_npc_set_tribe
+8004DA64:evt_npc_set_balloontype
+8004DAC0:evt_npc_wait_msec
+8004DB94:evt_npc_set_unitwork
+8004DC08:evt_npc_get_unitwork
+8004DC78:evt_npc_getback_item_entry
+8004DCC4:evt_npc_get_drop_coin
+// 8004DD54:_npc_check_coin_group
+// 8004DDCC:_npc_check_coin
+8004DDE0:evt_npc_get_drop_flower
+8004DEA0:evt_npc_get_drop_heart
+8004DF60:evt_npc_get_drop_item
+8004DFD4:evt_npc_get_drop_fixitem
+8004E02C:evt_npc_set_link
+8004E0AC:evt_npc_set_btlsetup_work
+8004E128:evt_npc_get_btlsetup_work
+8004E1A0:evt_npc_get_battle_rule_keep_result
+8004E1EC:evt_npc_check_escape_battle
+8004E228:evt_npc_get_battle_result
+8004E278:evt_npc_wait_battle_end
+8004E2F0:evt_npc_battle_start
+8004E3A4:evt_npc_set_battle_rule
+8004E428:evt_npc_set_battle_info
+8004E48C:evt_npc_set_attack_mode
+8004E4E8:evt_npc_check
+8004E550:evt_npc_blur_onoff
+8004E5C0:evt_npc_set_color
+8004E674:evt_npc_set_offscreen
+8004E6F4:evt_npc_change_fbat_mode
+8004E728:evt_npc_start_for_one_event
+8004E774:evt_npc_stop_for_one_event
+8004E7C0:evt_npc_start_for_event
+8004E7E4:evt_npc_stop_for_event
+8004E808:evtNpcNameToPtr_NoAssert
+8004E970:evtNpcNameToPtr
+8004EAD8:evt_npc_facedirection_add
+8004EBD4:evt_npc_restart_regular_event
+8004EC2C:evt_npc_get_reglid
+8004EC84:evt_npc_change_interrupt
+8004ED34:evt_npc_get_loiter_dir
+8004EE20:evt_npc_add_dirdist
+8004EF30:evt_set_dir_to_home
+8004EFA0:evt_set_dir_to_target
+8004F018:evt_get_target_dir
+// 8004F094:_get_target_dir
+8004F158:evt_npc_set_camid
+8004F1B4:evt_npc_pera_onoff
+8004F238:evt_npc_status_check
+8004F2A4:evt_npc_status_onoff
+8004F340:evt_npc_reaction_flag_onoff
+8004F3DC:evt_npc_flag_check
+8004F448:evt_npc_flag_onoff
+8004F4E4:evt_npc_wait_anim
+8004F560:evt_npc_wait_pera
+8004F5BC:evt_npc_set_force_regl_anim
+8004F638:evt_npc_clear_paper
+8004F690:evt_npc_set_paper_anim
+8004F6FC:evt_npc_set_paper
+8004F774:evt_npc_set_run_anim
+8004F7F0:evt_npc_set_walk_anim
+8004F86C:evt_npc_set_talk_anim
+8004F8E8:evt_npc_set_stay_anim
+8004F964:evt_npc_set_stop_anim
+8004F9E0:evt_npc_set_confuse_anim
+8004FA5C:evt_npc_set_damage_anim
+8004FAD8:evt_npc_set_anim
+8004FB60:evt_npc_get_dir
+8004FBC4:evt_npc_reverse_ry
+8004FC24:evt_npc_set_ry_lr
+8004FD20:evt_npc_set_ry
+8004FD84:_intplGetFloat
+8004FF64:evt_npc_homing_target
+80050600:evt_npc_return_interrupt
+80050654:evt_npc_glide_position
+80050C00:evt_npc_jump_position_nohit
+80050F64:evt_npc_jump_position
+800515EC:evt_npc_move_position
+80051C7C:evt_npc_set_rotate_offset
+80051DC8:evt_npc_add_rotate
+80051EF4:evt_npc_set_rotate
+80052040:evt_npc_get_rotate
+800520C4:evt_npc_set_home_position
+800521AC:evt_npc_get_home_position
+80052230:evt_npc_get_position
+800522B4:evt_npc_get_scale
+80052338:evt_npc_set_scale
+800523CC:evt_npc_get_height
+80052428:evt_npc_set_height
+8005248C:evt_npc_set_width
+800524F0:evt_npc_set_position
+800525D4:evt_npc_setup
+8005285C:evt_npc_get_ReactionOfLivingBody
+800528B0:evt_npc_check_delete
+80052904:evt_npc_delete
+80052950:evt_npc_slave_entry
+80052A7C:evt_npc_entry
 
 // evt_sub.o
 // 80052AFC:mail_evt_gor_04_keyoff_check
