@@ -7,6 +7,7 @@
 #include "patch.h"
 #include "assembly.h"
 
+#include <ttyd/npcdrv.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mariost.h>
 #include <ttyd/system.h>
@@ -32,10 +33,10 @@
 
 namespace mod {
 
-void *Mod::disableBattles(uint32_t flags, void *unk)
+ttyd::npcdrv::NpcEntry *Mod::disableBattles(uint32_t flags, void *unk)
 {
 	// Call the original function immediately
-	void *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
+	ttyd::npcdrv::NpcEntry *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
 	
 	uint32_t ReloadRoomCombo 	= PAD_L | PAD_B;
 	uint32_t OpenMenuCombo 		= PAD_L | PAD_START;
@@ -681,11 +682,11 @@ void bobberyEarly()
 		return;
 	}
 	
-	const uint32_t NPCSlot6 = 5;
-	uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot6));
+	ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(5); // NPC 6
 	
 	// Allow the Ember to be refought
-	*reinterpret_cast<uint8_t *>(NPCAddress + 0x1D7) = 0;
+	*reinterpret_cast<uint8_t *>(
+		reinterpret_cast<uint32_t>(NPC) + 0x1D7) = 0;
 }
 
 void spawnItem()

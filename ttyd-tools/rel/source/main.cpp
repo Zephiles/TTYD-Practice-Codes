@@ -122,8 +122,8 @@ void fixRoomProblems() // Gets called in initStageEvents
 		if (SequencePosition < 26)
 		{
 			// Clear the pointer used to check which animation Mario should use when greeting the Koopa
-			uint32_t fbatPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::fbatGetPointer());
-			*reinterpret_cast<uint32_t *>(fbatPointer + 0x4) = 0; // Mario will do no animation when the pointer is not set
+			ttyd::npcdrv::FbatData *fbatPtr = ttyd::npcdrv::fbatGetPointer();
+			fbatPtr->wHitNpc = nullptr; // Mario will do no animation when the pointer is not set
 		}
 	}
 	else if (compareStringToNextMap("rsh_05_a"))

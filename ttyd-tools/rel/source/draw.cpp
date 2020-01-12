@@ -27,6 +27,7 @@
 #include <ttyd/fadedrv.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/mario.h>
+#include <ttyd/npcdrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/battle_unit.h>
@@ -4086,29 +4087,22 @@ void drawPalaceSkipDetails()
 	}
 	
 	// Get Phantom Ember Y coordinate
-	const uint32_t NPCSlot2 = 1;
-	uint32_t NPCAddress = reinterpret_cast<uint32_t>(getNPCFieldWorkPointer(NPCSlot2)); // NPC 2
+	ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(1); // NPC 2
 	
 	// Check if NPC 2 is active, followed by NPC 1, and then default to 0 if neither is active
-	bool FoundPhantomEmber = false;
-	float PhantomEmberPosY;
+	float PhantomEmberPosY = 0;
 	
-	for (int32_t i = 0; i < 2; i++)
+	if (NPC->flags & (1 << 0)) // Check if 0 bit is active
 	{
-		uint32_t NPCActive = *reinterpret_cast<uint32_t *>(NPCAddress);
-		if (NPCActive &= (1 << 0)) // Check if 0 bit is active
-		{
-			PhantomEmberPosY = *reinterpret_cast<float *>(NPCAddress + 0x90);
-			FoundPhantomEmber = true;
-			break;
-		}
-		NPCAddress -= 0x340;
+		PhantomEmberPosY = NPC->position[1];
 	}
-	
-	if (!FoundPhantomEmber)
+	else
 	{
-		// Neither NPC is active, so set PhantomEmberPosY to 0
-		PhantomEmberPosY = 0;
+		NPC = getNpcEntryData(0); // NPC 1
+		if (NPC->flags & (1 << 0)) // Check if 0 bit is active
+		{
+			PhantomEmberPosY = NPC->position[1];
+		}
 	}
 	
 	// Get Field Item Timer

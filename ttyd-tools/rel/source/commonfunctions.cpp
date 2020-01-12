@@ -126,10 +126,10 @@ void *getActorPointer(uint32_t slot)
 	return ttyd::battle::BattleGetUnitPtr(BattlePointer, slot);
 }
 
-void *getNPCFieldWorkPointer(uint32_t npcSlot)
+ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot)
 {
 	// Get the work pointer
-	uint32_t NPCWorkPointer = reinterpret_cast<uint32_t>(ttyd::npcdrv::npcGetWorkPtr());
+	ttyd::npcdrv::NpcWork *NpcWorkPointer = ttyd::npcdrv::npcGetWorkPtr();
 	
 	// Adjust the pointer if currently in a battle
 	uint32_t BattleFlag = *reinterpret_cast<uint32_t *>(
@@ -138,12 +138,12 @@ void *getNPCFieldWorkPointer(uint32_t npcSlot)
 	
 	if (BattleFlag)
 	{
-		NPCWorkPointer -= 0x14;
+		NpcWorkPointer = reinterpret_cast<ttyd::npcdrv::NpcWork *>(
+			reinterpret_cast<uint32_t>(NpcWorkPointer) - 0x14);
 	}
 	
 	// Get the pointer for the desired NPC
-	uint32_t NPCFieldPointer = *reinterpret_cast<uint32_t *>(NPCWorkPointer + 0xC);
-	return reinterpret_cast<void *>(NPCFieldPointer + (npcSlot * 0x340));
+	return &NpcWorkPointer->entries[slot];
 }
 
 uint32_t secondsToFrames(uint32_t seconds)

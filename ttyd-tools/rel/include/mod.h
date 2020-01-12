@@ -3,6 +3,7 @@
 #include <gc/OSModule.h>
 #include <gc/OSContext.h>
 #include <ttyd/evtmgr.h>
+#include <ttyd/npcdrv.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
 
@@ -28,7 +29,7 @@ private:
 	uint32_t setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *, uint32_t);
 	int32_t fixMarioKeyOn();
 	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
-	void *disableBattles(uint32_t, void *);
+	ttyd::npcdrv::NpcEntry *disableBattles(uint32_t, void *);
 	void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
 	void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);
@@ -48,7 +49,7 @@ private:
 	uint32_t (*mPFN_evt_bero_get_info_trampoline)(ttyd::evtmgr::EvtEntry *, uint32_t) = nullptr;
 	int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
 	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
-	void *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
+	ttyd::npcdrv::NpcEntry *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
 	void (*mPFN_scissor_disp_control_trampoline)(ttyd::dispdrv::CameraId) = nullptr;
 	
 	int32_t (*mPFN_BattleActionCommandCheckDefence_trampoline)(
