@@ -317,9 +317,10 @@ void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmou
 	uint32_t Counter = 0;
 	for (uint32_t i = 0; i < (offsetAmount - 1); i++)
 	{
-		if (checkIfPointerIsValid(reinterpret_cast<void *>(tempAddress)))
+		uint32_t *tempAddress2 = reinterpret_cast<uint32_t *>(tempAddress + offset[i]);
+		if (checkIfPointerIsValid(tempAddress2))
 		{
-			tempAddress = *reinterpret_cast<uint32_t *>(tempAddress + offset[i]);
+			tempAddress = *tempAddress2;
 		}
 		else
 		{
