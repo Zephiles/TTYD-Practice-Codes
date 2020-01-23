@@ -3698,11 +3698,11 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
 
 void *initStageEvents()
 {
-	// Check to see if any fixes need to be applied to specific maps
-	fixRoomProblems();
-	
 	if (!WarpByEvent.ShouldInit)
 	{
+		// Check to see if any fixes need to be applied to specific maps
+		fixRoomProblems();
+		
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 		return ttyd::mariost::globalWorkPointer;
 	}
@@ -3713,6 +3713,9 @@ void *initStageEvents()
 	int32_t CurrentIndex = WarpByEvent.CurrentIndex;
 	if (!indexToStageAndEvent(CurrentIndex, StageAndEventIds))
 	{
+		// Check to see if any fixes need to be applied to specific maps
+		fixRoomProblems();
+		
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 		return ttyd::mariost::globalWorkPointer;
 	}
@@ -3722,6 +3725,9 @@ void *initStageEvents()
 	
 	if (!checkForValidStageAndEvent(StageId, EventId))
 	{
+		// Check to see if any fixes need to be applied to specific maps
+		fixRoomProblems();
+		
 		// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 		return ttyd::mariost::globalWorkPointer;
 	}
@@ -3940,6 +3946,9 @@ void *initStageEvents()
 	
 	// Override any flags set in this function if the previous flags were locked
 	lockFlags();
+	
+	// Check to see if any fixes need to be applied to specific maps
+	fixRoomProblems();
 	
 	// The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
 	return ttyd::mariost::globalWorkPointer;
