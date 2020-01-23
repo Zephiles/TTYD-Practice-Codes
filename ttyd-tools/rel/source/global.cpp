@@ -1851,6 +1851,7 @@ struct MemoryCardStruct MenuSettings;
 struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
+struct NpcNameToPtrErrorStruct NpcNameToPtrError;
 
 void initMenuVars()
 {

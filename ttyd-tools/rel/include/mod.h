@@ -33,6 +33,7 @@ private:
 	void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
 	void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);
+	ttyd::npcdrv::NpcEntry *npcNameToPtr_New(const char *);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -57,6 +58,8 @@ private:
 	
 	void (*mPFN_systemErrorHandler_trampoline)(uint16_t, 
 		gc::OSContext::OSContext *, uint32_t, uint32_t) = nullptr;
+	
+	ttyd::npcdrv::NpcEntry *(*mPFN_npcNameToPtr_New_trampoline)(const char *) = nullptr;
 };
 
 }

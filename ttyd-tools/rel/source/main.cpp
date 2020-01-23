@@ -476,18 +476,18 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 	}
 }
 
-void addTextToHeapArray(char *text)
+void addTextToHeapBuffer(char *text)
 {
 	char *tempHeapBuffer = HeapBuffer;
 	
 	// Make sure adding the new text will not result in an overflow
 	uint32_t NewTextSize = strlen(text);
-	uint32_t CurrentHeapSize = strlen(tempHeapBuffer);
+	uint32_t CurrentHeapBufferSize = strlen(tempHeapBuffer);
 	
-	uint32_t NewHeapSize = CurrentHeapSize + NewTextSize + 1;
-	uint32_t MaxHeapSize = sizeof(HeapBuffer);
+	uint32_t NewHeapBufferSize = CurrentHeapBufferSize + NewTextSize + 1;
+	uint32_t MaxHeapBufferSize = sizeof(HeapBuffer);
 	
-	if (NewHeapSize > MaxHeapSize)
+	if (NewHeapBufferSize > MaxHeapBufferSize)
 	{
 		// Adding the new text will result in an overflow, so don't add it
 		return;
@@ -582,7 +582,7 @@ void checkHeaps()
 				currentChunk);
 			
 			// Add the text to the heap buffer
-			addTextToHeapArray(tempDisplayBuffer);
+			addTextToHeapBuffer(tempDisplayBuffer);
 		}
 		
 		// Check the free entries
@@ -595,7 +595,7 @@ void checkHeaps()
 				currentChunk);
 			
 			// Add the text to the heap buffer
-			addTextToHeapArray(tempDisplayBuffer);
+			addTextToHeapBuffer(tempDisplayBuffer);
 		}
 	}
 	
@@ -611,7 +611,7 @@ void checkHeaps()
 			currentChunk);
 		
 		// Add the text to the heap buffer
-		addTextToHeapArray(tempDisplayBuffer);
+		addTextToHeapBuffer(tempDisplayBuffer);
 	}
 	
 	// Check the free entries
@@ -623,13 +623,62 @@ void checkHeaps()
 			currentChunk);
 		
 		// Add the text to the heap buffer
-		addTextToHeapArray(tempDisplayBuffer);
+		addTextToHeapBuffer(tempDisplayBuffer);
 	}
 	
 	// Draw any errors that occured
 	if (HeapBuffer[0] != '\0')
 	{
 		drawFunctionOnDebugLayerWithOrder(drawHeapArrayErrors, 100.f);
+	}
+}
+
+ttyd::npcdrv::NpcEntry *Mod::npcNameToPtr_New(const char *name)
+{
+	// Get the work pointer
+	ttyd::npcdrv::NpcWork *NpcWorkPointer = ttyd::npcdrv::npcGetWorkPtr();
+	
+	// Loop through the NPCs to find the correct one
+	ttyd::npcdrv::NpcEntry *NPC = nullptr;
+	uint32_t MaxNpcCount = NpcWorkPointer->npcMaxCount;
+	
+	for (uint32_t i = 0; i < MaxNpcCount; i++)
+	{
+		NPC = &NpcWorkPointer->entries[i];
+		if (NPC->flags & (1 << 0)) // Check if 0 bit is active
+		{
+			if (compareStrings(NPC->wUnkAnimation, name))
+			{
+				return NPC;
+			}
+		}
+	}
+	
+	// Didn't find the correct NPC, so return the last one and print error text
+	// Only print the error text if currently not printing any previous error text
+	if (NpcNameToPtrError.Timer == 0)
+	{
+		const char *Text = "npcNameToPtr error occured";
+		strcpy(NpcNameToPtrError.Buffer, Text);
+		NpcNameToPtrError.Timer = secondsToFrames(5);
+	}
+	
+	return NPC;
+}
+
+void displayNpcNameToPtrError()
+{
+	uint32_t Timer = NpcNameToPtrError.Timer;
+	if (Timer > 0)
+	{
+		Timer--;
+		NpcNameToPtrError.Timer = Timer;
+	}
+	
+	// Call the drawing function regardless of the current time, as the drawing function is what clears the buffer
+	if (NpcNameToPtrError.Buffer[0] != '\0')
+	{
+		drawFunctionOnDebugLayerWithOrder(drawNpcNameToPtrError, 100.f);
 	}
 }
 
@@ -818,6 +867,7 @@ void Mod::run()
 			displayMarioSpeedXZ();
 			displayStickAngle();
 			displayMemoryWatches();
+			displayNpcNameToPtrError();
 		}
 		
 		// Only run button-based displays if currently not changing button combos
