@@ -629,7 +629,7 @@ void checkHeaps()
 	// Draw any errors that occured
 	if (HeapBuffer[0] != '\0')
 	{
-		drawFunctionOnDebugLayer(drawHeapArrayErrors);
+		drawFunctionOnDebugLayerWithOrder(drawHeapArrayErrors, 100.f);
 	}
 }
 
