@@ -738,20 +738,23 @@ void initAddressOverwrites()
 	
 	patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
 	
-	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
-	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
+	patch::overwriteAddressValue(DebugModeInitialzeAddress, 0x3800FFFF); // li r0,-1
 	
-	*reinterpret_cast<uint32_t *>(PauseMenuPartnerMenuAddress) 				= 0x60000000; // nop
-	*reinterpret_cast<uint32_t *>(PauseMenuBadgeMenuAddress) 				= 0x60000000; // nop
+	patch::overwriteAddressValue(DebugModeShowBuildDateAddress, 0x60000000); // nop
 	
-	*reinterpret_cast<uint32_t *>(PreventImportantItemCutscenesAddress) 	= 0x48000030; // b 0x30
+	patch::overwriteAddressValue(PauseMenuPartnerMenuAddress, 0x60000000); // nop
 	
-	*reinterpret_cast<uint32_t *>(msgWindowMrAddress) 						= 0x38830001; // addi r4,r3,1
+	patch::overwriteAddressValue(PauseMenuBadgeMenuAddress, 0x60000000); // nop
+	
+	patch::overwriteAddressValue(PreventImportantItemCutscenesAddress, 0x48000030); // b 0x30
+	
+	patch::overwriteAddressValue(msgWindowMrAddress, 0x38830001); // addi r4,r3,1
 	
 	// Set the initial value for the debug mode variable
-	*reinterpret_cast<int32_t *>(
-		reinterpret_cast<uint32_t>(
-			ttyd::seq_title::seqTitleWorkPointer2) + 0x30) = -1;
+	int32_t *DebugModeVar = reinterpret_cast<int32_t *>(
+		reinterpret_cast<uint32_t>(ttyd::seq_title::seqTitleWorkPointer2) + 0x30);
+	
+	patch::overwriteAddressValue(DebugModeVar, static_cast<uint32_t>(-1));
 }
 
 void Mod::run()
