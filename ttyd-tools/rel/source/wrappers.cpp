@@ -4,6 +4,7 @@
 #include <ttyd/mario.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/event.h>
+#include <ttyd/dispdrv.h>
 
 #include <cstdint>
 #include <cstdio>
@@ -48,6 +49,9 @@ extern "C"
 	void __real_ICInvalidateRange(void *startAddr, uint32_t nBytes);
 	uint64_t __real___udivdi3(uint64_t a, uint64_t b);
 	uint64_t __real___umoddi3(uint64_t a, uint64_t b);
+	
+	void __real_dispEntry(ttyd::dispdrv::CameraId cameraId, uint8_t renderMode, 
+		float order, ttyd::dispdrv::PFN_dispCallback callback, void *user);
 	
 	// Wrap functions
 	// sprintf
@@ -268,5 +272,12 @@ extern "C"
 	__attribute__((noinline)) uint64_t __wrap___umoddi3(uint64_t a, uint64_t b)
 	{
 		return __real___umoddi3(a, b);
+	}
+	
+	// dispEntry
+	__attribute__((noinline)) void __wrap_dispEntry(ttyd::dispdrv::CameraId cameraId, 
+		uint8_t renderMode, float order, ttyd::dispdrv::PFN_dispCallback callback, void *user)
+	{
+		__real_dispEntry(cameraId, renderMode, order, callback, user);
 	}
 }
