@@ -123,6 +123,7 @@ void drawActionCommandsTiming();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();
+void drawNpcNameToPtrError();
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();
 

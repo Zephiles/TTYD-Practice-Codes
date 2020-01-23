@@ -809,6 +809,12 @@ struct ErrorHandlerStrings
 	char InstructionAndAddress[128];
 };
 
+struct NpcNameToPtrErrorStruct
+{
+	uint32_t Timer;
+	char Buffer[32];
+};
+
 extern MenuVars MenuVar;
 extern Menus Menu[30];
 extern Cheats Cheat[24];
@@ -840,6 +846,7 @@ extern MemoryCardStruct MenuSettings;
 extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
+extern NpcNameToPtrErrorStruct NpcNameToPtrError;
 
 extern uint8_t CheatsOrder[];
 extern uint16_t StatsMarioIcons[];

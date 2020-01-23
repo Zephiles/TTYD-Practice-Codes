@@ -139,7 +139,13 @@ void Mod::init()
 		StartErrorHandlerEnableFPU();
 		gMod->errorHandler(error, context, dsisr, dar);
 	});
-
+	
+	mPFN_npcNameToPtr_New_trampoline = patch::hookFunction(
+		ttyd::npcdrv::npcNameToPtr, [](const char *name)
+	{
+		return gMod->npcNameToPtr_New(name);
+	});
+	
 	// Initialize typesettings early
 	// Only run if an ACE loader was not used
 	uint32_t LoaderValue = *reinterpret_cast<uint32_t *>(0x80004148);

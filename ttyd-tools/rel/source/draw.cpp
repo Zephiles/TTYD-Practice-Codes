@@ -4474,7 +4474,7 @@ void drawHeapArrayErrors()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= 120;
+	int32_t PosY 			= 100;
 	float Scale 			= 0.6;
 	
 	// Draw the text
@@ -4483,6 +4483,25 @@ void drawHeapArrayErrors()
 	
 	// Clear the heap buffer
 	clearMemory(tempHeapBuffer, sizeof(HeapBuffer));
+}
+
+void drawNpcNameToPtrError()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= 120;
+	float Scale 			= 0.6;
+	
+	// Draw the text
+	char *tempBuffer = NpcNameToPtrError.Buffer;
+	drawText(tempBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Clear the buffer if the timer is at 0
+	if (NpcNameToPtrError.Timer == 0)
+	{
+		clearMemory(tempBuffer, sizeof(NpcNameToPtrError.Buffer));
+	}
 }
 
 void drawTitleScreenInfo()
