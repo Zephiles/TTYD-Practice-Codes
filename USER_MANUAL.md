@@ -15,22 +15,26 @@
 
 ## Setup
 * Download the GCI from the most recent release (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/releases)).
-* Copy the GCI containing the Practice Codes to the memory card. (This file contains only code required to run the Practice codes. It has no relation to the standard TTYD save file.)
+* Copy the GCI containing the Practice Codes to the memory card. (This file contains only code required to run the Practice Codes. It has no relation to the standard TTYD save file.)
   * For **Dolphin** users:
     * Use the memcard manager located in **Tools > Memcard Manager (GC)** to import the GCI into the file Dolphin is using for a memory card.
     * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located by default at **{Dolphin directory}/GC/{Region}/Card A**. **{Region}** will either be USA, JAP, or EUR depending on the region of the game that you're using.
   * For **Nintendont** or other console users:
     * Use the appropriate homebrew apps / folders, etc. to copy the file from your SD card to your GC memory card or virtual memory card.
-* Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Practice Codes GCI.
-  * For **Dolphin** users:
-    * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/Gecko)).
-    * (For older revisions of Dolphin v5, instead go to **Properties > Edit Config**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
-    * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
-  * For **Nintendont** users:
-    * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/GCT)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO. 
-        * Note: It is important that you **do not** right click to save the GCT, or it will be saved incorrectly. You must download it via the **Download** button.
-    * Enable cheats in Nintendont's settings before booting the game.
-  * Alternatively, you can use the Action Replay loader code (e.g., if you have a physical Action Replay disc).
+* Use one of the following:
+  1. Use a hacked save file to execute arbitrary code, which can then be used to load the practice codes. This is the most ideal way to load them, as it does not require any additional loaders/cheats. Details on how to set up a hacked save file like this may be added at a later date.
+    * Note: Using this method requires you to use at least **v3.0.43** of the Practice Codes. Any versions before this one will not work correctly.
+ 
+  2. Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Practice Codes GCI.
+      * For **Dolphin** users:
+          * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/Gecko)).
+        * (For older revisions of Dolphin v5, instead go to **Properties > Edit Config**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
+        * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
+      * For **Nintendont** users:
+        * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/GCT)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO. 
+          * Note: It is important that you **do not** right click to save the GCT, or it will be saved incorrectly. You must download it via the **Download** button.
+        * Enable cheats in Nintendont's settings before booting the game.
+      * Alternatively, you can use the Action Replay loader code (e.g., if you have a physical Action Replay disc).
 
 ## Menus
 ### Inventory
@@ -132,16 +136,17 @@ There are several other changes that have been made outside of the menu:
 2. The current Sequence value is displayed in the pause menu next to Mario's stats.
 3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
 4. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
-5. Several crashes have been fixed/prevented:
+5. A function in the game called **npcNameToPtr** can sometimes return an improper pointer, so an error message will be displayed on-screen when this happens. The message will be displayed for about 5 seconds.
+6. Several crashes have been fixed/prevented:
    * Petalburg intro cutscene - Mario will not have any greeting animation.
    * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the Sequence is past 338, then the Sequence will be set to 338.
    * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated.
    * If the Endless Room has been completed, and you enter it when the Sequence is at 385, then the room will be set to an incomplete state.
    * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn Gus.
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
-6. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
-7. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
-8. In the event that the game crashes, a custom-made error handler will be displayed automatically. The main purpose of this is to display specific values that were present just before the crash occurred, as well as the exact address at which the game crashed. The controls for how to use it will be displayed automatically, and are as follows:
+7. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
+8. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
+9. In the event that the game crashes, a custom-made error handler will be displayed automatically. The main purpose of this is to display specific values that were present just before the crash occurred, as well as the exact address at which the game crashed. The controls for how to use it will be displayed automatically, and are as follows:
    * Press/hold the D-Pad to move the text
    * Press X to go to the next page
    * Press Y to go to the previous page
