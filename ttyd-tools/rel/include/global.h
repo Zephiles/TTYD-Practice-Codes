@@ -811,8 +811,8 @@ struct ErrorHandlerStrings
 
 struct NpcNameToPtrErrorStruct
 {
-	uint32_t Timer;
-	char Buffer[32];
+	uint32_t Counter;
+	uint16_t Timer;
 };
 
 extern MenuVars MenuVar;
