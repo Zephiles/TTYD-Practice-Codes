@@ -635,32 +635,16 @@ void checkHeaps()
 
 ttyd::npcdrv::NpcEntry *Mod::npcNameToPtr_New(const char *name)
 {
-	// Get the work pointer
+	// Call the original function right away
+	ttyd::npcdrv::NpcEntry *NPC = mPFN_npcNameToPtr_New_trampoline(name);
+	
+	// Check if the returned pointer is valid
 	ttyd::npcdrv::NpcWork *NpcWorkPointer = ttyd::npcdrv::npcGetWorkPtr();
-	
-	// Loop through the NPCs to find the correct one
-	ttyd::npcdrv::NpcEntry *NPC = nullptr;
-	uint32_t MaxNpcCount = NpcWorkPointer->npcMaxCount;
-	
-	for (uint32_t i = 0; i < MaxNpcCount; i++)
+	if (NPC == &NpcWorkPointer->entries[NpcWorkPointer->npcMaxCount])
 	{
-		NPC = &NpcWorkPointer->entries[i];
-		if (NPC->flags & (1 << 0)) // Check if 0 bit is active
-		{
-			if (compareStrings(NPC->wUnkAnimation, name))
-			{
-				return NPC;
-			}
-		}
-	}
-	
-	// Didn't find the correct NPC, so return the last one and print error text
-	// Only print the error text if currently not printing any previous error text
-	if (NpcNameToPtrError.Timer == 0)
-	{
-		const char *Text = "npcNameToPtr error occured";
-		strcpy(NpcNameToPtrError.Buffer, Text);
+		// Didn't find the correct NPC, so print error text
 		NpcNameToPtrError.Timer = secondsToFrames(5);
+		NpcNameToPtrError.Counter++;
 	}
 	
 	return NPC;
@@ -673,12 +657,11 @@ void displayNpcNameToPtrError()
 	{
 		Timer--;
 		NpcNameToPtrError.Timer = Timer;
-	}
-	
-	// Call the drawing function regardless of the current time, as the drawing function is what clears the buffer
-	if (NpcNameToPtrError.Buffer[0] != '\0')
-	{
 		drawFunctionOnDebugLayerWithOrder(drawNpcNameToPtrError, 100.f);
+	}
+	else
+	{
+		NpcNameToPtrError.Counter = 0;
 	}
 }
 

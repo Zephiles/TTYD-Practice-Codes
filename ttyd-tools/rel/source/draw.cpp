@@ -4494,14 +4494,12 @@ void drawNpcNameToPtrError()
 	float Scale 			= 0.6;
 	
 	// Draw the text
-	char *tempBuffer = NpcNameToPtrError.Buffer;
-	drawText(tempBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"npcNameToPtr error occured x%" PRIu32,
+		NpcNameToPtrError.Counter);
 	
-	// Clear the buffer if the timer is at 0
-	if (NpcNameToPtrError.Timer == 0)
-	{
-		clearMemory(tempBuffer, sizeof(NpcNameToPtrError.Buffer));
-	}
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
 }
 
 void drawTitleScreenInfo()
