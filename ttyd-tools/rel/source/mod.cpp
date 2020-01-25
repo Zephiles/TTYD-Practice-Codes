@@ -140,10 +140,10 @@ void Mod::init()
 		gMod->errorHandler(error, context, dsisr, dar);
 	});
 	
-	mPFN_npcNameToPtr_New_trampoline = patch::hookFunction(
+	mPFN_npcNameToPtr_trampoline = patch::hookFunction(
 		ttyd::npcdrv::npcNameToPtr, [](const char *name)
 	{
-		return gMod->npcNameToPtr_New(name);
+		return gMod->checkForNpcNameToPtrError(name);
 	});
 	
 	// Initialize typesettings early
