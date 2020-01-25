@@ -633,10 +633,10 @@ void checkHeaps()
 	}
 }
 
-ttyd::npcdrv::NpcEntry *Mod::npcNameToPtr_New(const char *name)
+ttyd::npcdrv::NpcEntry *Mod::checkForNpcNameToPtrError(const char *name)
 {
-	// Call the original function right away
-	ttyd::npcdrv::NpcEntry *NPC = mPFN_npcNameToPtr_New_trampoline(name);
+	// Call the original function immediately
+	ttyd::npcdrv::NpcEntry *NPC = mPFN_npcNameToPtr_trampoline(name);
 	
 	// Check if the returned pointer is valid
 	ttyd::npcdrv::NpcWork *NpcWorkPointer = ttyd::npcdrv::npcGetWorkPtr();
