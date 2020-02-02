@@ -2,6 +2,21 @@
 
 # 8006EBD8 - Address to hook for this code
 
+# Set global function/variable/offset locations/values
+.set CARDMGR_WORK_PTR_OFFSET,0x1638
+.set INTERNAL_FILENAME_LOCATION,0x800040DC
+.set CARDProbeEx,0x802A9790
+.set CARDMountAsync,0x802A9E98
+.set CARDOpen,0x802AADD8
+.set CARDReadAsync,0x802AB588
+.set OSLink,0x80294AE0
+.set __memFree,0x8002FA60
+.set __memAlloc,0x8002FA8C
+.set CARDGetResultCode,0x802A6940
+.set OSUnlink,0x80294D3C
+.set CARDClose,0x802AAEF4
+.set CARDUnmount,0x802AA0D4
+
 # Initialize static values used for addresses
 lis r31,0x8000
 lis r30,0x8002
@@ -16,7 +31,7 @@ lis r26,0x000F
 ori r26,r26,0x4240 # Check 1,000,000 times
 
 checkForMemoryCardLoop:
-ori r3,r28,0x9790 # CARDProbeEx
+ori r3,r28,CARDProbeEx@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
@@ -28,17 +43,16 @@ bne- exitCheckForMemoryCardLoop
 # Exit if the limit has been reached
 subic. r26,r26,1
 bgt+ checkForMemoryCardLoop
-b exit
 
 exitCheckForMemoryCardLoop:
 cmpwi r3,0 # Check if something went wrong
 bne- exit
 
 # Mount the Memory Card
-ori r3,r28,0x9E98 # CARDMountAsync
+ori r3,r28,CARDMountAsync@l
 mtlr r3
 li r3,0 # Memory Card Slot A
-lwz r4,0x1638(r13)
+lwz r4,CARDMGR_WORK_PTR_OFFSET(r13)
 lwz r4,0x4(r4) # Pointer to the Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
@@ -55,10 +69,10 @@ bl allocateMemory
 mr r26,r3
 
 # Open the file
-ori r3,r28,0xADD8 # CARDOpen
+ori r3,r28,CARDOpen@l
 mtlr r3
 li r3,0 # Memory Card Slot A
-ori r4,r31,0x40DC # File Name
+ori r4,r31,INTERNAL_FILENAME_LOCATION@l
 mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
@@ -72,7 +86,7 @@ bl allocateMemory
 mr r24,r3
 
 # Read from the Card
-ori r3,r28,0xB588 # CARDReadAsync
+ori r3,r28,CARDReadAsync@l
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
 mr r4,r24 # Pointer to the File Buffer
@@ -101,7 +115,7 @@ bl allocateMemory
 mr r24,r3
 
 # Read the REL Area of the file
-ori r3,r28,0xB588 # CARDReadAsync
+ori r3,r28,CARDReadAsync@l
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
 mr r4,r24 # Pointer to the File Buffer
@@ -121,7 +135,7 @@ bl allocateMemory
 mr r25,r3
 
 # Link the functions in the REL
-ori r3,r29,0x4AE0 # OSLink
+ori r3,r29,OSLink@l
 mtlr r3
 mr r3,r24 # Pointer to the Module
 mr r4,r25 # Pointer to the BSS Area
@@ -141,13 +155,13 @@ b closeCard
 
 # Function definitions, error handling, etc.
 freeMemory:
-ori r3,r30,0xFA60 # __memFree
+ori r3,r30,__memFree@l
 mtctr r3
 li r3,0 # Heap to use
 bctr
 
 allocateMemory:
-ori r3,r30,0xFA8C # __memAlloc
+ori r3,r30,__memAlloc@l
 mtctr r3
 li r3,0 # Heap to use
 bctr
@@ -158,7 +172,7 @@ bnelr-
 mflr r14
 
 finishAsyncFunctionLoop:
-ori r3,r28,0x6940 # CARDGetResultCode
+ori r3,r28,CARDGetResultCode@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
@@ -168,7 +182,7 @@ mtlr r14
 blr
 
 freeRemainingMemory:
-ori r3,r29,0x4D3C # OSUnlink
+ori r3,r29,OSUnlink@l
 mtlr r3
 mr r3,r24 # Pointer to the Module
 blrl
@@ -182,7 +196,7 @@ mr r4,r24 # Pointer to the File Buffer or the 0x200 Bytes Buffer
 bl freeMemory
 
 closeCard:
-ori r3,r28,0xAEF4 # CARDClose
+ori r3,r28,CARDClose@l
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
 blrl
@@ -192,7 +206,7 @@ mr r4,r26
 bl freeMemory
 
 # Unmount the Memory Card
-ori r3,r28,0xA0D4 # CARDUnmount
+ori r3,r28,CARDUnmount@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl

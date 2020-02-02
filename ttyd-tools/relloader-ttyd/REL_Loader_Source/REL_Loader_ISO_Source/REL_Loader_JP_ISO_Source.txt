@@ -2,9 +2,26 @@
 
 # 8006EBD8 -- Address to hook for this code
 
-# Use the following line to branch to this code
-# b -0x6A650 # -- 0x6EBD8-0x4588
+# Set global function/variable/offset locations/values
+.set CARDMGR_WORK_PTR_OFFSET,0x1638
+.set LOADER_LOWMEM_LOCATION,0x80004588
+.set LOADER_HOOK_LOCATION,0x8006EBD8
+.set CARDProbeEx,0x802A9790
+.set CARDMountAsync,0x802A9E98
+.set CARDOpen,0x802AADD8
+.set CARDReadAsync,0x802AB588
+.set OSLink,0x80294AE0
+.set __memFree,0x8002FA60
+.set __memAlloc,0x8002FA8C
+.set CARDGetResultCode,0x802A6940
+.set OSUnlink,0x80294D3C
+.set CARDClose,0x802AAEF4
+.set CARDUnmount,0x802AA0D4
 
+# Use the following line to branch to this code
+# b (LOADER_LOWMEM_LOCATION - LOADER_HOOK_LOCATION)
+
+__start:
 # Initialize static values used for addresses
 lis r31,0x8000
 
@@ -19,14 +36,13 @@ checkForMemoryCardLoop:
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
-bl 0x2A51EC # CARDProbeEx -- 0x45A4
+bl (CARDProbeEx - LOADER_LOWMEM_LOCATION + __start)
 cmpwi r3,-1 # CARD_RESULT_BUSY
 bne- exitCheckForMemoryCardLoop
 
 # Exit if the limit has been reached
 subic. r29,r29,1
 bgt+ checkForMemoryCardLoop
-b exit
 
 exitCheckForMemoryCardLoop:
 cmpwi r3,0 # Check if something went wrong
@@ -34,11 +50,11 @@ bne- exit
 
 # Mount the Memory Card
 li r3,0 # Memory Card Slot A
-lwz r4,0x1638(r13)
+lwz r4,CARDMGR_WORK_PTR_OFFSET(r13)
 lwz r4,0x4(r4) # Pointer to the Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
-bl 0x2A58C0 # CARDMountAsync -- 0x45D8
+bl (CARDMountAsync - LOADER_LOWMEM_LOCATION + __start)
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- exit
@@ -52,9 +68,9 @@ mr r29,r3
 
 # Open the file
 li r3,0 # Memory Card Slot A
-ori r4,r31,0x40DC # File Name
+ori r4,r31,(LOADER_LOWMEM_LOCATION + internalFilenameString)@l
 mr r5,r29 # Pointer to CardFileInfo
-bl 0x2A67D8 # CARDOpen -- 0x4600
+bl (CARDOpen - LOADER_LOWMEM_LOCATION + __start)
 cmpwi r3,0 # Check if something went wrong
 bne- freeCardFileInfo
 
@@ -71,7 +87,7 @@ mr r4,r27 # Pointer to the File Buffer
 li r5,0x200 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
 li r7,0 # Read Callback function (Want to avoid using, so NULL)
-bl 0x2A6F5C # CARDReadAsync -- 0x462C
+bl (CARDReadAsync - LOADER_LOWMEM_LOCATION + __start)
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
@@ -98,7 +114,7 @@ mr r4,r27 # Pointer to the File Buffer
 mr r5,r28 # Adjusted File Size
 li r6,0x2200 # Offset in the file to start reading from
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
-bl 0x2A6F18 # CARDReadAsync -- 0x4670
+bl (CARDReadAsync - LOADER_LOWMEM_LOCATION + __start)
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
@@ -113,7 +129,7 @@ mr r28,r3
 # Link the functions in the REL
 mr r3,r27 # Pointer to the Module
 mr r4,r28 # Pointer to the BSS Area
-bl 0x29044C # OSLink -- 0x4694
+bl (OSLink - LOADER_LOWMEM_LOCATION + __start)
 cmpwi r3,1 # Check if something went wrong
 bne- freeRemainingMemory
 
@@ -130,11 +146,11 @@ b closeCard
 # Function definitions, error handling, etc.
 freeMemory:
 li r3,0 # Heap to use
-b 0x2B3AC # __memFree -- 0x46B4
+b (__memFree - LOADER_LOWMEM_LOCATION + __start)
 
 allocateMemory:
 li r3,0 # Heap to use
-b 0x2B3D0 # __memAlloc -- 0x46BC
+b (__memAlloc - LOADER_LOWMEM_LOCATION + __start)
 
 finishAsyncFunction:
 cmpwi r3,0 # Check if something went wrong
@@ -143,7 +159,7 @@ mflr r14
 
 finishAsyncFunctionLoop:
 li r3,0 # Memory Card Slot A
-bl 0x2A2270 # CARDGetResultCode -- 0x46D0
+bl (CARDGetResultCode - LOADER_LOWMEM_LOCATION + __start)
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
 mtlr r14
@@ -151,7 +167,7 @@ blr
 
 freeRemainingMemory:
 mr r3,r27 # Pointer to the Module
-bl 0x290654 # OSUnlink -- 0x46E8
+bl (OSUnlink - LOADER_LOWMEM_LOCATION + __start)
 
 # Free the BSS Area and the File Buffer
 mr r4,r28 # Pointer to the BSS Area
@@ -163,7 +179,7 @@ bl freeMemory
 
 closeCard:
 mr r3,r29 # Pointer to CardFileInfo
-bl 0x2A67F4 # CARDClose -- 0x4700
+bl (CARDClose - LOADER_LOWMEM_LOCATION + __start)
 
 freeCardFileInfo:
 mr r4,r29
@@ -171,7 +187,7 @@ bl freeMemory
 
 # Unmount the Memory Card
 li r3,0 # Memory Card Slot A
-bl 0x2A59C4 # CARDUnmount -- 0x4710
+bl (CARDUnmount - LOADER_LOWMEM_LOCATION + __start)
 
 # Run the REL Prolog if the load was successful
 cmpwi r30,0
@@ -183,5 +199,10 @@ exit:
 # Add back in the overwritten instruction
 li r3,0
 
-# Branch back to hooked function
-b 0x6A4B4 # 8006EBDC -- 0x4728
+# Go back to the main function
+b ((LOADER_HOOK_LOCATION + 4) - LOADER_LOWMEM_LOCATION + __start)
+
+internalFilenameString:
+.asciz "rel"
+
+__end:

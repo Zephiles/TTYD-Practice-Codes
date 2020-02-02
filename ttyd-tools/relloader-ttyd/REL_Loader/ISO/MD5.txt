@@ -1,10 +1,10 @@
 The following lists the MD5 checksums of the patched ISOs:
 
 JP:
-7c4fabaa9917b37a9577c2c947e97970
+712ff19215f42421805fb996dee10b56
 
 US:
-2a51a367cc7f41ca126903cf2b7f04b1
+967ce0cd6f8b00f64c7361885dd9fe90
 
 EU:
-5c29e07fb35cd30184886e756a5b7287
+468f55d6c6394eb21e8edb121793429e
