@@ -22,8 +22,7 @@
   * For **Nintendont** or other console users:
     * Use the appropriate homebrew apps / folders, etc. to copy the file from your SD card to your GC memory card or virtual memory card.
 * Use one of the following:
-  1. Use a hacked save file to execute arbitrary code, which can then be used to load the practice codes. This is the most ideal way to load them, as it does not require any additional loaders/cheats. Details on how to set up a hacked save file like this may be added at a later date.
-      * Note: Using this method requires you to use at least **v3.0.43** of the Practice Codes. Any versions before this one will not work correctly.
+  1. Use a hacked save file to execute arbitrary code, which can then be used to load the practice codes. This is the most ideal way to load them, as it does not require any additional loaders/cheats. A save file can be set up like this [here](https://magcius.github.io/TTYDSaveHacker/). Once the hack is applied to one of the save files, you can simply load the hacked file in-game, which will cause a soft reset to occur, and will also load the practice codes at boot. Furthermore, the practice codes will be loaded at boot for all future resets, and can only be disabled by powering off the console.
  
   2. Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Practice Codes GCI.
       * For **Dolphin** users:
