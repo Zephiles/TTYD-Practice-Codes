@@ -146,18 +146,12 @@ void Mod::init()
 		return gMod->checkForNpcNameToPtrError(name);
 	});
 	
-	// Initialize typesettings early
-	// Only run if an ACE loader was not used
-	uint32_t LoaderValue = *reinterpret_cast<uint32_t *>(0x80004148);
-	if (LoaderValue == 0)
-	{
-		// ACE loader was not used, so run the functions
-		ttyd::fontmgr::fontmgrTexSetup();
-		ttyd::windowdrv::windowTexSetup();
-	}
-	
-	// Prevent the functions from being ran again
+	// Initialize typesetting early
+	ttyd::fontmgr::fontmgrTexSetup();
 	patch::hookFunction(ttyd::fontmgr::fontmgrTexSetup, [](){});
+	
+	// Initialize typesetting early
+	ttyd::windowdrv::windowTexSetup();
 	patch::hookFunction(ttyd::windowdrv::windowTexSetup, [](){});
 
 	// Skip the logo

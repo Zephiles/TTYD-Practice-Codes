@@ -12,13 +12,6 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size)
 	gc::OSCache::ICInvalidateRange(ptr, size);
 }
 
-void overwriteAddressValue(void *address, uint32_t value)
-{
-	uint32_t *tempAddress = reinterpret_cast<uint32_t *>(address);
-	*tempAddress = value;
-	clear_DC_IC_Cache(address, sizeof(uint32_t));
-}
-
 void writeStandardBranches(void *address, void functionStart(), void functionBranchBack())
 {
 	void *BranchBackAddress = reinterpret_cast<void *>(
