@@ -617,6 +617,24 @@ void levitate()
 	player->wJumpVelocityY = 4.540000915527344;
 }
 
+uint32_t autoMashText(uint32_t controllerPort)
+{
+	if (!Cheat[AUTO_MASH_TEXT].Active)
+	{
+		// Return the intended value
+		return ttyd::system::keyGetButtonTrg(controllerPort);
+	}
+	
+	if (!checkButtonComboEveryFrame(Cheat[AUTO_MASH_TEXT].ButtonCombo))
+	{
+		// Return the intended value
+		return ttyd::system::keyGetButtonTrg(controllerPort);
+	}
+	
+	// Return the value for B to make sure the text is being mashed through as fast as possible
+	return PAD_B;
+}
+
 void lockMarioHPToMax()
 {
 	if (!Cheat[LOCK_MARIO_HP_TO_MAX].Active)

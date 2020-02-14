@@ -690,6 +690,9 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008E9DC);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008E1E8);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021A30C);
+	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x80080FCC);
+	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x80080FF0);
+	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x80084268);
 	#elif defined TTYD_JP
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004DFB0);
@@ -713,6 +716,9 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008D428);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008CC4C);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x80215668);
+	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x8008047C);
+	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x800804A0);
+	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x80083390);
 	#elif defined TTYD_EU
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004ECDC);
@@ -736,6 +742,9 @@ void initAddressOverwrites()
 	void *FallThroughMostObjectsStandAddress 			= reinterpret_cast<void *>(0x8008FD38);
 	void *FallThroughMostObjectsTubeAddress 			= reinterpret_cast<void *>(0x8008F544);
 	void *FallThroughMostObjectsBowserAddress 			= reinterpret_cast<void *>(0x8021DD9C);
+	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x80082288);
+	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x800822AC);
+	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x800855BC);
 	#endif
 	
 	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
@@ -765,10 +774,13 @@ void initAddressOverwrites()
 	patch::writeBranchBL(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
 	
 	patch::writeBranchBL(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
-	
 	patch::writeBranchBL(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
 	
 	patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
+	
+	patch::writeBranchBL(AutoMashThroughText1Address, reinterpret_cast<void *>(autoMashText));
+	patch::writeBranchBL(AutoMashThroughText2Address, reinterpret_cast<void *>(autoMashText));
+	patch::writeBranchBL(AutoMashThroughText3Address, reinterpret_cast<void *>(autoMashText));
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

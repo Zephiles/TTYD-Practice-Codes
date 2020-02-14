@@ -79,6 +79,7 @@ enum CHEATS_OPTIONS
 	INFINITE_ITEM_USAGE,
 	RELOAD_ROOM,
 	LEVITATE,
+	AUTO_MASH_TEXT,
 	LOCK_MARIO_HP_TO_MAX,
 	RUN_FROM_BATTLES,
 	DISABLE_MENU_SOUNDS,
@@ -817,7 +818,7 @@ struct NpcNameToPtrErrorStruct
 
 extern MenuVars MenuVar;
 extern Menus Menu[30];
-extern Cheats Cheat[24];
+extern Cheats Cheat[25];
 extern bool Displays[13];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];

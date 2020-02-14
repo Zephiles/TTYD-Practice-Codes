@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.43";
+const char *VersionNumber = "v3.0.44";
 
 const char *RootLines[] = 
 {
@@ -52,6 +52,7 @@ const char *CheatsLines[] =
 	"Infinite Item Usage",
 	"Reload Room",
 	"Levitate",
+	"Auto Mash Through Text",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
 	"Disable Pause Menu/Z Menu Sounds",
@@ -1801,6 +1802,7 @@ uint8_t CheatsOrder[] =
 	RESOLVE_FADES,
 	FALL_THROUGH_FLOORS,
 	LOCK_FLAGS,
+	AUTO_MASH_TEXT,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1822,7 +1824,7 @@ uint8_t DisplaysOrder[] =
 
 struct MenuVars MenuVar;
 struct Menus Menu[30];
-struct Cheats Cheat[24];
+struct Cheats Cheat[25];
 bool Displays[13];
 char DisplayBuffer[256];
 char HeapBuffer[512];
@@ -1983,6 +1985,7 @@ void setInitialSettings()
 	// Cheat[INFINITE_ITEM_USAGE].Active 		= false;
 	// Cheat[RELOAD_ROOM].Active 				= false;
 	// Cheat[LEVITATE].Active 					= false;
+	// Cheat[AUTO_MASH_TEXT].Active 			= false;
 	Cheat[LOCK_MARIO_HP_TO_MAX].Active 			= false;
 	Cheat[RUN_FROM_BATTLES].Active 				= false;
 	// Cheat[DISABLE_MENU_SOUNDS].Active 		= false;
@@ -2004,6 +2007,7 @@ void setInitialSettings()
 	Cheat[INFINITE_ITEM_USAGE].ButtonCombo 		= PAD_Y;
 	Cheat[RELOAD_ROOM].ButtonCombo 				= PAD_L | PAD_B;
 	Cheat[LEVITATE].ButtonCombo 				= PAD_L | PAD_A;
+	Cheat[AUTO_MASH_TEXT].ButtonCombo 			= PAD_Y;
 	
 	// Set the Displays bools
 	// Displays[ONSCREEN_TIMER] 				= true;

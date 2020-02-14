@@ -15,6 +15,7 @@ void checkIfSystemLevelShouldBeLowered();
 void reloadRoomMain();
 void reloadRoom();
 void levitate();
+uint32_t autoMashText(uint32_t controllerPort);
 void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();

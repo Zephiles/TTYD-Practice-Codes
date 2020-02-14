@@ -529,6 +529,7 @@ void menuCheckButton()
 						case INFINITE_ITEM_USAGE:
 						case RELOAD_ROOM:
 						case LEVITATE:
+						case AUTO_MASH_TEXT:
 						{
 							MenuToEnter = CHEATS_STANDARD;
 							break;
