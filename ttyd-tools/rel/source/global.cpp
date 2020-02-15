@@ -1568,7 +1568,6 @@ const char *WarpDestinations[] =
 	"las_00",
 	"las_09",
 	"las_27",
-	"las_29",
 	"jon_0x",
 	"title",
 };
@@ -1597,7 +1596,6 @@ const char *WarpDescriptions[] =
 	"Palace of Shadow - Entrance",
 	"Palace of Shadow - Outside Riddle Tower",
 	"Palace of Shadow - Room Before Grodus",
-	"Palace of Shadow - Shadow Queen (Battle 2) -\nSequence is automatically set",
 	"Pit of 100 Trials - You must select a floor when this\noption is chosen",
 	"Title Screen",
 };

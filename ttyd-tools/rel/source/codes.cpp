@@ -1416,82 +1416,169 @@ int32_t warpToMap(uint32_t value)
 	const char *WarpToMap;
 	switch (value)
 	{
-		case 0: WarpToMap = "gor_01"; break;
-		case 1: WarpToMap = "tik_00"; break;
-		case 2: WarpToMap = "hei_00"; break;
-		case 3: WarpToMap = "gon_00"; break;
-		case 4: WarpToMap = "win_06"; break;
-		case 5: WarpToMap = "mri_01"; break;
-		case 6: WarpToMap = "tou_02"; break;
-		case 7: WarpToMap = "tou_05"; break;
-		case 8: WarpToMap = "usu_00"; break;
-		case 9: WarpToMap = "jin_00"; break;
-		case 10: WarpToMap = "muj_01"; break;
-		case 11: WarpToMap = "dou_00"; break;
-		case 12: WarpToMap = "rsh_02_a"; break;
-		case 13: WarpToMap = "eki_00"; break;
-		case 14: WarpToMap = "pik_00"; break;
-		case 15: WarpToMap = "bom_00"; break;
-		case 16: WarpToMap = "moo_00"; break;
-		case 17: WarpToMap = "aji_00"; break;
-		case 18: WarpToMap = "aji_13"; break;
-		case 19: WarpToMap = "las_00"; break;
-		case 20: WarpToMap = "las_09"; break;
-		case 21: WarpToMap = "las_27"; break;
-		case 22:
+		case ROGUEPORT_CENTRAL:
 		{
-			setNextBero("minnnanokoe");
-			setSequencePosition(400);
-			WarpToMap = "las_29";
+			WarpToMap = "gor_01";
 			break;
 		}
-		case 23:
+		case ROGUEPORT_SEWERS_UNDERGROUND_SHOP:
 		{
+			WarpToMap = "tik_00";
+			break;
+		}
+		case PETAL_MEADOWS_ENTRANCE:
+		{
+			WarpToMap = "hei_00";
+			break;
+		}
+		case HOOKTAIL_CASTLE_ENTRANCE:
+		{
+			WarpToMap = "gon_00";
+			break;
+		}
+		case BOGGLY_WOODS_ENTRANCE:
+		{
+			WarpToMap = "win_06";
+			break;
+		}
+		case THE_GREAT_TREE_ENTRANCE:
+		{
+			WarpToMap = "mri_01";
+			break;
+		}
+		case GLITZVILLE_LOBBY:
+		{
+			WarpToMap = "tou_02";
+			break;
+		}
+		case GLITZVILLE_GRUBBAS_OFFICE:
+		{
+			WarpToMap = "tou_05";
+			break;
+		}
+		case TWILIGHT_TOWN_WEST_SIDE:
+		{
+			WarpToMap = "usu_00";
+			break;
+		}
+		case CREEPY_STEEPLE_ENTRANCE:
+		{
+			WarpToMap = "jin_00";
+			break;
+		}
+		case KEELHAUL_KEY_SHANTYTOWN:
+		{
+			WarpToMap = "muj_01";
+			break;
+		}
+		case PIRATES_GROTTO_ENTRANCE:
+		{
+			WarpToMap = "dou_00";
+			break;
+		}
+		case EXCESS_EXPRESS_PASSENGER_CAR_CABINS_3_5_DAY:
+		{
+			WarpToMap = "rsh_02_a";
+			break;
+		}
+		case RIVERSIDE_STATION_ENTRANCE:
+		{
+			WarpToMap = "eki_00";
+			break;
+		}
+		case POSHLEY_HEIGHTS_STATION:
+		{
+			WarpToMap = "pik_00";
+			break;
+		}
+		case FAHR_OUTPOST_PIPE_ENTRANCE:
+		{
+			WarpToMap = "bom_00";
+			break;
+		}
+		case MOON_ENTRANCE:
+		{
+			WarpToMap = "moo_00";
+			break;
+		}
+		case X_NAUT_FORTRESS_ENTRANCE:
+		{
+			WarpToMap = "aji_00";
+			break;
+		}
+		case X_NAUT_FORTRESS_FACTORY:
+		{
+			WarpToMap = "aji_13";
+			break;
+		}
+		case PALACE_OF_SHADOW_ENTRANCE:
+		{
+			WarpToMap = "las_00";
+			break;
+		}
+		case PALACE_OF_SHADOW_OUTSIDE_RIDDLE_TOWER:
+		{
+			WarpToMap = "las_09";
+			break;
+		}
+		case PALACE_OF_SHADOW_ROOM_BEFORE_GRODUS:
+		{
+			WarpToMap = "las_27";
+			break;
+		}
+		case PIT_OF_100_TRIALS:
+		{
+			setNextBero("dokan_2");
+			
 			uint32_t NewPitFloor = getCurrentPitFloor();
-			const char *NewPitMap;
-
+			static char NewPitMap[7];
+			char NewPitMapChar;
+			
 			// Get proper room to use for chosen floor
 			if (NewPitFloor % 10 == 0)
 			{
 				// Current floor is a chest floor or Bonetail
 				if (NewPitFloor <= 40)
 				{
-					NewPitMap = "jon_03";
+					NewPitMapChar = '3';
 				}
 				else if (NewPitFloor <= 70)
 				{
-					NewPitMap = "jon_04";
+					NewPitMapChar = '4';
 				}
 				else if (NewPitFloor <= 90)
 				{
-					NewPitMap = "jon_05";
+					NewPitMapChar = '5';
 				}
 				else // NewPitFloor == 100
 				{
-					NewPitMap = "jon_06";
+					NewPitMapChar = '6';
 				}
 			}
 			else // Current floor is not a chest floor nor Bonetail
 			{
 				if (NewPitFloor < 50)
 				{
-					NewPitMap = "jon_00";
+					NewPitMapChar = '0';
 				}
 				else if (NewPitFloor < 80)
 				{
-					NewPitMap = "jon_01";
+					NewPitMapChar = '1';
 				}
 				else // NewPitMap < 100
 				{
-					NewPitMap = "jon_02";
+					NewPitMapChar = '2';
 				}
 			}
 			
+			sprintf(NewPitMap,
+				"jon_0%c",
+				NewPitMapChar);
+			
 			WarpToMap = NewPitMap;
-			setNextBero("dokan_2");
 			break;
 		}
-		case 24:
+		case TITLE_SCREEN:
 		{
 			WarpToMap = "title";
 			break;
