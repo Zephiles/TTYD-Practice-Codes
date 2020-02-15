@@ -3398,7 +3398,7 @@ void drawWarpsOptions()
 	// Draw the description for the current option
 	if (CurrentlySelectingOption)
 	{
-		PosY -= 160;
+		PosY -= 140;
 		drawSingleLineFromArray(PosX, PosY, 
 			tempCurrentMenuOption, WarpDescriptions);
 	}

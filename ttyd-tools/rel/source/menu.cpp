@@ -3770,7 +3770,7 @@ void drawMenu()
 			if ((tempSelectedOption == SELECT_WARP) && 
 				(tempFunctionReturnCode < 0))
 			{
-				int32_t PosY = -90;
+				int32_t PosY = -120;
 				drawWarpsErrorMessage(PosY);
 			}
 			break;
