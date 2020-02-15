@@ -102,6 +102,7 @@ void drawCheatsClearArea();
 void drawWarpsOptions();
 void drawEventDetails(int32_t posX, int32_t posY, int32_t index);
 void drawWarpByEventMenuDetails();
+void drawWarpsBossesOptions();
 void drawWarpIndexMapAndEntrance();
 void drawWarpIndexEntranceList();
 void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo);

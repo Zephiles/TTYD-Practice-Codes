@@ -38,6 +38,7 @@ enum MENU_NAMES
 	DISPLAYS_NO_BUTTON_COMBO,
 	WARPS_EVENT,
 	WARPS_INDEX,
+	WARPS_BOSS,
 };
 
 enum INVENTORY_MENU_NAMES
@@ -371,6 +372,7 @@ enum WARPS_OPTIONS
 	SELECT_WARP = 1,
 	WARP_BY_EVENT,
 	WARP_BY_INDEX,
+	WARP_TO_BOSS,
 };
 
 enum WARPS_SELECTION_OPTIONS
@@ -413,6 +415,34 @@ enum WARPS_EVENT_OPTIONS
 	EVENT_KEEP_INVENTORY,
 	EVENT_SET_FLAGS,
 	EVENT_WARP_NOW,
+};
+
+enum WARPS_BOSS_OPTIONS
+{
+	BOSS_CRUMP_PROLOGUE = 0,
+	BOSS_GUS,
+	BOSS_BLOOPER,
+	BOSS_GOLD_FUZZY,
+	BOSS_RED_BONES,
+	BOSS_HOOKTAIL,
+	BOSS_SHADOW_SIRENS_CH2,
+	BOSS_MAGNUS_CH2,
+	BOSS_MACHO_GRUBBA,
+	BOSS_ATOMIC_BOO,
+	BOSS_DOOPLISS_1,
+	BOSS_DOOPLISS_2,
+	BOSS_CORTEZ,
+	BOSS_CRUMP_CH5,
+	BOSS_SMORG,
+	BOSS_MAGNUS_CH8,
+	BOSS_DARK_BONES,
+	BOSS_GLOOMTAIL,
+	BOSS_SHADOW_SIRENS_CH8,
+	BOSS_GRODUS,
+	BOSS_BOWSER_AND_KAMMY,
+	BOSS_SHADOW_QUEEN_1,
+	BOSS_SHADOW_QUEEN_2,
+	BOSS_BONETAIL,
 };
 
 enum WARPS_INDEX_OPTIONS
@@ -817,7 +847,7 @@ struct NpcNameToPtrErrorStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[30];
+extern Menus Menu[31];
 extern Cheats Cheat[25];
 extern bool Displays[13];
 extern char DisplayBuffer[256];
@@ -874,6 +904,7 @@ extern const char *DisplaysLines[];
 extern const char *OnScreenTimerOptions[];
 extern const char *WarpDestinations[];
 extern const char *WarpDescriptions[];
+extern const char *WarpBossLines[];
 
 extern uint8_t CheatsManageGlobalWordsOptionsSize;
 extern uint8_t CheatsManageGlobalFlagsOptionsSize;

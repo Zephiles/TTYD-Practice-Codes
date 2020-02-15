@@ -26,6 +26,7 @@
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_ac.h>
+#include <ttyd/party.h>
 
 #include <cstring>
 #include <cstdio>
@@ -1540,6 +1541,247 @@ int32_t warpToMapByEvent(int32_t index)
 		setNextBero("");
 	}
 	
+	reloadRoomMain();
+	return SUCCESS;
+}
+
+int32_t warpToBoss(uint32_t index)
+{
+	// Make sure the player is currently in the game
+	if (!checkIfInGame())
+	{
+		return NOT_IN_GAME;
+	}
+	
+	int32_t NewSequencePosition = -1;
+	const char *BossMap;
+	const char *BossBero = "";
+	
+	switch (index)
+	{
+		case BOSS_CRUMP_PROLOGUE:
+		{
+			NewSequencePosition = 4;
+			BossMap = "gor_00";
+			break;
+		}
+		case BOSS_GUS:
+		{
+			BossMap = "gor_02";
+			BossBero = "w_bero";
+			
+			// Turn off GSWF(1213) to allow Gus to be fought again
+			ttyd::swdrv::swClear(1213);
+			break;
+		}
+		case BOSS_BLOOPER:
+		{
+			NewSequencePosition = 20;
+			BossMap = "tik_02";
+			BossBero = "w_bero_1";
+			break;
+		}
+		case BOSS_GOLD_FUZZY:
+		{
+			// Turn on GSWF(1774) and GSWF(1775) to allow the Gold Fuzzy to be fought again
+			static const uint16_t FlagsToSet[] = 
+			{
+				1774,
+				1775,
+			};
+			
+			// Set the flags
+			uint32_t Size = sizeof(FlagsToSet) / sizeof(FlagsToSet[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swSet(FlagsToSet[i]);
+			}
+			
+			NewSequencePosition = 31;
+			BossMap = "hei_10";
+			break;
+		}
+		case BOSS_RED_BONES:
+		{
+			NewSequencePosition = 38;
+			BossMap = "gon_03";
+			BossBero = "e_bero";
+			break;
+		}
+		case BOSS_HOOKTAIL:
+		{
+			NewSequencePosition = 54;
+			BossMap = "gon_11";
+			
+			// Turn off GSWF(1498) to allow Hooktail to be fought again
+			ttyd::swdrv::swClear(1498);
+			break;
+		}
+		case BOSS_SHADOW_SIRENS_CH2:
+		{
+			NewSequencePosition = 84;
+			BossMap = "win_00";
+			BossBero = "w_bero";
+			break;
+		}
+		case BOSS_MAGNUS_CH2:
+		{
+			NewSequencePosition = 110;
+			BossMap = "mri_01";
+			BossBero = "e_bero"; // Required to avoid a crash
+			break;
+		}
+		case BOSS_MACHO_GRUBBA:
+		{
+			NewSequencePosition = 163;
+			BossMap = "tou_03";
+			BossBero = "w_bero";
+			break;
+		}
+		case BOSS_ATOMIC_BOO:
+		{
+			NewSequencePosition = 194;
+			BossMap = "jin_00";
+			
+			// Turn off GSWF(2226) to allow the Atomic Boo to be fought again
+			ttyd::swdrv::swClear(2226);
+			break;
+		}
+		case BOSS_DOOPLISS_1:
+		{
+			NewSequencePosition = 199;
+			BossMap = "jin_04";
+			break;
+		}
+		case BOSS_DOOPLISS_2:
+		{
+			// Force Vivian to be the current partner out
+			spawnPartnerOrFollower(ttyd::party::PartyMembers::kVivian);
+			
+			NewSequencePosition = 210;
+			BossMap = "jin_04";
+			break;
+		}
+		case BOSS_CORTEZ:
+		{
+			NewSequencePosition = 252;
+			BossMap = "muj_12";
+			break;
+		}
+		case BOSS_CRUMP_CH5:
+		{
+			NewSequencePosition = 259;
+			BossMap = "muj_00";
+			break;
+		}
+		case BOSS_SMORG:
+		{
+			NewSequencePosition = 331;
+			BossMap = "rsh_06_a";
+			break;
+		}
+		case BOSS_MAGNUS_CH8:
+		{
+			NewSequencePosition = 372;
+			BossMap = "aji_14";
+			BossBero = "w_bero";
+			break;
+		}
+		case BOSS_DARK_BONES:
+		{
+			NewSequencePosition = 382;
+			BossMap = "las_05";
+			BossBero = "e_bero_1";
+			break;
+		}
+		case BOSS_GLOOMTAIL:
+		{
+			NewSequencePosition = 387;
+			BossMap = "las_26";
+			break;
+		}
+		case BOSS_SHADOW_SIRENS_CH8:
+		{
+			NewSequencePosition = 390;
+			BossMap = "las_09";
+			BossBero = "majyorin_evt";
+			break;
+		}
+		case BOSS_GRODUS:
+		{
+			NewSequencePosition = 399;
+			BossMap = "las_28";
+			BossBero = "e_bero";
+			break;
+		}
+		case BOSS_BOWSER_AND_KAMMY:
+		{
+			NewSequencePosition = 399;
+			BossMap = "las_28";
+			BossBero = "koopa_evt";
+			break;
+		}
+		case BOSS_SHADOW_QUEEN_1:
+		{
+			NewSequencePosition = 400;
+			BossMap = "las_29";
+			BossBero = "sekai_yami2";
+			break;
+		}
+		case BOSS_SHADOW_QUEEN_2:
+		{
+			NewSequencePosition = 400;
+			BossMap = "las_29";
+			BossBero = "minnnanokoe";
+			break;
+		}
+		case BOSS_BONETAIL:
+		{
+			BossMap = "jon_06";
+			BossBero = "dokan_2";
+			
+			// Set the Pit floor for Bonetail
+			setPitFloor(100);
+			
+			// Turn off GSWF(5084) and GSWF(5085) to allow Bonetail to be fought again
+			static const uint16_t FlagsToSet[] = 
+			{
+				5084,
+				5085,
+			};
+			
+			// Set the flags
+			uint32_t Size = sizeof(FlagsToSet) / sizeof(FlagsToSet[0]);
+			for (uint32_t i = 0; i < Size; i++)
+			{
+				ttyd::swdrv::swClear(FlagsToSet[i]);
+			}
+			break;
+		}
+		default:
+		{
+			return UNKNOWN_BEHAVIOR;
+		}
+	}
+	
+	// Bring out a partner if one is not currently out
+	// Do not bring a partner out for the first Crump fight
+	if ((index != BOSS_CRUMP_PROLOGUE) && !getPartnerPointer())
+	{
+		spawnFailsafePartnerOrFollower(true);
+	}
+	
+	// Set the new map, bero, and Sequence position
+	setNextMap(BossMap);
+	setNextBero(BossBero);
+	
+	// Make sure the Sequence position should be changed
+	if (NewSequencePosition >= 0)
+	{
+		setSequencePosition(static_cast<uint32_t>(NewSequencePosition));
+	}
+	
+	// Warp to the boss
 	reloadRoomMain();
 	return SUCCESS;
 }

@@ -162,21 +162,7 @@ void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
 	// Bring out a partner if no partner is currently out
 	if (!partnerPtr)
 	{
-		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		ttyd::party::PartyMembers PreviousPartnerOut = player->prevFollowerId[0];
-
-		// Check if a partner was previously out
-		if (PreviousPartnerOut != ttyd::party::PartyMembers::kNone)
-		{
-			// A partner was previously out, so bring them back out
-			spawnPartnerOrFollower(PreviousPartnerOut);
-		}
-		else
-		{
-			// No partner was previously out, so bring out Goombella
-			spawnPartnerOrFollower(ttyd::party::PartyMembers::kGoombella);
-		}
-		
+		spawnFailsafePartnerOrFollower(true);
 		return getPartnerPointer();
 	}
 	else
@@ -190,21 +176,7 @@ void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr)
 	// Bring out a follower if no follower is currently out
 	if (!followerPtr)
 	{
-		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		ttyd::party::PartyMembers PreviousFollowerOut = player->prevFollowerId[1];
-
-		// Check if a follower was previously out
-		if (PreviousFollowerOut != ttyd::party::PartyMembers::kNone)
-		{
-			// A follower was previously out, so bring them back out
-			spawnPartnerOrFollower(PreviousFollowerOut);
-		}
-		else
-		{
-			// No follower was previously out, so bring out Gus
-			spawnPartnerOrFollower(ttyd::party::PartyMembers::kGus);
-		}
-		
+		spawnFailsafePartnerOrFollower(false);
 		return getFollowerPointer();
 	}
 	else

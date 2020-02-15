@@ -242,23 +242,8 @@ void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
 		// Make sure a file is loaded
 		if (checkIfInGame())
 		{
-			uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(partnerEnabledAddress);
-			
-			// Preserve the current value of the enabled bool
-			bool CurrentPartnerEnabled = *reinterpret_cast<bool *>(
-				PartnerEnabledAddress + 1);
-			
-			// Make sure the selected partner is enabled, as marioPartyEntry needs it to be enabled
-			*reinterpret_cast<bool *>(
-				PartnerEnabledAddress + 1) = true;
-			
 			// Bring the partner out
 			spawnPartnerOrFollower(getSelectedOptionPartnerValue());
-			
-			// Restore the value of the enabled bool
-			*reinterpret_cast<bool *>(
-				PartnerEnabledAddress + 1) = CurrentPartnerEnabled;
-			
 			MenuVar.Timer = 0;
 		}
 		else
@@ -1344,9 +1329,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 				}
 				case WARPS:
 				{
-					ttyd::swdrv::swByteSet(1321, static_cast<uint32_t>(
-						MenuVar.MenuSecondaryValue - 1)); // GSW(1321)
-					
+					setPitFloor(MenuVar.MenuSecondaryValue);
 					MenuVar.MenuSelectedOption = 0;
 					
 					// Warp to the currently selected map and close the menu
@@ -4993,6 +4976,21 @@ void adjustWarpsSelection(uint32_t button)
 	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
 		MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
 			MaxOptionsPerRow, false);
+}
+
+void adjustWarpsBossSelection(uint32_t button)
+{
+	uint32_t tempWarpBossLinesSize = Menu[WARPS_BOSS].TotalMenuOptions;
+	uint32_t TotalMenuOptions = tempWarpBossLinesSize;
+	uint32_t MaxOptionsPerRow = 2;
+	uint32_t TotalRows = 1 + ((TotalMenuOptions - 1) / MaxOptionsPerRow); // Round up
+	uint32_t MaxOptionsPerPage = TotalRows * MaxOptionsPerRow;
+	uint8_t tempPage[1];
+	tempPage[0] = 0;
+	
+	adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+		tempPage[0], TotalMenuOptions, MaxOptionsPerPage, 
+			MaxOptionsPerRow, true);
 }
 
 void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)

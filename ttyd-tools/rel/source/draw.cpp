@@ -3373,7 +3373,7 @@ void drawWarpsOptions()
 	const char **tempWarpDestinations 			= WarpDestinations;
 	
 	int32_t PosX 								= -232;
-	int32_t PosY 								= 100;
+	int32_t PosY 								= 80;
 	uint32_t Size 								= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerPage 					= tempWarpDestinationsSize;
 	uint32_t MaxOptionsPerRow 					= 4;
@@ -3525,6 +3525,35 @@ void drawWarpByEventMenuDetails()
 	
 	// Draw the details for the current event
 	drawEventDetails(PosX, PosY, WarpByEvent.CurrentIndex);
+}
+
+void drawWarpsBossesOptions()
+{
+	// Draw the text stating that using this menu will modify the sequence
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 180;
+	float Scale = 0.6;
+	
+	const char *ExplainText = "Note: Using this menu will modify the Sequence position";
+	drawText(ExplainText, PosX, PosY, Alpha, Color, Scale);
+	PosY -= 40;
+	
+	// Draw the main text
+	uint32_t tempWarpBossLinesSize 				= Menu[WARPS_BOSS].TotalMenuOptions;
+	const char **tempWarpBossLines 				= WarpBossLines;
+	
+	uint32_t Size 								= tempWarpBossLinesSize;
+	uint32_t MaxOptionsPerPage 					= tempWarpBossLinesSize;
+	uint32_t MaxOptionsPerRow 					= 2;
+	uint32_t PosXIncrementAmount 				= 200;
+	uint32_t tempPage 							= 0;
+	uint32_t tempCurrentMenuOption 				= MenuVar.CurrentMenuOption;
+	
+	drawMultipleColumnsVertical(PosX, PosY, tempCurrentMenuOption, tempPage, 
+		Size, MaxOptionsPerPage, MaxOptionsPerRow, true, 
+			PosXIncrementAmount, tempWarpBossLines);
 }
 
 void drawWarpIndexMapAndEntrance()

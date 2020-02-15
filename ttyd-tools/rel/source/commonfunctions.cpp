@@ -243,8 +243,41 @@ void setNewYoshiColorId(uint32_t colorId)
 
 void spawnPartnerOrFollower(ttyd::party::PartyMembers id)
 {
-	// Spawn the partner/follower
-	ttyd::party::PartySlotId PartySlotId = ttyd::mario_party::marioPartyEntry(id);
+	// Make sure the partner/follower is valid
+	if ((id <= ttyd::party::PartyMembers::kNone) || 
+		(id >= ttyd::party::PartyMembers::kMsMowzFollower))
+	{
+		return;
+	}
+	
+	ttyd::party::PartySlotId PartySlotId;
+	
+	// If spawning a partner, make sure they are enabled when marioPartyEntry is called
+	if ((id >= ttyd::party::PartyMembers::kGoombella) && 
+		(id <= ttyd::party::PartyMembers::kMsMowz))
+	{
+		uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+		
+		bool *PartnerEnabled = reinterpret_cast<bool *>(
+			PouchPtr + (static_cast<uint32_t>(id) * 0xE) + 0x1);
+		
+		// Preserve the current value of the enabled bool
+		bool CurrentPartnerEnabled = *PartnerEnabled;
+		
+		// Make sure the selected partner is enabled
+		*PartnerEnabled = true;
+		
+		// Spawn the partner
+		PartySlotId = ttyd::mario_party::marioPartyEntry(id);
+		
+		// Restore the value of the enabled bool
+		*PartnerEnabled = CurrentPartnerEnabled;
+	}
+	else
+	{
+		// Spawn the follower
+		PartySlotId = ttyd::mario_party::marioPartyEntry(id);
+	}
 	
 	// Make sure the partner/follower spawned properly
 	if (PartySlotId <= ttyd::party::PartySlotId::kNone)
@@ -254,6 +287,40 @@ void spawnPartnerOrFollower(ttyd::party::PartyMembers id)
 	
 	// Make sure the partner/follower is moving
 	ttyd::party::partyRun(ttyd::party::partyGetPtr(PartySlotId));
+}
+
+void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
+{
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	ttyd::party::PartyMembers PreviousOut;
+	
+	if (shouldSpawnPartner)
+	{
+		// Get the previous partner out
+		PreviousOut = player->prevFollowerId[0];
+	}
+	else
+	{
+		// Get the previous follower out
+		PreviousOut = player->prevFollowerId[1];
+	}
+
+	// Check if a partner/follower was previously out
+	if (PreviousOut != ttyd::party::PartyMembers::kNone)
+	{
+		// A partner/follower was previously out, so bring them back out
+		spawnPartnerOrFollower(PreviousOut);
+	}
+	else if (shouldSpawnPartner)
+	{
+		// No partner was previously out, so bring out Goombella
+		spawnPartnerOrFollower(ttyd::party::PartyMembers::kGoombella);
+	}
+	else
+	{
+		// No follower was previously out, so bring out Frankly
+		spawnPartnerOrFollower(ttyd::party::PartyMembers::kFrankly);
+	}
 }
 
 bool checkIfBadgeEquipped(int16_t badge)
@@ -275,6 +342,15 @@ void recheckJumpAndHammerLevels()
 uint32_t getCurrentPitFloor()
 {
 	return ttyd::swdrv::swByteGet(1321) + 1; // GSW(1321)
+}
+
+void setPitFloor(int32_t floor) // floor is 1-100
+{
+	// Make sure the desired floor is valid
+	if ((floor >= 1) && (floor <= 100))
+	{
+		ttyd::swdrv::swByteSet(1321, static_cast<uint32_t>(floor - 1)); // GSW(1321)
+	}
 }
 
 uint32_t getCurrentFPS()

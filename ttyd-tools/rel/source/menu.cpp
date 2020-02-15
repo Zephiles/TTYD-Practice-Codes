@@ -2706,6 +2706,13 @@ void menuCheckButton()
 									resetMenu();
 									break;
 								}
+								case WARP_TO_BOSS:
+								{
+									// Enter the next menu
+									enterNextMenu(WARPS_BOSS, tempCurrentMenuOption);
+									resetMenu();
+									break;
+								}
 								default:
 								{
 									break;
@@ -2913,6 +2920,60 @@ void menuCheckButton()
 							break;
 						}
 					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case WARPS_BOSS:
+		{
+			switch (CurrentButton)
+			{
+				case DPADLEFT:
+				case DPADRIGHT:
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustWarpsBossSelection(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					int32_t ReturnCode = warpToBoss(tempCurrentMenuOption);
+					switch (ReturnCode)
+					{
+						case UNKNOWN_BEHAVIOR:
+						{
+							break;
+						}
+						case SUCCESS:
+						{
+							closeMenu();
+							return;
+						}
+						case NOT_IN_GAME:
+						{
+							MenuVar.FunctionReturnCode 	= ReturnCode;
+							MenuVar.Timer 				= secondsToFrames(3);
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
+					MenuVar.FunctionReturnCode = 0;
+					resetMenu();
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -3733,6 +3794,19 @@ void drawMenu()
 			if (tempFunctionReturnCode < 0)
 			{
 				int32_t PosY = -50;
+				drawWarpsErrorMessage(PosY);
+			}
+			break;
+		}
+		case WARPS_BOSS:
+		{
+			// Draw the text for the options
+			drawWarpsBossesOptions();
+			
+			// Draw the error message if the player tried to warp while either not in the game or in a battle
+			if (tempFunctionReturnCode < 0)
+			{
+				int32_t PosY = 20;
 				drawWarpsErrorMessage(PosY);
 			}
 			break;

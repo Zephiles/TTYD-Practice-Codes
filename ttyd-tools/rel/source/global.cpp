@@ -1541,6 +1541,7 @@ const char *WarpLines[] =
 	"Select Warp",
 	"Warp By Event",
 	"Warp By Index",
+	"Warp To Boss",
 };
 
 const char *WarpDestinations[] = 
@@ -1607,6 +1608,34 @@ const char *WarpEventLines[] =
 	"Keep Inventory",
 	"Set Flags",
 	"Warp",
+};
+
+const char *WarpBossLines[] = 
+{
+	"Crump",
+	"Gus",
+	"Blooper",
+	"Gold Fuzzy",
+	"Red Bones (Ch1)",
+	"Hooktail",
+	"Shadow Sirens (Ch2)",
+	"Magnus Von Grapple",
+	"Macho Grubba",
+	"Atomic Boo",
+	"Doopliss 1",
+	"Doopliss 2",
+	"Cortez",
+	"Crump (Ch5)",
+	"Smorg",
+	"Magnus Von Grapple 2.0",
+	"Dark Bones",
+	"Gloomtail",
+	"Shadow Sirens (Ch8)",
+	"Grodus",
+	"Bowser & Kammy",
+	"Shadow Queen (Battle 1)",
+	"Shadow Queen (Battle 2)",
+	"Bonetail",
 };
 
 const char *WarpIndexLines[] = 
@@ -1823,7 +1852,7 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[30];
+struct Menus Menu[31];
 struct Cheats Cheat[25];
 bool Displays[13];
 char DisplayBuffer[256];
@@ -1960,6 +1989,10 @@ void initMenuVars()
 	Menu[WARPS_EVENT].TotalMenuOptions 					= sizeof(WarpEventLines) / sizeof(WarpEventLines[0]);
 	Menu[WARPS_EVENT].ColumnSplitAmount 				= Menu[WARPS_EVENT].TotalMenuOptions;
 	Menu[WARPS_EVENT].Line 								= WarpEventLines;
+	
+	Menu[WARPS_BOSS].TotalMenuOptions 					= sizeof(WarpBossLines) / sizeof(WarpBossLines[0]);
+	Menu[WARPS_BOSS].ColumnSplitAmount 					= Menu[WARPS_BOSS].TotalMenuOptions;
+	Menu[WARPS_BOSS].Line 								= WarpBossLines;
 	
 	// Set the initial settings
 	setInitialSettings();

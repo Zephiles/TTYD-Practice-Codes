@@ -123,6 +123,7 @@ void adjustMemoryChangeAddressOrPointerSelection(uint32_t button);
 void adjustBattlesActorSelection(uint32_t button);
 void adjustBattlesStatusSelection(uint32_t button);
 void adjustWarpsSelection(uint32_t button);
+void adjustWarpsBossSelection(uint32_t button);
 void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button);
 
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 
