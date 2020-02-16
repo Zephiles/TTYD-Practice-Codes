@@ -3868,7 +3868,7 @@ void *initStageEvents()
 	setSequencePosition(getGsw0ForEvent(StageId, EventId));
 	
 	// Reset Mario's motion
-	ttyd::mario_motion::marioChgMot(ttyd::mario_motion::MarioMotions::kNone);
+	ttyd::mario_motion::marioChgMot(ttyd::mario_motion::MarioMotions::kStay);
 	
 	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
 	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
