@@ -1520,6 +1520,7 @@ const char *DisplaysLines[] =
 	"Art Attack Hitboxes",
 	"Yoshi Skip",
 	"Palace Skip",
+	"Bridge Skip",
 	"Blimp Ticket Skip",
 };
 
@@ -1847,12 +1848,13 @@ uint8_t DisplaysOrder[] =
 	DPAD_OPTIONS_DISPLAY,
 	BLIMP_TICKET_SKIP,
 	ONSCREEN_TIMER_FRAME_COUNTER,
+	BRIDGE_SKIP,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[31];
 struct Cheats Cheat[25];
-bool Displays[13];
+bool Displays[14];
 char DisplayBuffer[256];
 char HeapBuffer[512];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1872,6 +1874,7 @@ struct ClearCacheForBattlesStruct ClearCacheForBattles;
 struct LockFlagsStruct LockFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
+struct BridgeSkipStruct BridgeSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
 struct OnScreenTimerDisplayFrameCounter FrameCounter;

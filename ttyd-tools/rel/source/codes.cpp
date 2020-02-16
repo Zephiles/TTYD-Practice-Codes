@@ -992,7 +992,7 @@ void displayFrameCounter()
 	drawFunctionOnDebugLayer(drawFrameCounter);
 }
 
-void displayMarioCoordinatesBoolCheck()
+void displayMarioCoordinates()
 {
 	if (!Displays[MARIO_COORDINATES])
 	{
@@ -1117,7 +1117,7 @@ void displayYoshiSkipDetails()
 	else
 	{
 		ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-		bool MarioControl = player->flags1 & (1 << 0); // Check if 0 bit is active
+		bool MarioControl = player->flags1 & (1 << 0); // Check if 0 bit is set
 		
 		if (MarioControl && YoshiSkip.TimerPaused)
 		{
@@ -1202,6 +1202,113 @@ void displayPalaceSkipDetails()
 	}
 	
 	drawFunctionOnDebugLayer(drawPalaceSkipDetails);
+}
+
+void displayBridgeSkipDetails()
+{
+	if (!Displays[BRIDGE_SKIP])
+	{
+		return;
+	}
+	
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	bool unkNoLongerOnGround = player->flags2 & (1 << 28); // Check if 28 bit is set
+	bool unkNotAbleToJump = player->flags2 & (1 << 16); // Check if 16 bit is set
+	
+	if (!unkNoLongerOnGround && unkNotAbleToJump) // Done falling, now starting to stand up
+	{
+		if (!BridgeSkip.PressedEarly)
+		{
+			// Reset the timer upon landing and while not pressing A
+			BridgeSkip.MainTimer = 0;
+			
+			// Check if A was pressed too early
+			if (BridgeSkip.TimerPaused && BridgeSkip.TimerStopped)
+			{
+				// Pressed A too early, so start the timer
+				BridgeSkip.PressedEarly = true;
+				BridgeSkip.TimerPaused = false;
+				BridgeSkip.TimerStopped = false;
+			}
+			else
+			{
+				// Stop the timer
+				BridgeSkip.TimerPaused = true;
+				BridgeSkip.TimerStopped = false;
+			}
+		}
+		else if (BridgeSkip.PressedEarlyShouldDisable)
+		{
+			// Reset the early state
+			BridgeSkip.TimerPaused = true;
+			BridgeSkip.PressedEarly = false;
+			BridgeSkip.PressedEarlyShouldDisable = false;
+			BridgeSkip.TimerStopped = false;
+		}
+		else
+		{
+			// The timer is currently running
+		}
+	}
+	else if (!unkNoLongerOnGround && !unkNotAbleToJump) // A timing, start timer
+	{
+		if (!BridgeSkip.PressedEarly)
+		{
+			if (BridgeSkip.TimerPaused) // Prevents running when the display is initially enabled
+			{
+				if (!BridgeSkip.TimerStopped)
+				{
+					// Didn't press A, so start the timer
+					BridgeSkip.TimerPaused = false;
+				}
+				else if (!(player->flags2 & (1 << 17))) // Check if 17 bit is not set; unkCurrentlyJumping
+				{
+					// Pressed A one frame early
+					BridgeSkip.PressedEarly = true;
+					BridgeSkip.PressedEarlyShouldDisable = true;
+				}
+				else
+				{
+					// Pressed A on the correct frame, so leave the timer paused
+				}
+			}
+		}
+		else
+		{
+			// Stop the timer
+			BridgeSkip.TimerPaused = true;
+			BridgeSkip.PressedEarlyShouldDisable = true;
+		}
+	}
+	
+	if (checkButtonCombo(PAD_A))
+	{
+		// Stop when A is pressed
+		BridgeSkip.TimerStopped = true;
+	}
+	
+	if (checkButtonComboEveryFrame(PAD_Y))
+	{
+		// Hold Y to increment the reset counter
+		BridgeSkip.ResetTimer++;
+	}
+	else
+	{
+		BridgeSkip.ResetTimer = 0;
+	}
+	
+	if (BridgeSkip.ResetTimer > secondsToFrames(2))
+	{
+		// Reset the timer when button is held for 2 seconds
+		BridgeSkip.MainTimer = 0;
+		BridgeSkip.ResetTimer = 0;
+		BridgeSkip.PressedEarly = false;
+		BridgeSkip.PressedEarlyShouldDisable = false;
+		BridgeSkip.TimerPaused = false;
+		BridgeSkip.TimerStopped = true;
+	}
+	
+	drawFunctionOnDebugLayer(drawBridgeSkipDetails);
 }
 
 void displayBlimpTicketSkipDetails()

@@ -25,7 +25,7 @@ void lockFlags();
 void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
 void displayFrameCounter();
-void displayMarioCoordinatesBoolCheck();
+void displayMarioCoordinates();
 void displayMarioSpeedXZ();
 void displayJumpStorageDetails();
 void displayButtonInputs();
@@ -34,6 +34,7 @@ void displayMemoryWatches();
 
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
+void displayBridgeSkipDetails();
 void displayBlimpTicketSkipDetails();
 void displayActionCommandsTiming();
 

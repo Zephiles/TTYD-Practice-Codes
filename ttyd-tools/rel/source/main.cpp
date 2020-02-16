@@ -239,6 +239,20 @@ const char *replaceJumpFallAnim(char *jumpFallString)
 	return jumpFallString;
 }
 
+void *jumpOnWater(void *ptr)
+{
+	// Allow jumping on water if the Bridge Skip display is active
+	if (Displays[BRIDGE_SKIP])
+	{
+		return nullptr;
+	}
+	else
+	{
+		// Return the original value
+		return ptr;
+	}
+}
+
 void displayTitleScreenAndFileSelectScreenInfo()
 {
 	if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kTitle))
@@ -717,6 +731,7 @@ void initAddressOverwrites()
 	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x80082288);
 	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x800822AC);
 	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x800855BC);
+	void *JumpOnWaterAddress 							= reinterpret_cast<void *>(0x80093CF0);
 	#endif
 	
 	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
@@ -753,6 +768,10 @@ void initAddressOverwrites()
 	patch::writeBranchBL(AutoMashThroughText1Address, reinterpret_cast<void *>(autoMashText));
 	patch::writeBranchBL(AutoMashThroughText2Address, reinterpret_cast<void *>(autoMashText));
 	patch::writeBranchBL(AutoMashThroughText3Address, reinterpret_cast<void *>(autoMashText));
+	
+	#ifdef TTYD_EU
+	patch::writeBranchBL(JumpOnWaterAddress, reinterpret_cast<void *>(StartJumpOnWater));
+	#endif
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop
@@ -823,11 +842,12 @@ void Mod::run()
 			{
 				displayYoshiSkipDetails();
 				displayPalaceSkipDetails();
+				displayBridgeSkipDetails();
 				displayBlimpTicketSkipDetails();
 			}
 			
 			// Run each display function that isn't button-based
-			displayMarioCoordinatesBoolCheck();
+			displayMarioCoordinates();
 			displayMarioSpeedXZ();
 			displayStickAngle();
 			displayMemoryWatches();

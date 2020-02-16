@@ -119,6 +119,7 @@ void drawMemoryWatchesOnOverworld();
 
 void drawYoshiSkipDetails();
 void drawPalaceSkipDetails();
+void drawBridgeSkipDetails();
 void drawBlimpTicketSkipDetails();
 void drawActionCommandsTiming();
 void drawSettingsCurrentWork();

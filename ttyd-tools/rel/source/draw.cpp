@@ -3790,8 +3790,9 @@ void drawOnScreenTimer()
 	if (!Displays[BUTTON_INPUT_DISPLAY])
 	{
 		if (Displays[MARIO_COORDINATES] || 
+			Displays[YOSHI_SKIP] || 
 			Displays[PALACE_SKIP] || 
-			Displays[YOSHI_SKIP])
+			Displays[BRIDGE_SKIP])
 		{
 			PosY += 20;
 		}
@@ -3837,8 +3838,9 @@ void drawFrameCounter()
 	if (!Displays[BUTTON_INPUT_DISPLAY])
 	{
 		if (Displays[MARIO_COORDINATES] || 
+			Displays[YOSHI_SKIP] || 
 			Displays[PALACE_SKIP] || 
-			Displays[YOSHI_SKIP])
+			Displays[BRIDGE_SKIP])
 		{
 			PosY += 20;
 		}
@@ -3902,8 +3904,9 @@ void drawMarioSpeedXZ()
 	
 	// Move the text up if the Mario coordinates display is active
 	if (Displays[MARIO_COORDINATES] || 
+		Displays[YOSHI_SKIP] || 
 		Displays[PALACE_SKIP] || 
-		Displays[YOSHI_SKIP])
+		Displays[BRIDGE_SKIP])
 	{
 		PosY += 20;
 	}
@@ -4005,8 +4008,10 @@ void drawStickAngle()
 		PosY += 20;
 	}
 	
-	// Move the text up if Mario's Coordinates are displayed, or if the Palace Skip display is active
-	if (Displays[MARIO_COORDINATES] || Displays[PALACE_SKIP])
+	// Move the text up if the Mario coordinates display is active
+	if (Displays[MARIO_COORDINATES] || 
+		Displays[PALACE_SKIP] || 
+		Displays[BRIDGE_SKIP])
 	{
 		PosY += 20;
 	}
@@ -4235,6 +4240,84 @@ void drawPalaceSkipDetails()
 	if (!PalaceSkip.TimerStopped)
 	{
 		PalaceSkip.MainTimer++;
+	}
+}
+
+void drawBridgeSkipDetails()
+{
+	uint32_t TextColor 		= 0xFFFFFFFF;
+	uint8_t Alpha 			= 0xFF;
+	int32_t PosX 			= -232;
+	int32_t PosY 			= -117;
+	float Scale 			= 0.75;
+	
+	// Move the text up if the input display is active
+	if (Displays[BUTTON_INPUT_DISPLAY])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Mario Speed XZ display is active
+	if (Displays[MARIO_SPEED_XZ])
+	{
+		PosY += 20;
+	}
+	
+	// Move the text up if the Stick Angle display is active
+	if (Displays[STICK_ANGLE])
+	{
+		PosY += 20;
+	}
+	
+	uint32_t MainTimer = BridgeSkip.MainTimer;
+	
+	// Check whether A was pressed early or late
+	const char *EarlyOrLate;
+	if (!BridgeSkip.PressedEarly)
+	{
+		EarlyOrLate = "Late";
+	}
+	else
+	{
+		// Increment the timer by 1 to account for being early by X frames
+		MainTimer += 1;
+		EarlyOrLate = "Early";
+	}
+	
+	// Check if the Frames text should be plural
+	const char *FramesPlural;
+	if (MainTimer == 1)
+	{
+		FramesPlural = "";
+	}
+	else
+	{
+		FramesPlural = "s";
+	}
+	
+	// Draw the text
+	char *tempDisplayBuffer = DisplayBuffer;
+	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+	
+	sprintf(tempDisplayBuffer,
+		"%" PRIu32 " Frame%s %s\nHRP: 0x%08" PRIX32,
+		MainTimer,
+		FramesPlural,
+		EarlyOrLate,
+		reinterpret_cast<uint32_t>(player->wObjHazardRespawn));
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Draw Mario's coordinates if they're not already drawn
+	if (!Displays[MARIO_COORDINATES])
+	{
+		drawMarioCoordinates();
+	}
+	
+	// Increment the main timer
+	if (!BridgeSkip.TimerPaused && !BridgeSkip.TimerStopped)
+	{
+		BridgeSkip.MainTimer++;
 	}
 }
 

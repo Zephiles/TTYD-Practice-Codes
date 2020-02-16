@@ -2611,12 +2611,21 @@ void menuCheckButton()
 						case YOSHI_SKIP:
 						{
 							Displays[PALACE_SKIP] = false;
+							Displays[BRIDGE_SKIP] = false;
 							Displays[BLIMP_TICKET_SKIP] = false;
 							break;
 						}
 						case PALACE_SKIP:
 						{
 							Displays[YOSHI_SKIP] = false;
+							Displays[BRIDGE_SKIP] = false;
+							Displays[BLIMP_TICKET_SKIP] = false;
+							break;
+						}
+						case BRIDGE_SKIP:
+						{
+							Displays[YOSHI_SKIP] = false;
+							Displays[PALACE_SKIP] = false;
 							Displays[BLIMP_TICKET_SKIP] = false;
 							break;
 						}
@@ -2624,6 +2633,7 @@ void menuCheckButton()
 						{
 							Displays[YOSHI_SKIP] = false;
 							Displays[PALACE_SKIP] = false;
+							Displays[BRIDGE_SKIP] = false;
 							break;
 						}
 						default:

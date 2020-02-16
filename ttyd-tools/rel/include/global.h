@@ -348,6 +348,7 @@ enum DISPLAYS_OPTIONS
 	ART_ATTACK_HITBOXES,
 	YOSHI_SKIP,
 	PALACE_SKIP,
+	BRIDGE_SKIP,
 	BLIMP_TICKET_SKIP,
 };
 
@@ -669,6 +670,21 @@ struct TrickDisplay
 	}
 };
 
+struct BridgeSkipStruct
+{
+	uint32_t MainTimer;
+	uint32_t ResetTimer;
+	bool PressedEarly;
+	bool PressedEarlyShouldDisable;
+	bool TimerPaused;
+	bool TimerStopped;
+	
+	BridgeSkipStruct()
+	{
+		TimerStopped = true;
+	}
+};
+
 struct BlimpTicketSkipStruct
 {
 	uint32_t UpRightTimer;
@@ -848,7 +864,7 @@ struct NpcNameToPtrErrorStruct
 extern MenuVars MenuVar;
 extern Menus Menu[31];
 extern Cheats Cheat[25];
-extern bool Displays[13];
+extern bool Displays[14];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];
 extern MemoryWatchStruct MemoryWatch[60];
@@ -868,6 +884,7 @@ extern ClearCacheForBattlesStruct ClearCacheForBattles;
 extern LockFlagsStruct LockFlags;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
+extern BridgeSkipStruct BridgeSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern OnScreenTimerDisplayFrameCounter FrameCounter;
