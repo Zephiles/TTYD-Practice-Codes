@@ -55,16 +55,17 @@ This menu allows you to modify your entire inventory, including standard items, 
 13. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
 14. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
 15. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
-16. **Lock Mario's HP To Max** locks Mario's current HP to the max.
-17. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
-18. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
-19. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
-20. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
-21. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
-22. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+16. **Auto Mash Through Text** allows you to automatically mash through all text boxes. Text boxes with questions (Yes, No, etc.) will still require you to manually select an option. The button combination must be held for this code to work.
+17. **Lock Mario's HP To Max** locks Mario's current HP to the max.
+18. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
+19. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+20. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+21. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+22. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+23. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
     * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on when not in use.
-23. **Manage Flags** allows you to manually change a lot of the important flags in the game.
-24. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+24. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+25. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
@@ -104,7 +105,8 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
 10. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack. While this display is active, you can hold Y while using Art Attack to pause the timer that is used to check how long you are able to use it for.
 11. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
 12. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
-13. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding Y for two seconds.
+13. **Bridge Skip** displays various information about performing this skip. The first field in this display is how many frames early/late you were with pressing A. If you press A on the correct frame, then the counter will remain at 0. You can also manually reset this counter by holding Y for two seconds. **HRP** is the pointer to the area of ground in the current room that you will respawn at upon touching a hazard. In order for **Bridge Skip** to work (as well as any other **Hazard Respawn Glitch**), this pointer must not be set, in which the value will be `0x00000000`.
+14. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding Y for two seconds.
 
 ### Warps
 This menu allows you to warp to various places around the game. You have three separate options to choose from:
@@ -124,10 +126,12 @@ This menu allows you to warp to various places around the game. You have three s
          * Recovery block tutorial
          * Item tutorial
 
-3. **Warp By Index** Allows you to manually choose any map, as well as the entrance used when warping to said map. Additionally, the **View Current Map Entrances** shows you which value goes to which entrance in the current map. Due to limitations, it is currently impossible to fetch the list of entrances for any other maps besides the one you're currently in.
+3. **Warp By Index** allows you to manually choose any map, as well as the entrance used when warping to said map. Additionally, the **View Current Map Entrances** shows you which value goes to which entrance in the current map. Due to limitations, it is currently impossible to fetch the list of entrances for any other maps besides the one you're currently in.
    * Notes about manually choosing a warp:
      * If an invalid entrance is used, then Mario will be placed at/near the center of the chosen map.
      * Some maps have entrances that don't actually work. Using them will simply place Mario at/near the center of the chosen map.
+4. **Warp To Boss** allows you to warp to most bosses/mini-bosses in the game.
+   * Note: Warping to a boss using this menu will adjust the game's Sequence value.
 
 ## Misc
 There are several other changes that have been made outside of the menu:
