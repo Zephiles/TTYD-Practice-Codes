@@ -626,6 +626,13 @@ uint32_t autoMashText(uint32_t controllerPort)
 		return ttyd::system::keyGetButtonTrg(controllerPort);
 	}
 	
+	// Don't auto mash if currently changing button combos
+	if (MenuVar.ChangingCheatButtonCombo)
+	{
+		// Return the intended value
+		return ttyd::system::keyGetButtonTrg(controllerPort);
+	}
+	
 	if (!checkButtonComboEveryFrame(Cheat[AUTO_MASH_TEXT].ButtonCombo))
 	{
 		// Return the intended value
