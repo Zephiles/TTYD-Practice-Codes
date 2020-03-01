@@ -5373,9 +5373,18 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		const char *Text = "Press/hold the D-Pad to move the text\nPress X to go to the next page\nPress Y to go to the previous page\nPress A to zoom in\nPress B to zoom out";
 		drawString(NewPosX, NewPosY, Text, FontScale);
 		
-		// Draw the page number
-		char MiscBuffer[7];
-		sprintf(MiscBuffer, "Page %" PRIu32, PageNumber + 1);
+		// Draw the page number and the version
+		#ifdef TTYD_JP
+		const char *Format = "Page %" PRIu32 "\n\nJPN";
+		#elif defined TTYD_US
+		const char *Format = "Page %" PRIu32 "\n\nUSA";
+		#elif defined TTYD_EU
+		const char *Format = "Page %" PRIu32 "\n\nEUR";
+		#endif
+		
+		char MiscBuffer[16];
+		sprintf(MiscBuffer, Format, PageNumber + 1);
+		
 		drawString(NewPosX + 400, NewPosY, MiscBuffer, FontScale);
 		NewPosY += PosYIncrementAmount * 6;
 		
