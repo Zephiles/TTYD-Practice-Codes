@@ -19,12 +19,12 @@ static_assert(sizeof(EffEntry) == 0x28);
 
 struct EffWork
 {
-	uint32_t effCount;
-	EffEntry *entries;
-	uint32_t unk_8;
-	uint32_t unk_c;
-	uint32_t unk_10;
-	uint32_t unk_14;
+	uint32_t maxEntries;
+	EffEntry *pEntries;
+	void *pEffectTpl;
+	uint32_t bEffectTplLoaded;
+	void *pLanguageEffectTplFile; // FileEntryData *pLanguageEffectTplFile;
+	int32_t loadedLanguage;
 } __attribute__((__packed__));
 
 static_assert(sizeof(EffWork) == 0x18);

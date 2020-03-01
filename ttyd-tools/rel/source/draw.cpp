@@ -4564,12 +4564,12 @@ void drawEffsActive()
 	
 	// Get the total amount of effs active
 	ttyd::effdrv::EffWork *EffWrk = ttyd::effdrv::effWorkPointer;
-	uint32_t MaxCount = EffWrk->effCount;
+	uint32_t MaxEntries = EffWrk->maxEntries;
 	uint32_t CurrentCount = 0;
 	
-	for (uint32_t i = 0; i < MaxCount; i++)
+	for (uint32_t i = 0; i < MaxEntries; i++)
 	{
-		if (EffWrk->entries[i].wFlags)
+		if (EffWrk->pEntries[i].wFlags)
 		{
 			CurrentCount++;
 		}
@@ -4580,7 +4580,7 @@ void drawEffsActive()
 	sprintf(tempDisplayBuffer,
 		"Effs Active: %" PRIu32 "/%" PRIu32,
 		CurrentCount,
-		MaxCount);
+		MaxEntries);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
