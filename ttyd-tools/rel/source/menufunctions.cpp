@@ -4175,9 +4175,8 @@ void updateOnScreenTimerVars()
 	if (PreviousFrameTime != 0)
 	{
 		if (!OnScreenTimer.TimerPaused && 
-		(!MenuVar.MenuIsDisplayed || MenuVar.HideMenu) && 
-		!SpawnItem.InAdjustableValueMenu && 
-		!MenuVar.ChangingCheatButtonCombo)
+			(!MenuVar.MenuIsDisplayed || MenuVar.HideMenu) && 
+			!MenuVar.ChangingCheatButtonCombo)
 		{
 			int64_t IncrementAmount = CurrentFrameTime - PreviousFrameTime;
 			OnScreenTimer.MainTimer += IncrementAmount;

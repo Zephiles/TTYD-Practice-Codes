@@ -571,7 +571,9 @@ void reloadRoom()
 	if (!MenuVar.ChangingCheatButtonCombo && checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
 	{
 		// Prevent being able to reload the room if the menu is open or if currently in the spawn item menu
-		if (Cheat[RELOAD_ROOM].Active && !MenuVar.MenuIsDisplayed && !SpawnItem.InAdjustableValueMenu)
+		if (Cheat[RELOAD_ROOM].Active && 
+			!MenuVar.MenuIsDisplayed && 
+			!SpawnItem.InAdjustableValueMenu)
 		{
 			reloadRoomMain();
 		}
@@ -817,7 +819,7 @@ void spawnItem()
 		}
 		
 		// Draw the menu
-		drawFunctionOnDebugLayer(drawAdjustableValueSpawnItem);
+		drawFunctionOnDebugLayerWithOrder(drawAdjustableValueSpawnItem, 10.f);
 	}
 	else if (tempInAdjustableValueMenu)
 	{
