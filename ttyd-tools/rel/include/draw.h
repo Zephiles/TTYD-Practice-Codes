@@ -122,6 +122,7 @@ void drawPalaceSkipDetails();
 void drawBridgeSkipDetails();
 void drawBlimpTicketSkipDetails();
 void drawActionCommandsTiming();
+void drawEffsActive();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();

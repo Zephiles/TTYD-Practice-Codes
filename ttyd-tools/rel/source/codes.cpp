@@ -1528,6 +1528,16 @@ void displayActionCommandsTiming()
 	}
 }
 
+void displayEffsActive()
+{
+	if (!Displays[EFFS_ACTIVE])
+	{
+		return;
+	}
+	
+	drawFunctionOnDebugLayerWithOrder(drawEffsActive, 1.f);
+}
+
 int32_t warpToMap(uint32_t value)
 {
 	// Make sure the player is currently in the game

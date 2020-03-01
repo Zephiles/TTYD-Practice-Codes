@@ -865,6 +865,7 @@ void Mod::run()
 		spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
 		displaySequenceInPauseMenu();
 		displayActionCommandsTiming();
+		displayEffsActive();
 		
 		// Check the heaps
 		checkHeaps();

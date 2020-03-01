@@ -719,6 +719,29 @@
 8005D204:marioGetColor
 8005D214:marioGetPtr
 
+// effdrv.o
+// text
+// 8005D21C:effDrawMayaPoly
+// 8005D3DC:effCalcMayaAnim
+// 8005D530:effPlayMayaAnim
+// 8005D5BC:effDeleteMayaAnim
+// 8005D5E4:effMayaAnimAlloc
+// 8005D648:effCalcMayaAnimMatrix
+// 8005D9F4:effGetSet
+// 8005DA7C:effNameToPtr
+// 8005DB14:effSoftDelete
+// 8005DB84:effDelete
+// 8005DBD0:effMain
+// 8005DD40:effSetName
+// 8005DDBC:effEntry
+// 8005DE24:effAutoRelease
+// 8005DEAC:effGetTexObj
+// 8005DF60:effTexSetup
+// 8005E058:effInit
+// 8005E0E0:_callback_tpl
+// data
+80410220:effWorkPointer
+
 // mariost.o
 // text
 // unused:gcResetDone

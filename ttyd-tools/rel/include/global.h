@@ -346,6 +346,7 @@ enum DISPLAYS_OPTIONS
 	DPAD_OPTIONS_DISPLAY,
 	GUARD_SUPERGUARD_TIMINGS,
 	ART_ATTACK_HITBOXES,
+	EFFS_ACTIVE,
 	YOSHI_SKIP,
 	PALACE_SKIP,
 	BRIDGE_SKIP,
@@ -864,7 +865,7 @@ struct NpcNameToPtrErrorStruct
 extern MenuVars MenuVar;
 extern Menus Menu[31];
 extern Cheats Cheat[25];
-extern bool Displays[14];
+extern bool Displays[15];
 extern char DisplayBuffer[256];
 extern char HeapBuffer[512];
 extern MemoryWatchStruct MemoryWatch[60];

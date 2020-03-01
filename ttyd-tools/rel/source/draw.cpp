@@ -30,6 +30,7 @@
 #include <ttyd/npcdrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
+#include <ttyd/effdrv.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_disp.h>
 #include <ttyd/pmario_sound.h>
@@ -4551,6 +4552,37 @@ void drawActionCommandsTiming()
 		Scale, WindowWidth, WindowColor, WindowCurve);
 	
 	DisplayActionCommands.DisplayTimer--;
+}
+
+void drawEffsActive()
+{
+	uint32_t Color 				= 0xFFFFFFFF;
+	uint8_t Alpha 				= 0xFF;
+	int32_t PosX 				= -232;
+	int32_t PosY 				= 60;
+	float Scale 				= 0.75;
+	
+	// Get the total amount of effs active
+	ttyd::effdrv::EffWork *EffWrk = ttyd::effdrv::effWorkPointer;
+	uint32_t MaxCount = EffWrk->effCount;
+	uint32_t CurrentCount = 0;
+	
+	for (uint32_t i = 0; i < MaxCount; i++)
+	{
+		if (EffWrk->entries[i].wFlags)
+		{
+			CurrentCount++;
+		}
+	}
+	
+	// Draw the total amount of effs active out of the max
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Effs Active: %" PRIu32 "/%" PRIu32,
+		CurrentCount,
+		MaxCount);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawSettingsCurrentWork()
