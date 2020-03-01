@@ -4456,7 +4456,7 @@ void drawActionCommandsTiming()
 		case SuccessfulTiming:
 		{
 			uint32_t CurrentDifficultyFrames;
-			uint32_t FramePressed;
+			int32_t FramePressed;
 			char Button;
 			
 			if (temp_Last_A_Frame > -1)
@@ -4473,7 +4473,7 @@ void drawActionCommandsTiming()
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %c on frame %" PRIu32 " of %" PRIu32,
+				"Pressed %c on frame %" PRId32 " of %" PRIu32,
 				Button,
 				FramePressed,
 				CurrentDifficultyFrames);
@@ -4489,7 +4489,7 @@ void drawActionCommandsTiming()
 		case PressedTooEarly:
 		{
 			uint32_t CurrentDifficultyFrames;
-			uint32_t FramesEarly;
+			int32_t FramesEarly;
 			char Button;
 			
 			if (temp_Last_A_Frame > -1)
@@ -4516,7 +4516,7 @@ void drawActionCommandsTiming()
 			}
 			
 			sprintf(tempDisplayBuffer,
-				"Pressed %c %" PRIu32 " frame%s early",
+				"Pressed %c %" PRId32 " frame%s early",
 				Button,
 				FramesEarly,
 				CheckForPlural);
