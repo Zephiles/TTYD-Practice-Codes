@@ -21,7 +21,10 @@ struct EffWork
 {
 	uint32_t effCount;
 	EffEntry *entries;
-	uint8_t unk_8[16];
+	uint32_t unk_8;
+	uint32_t unk_c;
+	uint32_t unk_10;
+	uint32_t unk_14;
 } __attribute__((__packed__));
 
 static_assert(sizeof(EffWork) == 0x18);
