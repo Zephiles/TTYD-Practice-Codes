@@ -626,6 +626,13 @@ uint32_t autoMashText(uint32_t controllerPort)
 		return ttyd::system::keyGetButtonTrg(controllerPort);
 	}
 	
+	// Don't auto mash if the Palace Skip display is currently on
+	if (Displays[PALACE_SKIP])
+	{
+		// Return the intended value
+		return ttyd::system::keyGetButtonTrg(controllerPort);
+	}
+	
 	// Don't auto mash if currently changing button combos
 	if (MenuVar.ChangingCheatButtonCombo)
 	{
