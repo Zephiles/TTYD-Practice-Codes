@@ -535,6 +535,37 @@ void drawInventoryIconAndTextColumns()
 		MultiplyAmount = 1;
 	}
 	
+	// Draw the text for how many items/badges the player currently has out of the max
+	int16_t *CurrentAddress = reinterpret_cast<int16_t *>(tempAddress);
+	uint32_t CurrentItemCount = 0;
+	
+	for (uint32_t i = 0; i < tempSize; i++)
+	{
+		if (*CurrentAddress)
+		{
+			CurrentItemCount++;
+		}
+		else
+		{
+			break;
+		}
+		
+		CurrentAddress++;
+	}
+	
+	// Draw the counts as int32_ts, to prevent long text if they somehow become negative
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	sprintf(tempDisplayBuffer,
+		"%" PRId32 "/%" PRId32,
+		static_cast<int32_t>(CurrentItemCount),
+		static_cast<int32_t>(tempSize));
+	
+	int32_t ItemCountPosX = 23;
+	int32_t ItemCountPosY = 180;
+	uint32_t Color = 0xFFFFFFFF;
+	drawText(tempDisplayBuffer, ItemCountPosX, ItemCountPosY, Alpha, Color, TextScale);
+	
 	// Draw the icons
 	for (uint32_t i = 0; i < 2; i++)
 	{
@@ -551,7 +582,7 @@ void drawInventoryIconAndTextColumns()
 	PosX = SetPosXText;
 	PosY = SetPosYText;
 	
-	// Draw the text
+	// Draw the text for each item/badge
 	for (uint32_t i = 0; i < 2; i++)
 	{
 		// Draw the left and right columns
