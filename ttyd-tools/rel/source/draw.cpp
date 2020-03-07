@@ -1432,6 +1432,30 @@ void drawMemoryWatches()
 	
 	// Draw the current page
 	drawPageNumber(PosX, PosY, tempCurrentPage);
+	
+	// Draw the total amount of watches out of the max
+	int32_t CurrentWatchCount = 0;
+	for (int32_t i = 0; i < TotalMenuOptions; i++)
+	{
+		if (MemoryWatch[i].Address)
+		{
+			CurrentWatchCount++;
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	// Draw the counts as int32_ts, to prevent long text if they somehow become negative
+	char *tempDisplayBuffer = DisplayBuffer;
+	
+	sprintf(tempDisplayBuffer,
+		"%" PRId32 "/%" PRId32,
+		CurrentWatchCount,
+		TotalMenuOptions);
+	
+	drawText(tempDisplayBuffer, PosX + TypeOffset, PosY, Alpha, Color, Scale);
 	PosY -= 40;
 	
 	// Draw the headers for the values
