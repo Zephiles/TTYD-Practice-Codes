@@ -3749,13 +3749,15 @@ void *initStageEvents()
 		const ttyd::event::EventStageDescription *Stage = ttyd::event::eventStgDtPtr(s);
 		int32_t lastEvent = (s == StageId ? EventId : (Stage->eventCount - 1));
 		
+		const ttyd::event::EventStageEventDescription *TargetEvent = &Stage->pEvents[0];
 		for (int32_t e = 0; e <= lastEvent; ++e)
 		{
-			void (*initFunction)() = Stage->pEvents[e].pfnInit;
+			void (*initFunction)() = TargetEvent->pfnInit;
 			if (initFunction)
 			{
 				initFunction();
 			}
+			TargetEvent++;
 		}
 	}
 	
@@ -4025,16 +4027,19 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	for (int32_t i = 0; i < NumberOfStages; ++i)
 	{
 		const ttyd::event::EventStageDescription *StageDesc = ttyd::event::eventStgDtPtr(i);
-		for (int32_t j = 0; j < StageDesc->eventCount; ++j)
+		int32_t EventCount = StageDesc->eventCount;
+		
+		const ttyd::event::EventStageEventDescription *EventDesc = &StageDesc->pEvents[0];
+		for (int32_t j = 0; j < EventCount; ++j)
 		{
-			const ttyd::event::EventStageEventDescription &EventDesc = StageDesc->pEvents[j];
-			if (EventDesc.gsw0 >= tempSequencePosition)
+			if (EventDesc->gsw0 >= tempSequencePosition)
 			{
 				StageName = StageDesc->nameEn;
-				EventName = EventDesc.nameEn;
+				EventName = EventDesc->nameEn;
 				FoundName = true;
 				break;
 			}
+			EventDesc++;
 		}
 		
 		if (FoundName)

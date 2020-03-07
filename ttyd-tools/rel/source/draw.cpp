@@ -3101,9 +3101,7 @@ void drawCheatsResolveFades()
 	{
 		// Check if the current fade is active
 		ttyd::fadedrv::FadeEntry *FadeEntry = &FadeWork->entry[i];
-		bool FadeIsActive = FadeEntry->flags & (1 << 0); // Check if 0 bit is active
-		
-		if (FadeIsActive)
+		if (FadeEntry->flags & (1 << 0)) // Check if 0 bit is active
 		{
 			sprintf(tempDisplayBuffer,
 				"%" PRId32,
@@ -3118,7 +3116,6 @@ void drawCheatsResolveFades()
 			Color = 0x4B4B4BFF;
 			drawText(String, PosX, PosY, Alpha, Color, Scale);
 		}
-		
 		PosY -= 20;
 	}
 }
@@ -4556,23 +4553,25 @@ void drawActionCommandsTiming()
 
 void drawEffsActive()
 {
-	uint32_t Color 				= 0xFFFFFFFF;
-	uint8_t Alpha 				= 0xFF;
-	int32_t PosX 				= -232;
-	int32_t PosY 				= 60;
-	float Scale 				= 0.75;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 60;
+	float Scale 	= 0.75;
 	
 	// Get the total amount of effs active
 	ttyd::effdrv::EffWork *EffWrk = ttyd::effdrv::effWorkPointer;
 	uint32_t MaxEntries = EffWrk->maxEntries;
 	uint32_t CurrentCount = 0;
 	
+	ttyd::effdrv::EffEntry *EffEntry = &EffWrk->pEntries[0];
 	for (uint32_t i = 0; i < MaxEntries; i++)
 	{
-		if (EffWrk->pEntries[i].wFlags)
+		if (EffEntry->wFlags)
 		{
 			CurrentCount++;
 		}
+		EffEntry++;
 	}
 	
 	// Draw the total amount of effs active out of the max
