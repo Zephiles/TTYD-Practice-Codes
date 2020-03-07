@@ -221,12 +221,6 @@ uint32_t getNextLineIndex(char *str)
 
 void drawStringMultiline(float x, float y, const char *text, float scale)
 {
-	// Get the line increment amount
-	// Round the value down
-	float increment = (scale * 25) + 5;
-	int32_t tempIncrementValue = static_cast<int32_t>(increment);
-	increment = static_cast<float>(tempIncrementValue);
-	
 	// Copy the text to a temporary array, as it will be modified
 	uint32_t textSize = strlen(text);
 	char tempText[textSize + 1];
@@ -254,7 +248,7 @@ void drawStringMultiline(float x, float y, const char *text, float scale)
 		index = getNextLineIndex(currentLine);
 		
 		// Implement the new line space
-		y -= increment;
+		y -= 20.f;
 	}
 	while (index != 0);
 }
@@ -1633,7 +1627,7 @@ void drawMemoryChangeWatchPosition()
 	int32_t PosY 		= MemoryWatchPosition.PosY;
 	uint32_t TextColor 	= 0xFFFFFFFF;
 	uint8_t Alpha 		= 0xFF;
-	float Scale 		= 0.75;
+	float Scale 		= 0.65;
 	
 	drawText(getValueString(tempMenuSelectedOption), PosX, PosY, Alpha, TextColor, Scale);
 	
@@ -1648,7 +1642,7 @@ void drawMemoryChangeWatchPosition()
 	uint32_t WindowColor 	= 0x151515F6;
 	int32_t TextPosX 		= -135;
 	int32_t TextPosY 		= 140;
-	Scale = 0.6;
+	Scale 					= 0.6;
 	
 	const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to cancel";
 	int32_t Width = static_cast<int32_t>(getMessageWidth(HelpText, Scale));
@@ -3804,9 +3798,9 @@ void drawOnScreenTimer()
 {
 	uint32_t TextColor 	= 0xFFFFFFFF;
 	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 105;
+	int32_t PosX 		= 115;
 	int32_t PosY 		= -160;
-	float Scale 		= 0.8;
+	float Scale 		= 0.7;
 	
 	#ifdef TTYD_JP
 	PosX 	+= 5;
@@ -3852,9 +3846,9 @@ void drawFrameCounter()
 	
 	uint32_t TextColor 	= 0xFFFFFFFF;
 	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 105;
+	int32_t PosX 		= 115;
 	int32_t PosY 		= -160;
-	float Scale 		= 0.8;
+	float Scale 		= 0.7;
 	
 	#ifdef TTYD_JP
 	PosX 	+= 5;
@@ -3898,8 +3892,8 @@ void drawMarioCoordinates()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -162;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -160;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -3922,8 +3916,8 @@ void drawMarioSpeedXZ()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -162;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -160;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -3954,9 +3948,9 @@ void drawJumpStorageDetails()
 {
 	uint32_t TextColor 	= 0xFFFFFFFF;
 	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 110;
+	int32_t PosX 		= 140;
 	int32_t PosY 		= 120;
-	float Scale 		= 0.75;
+	float Scale 		= 0.65;
 	
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -3973,7 +3967,7 @@ void drawJumpStorageDetails()
 	const char *TextToDraw;
 	
 	getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &TextColor);
-	drawText(TextToDraw, PosX + 38, PosY, Alpha, TextColor, Scale);
+	drawText(TextToDraw, PosX + 33, PosY, Alpha, TextColor, Scale);
 }
 
 void drawButtonInputs()
@@ -3982,7 +3976,7 @@ void drawButtonInputs()
 	uint8_t Alpha = 0xFF;
 	int32_t PosX = -232;
 	int32_t PosY = -160;
-	float Scale = 0.75;
+	float Scale = 0.65;
 	
 	uint32_t ButtonInput = ttyd::system::keyGetButton(0);
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -4022,8 +4016,8 @@ void drawStickAngle()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -162;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -160;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4065,7 +4059,7 @@ void drawMemoryWatchesOnOverworld()
 	
 	uint32_t Color = 0xFFFFFFFF;
 	uint8_t Alpha = 0xFF;
-	float Scale = 0.75;
+	float Scale = 0.65;
 	
 	for (uint32_t i = 0; i < Size; i++)
 	{
@@ -4092,8 +4086,8 @@ void drawYoshiSkipDetails()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -117;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -120;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4227,8 +4221,8 @@ void drawPalaceSkipDetails()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -70;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -80;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4277,8 +4271,8 @@ void drawBridgeSkipDetails()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -117;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -120;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4355,8 +4349,8 @@ void drawBlimpTicketSkipDetails()
 	uint32_t TextColor 		= 0xFFFFFFFF;
 	uint8_t Alpha 			= 0xFF;
 	int32_t PosX 			= -232;
-	int32_t PosY 			= -95;
-	float Scale 			= 0.75;
+	int32_t PosY 			= -100;
+	float Scale 			= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4541,7 +4535,7 @@ void drawActionCommandsTiming()
 	int32_t TextPosY 		= -105;
 	// int32_t WindowWidth 	= 320;
 	int32_t WindowCurve 	= 10;
-	float Scale 			= 0.75;
+	float Scale 			= 0.7;
 	
 	int32_t WindowWidth 	= static_cast<int32_t>(getMessageWidth(TextToDraw, Scale));
 	
@@ -4557,7 +4551,7 @@ void drawEffsActive()
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
 	int32_t PosY 	= 60;
-	float Scale 	= 0.75;
+	float Scale 	= 0.65;
 	
 	// Get the total amount of effs active
 	ttyd::effdrv::EffWork *EffWrk = ttyd::effdrv::effWorkPointer;
