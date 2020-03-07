@@ -79,6 +79,15 @@ void drawFunctionOn2DLayer(void (*func)())
 	}, reinterpret_cast<void *>(func));
 }
 
+void drawFunctionOn2DLayerWithOrder(void (*func)(), float order)
+{
+	ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::k2d, 2, order, 
+		[](ttyd::dispdrv::CameraId cameraId, void *user)
+	{
+		reinterpret_cast<void (*)()>(user)();
+	}, reinterpret_cast<void *>(func));
+}
+
 void drawMenuWindow()
 {
 	uint32_t color 		= 0x000000F4;

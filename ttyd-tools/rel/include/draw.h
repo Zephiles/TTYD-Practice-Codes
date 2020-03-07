@@ -7,6 +7,7 @@ namespace mod {
 void drawFunctionOnDebugLayer(void (*func)());
 void drawFunctionOnDebugLayerWithOrder(void (*func)(), float order);
 void drawFunctionOn2DLayer(void (*func)());
+void drawFunctionOn2DLayerWithOrder(void (*func)(), float order);
 
 void drawMenuWindow();
 

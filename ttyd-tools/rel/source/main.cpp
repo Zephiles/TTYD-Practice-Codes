@@ -266,7 +266,7 @@ void displayTitleScreenAndFileSelectScreenInfo()
 		{
 			// Curtain is not fully displayed
 			// Draw the title screen info
-			drawFunctionOn2DLayer(drawTitleScreenInfo);
+			drawFunctionOn2DLayerWithOrder(drawTitleScreenInfo, -1.f);
 		}
 	}
 	else if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kLoad))
@@ -277,7 +277,7 @@ void displayTitleScreenAndFileSelectScreenInfo()
 		if (SeqMainCheck == 2)
 		{
 			// Draw the file select screen info
-			drawFunctionOn2DLayer(drawFileSelectScreenInfo);
+			drawFunctionOn2DLayerWithOrder(drawFileSelectScreenInfo,  -1.f);
 		}
 	}
 }
