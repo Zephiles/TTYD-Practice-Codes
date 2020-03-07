@@ -1074,18 +1074,6 @@ void displayStickAngle()
 		return;
 	}
 	
-	// Don't display if the Yoshi Skip display is active
-	if (Displays[YOSHI_SKIP])
-	{
-		return;
-	}
-	
-	// Don't display if the Blimp Ticket Skip display is active
-	if (Displays[BLIMP_TICKET_SKIP])
-	{
-		return;
-	}
-	
 	drawFunctionOnDebugLayer(drawStickAngle);
 }
 

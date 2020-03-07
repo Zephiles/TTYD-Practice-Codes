@@ -3934,7 +3934,7 @@ void drawMarioSpeedXZ()
 		PosY += 20;
 	}
 	
-	// Move the text up if the Mario coordinates display is active
+	// Move the text up if the Mario Coordinates display is active
 	if (Displays[MARIO_COORDINATES] || 
 		Displays[YOSHI_SKIP] || 
 		Displays[PALACE_SKIP] || 
@@ -4040,8 +4040,9 @@ void drawStickAngle()
 		PosY += 20;
 	}
 	
-	// Move the text up if the Mario coordinates display is active
+	// Move the text up if the Mario Coordinates display is active
 	if (Displays[MARIO_COORDINATES] || 
+		Displays[YOSHI_SKIP] || 
 		Displays[PALACE_SKIP] || 
 		Displays[BRIDGE_SKIP])
 	{
@@ -4111,16 +4112,18 @@ void drawYoshiSkipDetails()
 	}
 	
 	// Draw the text
-	char StickAngleString[32];
-	getStickAngleString(StickAngleString);
-	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"YST: %" PRIu32 "\nStickAngle: %s",
-		YoshiSkip.MainTimer,
-		StickAngleString);
+		"YST: %" PRIu32,
+		YoshiSkip.MainTimer);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Draw the Stick Angle if it's not already drawn
+	if (!Displays[STICK_ANGLE])
+	{
+		drawStickAngle();
+	}
 	
 	// Draw Mario's coordinates if they're not already drawn
 	if (!Displays[MARIO_COORDINATES])
@@ -4374,17 +4377,19 @@ void drawBlimpTicketSkipDetails()
 	}
 	
 	// Draw the text
-	char StickAngleString[32];
-	getStickAngleString(StickAngleString);
-	
 	char *tempDisplayBuffer = DisplayBuffer;
 	sprintf(tempDisplayBuffer,
-		"URT: %" PRIu32 "\nSUT: %" PRIu32 "\nStickAngle: %s",
+		"URT: %" PRIu32 "\nSUT: %" PRIu32,
 		BlimpTicketSkip.UpRightTimer,
-		BlimpTicketSkip.StraightUpTimer,
-		StickAngleString);
+		BlimpTicketSkip.StraightUpTimer);
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	
+	// Draw the Stick Angle if it's not already drawn
+	if (!Displays[STICK_ANGLE])
+	{
+		drawStickAngle();
+	}
 	
 	// Draw Mario's coordinates if they're not already drawn
 	if (!Displays[MARIO_COORDINATES])
