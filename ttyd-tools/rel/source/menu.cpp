@@ -3861,7 +3861,7 @@ void enableOrDisableMenu()
 	uint32_t OpenMenuCombo = PAD_L | PAD_START;
 	bool tempMenuIsDisplayed = MenuVar.MenuIsDisplayed;
 	
-	if (checkButtonCombo(OpenMenuCombo) && !MenuVar.PreventClosingMenu && !MenuVar.ChangingCheatButtonCombo)
+	if (checkButtonCombo(OpenMenuCombo) && !MenuVar.ChangingCheatButtonCombo)
 	{
 		resetMenuToRoot();
 		tempMenuIsDisplayed = !tempMenuIsDisplayed;

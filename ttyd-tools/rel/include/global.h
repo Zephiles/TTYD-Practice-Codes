@@ -500,7 +500,6 @@ struct MenuVars
 {
 	bool HideMenu;
 	bool MenuIsDisplayed;
-	bool PreventClosingMenu;
 	bool ChangingCheatButtonCombo;
 	uint8_t CurrentMenu;
 	uint8_t CurrentMenuOption;
