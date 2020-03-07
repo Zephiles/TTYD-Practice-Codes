@@ -1523,7 +1523,7 @@ void displayActionCommandsTiming()
 	// Only display if the timer is not at 0
 	if (DisplayActionCommands.DisplayTimer > 0)
 	{
-		drawFunctionOnDebugLayer(drawActionCommandsTiming);
+		drawFunctionOnDebugLayerWithOrder(drawActionCommandsTiming, 10.f);
 	}
 }
 
