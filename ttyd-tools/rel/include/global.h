@@ -514,6 +514,7 @@ struct MenuVars
 	uint8_t MenuSelectionStates;
 	int32_t MenuSecondaryValue;
 	uint32_t MemoryWatchSecondaryValue;
+	bool DrawChangingMemoryWatchPosition;
 	uint8_t FrameCounter;
 	
 	// Variables used by other stuff

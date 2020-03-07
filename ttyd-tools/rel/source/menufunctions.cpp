@@ -109,10 +109,11 @@ void resetMenu()
 
 void resetMenuToRoot()
 {
-	MenuVar.CurrentMenu 		= ROOT;
-	MenuVar.MenuSelectedOption 	= 0;
-	MenuVar.FunctionReturnCode 	= 0;
-	MenuVar.HideMenu 			= false;
+	MenuVar.CurrentMenu 						= ROOT;
+	MenuVar.MenuSelectedOption 					= 0;
+	MenuVar.FunctionReturnCode 					= 0;
+	MenuVar.HideMenu 							= false;
+	MenuVar.DrawChangingMemoryWatchPosition 	= false;
 	resetMenu();
 	
 	MenuVar.CurrentMenuOption = PrevMenuAndOption.PreviousMenuOption[0];
@@ -1787,6 +1788,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			
 			MenuVar.SelectedOption = 0;
 			MenuVar.HideMenu = false;
+			MenuVar.DrawChangingMemoryWatchPosition = false;
 			
 			MenuVar.FrameCounter = 1;
 			return Button;
@@ -1795,6 +1797,7 @@ uint32_t memoryChangeWatchPositionButtonControls()
 		{
 			MenuVar.SelectedOption = 0;
 			MenuVar.HideMenu = false;
+			MenuVar.DrawChangingMemoryWatchPosition = false;
 			
 			MenuVar.FrameCounter = 1;
 			return Button;

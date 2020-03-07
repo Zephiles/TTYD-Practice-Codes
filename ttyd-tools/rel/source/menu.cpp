@@ -1930,6 +1930,7 @@ void menuCheckButton()
 								case CHANGE_WATCH_POSITION:
 								{
 									MenuVar.HideMenu = true;
+									MenuVar.DrawChangingMemoryWatchPosition = true;
 									MemoryWatchPosition.PosX = MemoryWatch[tempMenuSelectedOption].PosX;
 									MemoryWatchPosition.PosY = MemoryWatch[tempMenuSelectedOption].PosY;
 									MenuVar.SelectedOption = CurrentMenuOptionCheck;
@@ -3589,7 +3590,7 @@ void drawMenu()
 				}
 				case CHANGE_WATCH_POSITION:
 				{
-					drawMemoryChangeWatchPosition();
+					// drawMemoryChangeWatchPosition is called in displayMemoryWatches
 					break;
 				}
 				default:

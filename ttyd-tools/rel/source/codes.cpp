@@ -1091,8 +1091,17 @@ void displayStickAngle()
 
 void displayMemoryWatches()
 {
-	// Make sure at least one watch is going to be displayed
+	// Check if a memory watch is currently being repositioned
 	bool tempHideMenu = MenuVar.HideMenu;
+	bool ChangingMemoryWatchPosition = MenuVar.DrawChangingMemoryWatchPosition;
+	
+	if (tempHideMenu && ChangingMemoryWatchPosition)
+	{
+		// A memory watch is being repositioned
+		drawFunctionOnDebugLayerWithOrder(drawMemoryChangeWatchPosition, 10.f);
+	}
+	
+	// Make sure at least one watch is going to be displayed
 	uint32_t tempMenuSelectionOption = MenuVar.MenuSelectedOption;
 	uint32_t Size = sizeof(MemoryWatch) / sizeof(MemoryWatch[0]);
 	
@@ -1104,7 +1113,9 @@ void displayMemoryWatches()
 		}
 		
 		// Check to see if this watch is currently being repositioned
-		if (tempHideMenu && (tempMenuSelectionOption == i))
+		if (tempHideMenu && 
+			ChangingMemoryWatchPosition && 
+			(tempMenuSelectionOption == i))
 		{
 			// This watch is currently being repositioned, so do not draw it
 		}
