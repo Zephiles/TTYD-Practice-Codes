@@ -741,13 +741,14 @@ struct HeapInfoDisplay
 	{
 		int32_t NumHeaps = gc::OSAlloc::NumHeaps;
 		
+		DisplayHeapInfo = new bool[NumHeaps + 1]; // Add one for the smart heap
+		
 		// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
 		int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
 		
-		DisplayHeapInfo = new bool[NumHeaps + 1]; // Add one for the smart heap
-		MemoryUsageBuffer = new char *[MemoryUsageArrays];
+		char **tempMemoryUsageBuffer = new char *[MemoryUsageArrays];
+		MemoryUsageBuffer = tempMemoryUsageBuffer;
 		
-		char **tempMemoryUsageBuffer = MemoryUsageBuffer;
 		for (int32_t i = 0; i < MemoryUsageArrays; i++)
 		{
 			tempMemoryUsageBuffer[i] = new char[MEMORY_USAGE_LINE_BUFFER_SIZE];

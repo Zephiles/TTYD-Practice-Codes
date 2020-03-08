@@ -5,6 +5,7 @@
 #include "memorywatch.h"
 #include "mod.h"
 #include "assembly.h"
+#include "main.h"
 
 #include <gc/gx.h>
 #include <gc/ppc.h>
@@ -3431,18 +3432,18 @@ void drawDisplaysMemoryUsageMenu()
 	uint32_t Color;
 	
 	// Draw each option for displaying memory usage about each heap
+	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
+	int32_t TotalHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
+	
 	int32_t tempCurrentMenuOption = static_cast<int32_t>(MenuVar.CurrentMenuOption);
 	char *tempDisplayBuffer = DisplayBuffer;
 	const char *String;
-	
-	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-	int32_t TotalHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
 	
 	for (int32_t i = 0; i < TotalHeaps; i++)
 	{
 		// Draw each heap number
 		sprintf(tempDisplayBuffer,
-			"Main Heap %" PRIu32 ":",
+			"Main Heap %" PRIu32,
 			i);
 		
 		bool CurrentOptionCheck = tempCurrentMenuOption == i;
@@ -3458,7 +3459,7 @@ void drawDisplaysMemoryUsageMenu()
 	// Draw the smart heap text
 	bool CurrentOptionCheck = tempCurrentMenuOption == TotalHeaps;
 	Color = getSelectedTextColor(CurrentOptionCheck);
-	drawText("Smart Heap:", PosX, PosY, Alpha, Color, Scale);
+	drawText("Smart Heap", PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the bool for the smart heap
 	getOnOffTextAndColor(DisplayHeapInfo[TotalHeaps], &String, &Color);
@@ -3872,11 +3873,11 @@ void drawSequenceInPauseMenu()
 
 void drawOnScreenTimer()
 {
-	uint32_t TextColor 	= 0xFFFFFFFF;
-	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 115;
-	int32_t PosY 		= -160;
-	float Scale 		= 0.7;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= 115;
+	int32_t PosY 	= -160;
+	float Scale 	= 0.7;
 	
 	#ifdef TTYD_JP
 	PosX 	+= 5;
@@ -3898,7 +3899,7 @@ void drawOnScreenTimer()
 	}
 	
 	char *CurrentTimeString = getTimeString(DisplayBuffer, OnScreenTimer.MainTimer);
-	drawText(CurrentTimeString, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(CurrentTimeString, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawFrameCounter()
@@ -3920,11 +3921,11 @@ void drawFrameCounter()
 		second,
 		frame);
 	
-	uint32_t TextColor 	= 0xFFFFFFFF;
-	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 115;
-	int32_t PosY 		= -160;
-	float Scale 		= 0.7;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= 115;
+	int32_t PosY 	= -160;
+	float Scale 	= 0.7;
 	
 	#ifdef TTYD_JP
 	PosX 	+= 5;
@@ -3955,7 +3956,7 @@ void drawFrameCounter()
 		#endif
 	}
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	if (!FrameCounter.TimerPaused)
 	{
@@ -3965,11 +3966,11 @@ void drawFrameCounter()
 
 void drawMarioCoordinates()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -160;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -160;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -3984,16 +3985,16 @@ void drawMarioCoordinates()
 		"MarPos: %.2f  %.2f  %.2f",
 		player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawMarioSpeedXZ()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -160;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -160;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4017,16 +4018,16 @@ void drawMarioSpeedXZ()
 		"MarSpeedXZ: %.6f",
 		player->wPlayerEffectiveSpeed);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawJumpStorageDetails()
 {
-	uint32_t TextColor 	= 0xFFFFFFFF;
-	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= 140;
-	int32_t PosY 		= 120;
-	float Scale 		= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= 140;
+	int32_t PosY 	= 120;
+	float Scale 	= 0.65;
 	
 	ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -4036,14 +4037,14 @@ void drawJumpStorageDetails()
 		"JS:\nSpdY: %.2f",
 		player->wJumpVelocityY);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the On/Off Text
 	bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
 	const char *TextToDraw;
 	
-	getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &TextColor);
-	drawText(TextToDraw, PosX + 33, PosY, Alpha, TextColor, Scale);
+	getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &Color);
+	drawText(TextToDraw, PosX + 33, PosY, Alpha, Color, Scale);
 }
 
 void drawButtonInputs()
@@ -4089,11 +4090,11 @@ void drawButtonInputs()
 
 void drawStickAngle()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -160;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -160;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4124,7 +4125,7 @@ void drawStickAngle()
 		"StickAngle: %s",
 		StickAngleString);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawMemoryWatchesOnOverworld()
@@ -4160,11 +4161,11 @@ void drawMemoryWatchesOnOverworld()
 
 void drawYoshiSkipDetails()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -120;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -120;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4184,7 +4185,7 @@ void drawYoshiSkipDetails()
 		"YST: %" PRIu32,
 		YoshiSkip.MainTimer);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the Stick Angle if it's not already drawn
 	if (!Displays[STICK_ANGLE])
@@ -4297,11 +4298,11 @@ void drawPalaceSkipDetails()
 		ItemTimer = 0;
 	}
 	
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -80;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -80;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4330,7 +4331,7 @@ void drawPalaceSkipDetails()
 		PhantomEmberPosY,
 		PartnerPosY);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw Mario's coordinates if they're not already drawn
 	if (!Displays[MARIO_COORDINATES])
@@ -4347,11 +4348,11 @@ void drawPalaceSkipDetails()
 
 void drawBridgeSkipDetails()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -120;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -120;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4408,7 +4409,7 @@ void drawBridgeSkipDetails()
 		EarlyOrLate,
 		reinterpret_cast<uint32_t>(player->wObjHazardRespawn));
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw Mario's coordinates if they're not already drawn
 	if (!Displays[MARIO_COORDINATES])
@@ -4425,11 +4426,11 @@ void drawBridgeSkipDetails()
 
 void drawBlimpTicketSkipDetails()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= -100;
-	float Scale 			= 0.65;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= -100;
+	float Scale 	= 0.65;
 	
 	// Move the text up if the input display is active
 	if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4450,7 +4451,7 @@ void drawBlimpTicketSkipDetails()
 		BlimpTicketSkip.UpRightTimer,
 		BlimpTicketSkip.StraightUpTimer);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the Stick Angle if it's not already drawn
 	if (!Displays[STICK_ANGLE])
@@ -4720,27 +4721,27 @@ void drawSettingsCurrentWork()
 
 void drawHeapArrayErrors()
 {
-	uint32_t TextColor 	= 0xFFFFFFFF;
-	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= -232;
-	int32_t PosY 		= 100;
-	float Scale 		= 0.6;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 100;
+	float Scale 	= 0.6;
 	
 	// Draw the text
 	char *tempHeapCorruptionBuffer = HeapInfo.HeapCorruptionBuffer;
-	drawText(tempHeapCorruptionBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempHeapCorruptionBuffer, PosX, PosY, Alpha, Color, Scale);
 	
 	// Clear the heap corruption buffer
-	clearMemory(tempHeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
+	clearHeapCorruptionBuffer();
 }
 
 void drawMemoryUsage()
 {
-	uint32_t TextColor 	= 0xFFFFFFFF;
-	uint8_t Alpha 		= 0xFF;
-	int32_t PosX 		= -232;
-	int32_t PosY 		= 40;
-	float Scale 		= 0.6;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 40;
+	float Scale 	= 0.6;
 	
 	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
 	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
@@ -4757,13 +4758,13 @@ void drawMemoryUsage()
 			// Draw the used and free text
 			if (tempMemoryUsageBuffer[MemoryUsageCounter][0] != '\0')
 			{
-				drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, TextColor, Scale);
+				drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, Color, Scale);
 				PosY -= 20;
 			}
 			
 			if (tempMemoryUsageBuffer[MemoryUsageCounter + 1][0] != '\0')
 			{
-				drawText(tempMemoryUsageBuffer[MemoryUsageCounter + 1], PosX, PosY, Alpha, TextColor, Scale);
+				drawText(tempMemoryUsageBuffer[MemoryUsageCounter + 1], PosX, PosY, Alpha, Color, Scale);
 				PosY -= 20;
 			}
 		}
@@ -4771,35 +4772,26 @@ void drawMemoryUsage()
 	}
 	
 	// Draw the text for the smart heap
-	// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
-	int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
-	
 	if (DisplayHeapInfo[NumHeaps])
 	{
-		// Subtract 1 for the index
-		int32_t SmartHeapBufferIndex = MemoryUsageArrays - 1;
-		
 		// Draw the used text
-		if (tempMemoryUsageBuffer[SmartHeapBufferIndex][0] != '\0')
+		if (tempMemoryUsageBuffer[MemoryUsageCounter][0] != '\0')
 		{
-			drawText(tempMemoryUsageBuffer[SmartHeapBufferIndex], PosX, PosY, Alpha, TextColor, Scale);
+			drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, Color, Scale);
 		}
 	}
 	
 	// Clear each of the memory usage buffers
-	for (int32_t i = 0; i < MemoryUsageArrays; i++)
-	{
-		clearMemory(tempMemoryUsageBuffer[i], MEMORY_USAGE_LINE_BUFFER_SIZE);
-	}
+	clearMemoryUsageBuffers();
 }
 
 void drawNpcNameToPtrError()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= 120;
-	float Scale 			= 0.6;
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 120;
+	float Scale 	= 0.6;
 	
 	// Draw the text
 	char *tempDisplayBuffer = DisplayBuffer;
@@ -4807,7 +4799,7 @@ void drawNpcNameToPtrError()
 		"npcNameToPtr error occured x%" PRIu32,
 		NpcNameToPtrError.Counter);
 	
-	drawText(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
 void drawTitleScreenInfo()

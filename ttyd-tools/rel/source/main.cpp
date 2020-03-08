@@ -462,6 +462,25 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 	}
 }
 
+void clearHeapCorruptionBuffer()
+{
+	clearMemory(HeapInfo.HeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
+}
+
+void clearMemoryUsageBuffers()
+{
+	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
+	
+	// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
+	int32_t MemoryUsageArrays = ((TotalHeaps + 1) * 2) - 1;
+	
+	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
+	for (int32_t i = 0; i < MemoryUsageArrays; i++)
+	{
+		clearMemory(tempMemoryUsageBuffer[i], MEMORY_USAGE_LINE_BUFFER_SIZE);
+	}
+}
+
 void addTextToHeapCorruptionBuffer(char *text)
 {
 	char *tempHeapCorruptionBuffer = HeapInfo.HeapCorruptionBuffer;
@@ -545,128 +564,31 @@ void *checkIndividualSmartHeap(ttyd::memory::SmartAllocationData *start)
 	return nullptr;
 }
 
-void checkHeaps()
+void handleStandardHeapChunkResults(void *addressWithError, 
+	gc::OSAlloc::ChunkInfo *chunk, const gc::OSAlloc::HeapInfo *heap, 
+	int32_t heapIndex, uint32_t memoryUsageBufferIndex, bool isUsedPortion)
 {
-	// Clear the heap buffers to be safe
-	// Clear the heap corruption buffer
-	clearMemory(HeapInfo.HeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
+	// Get the used or free text
+	const char *String;
 	
-	// Clear each of the memory usage buffers
-	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
-	
-	// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
-	int32_t MemoryUsageArrays = ((TotalHeaps + 1) * 2) - 1;
-	
-	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
-	for (int32_t i = 0; i < MemoryUsageArrays; i++)
+	if (isUsedPortion)
 	{
-		clearMemory(tempMemoryUsageBuffer[i], MEMORY_USAGE_LINE_BUFFER_SIZE);
+		String = "used";
+	}
+	else
+	{
+		String = "free";
 	}
 	
 	char *tempDisplayBuffer = DisplayBuffer;
-	uint32_t currentChunk = 0;
-	uint32_t MemoryUsageCounter = 0;
-	
-	// Check the standard heaps
-	gc::OSAlloc::HeapInfo *HeapArray = gc::OSAlloc::HeapArray;
-	
-	for (int32_t i = 0; i < TotalHeaps; i++)
+	if (addressWithError)
 	{
-		// Check the used entries
-		const gc::OSAlloc::HeapInfo &heap = HeapArray[i];
-		gc::OSAlloc::ChunkInfo *tempChunk = heap.firstUsed;
-		
-		currentChunk = reinterpret_cast<uint32_t>(checkIndividualStandardHeap(tempChunk));
-		if (currentChunk)
-		{
-			// Error occured, so add error text to the corruption buffer
-			sprintf(tempDisplayBuffer,
-				"Main Heap %" PRId32 " (used) corrupt at 0x%08" PRIX32 "\n",
-				i,
-				currentChunk);
-			
-			// Add the text to the heap corruption buffer
-			addTextToHeapCorruptionBuffer(tempDisplayBuffer);
-		}
-		else
-		{
-			// Add info about the memory usage to the memory usage buffer
-			int32_t Usage = 0;
-			int32_t Chunks = 0;
-			
-			for (gc::OSAlloc::ChunkInfo *chunk = tempChunk; chunk; chunk = chunk->next)
-			{
-				Usage += chunk->size;
-				Chunks++;
-			}
-			
-			sprintf(tempDisplayBuffer,
-				"Main Heap %" PRId32 " (used): %.2f/%.2fkb, %" PRId32 " cks",
-				i,
-				static_cast<float>(Usage) / 1024.f,
-				static_cast<float>(heap.capacity) / 1024.f,
-				Chunks);
-			
-			// Add the text to the memory usage buffer
-			strncpy(tempMemoryUsageBuffer[MemoryUsageCounter], 
-				tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
-		}
-		
-		// Check the free entries
-		MemoryUsageCounter++;
-		tempChunk = heap.firstFree;
-		
-		currentChunk = reinterpret_cast<uint32_t>(checkIndividualStandardHeap(tempChunk));
-		if (currentChunk)
-		{
-			// Error occured, so add error text to the corruption buffer
-			sprintf(tempDisplayBuffer,
-				"Main Heap %" PRId32 " (free) corrupt at 0x%08" PRIX32 "\n",
-				i,
-				currentChunk);
-			
-			// Add the text to the heap corruption buffer
-			addTextToHeapCorruptionBuffer(tempDisplayBuffer);
-		}
-		else
-		{
-			// Add info about the memory usage to the memory usage buffer
-			int32_t Usage = 0;
-			int32_t Chunks = 0;
-			
-			for (gc::OSAlloc::ChunkInfo *chunk = tempChunk; chunk; chunk = chunk->next)
-			{
-				Usage += chunk->size;
-				Chunks++;
-			}
-			
-			sprintf(tempDisplayBuffer,
-				"Main Heap %" PRId32 " (free): %.2f/%.2fkb, %" PRId32 " cks",
-				i,
-				static_cast<float>(Usage) / 1024.f,
-				static_cast<float>(heap.capacity) / 1024.f,
-				Chunks);
-			
-			// Add the text to the memory usage buffer
-			strncpy(tempMemoryUsageBuffer[MemoryUsageCounter], 
-				tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
-		}
-		
-		MemoryUsageCounter++;
-	}
-	
-	// Check the smart heap
-	ttyd::memory::SmartWork *SmartWorkPtr = ttyd::memory::smartWorkPointer;
-	
-	// Check the used entries
-	ttyd::memory::SmartAllocationData *tempChunk = SmartWorkPtr->pFirstUsed;
-	
-	currentChunk = reinterpret_cast<uint32_t>(checkIndividualSmartHeap(tempChunk));
-	if (currentChunk)
-	{
+		// Error occured, so add error text to the corruption buffer
 		sprintf(tempDisplayBuffer,
-			"Smart Heap (used) corrupt at 0x%08" PRIX32 "\n",
-			currentChunk);
+			"Main Heap %" PRId32 " (%s) corrupt at 0x%08" PRIX32 "\n",
+			heapIndex,
+			String,
+			reinterpret_cast<uint32_t>(addressWithError));
 		
 		// Add the text to the heap corruption buffer
 		addTextToHeapCorruptionBuffer(tempDisplayBuffer);
@@ -677,9 +599,64 @@ void checkHeaps()
 		int32_t Usage = 0;
 		int32_t Chunks = 0;
 		
-		for (ttyd::memory::SmartAllocationData *chunk = tempChunk; chunk; chunk = chunk->pNext)
+		for (gc::OSAlloc::ChunkInfo *tempChunk = chunk; 
+			tempChunk; tempChunk = tempChunk->next)
 		{
-			Usage += chunk->usedSize;
+			Usage += tempChunk->size;
+			Chunks++;
+		}
+		
+		sprintf(tempDisplayBuffer,
+			"Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks",
+			heapIndex,
+			String,
+			static_cast<float>(Usage) / 1024.f,
+			static_cast<float>(heap->capacity) / 1024.f,
+			Chunks);
+		
+		// Add the text to the memory usage buffer
+		strncpy(HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex], 
+			tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
+	}
+}
+
+void handleSmartHeapChunkResults(void *addressWithError, 
+	ttyd::memory::SmartAllocationData *chunk, 
+	int32_t memoryUsageBufferIndex, bool isUsedPortion)
+{
+	char *tempDisplayBuffer = DisplayBuffer;
+	if (addressWithError)
+	{
+		// Get the used or free text
+		const char *String;
+		
+		if (isUsedPortion)
+		{
+			String = "used";
+		}
+		else
+		{
+			String = "free";
+		}
+		
+		sprintf(tempDisplayBuffer,
+			"Smart Heap (%s) corrupt at 0x%08" PRIX32 "\n",
+			String,
+			reinterpret_cast<uint32_t>(addressWithError));
+		
+		// Add the text to the heap corruption buffer
+		addTextToHeapCorruptionBuffer(tempDisplayBuffer);
+	}
+	else if (isUsedPortion) // Don't draw the free portion
+	{
+		// Add info about the memory usage to the memory usage buffer
+		int32_t Usage = 0;
+		int32_t Chunks = 0;
+		
+		for (ttyd::memory::SmartAllocationData *tempChunk = chunk; 
+			tempChunk; tempChunk = tempChunk->pNext)
+		{
+			Usage += tempChunk->usedSize;
 			Chunks++;
 		}
 		
@@ -699,23 +676,55 @@ void checkHeaps()
 			Chunks);
 		
 		// Add the text to the memory usage buffer
-		strncpy(tempMemoryUsageBuffer[MemoryUsageCounter], 
+		strncpy(HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex], 
 			tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
 	}
+}
+
+void checkHeaps()
+{
+	// Clear the heap buffers to be safe
+	clearHeapCorruptionBuffer();
+	clearMemoryUsageBuffers();
+	
+	void *AddressWithError;
+	uint32_t MemoryUsageCounter = 0;
+	
+	// Check the standard heaps
+	gc::OSAlloc::HeapInfo *HeapArray = gc::OSAlloc::HeapArray;
+	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
+	
+	for (int32_t i = 0; i < TotalHeaps; i++)
+	{
+		const gc::OSAlloc::HeapInfo *heap = &HeapArray[i];
+		
+		// Check the used entries
+		gc::OSAlloc::ChunkInfo *tempChunk = heap->firstUsed;
+		AddressWithError = checkIndividualStandardHeap(tempChunk);
+		
+		handleStandardHeapChunkResults(AddressWithError, 
+			tempChunk, heap, i, MemoryUsageCounter++, true);
+		
+		// Check the free entries
+		tempChunk = heap->firstFree;
+		AddressWithError = checkIndividualStandardHeap(tempChunk);
+		
+		handleStandardHeapChunkResults(AddressWithError, 
+			tempChunk, heap, i, MemoryUsageCounter++, false);
+	}
+	
+	// Check the smart heap
+	ttyd::memory::SmartWork *SmartWorkPtr = ttyd::memory::smartWorkPointer;
+	
+	// Check the used entries
+	ttyd::memory::SmartAllocationData *tempChunk = SmartWorkPtr->pFirstUsed;
+	AddressWithError = checkIndividualSmartHeap(tempChunk);
+	handleSmartHeapChunkResults(AddressWithError, tempChunk, MemoryUsageCounter++, true);
 	
 	// Check the free entries
 	tempChunk = SmartWorkPtr->pFirstFree;
-	
-	currentChunk = reinterpret_cast<uint32_t>(checkIndividualSmartHeap(tempChunk));
-	if (currentChunk)
-	{
-		sprintf(tempDisplayBuffer,
-			"Smart Heap (free) corrupt at 0x%08" PRIX32 "\n",
-			currentChunk);
-		
-		// Add the text to the heap corruption buffer
-		addTextToHeapCorruptionBuffer(tempDisplayBuffer);
-	}
+	AddressWithError = checkIndividualSmartHeap(tempChunk);
+	handleSmartHeapChunkResults(AddressWithError, tempChunk, MemoryUsageCounter, false);
 	
 	// Draw any errors that occured
 	if (HeapInfo.HeapCorruptionBuffer[0] != '\0')
