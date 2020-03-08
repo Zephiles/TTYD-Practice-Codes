@@ -1518,6 +1518,7 @@ const char *DisplaysLines[] =
 	"D-Pad Options",
 	"Guard/Superguard Timings",
 	"Art Attack Hitboxes",
+	"Memory Usage",
 	"Effs Active",
 	"Yoshi Skip",
 	"Palace Skip",
@@ -1851,16 +1852,17 @@ uint8_t DisplaysOrder[] =
 	ONSCREEN_TIMER_FRAME_COUNTER,
 	BRIDGE_SKIP,
 	EFFS_ACTIVE,
+	MEMORY_USAGE,
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[31];
+struct Menus Menu[32];
 struct Cheats Cheat[25];
-bool Displays[15];
+bool Displays[16];
 char DisplayBuffer[256];
-char HeapBuffer[512];
 struct MemoryWatchStruct MemoryWatch[60];
 
+struct HeapInfoDisplay HeapInfo;
 struct AutoIncrement AdjustableValueMenu;
 struct AutoIncrement MemoryWatchAdjustableValueMenu;
 struct AutoIncrementCoordinates MemoryWatchPosition;

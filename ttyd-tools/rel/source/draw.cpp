@@ -3422,6 +3422,49 @@ void drawCheatsClearArea()
 		String, tempCheatsClearAreaFlagsAreas);
 }
 
+void drawDisplaysMemoryUsageMenu()
+{
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 180;
+	float Scale = 0.6;
+	uint32_t Color;
+	
+	// Draw each option for displaying memory usage about each heap
+	int32_t tempCurrentMenuOption = static_cast<int32_t>(MenuVar.CurrentMenuOption);
+	char *tempDisplayBuffer = DisplayBuffer;
+	const char *String;
+	
+	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
+	int32_t TotalHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
+	
+	for (int32_t i = 0; i < TotalHeaps; i++)
+	{
+		// Draw each heap number
+		sprintf(tempDisplayBuffer,
+			"Main Heap %" PRIu32 ":",
+			i);
+		
+		bool CurrentOptionCheck = tempCurrentMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		
+		// Draw the bool for each heap
+		getOnOffTextAndColor(DisplayHeapInfo[i], &String, &Color);
+		drawText(String, PosX + 120, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
+	// Draw the smart heap text
+	bool CurrentOptionCheck = tempCurrentMenuOption == TotalHeaps;
+	Color = getSelectedTextColor(CurrentOptionCheck);
+	drawText("Smart Heap:", PosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the bool for the smart heap
+	getOnOffTextAndColor(DisplayHeapInfo[TotalHeaps], &String, &Color);
+	drawText(String, PosX + 120, PosY, Alpha, Color, Scale);
+}
+
 void drawWarpsOptions()
 {
 	// Draw the main text
@@ -4677,18 +4720,77 @@ void drawSettingsCurrentWork()
 
 void drawHeapArrayErrors()
 {
-	uint32_t TextColor 		= 0xFFFFFFFF;
-	uint8_t Alpha 			= 0xFF;
-	int32_t PosX 			= -232;
-	int32_t PosY 			= 100;
-	float Scale 			= 0.6;
+	uint32_t TextColor 	= 0xFFFFFFFF;
+	uint8_t Alpha 		= 0xFF;
+	int32_t PosX 		= -232;
+	int32_t PosY 		= 100;
+	float Scale 		= 0.6;
 	
 	// Draw the text
-	char *tempHeapBuffer = HeapBuffer;
-	drawText(tempHeapBuffer, PosX, PosY, Alpha, TextColor, Scale);
+	char *tempHeapCorruptionBuffer = HeapInfo.HeapCorruptionBuffer;
+	drawText(tempHeapCorruptionBuffer, PosX, PosY, Alpha, TextColor, Scale);
 	
-	// Clear the heap buffer
-	clearMemory(tempHeapBuffer, sizeof(HeapBuffer));
+	// Clear the heap corruption buffer
+	clearMemory(tempHeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
+}
+
+void drawMemoryUsage()
+{
+	uint32_t TextColor 	= 0xFFFFFFFF;
+	uint8_t Alpha 		= 0xFF;
+	int32_t PosX 		= -232;
+	int32_t PosY 		= 40;
+	float Scale 		= 0.6;
+	
+	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
+	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
+	
+	int32_t NumHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
+	uint32_t MemoryUsageCounter = 0;
+	
+	// Draw the text for the main heaps
+	for (int32_t i = 0; i < NumHeaps; i++)
+	{
+		// Only draw if the current option is enabled
+		if (DisplayHeapInfo[i])
+		{
+			// Draw the used and free text
+			if (tempMemoryUsageBuffer[MemoryUsageCounter][0] != '\0')
+			{
+				drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, TextColor, Scale);
+				PosY -= 20;
+			}
+			
+			if (tempMemoryUsageBuffer[MemoryUsageCounter + 1][0] != '\0')
+			{
+				drawText(tempMemoryUsageBuffer[MemoryUsageCounter + 1], PosX, PosY, Alpha, TextColor, Scale);
+				PosY -= 20;
+			}
+		}
+		MemoryUsageCounter += 2;
+	}
+	
+	// Draw the text for the smart heap
+	// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
+	int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
+	
+	if (DisplayHeapInfo[NumHeaps])
+	{
+		// Subtract 1 for the index
+		int32_t SmartHeapBufferIndex = MemoryUsageArrays - 1;
+		
+		// Draw the used text
+		if (tempMemoryUsageBuffer[SmartHeapBufferIndex][0] != '\0')
+		{
+			drawText(tempMemoryUsageBuffer[SmartHeapBufferIndex], PosX, PosY, Alpha, TextColor, Scale);
+		}
+	}
+	
+	// Clear each of the memory usage buffers
+	for (int32_t i = 0; i < MemoryUsageArrays; i++)
+	{
+		clearMemory(tempMemoryUsageBuffer[i], MEMORY_USAGE_LINE_BUFFER_SIZE);
+	}
 }
 
 void drawNpcNameToPtrError()

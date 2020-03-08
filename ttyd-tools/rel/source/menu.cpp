@@ -2476,6 +2476,11 @@ void menuCheckButton()
 							MenuToEnter = DISPLAYS_ONSCREEN_TIMER;
 							break;
 						}
+						case MEMORY_USAGE:
+						{
+							MenuToEnter = DISPLAYS_MEMORY_USAGE;
+							break;
+						}
 						default:
 						{
 							MenuToEnter = DISPLAYS_NO_BUTTON_COMBO;
@@ -2581,6 +2586,44 @@ void menuCheckButton()
 						MenuVar.MenuSelectedOption = 0;
 						enterPreviousMenu();
 					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case DISPLAYS_MEMORY_USAGE:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustDisplaysMemoryUsageSelection(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					// Make sure the selected option is valid
+					if (tempCurrentMenuOption >= static_cast<uint32_t>(getTotalHeaps()))
+					{
+						break;
+					}
+					
+					// Flip the bool for the current heap info
+					bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
+					bool HeapInfoDisplayed = DisplayHeapInfo[tempCurrentMenuOption];
+					DisplayHeapInfo[tempCurrentMenuOption] = !HeapInfoDisplayed;
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
+					MenuVar.MenuSelectedOption = 0;
+					enterPreviousMenu();
 					break;
 				}
 				default:
@@ -3749,6 +3792,12 @@ void drawMenu()
 			{
 				drawChangeButtonCombo(&ButtonComboSource[tempSelectedOption - OnScreenTimerOptionsSize]);
 			}
+			break;
+		}
+		case DISPLAYS_MEMORY_USAGE:
+		{
+			// Draw the text for the options
+			drawDisplaysMemoryUsageMenu();
 			break;
 		}
 		case DISPLAYS_NO_BUTTON_COMBO:

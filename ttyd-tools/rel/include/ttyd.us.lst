@@ -347,6 +347,8 @@
 80030218:memInit
 // data
 804151E0:smartWorkPointer
+8041E81C:heapEnd
+8041E830:heapStart
 
 // evtmgr.o
 80035A28:evtGetPtrID

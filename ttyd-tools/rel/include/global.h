@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gc/OSAlloc.h>
 #include <ttyd/item_data.h>
 
 #include <cstdint>
@@ -35,6 +36,7 @@ enum MENU_NAMES
 	BATTLES_CURRENT_ACTOR,
 	BATTLES_STATUSES,
 	DISPLAYS_ONSCREEN_TIMER,
+	DISPLAYS_MEMORY_USAGE,
 	DISPLAYS_NO_BUTTON_COMBO,
 	WARPS_EVENT,
 	WARPS_INDEX,
@@ -346,6 +348,7 @@ enum DISPLAYS_OPTIONS
 	DPAD_OPTIONS_DISPLAY,
 	GUARD_SUPERGUARD_TIMINGS,
 	ART_ATTACK_HITBOXES,
+	MEMORY_USAGE,
 	EFFS_ACTIVE,
 	YOSHI_SKIP,
 	PALACE_SKIP,
@@ -727,6 +730,58 @@ struct OnScreenTimerDisplayFrameCounter
 	}
 };
 
+struct HeapInfoDisplay
+{
+	#define MEMORY_USAGE_LINE_BUFFER_SIZE 64
+	bool *DisplayHeapInfo;
+	char **MemoryUsageBuffer;
+	char HeapCorruptionBuffer[512];
+	
+	HeapInfoDisplay()
+	{
+		int32_t NumHeaps = gc::OSAlloc::NumHeaps;
+		
+		// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
+		int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
+		
+		DisplayHeapInfo = new bool[NumHeaps + 1]; // Add one for the smart heap
+		MemoryUsageBuffer = new char *[MemoryUsageArrays];
+		
+		char **tempMemoryUsageBuffer = MemoryUsageBuffer;
+		for (int32_t i = 0; i < MemoryUsageArrays; i++)
+		{
+			tempMemoryUsageBuffer[i] = new char[MEMORY_USAGE_LINE_BUFFER_SIZE];
+		}
+	}
+	
+	~HeapInfoDisplay()
+	{
+		if (DisplayHeapInfo)
+		{
+			delete[] (DisplayHeapInfo);
+		}
+		
+		if (MemoryUsageBuffer)
+		{
+			int32_t NumHeaps = gc::OSAlloc::NumHeaps;
+			
+			// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
+			int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
+			
+			char **tempMemoryUsageBuffer = MemoryUsageBuffer;
+			for (int32_t i = 0; i < MemoryUsageArrays; i++)
+			{
+				if (tempMemoryUsageBuffer[i])
+				{
+					delete[] (tempMemoryUsageBuffer[i]);
+				}
+			}
+			
+			delete[] (MemoryUsageBuffer);
+		}
+	}
+};
+
 struct DisplayActionCommandsTiming
 {
 	uint16_t DisplayTimer;
@@ -863,11 +918,10 @@ struct NpcNameToPtrErrorStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[31];
+extern Menus Menu[32];
 extern Cheats Cheat[25];
-extern bool Displays[15];
+extern bool Displays[16];
 extern char DisplayBuffer[256];
-extern char HeapBuffer[512];
 extern MemoryWatchStruct MemoryWatch[60];
 
 extern AutoIncrement AdjustableValueMenu;
@@ -889,6 +943,7 @@ extern BridgeSkipStruct BridgeSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;
 extern OnScreenTimerDisplayFrameCounter FrameCounter;
+extern HeapInfoDisplay HeapInfo;
 extern DisplayActionCommandsTiming DisplayActionCommands;
 extern MemoryCardStruct MenuSettings;
 extern WarpByEventStruct WarpByEvent;

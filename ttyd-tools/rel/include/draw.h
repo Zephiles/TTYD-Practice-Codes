@@ -100,6 +100,7 @@ void drawCheatsResolveFades();
 void drawCheatsLockFlags();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
+void drawDisplaysMemoryUsageMenu();
 void drawWarpsOptions();
 void drawEventDetails(int32_t posX, int32_t posY, int32_t index);
 void drawWarpByEventMenuDetails();
@@ -127,6 +128,7 @@ void drawEffsActive();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();
+void drawMemoryUsage();
 void drawNpcNameToPtrError();
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();
