@@ -802,13 +802,13 @@ struct MemoryCardStruct
 	{
 		SettingsFileName = "rel_settings";
 		
-		#ifdef TTYD_US
+#ifdef TTYD_US
 		SettingsDescription = "Practice Codes Settings (US)";
-		#elif defined TTYD_JP
+#elif defined TTYD_JP
 		SettingsDescription = "Practice Codes Settings (JP)";
-		#elif defined TTYD_EU
+#elif defined TTYD_EU
 		SettingsDescription = "Practice Codes Settings (EU)";
-		#endif
+#endif
 		
 		RelFileName = "rel";
 	}
@@ -864,11 +864,11 @@ struct WarpByEventInventoryStruct
 
 struct WarpByEventDetailsStruct
 {
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	char Stage[8];
-	#else
+#else
 	const char *Stage;
-	#endif
+#endif
 	
 	const char *Event;
 	const char *Partner;
@@ -995,12 +995,14 @@ extern uint8_t OnScreenTimerOptionsSize;
 extern uint8_t WarpDestinationsSize;
 
 #ifdef TTYD_JP
+extern const char *ButtonInputDisplay[];
 extern const char *CheatsEventNames[];
 extern const char *WarpsEventNames[];
-extern const char *ButtonInputDisplay[];
 extern const char *PointerText;
 extern uint16_t WarpsEventNamesSize;
-#else
+#endif
+
+#ifndef TTYD_JP
 extern const char ButtonInputDisplay[];
 #endif
 

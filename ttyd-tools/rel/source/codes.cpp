@@ -110,13 +110,13 @@ void *fallThroughMostObjects(void *ptr)
 
 void Mod::performBattleChecks()
 {
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	const uint32_t DebugBadgeAddressOffset = 0x307;
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	const uint32_t DebugBadgeAddressOffset = 0x303;
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	const uint32_t DebugBadgeAddressOffset = 0x30B;
-	#endif
+#endif
 	
 	// Make sure Mario is in the battle before making any changes
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
@@ -318,13 +318,13 @@ void saveAnywhere()
 			return;
 		}
 		
-		#ifdef TTYD_US
+#ifdef TTYD_US
 		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803BAC3C);
-		#elif defined TTYD_JP
+#elif defined TTYD_JP
 		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803B68BC);
-		#elif defined TTYD_EU
+#elif defined TTYD_EU
 		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803C6C4C);
-		#endif
+#endif
 		
 		// Take away control from the player and start the Save script
 		ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(SaveScriptEvtCode, 0, 0, 0);
@@ -1354,9 +1354,9 @@ void displayBlimpTicketSkipDetails()
 	double StickAngle = getStickAngle(nullptr);
 	double UpRightAngleStart = 25;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	UpRightAngleStart += 2;
-	#endif
+#endif
 	
 	if (StickAngle >= UpRightAngleStart)
 	{
@@ -1421,13 +1421,13 @@ int32_t Mod::displayActionCommandsTimingHook(void *battleUnitPtr, ttyd::battle_u
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
 	if (MarioBattlePointer)
 	{
-		#ifdef TTYD_US
+#ifdef TTYD_US
 		const uint32_t DebugBadgeAddressOffset = 0x307;
-		#elif defined TTYD_JP
+#elif defined TTYD_JP
 		const uint32_t DebugBadgeAddressOffset = 0x303;
-		#elif defined TTYD_EU
+#elif defined TTYD_EU
 		const uint32_t DebugBadgeAddressOffset = 0x30B;
-		#endif
+#endif
 		
 		uint8_t DebugBadgeCheck = *reinterpret_cast<uint8_t *>(MarioBattlePointer + DebugBadgeAddressOffset);
 		if (DebugBadgeCheck > 0)

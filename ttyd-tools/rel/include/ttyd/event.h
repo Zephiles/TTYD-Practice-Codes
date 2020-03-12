@@ -15,9 +15,9 @@ struct EventStageEventDescription
 	uint16_t pad_6;
 	char *textId;
 	char *nameJp;
-	#ifndef TTYD_JP
+#ifndef TTYD_JP
 	char *nameEn;
-	#endif
+#endif
 	char *map;
 	char *bero;
 	void (*pfnInit)();
@@ -26,9 +26,9 @@ struct EventStageEventDescription
 struct EventStageDescription
 {
 	char *nameJp;
-	#ifndef TTYD_JP
+#ifndef TTYD_JP
 	char *nameEn;
-	#endif
+#endif
 	EventStageEventDescription *pEvents;
 	int32_t eventCount;
 } __attribute__((__packed__));

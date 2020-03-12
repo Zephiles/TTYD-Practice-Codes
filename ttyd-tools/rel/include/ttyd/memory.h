@@ -36,9 +36,9 @@ struct HeapEnd
 	void *pHeap2End;
 	void *pHeap3End;
 	void *pHeap4End;
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	void *pHeap5End;
-	#endif
+#endif
 } __attribute__((__packed__));
 
 struct HeapStart
@@ -48,9 +48,9 @@ struct HeapStart
 	void *pHeap2Start;
 	void *pHeap3Start;
 	void *pHeap4Start;
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	void *pHeap5Start;
-	#endif
+#endif
 } __attribute__((__packed__));
 
 enum SmartAllocationGroup

@@ -2224,16 +2224,16 @@ void menuCheckButton()
 											break;
 										}
 										
-										#ifdef TTYD_US
+#ifdef TTYD_US
 										uint32_t HeldItemOffset = 0x308;
 										uint32_t BadgeFlagOffsetStart = 0x2E0;
-										#elif defined TTYD_JP
+#elif defined TTYD_JP
 										uint32_t HeldItemOffset = 0x304;
 										uint32_t BadgeFlagOffsetStart = 0x2DC;
-										#elif defined TTYD_EU
+#elif defined TTYD_EU
 										uint32_t HeldItemOffset = 0x30C;
 										uint32_t BadgeFlagOffsetStart = 0x2E4;
-										#endif
+#endif
 										
 										// Clear the held item
 										*reinterpret_cast<int32_t *>(ActorAddress + HeldItemOffset) = 0;
@@ -2299,13 +2299,13 @@ void menuCheckButton()
 											}
 											case CHANGE_HELD_ITEM:
 											{
-												#ifdef TTYD_US
+#ifdef TTYD_US
 												uint32_t offset = 0x308;
-												#elif defined TTYD_JP
+#elif defined TTYD_JP
 												uint32_t offset = 0x304;
-												#elif defined TTYD_EU
+#elif defined TTYD_EU
 												uint32_t offset = 0x30C;
-												#endif
+#endif
 												
 												MenuVar.MenuSecondaryValue = *reinterpret_cast<int32_t *>(
 													ActorAddress + offset);

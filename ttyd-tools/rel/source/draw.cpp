@@ -130,7 +130,7 @@ int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
 
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 {
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	const int16_t DiamondStarIconValue 		= 407;
 	const int16_t EmeraldStarIconValue 		= 408;
 	const int16_t GarnetStarIconValue 		= 409;
@@ -138,7 +138,7 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 	const int16_t CrystalStarIconValue 		= 411;
 	const int16_t RubyStarIconValue 		= 412;
 	const int16_t SapphireStarIconValue 	= 413;
-	#else
+#else
 	const int16_t DiamondStarIconValue 		= 415;
 	const int16_t EmeraldStarIconValue 		= 416;
 	const int16_t GarnetStarIconValue 		= 417;
@@ -146,7 +146,7 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 	const int16_t CrystalStarIconValue 		= 419;
 	const int16_t RubyStarIconValue 		= 420;
 	const int16_t SapphireStarIconValue 	= 421;
-	#endif
+#endif
 	
 	ttyd::item_data::ItemData *ItemDb = ttyd::item_data::itemDataTable;
 	int16_t iconNum;
@@ -517,13 +517,13 @@ void drawInventoryIconAndTextColumns()
 	IconPosition[2] 				= 0;
 	IconPosition[IconPositionX] 	= 217;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	const int16_t ButtonL = 126;
 	const int16_t ButtonR = 128;
-	#else
+#else
 	const int16_t ButtonL = 134;
 	const int16_t ButtonR = 136;
-	#endif
+#endif
 	
 	uint32_t IncrementAmount;
 	uint32_t MultiplyAmount;
@@ -742,9 +742,9 @@ void drawMarioSpecialMovesOptions()
 	PosX += 30;
 	PosY -= 25;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 1;
-	#endif
+#endif
 	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
@@ -832,18 +832,18 @@ void drawFollowersOptions()
 	PosX += 30;
 	PosY -= 25;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 1;
-	#endif
+#endif
 	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
 	PosX += 45;
 	PosY -= 54;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 4;
-	#endif
+#endif
 	
 	// Draw the main text
 	uint32_t tempStatsFollowerOptionsLinesSize = StatsFollowerOptionsLinesSize;
@@ -1212,9 +1212,9 @@ void drawPartnerChangeYoshiColorOptions()
 	PosX += 30;
 	PosY -= 25;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 1;
-	#endif
+#endif
 	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
@@ -1223,9 +1223,9 @@ void drawPartnerChangeYoshiColorOptions()
 	PosX += 47;
 	PosY -= 54;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 2;
-	#endif
+#endif
 	
 	uint32_t Size = StatsYoshiColorOptionsLinesSize;
 	for (uint32_t i = 0; i < Size; i++)
@@ -1333,13 +1333,13 @@ void drawBattlesActorsHeldItem()
 	
 	// Draw the current item icon
 	// Make sure the actor is actually holding an item
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	uint32_t offset = 0x308;
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	uint32_t offset = 0x304;
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	uint32_t offset = 0x30C;
-	#endif
+#endif
 	
 	int32_t tempitem = *reinterpret_cast<uint32_t *>(ActorAddress + offset);
 	if (tempitem > 0)
@@ -1623,17 +1623,17 @@ void drawMemoryTypeList()
 	PosX += 30;
 	PosY -= 25;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 1;
-	#endif
+#endif
 	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	PosX += 42;
 	PosY -= 50;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 3;
-	#endif
+#endif
 	
 	// Draw the main text
 	uint32_t Size = MemoryTypeLinesSize;
@@ -1694,9 +1694,9 @@ void drawMemoryWatchChangeAddressListWindow(int32_t posY)
 	int32_t Height = 15;
 	int32_t Curve = 0;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	Width -= 16;
-	#endif
+#endif
 	
 	drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
 }
@@ -2042,18 +2042,18 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
 	{
 		PartnerOrFollowerText = "partner";
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		TextPosX += 3;
 		WindowWidth -= 7;
-		#endif
+#endif
 	}
 	else
 	{
 		PartnerOrFollowerText = "follower";
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		WindowWidth -= 1;
-		#endif
+#endif
 	}
 	
 	// Print error text if currently trying to spawn a partner/follower when not able to
@@ -2078,10 +2078,10 @@ void drawNotInBattleErrorMessage()
 	int32_t TextPosY 		= 0;
 	int32_t WindowWidth 	= 440;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	TextPosX += 6;
 	WindowWidth -= 13;
-	#endif
+#endif
 	
 	drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
 }
@@ -2116,10 +2116,10 @@ void drawResolveFadesMessage()
 			WindowWidth = 404;
 			Message = "The selected fade was successfully resolved.";
 			
-			#ifdef TTYD_JP
+#ifdef TTYD_JP
 			TextPosX += 2;
 			WindowWidth -= 2;
-			#endif
+#endif
 			break;
 		}
 		case FADE_NOT_ACTIVE:
@@ -2128,10 +2128,10 @@ void drawResolveFadesMessage()
 			WindowWidth = 299;
 			Message = "The selected fade is not active.";
 			
-			#ifdef TTYD_JP
+#ifdef TTYD_JP
 			TextPosX += 5;
 			WindowWidth -= 9;
-			#endif
+#endif
 			break;
 		}
 		case FADE_DONT_RESOLVE:
@@ -2140,10 +2140,10 @@ void drawResolveFadesMessage()
 			WindowWidth = 440;
 			Message = "The selected fade does not need to be resolved.";
 			
-			#ifdef TTYD_JP
+#ifdef TTYD_JP
 			TextPosX += 5;
 			WindowWidth -= 11;
-			#endif
+#endif
 			break;
 		}
 		default:
@@ -2168,10 +2168,10 @@ void drawWarpsErrorMessage(int32_t textPosY)
 	int32_t TextPosX 		= -195;
 	int32_t WindowWidth 	= 415;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	TextPosX += 8;
 	WindowWidth -= 13;
-	#endif
+#endif
 	
 	drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
 }
@@ -2222,9 +2222,9 @@ void drawConfirmationWindow(const char *message)
 	PosX += 70;
 	PosY -= 40;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 7;
-	#endif
+#endif
 	
 	drawText(message, PosX, PosY, Alpha, Color, Scale);
 	
@@ -2234,9 +2234,9 @@ void drawConfirmationWindow(const char *message)
 	Scale = 0.8;
 	const char *Option;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 5;
-	#endif
+#endif
 	
 	for (uint32_t i = 0; i < 2; i++)
 	{
@@ -2336,10 +2336,10 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	int32_t curve 	= 10;
 	int32_t height;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 4;
 	width -= 6;
-	#endif
+#endif
 	
 	uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
 	
@@ -2431,14 +2431,14 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		// Draw the Stage and Event for the current Sequence value
 		const char *StageAndEventNames[2];
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		char StageNameBuffer[8];
 		getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, 
 			static_cast<uint32_t>(tempMenuSecondaryValue));
-		#else
+#else
 		getSequenceStageAndEvent(StageAndEventNames, 
 			static_cast<uint32_t>(tempMenuSecondaryValue));
-		#endif
+#endif
 		
 		sprintf(tempDisplayBuffer,
 			"%s\n%s",
@@ -2503,13 +2503,13 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	x += 166;
 	y -= 30;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	scale = 1;
 	x -= 1;
 	y += 3;
-	#else
+#else
 	scale = 0.9;
-	#endif
+#endif
 	
 	// Calculate the X offset
 	int32_t tempPosX = 0;
@@ -2525,9 +2525,9 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 		// Draw the negative sign
 		int32_t NegativeSignOffset = 10;
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		NegativeSignOffset += 2;
-		#endif
+#endif
 		
 		drawText("-", (x - NegativeSignOffset), y, alpha, color, scale);
 	}
@@ -2574,10 +2574,10 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	int32_t curve 	= 10;
 	int32_t height 	= 148;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX += 4;
 	width -= 6;
-	#endif
+#endif
 	
 	drawWindow(color, PosX, y, width, height, curve);
 	
@@ -2634,13 +2634,13 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	
 	x += 180;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	scale = 1;
 	x -= 1;
 	y += 2;
-	#else
+#else
 	scale = 0.9;
-	#endif
+#endif
 	
 	// Calculate the X offset
 	int32_t tempPosX = 0;
@@ -2665,9 +2665,9 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		// Draw the negative sign
 		int32_t NegativeSignOffset = 40;
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		NegativeSignOffset += 2;
-		#endif
+#endif
 		
 		drawText("-", (x - NegativeSignOffset), y, alpha, color, scale);
 	}
@@ -2736,9 +2736,9 @@ void drawAddByIconMain(uint32_t currentMenu)
 	Color 					= 0xFFFFFFFF;
 	const char *HelpText 	= "Press A to confirm\nPress B to cancel";
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX -= 2;
-	#endif
+#endif
 	
 	drawText(HelpText, PosX, PosY, Alpha, Color, Scale);
 	
@@ -2901,12 +2901,12 @@ void drawCheatsChangeSequence()
 	// Draw the Stage and Event names for the current Sequence value
 	const char *StageAndEventNames[2];
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	char StageNameBuffer[8];
 	if (!getSequenceStageAndEvent(StageAndEventNames, StageNameBuffer, SequencePosition))
-	#else
+#else
 	if (!getSequenceStageAndEvent(StageAndEventNames, SequencePosition))
-	#endif
+#endif
 	{
 		return;
 	}
@@ -3611,9 +3611,9 @@ void drawWarpByEventMenuDetails()
 	
 	int32_t tempPosX = PosX + 147;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	tempPosX -= 4;
-	#endif
+#endif
 	
 	drawText(String, tempPosX, PosY, Alpha, Color, Scale);
 	PosY -= 20;
@@ -3849,11 +3849,11 @@ void drawSequenceInPauseMenu()
 		SequencePosition);
 	
 	// Adjust the position of the value based on the Sequence Position
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	int32_t PosXIncrement = 186;
-	#else
+#else
 	int32_t PosXIncrement = 182;
-	#endif
+#endif
 	
 	if (SequencePosition >= 100)
 	{
@@ -3864,9 +3864,9 @@ void drawSequenceInPauseMenu()
 		PosXIncrement -= 13;
 	}
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	Scale += 0.05;
-	#endif
+#endif
 	
 	drawText(tempDisplayBuffer, PosX + PosXIncrement, PosY, Alpha, Color, Scale);
 }
@@ -3879,11 +3879,11 @@ void drawOnScreenTimer()
 	int32_t PosY 	= -160;
 	float Scale 	= 0.7;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX 	+= 5;
 	PosY 	+= 2;
 	Scale 	+= 0.05;
-	#endif
+#endif
 	
 	// Move the timer up if Mario's Coordinates are currently displayed
 	// Don't move up if the input display is active
@@ -3927,11 +3927,11 @@ void drawFrameCounter()
 	int32_t PosY 	= -160;
 	float Scale 	= 0.7;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosX 	+= 5;
 	PosY 	+= 2;
 	Scale 	+= 0.05;
-	#endif
+#endif
 	
 	// Move the timer up if Mario's Coordinates are currently displayed
 	// Don't move up if the input display is active
@@ -3951,9 +3951,9 @@ void drawFrameCounter()
 	{
 		PosY += 20;
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		PosY += 2;
-		#endif
+#endif
 	}
 	
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
@@ -4059,11 +4059,11 @@ void drawButtonInputs()
 	char *tempDisplayBuffer = DisplayBuffer;
 	
 	const char *Format;
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	Format = "%s";
-	#else
+#else
 	Format = "%c";
-	#endif
+#endif
 	
 	uint32_t Counter = 0;
 	for (uint32_t i = 0; i < 13; i++)
@@ -4487,16 +4487,16 @@ void drawActionCommandsTiming()
 	}
 	
 	// const int8_t CommandDifficulty = ttyd::battle_ac::BattleActionCommandGetDifficulty(getBattleWorkPointer());
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	uint32_t SimplifierOffset 		= 0x305;
 	uint32_t UnsimplifierOffset 	= 0x306;
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	uint32_t SimplifierOffset 		= 0x301;
 	uint32_t UnsimplifierOffset 	= 0x302;
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	uint32_t SimplifierOffset 		= 0x309;
 	uint32_t UnsimplifierOffset 	= 0x30A;
-	#endif
+#endif
 	
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
 	uint32_t SimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + SimplifierOffset);
@@ -4812,10 +4812,10 @@ void drawTitleScreenInfo()
 	int32_t WindowHeight 	= 70;
 	int32_t Curve 			= 10;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	PosY += 30;
 	WindowWidth -= 10;
-	#endif
+#endif
 	
 	drawWindow(WindowColor, PosX, PosY, WindowWidth, WindowHeight, Curve);
 	
@@ -5531,13 +5531,13 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		drawString(NewPosX, NewPosY, Text, FontScale);
 		
 		// Draw the page number and the version
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		const char *Format = "Page %" PRIu32 "\n\nJPN";
-		#elif defined TTYD_US
+#elif defined TTYD_US
 		const char *Format = "Page %" PRIu32 "\n\nUSA";
-		#elif defined TTYD_EU
+#elif defined TTYD_EU
 		const char *Format = "Page %" PRIu32 "\n\nEUR";
-		#endif
+#endif
 		
 		char MiscBuffer[16];
 		sprintf(MiscBuffer, Format, PageNumber + 1);

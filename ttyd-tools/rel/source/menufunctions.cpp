@@ -2517,16 +2517,16 @@ void setBattlesActorValue(uint32_t currentMenuOption)
 		}
 		case CHANGE_HELD_ITEM:
 		{
-			#ifdef TTYD_US
+#ifdef TTYD_US
 			uint32_t HeldItemOffset = 0x308;
 			uint32_t BadgeFlagOffsetStart = 0x2E0;
-			#elif defined TTYD_JP
+#elif defined TTYD_JP
 			uint32_t HeldItemOffset = 0x304;
 			uint32_t BadgeFlagOffsetStart = 0x2DC;
-			#elif defined TTYD_EU
+#elif defined TTYD_EU
 			uint32_t HeldItemOffset = 0x30C;
 			uint32_t BadgeFlagOffsetStart = 0x2E4;
-			#endif
+#endif
 			
 			// Set the current item/badge
 			*reinterpret_cast<int32_t *>(ActorAddress + HeldItemOffset) = tempMenuSecondaryValue;
@@ -3655,7 +3655,7 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
 	const ttyd::event::EventStageDescription *TargetStage = ttyd::event::eventStgDtPtr(StageId);
 	const ttyd::event::EventStageEventDescription *TargetEvent = &TargetStage->pEvents[EventId];
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	char *StageNameBuffer = warpByEventDetails->Stage;
 	if (!getStageString(StageNameBuffer, getGsw0ForEvent(StageId, EventId)))
 	{
@@ -3670,10 +3670,10 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
 	{
 		warpByEventDetails->Event = "";
 	}
-	#else
+#else
 	warpByEventDetails->Stage = 			TargetStage->nameEn;
 	warpByEventDetails->Event = 			TargetEvent->nameEn;
-	#endif
+#endif
 	
 	warpByEventDetails->Partner = 			getPartyName(TargetEvent->partyId[0]);
 	warpByEventDetails->Follower = 			getPartyName(TargetEvent->partyId[1]);
@@ -4015,7 +4015,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	const char *StageName = nullptr;
 	const char *EventName = nullptr;
 	
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	if (!getStageString(stageNameBuffer, sequencePosition))
 	{
 		return false;
@@ -4023,7 +4023,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	
 	StageName = stageNameBuffer;
 	EventName = CheatsEventNames[sequencePosition];
-	#else
+#else
 	uint16_t tempSequencePosition = static_cast<uint16_t>(sequencePosition);
 	int32_t NumberOfStages = ttyd::event::eventStgNum();
 	bool FoundName = false;
@@ -4056,7 +4056,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	{
 		return false;
 	}
-	#endif
+#endif
 	
 	arrayOut[0] = StageName;
 	arrayOut[1] = EventName;

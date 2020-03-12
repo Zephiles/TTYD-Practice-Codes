@@ -59,13 +59,13 @@ uint32_t fixBlooperCrash1(uint32_t unkValue, void *battleUnitPointer)
 {
 	if (checkIfPointerIsValid(battleUnitPointer))
 	{
-		#ifdef TTYD_US
+#ifdef TTYD_US
 		uint32_t offset = 0x218;
-		#elif defined TTYD_JP
+#elif defined TTYD_JP
 		uint32_t offset = 0x214;
-		#elif defined TTYD_EU
+#elif defined TTYD_EU
 		uint32_t offset = 0x218;
-		#endif
+#endif
 		
 		*reinterpret_cast<uint32_t *>(
 			reinterpret_cast<uint32_t>(battleUnitPointer) 
@@ -348,11 +348,11 @@ const char *Mod::getCustomMessage(const char *key)
 		// Only needs to change when not on the train
 		if (!compareStrings(tempNextArea, "rsh"))
 		{
-			#ifdef TTYD_JP
+#ifdef TTYD_JP
 			const char *message = "<select 0 0 300 40>No\nAlright\nChoose this option";
-			#else
+#else
 			const char *message = "<select 0 0 0 40>No\nAlright\nChoose this option";
-			#endif
+#endif
 			
 			return message;
 		}
@@ -416,22 +416,22 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 		return Result;
 	}
 	
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	const uint32_t LAS = 0x10;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	const uint32_t LAS = 0x11;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FC0;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x58;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0xD4;
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	const uint32_t LAS = 0x11;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
 	const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
-	#endif
+#endif
 	
 	uint32_t CurrentRelModuleInfoRaw = reinterpret_cast<uint32_t>(CurrentRelModuleInfo);
 	switch (CurrentRelModuleInfo->id)
@@ -660,13 +660,13 @@ void handleSmartHeapChunkResults(void *addressWithError,
 			Chunks++;
 		}
 		
-		#ifdef TTYD_JP
+#ifdef TTYD_JP
 		uint32_t HeapEnd = reinterpret_cast<uint32_t>(ttyd::memory::heapEnd.pHeap5End);
 		uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeap5Start);
-		#else
+#else
 		uint32_t HeapEnd = reinterpret_cast<uint32_t>(ttyd::memory::heapEnd.pHeap4End);
 		uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeap4Start);
-		#endif
+#endif
 		
 		uint32_t TotalSize = HeapEnd - HeapStart - 0x20;
 		sprintf(tempDisplayBuffer,
@@ -779,7 +779,7 @@ void displayNpcNameToPtrError()
 
 void initAddressOverwrites()
 {
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80123CA4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004EC10);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009B2C);
@@ -805,7 +805,7 @@ void initAddressOverwrites()
 	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x80080FCC);
 	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x80080FF0);
 	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x80084268);
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x8011E7DC);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004DFB0);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x8000999C);
@@ -831,7 +831,7 @@ void initAddressOverwrites()
 	void *AutoMashThroughText1Address 					= reinterpret_cast<void *>(0x8008047C);
 	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x800804A0);
 	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x80083390);
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	void *AllowRunningFromBattlesAddress 				= reinterpret_cast<void *>(0x80124BE4);
 	void *ForceNPCItemDropAddress 						= reinterpret_cast<void *>(0x8004ECDC);
 	void *DebugModeInitialzeAddress 					= reinterpret_cast<void *>(0x80009CF0);
@@ -858,7 +858,7 @@ void initAddressOverwrites()
 	void *AutoMashThroughText2Address 					= reinterpret_cast<void *>(0x800822AC);
 	void *AutoMashThroughText3Address 					= reinterpret_cast<void *>(0x800855BC);
 	void *JumpOnWaterAddress 							= reinterpret_cast<void *>(0x80093CF0);
-	#endif
+#endif
 	
 	patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
 	
@@ -895,9 +895,9 @@ void initAddressOverwrites()
 	patch::writeBranchBL(AutoMashThroughText2Address, reinterpret_cast<void *>(autoMashText));
 	patch::writeBranchBL(AutoMashThroughText3Address, reinterpret_cast<void *>(autoMashText));
 	
-	#ifdef TTYD_EU
+#ifdef TTYD_EU
 	patch::writeBranchBL(JumpOnWaterAddress, reinterpret_cast<void *>(StartJumpOnWater));
-	#endif
+#endif
 	
 	*reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress) 				= 0x3800FFFF; // li r0,-1
 	*reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress) 			= 0x60000000; // nop

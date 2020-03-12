@@ -70,9 +70,9 @@ struct Player
 	float unk_184;
 	float unk_188;
 	float wPlayerEffectiveSpeed;
-	#ifndef TTYD_JP
+#ifndef TTYD_JP
 	float unk_190;
-	#endif
+#endif
 	float wControlStickSensitivity;
 	float wControlStickAngle;
 	float unk_19c;
@@ -119,11 +119,11 @@ struct Player
 	uint8_t unk_259;
 	uint16_t unk_25a;
 	uint32_t unk_25c;
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	uint8_t gap_260[68];
-	#else
+#else
 	uint8_t gap_260[88];
-	#endif
+#endif
 	float wMultiVal1;
 	float wYoshiHoverHeight;
 	float wCamVal1;

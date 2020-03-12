@@ -69,13 +69,13 @@ bool checkIfInGame()
 		return false;
 	}
 	
-	#ifdef TTYD_US
+#ifdef TTYD_US
 	const uint32_t DMO = 0x4;
-	#elif defined TTYD_JP
+#elif defined TTYD_JP
 	const uint32_t DMO = 0x5;
-	#elif defined TTYD_EU
+#elif defined TTYD_EU
 	const uint32_t DMO = 0x5;
-	#endif
+#endif
 	
 	return CurrentRelModuleInfo->id != DMO;
 }

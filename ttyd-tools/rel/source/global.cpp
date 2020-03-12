@@ -1706,7 +1706,7 @@ uint8_t WarpDestinationsSize 				= sizeof(WarpDestinations) / sizeof(WarpDestina
 
 uint16_t StatsMarioIcons[] = 
 {
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	395, // Coins
 	415, // HP
 	416, // FP
@@ -1724,7 +1724,7 @@ uint16_t StatsMarioIcons[] =
 	382, // Shop Points
 	319, // Piantas Stored
 	319, // Current Piantas
-	#else
+#else
 	403, // Coins
 	423, // HP
 	424, // FP
@@ -1742,12 +1742,12 @@ uint16_t StatsMarioIcons[] =
 	390, // Shop Points
 	327, // Piantas Stored
 	327, // Current Piantas
-	#endif
+#endif
 };
 
 uint16_t BattlesStatusesIcons[] = 
 {
-	#ifdef TTYD_JP
+#ifdef TTYD_JP
 	389, // Sleep
 	390, // Stop
 	371, // Dizzy
@@ -1775,7 +1775,7 @@ uint16_t BattlesStatusesIcons[] =
 	381, // FP Regen
 	381, // FP Regen Amount
 	354, // Defeated Flag
-	#else
+#else
 	397, // Sleep
 	398, // Stop
 	379, // Dizzy
@@ -1803,7 +1803,7 @@ uint16_t BattlesStatusesIcons[] =
 	389, // FP Regen
 	389, // FP Regen Amount
 	362, // Defeated Flag
-	#endif
+#endif
 };
 
 uint8_t CheatsOrder[] = 
