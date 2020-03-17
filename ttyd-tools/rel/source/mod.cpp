@@ -132,7 +132,7 @@ void Mod::init()
 	});
 	
 	mPFN_systemErrorHandler_trampoline = patch::hookFunction(
-		ttyd::mariost::systemErrorHandler, [](uint16_t error, 
+		ttyd::mariost::N_systemErrorHandler, [](uint16_t error, 
 			gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
 	{
 		// Enable the FPU registers

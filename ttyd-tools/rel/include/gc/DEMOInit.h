@@ -10,7 +10,7 @@ extern "C" {
 // __NoHangDoneRender
 // __NoHangRetraceCallback
 // DEMOEnableGPHangWorkaround
-void *DEMOGetCurrentBuffer();
+void *L_DEMOGetCurrentBuffer();
 // DEMOGetRenderModeObj
 // DEMODoneRender
 // DEMOBeforeRender

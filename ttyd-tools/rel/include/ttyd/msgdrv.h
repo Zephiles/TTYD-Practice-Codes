@@ -22,7 +22,7 @@ extern "C" {
 // _ismbblead
 const char *msgSearch(const char *key);
 // msg_compare
-// msgGetWork
+// L_msgGetWork
 // msgAnalize
 // msgDispKeyWait_render
 // msgDisp

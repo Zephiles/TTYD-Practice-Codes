@@ -42,6 +42,7 @@ void *itemEntry(const char *name, int32_t id, uint32_t mode,
 
 // itemModeChange
 // itemMain
+// N_itemPickUpFromFieldCheck
 // itemGetNokoCheck
 // itemGetCheck
 // itemCoinDrop

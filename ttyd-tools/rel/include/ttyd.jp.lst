@@ -85,8 +85,8 @@
 // 80008C50:disp2
 // 80008F68:disp1
 // 800090F4:titleMain
-// 80009958:titleInit
-// 80009B3C:getDebugMode
+// 80009958:L_titleInit
+// 80009B3C:N_getDebugMode
 // 80009B48:seq_titleMain
 // 80009B68:seq_titleExit
 // 80009BA0:seq_titleInit
@@ -102,8 +102,8 @@
 // 8000E714:camSetTypePersp
 // 8000E730:camCtrlOff
 // 8000E750:camCtrlOn
-// 8000E770:camDispOff
-8000E790:camDispOn
+// 8000E770:L_camDispOff
+8000E790:L_camDispOn
 // 8000E7B0:camSetMode
 // 8000E7C8:camEffMain
 // 8000E884:cam3dImgMain
@@ -289,8 +289,8 @@
 // 8002AB48:mapGetJointsSub
 // 8002AE0C:mapGetActiveGroup
 8002AE14:mapGetWork
-// 8002AE28:mapDispOn
-// 8002AE34:mapDispOff
+// 8002AE28:N_mapDispOn
+// 8002AE34:N_mapDispOff
 // 8002AE40:getMapDataDvdRoot
 // 8002AE48:mapErrorEntry
 
@@ -312,7 +312,7 @@
 // 8002DF34:__NoHangDoneRender
 // 8002E380:__NoHangRetraceCallback
 // 8002E41C:DEMOEnableGPHangWorkaround
-8002E504:DEMOGetCurrentBuffer
+8002E504:L_DEMOGetCurrentBuffer
 // 8002E50C:DEMOGetRenderModeObj
 // 8002E514:DEMODoneRender
 // 8002E5F8:DEMOBeforeRender
@@ -335,7 +335,7 @@
 8002EF1C:smartAlloc
 8002F254:smartFree
 8002F3A8:smartAutoFree
-8002F44C:smartReInit
+8002F44C:L_smartReInit
 8002F5BC:smartInit
 // unused:_mapAllocDump
 8002F7A0:_mapFree
@@ -380,7 +380,7 @@
 800373C4:evtGetWork
 
 // evt_map.o
-800375F0:evt_mapdisp_onoff
+800375F0:N_evt_mapdisp_onoff
 80037630:evt_map_replace_mapobj
 80037708:evt_map_entry_airport_harbor
 800378A4:check2
@@ -420,7 +420,7 @@
 80304224:worldData
 
 // npcdrv.o
-8004289C:fbatPreventMarioEventChk
+8004289C:N_fbatPreventMarioEventChk
 800428D0:npcCheckBlow
 80042A10:npcCalcScore
 80042B18:fbatSandersBombTriggerOn
@@ -707,6 +707,7 @@
 8005B4A4:marioCtrlOffChk
 8005B4B4:marioFBattlePost
 8005B53C:marioFBattlePrepare
+8005B5A8:N_marioChkUseParty
 8005B5D4:marioChkCtrl
 8005B5EC:marioChkKey
 8005B728:marioCheckMenuDisable
@@ -748,6 +749,7 @@
 // text
 // unused:gcResetDone
 // unused:gcResetCheck
+8006DBC8:L_gcResetCheck
 8006DCB8:gcRumbleCheck
 // unused:gcDvdCheckCancel
 // unused:gcDvdCheckInit
@@ -758,8 +760,8 @@
 8006E66C:marioStDisp
 8006E694:marioStMain
 8006E8CC:marioStInit
-80257EF4:systemErrorHandler
-// 80258500:setupErrorHandler
+80257EF4:N_systemErrorHandler
+// 80258500:N_setupErrorHandler
 // data
 80410310:globalWorkPointer
 
@@ -867,6 +869,8 @@
 // 8007A144:bero_get_BeroSX
 // 8007A14C:bero_get_BeroNUM
 // 8007A154:bero_get_BeroEXEC
+// 8007A15C:N_evt_bero_set_mario_bottomless_respawn_pos_to_current_mario_pos
+// 8007A190:N_evt_bero_set_mario_bottomless_respawn_pos_on_bero_entry
 
 // windowdrv.o
 // 8007A244:getWakuTexObj
@@ -903,7 +907,7 @@
 // 80080F94:_ismbblead
 80080FC8:msgSearch
 // 800810A8:msg_compare
-// 800810F0:msgGetWork
+// 800810F0:L_msgGetWork
 // 800810F8:msgAnalize
 // 800825F4:msgDispKeyWait_render
 // 80082674:msgDisp
@@ -949,7 +953,7 @@
 // 800909F4:mot_kaze
 // 80090C38:marioChgMotJump2
 // 80090D10:marioRollChgChk
-// 80090E9C:marioChkRub
+// 80090E9C:L_marioChkRub
 // 80090EA4:marioChkItemMotion
 // 80091070:marioChkTransform
 // 80091260:marioChkJump
@@ -1005,6 +1009,7 @@
 800ABA60:itemEntry
 // 800AC298:itemModeChange
 // 800AC2A8:itemMain
+// 800AC944:N_itemPickUpFromFieldCheck
 // 800AC9A4:itemGetNokoCheck
 // 800ACB38:itemGetCheck
 // 800ACD74:itemCoinDrop
@@ -1050,7 +1055,7 @@
 // 800B52B4:partySetFamicomMode
 // 800B56A8:partyShadowOff
 // 800B56C0:partyUpdateKeyData
-// 800B57C8:partyClearCont
+// 800B57C8:L_partyClearCont
 // 800B5800:partyKeyOff
 // 800B5804:partyKeyOn
 // 800B5808:partyDisp
@@ -1066,6 +1071,7 @@
 // 800B7A68:partyRideChk
 // 800B7AA4:allPartyRideOff2
 // 800B7B38:allPartyRideOff
+// 800B7BCC:L_allPartyRideOn
 // 800B7C48:allPartyForceRideOn
 // 800B7D1C:getRidePos
 // 800B7F9C:allPartyRideShip
@@ -1080,7 +1086,9 @@
 // 800B9A58:partyDoWork
 // 800B9B00:driveParty
 // 800BA1F0:partyMain
-// 800BA814:partyChgRunMode
+// 800BA72C:N_partyForceChgRunMode
+// 800BA7A8:partyChgRunMode
+// 800BA814:N__partyChgRunMode
 // 800BABB0:partyUsePost
 // 800BAC0C:partyReInit
 // 800BB328:partyInit
@@ -1126,7 +1134,7 @@
 // 800CF07C:pouchGetKpaCoin
 // 800CF088:pouchMajinaiInit
 // 800CF0B8:pouchArriveBadge
-800CF0E8:pouchUnEquipBadgeID
+800CF0E8:N_pouchUnEquipBadgeID
 800CF140:pouchEquipBadgeID
 // 800CF194:pouchEquipCheckBadgeIndex
 800CF1B4:pouchEquipCheckBadge
@@ -1219,6 +1227,7 @@
 // 800D7298:psndBGMOn
 // 800D72C4:psndBGMMain
 // 800D7758:psndBGM_rate
+// 800D77BC:L_psndBGM_stop
 // 800D78E8:psndSFXAllOff
 // 800D79E8:psndMapChange
 // 800D7B58:psndGetFlag
@@ -1299,6 +1308,7 @@
 // event.o
 800E73A8:eventStgNum
 800E73B0:eventStgDtPtr
+// 800E73C4:N_stg9_02_init
 // 800E73F0:stg8_15_init
 // 800E741C:stg8_14_init
 // 800E7448:stg8_13_init
@@ -1531,12 +1541,12 @@
 // 800EBDD0:evt_pouch_party_join
 // 800EBE00:evt_pouch_set_ap
 // 800EBE30:evt_pouch_get_max_ap
-// 800EBE7C:evt_pouch_set_hp
-// 800EBEAC:evt_pouch_get_hp
+// 800EBE7C:L_evt_pouch_set_hp
+// 800EBEAC:L_evt_pouch_get_hp
 // 800EBEF8:evt_pouch_check_item
 // 800EBF4C:evt_pouch_remove_keepitem
 // 800EBFE0:evt_pouch_add_keepitem
-// 800EC050:evt_pouch_remove_item_index
+// 800EC050:N_evt_pouch_remove_item_index
 // 800EC0EC:evt_pouch_remove_item
 // 800EC164:evt_pouch_add_item
 // 800EC1D4:evt_pouch_get_starstone
@@ -1863,10 +1873,10 @@
 // 80150EA8:sort_4_3_func
 // 801510C8:sort_4_2_func
 // 80151154:sort_4_1_func
-// 801511E0:compare_func4_2_r
-// 80151230:compare_func4_2
-// 80151280:compare_func4_1_r
-// 801512FC:compare_func4_1
+// 801511E0:N_compare_func4_2_r
+// 80151230:N_compare_func4_2
+// 80151280:N_compare_func4_1_r
+// 801512FC:N_compare_func4_1
 // 80151378:sort_3_3_func
 // 80151414:sort_3_2_func
 // 80151498:sort_3_1_func
@@ -2138,7 +2148,7 @@
 // 80291570:OSDumpContext
 // 80291818:OSSwitchFPUContext
 // 8029189C:__OSContextInit
-802918E4:OSFillFPUContext
+802918E4:L_OSFillFPUContext
 
 // OSFont.c
 // 80292A1C:GetFontCode
@@ -2148,9 +2158,9 @@
 // 8029308C:OSLoadFont
 // 802931CC:ParseStringS
 // 80293308:OSGetFontTexel
-// 802935A8:ExpandFontSheet
-80293954:OSInitFont
-80293B60:OSGetFontTexture
+// 802935A8:L_ExpandFontSheet
+80293954:L_OSInitFont
+80293B60:L_OSGetFontTexture
 
 // OSLink.c
 // 8029453C:OSNotifyLink
@@ -2372,6 +2382,30 @@
 // 802AEFF0:GXInvalidateVtxCache
 802AF000:GXSetTexCoordGen2
 802AF280:GXSetNumTexGens
+// 802AF2BC:GXSetMisc
+// 802AF350:GXFlush
+// 802AF3AC:GXResetWriteGatherPipe
+// 802AF3E0:__GXAbort
+// 802AF54C:GXAbortFrame
+// 802AF714:GXSetDrawSync
+// 802AF7C8:GXReadDrawSync
+// 802AF7D4:GXDrawDone
+// 802AF854:GXPixModeSync
+// 802AF878:GXTexModeSync
+// 802AF89C:GXPokeAlphaMode
+// 802AF8B0:GXPokeAlphaRead
+// 802AF8D0:GXPokeAlphaUpdate
+// 802AF8E8:GXPokeBlendMode
+// 802AF94C:GXPokeColorUpdate
+// 802AF964:GXPokeDstAlpha
+// 802AF988:GXPokeDither
+// 802AF9A0:GXPokeZMode
+// 802AF9C0:GXPeekARGB
+// 802AF9E4:GXSetDrawSyncCallback
+// 802AFA28:GXTokenInterruptHandler
+// 802AFAB0:GXSetDrawDoneCallback
+// 802AFAF4:GXFinishInterruptHandler
+// 802AFB74:__GXPEInit
 // 802AFBE8:__GXSetDirtyState
 802AFC68:GXBegin
 // 802AFD38:__GXSendFlushPrim
@@ -2435,6 +2469,16 @@
 // 802B2024:__SetSURegs
 // 802B20C4:__GXSetSUTexRegs
 // 802B2240:__GXSetTmemConfig
+// 802B2594:GXSetTevIndirect
+// 802B2600:GXSetIndTexMtx
+// 802B2778:GXSetIndTexCoordScale
+// 802B28BC:GXSetIndTexOrder
+// 802B29A8:GXSetNumIndStages
+// 802B29CC:GXSetTevDirect
+// 802B2A14:GXSetTevIndWarp
+// 802B2A78:__GXUpdateBPMask
+// 802B2A7C:__GXSetIndirectMask
+// 802B2AAC:__GXFlushTextureState
 802B2AD0:GXSetTevOp
 // 802B2B5C:GXSetTevColorIn
 // 802B2BA0:GXSetTevAlphaIn
@@ -2463,6 +2507,12 @@
 // 802B373C:GXSetDstAlpha
 // 802B3778:GXSetFieldMask
 // 802B37B0:GXSetFieldMode
+// 802B3828:GXDrawSphere
+// 802B3BA4:GXDrawCubeFace
+// 802B3DBC:GXDrawCube
+// 802B400C:GXBeginDisplayList
+// 802B40D8:GXEndDisplayList
+// 802B419C:GXCallDisplayList
 // 802B420C:GXProject
 802B4380:GXSetProjection
 // 802B4424:GXSetProjectionv
@@ -2481,6 +2531,19 @@
 // 802B4900:GXSetScissorBoxOffset
 // 802B4940:GXSetClipMode
 // 802B4968:__GXSetMatrixIndex
+// 802B49EC:GXSetGPMetric
+// 802B5234:GXReadGPMetric
+// 802B53DC:GXClearGPMetric
+// 802B53EC:GXReadGP0Metric
+// 802B5418:GXReadGP1Metric
+// 802B5444:GXReadMemMetric
+// 802B5658:GXClearMemMetric
+// 802B5700:GXReadPixMetric
+// 802B5838:GXClearPixMetric
+// 802B5868:GXSetVCacheMetric
+// 802B58AC:GXReadVCacheMetric
+// 802B5940:GXClearVCacheMetric
+// 802B595C:GXReadXfRasMetric
 
 // item_data.o
 // data

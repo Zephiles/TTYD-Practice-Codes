@@ -58,6 +58,8 @@ uint32_t evt_bero_get_info(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode);
 // bero_get_BeroSX
 // bero_get_BeroNUM
 // bero_get_BeroEXEC
+// N_evt_bero_set_mario_bottomless_respawn_pos_to_current_mario_pos
+// N_evt_bero_set_mario_bottomless_respawn_pos_on_bero_entry
 
 }
 

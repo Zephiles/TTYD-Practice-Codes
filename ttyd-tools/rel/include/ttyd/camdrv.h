@@ -15,8 +15,8 @@ extern "C" {
 // camSetTypePersp
 // camCtrlOff
 // camCtrlOn
-// camDispOff
-void camDispOn(ttyd::dispdrv::CameraId cameraId);
+// L_camDispOff
+void L_camDispOn(ttyd::dispdrv::CameraId cameraId);
 // camSetMode
 // camEffMain
 // cam3dImgMain

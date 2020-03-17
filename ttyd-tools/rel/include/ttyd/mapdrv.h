@@ -103,8 +103,8 @@ extern "C" {
 // mapGetJointsSub
 // mapGetActiveGroup
 void *mapGetWork();
-// mapDispOn
-// mapDispOff
+// N_mapDispOn
+// N_mapDispOff
 // getMapDataDvdRoot
 // mapErrorEntry
 

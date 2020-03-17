@@ -5034,7 +5034,7 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
 void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
 {
 	// Reinit the smart heap
-	ttyd::memory::smartReInit();
+	ttyd::memory::L_smartReInit();
 	
 	// Init memory for the strings
 	ttyd::memory::SmartAllocationData *ErrorHandlerStringsMemory = 
@@ -5163,7 +5163,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		dar);
 	
 	// Fill FPU context
-	gc::OSContext::OSFillFPUContext(context);
+	gc::OSContext::L_OSFillFPUContext(context);
 	
 	// Get the float register values
 	uint32_t FloatRegistersSize = sizeof(ErrorHandler->FloatRegisterValues) / 
@@ -5218,7 +5218,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 	}
 	
 	// Init the font data
-	gc::OSFont::OSInitFont(reinterpret_cast<gc::OSFont::OSFontHeader *>(FontDataMemory->pMemory));
+	gc::OSFont::L_OSInitFont(reinterpret_cast<gc::OSFont::OSFontHeader *>(FontDataMemory->pMemory));
 	
 	// Init the DEMO pad
 	gc::DEMOPad::DEMOPadInit();
@@ -5231,7 +5231,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 		0x00FFFFFF);
 	
 	gc::gx::GXCopyDisp(
-		gc::DEMOInit::DEMOGetCurrentBuffer(), 
+		gc::DEMOInit::L_DEMOGetCurrentBuffer(), 
 		true);
 	
 	// Set the visible screen region
@@ -5341,7 +5341,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
 				int32_t ImagePosY;
 				int32_t ImageWidth;
 				
-				text = gc::OSFont::OSGetFontTexture(
+				text = gc::OSFont::L_OSGetFontTexture(
 					&text[0], 
 					&Image, 
 					&ImagePosX, 

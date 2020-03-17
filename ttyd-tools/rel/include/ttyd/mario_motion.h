@@ -59,7 +59,7 @@ extern "C" {
 // mot_kaze
 // marioChgMotJump2
 // marioRollChgChk
-// marioChkRub
+// L_marioChkRub
 // marioChkItemMotion
 // marioChkTransform
 // marioChkJump

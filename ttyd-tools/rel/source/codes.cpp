@@ -556,7 +556,7 @@ void reloadRoomMain()
 	if (SystemLevel == 15)
 	{
 		// Currently in pause menu, so re-enable the 3D camera
-		ttyd::camdrv::camDispOn(ttyd::dispdrv::CameraId::k3d);
+		ttyd::camdrv::L_camDispOn(ttyd::dispdrv::CameraId::k3d);
 	}
 	
 	// Enable sound effects, set the default camera id for Mario, and give back control to the player

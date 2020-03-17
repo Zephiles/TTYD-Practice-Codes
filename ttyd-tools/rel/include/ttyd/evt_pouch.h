@@ -20,12 +20,12 @@ uint32_t evt_pouch_mario_recovery();
 // evt_pouch_party_join
 // evt_pouch_set_ap
 // evt_pouch_get_max_ap
-// evt_pouch_set_hp
-// evt_pouch_get_hp
+// L_evt_pouch_set_hp
+// L_evt_pouch_get_hp
 // evt_pouch_check_item
 // evt_pouch_remove_keepitem
 // evt_pouch_add_keepitem
-// evt_pouch_remove_item_index
+// N_evt_pouch_remove_item_index
 // evt_pouch_remove_item
 // evt_pouch_add_item
 // evt_pouch_get_starstone

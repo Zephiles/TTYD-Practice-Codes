@@ -85,8 +85,8 @@
 // 80008EFC:disp2
 // 80009264:disp1
 // 800093F0:titleMain
-// 80009CAC:titleInit
-// 80009E90:getDebugMode
+// 80009CAC:L_titleInit
+// 80009E90:N_getDebugMode
 // 80009E9C:seq_titleMain
 // 80009EBC:seq_titleExit
 // 80009EF4:seq_titleInit
@@ -102,8 +102,8 @@
 // 8000EA84:camSetTypePersp
 // 8000EAA0:camCtrlOff
 // 8000EAC0:camCtrlOn
-// 8000EAE0:camDispOff
-8000EB00:camDispOn
+// 8000EAE0:L_camDispOff
+8000EB00:L_camDispOn
 // 8000EB20:camSetMode
 // 8000EB38:camEffMain
 // 8000EBF4:cam3dImgMain
@@ -289,8 +289,8 @@
 // 8002B254:mapGetJointsSub
 // 8002B518:mapGetActiveGroup
 8002B520:mapGetWork
-// 8002B534:mapDispOn
-// 8002B540:mapDispOff
+// 8002B534:N_mapDispOn
+// 8002B540:N_mapDispOff
 // 8002B54C:getMapDataDvdRoot
 // 8002B554:mapErrorEntry
 
@@ -312,7 +312,7 @@
 // 8002E640:__NoHangDoneRender
 // 8002EA8C:__NoHangRetraceCallback
 // 8002EB28:DEMOEnableGPHangWorkaround
-8002EC10:DEMOGetCurrentBuffer
+8002EC10:L_DEMOGetCurrentBuffer
 // 8002EC18:DEMOGetRenderModeObj
 // 8002EC20:DEMODoneRender
 // 8002ED04:DEMOBeforeRender
@@ -335,7 +335,7 @@
 8002F628:smartAlloc
 8002F960:smartFree
 8002FAB4:smartAutoFree
-8002FB58:smartReInit
+8002FB58:L_smartReInit
 8002FCC8:smartInit
 // unused:_mapAllocDump
 8002FEAC:_mapFree
@@ -380,7 +380,7 @@
 80037B48:evtGetWork
 
 // evt_map.o
-80037D74:evt_mapdisp_onoff
+80037D74:N_evt_mapdisp_onoff
 80037DB4:evt_map_replace_mapobj
 80037E8C:evt_map_entry_airport_harbor
 80038028:check2
@@ -420,7 +420,7 @@
 80311524:worldData
 
 // npcdrv.o
-80043020:fbatPreventMarioEventChk
+80043020:N_fbatPreventMarioEventChk
 80043054:npcCheckBlow
 80043194:npcCalcScore
 8004329C:fbatSandersBombTriggerOn
@@ -710,6 +710,7 @@
 8005C434:marioCtrlOffChk
 8005C444:marioFBattlePost
 8005C504:marioFBattlePrepare
+8005C570:N_marioChkUseParty
 8005C59C:marioChkCtrl
 8005C5B4:marioChkKey
 8005C6F0:marioCheckMenuDisable
@@ -751,6 +752,7 @@
 // text
 // unused:gcResetDone
 // unused:gcResetCheck
+8006FF98:L_gcResetCheck
 800700B4:gcRumbleCheck
 // unused:gcDvdCheckCancel
 // unused:gcDvdCheckInit
@@ -761,8 +763,8 @@
 80070AB8:marioStDisp
 80070AE0:marioStMain
 80070D18:marioStInit
-80261A48:systemErrorHandler
-// 80262084:setupErrorHandler
+80261A48:N_systemErrorHandler
+// 80262084:N_setupErrorHandler
 // data
 80422810:globalWorkPointer
 
@@ -870,6 +872,8 @@
 // 8007BEEC:bero_get_BeroSX
 // 8007BEF4:bero_get_BeroNUM
 // 8007BEFC:bero_get_BeroEXEC
+// 8007BF04:N_evt_bero_set_mario_bottomless_respawn_pos_to_current_mario_pos
+// 8007BF38:N_evt_bero_set_mario_bottomless_respawn_pos_on_bero_entry
 
 // windowdrv.o
 // 8007BFEC:getWakuTexObj
@@ -906,7 +910,7 @@
 // 80082DFC:_ismbblead
 80082E48:msgSearch
 // 80082F28:msg_compare
-// 80082F70:msgGetWork
+// 80082F70:L_msgGetWork
 // 80082F78:msgAnalize
 // 800846B4:msgDispKeyWait_render
 // 80084734:msgDisp
@@ -952,7 +956,7 @@
 // 80093304:mot_kaze
 // 80093548:marioChgMotJump2
 // 80093620:marioRollChgChk
-// 800937AC:marioChkRub
+// 800937AC:L_marioChkRub
 // 800937B4:marioChkItemMotion
 // 80093980:marioChkTransform
 // 80093B70:marioChkJump
@@ -1008,6 +1012,7 @@
 800AEBC0:itemEntry
 // 800AF3A0:itemModeChange
 // 800AF3B0:itemMain
+// 800AFA4C:N_itemPickUpFromFieldCheck
 // 800AFAAC:itemGetNokoCheck
 // 800AFC40:itemGetCheck
 // 800AFE7C:itemCoinDrop
@@ -1053,7 +1058,7 @@
 // 800B7E70:partySetFamicomMode
 // 800B8264:partyShadowOff
 // 800B827C:partyUpdateKeyData
-// 800B8384:partyClearCont
+// 800B8384:L_partyClearCont
 // 800B83BC:partyKeyOff
 // 800B83C0:partyKeyOn
 // 800B83C4:partyDisp
@@ -1069,6 +1074,7 @@
 // 800BA620:partyRideChk
 // 800BA65C:allPartyRideOff2
 // 800BA720:allPartyRideOff
+// 800BA7E4:L_allPartyRideOn
 // 800BA860:allPartyForceRideOn
 // 800BA934:getRidePos
 // 800BABB4:allPartyRideShip
@@ -1083,7 +1089,9 @@
 // 800BCB10:partyDoWork
 // 800BCBB8:driveParty
 // 800BD2A8:partyMain
-// 800BD8CC:partyChgRunMode
+// 800BD7E4:N_partyForceChgRunMode
+// 800BD860:partyChgRunMode
+// 800BD8CC:N__partyChgRunMode
 // 800BDC68:partyUsePost
 // 800BDCC4:partyReInit
 // 800BE3E0:partyInit
@@ -1129,7 +1137,7 @@
 // 800D3FC0:pouchGetKpaCoin
 // 800D3FCC:pouchMajinaiInit
 // 800D3FFC:pouchArriveBadge
-800D402C:pouchUnEquipBadgeID
+800D402C:N_pouchUnEquipBadgeID
 800D4084:pouchEquipBadgeID
 // 800D40D8:pouchEquipCheckBadgeIndex
 800D40F8:pouchEquipCheckBadge
@@ -1223,6 +1231,7 @@
 // 800DC59C:psndBGMOn
 // 800DC5C8:psndBGMMain
 // 800DCA5C:psndBGM_rate
+// 800DCAC0:L_psndBGM_stop
 // 800DCBEC:psndSFXAllOff
 // 800DCD34:psndMapChange
 // 800DCEE4:psndGetFlag
@@ -1303,6 +1312,7 @@
 // event.o
 800ECA24:eventStgNum
 800ECA2C:eventStgDtPtr
+// 800ECA40:N_stg9_02_init
 // 800ECA6C:stg8_15_init
 // 800ECA98:stg8_14_init
 // 800ECAC4:stg8_13_init
@@ -1535,12 +1545,12 @@
 // 800F18F8:evt_pouch_party_join
 // 800F1928:evt_pouch_set_ap
 // 800F1958:evt_pouch_get_max_ap
-// 800F19A4:evt_pouch_set_hp
-// 800F19D4:evt_pouch_get_hp
+// 800F19A4:L_evt_pouch_set_hp
+// 800F19D4:L_evt_pouch_get_hp
 // 800F1A20:evt_pouch_check_item
 // 800F1A74:evt_pouch_remove_keepitem
 // 800F1B08:evt_pouch_add_keepitem
-// 800F1B78:evt_pouch_remove_item_index
+// 800F1B78:N_evt_pouch_remove_item_index
 // 800F1C14:evt_pouch_remove_item
 // 800F1C8C:evt_pouch_add_item
 // 800F1CFC:evt_pouch_get_starstone
@@ -1867,10 +1877,10 @@
 // 8015826C:sort_4_3_func
 // 8015848C:sort_4_2_func
 // 80158518:sort_4_1_func
-// 801585A4:compare_func4_2_r
-// 801585F4:compare_func4_2
-// 80158644:compare_func4_1_r
-// 801586C0:compare_func4_1
+// 801585A4:N_compare_func4_2_r
+// 801585F4:N_compare_func4_2
+// 80158644:N_compare_func4_1_r
+// 801586C0:N_compare_func4_1
 // 8015873C:sort_3_3_func
 // 801587D8:sort_3_2_func
 // 8015885C:sort_3_1_func
@@ -2143,7 +2153,7 @@
 // 8029B3C0:OSDumpContext
 // 8029B668:OSSwitchFPUContext
 // 8029B6EC:__OSContextInit
-8029B734:OSFillFPUContext
+8029B734:L_OSFillFPUContext
 
 // OSFont.c
 // 8029C86C:GetFontCode
@@ -2153,9 +2163,9 @@
 // 8029CEDC:OSLoadFont
 // 8029D01C:ParseStringS
 // 8029D158:OSGetFontTexel
-// 8029D3F8:ExpandFontSheet
-8029D7A4:OSInitFont
-8029D9B0:OSGetFontTexture
+// 8029D3F8:L_ExpandFontSheet
+8029D7A4:L_OSInitFont
+8029D9B0:L_OSGetFontTexture
 
 // OSLink.c
 // 8029E38C:OSNotifyLink

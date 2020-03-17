@@ -16,8 +16,9 @@ uint32_t marioStGetSystemLevel();
 void viPostCallback(uint32_t retraceCount);
 void gcDvdCheckThread();
 void gcRumbleCheck();
-void systemErrorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar);
-// setupErrorHandler
+// L_gcResetCheck
+void N_systemErrorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar);
+// N_setupErrorHandler
 
 extern void *globalWorkPointer;
 

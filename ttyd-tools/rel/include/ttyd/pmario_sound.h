@@ -38,6 +38,7 @@ extern "C" {
 // psndBGMOn
 // psndBGMMain
 // psndBGM_rate
+// L_psndBGM_stop
 // psndSFXAllOff
 // psndMapChange
 // psndGetFlag

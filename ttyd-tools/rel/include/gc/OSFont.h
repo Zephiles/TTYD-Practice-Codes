@@ -42,9 +42,9 @@ uint16_t OSGetFontEncode();
 // OSLoadFont
 // ParseStringS
 // OSGetFontTexel
-// ExpandFontSheet
-bool OSInitFont(OSFontHeader *fontData);
-char *OSGetFontTexture(const char *string, void **image, int32_t *posX, int32_t *posY, int32_t *width);
+// L_ExpandFontSheet
+bool L_OSInitFont(OSFontHeader *fontData);
+char *L_OSGetFontTexture(const char *string, void **image, int32_t *posX, int32_t *posY, int32_t *width);
 
 }
 

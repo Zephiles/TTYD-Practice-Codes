@@ -44,10 +44,10 @@ extern "C" {
 // sort_4_3_func
 // sort_4_2_func
 // sort_4_1_func
-// compare_func4_2_r
-// compare_func4_2
-// compare_func4_1_r
-// compare_func4_1
+// N_compare_func4_2_r
+// N_compare_func4_2
+// N_compare_func4_1_r
+// N_compare_func4_1
 // sort_3_3_func
 // sort_3_2_func
 // sort_3_1_func

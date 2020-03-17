@@ -94,6 +94,9 @@ EVT_DECLARE_USER_FUNC(evt_map_entry_airport_harbor, 3)
 // evt_map_replace_mapobj(char *mapobj_name, int mode)
 EVT_DECLARE_USER_FUNC(evt_map_replace_mapobj, 2)
 
+// N_evt_mapdisp_onoff(int on)
+EVT_DECLARE_USER_FUNC(N_evt_mapdisp_onoff, 1)
+
 }
 
 }

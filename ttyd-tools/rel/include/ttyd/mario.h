@@ -190,6 +190,7 @@ int32_t marioKeyOffChk();
 // marioCtrlOffChk
 // marioFBattlePost
 // marioFBattlePrepare
+// N_marioChkUseParty
 // marioChkCtrl
 bool marioChkKey();
 // marioCheckMenuDisable

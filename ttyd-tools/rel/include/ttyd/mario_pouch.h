@@ -21,7 +21,7 @@ void pouchGetStarStone(uint32_t starId);
 // pouchGetKpaCoin
 // pouchMajinaiInit
 // pouchArriveBadge
-bool pouchUnEquipBadgeID(int16_t badge);
+bool N_pouchUnEquipBadgeID(int16_t badge);
 bool pouchEquipBadgeID(int16_t badge);
 // pouchEquipCheckBadgeIndex
 uint32_t pouchEquipCheckBadge(int16_t badge);

@@ -45,6 +45,7 @@ extern "C" {
 
 int32_t eventStgNum();
 EventStageDescription *eventStgDtPtr(int32_t stageId);
+// N_stg9_02_init
 // stg8_15_init
 // stg8_14_init
 // stg8_13_init

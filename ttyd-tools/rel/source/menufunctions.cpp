@@ -3821,7 +3821,7 @@ void *initStageEvents()
 			}
 			
 			// Unequip Attack FX R if it's equipped, as the new badge order may cause it to break
-			ttyd::mario_pouch::pouchUnEquipBadgeID(ttyd::item_data::Item::AttackFXR);
+			ttyd::mario_pouch::N_pouchUnEquipBadgeID(ttyd::item_data::Item::AttackFXR);
 			
 			// Re-equip Attack FX R if currently going to fight Hooktail
 			if (CurrentIndex == 58)

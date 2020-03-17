@@ -10,8 +10,8 @@ extern "C" {
 // disp2
 // disp1
 // titleMain
-// titleInit
-// getDebugMode
+// L_titleInit
+// N_getDebugMode
 // seq_titleMain
 // seq_titleExit
 // seq_titleInit

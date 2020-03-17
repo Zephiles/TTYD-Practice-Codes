@@ -40,7 +40,7 @@ extern "C" {
 // partySetFamicomMode
 // partyShadowOff
 // partyUpdateKeyData
-// partyClearCont
+// L_partyClearCont
 // partyKeyOff
 // partyKeyOn
 // partyDisp
@@ -56,6 +56,7 @@ extern "C" {
 // partyRideChk
 // allPartyRideOff2
 // allPartyRideOff
+// L_allPartyRideOn
 // allPartyForceRideOn
 // getRidePos
 // allPartyRideShip
@@ -70,7 +71,9 @@ extern "C" {
 // partyDoWork
 // driveParty
 // partyMain
+// N_partyForceChgRunMode
 // partyChgRunMode
+// N__partyChgRunMode
 // partyUsePost
 // partyReInit
 // partyInit

@@ -361,7 +361,7 @@ void fbatSandersBombTriggerOn();
 int32_t npcCalcScore(const NpcEntry *npc);
 bool npcCheckBlow(const NpcEntry *npc);
 
-// fbatPreventMarioEventChk
+// N_fbatPreventMarioEventChk
 
 }
 

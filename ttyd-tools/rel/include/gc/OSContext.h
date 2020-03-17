@@ -40,7 +40,7 @@ extern "C" {
 // OSDumpContext
 // OSSwitchFPUContext
 // __OSContextInit
-void OSFillFPUContext(OSContext *context);
+void L_OSFillFPUContext(OSContext *context);
 
 }
 
