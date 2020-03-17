@@ -128,8 +128,9 @@ struct Player
 	float wYoshiHoverHeight;
 	float wCamVal1;
 	float wHazardSpeed;
-	uint8_t gap_2c8[28];
-	float wResetPosition[3];
+	uint8_t gap_2c8[24];
+	uint32_t wbReloadMapOnBottomless;
+	float bottomlessResetPosition[3];
 	uint32_t unk_2f0;
 	uint32_t unk_2f4;
 } __attribute__((__packed__));
