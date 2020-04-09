@@ -32,6 +32,7 @@
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/effdrv.h>
+#include <ttyd/evtmgr.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_disp.h>
 #include <ttyd/pmario_sound.h>
@@ -4660,6 +4661,39 @@ void drawEffsActive()
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
+void drawEvtsActive()
+{
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= 40;
+	float Scale 	= 0.65;
+	
+	// Get the total amount of evts active
+	ttyd::evtmgr::EvtWork *EvtWrk = ttyd::evtmgr::evtGetWork();
+	int32_t MaxEntries = EvtWrk->entryCount;
+	int32_t CurrentCount = 0;
+	
+	ttyd::evtmgr::EvtEntry *EvtEntry = &EvtWrk->entries[0];
+	for (int32_t i = 0; i < MaxEntries; i++)
+	{
+		if (EvtEntry->flags & (1 << 0)) // Check if 0 bit is active
+		{
+			CurrentCount++;
+		}
+		EvtEntry++;
+	}
+	
+	// Draw the total amount of evts active out of the max
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Evts Active: %" PRId32 "/%" PRId32,
+		CurrentCount,
+		MaxEntries);
+	
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+}
+
 void drawSettingsCurrentWork()
 {
 	const char *String;
@@ -4740,7 +4774,7 @@ void drawMemoryUsage()
 	uint32_t Color 	= 0xFFFFFFFF;
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 40;
+	int32_t PosY 	= 20;
 	float Scale 	= 0.6;
 	
 	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;

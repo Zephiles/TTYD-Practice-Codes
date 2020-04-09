@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.46";
+const char *VersionNumber = "v3.0.47d";
 
 const char *RootLines[] = 
 {
@@ -1520,6 +1520,7 @@ const char *DisplaysLines[] =
 	"Art Attack Hitboxes",
 	"Memory Usage",
 	"Effs Active",
+	"Evts Active",
 	"Yoshi Skip",
 	"Palace Skip",
 	"Bridge Skip",
@@ -1853,12 +1854,13 @@ uint8_t DisplaysOrder[] =
 	BRIDGE_SKIP,
 	EFFS_ACTIVE,
 	MEMORY_USAGE,
+	EVTS_ACTIVE,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[32];
 struct Cheats Cheat[25];
-bool Displays[16];
+bool Displays[17];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 

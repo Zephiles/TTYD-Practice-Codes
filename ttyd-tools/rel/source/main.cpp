@@ -981,6 +981,7 @@ void Mod::run()
 		displaySequenceInPauseMenu();
 		displayActionCommandsTiming();
 		displayEffsActive();
+		displayEvtsActive();
 		
 		// Check the heaps
 		checkHeaps();

@@ -350,6 +350,7 @@ enum DISPLAYS_OPTIONS
 	ART_ATTACK_HITBOXES,
 	MEMORY_USAGE,
 	EFFS_ACTIVE,
+	EVTS_ACTIVE,
 	YOSHI_SKIP,
 	PALACE_SKIP,
 	BRIDGE_SKIP,
@@ -921,7 +922,7 @@ struct NpcNameToPtrErrorStruct
 extern MenuVars MenuVar;
 extern Menus Menu[32];
 extern Cheats Cheat[25];
-extern bool Displays[16];
+extern bool Displays[17];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 
