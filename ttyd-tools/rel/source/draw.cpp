@@ -4666,8 +4666,14 @@ void drawEvtsActive()
 	uint32_t Color 	= 0xFFFFFFFF;
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 40;
+	int32_t PosY 	= 60;
 	float Scale 	= 0.65;
+	
+	// Move the text down if the effs display is active
+	if (Displays[EFFS_ACTIVE])
+	{
+		PosY -= 20;
+	}
 	
 	// Get the total amount of evts active
 	ttyd::evtmgr::EvtWork *EvtWrk = ttyd::evtmgr::evtGetWork();
@@ -4774,8 +4780,20 @@ void drawMemoryUsage()
 	uint32_t Color 	= 0xFFFFFFFF;
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
-	int32_t PosY 	= 20;
+	int32_t PosY 	= 60;
 	float Scale 	= 0.6;
+	
+	// Move the text down if the effs display is active
+	if (Displays[EFFS_ACTIVE])
+	{
+		PosY -= 20;
+	}
+	
+	// Move the text down if the evts display is active
+	if (Displays[EVTS_ACTIVE])
+	{
+		PosY -= 20;
+	}
 	
 	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
 	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
