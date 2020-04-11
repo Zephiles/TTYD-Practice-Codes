@@ -490,6 +490,12 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 			UpperBound = ttyd::item_data::Item::SuperChargeP;
 			break;
 		}
+		case CHEATS_GENERATE_LAG_SPIKE:
+		{
+			LowerBound = 1;
+			UpperBound = 10000;
+			break;
+		}
 		case CHEATS_MANAGE_FLAGS_MAIN:
 		{
 			switch (tempMenuSelectionStates)
@@ -1243,6 +1249,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					MenuVar.FrameCounter = 1;
 					return Button;
 				}
+				case CHEATS_GENERATE_LAG_SPIKE:
+				{
+					MenuVar.LagSpikeDuration = static_cast<uint16_t>(MenuVar.MenuSecondaryValue);
+					MenuVar.SelectedOption = 0;
+					
+					MenuVar.FrameCounter = 1;
+					return Button;
+				}
 				case CHEATS_NPC_FORCE_DROP:
 				{
 					MenuVar.ForcedNPCItemDrop = static_cast<int16_t>(MenuVar.MenuSecondaryValue);
@@ -1463,6 +1477,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 							return NO_NUMBERS_TO_DISPLAY;
 						}
 					}
+					case CHEATS_GENERATE_LAG_SPIKE:
 					case CHEATS_MANAGE_FLAGS_MAIN:
 					case BATTLES_CURRENT_ACTOR:
 					case BATTLES_STATUSES:

@@ -936,6 +936,7 @@ void Mod::run()
 		setTimeStopTextStorage();
 		lockMarioHPToMax();
 		levitate();
+		generateLagSpike();
 	}
 	
 	// Run each cheat function that isn't button-based

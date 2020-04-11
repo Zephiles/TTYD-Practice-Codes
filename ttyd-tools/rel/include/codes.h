@@ -16,6 +16,7 @@ void reloadRoomMain();
 void reloadRoom();
 void levitate();
 uint32_t autoMashText(uint32_t controllerPort);
+void generateLagSpike();
 void lockMarioHPToMax();
 void bobberyEarly();
 void spawnItem();

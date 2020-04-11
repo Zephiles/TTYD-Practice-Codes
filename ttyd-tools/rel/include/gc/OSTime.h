@@ -7,7 +7,7 @@ namespace gc::OSTime {
 extern "C" {
 
 int64_t OSGetTime();
-// OSGetTick
+uint32_t OSGetTick();
 // __OSGetSystemTime
 // GetDates
 // OSTicksToCalendarTime

@@ -7,6 +7,7 @@
 #include "patch.h"
 #include "assembly.h"
 
+#include <gc/OSTime.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mariost.h>
@@ -650,6 +651,40 @@ uint32_t autoMashText(uint32_t controllerPort)
 	
 	// Return the value for B to make sure the text is being mashed through as fast as possible
 	return PAD_B;
+}
+
+void generateLagSpike()
+{
+	if (!Cheat[GENERATE_LAG_SPIKE].Active)
+	{
+		return;
+	}
+	
+	if (!checkButtonCombo(Cheat[GENERATE_LAG_SPIKE].ButtonCombo))
+	{
+		return;
+	}
+	
+	// Make sure the desired duration does not exceed 10 seconds
+	uint32_t Duration = MenuVar.LagSpikeDuration;
+	if (Duration > 10000)
+	{
+		// Reset the duration
+		Duration = 468;
+		MenuVar.LagSpikeDuration = static_cast<uint16_t>(Duration);
+	}
+	
+	uint32_t DurationTick = Duration * 40500;
+	uint32_t StartTick = gc::OSTime::OSGetTick();
+	
+	while (1)
+	{
+		uint32_t CurrentTick = gc::OSTime::OSGetTick();
+		if ((CurrentTick - StartTick) >= DurationTick)
+		{
+			break;
+		}
+	}
 }
 
 void lockMarioHPToMax()

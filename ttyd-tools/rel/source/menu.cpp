@@ -534,6 +534,11 @@ void menuCheckButton()
 							MenuToEnter = CHEATS_STANDARD;
 							break;
 						}
+						case GENERATE_LAG_SPIKE:
+						{
+							MenuToEnter = CHEATS_GENERATE_LAG_SPIKE;
+							break;
+						}
 						case LOCK_MARIO_HP_TO_MAX:
 						case RUN_FROM_BATTLES:
 						case DISABLE_MENU_SOUNDS:
@@ -688,6 +693,72 @@ void menuCheckButton()
 							enterPreviousMenu();
 							break;
 						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case CHEATS_GENERATE_LAG_SPIKE:
+		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					if (tempSelectedOption == 0)
+					{
+						adjustMenuNoPageEdit(CurrentButton);
+					}
+					break;
+				}
+				case A:
+				{
+					if (tempSelectedOption == 0)
+					{
+						uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+						switch (CurrentMenuOptionCheck)
+						{
+							case CHEATS_GENERATE_LAG_SPIKE_TURN_ON_OR_OFF:
+							{
+								// Flip the bool for the current cheat
+								bool CheatActive = Cheat[tempMenuSelectedOption].Active;
+								Cheat[tempMenuSelectedOption].Active = !CheatActive;
+								break;
+							}
+							case CHEATS_GENERATE_LAG_SPIKE_CHANGE_BUTTON_COMBO:
+							{
+								MenuVar.ChangingCheatButtonCombo 	= true;
+								MenuVar.Timer 						= secondsToFrames(3);
+								MenuVar.SelectedOption 				= CHEATS_GENERATE_LAG_SPIKE_CHANGE_BUTTON_COMBO;
+								break;
+							}
+							case CHEATS_GENERATE_LAG_SPIKE_SET_DURATION:
+							{
+								MenuVar.MenuSecondaryValue 		= static_cast<int32_t>(MenuVar.LagSpikeDuration);
+								MenuVar.SelectedOption 			= CHEATS_GENERATE_LAG_SPIKE_SET_DURATION;
+								MenuVar.SecondaryMenuOption 	= getHighestAdjustableValueDigit(tempCurrentMenu) - 1;
+								break;
+							}
+							default:
+							{
+								break;
+							}
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					if (tempSelectedOption == 0)
+					{
+						// Go back to the previous menu
+						MenuVar.MenuSelectedOption = 0;
+						enterPreviousMenu();
 					}
 					break;
 				}
@@ -3416,6 +3487,34 @@ void drawMenu()
 			// Draw the bool
 			int32_t PosY = 140;
 			drawCheatsBool(PosY);
+			break;
+		}
+		case CHEATS_GENERATE_LAG_SPIKE:
+		{
+			// Draw the text for the options
+			drawSingleColumnSelectedOption();
+			
+			// Draw the text for the other details
+			uint16_t *CurrentButtonCombo = &Cheat[tempMenuSelectedOption].ButtonCombo;
+			drawCheatsGenerateLagSpike(*CurrentButtonCombo);
+			
+			switch (tempSelectedOption)
+			{
+				case CHEATS_GENERATE_LAG_SPIKE_CHANGE_BUTTON_COMBO:
+				{
+					drawChangeButtonCombo(CurrentButtonCombo);
+					break;
+				}
+				case CHEATS_GENERATE_LAG_SPIKE_SET_DURATION:
+				{
+					drawAdjustableValue(false, tempCurrentMenu);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
 			break;
 		}
 		case CHEATS_NPC_FORCE_DROP:

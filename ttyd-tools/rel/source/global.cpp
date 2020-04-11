@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.47d";
+const char *VersionNumber = "v3.0.47";
 
 const char *RootLines[] = 
 {
@@ -53,6 +53,7 @@ const char *CheatsLines[] =
 	"Reload Room",
 	"Levitate",
 	"Auto Mash Through Text",
+	"Generate Lag Spike",
 	"Lock Mario's HP To Its Max",
 	"Allow Running From Any Battle",
 	"Disable Pause Menu/Z Menu Sounds",
@@ -1016,6 +1017,13 @@ const char *CheatsManageGlobalWordsOptions[]
 	"Set New Value",
 };
 
+const char *CheatsGenerateLagSpikeOptions[]
+{
+	"Turn On/Off",
+	"Change Button Combo",
+	"Set Duration",
+};
+
 const char *CheatsLockFlagsOptions[]
 {
 	"Lock GSWs",
@@ -1834,6 +1842,7 @@ uint8_t CheatsOrder[] =
 	FALL_THROUGH_FLOORS,
 	LOCK_FLAGS,
 	AUTO_MASH_TEXT,
+	GENERATE_LAG_SPIKE,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1858,8 +1867,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[32];
-struct Cheats Cheat[25];
+struct Menus Menu[33];
+struct Cheats Cheat[26];
 bool Displays[17];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1924,6 +1933,10 @@ void initMenuVars()
 	Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions 		= sizeof(CheatsForceItemDropOptionsLines) / sizeof(CheatsForceItemDropOptionsLines[0]);
 	Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount 		= Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
 	Menu[CHEATS_NPC_FORCE_DROP].Line 					= CheatsForceItemDropOptionsLines;
+	
+	Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions 	= sizeof(CheatsGenerateLagSpikeOptions) / sizeof(CheatsGenerateLagSpikeOptions[0]);
+	Menu[CHEATS_GENERATE_LAG_SPIKE].ColumnSplitAmount 	= Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions;
+	Menu[CHEATS_GENERATE_LAG_SPIKE].Line 				= CheatsGenerateLagSpikeOptions;
 	
 	Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions 			= sizeof(CheatsLockFlagsOptions) / sizeof(CheatsLockFlagsOptions[0]);
 	Menu[CHEATS_LOCK_FLAGS].ColumnSplitAmount 			= Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions;
@@ -2031,6 +2044,7 @@ void setInitialSettings()
 	// Cheat[DISABLE_MENU_SOUNDS].Active 		= false;
 	// Cheat[BOBBERY_EARLY].Active 				= false;
 	Cheat[FORCE_ITEM_DROP].Active 				= false;
+	Cheat[GENERATE_LAG_SPIKE].Active 			= false;
 	
 	// Set the Cheats button combos
 	Cheat[WALK_THROUGH_WALLS].ButtonCombo 		= PAD_Z;
@@ -2048,6 +2062,7 @@ void setInitialSettings()
 	Cheat[RELOAD_ROOM].ButtonCombo 				= PAD_L | PAD_B;
 	Cheat[LEVITATE].ButtonCombo 				= PAD_L | PAD_A;
 	Cheat[AUTO_MASH_TEXT].ButtonCombo 			= PAD_Y;
+	Cheat[GENERATE_LAG_SPIKE].ButtonCombo 		= PAD_Y | PAD_Z;
 	
 	// Set the Displays bools
 	// Displays[ONSCREEN_TIMER] 				= true;

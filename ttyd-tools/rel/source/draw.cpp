@@ -3052,6 +3052,32 @@ void drawChangeButtonCombo(uint16_t *currentButtonCombo)
 	clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 }
 
+void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo)
+{
+	uint32_t Color = 0xFFFFFFFF;
+	uint8_t Alpha = 0xFF;
+	int32_t PosX = -232;
+	int32_t PosY = 100;
+	float Scale = 0.6;
+	
+	// Draw the bool
+	drawCheatsBool(PosY);
+	
+	// Draw the button combo
+	PosY -= 60;
+	const char *Description = "Button Combo (Can be pressed in any order)";
+	drawButtonCombo(currentButtonCombo, PosY, Description);
+	
+	// Draw the duration
+	char *tempDisplayBuffer = DisplayBuffer;
+	sprintf(tempDisplayBuffer,
+		"Duration (in milliseconds)\n%" PRIu16,
+		MenuVar.LagSpikeDuration);
+	
+	PosY -= 60;
+	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+}
+
 void drawCheatsForcedDropItem()
 {
 	uint8_t Alpha 	= 0xFF;

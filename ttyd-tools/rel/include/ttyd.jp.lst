@@ -2174,7 +2174,7 @@
 
 // OSTime.c
 80297A48:OSGetTime
-// 80297A60:OSGetTick
+80297A60:OSGetTick
 // 80297A68:__OSGetSystemTime
 // 80297ACC:GetDates
 // 80297C68:OSTicksToCalendarTime

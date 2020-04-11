@@ -22,6 +22,7 @@ enum MENU_NAMES
 	CHEATS_CHANGE_SEQUENCE,
 	CHEATS_STANDARD,
 	CHEATS_NO_BUTTON_COMBO,
+	CHEATS_GENERATE_LAG_SPIKE,
 	CHEATS_NPC_FORCE_DROP,
 	CHEATS_RESOLVE_FADES,
 	CHEATS_LOCK_FLAGS,
@@ -83,6 +84,7 @@ enum CHEATS_OPTIONS
 	RELOAD_ROOM,
 	LEVITATE,
 	AUTO_MASH_TEXT,
+	GENERATE_LAG_SPIKE,
 	LOCK_MARIO_HP_TO_MAX,
 	RUN_FROM_BATTLES,
 	DISABLE_MENU_SOUNDS,
@@ -115,6 +117,13 @@ enum CHEATS_FORCE_ITEM_DROP_SELECTION
 #define FADE_NOT_ACTIVE 		-2
 #define FADE_DONT_RESOLVE 		-1
 #define FADE_RESOLVE_SUCCESS 	1
+
+enum CHEATS_GENERATE_LAG_SPIKE_SELECTION
+{
+	CHEATS_GENERATE_LAG_SPIKE_TURN_ON_OR_OFF = 1,
+	CHEATS_GENERATE_LAG_SPIKE_CHANGE_BUTTON_COMBO,
+	CHEATS_GENERATE_LAG_SPIKE_SET_DURATION,
+};
 
 enum CHEATS_LOCK_FLAGS_SELECTION
 {
@@ -519,6 +528,7 @@ struct MenuVars
 	uint32_t MemoryWatchSecondaryValue;
 	bool DrawChangingMemoryWatchPosition;
 	uint8_t FrameCounter;
+	uint16_t LagSpikeDuration; // Milliseconds
 	
 	// Variables used by other stuff
 	bool ResetMarioProperties;
@@ -529,6 +539,7 @@ struct MenuVars
 	MenuVars()
 	{
 		ForcedNPCItemDrop = ttyd::item_data::Item::SleepySheep;
+		LagSpikeDuration = 468;
 	}
 };
 
@@ -900,8 +911,8 @@ struct NpcNameToPtrErrorStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[32];
-extern Cheats Cheat[25];
+extern Menus Menu[33];
+extern Cheats Cheat[26];
 extern bool Displays[17];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
