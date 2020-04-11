@@ -467,18 +467,13 @@ void clearHeapCorruptionBuffer()
 	clearMemory(HeapInfo.HeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
 }
 
-void clearMemoryUsageBuffers()
+void clearMemoryUsageBuffer()
 {
-	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
+	int32_t ArrayCount = HeapInfo.ArrayCount;
 	
-	// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
-	int32_t MemoryUsageArrays = ((TotalHeaps + 1) * 2) - 1;
-	
-	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
-	for (int32_t i = 0; i < MemoryUsageArrays; i++)
-	{
-		clearMemory(tempMemoryUsageBuffer[i], MEMORY_USAGE_LINE_BUFFER_SIZE);
-	}
+	// Subtract 1 for not displaying the free portion of the smart heap
+	int32_t MemoryUsageArrays = (ArrayCount * 2) - 1;
+	clearMemory(HeapInfo.MemoryUsageBuffer, MemoryUsageArrays * MEMORY_USAGE_LINE_BUFFER_SIZE);
 }
 
 void addTextToHeapCorruptionBuffer(char *text)
@@ -615,7 +610,7 @@ void handleStandardHeapChunkResults(void *addressWithError,
 			Chunks);
 		
 		// Add the text to the memory usage buffer
-		strncpy(HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex], 
+		strncpy(&HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex * MEMORY_USAGE_LINE_BUFFER_SIZE], 
 			tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
 	}
 }
@@ -676,7 +671,7 @@ void handleSmartHeapChunkResults(void *addressWithError,
 			Chunks);
 		
 		// Add the text to the memory usage buffer
-		strncpy(HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex], 
+		strncpy(&HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex * MEMORY_USAGE_LINE_BUFFER_SIZE], 
 			tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
 	}
 }
@@ -685,16 +680,16 @@ void checkHeaps()
 {
 	// Clear the heap buffers to be safe
 	clearHeapCorruptionBuffer();
-	clearMemoryUsageBuffers();
+	clearMemoryUsageBuffer();
 	
 	void *AddressWithError;
 	uint32_t MemoryUsageCounter = 0;
 	
 	// Check the standard heaps
 	gc::OSAlloc::HeapInfo *HeapArray = gc::OSAlloc::HeapArray;
-	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
+	int32_t NumHeaps = gc::OSAlloc::NumHeaps;
 	
-	for (int32_t i = 0; i < TotalHeaps; i++)
+	for (int32_t i = 0; i < NumHeaps; i++)
 	{
 		const gc::OSAlloc::HeapInfo *heap = &HeapArray[i];
 		
@@ -735,12 +730,12 @@ void checkHeaps()
 	// Draw the memory usage details
 	// Make sure at least one heap is being drawn
 	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-	for (int32_t i = 0; i <= TotalHeaps; i++)
+	for (int32_t i = 0; i <= NumHeaps; i++)
 	{
 		if (DisplayHeapInfo[i])
 		{
 			drawFunctionOnDebugLayerWithOrder(drawMemoryUsage, 5.f);
-			return;
+			break;
 		}
 	}
 }

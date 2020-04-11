@@ -2608,7 +2608,7 @@ void menuCheckButton()
 				case A:
 				{
 					// Make sure the selected option is valid
-					if (tempCurrentMenuOption >= static_cast<uint32_t>(getTotalHeaps()))
+					if (tempCurrentMenuOption >= static_cast<uint32_t>(HeapInfo.ArrayCount))
 					{
 						break;
 					}

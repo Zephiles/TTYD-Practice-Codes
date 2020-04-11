@@ -4195,12 +4195,6 @@ void updateOnScreenTimerVars()
 	OnScreenTimer.PreviousFrameTime = CurrentFrameTime;
 }
 
-int32_t getTotalHeaps()
-{
-	int32_t TotalHeaps = gc::OSAlloc::NumHeaps;
-	return TotalHeaps + 1; // Add one to include the smart heap at the end
-}
-
 /*void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo)
 {
 	uint32_t Counter = 0;
@@ -4981,7 +4975,7 @@ void adjustBattlesStatusSelection(uint32_t button)
 
 void adjustDisplaysMemoryUsageSelection(uint32_t button)
 {
-	uint32_t TotalMenuOptions = static_cast<uint32_t>(getTotalHeaps());
+	uint32_t TotalMenuOptions = static_cast<uint32_t>(HeapInfo.ArrayCount);
 	uint32_t MaxOptionsPerRow = 1;
 	uint32_t MaxOptionsPerPage = TotalMenuOptions;
 	uint8_t tempPage[1];

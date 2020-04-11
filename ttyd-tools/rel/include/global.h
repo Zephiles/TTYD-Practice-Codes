@@ -734,26 +734,20 @@ struct OnScreenTimerDisplayFrameCounter
 struct HeapInfoDisplay
 {
 	#define MEMORY_USAGE_LINE_BUFFER_SIZE 64
+	int32_t ArrayCount;
 	bool *DisplayHeapInfo;
-	char **MemoryUsageBuffer;
+	char *MemoryUsageBuffer;
 	char HeapCorruptionBuffer[512];
 	
 	HeapInfoDisplay()
 	{
-		int32_t NumHeaps = gc::OSAlloc::NumHeaps;
+		int32_t NumHeaps = gc::OSAlloc::NumHeaps + 1; // Add one for the smart heap
+		ArrayCount = NumHeaps;
+		DisplayHeapInfo = new bool[NumHeaps];
 		
-		DisplayHeapInfo = new bool[NumHeaps + 1]; // Add one for the smart heap
-		
-		// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
-		int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
-		
-		char **tempMemoryUsageBuffer = new char *[MemoryUsageArrays];
-		MemoryUsageBuffer = tempMemoryUsageBuffer;
-		
-		for (int32_t i = 0; i < MemoryUsageArrays; i++)
-		{
-			tempMemoryUsageBuffer[i] = new char[MEMORY_USAGE_LINE_BUFFER_SIZE];
-		}
+		// Subtract 1 for not displaying the free portion of the smart heap
+		int32_t MemoryUsageArrays = (NumHeaps * 2) - 1;
+		MemoryUsageBuffer = new char[MemoryUsageArrays * MEMORY_USAGE_LINE_BUFFER_SIZE];
 	}
 	
 	~HeapInfoDisplay()
@@ -765,20 +759,6 @@ struct HeapInfoDisplay
 		
 		if (MemoryUsageBuffer)
 		{
-			int32_t NumHeaps = gc::OSAlloc::NumHeaps;
-			
-			// Add one for the smart heap, subtract 1 for not displaying the free portion of the smart heap
-			int32_t MemoryUsageArrays = ((NumHeaps + 1) * 2) - 1;
-			
-			char **tempMemoryUsageBuffer = MemoryUsageBuffer;
-			for (int32_t i = 0; i < MemoryUsageArrays; i++)
-			{
-				if (tempMemoryUsageBuffer[i])
-				{
-					delete[] (tempMemoryUsageBuffer[i]);
-				}
-			}
-			
 			delete[] (MemoryUsageBuffer);
 		}
 	}

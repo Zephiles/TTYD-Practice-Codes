@@ -6,6 +6,6 @@ namespace mod {
 
 void fixRoomProblems();
 void clearHeapCorruptionBuffer();
-void clearMemoryUsageBuffers();
+void clearMemoryUsageBuffer();
 
 }

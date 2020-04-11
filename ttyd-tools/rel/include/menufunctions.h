@@ -100,7 +100,6 @@ double getStickAngle(int32_t stickXYOut[2]); // If the X and Y values are not wa
 void getStickAngleString(char *stringOut);
 char *getTimeString(char *stringOut, int64_t time);
 void updateOnScreenTimerVars();
-int32_t getTotalHeaps();
 
 // void getButtonsPressedDynamic(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);

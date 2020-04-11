@@ -3434,13 +3434,13 @@ void drawDisplaysMemoryUsageMenu()
 	
 	// Draw each option for displaying memory usage about each heap
 	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-	int32_t TotalHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
+	int32_t NumHeaps = HeapInfo.ArrayCount - 1; // Remove the smart heap from the total
 	
 	int32_t tempCurrentMenuOption = static_cast<int32_t>(MenuVar.CurrentMenuOption);
 	char *tempDisplayBuffer = DisplayBuffer;
 	const char *String;
 	
-	for (int32_t i = 0; i < TotalHeaps; i++)
+	for (int32_t i = 0; i < NumHeaps; i++)
 	{
 		// Draw each heap number
 		sprintf(tempDisplayBuffer,
@@ -3458,12 +3458,12 @@ void drawDisplaysMemoryUsageMenu()
 	}
 	
 	// Draw the smart heap text
-	bool CurrentOptionCheck = tempCurrentMenuOption == TotalHeaps;
+	bool CurrentOptionCheck = tempCurrentMenuOption == NumHeaps;
 	Color = getSelectedTextColor(CurrentOptionCheck);
 	drawText("Smart Heap", PosX, PosY, Alpha, Color, Scale);
 	
 	// Draw the bool for the smart heap
-	getOnOffTextAndColor(DisplayHeapInfo[TotalHeaps], &String, &Color);
+	getOnOffTextAndColor(DisplayHeapInfo[NumHeaps], &String, &Color);
 	drawText(String, PosX + 120, PosY, Alpha, Color, Scale);
 }
 
@@ -4795,10 +4795,10 @@ void drawMemoryUsage()
 		PosY -= 20;
 	}
 	
-	char **tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
+	char *tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
 	bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
 	
-	int32_t NumHeaps = getTotalHeaps() - 1; // Remove the smart heap from the total
+	int32_t NumHeaps = HeapInfo.ArrayCount - 1; // Remove the smart heap from the total
 	uint32_t MemoryUsageCounter = 0;
 	
 	// Draw the text for the main heaps
@@ -4808,15 +4808,17 @@ void drawMemoryUsage()
 		if (DisplayHeapInfo[i])
 		{
 			// Draw the used and free text
-			if (tempMemoryUsageBuffer[MemoryUsageCounter][0] != '\0')
+			uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
+			if (tempMemoryUsageBuffer[MemoryUsageBufferIndex] != '\0')
 			{
-				drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, Color, Scale);
+				drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Alpha, Color, Scale);
 				PosY -= 20;
 			}
 			
-			if (tempMemoryUsageBuffer[MemoryUsageCounter + 1][0] != '\0')
+			MemoryUsageBufferIndex += MEMORY_USAGE_LINE_BUFFER_SIZE;
+			if (tempMemoryUsageBuffer[MemoryUsageBufferIndex] != '\0')
 			{
-				drawText(tempMemoryUsageBuffer[MemoryUsageCounter + 1], PosX, PosY, Alpha, Color, Scale);
+				drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Alpha, Color, Scale);
 				PosY -= 20;
 			}
 		}
@@ -4827,14 +4829,15 @@ void drawMemoryUsage()
 	if (DisplayHeapInfo[NumHeaps])
 	{
 		// Draw the used text
-		if (tempMemoryUsageBuffer[MemoryUsageCounter][0] != '\0')
+		if (tempMemoryUsageBuffer[MemoryUsageCounter] != '\0')
 		{
-			drawText(tempMemoryUsageBuffer[MemoryUsageCounter], PosX, PosY, Alpha, Color, Scale);
+			uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
+			drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Alpha, Color, Scale);
 		}
 	}
 	
 	// Clear each of the memory usage buffers
-	clearMemoryUsageBuffers();
+	clearMemoryUsageBuffer();
 }
 
 void drawNpcNameToPtrError()
