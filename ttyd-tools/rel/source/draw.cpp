@@ -4855,9 +4855,9 @@ void drawMemoryUsage()
 	if (DisplayHeapInfo[NumHeaps])
 	{
 		// Draw the used text
-		if (tempMemoryUsageBuffer[MemoryUsageCounter] != '\0')
+		uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
+		if (tempMemoryUsageBuffer[MemoryUsageBufferIndex] != '\0')
 		{
-			uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
 			drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Alpha, Color, Scale);
 		}
 	}
