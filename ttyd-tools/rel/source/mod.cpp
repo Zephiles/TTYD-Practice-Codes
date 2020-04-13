@@ -131,14 +131,14 @@ void Mod::init()
 		return gMod->displayActionCommandsTimingHook(battleUnitPtr, attackParams);
 	});
 	
-	mPFN_systemErrorHandler_trampoline = patch::hookFunction(
+	/* mPFN_systemErrorHandler_trampoline = patch::hookFunction(
 		ttyd::mariost::N_systemErrorHandler, [](uint16_t error, 
 			gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
 	{
 		// Enable the FPU registers
 		StartErrorHandlerEnableFPU();
 		gMod->errorHandler(error, context, dsisr, dar);
-	});
+	}); */
 	
 	mPFN_npcNameToPtr_trampoline = patch::hookFunction(
 		ttyd::npcdrv::npcNameToPtr, [](const char *name)

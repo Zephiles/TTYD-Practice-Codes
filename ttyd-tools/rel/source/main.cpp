@@ -789,6 +789,9 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010F810);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010F888);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D214C);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x80428BC0);
+	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8025E4A4);
+	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x8025E4A8);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013D148);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x800389C4);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038A0C);
@@ -815,6 +818,7 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x8010A724);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x8010A79C);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800CE01C);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x80422618);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x80137C1C);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038328);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038370);
@@ -841,6 +845,9 @@ void initAddressOverwrites()
 	void *FixBlooperCrash1Address 						= reinterpret_cast<void *>(0x801106E8);
 	void *FixBlooperCrash2Address 						= reinterpret_cast<void *>(0x80110760);
 	void *PreventTextboxSelectionAddress 				= reinterpret_cast<void *>(0x800D2F44);
+	void *BacktraceScreenFontSizeAddress 				= reinterpret_cast<void *>(0x804356C8);
+	void *BacktraceScreenPPCHaltBranchAddress 			= reinterpret_cast<void *>(0x8026207C);
+	void *BacktraceScreenEndBranchAddress 				= reinterpret_cast<void *>(0x80262080);
 	void *DisableDPadOptionsDisplayAddress 				= reinterpret_cast<void *>(0x8013EC30);
 	void *FixEvtMapBlendSetFlagPartnerCrashAddress 		= reinterpret_cast<void *>(0x80038AAC);
 	void *FixEvtMapBlendSetFlagFollowerCrashAddress 	= reinterpret_cast<void *>(0x80038AF4);
@@ -903,6 +910,14 @@ void initAddressOverwrites()
 	*reinterpret_cast<uint32_t *>(PreventImportantItemCutscenesAddress) 	= 0x48000030; // b 0x30
 	
 	*reinterpret_cast<uint32_t *>(msgWindowMrAddress) 						= 0x38830001; // addi r4,r3,1
+	
+	*reinterpret_cast<float *>(BacktraceScreenFontSizeAddress) 				= 0.66;
+	
+#ifndef TTYD_JP
+	// This part of the backtrace screen does not need to be modified in JP
+	*reinterpret_cast<uint32_t *>(BacktraceScreenPPCHaltBranchAddress) 		= 0x3B400000; // li r26,0
+	*reinterpret_cast<uint32_t *>(BacktraceScreenEndBranchAddress) 			= 0x4BFFFDD4; // b -0x22C
+#endif
 	
 	// Set the initial value for the debug mode variable
 	*reinterpret_cast<int32_t *>(
