@@ -4033,7 +4033,8 @@ void drawMarioSpeedXZ()
 	if (Displays[MARIO_COORDINATES] || 
 		Displays[YOSHI_SKIP] || 
 		Displays[PALACE_SKIP] || 
-		Displays[BRIDGE_SKIP])
+		Displays[BRIDGE_SKIP] || 
+		Displays[BLIMP_TICKET_SKIP])
 	{
 		PosY += 20;
 	}
@@ -4139,7 +4140,8 @@ void drawStickAngle()
 	if (Displays[MARIO_COORDINATES] || 
 		Displays[YOSHI_SKIP] || 
 		Displays[PALACE_SKIP] || 
-		Displays[BRIDGE_SKIP])
+		Displays[BRIDGE_SKIP] || 
+		Displays[BLIMP_TICKET_SKIP])
 	{
 		PosY += 20;
 	}
