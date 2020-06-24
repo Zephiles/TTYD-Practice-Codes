@@ -3419,31 +3419,31 @@ const char *getMapFromIndex(int32_t index)
 	{
 		case 18:
 		{
-			return UnusedMaps[0]; // tik_09
+			return UnusedMapsArray[0]; // tik_09
 		}
 		case 19:
 		{
-			return UnusedMaps[1]; // tik_10
+			return UnusedMapsArray[1]; // tik_10
 		}
 		case 23:
 		{
-			return UnusedMaps[2]; // tik_14
+			return UnusedMapsArray[2]; // tik_14
 		}
 		case 135:
 		{
-			return UnusedMaps[3]; // rsh_05_b
+			return UnusedMapsArray[3]; // rsh_05_b
 		}
 		case 136:
 		{
-			return UnusedMaps[4]; // rsh_05_c
+			return UnusedMapsArray[4]; // rsh_05_c
 		}
 		case 138:
 		{
-			return UnusedMaps[5]; // rsh_06_b
+			return UnusedMapsArray[5]; // rsh_06_b
 		}
 		case 139:
 		{
-			return UnusedMaps[6]; // rsh_06_c
+			return UnusedMapsArray[6]; // rsh_06_c
 		}
 		default:
 		{

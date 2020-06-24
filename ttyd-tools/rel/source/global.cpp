@@ -1656,7 +1656,7 @@ const char *WarpIndexLines[] =
 	"Warp",
 };
 
-const char *UnusedMaps[] = 
+const char *UnusedMapsArray[] = 
 {
 	"tik_09",
 	"tik_10",
@@ -1723,7 +1723,7 @@ uint8_t BattlesCurrentActorStatsSize 		= sizeof(BattlesCurrentActorStats) / size
 uint8_t BattlesStatusesLinesSize 			= sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
 uint8_t OnScreenTimerOptionsSize 			= sizeof(OnScreenTimerOptions) / sizeof(OnScreenTimerOptions[0]);
 uint8_t WarpDestinationsSize 				= sizeof(WarpDestinations) / sizeof(WarpDestinations[0]);
-uint8_t UnusedMapsSize 						= sizeof(UnusedMaps) / sizeof(UnusedMaps[0]);
+uint8_t UnusedMapsArraySize 				= sizeof(UnusedMapsArray) / sizeof(UnusedMapsArray[0]);
 
 uint16_t StatsMarioIcons[] = 
 {
@@ -1911,6 +1911,7 @@ struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
 struct NpcNameToPtrErrorStruct NpcNameToPtrError;
+struct UnusedMapStruct UnusedMap;
 
 void initMenuVars()
 {

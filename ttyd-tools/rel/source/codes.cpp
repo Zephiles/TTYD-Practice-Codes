@@ -2134,27 +2134,21 @@ uint32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMod
 
 ttyd::mapdata::MapData *Mod::mapDataPtrHandleUnusedMaps(const char *mapName)
 {
-	// Set up a global struct to use for unused maps
-	static ttyd::mapdata::MapData UnusedMapData;
-	
-	// Set up a global string to be used in the struct
-	const uint32_t MaxSize = 9; // 8 bytes for UnusedMapName, 1 byte for NULL
-	static char UnusedMapName[MaxSize];
-	
 	// Check if the current map is unused
-	const char **UnusedMapsPtr = UnusedMaps;
-	uint32_t tempUnusedMapsSize = UnusedMapsSize;
+	const char **UnusedMapsArrayPtr = UnusedMapsArray;
+	uint32_t tempUnusedMapsArraySize = UnusedMapsArraySize;
+	uint32_t Size = sizeof(UnusedMap.UnusedMapName);
 	
-	for (uint32_t i = 0; i < tempUnusedMapsSize; i++)
+	for (uint32_t i = 0; i < tempUnusedMapsArraySize; i++)
 	{
-		if (compareStringsSize(mapName, UnusedMapsPtr[i], MaxSize))
+		if (compareStringsSize(mapName, UnusedMapsArrayPtr[i], Size))
 		{
 			// Set up the new data
-			ttyd::mapdata::MapData *tempUnusedMapData = &UnusedMapData;
-			char *tempUnusedMapName = UnusedMapName;
+			UnusedMapStruct *tempUnusedMap = &UnusedMap;
+			ttyd::mapdata::MapData *tempUnusedMapData = &tempUnusedMap->UnusedMapData;
+			char *tempUnusedMapName = tempUnusedMap->UnusedMapName;
 			
-			strncpy(tempUnusedMapName, mapName, MaxSize - 1); // Subtract 1 to make sure the string is properly null terminated
-			tempUnusedMapData->mapName = tempUnusedMapName;
+			strncpy(tempUnusedMapName, mapName, Size - 1); // Subtract 1 to make sure the string is properly null terminated
 			tempUnusedMapData->pInitEvtCode = MenuVar.CurrentMapInitScript;
 			
 			return tempUnusedMapData;

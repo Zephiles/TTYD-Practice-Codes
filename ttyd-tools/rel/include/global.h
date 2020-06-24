@@ -2,6 +2,7 @@
 
 #include <gc/OSAlloc.h>
 #include <ttyd/item_data.h>
+#include <ttyd/mapdata.h>
 
 #include <cstdint>
 
@@ -911,6 +912,17 @@ struct NpcNameToPtrErrorStruct
 	uint16_t Timer;
 };
 
+struct UnusedMapStruct
+{
+	ttyd::mapdata::MapData UnusedMapData;
+	char UnusedMapName[9]; // 8 bytes for UnusedMapName, 1 byte for NULL
+	
+	UnusedMapStruct()
+	{
+		UnusedMapData.mapName = UnusedMapName;
+	}
+};
+
 extern MenuVars MenuVar;
 extern Menus Menu[33];
 extern Cheats Cheat[26];
@@ -944,6 +956,7 @@ extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
 extern NpcNameToPtrErrorStruct NpcNameToPtrError;
+extern UnusedMapStruct UnusedMap;
 
 extern uint8_t CheatsOrder[];
 extern uint16_t StatsMarioIcons[];
@@ -971,7 +984,7 @@ extern const char *OnScreenTimerOptions[];
 extern const char *WarpDestinations[];
 extern const char *WarpDescriptions[];
 extern const char *WarpBossLines[];
-extern const char *UnusedMaps[];
+extern const char *UnusedMapsArray[];
 
 extern uint8_t CheatsManageGlobalWordsOptionsSize;
 extern uint8_t CheatsManageGlobalFlagsOptionsSize;
@@ -987,7 +1000,7 @@ extern uint8_t BattlesCurrentActorStatsSize;
 extern uint8_t BattlesStatusesLinesSize;
 extern uint8_t OnScreenTimerOptionsSize;
 extern uint8_t WarpDestinationsSize;
-extern uint8_t UnusedMapsSize;
+extern uint8_t UnusedMapsArraySize;
 
 #ifdef TTYD_JP
 extern const char *ButtonInputDisplay[];
