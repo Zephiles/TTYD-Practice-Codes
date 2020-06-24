@@ -535,6 +535,7 @@ struct MenuVars
 	int16_t ForcedNPCItemDrop;
 	bool MarioFreeze;
 	uint16_t JumpStorageSetCounter;
+	const uint32_t *CurrentMapInitScript;
 	
 	MenuVars()
 	{
@@ -970,6 +971,7 @@ extern const char *OnScreenTimerOptions[];
 extern const char *WarpDestinations[];
 extern const char *WarpDescriptions[];
 extern const char *WarpBossLines[];
+extern const char *UnusedMaps[];
 
 extern uint8_t CheatsManageGlobalWordsOptionsSize;
 extern uint8_t CheatsManageGlobalFlagsOptionsSize;
@@ -985,6 +987,7 @@ extern uint8_t BattlesCurrentActorStatsSize;
 extern uint8_t BattlesStatusesLinesSize;
 extern uint8_t OnScreenTimerOptionsSize;
 extern uint8_t WarpDestinationsSize;
+extern uint8_t UnusedMapsSize;
 
 #ifdef TTYD_JP
 extern const char *ButtonInputDisplay[];

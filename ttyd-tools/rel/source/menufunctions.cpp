@@ -792,7 +792,7 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 			if ((tempCurrentMenuOption + 1) == INDEX_SELECT_MAP)
 			{
 				// LowerBound = 0;
-				UpperBound = 271;
+				UpperBound = 278;
 			}
 			else
 			{
@@ -3404,7 +3404,7 @@ void cheatClearAreaFlags(uint32_t currentMenuOption)
 
 const char *getMapFromIndex(int32_t index)
 {
-	int32_t MaxIndex = 271;
+	const int32_t MaxIndex = 278;
 	if (index >= MaxIndex)
 	{
 		return "title";
@@ -3413,41 +3413,95 @@ const char *getMapFromIndex(int32_t index)
 	{
 		return "aaa_00";
 	}
-	else
+	
+	// Check for the unused maps
+	switch (index)
 	{
-		// Skip invalid values
-		int32_t NewIndex = index - 1;
-		uint32_t Counter = 0;
-		
-		if (NewIndex >= 269) // dig_00
+		case 18:
 		{
-			Counter += 32;
+			return UnusedMaps[0]; // tik_09
 		}
-		else if (NewIndex >= 266) // qiz_00
+		case 19:
 		{
-			Counter += 24;
+			return UnusedMaps[1]; // tik_10
 		}
-		else if (NewIndex >= 90) // hei_bt00
+		case 23:
 		{
-			Counter += 16;
+			return UnusedMaps[2]; // tik_14
 		}
-		else if (NewIndex >= 74) // gon_bt00
+		case 135:
 		{
-			Counter += 8;
+			return UnusedMaps[3]; // rsh_05_b
 		}
-		
-		uint32_t WorldDataPointer = reinterpret_cast<uint32_t>(ttyd::mapdata::worldData.unk_18);
-		
-		return reinterpret_cast<const char *>(
-			*reinterpret_cast<uint32_t *>(
-				*reinterpret_cast<uint32_t *>(
-					WorldDataPointer + 0x10) + Counter + (NewIndex * 0x8)));
+		case 136:
+		{
+			return UnusedMaps[4]; // rsh_05_c
+		}
+		case 138:
+		{
+			return UnusedMaps[5]; // rsh_06_b
+		}
+		case 139:
+		{
+			return UnusedMaps[6]; // rsh_06_c
+		}
+		default:
+		{
+			break;
+		}
 	}
+	
+	int32_t NewIndex = index - 1;
+	
+	// Decrement NewIndex based on the current index
+	if (index >= 138) // rsh_06_c
+	{
+		NewIndex -= 7;
+	}
+	else if (index >= 135) // rsh_05_c
+	{
+		NewIndex -= 5;
+	}
+	else if (index >= 23) // tik_14
+	{
+		NewIndex -= 3;
+	}
+	else if (index >= 19) // tik_10
+	{
+		NewIndex -= 2;
+	}
+	
+	// Skip invalid values
+	uint32_t Counter = 0;
+	
+	if (index >= 277) // dig_00
+	{
+		Counter += 32;
+	}
+	else if (index >= 274) // qiz_00
+	{
+		Counter += 24;
+	}
+	else if (index >= 94) // hei_bt00
+	{
+		Counter += 16;
+	}
+	else if (index >= 78) // gon_bt00
+	{
+		Counter += 8;
+	}
+	
+	uint32_t WorldDataPointer = reinterpret_cast<uint32_t>(ttyd::mapdata::worldData.unk_18);
+	
+	return reinterpret_cast<const char *>(
+		*reinterpret_cast<uint32_t *>(
+			*reinterpret_cast<uint32_t *>(
+				WorldDataPointer + 0x10) + Counter + (NewIndex * 0x8)));
 }
 
 int32_t getMapIndex()
 {
-	int32_t MaxIndex = 271;
+	const int32_t MaxIndex = 278;
 	for (int32_t i = 0; i <= MaxIndex; i++)
 	{
 		if (compareStringToNextMap(getMapFromIndex(i)))

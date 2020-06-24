@@ -28,6 +28,7 @@
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/party.h>
+#include <ttyd/mapdata.h>
 
 #include <cstring>
 #include <cstdio>
@@ -2126,6 +2127,62 @@ uint32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMod
 	
 	// Call original function
 	return mPFN_evt_bero_get_info_trampoline(evt, waitMode);
+}
+
+ttyd::mapdata::MapData *Mod::mapDataPtrHandleUnusedMaps(const char *mapName)
+{
+	// Set up a global struct to use for unused maps
+	static ttyd::mapdata::MapData UnusedMapData;
+	
+	// Set up a global string to be used in the struct
+	const uint32_t MaxSize = 9; // 8 bytes for UnusedMapName, 1 byte for NULL
+	static char UnusedMapName[MaxSize];
+	
+	// Check if the current map is unused
+	const char **UnusedMapsPtr = UnusedMaps;
+	uint32_t tempUnusedMapsSize = UnusedMapsSize;
+	
+	for (uint32_t i = 0; i < tempUnusedMapsSize; i++)
+	{
+		if (compareStringsSize(mapName, UnusedMapsPtr[i], MaxSize))
+		{
+			// Set up the new data
+			ttyd::mapdata::MapData *tempUnusedMapData = &UnusedMapData;
+			char *tempUnusedMapName = UnusedMapName;
+			
+			strncpy(tempUnusedMapName, mapName, MaxSize - 1); // Subtract 1 to make sure the string is properly null terminated
+			tempUnusedMapData->mapName = tempUnusedMapName;
+			tempUnusedMapData->pInitEvtCode = MenuVar.CurrentMapInitScript;
+			
+			return tempUnusedMapData;
+		}
+	}
+	
+	// Call original function
+	return mPFN_mapDataPtr_trampoline(mapName);
+}
+
+void Mod::_unloadHook(const char *currentMap, const char *nextMap, const char *nextBero)
+{
+	// Reset the current map init script variable
+	// Must reset this variable, as not all maps have an init script
+	MenuVar.CurrentMapInitScript = nullptr;
+	
+	// Call original function
+	mPFN__unload_trampoline(currentMap, nextMap, nextBero);
+}
+
+void Mod::relSetEvtAddrHook(const char *mapName, const void *pInitEvtCode)
+{
+	// Check if setting the init script for the current map
+	if (compareStringToNextMap(mapName))
+	{
+		// Set the current map init script variable
+		MenuVar.CurrentMapInitScript = static_cast<const uint32_t *>(pInitEvtCode);
+	}
+	
+	// Call original function
+	mPFN_relSetEvtAddr_trampoline(mapName, pInitEvtCode);
 }
 
 }

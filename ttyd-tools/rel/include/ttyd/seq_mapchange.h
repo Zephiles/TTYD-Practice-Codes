@@ -8,7 +8,7 @@ extern "C" {
 
 // _relUnLoad
 // _load
-// _unload
+void _unload(const char *currentMap, const char *nextMap, const char *nextBero);
 // seq_mapChangeMain
 // seq_mapChangeExit
 // seq_mapChangeInit

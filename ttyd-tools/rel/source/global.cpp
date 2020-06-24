@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.47";
+const char *VersionNumber = "v3.0.48d";
 
 const char *RootLines[] = 
 {
@@ -1656,6 +1656,17 @@ const char *WarpIndexLines[] =
 	"Warp",
 };
 
+const char *UnusedMaps[] = 
+{
+	"tik_09",
+	"tik_10",
+	"tik_14",
+	"rsh_05_b",
+	"rsh_05_c",
+	"rsh_06_b",
+	"rsh_06_c",
+};
+
 #ifdef TTYD_JP
 uint8_t ButtonLeft[] 	= {0x81, 0xA9, 0};
 uint8_t ButtonRight[] 	= {0x81, 0xA8, 0};
@@ -1712,6 +1723,7 @@ uint8_t BattlesCurrentActorStatsSize 		= sizeof(BattlesCurrentActorStats) / size
 uint8_t BattlesStatusesLinesSize 			= sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
 uint8_t OnScreenTimerOptionsSize 			= sizeof(OnScreenTimerOptions) / sizeof(OnScreenTimerOptions[0]);
 uint8_t WarpDestinationsSize 				= sizeof(WarpDestinations) / sizeof(WarpDestinations[0]);
+uint8_t UnusedMapsSize 						= sizeof(UnusedMaps) / sizeof(UnusedMaps[0]);
 
 uint16_t StatsMarioIcons[] = 
 {

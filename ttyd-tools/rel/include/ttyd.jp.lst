@@ -70,7 +70,7 @@
 // text
 // 800074F4:_relUnLoad
 // 8000755C:_load
-// 80007A30:_unload
+80007A30:_unload
 // 80007BA8:seq_mapChangeMain
 // 8000864C:seq_mapChangeExit
 // 80008674:seq_mapChangeInit

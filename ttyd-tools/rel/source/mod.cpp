@@ -20,6 +20,8 @@
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/battle_unit.h>
+#include <ttyd/mapdata.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -144,6 +146,25 @@ void Mod::init()
 		ttyd::npcdrv::npcNameToPtr, [](const char *name)
 	{
 		return gMod->checkForNpcNameToPtrError(name);
+	});
+	
+	mPFN_mapDataPtr_trampoline = patch::hookFunction(
+		ttyd::mapdata::mapDataPtr, [](const char *mapName)
+	{
+		return gMod->mapDataPtrHandleUnusedMaps(mapName);
+	});
+	
+	mPFN__unload_trampoline = patch::hookFunction(
+		ttyd::seq_mapchange::_unload, [](
+			const char *currentMap, const char *nextMap, const char *nextBero)
+	{
+		return gMod->_unloadHook(currentMap, nextMap, nextBero);
+	});
+	
+	mPFN_relSetEvtAddr_trampoline = patch::hookFunction(
+		ttyd::mapdata::relSetEvtAddr, [](const char *mapName, const void *pInitEvtCode)
+	{
+		gMod->relSetEvtAddrHook(mapName, pInitEvtCode);
 	});
 	
 	// Initialize typesetting early

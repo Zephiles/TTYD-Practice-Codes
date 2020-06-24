@@ -46,14 +46,21 @@ struct WorldData
 	uint8_t unk_8c[124];
 } __attribute__((__packed__));
 
+struct MapData
+{
+	const char *mapName;
+	const void *pInitEvtCode;
+} __attribute__((__packed__));
+
 static_assert(sizeof(WorldData) == 0x108);
+static_assert(sizeof(MapData) == 0x8);
 
 extern "C" {
 
 void relSetBtlAddr(const char *areaName, const void *battleInfos, const ttyd::database::DatabaseDefinition *nameToInfoIdTable);
 void relSetEvtAddr(const char *mapName, const void *pInitEvtCode);
 void **areaDataPtr(const char *areaName);
-void **mapDataPtr(const char *mapName);
+MapData *mapDataPtr(const char *mapName);
 
 extern WorldData worldData;
 

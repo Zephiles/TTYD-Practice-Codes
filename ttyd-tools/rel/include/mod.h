@@ -6,6 +6,7 @@
 #include <ttyd/npcdrv.h>
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
+#include <ttyd/mapdata.h>
 
 #include <cstdint>
 
@@ -34,6 +35,9 @@ private:
 	int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
 	void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);
 	ttyd::npcdrv::NpcEntry *checkForNpcNameToPtrError(const char *);
+	ttyd::mapdata::MapData *mapDataPtrHandleUnusedMaps(const char *);
+	void _unloadHook(const char *, const char *, const char *);
+	void relSetEvtAddrHook(const char *, const void *);
 
 private:
 	void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -60,6 +64,9 @@ private:
 		gc::OSContext::OSContext *, uint32_t, uint32_t) = nullptr;
 	
 	ttyd::npcdrv::NpcEntry *(*mPFN_npcNameToPtr_trampoline)(const char *) = nullptr;
+	ttyd::mapdata::MapData *(*mPFN_mapDataPtr_trampoline)(const char *) = nullptr;
+	void (*mPFN__unload_trampoline)(const char *, const char *, const char *) = nullptr;
+	void (*mPFN_relSetEvtAddr_trampoline)(const char *, const void *) = nullptr;
 };
 
 }
