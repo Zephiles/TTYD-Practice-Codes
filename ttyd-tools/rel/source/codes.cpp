@@ -1387,22 +1387,25 @@ void displayBlimpTicketSkipDetails()
 		BlimpTicketSkip.StraightUpTimerStopped 	= false;
 	}
 	
-	double StickAngle = getStickAngle(nullptr);
+	double StickAngle;
 	double UpRightAngleStart = 25;
 	
 #ifdef TTYD_JP
 	UpRightAngleStart += 2;
 #endif
 	
-	if (StickAngle >= UpRightAngleStart)
+	if (getStickAngle(nullptr, &StickAngle))
 	{
-		// Stop the up-right timer when the angle held reaches or exceeds 25 for JP, or 27 for US/EU
-		BlimpTicketSkip.UpRightTimerStopped = true;
-	}
-	else if (StickAngle == 0)
-	{
-		// Stop the straight-up timer when the angle held is 0
-		BlimpTicketSkip.StraightUpTimerStopped = true;
+		if (StickAngle >= UpRightAngleStart)
+		{
+			// Stop the up-right timer when the angle held reaches or exceeds 25 for JP, or 27 for US/EU
+			BlimpTicketSkip.UpRightTimerStopped = true;
+		}
+		else if (StickAngle == 0)
+		{
+			// Stop the straight-up timer when the angle held is 0
+			BlimpTicketSkip.StraightUpTimerStopped = true;
+		}
 	}
 	
 	if (checkButtonComboEveryFrame(PAD_Y))

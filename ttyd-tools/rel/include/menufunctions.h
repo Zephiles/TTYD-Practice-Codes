@@ -96,7 +96,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], char *stageNameBuffer, ui
 bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition);
 #endif
 
-double getStickAngle(int32_t stickXYOut[2]); // If the X and Y values are not wanted, then pass in nullptr
+bool getStickAngle(int32_t stickXYOut[2], double *stickAngleOut); // If the X and Y values are not wanted, then pass in nullptr for stickXYOut
 void getStickAngleString(char *stringOut);
 char *getTimeString(char *stringOut, int64_t time);
 void updateOnScreenTimerVars();

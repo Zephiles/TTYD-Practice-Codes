@@ -4132,7 +4132,7 @@ bool getSequenceStageAndEvent(const char *arrayOut[2], uint32_t sequencePosition
 	return true;
 }
 
-double getStickAngle(int32_t stickXYOut[2])
+bool getStickAngle(int32_t stickXYOut[2], double *stickAngleOut)
 {
 	int32_t StickXInt = static_cast<int32_t>(ttyd::system::keyGetStickX(0));
 	int32_t StickYInt = static_cast<int32_t>(ttyd::system::keyGetStickY(0));
@@ -4146,7 +4146,7 @@ double getStickAngle(int32_t stickXYOut[2])
 			stickXYOut[0] = 0;
 			stickXYOut[1] = 0;
 		}
-		return -1000;
+		return false;
 	}
 	
 	if (StickXInt > 127)
@@ -4176,16 +4176,17 @@ double getStickAngle(int32_t stickXYOut[2])
 		StickAngle += 360;
 	}
 	
-	return StickAngle;
+	*stickAngleOut = StickAngle;
+	return true;
 }
 
 void getStickAngleString(char *stringOut)
 {
 	int32_t StickXYAngles[2];
-	double StickAngle = getStickAngle(StickXYAngles);
+	double StickAngle;
 	
 	// Check if the stick is at the neutral position
-	if (StickAngle == -1000)
+	if (!getStickAngle(StickXYAngles, &StickAngle))
 	{
 		// The stick is currently at the neutral position
 		strcpy(stringOut, "Neutral");
