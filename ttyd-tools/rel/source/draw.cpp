@@ -4528,6 +4528,12 @@ void drawActionCommandsTiming()
 #endif
 	
 	uint32_t MarioBattlePointer = reinterpret_cast<uint32_t>(getMarioBattlePointer());
+	if (!MarioBattlePointer)
+	{
+		DisplayActionCommands.DisplayTimer = 0;
+		return;
+	}
+	
 	uint32_t SimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + SimplifierOffset);
 	uint32_t UnsimplifiersEquipped = *reinterpret_cast<uint8_t *>(MarioBattlePointer + UnsimplifierOffset);
 	
