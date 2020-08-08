@@ -768,7 +768,10 @@ void spawnItem()
 	}
 	
 	bool tempInAdjustableValueMenu = SpawnItem.InAdjustableValueMenu;
-	if (Cheat[SPAWN_ITEM].Active && !MenuVar.ChangingCheatButtonCombo)
+	
+	if (Cheat[SPAWN_ITEM].Active && 
+		!MenuVar.MenuIsDisplayed && 
+		!MenuVar.ChangingCheatButtonCombo)
 	{
 		if (!checkIfInGame())
 		{
