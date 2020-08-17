@@ -37,6 +37,7 @@ bool checkForClosingErrorMessage();
 
 void correctInventoryCurrentMenuOptionAndPage(uint32_t maxOptionsPerPage);
 uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu);
+uint32_t getHighestAdjustableValueDigitUnsigned(uint32_t currentMenu, bool handleAsHex);
 int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy);
 void setAdjustableValueToMax(uint32_t currentMenu);
 void setAdjustableValueToMin(uint32_t currentMenu);
@@ -49,9 +50,10 @@ uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 
-void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
+void adjustMenuItemBoundsMain(uint32_t currentMenu, int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
+void adjustMenuItemBoundsMainUnsigned(uint32_t currentMenu, int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);
-void adjustAddByIdValue(int32_t value, uint32_t currentMenu);
+void adjustAddByIdValue(int32_t value, uint32_t currentMenu, bool handleAsHex, bool handleAsUnsigned);
 
 uint32_t getMarioStatsValueOffset(uint32_t currentMenuOption);
 void setMarioStatsValue(uint32_t currentMenuOption);

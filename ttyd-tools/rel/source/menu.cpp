@@ -3,7 +3,7 @@
 #include "global.h"
 #include "commonfunctions.h"
 #include "memcard.h"
-#include "memorywatch.h"
+#include "memory.h"
 #include "codes.h"
 #include "draw.h"
 
@@ -1731,6 +1731,53 @@ void menuCheckButton()
 		}
 		case MEMORY:
 		{
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustMenuNoPageEdit(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+					switch (CurrentMenuOptionCheck)
+					{
+						case OPEN_WATCHES_MENU:
+						{
+							enterNextMenu(MEMORY_WATCH, tempCurrentMenuOption);
+							resetMenu();
+							break;
+						}
+						case OPEN_EDITOR_MENU:
+						{
+							enterNextMenu(MEMORY_EDITOR_SETUP, tempCurrentMenuOption);
+							resetMenu();
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					// Go back to the previous menu
+					enterPreviousMenu();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_WATCH:
+		{
 			uint32_t MaxOptionsPerPage = 10;
 			switch (CurrentButton)
 			{
@@ -1882,7 +1929,7 @@ void menuCheckButton()
 							{
 								// Enter the next menu
 								MenuVar.MenuSelectedOption = tempCurrentMenuOption;
-								enterNextMenu(MEMORY_MODIFY, tempSelectedOption - 1);
+								enterNextMenu(MEMORY_WATCH_MODIFY, tempSelectedOption - 1);
 								resetMenu();
 							}
 							else
@@ -1944,7 +1991,7 @@ void menuCheckButton()
 			}
 			break;
 		}
-		case MEMORY_MODIFY:
+		case MEMORY_WATCH_MODIFY:
 		{
 			switch (CurrentButton)
 			{
@@ -1969,7 +2016,7 @@ void menuCheckButton()
 								case CHANGE_ADDRESS:
 								{
 									// Enter the next menu
-									enterNextMenu(MEMORY_CHANGE_ADDRESS, tempCurrentMenuOption);
+									enterNextMenu(MEMORY_WATCH_CHANGE_ADDRESS, tempCurrentMenuOption);
 									resetMenu();
 									break;
 								}
@@ -2054,7 +2101,7 @@ void menuCheckButton()
 			}
 			break;
 		}
-		case MEMORY_CHANGE_ADDRESS:
+		case MEMORY_WATCH_CHANGE_ADDRESS:
 		{
 			switch (CurrentButton)
 			{
@@ -2143,12 +2190,12 @@ void menuCheckButton()
 									{
 										case 0:
 										{
-											MenuVar.MemoryWatchSecondaryValue = MemoryWatch[tempMenuSelectedOption].Address;
+											MenuVar.MenuSecondaryValueUnsigned = MemoryWatch[tempMenuSelectedOption].Address;
 											break;
 										}
 										default:
 										{
-											MenuVar.MemoryWatchSecondaryValue = MemoryWatch[tempMenuSelectedOption].AddressOffset[tempCurrentMenuOption - 1];
+											MenuVar.MenuSecondaryValueUnsigned = MemoryWatch[tempMenuSelectedOption].AddressOffset[tempCurrentMenuOption - 1];
 											break;
 										}
 									}
@@ -2190,6 +2237,85 @@ void menuCheckButton()
 								}
 							}
 							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
+		case MEMORY_EDITOR_SETUP:
+		{
+			// Do nothing if the settings menu is open
+			uint32_t CurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+			if (CurrentSelectionStatus & EDITOR_OPEN_SETTINGS)
+			{
+				break;
+			}
+			
+			switch (CurrentButton)
+			{
+				case DPADDOWN:
+				case DPADUP:
+				{
+					adjustMenuNoPageEdit(CurrentButton);
+					break;
+				}
+				case A:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+							switch (CurrentMenuOptionCheck)
+							{
+								case ENABLE_EDITOR:
+								{
+									MemoryEditor.CurrentSelectionStatus = CurrentSelectionStatus ^ EDITOR_ENABLED;
+									break;
+								}
+								case EDITOR_CHANGE_BUTTON_COMBO:
+								{
+									MenuVar.ChangingCheatButtonCombo 	= true;
+									MenuVar.Timer 						= secondsToFrames(3);
+									MenuVar.SelectedOption 				= CurrentMenuOptionCheck;
+									break;
+								}
+								case EDITOR_OPEN_SETTINGS_MENU:
+								{
+									MemoryEditor.CurrentSelectionStatus = CurrentSelectionStatus | EDITOR_OPEN_SETTINGS;
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
+						}
+						default:
+						{
+							break;
+						}
+					}
+					break;
+				}
+				case B:
+				{
+					switch (tempSelectedOption)
+					{
+						case 0:
+						{
+							// Go back to the previous menu
+							enterPreviousMenu();
 						}
 						default:
 						{
@@ -3681,7 +3807,7 @@ void drawMenu()
 			}
 			break;
 		}
-		case MEMORY:
+		case MEMORY_WATCH:
 		{
 			// Draw the text for the options
 			drawSingleColumnSelectedOption();
@@ -3714,7 +3840,7 @@ void drawMenu()
 			}
 			break;
 		}
-		case MEMORY_MODIFY:
+		case MEMORY_WATCH_MODIFY:
 		{
 			// Draw the main text
 			// Don't draw if currently changing display positions
@@ -3742,7 +3868,7 @@ void drawMenu()
 			}
 			break;
 		}
-		case MEMORY_CHANGE_ADDRESS:
+		case MEMORY_WATCH_CHANGE_ADDRESS:
 		{
 			// Draw the text for the options
 			drawSingleColumnSelectedOption();
@@ -3752,7 +3878,25 @@ void drawMenu()
 			
 			if (tempMenuSelectionStates != 0)
 			{
-				drawMemoryWatchAdjustableValue(tempCurrentMenu);
+				drawAdjustableValueHex(tempCurrentMenu);
+			}
+			break;
+		}
+		case MEMORY_EDITOR_SETUP:
+		{
+			// Check if the settings menu is open
+			if (MemoryEditor.CurrentSelectionStatus & EDITOR_OPEN_SETTINGS)
+			{
+				memoryEditorButtonControls();
+				drawMemoryEditorSettingsWindow();
+			}
+			else
+			{
+				uint16_t *ButtonCombo = drawMemoryEditorSetup();
+				if (tempSelectedOption == EDITOR_CHANGE_BUTTON_COMBO)
+				{
+					drawChangeButtonCombo(ButtonCombo);
+				}
 			}
 			break;
 		}

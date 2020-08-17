@@ -935,7 +935,9 @@ void Mod::run()
 	
 	// Check if the menu should be enabled or disabled
 	// Prevent checking it if currently in the process of spawning an item
-	if (!SpawnItem.InAdjustableValueMenu)
+	// Prevent checking it if the memory editor is open
+	if (!SpawnItem.InAdjustableValueMenu && 
+		!MemoryEditor.EditorCurrentlyDisplayed)
 	{
 		enableOrDisableMenu();
 	}
@@ -989,6 +991,7 @@ void Mod::run()
 		displayMemoryWatches();
 		displayNpcNameToPtrError();
 		spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
+		displayMemoryEditor(); // Needs to always run due to the adjustable value menu sometimes being displayed
 		displaySequenceInPauseMenu();
 		displayActionCommandsTiming();
 		displayEffsActive();

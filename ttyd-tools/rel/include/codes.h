@@ -32,6 +32,7 @@ void displayJumpStorageDetails();
 void displayButtonInputs();
 void displayStickAngle();
 void displayMemoryWatches();
+void displayMemoryEditor();
 
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();

@@ -33,8 +33,10 @@ enum MENU_NAMES
 	STATS_MARIO,
 	STATS_PARTNERS,
 	STATS_FOLLOWERS,
-	MEMORY_MODIFY,
-	MEMORY_CHANGE_ADDRESS,
+	MEMORY_WATCH,
+	MEMORY_WATCH_MODIFY,
+	MEMORY_WATCH_CHANGE_ADDRESS,
+	MEMORY_EDITOR_SETUP,
 	BATTLES_CURRENT_ACTOR,
 	BATTLES_STATUSES,
 	DISPLAYS_ONSCREEN_TIMER,
@@ -204,10 +206,10 @@ enum CHEATS_CLEAR_AREA_FLAGS_AREAS
 };
 
 // Various menu values
-#define NO_NUMBERS_TO_DISPLAY 				0x1000
-#define ADDING_BY_ID 						0x1008
-#define ADDING_BY_ICON 						0x1108
-#define SPAWN_ITEM_MENU_VALUE 				0x7000
+#define NO_NUMBERS_TO_DISPLAY 				0x2000
+#define ADDING_BY_ID 						0x2008
+#define ADDING_BY_ICON 						0x2108
+#define SPAWN_ITEM_MENU_VALUE 				0x3000
 #define STATS_PARTNER_DISPLAY_YOSHI_COLORS 	100
 
 enum STATS_MARIO_SELECTION_OPTIONS
@@ -278,13 +280,19 @@ enum MEMORY_TYPES
 
 enum MEMORY_OPTIONS
 {
+	OPEN_WATCHES_MENU = 1,
+	OPEN_EDITOR_MENU,
+};
+
+enum MEMORY_WATCH_OPTIONS
+{
 	ADD_WATCH = 1,
 	MODIFY_WATCH,
 	DUPLICATE_WATCH,
 	DELETE_WATCH,
 };
 
-enum MEMORY_MODIFY_OPTIONS
+enum MEMORY_WATCH_MODIFY_OPTIONS
 {
 	CHANGE_ADDRESS = 1,
 	CHANGE_TYPE,
@@ -293,16 +301,23 @@ enum MEMORY_MODIFY_OPTIONS
 	DISPLAY_OUT_OF_MENU,
 };
 
-enum MEMORY_MODIFY_ADDRESS_OPTIONS
+enum MEMORY_WATCH_MODIFY_ADDRESS_OPTIONS
 {
 	CHANGE_ADDRESS_OR_POINTERS = 1,
 	ADD_POINTER_LEVEL,
 	REMOVE_POINTER_LEVEL,
 };
 
-// Memory error return values
+// Memory watch error return values
 #define ALL_SLOTS_EMPTY 	-2
 #define NO_SLOTS_LEFT 		-1
+
+enum MEMORY_EDITOR_SETUP_OPTIONS
+{
+	ENABLE_EDITOR = 1,
+	EDITOR_CHANGE_BUTTON_COMBO,
+	EDITOR_OPEN_SETTINGS_MENU,
+};
 
 enum BATTLES_CURRENT_ACTOR_STATS_SELECTION
 {
@@ -526,7 +541,7 @@ struct MenuVars
 	uint32_t Timer;
 	uint8_t MenuSelectionStates;
 	int32_t MenuSecondaryValue;
-	uint32_t MemoryWatchSecondaryValue;
+	uint32_t MenuSecondaryValueUnsigned;
 	bool DrawChangingMemoryWatchPosition;
 	uint8_t FrameCounter;
 	uint16_t LagSpikeDuration; // Milliseconds
@@ -820,6 +835,70 @@ struct MemoryWatchStruct
 	int32_t PosY;
 } __attribute__((__packed__));
 
+struct MemoryEditorStruct
+{
+	#define EDITOR_BYTES_PER_ROW 13
+	#define EDITOR_TOTAL_ROWS 13
+	#define EDITOR_DIGITS_PER_ROW (EDITOR_BYTES_PER_ROW * 2)
+	#define EDITOR_MAX_NUM_BYTES_DISPLAYED (EDITOR_BYTES_PER_ROW * EDITOR_TOTAL_ROWS)
+	#define EDITOR_MAX_NUM_DIGITS_DISPLAYED (EDITOR_DIGITS_PER_ROW * EDITOR_TOTAL_ROWS)
+	
+	#define EDITOR_HEADER_TOTAL_OPTIONS 	3
+	#define EDITOR_HEADER_CHANGE_ADDRESS 	0
+	#define EDITOR_HEADER_CHANGE_BYTE_SIZE 	1
+	#define EDITOR_HEADER_GOTO_EDITOR 		2
+	
+	#define EDITOR_SETTINGS_CLEAR_CACHE 		0
+	#define EDITOR_SETTINGS_SYSTEM_LEVEL 		1
+	#define EDITOR_SETTINGS_PAUSE_MENU 			2
+	#define EDITOR_SETTINGS_VERTICAL_LINES 		3
+	#define EDITOR_SETTINGS_HORIZONTAL_LINES 	4
+	
+	// CurrentSelectionStatus values
+	#define EDITOR_SELECT_CHANGE_ADDRESS 	0x00000001
+	#define EDITOR_SELECT_CHANGE_BYTES 		0x00000002
+	#define EDITOR_SELECT_GOTO_EDITOR 		0x00000004
+	#define EDITOR_SELECTED_BYTES_TO_EDIT 	0x00000008
+	#define EDITOR_EDITING_BYTES 			0x00000010
+	#define EDITOR_CLEAR_CACHE 				0x00000020
+	#define EDITOR_RAISE_SYSTEM_LEVEL 		0x00000040
+	#define EDITOR_DISABLE_PAUSE_MENU 		0x00000080
+	#define EDITOR_VERTICAL_LINES 			0x00000100
+	#define EDITOR_HORIZONTAL_LINES 		0x00000200
+	#define EDITOR_OPEN_SETTINGS 			0x00000400
+	#define EDITOR_ENABLED 					0x00000800
+	
+	#define MEMORY_EDITOR_MENU 				0x3100
+	#define MEMORY_EDITOR_ADJUSTABLE_VALUE 	0x3200
+	
+	uint8_t *CurrentAddress;
+	uint8_t *BytesBeingEdited;
+	uint32_t CurrentSelectionStatus; // Bitfield
+	uint16_t ButtonCombo;
+	uint16_t CurrentEditorSelectedMenuOption;
+	AutoIncrement AdjustEachFrame;
+	uint8_t CurrentEditorMenuOption;
+	uint8_t CurrentSettingsMenuOption;
+	uint8_t NumBytesBeingEdited;
+	bool EditorCurrentlyDisplayed;
+	
+	MemoryEditorStruct()
+	{
+		CurrentAddress = reinterpret_cast<uint8_t *>(0x80000000);
+		CurrentSelectionStatus = (EDITOR_RAISE_SYSTEM_LEVEL | EDITOR_DISABLE_PAUSE_MENU);
+		NumBytesBeingEdited = 1;
+	}
+};
+
+struct MemoryEditorSaveStruct
+{
+	uint8_t *CurrentAddress;
+	uint32_t CurrentSelectionStatus; // Bitfield
+	uint16_t ButtonCombo;
+	uint8_t NumBytesBeingEdited;
+	bool EditorCurrentlyDisplayed;
+} __attribute__((__packed__));
+
 struct SettingsStruct
 {
 	bool CheatsActive[100];
@@ -827,6 +906,7 @@ struct SettingsStruct
 	bool DisplaysActive[100];
 	uint16_t DisplaysButtonCombos[100];
 	MemoryWatchStruct MemoryWatchSettings[60];
+	MemoryEditorSaveStruct MemoryEditorSave;
 } __attribute__((__packed__));
 
 struct SaveFileDecriptionInfo
@@ -924,11 +1004,12 @@ struct UnusedMapStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[33];
+extern Menus Menu[35];
 extern Cheats Cheat[26];
 extern bool Displays[17];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
+extern MemoryEditorStruct MemoryEditor;
 
 extern AutoIncrement AdjustableValueMenu;
 extern AutoIncrement MemoryWatchAdjustableValueMenu;
@@ -974,8 +1055,9 @@ extern const char *MarioStatsSpecialMovesOptions[];
 extern const char *StatsPartnerOptionsLines[];
 extern const char *StatsYoshiColorOptionsLines[];
 extern const char *StatsFollowerOptionsLines[];
-extern const char *MemoryModifyLines[];
+extern const char *MemoryWatchModifyLines[];
 extern const char *MemoryTypeLines[];
+extern const char *MemoryEditorSettingsLines[];
 extern const char *BattlesActorsLines[];
 extern const char *BattlesCurrentActorStats[];
 extern const char *BattlesStatusesLines[];
@@ -994,8 +1076,9 @@ extern uint8_t MarioStatsSpecialMovesOptionsSize;
 extern uint8_t StatsPartnerOptionsLinesSize;
 extern uint8_t StatsYoshiColorOptionsLinesSize;
 extern uint8_t StatsFollowerOptionsLinesSize;
-extern uint8_t MemoryModifyLinesSize;
+extern uint8_t MemoryWatchModifyLinesSize;
 extern uint8_t MemoryTypeLinesSize;
+extern uint8_t MemoryEditorSettingsLinesSize;
 extern uint8_t BattlesCurrentActorStatsSize;
 extern uint8_t BattlesStatusesLinesSize;
 extern uint8_t OnScreenTimerOptionsSize;

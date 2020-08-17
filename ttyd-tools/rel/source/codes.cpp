@@ -572,10 +572,12 @@ void reloadRoom()
 {
 	if (!MenuVar.ChangingCheatButtonCombo && checkButtonCombo(Cheat[RELOAD_ROOM].ButtonCombo))
 	{
-		// Prevent being able to reload the room if the menu is open or if currently in the spawn item menu
+		/* Prevent being able to reload the room if the menu is open, if 
+			currently in the spawn item menu, or if the memory editor is open */
 		if (Cheat[RELOAD_ROOM].Active && 
 			!MenuVar.MenuIsDisplayed && 
-			!SpawnItem.InAdjustableValueMenu)
+			!SpawnItem.InAdjustableValueMenu && 
+			!MemoryEditor.EditorCurrentlyDisplayed)
 		{
 			reloadRoomMain();
 		}
@@ -771,7 +773,8 @@ void spawnItem()
 	
 	if (Cheat[SPAWN_ITEM].Active && 
 		!MenuVar.MenuIsDisplayed && 
-		!MenuVar.ChangingCheatButtonCombo)
+		!MenuVar.ChangingCheatButtonCombo && 
+		!MemoryEditor.EditorCurrentlyDisplayed)
 	{
 		if (!checkIfInGame())
 		{
@@ -786,17 +789,17 @@ void spawnItem()
 		
 		// Currently not in a battle and the pause menu is not open
 		// Check to see if the adjustable value menu is open or not
-		if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo) && !tempInAdjustableValueMenu)
-		{
-			// Not open, so disable the pause menu, raise the system level, and open the menu
-			ttyd::win_main::winOpenDisable();
-			raiseSystemLevel();
-			MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
-			SpawnItem.InAdjustableValueMenu = true;
-		}
-		
 		if (!tempInAdjustableValueMenu)
 		{
+			// Check if the adjustable value menu should be opened
+			if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo))
+			{
+				// Disable the pause menu, raise the system level, and open the menu
+				ttyd::win_main::winOpenDisable();
+				raiseSystemLevel();
+				MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
+				SpawnItem.InAdjustableValueMenu = true;
+			}
 			return;
 		}
 		
@@ -1153,6 +1156,47 @@ void displayMemoryWatches()
 			return;
 		}
 	}
+}
+
+void displayMemoryEditor()
+{
+	uint32_t tempCurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+	
+	if (!(tempCurrentSelectionStatus & EDITOR_ENABLED) || 
+		MenuVar.MenuIsDisplayed || 
+		MenuVar.ChangingCheatButtonCombo || 
+		SpawnItem.InAdjustableValueMenu)
+	{
+		return;
+	}
+	
+	// Check to see if the memory editor is open or not
+	if (!MemoryEditor.EditorCurrentlyDisplayed)
+	{
+		// Check if the memory editor should be opened
+		if (checkButtonCombo(MemoryEditor.ButtonCombo))
+		{
+			// Check if the system level should be raised
+			if (tempCurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
+			{
+				raiseSystemLevel();
+			}
+			
+			// Check if the pause menu should be disabled
+			if (tempCurrentSelectionStatus & EDITOR_DISABLE_PAUSE_MENU)
+			{
+				ttyd::win_main::winOpenDisable();
+			}
+			
+			MemoryEditor.CurrentEditorMenuOption = 0;
+			
+			// Open the memory editor
+			MemoryEditor.EditorCurrentlyDisplayed = true;
+		}
+		return;
+	}
+	
+	drawFunctionOnDebugLayerWithOrder(drawMemoryEditor, 105.f);
 }
 
 void displayYoshiSkipDetails()

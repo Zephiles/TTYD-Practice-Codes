@@ -353,6 +353,13 @@ int32_t saveSettings()
 	// Copy the Memory Watches
 	memcpy(Settings->MemoryWatchSettings, MemoryWatch, sizeof(MemoryWatch));
 	
+	// Copy the Memory Editor data
+	Settings->MemoryEditorSave.CurrentAddress 				= MemoryEditor.CurrentAddress;
+	Settings->MemoryEditorSave.ButtonCombo 					= MemoryEditor.ButtonCombo;
+	Settings->MemoryEditorSave.CurrentSelectionStatus 		= MemoryEditor.CurrentSelectionStatus;
+	Settings->MemoryEditorSave.NumBytesBeingEdited 			= MemoryEditor.NumBytesBeingEdited;
+	Settings->MemoryEditorSave.EditorCurrentlyDisplayed 	= MemoryEditor.EditorCurrentlyDisplayed;
+	
 	// Write the data to the file
 	ReturnCode = writeToFileOnCard(&FileInfo, MiscData, FileSizeAdjusted, 0x2000);
 	
@@ -495,6 +502,29 @@ int32_t loadSettings()
 	
 	// Get the Memory Watches
 	memcpy(MemoryWatch, Settings->MemoryWatchSettings, sizeof(MemoryWatch));
+	
+	// Get the Memory Editor data
+	MemoryEditor.CurrentSelectionStatus = Settings->MemoryEditorSave.CurrentSelectionStatus;
+	MemoryEditor.EditorCurrentlyDisplayed = Settings->MemoryEditorSave.EditorCurrentlyDisplayed;
+	
+	// Don't get CurrentAddress, ButtonCombo, or NumBytesBeingEdited if they are 0
+	uint8_t *CurrentAddress = Settings->MemoryEditorSave.CurrentAddress;
+	if (CurrentAddress)
+	{
+		MemoryEditor.CurrentAddress = CurrentAddress;
+	}
+	
+	uint16_t ButtonCombo = Settings->MemoryEditorSave.ButtonCombo;
+	if (ButtonCombo)
+	{
+		MemoryEditor.ButtonCombo = ButtonCombo;
+	}
+	
+	uint8_t NumBytesBeingEdited = Settings->MemoryEditorSave.NumBytesBeingEdited;
+	if (NumBytesBeingEdited)
+	{
+		MemoryEditor.NumBytesBeingEdited = NumBytesBeingEdited;
+	}
 	
 	delete[] (MiscData);
 	return CARD_RESULT_READY;

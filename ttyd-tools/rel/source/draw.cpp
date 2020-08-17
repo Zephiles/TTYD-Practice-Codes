@@ -2,7 +2,7 @@
 #include "global.h"
 #include "commonfunctions.h"
 #include "menufunctions.h"
-#include "memorywatch.h"
+#include "memory.h"
 #include "mod.h"
 #include "assembly.h"
 #include "main.h"
@@ -1508,7 +1508,7 @@ void drawMemoryModifyList()
 	uint32_t tempSelectedOption 		= MenuVar.SelectedOption;
 	uint32_t tempCurrentMenuOption 		= MenuVar.CurrentMenuOption;
 	uint32_t tempMenuSelectedOption 	= MenuVar.MenuSelectedOption;
-	uint32_t TotalOptions 				= MemoryModifyLinesSize;
+	uint32_t TotalOptions 				= MemoryWatchModifyLinesSize;
 	
 	uint8_t Alpha 	= 0xFF;
 	int32_t PosX 	= -232;
@@ -1535,7 +1535,7 @@ void drawMemoryModifyList()
 		Color = getSelectedTextColor(CurrentOptionCheck);
 		
 		// Draw the main text
-		drawText(MemoryModifyLines[i], PosX, PosY, Alpha, Color, Scale);
+		drawText(MemoryWatchModifyLines[i], PosX, PosY, Alpha, Color, Scale);
 		
 		// Reset the color back to white
 		Color = 0xFFFFFFFF;
@@ -1796,6 +1796,469 @@ void drawMemoryChangeAddressList()
 	
 	drawText("Final Value", PosX, PosY, Alpha, Color, Scale);
 	drawText(getValueString(tempMenuSelectedOption), PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
+}
+
+uint16_t *drawMemoryEditorSetup()
+{
+	// Draw the text for the options
+	drawSingleColumnMain();
+	
+	// Draw the bool for whether the editor is enabled or not
+	bool EditorEnabled = MemoryEditor.CurrentSelectionStatus & EDITOR_ENABLED;
+	const char *CurrentLine = "Memory Editor Display";
+	
+	int32_t PosY = 100;
+	drawBoolOnOrOff(EditorEnabled, CurrentLine, PosY);
+	
+	// Draw the button combo
+	uint16_t *ButtonCombo = &MemoryEditor.ButtonCombo;
+	CurrentLine = "Button Combo (Can be pressed in any order)";
+	PosY -= 60;
+	drawButtonCombo(*ButtonCombo, PosY, CurrentLine);
+	
+	return ButtonCombo;
+}
+
+void drawMemoryEditorSettingsWindow()
+{
+	const int32_t InitialPosY 		= 180;
+	const int32_t ValuesPosXOffset 	= 260;
+	
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= -232;
+	int32_t PosY 	= InitialPosY;
+	float Scale 	= 0.6;
+	uint32_t Color;
+	
+	// Draw the main text
+	uint32_t CurrentSettingsMenuOption = MemoryEditor.CurrentSettingsMenuOption;
+	const char **StringArray = MemoryEditorSettingsLines;
+	uint32_t Size = MemoryEditorSettingsLinesSize;
+	
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		bool CurrentOptionCheck = CurrentSettingsMenuOption == i;
+		Color = getSelectedTextColor(CurrentOptionCheck);
+		
+		if (CurrentOptionCheck)
+		{
+			// Draw a window for the current option
+			uint32_t WindowColor = 0x151515E0;
+			int32_t WindowPosX = PosX - 5;
+			int32_t WindowPosY = PosY;
+			int32_t Width = 293;
+			int32_t Height = 15;
+			int32_t Curve = 0;
+			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+		}
+		
+		drawText(StringArray[i], PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
+	// Draw the values
+	uint32_t CurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+	const char *TextToDraw;
+	PosX += ValuesPosXOffset;
+	PosY = InitialPosY;
+	
+	for (uint32_t i = 0; i < Size; i++)
+	{
+		// Values start at EDITOR_CLEAR_CACHE
+		bool CurrentValue = CurrentSelectionStatus & (EDITOR_CLEAR_CACHE << i);
+		getOnOffTextAndColor(CurrentValue, &TextToDraw, &Color);
+		
+		drawText(TextToDraw, PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+}
+
+void drawMemoryEditorMainWindow()
+{
+	const int32_t InitialPosX 			= -232;
+	const int32_t InitialPosY 			= 180;
+	const int32_t InitialEditorPosX 	= InitialPosX + 103;
+	const int32_t DigitSpace 			= 12;
+	
+	uint32_t Color 	= 0xFFFFFFFF;
+	uint8_t Alpha 	= 0xFF;
+	int32_t PosX 	= InitialPosX;
+	int32_t PosY 	= InitialPosY;
+	float Scale 	= 0.6;
+	
+	// Draw the text stating to press Y to open the options
+	const char *String = "Press Y to open the settings menu";
+	int32_t SettingsTextPosX = -143;
+	drawText(String, SettingsTextPosX, PosY, Alpha, Color, Scale);
+	
+	// Draw the text for the options
+	uint8_t *CurrentAddress = MemoryEditor.CurrentAddress;
+	uint32_t tempCurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+	uint32_t tempCurrentEditorMenuOption = MemoryEditor.CurrentEditorMenuOption;
+	bool ColorCondition;
+	
+	char *tempDisplayBuffer = DisplayBuffer;
+	for (uint32_t i = 0; i < EDITOR_HEADER_TOTAL_OPTIONS; i++)
+	{
+		switch (i)
+		{
+			case EDITOR_HEADER_CHANGE_ADDRESS:
+			{
+				// Get the values for the address string
+				String = "Address";
+				PosY -= 20;
+				
+				// Draw the starting address
+				sprintf(tempDisplayBuffer,
+					"0x%08" PRIX32,
+					reinterpret_cast<uint32_t>(CurrentAddress));
+				
+				uint32_t tempColor = 0xFFFFFFFF;
+				drawText(tempDisplayBuffer, PosX, PosY - 20, Alpha, tempColor, Scale);
+				break;
+			}
+			case EDITOR_HEADER_CHANGE_BYTE_SIZE:
+			{
+				// Get the values for the number of bytes being changed
+				String = "Bytes Size";
+				PosX += 178;
+				
+				// Draw the number of bytes being changed
+				uint32_t NumBytesBeingEdited = MemoryEditor.NumBytesBeingEdited;
+				
+				sprintf(tempDisplayBuffer,
+					"%" PRIu32,
+					NumBytesBeingEdited);
+				
+				// Calculate the X offset
+				uint32_t tempNumBytesBeingEdited = NumBytesBeingEdited;
+				int32_t tempPosX = 0;
+				
+				// Can probably just subtract directly from PosX, but need to check JP
+				while (tempNumBytesBeingEdited >= 10)
+				{
+					tempNumBytesBeingEdited /= 10;
+					tempPosX += 12;
+				}
+				
+				tempPosX = (PosX + 39) - (tempPosX / 2);
+				
+				uint32_t tempColor = 0xFFFFFFFF;
+				drawText(tempDisplayBuffer, tempPosX, PosY - 20, Alpha, tempColor, Scale);
+				break;
+			}
+			case EDITOR_HEADER_GOTO_EDITOR:
+			{
+				String = "Edit Bytes";
+				PosX += 199;
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+		
+		// Values start at EDITOR_SELECT_CHANGE_ADDRESS
+		ColorCondition = tempCurrentSelectionStatus & (EDITOR_SELECT_CHANGE_ADDRESS << i);
+		
+		Color = getSelectedTextColor(ColorCondition || 
+			((tempCurrentEditorMenuOption == i) && 
+			!checkIfOtherHeaderOptionsSelected(i)));
+		
+		drawText(String, PosX, PosY, Alpha, Color, Scale);
+	}
+	
+	PosY -= 80;
+	int32_t InitialEditorPosY = PosY + 20;
+	
+	if (tempCurrentSelectionStatus & EDITOR_VERTICAL_LINES)
+	{
+		// Draw a line between each byte
+		uint32_t WindowColor = 0xFFFFFFE0;
+		int32_t WindowPosX = InitialEditorPosX + 24;
+		int32_t WindowPosY = InitialEditorPosY;
+		int32_t Width = 2;
+		int32_t Height = 275;
+		int32_t Curve = 0;
+		
+#ifdef TTYD_JP
+		WindowPosX -= 2;
+#endif
+		
+		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
+		{
+			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+			WindowPosX += 28;
+		}
+	}
+	
+	if (tempCurrentSelectionStatus & EDITOR_HORIZONTAL_LINES)
+	{
+		// Draw a line between each row
+		uint32_t WindowColor = 0xFFFFFFE0;
+		int32_t WindowPosX = InitialPosX - 5;
+		int32_t WindowPosY = InitialEditorPosY - 36;
+		int32_t Width = 470;
+		int32_t Height = 2;
+		int32_t Curve = 0;
+		
+		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
+		{
+			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+			WindowPosY -= 20;
+		}
+	}
+	
+	// Draw the current addresses displayed in the editor
+	Color = 0xFFFFFFFF;
+	PosX = InitialPosX;
+	
+	for (uint32_t i = 0; i < EDITOR_TOTAL_ROWS; i++)
+	{
+		sprintf(tempDisplayBuffer,
+			"%08" PRIX32,
+			reinterpret_cast<uint32_t>(CurrentAddress) + (i * EDITOR_BYTES_PER_ROW));
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		PosY -= 20;
+	}
+	
+	// Draw the headers numbers indicating each byte in the current line in the editor
+	PosX = InitialEditorPosX + 6; // Add a bit extra to start at at the middle of the 2 digits
+	PosY = InitialEditorPosY;
+	
+	for (uint32_t i = 0; i < EDITOR_BYTES_PER_ROW; i++)
+	{
+		sprintf(tempDisplayBuffer,
+			"%" PRIX32,
+			i);
+		
+		drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		PosX += (DigitSpace * 2) + 4;
+	}
+	
+	// Draw the bytes displayed in the editor
+	uint32_t SelectedBytesCurrentDigit = 0;
+	for (uint32_t i = 0; i < EDITOR_MAX_NUM_DIGITS_DISPLAYED; i++)
+	{
+		if ((i % EDITOR_DIGITS_PER_ROW) == 0)
+		{
+			// Go to the next line
+			// This also handles setting the first line
+			PosX = InitialEditorPosX;
+			PosY = (InitialEditorPosY - 20) - ((i / EDITOR_DIGITS_PER_ROW) * 20);
+		}
+		
+		// Set the default color to white
+		Color = 0xFFFFFFFF;
+		
+		// Get the address of the current digit
+		uint8_t *DigitAddress = getDigitAddress(
+			CurrentAddress,
+			EDITOR_MAX_NUM_BYTES_DISPLAYED,
+			i);
+		
+		// Check which digit to get
+		int32_t CurrentDigit;
+		
+		// Check to see if currently hovering over addresses
+		if (tempCurrentSelectionStatus & EDITOR_SELECT_GOTO_EDITOR)
+		{
+			// Check if the current address is part of the hover address
+			if (checkIfAddressInHoverRange(DigitAddress, SelectedBytesCurrentDigit))
+			{
+				// Check if the current digit address is valid
+				bool DigitAddressIsValid = checkIfPointerIsValid(DigitAddress);
+				
+				// Check to see if an address has been selected
+				if (tempCurrentSelectionStatus & EDITOR_SELECTED_BYTES_TO_EDIT)
+				{
+					// Check if the current digit is being hovered over
+					if (MemoryEditor.CurrentEditorSelectedMenuOption == SelectedBytesCurrentDigit)
+					{
+						// Draw a window under the current digit
+						uint32_t WindowColor = 0x1C4F57FF;
+						int32_t WindowPosX = PosX - 2;
+						int32_t WindowPosY = PosY + 2;
+						int32_t Width = 13;
+						int32_t Height = 19;
+						int32_t Curve = 0;
+						
+#ifdef TTYD_JP
+						WindowPosX -= 1;
+#endif
+						
+						drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+						
+						// Set the text color
+						if (tempCurrentSelectionStatus & EDITOR_EDITING_BYTES)
+						{
+							// Make the text orange
+							Color = 0xFFA31AFF;
+							
+							if (!DigitAddressIsValid)
+							{
+								// Digit address is invalid, so set the digit to an invalid number
+								CurrentDigit = -1;
+							}
+							else
+							{
+								// Get the current digit of the edited bytes
+								CurrentDigit = getDigitValueFromRawAddress(
+									MemoryEditor.BytesBeingEdited, 
+									MemoryEditor.NumBytesBeingEdited, 
+									SelectedBytesCurrentDigit);
+							}
+						}
+						else if (!DigitAddressIsValid)
+						{
+							// Digit address is invalid, so make the text green
+							Color = 0x2EE866FF;
+							
+							// Set the digit to an invalid number
+							CurrentDigit = -1;
+						}
+						else
+						{
+							// Make the text green
+							Color = 0x2EE866FF;
+							
+							// Get the current digit of the edited bytes
+							CurrentDigit = getDigitValueFromRawAddress(
+								MemoryEditor.BytesBeingEdited, 
+								MemoryEditor.NumBytesBeingEdited, 
+								SelectedBytesCurrentDigit);
+						}
+					}
+					else if (!DigitAddressIsValid)
+					{
+						// Digit address is invalid, so make the text red
+						Color = 0xFF1414FF;
+						
+						// Set the digit to an invalid number
+						CurrentDigit = -1;
+					}
+					else
+					{
+						// Make the text blue
+						Color = 0x5B59DEFF;
+						
+						// Get the current digit of the edited bytes
+						CurrentDigit = getDigitValueFromRawAddress(
+							MemoryEditor.BytesBeingEdited, 
+							MemoryEditor.NumBytesBeingEdited, 
+							SelectedBytesCurrentDigit);
+					}
+				}
+				else
+				{
+					// Set the text color
+					if (!DigitAddressIsValid)
+					{
+						// Digit address is invalid, so make the text red
+						Color = 0xFF1414FF;
+						
+						// Set the digit to an invalid number
+						CurrentDigit = -1;
+					}
+					else
+					{
+						// Make the text blue
+						Color = 0x5B59DEFF;
+						
+						// Get the current digit of the current address
+						CurrentDigit = getDigitValue(
+							DigitAddress, 
+							EDITOR_MAX_NUM_BYTES_DISPLAYED, 
+							i);
+					}
+				}
+				
+				SelectedBytesCurrentDigit++;
+			}
+			else
+			{
+				// Get the current digit of the current address
+				CurrentDigit = getDigitValue(
+					DigitAddress, 
+					EDITOR_MAX_NUM_BYTES_DISPLAYED, 
+					i);
+			}
+		}
+		else
+		{
+			// Get the current digit of the current address
+			CurrentDigit = getDigitValue(
+				DigitAddress, 
+				EDITOR_MAX_NUM_BYTES_DISPLAYED, 
+				i);
+		}
+		
+		// Draw the current digit
+		if ((CurrentDigit < 0) || (CurrentDigit > 0xF))
+		{
+			// Digit is invalid, so draw a ?
+			drawText("?", PosX, PosY, Alpha, Color, Scale);
+		}
+		else
+		{
+			// Digit is valid
+			sprintf(tempDisplayBuffer,
+				"%" PRIX32,
+				CurrentDigit);
+			
+			drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
+		}
+		
+		// Add extra space between every 2 digits
+		if ((i % 2) == 1)
+		{
+			PosX += 4;
+		}
+		
+		PosX += DigitSpace;
+	}
+}
+
+void drawMemoryEditor()
+{
+	// Draw the window for the editor
+	drawMenuWindow();
+	
+	// Check for button inputs
+	// Don't check if the adjustable value menu is open
+	uint32_t Button = 0;
+	
+	if (!(MemoryEditor.CurrentSelectionStatus & 
+		(EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES)))
+	{
+		Button = memoryEditorButtonControls();
+	}
+	
+	// Check if the settings menu is open
+	// Need to retrive CurrentSelectionStatus after memoryEditorButtonControls is called
+	uint32_t CurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+	if (CurrentSelectionStatus & EDITOR_OPEN_SETTINGS)
+	{
+		// Draw the settings menu
+		drawMemoryEditorSettingsWindow();
+	}
+	else
+	{
+		// Draw the main window
+		drawMemoryEditorMainWindow();
+		
+		// Draw the adjustable value menu if it's open
+		if (CurrentSelectionStatus & (EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES))
+		{
+			// Don't draw on the first frame that it's enabled
+			if (Button != MEMORY_EDITOR_ADJUSTABLE_VALUE)
+			{
+				drawAdjustableValueMemoryEditor(); // Also handles inputs
+			}
+		}
+	}
 }
 
 void drawBattlesActorsList()
@@ -2306,6 +2769,18 @@ void drawAdjustableValueSpawnItem()
 	drawAdjustableValue(true, SPAWN_ITEM_MENU_VALUE);
 }
 
+void drawAdjustableValueMemoryEditor()
+{
+	if (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS)
+	{
+		drawAdjustableValueHex(MEMORY_EDITOR_MENU);
+	}
+	else
+	{
+		drawAdjustableValue(false, MEMORY_EDITOR_MENU);
+	}
+}
+
 void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 {
 	// Check for button inputs
@@ -2549,12 +3024,19 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
 	}
 }
 
-void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
+void drawAdjustableValueHex(uint32_t currentMenu)
 {
-	uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
-	
 	// Check for button inputs
-	uint32_t ReturnCode = adjustWatchValueControls(tempMenuSelectedOption);
+	uint32_t ReturnCode;
+	if (currentMenu == MEMORY_WATCH_CHANGE_ADDRESS)
+	{
+		ReturnCode = adjustWatchValueControls(MenuVar.MenuSelectedOption);
+	}
+	else
+	{
+		ReturnCode = adjustableValueButtonControls(currentMenu);
+	}
+	
 	switch (ReturnCode)
 	{
 		case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
@@ -2565,6 +3047,12 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		{
 			break;
 		}
+	}
+	
+	// Adjust the current value if necessary
+	if (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS)
+	{
+		adjustMenuItemBounds(0, currentMenu);
 	}
 	
 	// Draw the window
@@ -2591,8 +3079,8 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
 	drawText(HelpText, x, y, alpha, color, scale);
 	
-	uint32_t tempMemoryWatchSecondaryValue = MenuVar.MemoryWatchSecondaryValue;
-	int32_t tempMemoryWatchSecondaryValueSigned;
+	uint32_t tempMenuSecondaryValueUnsigned = MenuVar.MenuSecondaryValueUnsigned;
+	int32_t tempMenuSecondaryValue;
 	y -= 100;
 	
 	// Check if the number is negative and get the amount of numbers to draw
@@ -2601,7 +3089,7 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	
 	switch (currentMenu)
 	{
-		case MEMORY_CHANGE_ADDRESS:
+		case MEMORY_WATCH_CHANGE_ADDRESS:
 		{
 			AmountOfNumbers = 8;
 			
@@ -2615,13 +3103,20 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 				default:
 				{
 					// Modifying the pointer offsets, which can be negative
-					tempMemoryWatchSecondaryValueSigned = static_cast<int32_t>(tempMemoryWatchSecondaryValue);
-					if (tempMemoryWatchSecondaryValueSigned < 0)
+					tempMenuSecondaryValue = static_cast<int32_t>(tempMenuSecondaryValueUnsigned);
+					if (tempMenuSecondaryValue < 0)
 					{
 						NumberIsNegative = true;
 					}
 				}
 			}
+			break;
+		}
+		case MEMORY_EDITOR_MENU:
+		{
+			AmountOfNumbers = 8;
+			
+			// Values can never be negative, so no further adjustments needed
 			break;
 		}
 		default:
@@ -2654,13 +3149,13 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 	if (NumberIsNegative)
 	{
 		// Convert the number to positive
-		tempMemoryWatchSecondaryValueSigned = -tempMemoryWatchSecondaryValueSigned;
+		tempMenuSecondaryValue = -tempMenuSecondaryValue;
 		
 		// Get the values for the array
 		for (uint32_t i = 0; i < AmountOfNumbers; i++)
 		{
-			AdjustableValue[AmountOfNumbers - i - 1] = tempMemoryWatchSecondaryValueSigned % 0x10;
-			tempMemoryWatchSecondaryValueSigned /= 0x10;
+			AdjustableValue[AmountOfNumbers - i - 1] = tempMenuSecondaryValue % 0x10;
+			tempMenuSecondaryValue /= 0x10;
 		}
 		
 		// Draw the negative sign
@@ -2677,8 +3172,8 @@ void drawMemoryWatchAdjustableValue(uint32_t currentMenu)
 		// Get the values for the array
 		for (uint32_t i = 0; i < AmountOfNumbers; i++)
 		{
-			AdjustableValue[AmountOfNumbers - i - 1] = tempMemoryWatchSecondaryValue % 0x10;
-			tempMemoryWatchSecondaryValue /= 0x10;
+			AdjustableValue[AmountOfNumbers - i - 1] = tempMenuSecondaryValueUnsigned % 0x10;
+			tempMenuSecondaryValueUnsigned /= 0x10;
 		}
 	}
 	

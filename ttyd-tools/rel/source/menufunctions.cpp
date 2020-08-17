@@ -2,7 +2,7 @@
 #include "global.h"
 #include "commonfunctions.h"
 #include "codes.h"
-#include "memorywatch.h"
+#include "memory.h"
 #include "main.h"
 
 #include <gc/os.h>
@@ -268,13 +268,16 @@ void lockFlagsMenuBackUpFlags(uint32_t index)
 	uint8_t *tempMemory = Region->MemoryRegion;
 	if (FlagsLocked)
 	{
-		// Allocate memory for the flags if memory is not allocated already
-		uint32_t Size = Region->Size;
-		if (!tempMemory)
+		// Allocate memory for the flags
+		// If memory was previously allocated for it, then free it
+		if (tempMemory)
 		{
-			tempMemory = new uint8_t[Size];
-			Region->MemoryRegion = tempMemory;
+			delete[] (tempMemory);
 		}
+		
+		uint32_t Size = Region->Size;
+		tempMemory = new uint8_t[Size];
+		Region->MemoryRegion = tempMemory;
 		
 		// Back up the memory
 		if ((index == GW) || (index == GF))
@@ -409,7 +412,7 @@ void *getFreeSlotPointer()
 		}
 	}
 	
-	// Check if theres an empty slot
+	// Check if there's an empty slot
 	if (!FoundEmptySlot)
 	{
 		// No slot is available
@@ -702,6 +705,20 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
 					UpperBound = 0;
 					break;
 				}
+			}
+			break;
+		}
+		case MEMORY_EDITOR_MENU:
+		{
+			if (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS)
+			{
+				LowerBound = 0x80000000;
+				UpperBound = 0x817FFFFF;
+			}
+			else // Changing the amount of bytes to modify
+			{
+				LowerBound = 1;
+				UpperBound = EDITOR_MAX_NUM_BYTES_DISPLAYED;
 			}
 			break;
 		}
@@ -1018,6 +1035,46 @@ uint32_t getHighestAdjustableValueDigit(uint32_t currentMenu)
 	return Counter;
 }
 
+uint32_t getHighestAdjustableValueDigitUnsigned(uint32_t currentMenu, bool handleAsHex)
+{
+	int32_t UpperAndLowerBounds[2];
+	getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+	
+	uint32_t LowerBound = static_cast<uint32_t>(UpperAndLowerBounds[0]);
+	uint32_t UpperBound = static_cast<uint32_t>(UpperAndLowerBounds[1]);
+	
+	// Use the biggest value
+	uint32_t tempValue;
+	if (UpperBound > LowerBound)
+	{
+		tempValue = UpperBound;
+	}
+	else
+	{
+		tempValue = LowerBound;
+	}
+	
+	uint32_t divideAmount;
+	if (handleAsHex)
+	{
+		divideAmount = 0x10;
+	}
+	else
+	{
+		divideAmount = 10;
+	}
+	
+	// Get the highest digit for the current value
+	uint32_t Counter = 0;
+	while (tempValue > 0)
+	{
+		tempValue /= divideAmount;
+		Counter++;
+	}
+	
+	return Counter;
+}
+
 int32_t getDigitBeingChanged(int32_t number, int32_t valueChangedBy)
 {
 	// Get the digit being changed
@@ -1057,8 +1114,19 @@ void setAdjustableValueToMin(uint32_t currentMenu)
 
 uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 {
+	bool InMemoryEditorAddressMenu = (currentMenu == MEMORY_EDITOR_MENU) && 
+		(MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS);
+	
 	// Get the amount of numbers to draw
-	uint32_t AmountOfNumbers = getHighestAdjustableValueDigit(currentMenu);
+	uint32_t AmountOfNumbers;
+	if (InMemoryEditorAddressMenu)
+	{
+		AmountOfNumbers = getHighestAdjustableValueDigitUnsigned(currentMenu, true);
+	}
+	else
+	{
+		AmountOfNumbers = getHighestAdjustableValueDigit(currentMenu);
+	}
 	
 	// Make sure there is at least 1 number to display
 	bool NoNumbersToDisplay = false;
@@ -1085,11 +1153,12 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		if (Button != 0)
 		{
 			// Check to see if the value should begin to auto-increment
-			if (AdjustableValueMenu.WaitFramesToBeginIncrement >= 
-				ttyd::system::sysMsec2Frame(500))
+			uint32_t WaitFramesToBeginIncrement = AdjustableValueMenu.WaitFramesToBeginIncrement;
+			if (WaitFramesToBeginIncrement >= ttyd::system::sysMsec2Frame(500))
 			{
 				// Check to see if the number should increment or not
-				if (AdjustableValueMenu.WaitFramesToPerformIncrement >= 1)
+				uint32_t WaitFramesToPerformIncrement = AdjustableValueMenu.WaitFramesToPerformIncrement;
+				if (WaitFramesToPerformIncrement >= 1)
 				{
 					// Auto-increment the value
 					int32_t IncrementAmount;
@@ -1102,18 +1171,28 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						IncrementAmount = -1;
 					}
 					
-					adjustAddByIdValue(IncrementAmount, currentMenu);
+					if (InMemoryEditorAddressMenu)
+					{
+						adjustAddByIdValue(IncrementAmount, currentMenu, true, true);
+					}
+					else
+					{
+						adjustAddByIdValue(IncrementAmount, currentMenu, false, false);
+					}
+					
 					AdjustableValueMenu.WaitFramesToPerformIncrement = 0;
 					return Button;
 				}
 				else
 				{
-					AdjustableValueMenu.WaitFramesToPerformIncrement++;
+					WaitFramesToPerformIncrement++;
+					AdjustableValueMenu.WaitFramesToPerformIncrement = WaitFramesToPerformIncrement;
 				}
 			}
 			else
 			{
-				AdjustableValueMenu.WaitFramesToBeginIncrement++;
+				WaitFramesToBeginIncrement++;
+				AdjustableValueMenu.WaitFramesToBeginIncrement = WaitFramesToBeginIncrement;
 			}
 		}
 		else
@@ -1140,7 +1219,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 			if (tempSecondaryMenuOption == 0)
 			{
 				// Loop to the last option
-				MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(currentMenu) - 1;
+				MenuVar.SecondaryMenuOption = AmountOfNumbers - 1;
 			}
 			else
 			{
@@ -1154,7 +1233,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		case DPADRIGHT:
 		{
 			uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
-			if (tempSecondaryMenuOption == (getHighestAdjustableValueDigit(currentMenu) - 1))
+			if (tempSecondaryMenuOption == (AmountOfNumbers - 1))
 			{
 				// Loop to the first option
 				MenuVar.SecondaryMenuOption = 0;
@@ -1171,7 +1250,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		case DPADDOWN:
 		{
 			// Decrement the current value for the current slot in the drawAddById function
-			adjustAddByIdValue(-1, currentMenu);
+			if (InMemoryEditorAddressMenu)
+			{
+				adjustAddByIdValue(-1, currentMenu, true, true);
+			}
+			else
+			{
+				adjustAddByIdValue(-1, currentMenu, false, false);
+			}
 			
 			MenuVar.FrameCounter = 1;
 			return Button;
@@ -1179,7 +1265,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 		case DPADUP:
 		{
 			// Increment the current value for the current slot in the drawAddById function
-			adjustAddByIdValue(1, currentMenu);
+			if (InMemoryEditorAddressMenu)
+			{
+				adjustAddByIdValue(1, currentMenu, true, true);
+			}
+			else
+			{
+				adjustAddByIdValue(1, currentMenu, false, false);
+			}
 			
 			MenuVar.FrameCounter = 1;
 			return Button;
@@ -1406,6 +1499,22 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 					MenuVar.FrameCounter = 1;
 					return Button;
 				}
+				case MEMORY_EDITOR_MENU:
+				{
+					if (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS)
+					{
+						MemoryEditor.CurrentAddress = reinterpret_cast<uint8_t *>(MenuVar.MenuSecondaryValueUnsigned);
+					}
+					else
+					{
+						MemoryEditor.NumBytesBeingEdited = static_cast<uint8_t>(MenuVar.MenuSecondaryValue);
+					}
+					
+					MemoryEditor.CurrentSelectionStatus &= ~(EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES);
+					
+					MenuVar.FrameCounter = 1;
+					return Button;
+				}
 				default:
 				{
 					return 0;
@@ -1496,6 +1605,13 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 						{
 							return NO_NUMBERS_TO_DISPLAY;
 						}
+					}
+					case MEMORY_EDITOR_MENU:
+					{
+						MemoryEditor.CurrentSelectionStatus &= ~(EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES);
+						
+						MenuVar.FrameCounter = 1;
+						return Button;
 					}
 					default:
 					{
@@ -1677,31 +1793,25 @@ uint32_t memoryChangeWatchPositionButtonControls()
 	uint32_t Button = 0;
 	
 	// Check to see if a D-Pad Button is being held
-	if (checkButtonComboEveryFrame(PAD_DPAD_LEFT))
+	for (uint32_t i = 0; i < 4; i++)
 	{
-		Button = DPADLEFT;
-	}
-	else if (checkButtonComboEveryFrame(PAD_DPAD_RIGHT))
-	{
-		Button = DPADRIGHT;
-	}
-	else if (checkButtonComboEveryFrame(PAD_DPAD_UP))
-	{
-		Button = DPADUP;
-	}
-	else if (checkButtonComboEveryFrame(PAD_DPAD_DOWN))
-	{
-		Button = DPADDOWN;
+		// Values start at PAD_DPAD_LEFT
+		if (checkButtonComboEveryFrame(PAD_DPAD_LEFT << i))
+		{
+			Button = i + 1;
+			break;
+		}
 	}
 	
 	if (Button != 0)
 	{
 		// Check to see if the value should begin to auto-increment
-		if (MemoryWatchPosition.WaitFramesToBeginIncrement >= 
-			ttyd::system::sysMsec2Frame(500))
+		uint32_t WaitFramesToBeginIncrement = MemoryWatchPosition.WaitFramesToBeginIncrement;
+		if (WaitFramesToBeginIncrement >= ttyd::system::sysMsec2Frame(500))
 		{
 			// Check to see if the number should increment or not
-			if (MemoryWatchPosition.WaitFramesToPerformIncrement >= 1)
+			uint32_t WaitFramesToPerformIncrement = MemoryWatchPosition.WaitFramesToPerformIncrement;
+			if (WaitFramesToPerformIncrement >= 1)
 			{
 				// Auto-increment the value
 				switch (Button)
@@ -1741,13 +1851,15 @@ uint32_t memoryChangeWatchPositionButtonControls()
 			}
 			else
 			{
-				MemoryWatchPosition.WaitFramesToPerformIncrement++;
+				WaitFramesToPerformIncrement++;
+				MemoryWatchPosition.WaitFramesToPerformIncrement = WaitFramesToPerformIncrement;
 				CurrentlyAutoIncrementing = true;
 			}
 		}
 		else
 		{
-			MemoryWatchPosition.WaitFramesToBeginIncrement++;
+			WaitFramesToBeginIncrement++;
+			MemoryWatchPosition.WaitFramesToBeginIncrement = WaitFramesToBeginIncrement;
 		}
 	}
 	else
@@ -2091,7 +2203,8 @@ uint32_t followersOptionsButtonControls()
 	}
 }*/
 
-void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
+void adjustMenuItemBoundsMain(uint32_t currentMenu, 
+	int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
 {
 	int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue + valueChangedBy;
 	MenuVar.MenuSecondaryValue = tempMenuSecondaryValue;
@@ -2123,6 +2236,49 @@ void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_
 	{
 		// Loop to the beginning
 		MenuVar.MenuSecondaryValue = lowerBound;
+	}
+}
+
+void adjustMenuItemBoundsMainUnsigned(uint32_t currentMenu, 
+	int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound)
+{
+	int64_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValueUnsigned + valueChangedBy;
+	MenuVar.MenuSecondaryValueUnsigned = static_cast<uint32_t>(tempMenuSecondaryValue);
+	
+	if (tempMenuSecondaryValue == 0)
+	{
+		if (valueChangedBy != 0)
+		{
+			MenuVar.MenuSecondaryValueUnsigned = upperBound;
+		}
+		else
+		{
+			MenuVar.MenuSecondaryValueUnsigned = lowerBound;
+		}
+	}
+	else if (tempMenuSecondaryValue < static_cast<int64_t>(lowerBound))
+	{
+		if (valueChangedBy != 0)
+		{
+			// Loop to the end
+			MenuVar.MenuSecondaryValueUnsigned = upperBound;
+		}
+		else
+		{
+			MenuVar.MenuSecondaryValueUnsigned = lowerBound;
+		}
+	}
+	else if (tempMenuSecondaryValue > static_cast<int64_t>(upperBound))
+	{
+		if (valueChangedBy != 0)
+		{
+			// Loop to the beginning
+			MenuVar.MenuSecondaryValueUnsigned = lowerBound;
+		}
+		else
+		{
+			MenuVar.MenuSecondaryValueUnsigned = upperBound;
+		}
 	}
 }
 
@@ -2180,6 +2336,23 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 			}
 			break;
 		}
+		case MEMORY_EDITOR_MENU:
+		{
+			if ((currentMenu == MEMORY_EDITOR_MENU) && 
+				(MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS))
+			{
+				// Handle everything as unsigned
+				int32_t UpperAndLowerBounds[2];
+				getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+				
+				uint32_t LowerBound = static_cast<uint32_t>(UpperAndLowerBounds[0]);
+				uint32_t UpperBound = static_cast<uint32_t>(UpperAndLowerBounds[1]);
+				
+				adjustMenuItemBoundsMainUnsigned(currentMenu, valueChangedBy, LowerBound, UpperBound);
+				return;
+			}
+			break;
+		}
 		default:
 		{
 			break;
@@ -2192,21 +2365,38 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 	int32_t LowerBound = UpperAndLowerBounds[0];
 	int32_t UpperBound = UpperAndLowerBounds[1];
 	
-	adjustMenuItemBoundsMain(valueChangedBy, LowerBound, UpperBound);
+	adjustMenuItemBoundsMain(currentMenu, valueChangedBy, LowerBound, UpperBound);
 }
 
-void adjustAddByIdValue(int32_t value, uint32_t currentMenu)
+void adjustAddByIdValue(int32_t value, uint32_t currentMenu, 
+	bool handleAsHex, bool handleAsUnsigned)
 {
-	uint32_t HighestDigit = getHighestAdjustableValueDigit(currentMenu);
-	int32_t newValue = value;
+	int32_t multiplyAmount;
+	if (handleAsHex)
+	{
+		multiplyAmount = 0x10;
+	}
+	else
+	{
+		multiplyAmount = 10;
+	}
+	
+	uint32_t HighestDigit;
+	if (handleAsUnsigned)
+	{
+		HighestDigit = getHighestAdjustableValueDigitUnsigned(currentMenu, handleAsHex);
+	}
+	else
+	{
+		HighestDigit = getHighestAdjustableValueDigit(currentMenu);
+	}
 	
 	for (uint32_t i = 0; i < (HighestDigit - MenuVar.SecondaryMenuOption - 1); i++)
 	{
-		newValue *= 10;
+		value *= multiplyAmount;
 	}
 	
-	// Make sure the total value is valid
-	adjustMenuItemBounds(newValue, currentMenu);
+	adjustMenuItemBounds(value, currentMenu);
 }
 
 uint32_t getMarioStatsValueOffset(uint32_t currentMenuOption)

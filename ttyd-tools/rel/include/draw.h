@@ -60,6 +60,10 @@ void drawMemoryModifyList();
 void drawMemoryTypeList();
 void drawMemoryChangeWatchPosition();
 void drawMemoryChangeAddressList();
+uint16_t *drawMemoryEditorSetup();
+void drawMemoryEditorSettingsWindow();
+void drawMemoryEditorMainWindow();
+void drawMemoryEditor();
 void drawBattlesActorsList();
 void drawBattlesStatusesList();
 
@@ -81,8 +85,9 @@ void drawSingleLineFromStringAndArray(int32_t posX, int32_t posY,
 	int32_t currentMenuOption, const char *string, const char **line);
 
 void drawAdjustableValueSpawnItem();
+void drawAdjustableValueMemoryEditor();
 void drawAdjustableValue(bool changingItem, uint32_t currentMenu);
-void drawMemoryWatchAdjustableValue(uint32_t currentMenu);
+void drawAdjustableValueHex(uint32_t currentMenu);
 void drawAddByIconMain(uint32_t currentMenu);
 void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);

@@ -43,6 +43,7 @@ extern "C"
 	int32_t __real_eventStgNum();
 	ttyd::event::EventStageDescription *__real_eventStgDtPtr(int32_t stageId);
 	void *__real_winGetPtr();
+	void __real_winOpenDisable();
 	void __real_winOpenEnable();
 	int32_t __real_CARDClose(gc::card::CARDFileInfo *fileInfo);
 	void __real_DCFlushRange(void *startAddr, uint32_t nBytes);
@@ -236,6 +237,12 @@ extern "C"
 	__attribute__((noinline)) void *__wrap_winGetPtr()
 	{
 		return __real_winGetPtr();
+	}
+	
+	// winOpenDisable
+	__attribute__((noinline)) void __wrap_winOpenDisable()
+	{
+		__real_winOpenDisable();
 	}
 	
 	// winOpenEnable
