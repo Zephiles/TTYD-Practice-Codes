@@ -144,7 +144,7 @@ void resetImportantItemsPauseMenu()
 	
 	// Only run if the pause menu is currently open
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-	if (SystemLevel != 15)
+	if ((SystemLevel & 15) != 15)
 	{
 		// The pause menu is not open, so do nothing
 		return;
@@ -172,7 +172,7 @@ void resetPartnerPauseMenu()
 {
 	// Only run if the pause menu is currently open
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-	if (SystemLevel != 15)
+	if ((SystemLevel & 15) != 15)
 	{
 		// The pause menu is not open, so do nothing
 		return;

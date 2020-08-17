@@ -315,7 +315,7 @@ void saveAnywhere()
 		}
 		
 		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-		if (SystemLevel == 15)
+		if ((SystemLevel & 15) == 15)
 		{
 			return;
 		}
@@ -555,7 +555,7 @@ void reloadRoomMain()
 	}
 	
 	// Only run the following if the system level is not 0
-	if (SystemLevel == 15)
+	if ((SystemLevel & 15) == 15)
 	{
 		// Currently in pause menu, so re-enable the 3D camera
 		ttyd::camdrv::L_camDispOn(ttyd::dispdrv::CameraId::k3d);
@@ -782,7 +782,7 @@ void spawnItem()
 		}
 		
 		uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-		if (SystemLevel == 15)
+		if ((SystemLevel & 15) == 15)
 		{
 			return;
 		}
@@ -988,7 +988,7 @@ void lockFlags()
 void displaySequenceInPauseMenu()
 {
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-	if (SystemLevel != 15)
+	if ((SystemLevel & 15) != 15)
 	{
 		return;
 	}
@@ -1261,7 +1261,7 @@ void displayPalaceSkipDetails()
 	}
 	
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-	if (SystemLevel == 15)
+	if ((SystemLevel & 15) == 15)
 	{
 		// Stop upon pausing
 		PalaceSkip.TimerStopped = true;
@@ -1417,7 +1417,7 @@ void displayBlimpTicketSkipDetails()
 	}
 	
 	uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-	if (SystemLevel == 15)
+	if ((SystemLevel & 15) == 15)
 	{
 		// Stop upon pausing
 		BlimpTicketSkip.UpRightTimerStopped 	= true;
