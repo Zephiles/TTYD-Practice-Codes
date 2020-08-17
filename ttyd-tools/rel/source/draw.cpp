@@ -1410,6 +1410,52 @@ void drawCurrentFollowerOut()
 	drawText(tempDisplayBuffer, PosX, PosY, Alpha, Color, Scale);
 }
 
+void drawMemoryWatchValueString(int32_t slot, int32_t posX, 
+	int32_t posY, uint8_t alpha, uint32_t color, float scale)
+{
+	// Get the string value
+	const char *ValueString = getValueString(slot);
+	
+	// Check to see what type of memory watch is being drawn
+	uint32_t MemoryWatchType = MemoryWatch[slot].Type;
+	
+	// Check if the current value is not text
+	if (MemoryWatchType != string)
+	{
+		// Draw the value
+		drawText(ValueString, posX, posY, alpha, color, scale);
+	}
+	else
+	{
+		// Draw a maximum of 127 characters
+		char TextString[128]; // 1 byte for NULL
+		uint32_t Size = sizeof(TextString);
+		clearMemory(TextString, Size);
+		
+		// Get the size of the current string
+		// Stop if an invalid address is reached
+		uint32_t Length = 0;
+		
+		for (uint32_t i = 0; i < (Size - 1); i++)
+		{
+			if (checkIfPointerIsValid(&ValueString[i]) && (ValueString[i] != '\0'))
+			{
+				Length++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		
+		// Get the text to draw
+		strncpy(TextString, ValueString, Length);
+		
+		// Draw the text
+		drawText(TextString, posX, posY, alpha, color, scale);
+	}
+}
+
 void drawMemoryWatches()
 {
 	// Make sure there's at least one watch to draw
@@ -1497,7 +1543,7 @@ void drawMemoryWatches()
 		
 		// Draw the value
 		Color = 0xFFFFFFFF;
-		drawText(getValueString(i), PosX + ValueOffset, PosY, Alpha, Color, Scale);
+		drawMemoryWatchValueString(i, PosX + ValueOffset, PosY, Alpha, Color, Scale);
 		
 		PosY -= 20;
 	}
@@ -1598,7 +1644,7 @@ void drawMemoryModifyList()
 	PosY -= 20;
 	
 	drawText("Value", PosX, PosY, Alpha, Color, Scale);
-	drawText(getValueString(tempMenuSelectedOption), PosX + PosX_Offset, PosY, Alpha, Color, Scale);
+	drawMemoryWatchValueString(tempMenuSelectedOption, PosX + PosX_Offset, PosY, Alpha, Color, Scale);
 }
 
 void drawMemoryTypeList()
@@ -1664,7 +1710,7 @@ void drawMemoryChangeWatchPosition()
 	uint8_t Alpha 		= 0xFF;
 	float Scale 		= 0.65;
 	
-	drawText(getValueString(tempMenuSelectedOption), PosX, PosY, Alpha, TextColor, Scale);
+	drawMemoryWatchValueString(tempMenuSelectedOption, PosX, PosY, Alpha, TextColor, Scale);
 	
 	// Don't draw the window and text if Y is being held
 	if (checkButtonComboEveryFrame(PAD_Y))
@@ -1795,7 +1841,7 @@ void drawMemoryChangeAddressList()
 	PosY -= 20;
 	
 	drawText("Final Value", PosX, PosY, Alpha, Color, Scale);
-	drawText(getValueString(tempMenuSelectedOption), PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
+	drawMemoryWatchValueString(tempMenuSelectedOption, PosX + PosX_Offset_Position, PosY, Alpha, Color, Scale);
 }
 
 uint16_t *drawMemoryEditorSetup()
@@ -4677,7 +4723,7 @@ void drawMemoryWatchesOnOverworld()
 				// Draw the watch
 				int32_t PosX = MemoryWatch[i].PosX;
 				int32_t PosY = MemoryWatch[i].PosY;
-				drawText(getValueString(i), PosX, PosY, Alpha, Color, Scale);
+				drawMemoryWatchValueString(i, PosX, PosY, Alpha, Color, Scale);
 			}
 		}
 	}

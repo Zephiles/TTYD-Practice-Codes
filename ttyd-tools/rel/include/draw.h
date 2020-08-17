@@ -55,6 +55,10 @@ void drawPartnerChangeYoshiColorOptions();
 void drawBattlesActorStats();
 void drawBattlesActorsHeldItem();
 void drawCurrentFollowerOut();
+
+void drawMemoryWatchValueString(int32_t slot, int32_t posX, 
+	int32_t posY, uint8_t alpha, uint32_t color, float scale);
+
 void drawMemoryWatches();
 void drawMemoryModifyList();
 void drawMemoryTypeList();

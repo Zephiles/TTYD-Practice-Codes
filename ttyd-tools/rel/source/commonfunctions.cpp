@@ -368,7 +368,7 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 	}
 }
 
-bool checkIfPointerIsValid(void *ptr)
+bool checkIfPointerIsValid(const void *ptr)
 {
 	uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
 	return ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000));
