@@ -1432,24 +1432,19 @@ void drawMemoryWatchValueString(int32_t slot, int32_t posX,
 		uint32_t Size = sizeof(TextString);
 		clearMemory(TextString, Size);
 		
-		// Get the size of the current string
+		// Get each character to draw one at a time
 		// Stop if an invalid address is reached
-		uint32_t Length = 0;
-		
 		for (uint32_t i = 0; i < (Size - 1); i++)
 		{
 			if (checkIfPointerIsValid(&ValueString[i]) && (ValueString[i] != '\0'))
 			{
-				Length++;
+				TextString[i] = ValueString[i];
 			}
 			else
 			{
 				break;
 			}
 		}
-		
-		// Get the text to draw
-		strncpy(TextString, ValueString, Length);
 		
 		// Draw the text
 		drawText(TextString, posX, posY, alpha, color, scale);
