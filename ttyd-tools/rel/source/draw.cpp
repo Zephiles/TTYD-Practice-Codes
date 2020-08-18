@@ -1932,6 +1932,10 @@ void drawMemoryEditorMainWindow()
 	int32_t PosY 	= InitialPosY;
 	float Scale 	= 0.6;
 	
+#ifdef TTYD_JP
+	Scale += 0.05;
+#endif
+	
 	// Draw the text stating to press Y to open the options
 	const char *String = "Press Y to open the settings menu";
 	int32_t SettingsTextPosX = -143;
@@ -1969,6 +1973,10 @@ void drawMemoryEditorMainWindow()
 				String = "Bytes Size";
 				PosX += 178;
 				
+#ifdef TTYD_JP
+				PosX -= 2;
+#endif
+				
 				// Draw the number of bytes being changed
 				uint32_t NumBytesBeingEdited = MemoryEditor.NumBytesBeingEdited;
 				
@@ -1980,14 +1988,18 @@ void drawMemoryEditorMainWindow()
 				uint32_t tempNumBytesBeingEdited = NumBytesBeingEdited;
 				int32_t tempPosX = 0;
 				
-				// Can probably just subtract directly from PosX, but need to check JP
 				while (tempNumBytesBeingEdited >= 10)
 				{
 					tempNumBytesBeingEdited /= 10;
-					tempPosX += 12;
+					tempPosX += 9;
 				}
 				
-				tempPosX = (PosX + 39) - (tempPosX / 2);
+				int32_t IncrementAmount = 37;
+#ifdef TTYD_JP
+				IncrementAmount += 4;
+#endif
+				
+				tempPosX = (PosX + IncrementAmount) - (tempPosX / 2);
 				
 				uint32_t tempColor = 0xFFFFFFFF;
 				drawText(tempDisplayBuffer, tempPosX, PosY - 20, Alpha, tempColor, Scale);
@@ -1997,6 +2009,10 @@ void drawMemoryEditorMainWindow()
 			{
 				String = "Edit Bytes";
 				PosX += 199;
+				
+#ifdef TTYD_JP
+				PosX -= 1;
+#endif
 				break;
 			}
 			default:
@@ -2029,7 +2045,7 @@ void drawMemoryEditorMainWindow()
 		int32_t Curve = 0;
 		
 #ifdef TTYD_JP
-		WindowPosX -= 2;
+		WindowPosX -= 1;
 #endif
 		
 		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
@@ -2048,6 +2064,10 @@ void drawMemoryEditorMainWindow()
 		int32_t Width = 470;
 		int32_t Height = 2;
 		int32_t Curve = 0;
+		
+#ifdef TTYD_JP
+		WindowPosY -= 1;
+#endif
 		
 		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
 		{
