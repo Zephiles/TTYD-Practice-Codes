@@ -1042,13 +1042,29 @@ uint32_t memoryEditorButtonControls()
 					// Check to see if on the first row
 					if (!FirstDigitCheck)
 					{
-						// Go to the last digit on the first row
-						CurrentEditorSelectedMenuOption = EDITOR_DIGITS_PER_ROW - StartingHoverDigit - 1;
+						// If there's only enough bytes to make a single row, then go to the last valid digit
+						if (NumBytesBeingEdited <= EDITOR_BYTES_PER_ROW)
+						{
+							CurrentEditorSelectedMenuOption = NumDigitsBeingEdited - 1;
+						}
+						else
+						{
+							// Go to the last digit on the first row
+							CurrentEditorSelectedMenuOption = EDITOR_DIGITS_PER_ROW - StartingHoverDigit - 1;
+						}
 					}
 					else
 					{
-						// Go to the last digit on the current row
-						CurrentEditorSelectedMenuOption += EDITOR_DIGITS_PER_ROW - 1;
+						// If there's only enough bytes to make a single row, then go to to the previous digit
+						if (NumBytesBeingEdited <= EDITOR_BYTES_PER_ROW)
+						{
+							CurrentEditorSelectedMenuOption--;
+						}
+						else
+						{
+							// Go to the last digit on the current row
+							CurrentEditorSelectedMenuOption += EDITOR_DIGITS_PER_ROW - 1;
+						}
 					}
 					
 					// Make sure the current digit is valid
@@ -1129,21 +1145,34 @@ uint32_t memoryEditorButtonControls()
 					int32_t RowCheck = CurrentEditorSelectedMenuOption + StartingHoverDigit;
 					if (RowCheck <= EDITOR_DIGITS_PER_ROW)
 					{
-						// Go to the first digit
-						CurrentEditorSelectedMenuOption = 0;
+						// Go to the first digit if the amount of bytes exceeds a single row
+						// Also go to the first digit if the next digit exceeds the maximum
+						if ((NumBytesBeingEdited > EDITOR_BYTES_PER_ROW) || 
+							(CurrentEditorSelectedMenuOption > (NumDigitsBeingEdited - 1)))
+						{
+							CurrentEditorSelectedMenuOption = 0;
+						}
 					}
 					else
 					{
-						// Move to the first digit of the current row
-						// Check to see if on the furthest right digit of the current row
-						if (!FurthestRightByteCheck)
+						// If there's only enough bytes to make a single row, then go to the first digit
+						if (NumBytesBeingEdited <= EDITOR_BYTES_PER_ROW)
 						{
-							CurrentEditorSelectedMenuOption -= EDITOR_DIGITS_PER_ROW;
+							CurrentEditorSelectedMenuOption = 0;
 						}
 						else
 						{
-							CurrentEditorSelectedMenuOption -= ((CurrentEditorSelectedMenuOption + 
-								StartingHoverDigit) % EDITOR_DIGITS_PER_ROW);
+							// Move to the first digit of the current row
+							// Check to see if on the furthest right digit of the current row
+							if (!FurthestRightByteCheck)
+							{
+								CurrentEditorSelectedMenuOption -= EDITOR_DIGITS_PER_ROW;
+							}
+							else
+							{
+								CurrentEditorSelectedMenuOption -= ((CurrentEditorSelectedMenuOption + 
+									StartingHoverDigit) % EDITOR_DIGITS_PER_ROW);
+							}
 						}
 					}
 				}
