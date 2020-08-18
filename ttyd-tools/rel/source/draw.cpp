@@ -2148,11 +2148,12 @@ void drawMemoryEditorMainWindow()
 						int32_t WindowPosX = PosX - 2;
 						int32_t WindowPosY = PosY + 2;
 						int32_t Width = 13;
-						int32_t Height = 19;
+						int32_t Height = 18;
 						int32_t Curve = 0;
 						
 #ifdef TTYD_JP
 						WindowPosX -= 1;
+						WindowPosY -= 1;
 #endif
 						
 						drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
