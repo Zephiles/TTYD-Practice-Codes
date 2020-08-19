@@ -1455,9 +1455,9 @@ uint32_t memoryEditorButtonControls()
 						Start = 0x80000000;
 					}
 					
-					if (End > 0x817FFFFF)
+					if (End > 0x81800000)
 					{
-						End = 0x817FFFFF;
+						End = 0x81800000;
 					}
 					
 					uint32_t Size = End - Start;
