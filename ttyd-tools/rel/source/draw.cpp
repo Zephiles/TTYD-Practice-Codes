@@ -7,6 +7,8 @@
 #include "assembly.h"
 #include "main.h"
 
+#include <gc/OSTime.h>
+#include <gc/OSError.h>
 #include <gc/gx.h>
 #include <gc/ppc.h>
 #include <gc/OSContext.h>
@@ -298,6 +300,30 @@ void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, uint32_t co
 		// The text has one line
 		ttyd::fontmgr::FontDrawString(NewX, NewY, text);
 	}
+}
+
+int64_t reportCurrentFrameTime(const char *label)
+{
+	int64_t CurrentFrameTime = gc::OSTime::OSGetTime();
+	
+	gc::OSError::OSReport(
+		"%s Raw: 0x%016" PRIX64 "\n",
+		label,
+		CurrentFrameTime);
+	
+	return CurrentFrameTime;
+}
+
+int64_t reportFrameTimeDifference(const char *label, int64_t startFrameTime, int64_t endFrameTime)
+{
+	int64_t FrameTimeDifference = endFrameTime - startFrameTime;
+	
+	gc::OSError::OSReport(
+		"%s Dif: 0x%" PRIX64 "\n",
+		label,
+		FrameTimeDifference);
+	
+	return FrameTimeDifference;
 }
 
 uint16_t getMessageWidth(const char *text, float scale)

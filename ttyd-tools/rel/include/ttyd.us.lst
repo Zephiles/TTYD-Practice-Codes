@@ -2151,6 +2151,12 @@
 // 802976A0:__OSContextInit
 802976E8:L_OSFillFPUContext
 
+// OSError.c
+80297814:OSReport
+// 80297894:OSPanic
+// 802979C0:OSSetErrorHandler
+// 80297BD8:__OSUnhandledException
+
 // OSFont.c
 // 80298820:GetFontCode
 // 80298994:Decode
