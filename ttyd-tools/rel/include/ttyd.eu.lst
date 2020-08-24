@@ -2254,6 +2254,11 @@
 // 802A9140:__VIDisplayPositionToXY
 // 802A935C:__VIGetCurrentPosition
 
+// DEMOPuts.c
+802A93BC:DEMOInitCaption
+802A9618:DEMOPuts
+802A9928:DEMOPrintf
+
 // card.a
 // 802AF520:__CARDDefaultApiCallback
 // 802AF524:__CARDSyncCallback
