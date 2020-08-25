@@ -30,12 +30,13 @@
 .global __wrap_winGetPtr
 .global __wrap_winOpenDisable
 .global __wrap_winOpenEnable
-.global __wrap_CARDClose
 .global __wrap_DCFlushRange
 .global __wrap_ICInvalidateRange
 .global __wrap___udivdi3
 .global __wrap___umoddi3
 .global __wrap_dispEntry
+.global __wrap_FontDrawStart_alpha
+.global __wrap_FontDrawEdge
 
 __wrap_sprintf:
 b __real_sprintf
@@ -133,9 +134,6 @@ b __real_winOpenDisable
 __wrap_winOpenEnable:
 b __real_winOpenEnable
 
-__wrap_CARDClose:
-b __real_CARDClose
-
 __wrap_DCFlushRange:
 b __real_DCFlushRange
 
@@ -150,3 +148,9 @@ b __real___umoddi3
 
 __wrap_dispEntry:
 b __real_dispEntry
+
+__wrap_FontDrawStart_alpha:
+b __real_FontDrawStart_alpha
+
+__wrap_FontDrawEdge:
+b __real_FontDrawEdge

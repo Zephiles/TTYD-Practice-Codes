@@ -15,18 +15,21 @@ void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t hei
 
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
-void drawStringMultiline(float x, float y, const char *text);
 
-void drawText(const char *text, int32_t x, int32_t y, uint8_t alpha, 
-	uint32_t color, float scale);
+void drawStringMultiline(float x, float y, const char *text);
+void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
+void drawTextInit(uint8_t alpha, bool drawFontEdge);
+
+void drawTextAndInit(const char *text, int32_t x, int32_t y, 
+	uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
 
 uint16_t getMessageWidth(const char *text, float scale);
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
 void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
 uint32_t getSelectedTextColor(bool valueToCheck);
 
-void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
-	uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
+void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint32_t textColor, 
+	float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
 
 void drawSingleColumnMain();
 void drawSingleColumnSelectedOption();
@@ -44,8 +47,8 @@ void drawInventoryIconAndTextColumns();
 void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t size, 
 	int32_t posX, int32_t posY, uint32_t address, float scale);
 
-void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t size, 
-	int32_t posX, int32_t posY, uint32_t address, uint8_t alpha, float scale);
+void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, 
+	uint32_t size, int32_t posX, int32_t posY, uint32_t address, float scale);
 
 void drawMarioSpecialMovesOptions();
 void drawFollowersOptions();
@@ -57,7 +60,7 @@ void drawBattlesActorsHeldItem();
 void drawCurrentFollowerOut();
 
 void drawMemoryWatchValueString(int32_t slot, int32_t posX, 
-	int32_t posY, uint8_t alpha, uint32_t color, float scale);
+	int32_t posY, uint32_t color, bool drawFontEdge, float scale);
 
 void drawMemoryWatches();
 void drawMemoryModifyList();
@@ -122,10 +125,12 @@ void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo);
 void drawOnScreenTimer();
 void drawFrameCounter();
 void drawSequenceInPauseMenu();
+void drawMarioCoordinatesInit();
 void drawMarioCoordinates();
 void drawMarioSpeedXZ();
 void drawJumpStorageDetails();
 void drawButtonInputs();
+void drawStickAngleInit();
 void drawStickAngle();
 void drawMemoryWatchesOnOverworld();
 

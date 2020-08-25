@@ -3402,6 +3402,10 @@ void drawMenu()
 		drawMenuWindow();
 	}
 	
+	// Start the text drawing sequence
+	uint8_t Alpha = 0xFF;
+	drawTextInit(Alpha, false);
+	
 	uint32_t tempCurrentMenu 			= MenuVar.CurrentMenu;
 	// uint32_t tempCurrentMenuOption 	= MenuVar.CurrentMenuOption;
 	uint32_t tempSelectedOption 		= MenuVar.SelectedOption;

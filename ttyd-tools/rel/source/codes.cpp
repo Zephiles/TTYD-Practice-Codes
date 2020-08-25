@@ -1057,7 +1057,7 @@ void displayMarioCoordinates()
 		return;
 	}
 	
-	drawFunctionOnDebugLayer(drawMarioCoordinates);
+	drawFunctionOnDebugLayer(drawMarioCoordinatesInit);
 }
 
 void displayMarioSpeedXZ()
@@ -1116,7 +1116,7 @@ void displayStickAngle()
 		return;
 	}
 	
-	drawFunctionOnDebugLayer(drawStickAngle);
+	drawFunctionOnDebugLayer(drawStickAngleInit);
 }
 
 void displayMemoryWatches()
