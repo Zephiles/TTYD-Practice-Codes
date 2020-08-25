@@ -540,7 +540,7 @@ void drawInventoryIconAndTextColumns()
 	uint32_t tempAddress 	= tempArray[0];
 	uint32_t tempSize 		= tempArray[1];
 	
-	// uint8_t Alpha 				= 0xFF;
+	uint8_t Alpha 					= 0xFF;
 	float TextScale 				= 0.6;
 	float IconScale					= 0.6;
 	int32_t PosX 					= -90;
@@ -582,6 +582,41 @@ void drawInventoryIconAndTextColumns()
 		MultiplyAmount = 1;
 	}
 	
+	// Draw the icons
+	uint32_t LoopCount = 2;
+	for (uint32_t i = 0; i < LoopCount; i++)
+	{
+		// Draw the left and right columns
+		drawItemIconsColumn(i * MultiplyAmount, IncrementAmount, tempSize, 
+			PosX, PosY, tempAddress, IconScale);
+		
+		// Adjust position for right column
+		PosX += AdjustPosX;
+		PosY = AdjustPosYIcon;
+	}
+	
+	// Draw the L and/or R buttons if appropriate
+	if (tempCurrentMenu != INVENTORY_STANDARD)
+	{
+		float L_and_R_buttons_scale = 0.5;
+	
+		// Draw the L button if currently not on the first page
+		if (tempCurrentPage > 0)
+		{
+			IconPosition[IconPositionY] = 155;
+			int16_t iconNum = ButtonL;
+			drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
+		}
+		
+		// Draw the R button if more items are on the next page
+		if (checkForItemsOnNextPage(tempCurrentPage))
+		{
+			IconPosition[IconPositionY] = -175;
+			int16_t iconNum = ButtonR;
+			drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
+		}
+	}
+	
 	// Draw the text for how many items/badges the player currently has out of the max
 	int16_t *CurrentAddress = reinterpret_cast<int16_t *>(tempAddress);
 	uint32_t CurrentItemCount = 0;
@@ -611,26 +646,14 @@ void drawInventoryIconAndTextColumns()
 	int32_t ItemCountPosX = 23;
 	int32_t ItemCountPosY = 180;
 	uint32_t Color = 0xFFFFFFFF;
-	drawText(tempDisplayBuffer, ItemCountPosX, ItemCountPosY, Color, TextScale);
-	
-	// Draw the icons
-	for (uint32_t i = 0; i < 2; i++)
-	{
-		// Draw the left and right columns
-		drawItemIconsColumn(i * MultiplyAmount, IncrementAmount, tempSize, 
-			PosX, PosY, tempAddress, IconScale);
-		
-		// Adjust position for right column
-		PosX += AdjustPosX;
-		PosY = AdjustPosYIcon;
-	}
+	drawTextAndInit(tempDisplayBuffer, ItemCountPosX, ItemCountPosY, Alpha, Color, false, TextScale);
 	
 	// Adjust the initial position of the text
 	PosX = SetPosXText;
 	PosY = SetPosYText;
 	
 	// Draw the text for each item/badge
-	for (uint32_t i = 0; i < 2; i++)
+	for (uint32_t i = 0; i < LoopCount; i++)
 	{
 		// Draw the left and right columns
 		drawItemTextColumn(i * MultiplyAmount, IncrementAmount, 
@@ -639,30 +662,6 @@ void drawInventoryIconAndTextColumns()
 		// Adjust position for right column
 		PosX += AdjustPosX;
 		PosY = AdjustPosYText;
-	}
-	
-	// Draw the L and/or R buttons if appropriate
-	if (tempCurrentMenu == INVENTORY_STANDARD)
-	{
-		return;
-	}
-	
-	float L_and_R_buttons_scale = 0.5;
-	
-	// Draw the L button if currently not on the first page
-	if (tempCurrentPage > 0)
-	{
-		IconPosition[IconPositionY] = 155;
-		int16_t iconNum = ButtonL;
-		drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
-	}
-	
-	// Draw the R button if more items are on the next page
-	if (checkForItemsOnNextPage(tempCurrentPage))
-	{
-		IconPosition[IconPositionY] = -175;
-		int16_t iconNum = ButtonR;
-		drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
 	}
 }
 
@@ -730,10 +729,6 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement,
 	uint32_t newIndexStart 			= indexStart + (tempCurrentPage * MaxIconsPerPage);
 	uint32_t IndexCounter 			= newIndexStart;
 	
-	// Start the text drawing sequence
-	uint8_t Alpha = 0xFF;
-	drawTextInit(Alpha, false);
-	
 	uint32_t TextColor;
 	
 	for (uint32_t i = newIndexStart; i < (newIndexStart + MaxIconsPerColumn); i++)
@@ -780,23 +775,10 @@ void drawMarioSpecialMovesOptions()
 	
 	drawWindow(Color, PosX, PosY, Width, Height, Curve);
 	
-	// Draw the help text
-	const char *HelpText = "Press A to turn on/off\nPress B to cancel";
-	uint8_t Alpha = 0xFF;
-	float Scale = 0.6;
-	Color = 0xFFFFFFFF;
-	PosX += 30;
-	PosY -= 25;
-	
-#ifdef TTYD_JP
-	PosX -= 1;
-#endif
-	
-	drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
-	
 	// Set the values for the text to use
-	int32_t NewPosY = PosY - 54;
-	PosX += 25;
+	int32_t NewPosY = PosY - 79;
+	float Scale = 0.6;
+	PosX += 55;
 	PosY = NewPosY;
 	
 	// Set up array to use for displaying icons
@@ -830,8 +812,18 @@ void drawMarioSpecialMovesOptions()
 		IconPosition[IconPositionY] -= 30;
 	}
 	
-	// Restart the text drawing sequence
-	drawTextInit(Alpha, false);
+	// Draw the help text
+	const char *HelpText = "Press A to turn on/off\nPress B to cancel";
+	uint8_t Alpha = 0xFF;
+	int32_t HelpTextPosX = PosX - 25;
+	int32_t HelpTextPosY = PosY + 54;
+	Color = 0xFFFFFFFF;
+	
+#ifdef TTYD_JP
+	HelpTextPosX -= 1;
+#endif
+	
+	drawTextAndInit(HelpText, HelpTextPosX, HelpTextPosY, Alpha, Color, false, Scale);
 	
 	// Draw the main text
 	PosY = NewPosY;
@@ -1023,6 +1015,33 @@ void drawMarioStats()
 		IconPosition[IconPositionY] = IconPosY;
 	}
 	
+	// Draw the special moves
+	float SpecialMovesScale = 0.37;
+	int16_t SpecialMoveIcon;
+	IconPosition[IconPositionX] = 133;
+	IconPosition[IconPositionY] = 101;
+	
+	int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
+	for (uint32_t i = 0; i < 8; i++)
+	{
+		if (SpecialMovesBits & (1 << i))
+		{
+			if (i == 0)
+			{
+				// Set the icon for Sweet Treat
+				SpecialMoveIcon = ttyd::item_data::Item::MagicalMap;
+			}
+			else
+			{
+				SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
+			}
+			
+			drawIconFromItem(IconPosition, SpecialMoveIcon, SpecialMovesScale);
+		}
+		
+		IconPosition[IconPositionX] += 13;
+	}
+	
 	// Restart the text drawing sequence
 	drawTextInit(Alpha, false);
 	
@@ -1072,33 +1091,6 @@ void drawMarioStats()
 		PosX += 190;
 		ValuesPosX += 230;
 		PosY = TextPosY;
-	}
-	
-	// Draw the special moves
-	float SpecialMovesScale = 0.37;
-	int16_t SpecialMoveIcon;
-	IconPosition[IconPositionX] = 133;
-	IconPosition[IconPositionY] = 101;
-	
-	int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
-	for (uint32_t i = 0; i < 8; i++)
-	{
-		if (SpecialMovesBits & (1 << i))
-		{
-			if (i == 0)
-			{
-				// Set the icon for Sweet Treat
-				SpecialMoveIcon = ttyd::item_data::Item::MagicalMap;
-			}
-			else
-			{
-				SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
-			}
-			
-			drawIconFromItem(IconPosition, SpecialMoveIcon, SpecialMovesScale);
-		}
-		
-		IconPosition[IconPositionX] += 13;
 	}
 }
 
@@ -1902,6 +1894,7 @@ void drawMemoryChangeAddressList()
 		sprintf(tempDisplayBuffer,
 			"Level %" PRIu32,
 			i);
+		
 		drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 		
 		// Reset the color back to white
@@ -1977,6 +1970,9 @@ void drawMemoryEditorSettingsWindow()
 	float Scale 	= 0.6;
 	uint32_t Color;
 	
+	// Start the text drawing sequence
+	drawTextInit(Alpha, false);
+	
 	// Draw the main text
 	uint32_t CurrentSettingsMenuOption = MemoryEditor.CurrentSettingsMenuOption;
 	const char **StringArray = MemoryEditorSettingsLines;
@@ -2029,6 +2025,7 @@ void drawMemoryEditorMainWindow()
 {
 	const int32_t InitialPosX 			= -232;
 	const int32_t InitialPosY 			= 180;
+	const int32_t InitialEditorPosY 	= InitialPosY - 80;
 	const int32_t InitialEditorPosX 	= InitialPosX + 103;
 	const int32_t DigitSpace 			= 12;
 	
@@ -2042,14 +2039,58 @@ void drawMemoryEditorMainWindow()
 	Scale += 0.05;
 #endif
 	
+	// Draw the vertical and/or horizontal lines
+	uint32_t tempCurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
+	if (tempCurrentSelectionStatus & EDITOR_VERTICAL_LINES)
+	{
+		// Draw a line between each byte
+		uint32_t WindowColor = 0xFFFFFFE0;
+		int32_t WindowPosX = InitialEditorPosX + 24;
+		int32_t WindowPosY = InitialEditorPosY;
+		int32_t Width = 2;
+		int32_t Height = 275;
+		int32_t Curve = 0;
+		
+#ifdef TTYD_JP
+		WindowPosX -= 1;
+#endif
+		
+		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
+		{
+			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+			WindowPosX += 28;
+		}
+	}
+	
+	if (tempCurrentSelectionStatus & EDITOR_HORIZONTAL_LINES)
+	{
+		// Draw a line between each row
+		uint32_t WindowColor = 0xFFFFFFE0;
+		int32_t WindowPosX = InitialPosX - 5;
+		int32_t WindowPosY = InitialEditorPosY - 36;
+		int32_t Width = 470;
+		int32_t Height = 2;
+		int32_t Curve = 0;
+		
+#ifdef TTYD_JP
+		WindowPosY -= 1;
+#endif
+		
+		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
+		{
+			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
+			WindowPosY -= 20;
+		}
+	}
+	
 	// Draw the text stating to press Y to open the options
 	const char *String = "Press Y to open the settings menu";
 	int32_t SettingsTextPosX = -143;
-	drawText(String, SettingsTextPosX, PosY, Color, Scale);
+	drawTextAndInit(String, SettingsTextPosX, PosY, Alpha, Color, false, Scale);
+	PosY -= 20;
 	
 	// Draw the text for the options
 	uint8_t *CurrentAddress = MemoryEditor.CurrentAddress;
-	uint32_t tempCurrentSelectionStatus = MemoryEditor.CurrentSelectionStatus;
 	uint32_t tempCurrentEditorMenuOption = MemoryEditor.CurrentEditorMenuOption;
 	bool ColorCondition;
 	
@@ -2062,7 +2103,6 @@ void drawMemoryEditorMainWindow()
 			{
 				// Get the values for the address string
 				String = "Address";
-				PosY -= 20;
 				
 				// Draw the starting address
 				sprintf(tempDisplayBuffer,
@@ -2137,57 +2177,10 @@ void drawMemoryEditorMainWindow()
 		drawText(String, PosX, PosY, Color, Scale);
 	}
 	
-	PosY -= 80;
-	int32_t InitialEditorPosY = PosY + 20;
-	
-	if (tempCurrentSelectionStatus & EDITOR_VERTICAL_LINES)
-	{
-		// Draw a line between each byte
-		uint32_t WindowColor = 0xFFFFFFE0;
-		int32_t WindowPosX = InitialEditorPosX + 24;
-		int32_t WindowPosY = InitialEditorPosY;
-		int32_t Width = 2;
-		int32_t Height = 275;
-		int32_t Curve = 0;
-		
-#ifdef TTYD_JP
-		WindowPosX -= 1;
-#endif
-		
-		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
-		{
-			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
-			WindowPosX += 28;
-		}
-	}
-	
-	if (tempCurrentSelectionStatus & EDITOR_HORIZONTAL_LINES)
-	{
-		// Draw a line between each row
-		uint32_t WindowColor = 0xFFFFFFE0;
-		int32_t WindowPosX = InitialPosX - 5;
-		int32_t WindowPosY = InitialEditorPosY - 36;
-		int32_t Width = 470;
-		int32_t Height = 2;
-		int32_t Curve = 0;
-		
-#ifdef TTYD_JP
-		WindowPosY -= 1;
-#endif
-		
-		for (uint32_t i = 0; i < (EDITOR_BYTES_PER_ROW - 1); i++)
-		{
-			drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
-			WindowPosY -= 20;
-		}
-	}
-	
 	// Draw the current addresses displayed in the editor
 	Color = 0xFFFFFFFF;
 	PosX = InitialPosX;
-	
-	// Restart the text drawing sequence
-	drawTextInit(Alpha, false);
+	PosY -= 80;
 	
 	for (uint32_t i = 0; i < EDITOR_TOTAL_ROWS; i++)
 	{
@@ -2404,10 +2397,6 @@ void drawMemoryEditor()
 {
 	// Draw the window for the editor
 	drawMenuWindow();
-	
-	// Start the text drawing sequence
-	uint8_t Alpha = 0xFF;
-	drawTextInit(Alpha, false);
 	
 	// Check for button inputs
 	// Don't check if the adjustable value menu is open
@@ -3423,20 +3412,6 @@ void drawAddByIconMain(uint32_t currentMenu)
 	
 	drawWindow(Color, PosX, PosY, Width, Height, Curve);
 	
-	// Draw the help text
-	uint8_t Alpha 			= 0xFF;
-	float Scale 			= 0.6;
-	PosX 					= -75;
-	PosY 					= 145;
-	Color 					= 0xFFFFFFFF;
-	const char *HelpText 	= "Press A to confirm\nPress B to cancel";
-	
-#ifdef TTYD_JP
-	PosX -= 2;
-#endif
-	
-	drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
-	
 	// Draw the window for the current menu option
 	uint32_t tempCurrentMenuOption = MenuVar.SecondaryMenuOption;
 	Color 	= 0x5B59DEC0;
@@ -3465,8 +3440,10 @@ void drawAddByIconMain(uint32_t currentMenu)
 	int32_t tempIconPositionY = 70;
 	IconPosition[IconPositionY] = tempIconPositionY;
 	
-	// Draw all of the badges for the current menu
+	// Draw all of the icons for the current menu
+	float Scale = 0.6;
 	uint32_t Counter = 0;
+	
 	for (int32_t i = LowerBound; i <= UpperBound; i++)
 	{
 		if ((i >= ttyd::item_data::Item::PaperModeCurse) && 
@@ -3502,6 +3479,19 @@ void drawAddByIconMain(uint32_t currentMenu)
 			Counter++;
 		}
 	}
+	
+	// Draw the help text
+	uint8_t Alpha 				= 0xFF;
+	int32_t HelpTextPosX 		= -75;
+	int32_t HelpTextPosPosY 	= 145;
+	Color 						= 0xFFFFFFFF;
+	const char *HelpText 		= "Press A to confirm\nPress B to cancel";
+	
+#ifdef TTYD_JP
+	HelpTextPosX -= 2;
+#endif
+	
+	drawTextAndInit(HelpText, HelpTextPosX, HelpTextPosPosY, Alpha, Color, false, Scale);
 }
 
 void drawAddByIcon(uint32_t currentMenu)
@@ -3775,16 +3765,9 @@ void drawCheatsForcedDropItem()
 {
 	uint8_t Alpha 	= 0xFF;
 	uint32_t Color 	= 0xFFFFFFFF;
-	int32_t PosX 	= -232;
-	int32_t PosY 	= 60;
+	int32_t PosX 	= -222;
+	int32_t PosY 	= 15;
 	float Scale 	= 0.6;
-	
-	// Draw the text for showing what the current item is
-	const char *CurrentLine = "Current Item";
-	drawText(CurrentLine, PosX, PosY, Color, Scale);
-	
-	PosX += 10;
-	PosY -= 45;
 	
 	// Draw the current item icon
 	// Set up array to use for displaying icons
@@ -3798,12 +3781,16 @@ void drawCheatsForcedDropItem()
 	int16_t tempForcedNPCItemDrop = MenuVar.ForcedNPCItemDrop;
 	drawIconFromItem(IconPosition, tempForcedNPCItemDrop, Scale);
 	
+	// Draw the text for showing what the current item is
+	const char *CurrentLine = "Current Item";
+	drawTextAndInit(CurrentLine, PosX - 10, PosY + 45, Alpha, Color, false, Scale);
+	
 	// Draw the text for the item
 	PosX += 17;
 	PosY += 18;
 	const char *ItemName = getItemName(tempForcedNPCItemDrop);
 	
-	drawTextAndInit(ItemName, PosX, PosY, Alpha, Color, false, Scale);
+	drawText(ItemName, PosX, PosY, Color, Scale);
 }
 
 void drawCheatsResolveFades()
