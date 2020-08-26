@@ -113,6 +113,7 @@ This menu allows you to save and load various settings. The settings are stored 
 ### Memory
 1. **Memory Watches**
 This menu allows you to watch the values of up to 60 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
+
 2. **Memory Editor**
 This menu allows you to enable a memory editor as well as adjust it's settings. The settings that can be modified are as follows:
    * **Clear Cache** will clear the data cache and instruction cache of all of the memory that is modified via the editor.
