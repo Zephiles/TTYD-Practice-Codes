@@ -268,8 +268,8 @@ void drawStringMultiline(float x, float y, const char *text)
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-	ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
 	ttyd::fontmgr::FontDrawScale(scale);
+	ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
 	
 	uint32_t i = 0;
 	char EndOfLineChar;
