@@ -105,11 +105,12 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 
 ### Settings
 This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The current settings included are as follows:
-* Which cheats are active
+* Which Cheats are active
 * Cheats button combinations
-* Which displays are active
+* Which Displays are active
 * Displays button combinations
-* Memory watches (See below)
+* Memory Watches (See below)
+* Memory Editor settings (See below)
 
 ### Memory
 This menu allows you to view and edit parts of the game's memory. The current options in this menu are as follows:
