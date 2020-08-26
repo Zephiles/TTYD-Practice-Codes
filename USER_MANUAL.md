@@ -15,6 +15,7 @@
 
 ## Setup
 * Download the GCI from the most recent release (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/releases)).
+
 * Copy the GCI containing the Practice Codes to the memory card. (This file contains only code required to run the Practice Codes. It has no relation to the standard TTYD save file.)
   * For **Dolphin** users:
     * Use the memcard manager located in **Tools > Memcard Manager (GC)** to import the GCI into the file Dolphin is using for a memory card.
@@ -111,38 +112,37 @@ This menu allows you to save and load various settings. The settings are stored 
 * Memory watches (See below)
 
 ### Memory
-1. **Memory Watches**
-This menu allows you to watch the values of up to 60 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
+This menu allows you to view and edit parts of the game's memory. The current options in this menu are as follows:
+1. **Memory Watches** allows you to watch the values of up to 60 memory addresses, with support for up to 10 pointer levels each. Each of these watches can also be displayed on the screen at will.
 
-2. **Memory Editor**
-This menu allows you to enable a memory editor as well as adjust it's settings. The settings that can be modified are as follows:
-   * **Clear Cache** will clear the data cache and instruction cache of all of the memory that is modified via the editor.
+2. **Memory Editor** allows you to enable a memory editor as well as adjust it's settings. The settings that can be modified are as follows:
+      * **Clear Cache** will clear the data cache and instruction cache of all of the memory that is modified via the editor.
    
-   * **Raise System Level** will set a value that will cause most things in the overworld to pause. This will take effect once the editor is initially opened, and also if the setting is changed from within the editor itself.
+      * **Raise System Level** will set a value that will cause most things in the overworld to pause. This will take effect once the editor is initially opened, and also if the setting is changed from within the editor itself.
    
-   * **Disable Pause Menu** will disable the pause menu from being used. This is particularly useful since the editor uses the D-Pad for movement, but is not forced since you may want to view the game's memory while the pausing menu is running. This will take effect once the editor is initially opened, and also if the setting is changed from within the editor itself.
+      * **Disable Pause Menu** will disable the pause menu from being used. This is particularly useful since the editor uses the D-Pad for movement, but is not forced since you may want to view the game's memory while the pausing menu is running. This will take effect once the editor is initially opened, and also if the setting is changed from within the editor itself.
    
-   * **Enable Vertical Separators** enables separators between each byte.
-   * **Enable Horizontal Separators** enables separators between each row of bytes
+      * **Enable Vertical Separators** enables separators between each byte.
+      * **Enable Horizontal Separators** enables separators between each row of bytes
 
-Upon opening the editor, the settings menu can be opened by pressing Y, which will allow modifying the same settings as listed above. Three other options are also present, which can be moved between with the D-Pad and selected with A:
-   * **Address** allows you to change the address in which the editor starts displaying bytes for. The valid range that can be selected with this is from `0x80000000` to `0x817FFFFF`.
+   Upon opening the editor, the settings menu can be opened by pressing Y, which will allow modifying the same settings as listed above. Three other options are also present, which can be moved between with the D-Pad and selected with A:
+      * **Address** allows you to change the address in which the editor starts displaying bytes for. The valid range that can be selected with this is from `0x80000000` to `0x817FFFFF`.
+      
+      * **Bytes Size** allows you to change the range of bytes that are being modified at a single time. The maximum amount of bytes that can be selected is the total amount that is displayed at a single time in the editor. It's important to note that when the changes are applied, all of the bytes in the selected size will be changed all at once.
    
-   * **Bytes Size** allows you to change the range of bytes that are being modified at a single time. The maximum amount of bytes that can be selected is the total amount that is displayed at a single time in the editor. It's important to note that when the changes are applied, all of the bytes in the selected size will be changed all at once.
+      * **Edit Bytes** allows you to start editing bytes, with the amount being based on the **Bytes Size**.
    
-   * **Edit Bytes** allows you to start editing bytes, with the amount being based on the **Bytes Size**.
-
-Once **Edit Bytes** is selected, the following controls are used:
-   * Before A is pressed, the editor will be in a state in which you are selecting which bytes in the bytes size should be edited. In this state, the **D-Pad** can be used to move in all four directions and the bytes that are currently selected will be `blue`. Pressing **B** in this state will cause you to go back to selecting one of the three options from before.
+   Once **Edit Bytes** is selected, the following controls are used:
+      * Before A is pressed, the editor will be in a state in which you are selecting which bytes in the bytes size should be edited. In this state, the **D-Pad** can be used to move in all four directions and the bytes that are currently selected will be `blue`. Pressing **B** in this state will cause you to go back to selecting one of the three options from before.
+      
+      * Pressing **A** in this state will put the editor into a state where you are selecting which digit in the bytes size to edit. In this state, the **D-Pad** can be used to move in all four directions, and a window will be drawn behind the digit that is currently selected. Furthermore, the digit that is selected will also be colored `green`. Pressing **B** in this state will cause you to go back to selecting which bytes in the bytes size should be edited.
+      
+      * Pressing **A** in this state will put the editor into a state where you are modifying the actual values of each digit. In this state, the **D-Pad** works the same as the previous state for **left and right**, but **up and down** increment and decrement the values respectively. Furthermore, the digit that is being modified will also be colored `orange`. If **A** is pressed while in this state, then all of the current values are applied at once, and the editor is put back into the state where you are selecting a range of bytes to change. If **B** is pressed instead, then the editor will go back to selecting which digit in the bytes size to edit, and all of the changed values will be discarded.
    
-   * Pressing **A** in this state will put the editor into a state where you are selecting which digit in the bytes size to edit. In this state, the **D-Pad** can be used to move in all four directions, and a window will be drawn behind the digit that is currently selected. Furthermore, the digit that is selected will also be colored `green`. Pressing **B** in this state will cause you to go back to selecting which bytes in the bytes size should be edited.
-   
-   * Pressing **A** in this state will put the editor into a state where you are modifying the actual values of each digit. In this state, the **D-Pad** works the same as the previous state for **left and right**, but **up and down** increment and decrement the values respectively. Furthermore, the digit that is being modified will also be colored `orange`. If **A** is pressed while in this state, then all of the current values are applied at once, and the editor is put back into the state where you are selecting a range of bytes to change. If **B** is pressed instead, then the editor will go back to selecting which digit in the bytes size to edit, and all of the changed values will be discarded.
-
-Other notes about the memory editor:
-   * When the editor is in a state that is after and including that of selecting which bytes in the bytes size should be edited, any of the **D-Pad** directions can be held to move automatically.
-   
-   * It is possible to both display and select invalid portions of memory. These are portions of memory that come before `0x80000000` and after `0x817FFFFF`. When these portions of memory are displayed, they will be displayed as question marks and will be colored `red`. These portions of memory can be selected, but you will not be able to modify their values.
+   Other notes about the memory editor:
+      * When the editor is in a state that is after and including that of selecting which bytes in the bytes size should be edited, any of the **D-Pad** directions can be held to move automatically.
+      
+      * It is possible to both display and select invalid portions of memory. These are portions of memory that come before `0x80000000` and after `0x817FFFFF`. When these portions of memory are displayed, they will be displayed as question marks and will be colored `red`. These portions of memory can be selected, but you will not be able to modify their values.
 
 ### Battles
 This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statuses of anyone in a battle (refered to as Actors).
