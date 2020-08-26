@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.49d";
+const char *VersionNumber = "v3.0.49";
 
 const char *RootLines[] = 
 {
