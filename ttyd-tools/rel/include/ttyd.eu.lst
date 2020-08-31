@@ -2032,6 +2032,21 @@
 // 8023706C:scissor_intersection
 802376C4:GetScissorPtr
 
+// evt_memcard.o
+// text
+// 8025FC80:memcard_write
+// 8025FCC8:memcard_file_existance
+// 8025FD50:memcard_ipl
+// 8025FD64:memcard_header_write
+// 8025FDA4:memcard_copy
+// 8025FE28:memcard_delete
+// 8025FE84:memcard_create
+// 8025FEC4:memcard_format
+// 8025FF04:memcard_load
+// 8026001C:memcard_code
+// data
+803C6454:evt_memcard_save
+
 // runtime.c
 8026849C:_savefpr_14
 802684A0:_savefpr_15

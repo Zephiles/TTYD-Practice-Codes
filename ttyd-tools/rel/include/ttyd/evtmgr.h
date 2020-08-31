@@ -87,10 +87,10 @@ void evtmgrMain();
 
 EvtWork *evtGetWork();
 
-EvtEntry *evtEntry(void *evtCode, int32_t executionOrder, uint32_t flags);
-EvtEntry *evtEntryType(void *evtCode, int8_t priority, uint32_t flags, uint32_t types);
-EvtEntry *evtChildEntry(EvtEntry *parentEvt, void *evtCode, uint32_t flags);
-EvtEntry *evtBrotherEntry(EvtEntry *parentEvt, void *evtCode, uint32_t flags);
+EvtEntry *evtEntry(const void *evtCode, int32_t executionOrder, uint32_t flags);
+EvtEntry *evtEntryType(const void *evtCode, int8_t priority, uint32_t flags, uint32_t types);
+EvtEntry *evtChildEntry(EvtEntry *parentEvt, const void *evtCode, uint32_t flags);
+EvtEntry *evtBrotherEntry(EvtEntry *parentEvt, const void *evtCode, uint32_t flags);
 EvtEntry *evtRestart(EvtEntry *evt);
 void evtDelete(EvtEntry *evt);
 void evtDeleteID(int32_t threadId);

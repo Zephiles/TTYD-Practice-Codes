@@ -6,6 +6,7 @@
 #include "draw.h"
 #include "patch.h"
 #include "assembly.h"
+#include "evt_cmd.h"
 
 #include <gc/OSTime.h>
 #include <ttyd/npcdrv.h>
@@ -13,6 +14,7 @@
 #include <ttyd/mariost.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
+#include <ttyd/evt_memcard.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/seq_mapchange.h>
@@ -288,6 +290,14 @@ void loadMarioAndPartnerPositions()
 	*reinterpret_cast<float *>(PartnerPointer + 0x110) 	= MarioPartnerPositions.PartnerPosition[6]; // Partner Direction
 }
 
+// Create a script to call evt_memcard_save
+// LW(0) needs to be set to 0 before evt_memcard_save can be called
+EVT_BEGIN(MemcardSaveScriptInit)
+SET(LW(0), 0)
+RUN_CHILD_EVT(ttyd::evt_memcard::evt_memcard_save)
+RETURN()
+EVT_END()
+
 void saveAnywhere()
 {
 	if (!SaveAnywhere.ScriptIsRunning)
@@ -320,16 +330,8 @@ void saveAnywhere()
 			return;
 		}
 		
-#ifdef TTYD_US
-		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803BAC3C);
-#elif defined TTYD_JP
-		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803B68BC);
-#elif defined TTYD_EU
-		void *SaveScriptEvtCode = reinterpret_cast<void *>(0x803C6C4C);
-#endif
-		
 		// Take away control from the player and start the Save script
-		ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(SaveScriptEvtCode, 0, 0, 0);
+		ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(MemcardSaveScriptInit, 0, 0, 0);
 		SaveAnywhere.ThreadID = SaveScriptEvt->threadId;
 		
 		SaveAnywhere.ScriptIsRunning = true;
