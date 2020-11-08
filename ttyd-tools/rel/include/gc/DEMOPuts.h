@@ -7,9 +7,9 @@ namespace gc::DEMOPuts {
 
 enum class FontType : int32_t
 {
-	kOpaque = 0, // White on black
-	kReverse, // Black on white
-	kTranslucent, // White on transparent
+    kOpaque = 0, // White on black
+    kReverse, // Black on white
+    kTranslucent, // White on transparent
 };
 
 extern "C" {

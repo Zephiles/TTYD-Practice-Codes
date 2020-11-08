@@ -7,31 +7,31 @@ namespace ttyd::dispdrv {
 // May want to move this enum class to camdrv.h at some point
 enum class CameraId : uint8_t
 {
-	kOffscreen = 0,
-	kOffscreen2,
-	kShadow,
-	kBackground,
-	k3d,
-	k3dEffectA,
-	k3dImage,
-	k3dEffectB,
-	k2d,
-	kFade,
-	kFade2,
-	kDebug,
-	kDebug3d,
+    kOffscreen = 0,
+    kOffscreen2,
+    kShadow,
+    kBackground,
+    k3d,
+    k3dEffectA,
+    k3dImage,
+    k3dEffectB,
+    k2d,
+    kFade,
+    kFade2,
+    kDebug,
+    kDebug3d,
 };
 
 typedef void (*PFN_dispCallback)(CameraId cameraId, void *user);
 
 struct DisplayWork
 {
-	CameraId cameraId;
-	uint8_t renderMode;
-	uint16_t padding_2;
-	float order;
-	PFN_dispCallback callback;
-	void *user;
+    CameraId cameraId;
+    uint8_t renderMode;
+    uint16_t padding_2;
+    float order;
+    PFN_dispCallback callback;
+    void *user;
 } __attribute__((__packed__));
 
 static_assert(sizeof(DisplayWork) == 0x10);

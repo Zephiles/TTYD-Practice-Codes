@@ -6,8 +6,8 @@ namespace ttyd::database {
 
 struct DatabaseDefinition
 {
-	const char *name;
-	int32_t id;
+    const char *name;
+    int32_t id;
 } __attribute__((__packed__));
 
 static_assert(sizeof(DatabaseDefinition) == 0x8);

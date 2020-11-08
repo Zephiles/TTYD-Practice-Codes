@@ -9,25 +9,25 @@ namespace ttyd::evt_npc {
 
 struct NpcSetupInfo
 {
-	const char *name;
-	uint32_t initialFlags;
-	uint32_t initialReactionFlags;
-	const void *initEvtCode;
-	const void *regularEvtCode;
-	const void *talkEvtCode;
-	const void *deadEvtCode;
-	const void *findEvtCode;
-	const void *lostEvtCode;
-	const void *returnEvtCode;
-	const void *blowEvtCode;
-	npcdrv::NpcTerritoryType territoryType;
-	float territoryBase[3];
-	float territorySizeHoming[3];
-	float searchRange;
-	float searchAngle;
-	float homingRange;
-	float homingAngle;
-	int32_t battleInfoId;
+    const char *name;
+    uint32_t initialFlags;
+    uint32_t initialReactionFlags;
+    const void *initEvtCode;
+    const void *regularEvtCode;
+    const void *talkEvtCode;
+    const void *deadEvtCode;
+    const void *findEvtCode;
+    const void *lostEvtCode;
+    const void *returnEvtCode;
+    const void *blowEvtCode;
+    npcdrv::NpcTerritoryType territoryType;
+    float territoryBase[3];
+    float territorySizeHoming[3];
+    float searchRange;
+    float searchAngle;
+    float homingRange;
+    float homingAngle;
+    int32_t battleInfoId;
 } __attribute__((__packed__));
 
 static_assert(sizeof(NpcSetupInfo) == 0x5c);

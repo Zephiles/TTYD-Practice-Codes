@@ -130,13 +130,13 @@ void adjustWarpsBossSelection(uint32_t button);
 void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button);
 
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 
-	uint8_t &currentPage, uint32_t totalMenuOptions, 
-		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow,
-			bool allowUpwardsSnapFromLeftOrRight);
+    uint8_t &currentPage, uint32_t totalMenuOptions, 
+        uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow,
+            bool allowUpwardsSnapFromLeftOrRight);
 
 void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption, 
-	uint8_t &currentPage, uint32_t totalMenuOptions, 
-		uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow, 
-			bool allowUpwardsSnapFromLeftOrRight);
+    uint8_t &currentPage, uint32_t totalMenuOptions, 
+        uint32_t maxOptionsPerPage, uint32_t maxOptionsPerRow, 
+            bool allowUpwardsSnapFromLeftOrRight);
 
 }

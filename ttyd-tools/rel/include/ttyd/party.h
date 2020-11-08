@@ -6,33 +6,33 @@ namespace ttyd::party {
 
 enum class PartySlotId : int32_t
 {
-	kNone = -1,
-	kParty,
-	kFollower,
+    kNone = -1,
+    kParty,
+    kFollower,
 };
 
 enum class PartyMembers : uint8_t
 {
-	kNone = 0,
-	kGoombella,
-	kKoops,
-	kBobbery,
-	kYoshi,
-	kFlurrie,
-	kVivian,
-	kMsMowz,
-	kEgg,
-	kFlavio,
-	kPunio,
-	kFrankly,
-	kGus,
-	kGoombellaFollower,
-	kKoopsFollower,
-	kBobberyFollower,
-	kYoshiFollower,
-	kFlurrieFollower,
-	kVivianFollower,
-	kMsMowzFollower,
+    kNone = 0,
+    kGoombella,
+    kKoops,
+    kBobbery,
+    kYoshi,
+    kFlurrie,
+    kVivian,
+    kMsMowz,
+    kEgg,
+    kFlavio,
+    kPunio,
+    kFrankly,
+    kGus,
+    kGoombellaFollower,
+    kKoopsFollower,
+    kBobberyFollower,
+    kYoshiFollower,
+    kFlurrieFollower,
+    kVivianFollower,
+    kMsMowzFollower,
 };
 
 extern "C" {

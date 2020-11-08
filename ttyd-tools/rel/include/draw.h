@@ -21,7 +21,7 @@ void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scal
 void drawTextInit(uint8_t alpha, bool drawFontEdge);
 
 void drawTextAndInit(const char *text, int32_t x, int32_t y, 
-	uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
+    uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
 
 uint16_t getMessageWidth(const char *text, float scale);
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
@@ -29,26 +29,26 @@ void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *col
 uint32_t getSelectedTextColor(bool valueToCheck);
 
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint32_t textColor, 
-	float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
+    float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve);
 
 void drawSingleColumnMain();
 void drawSingleColumnSelectedOption();
 
 void drawSingleColumn(int32_t posY, uint32_t maxOptionsPerPage, 
-	uint32_t currentPage, bool adjustSelectedOption);
+    uint32_t currentPage, bool adjustSelectedOption);
 
 void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMenuOption, 
-	uint32_t currentPage, uint32_t size, uint32_t maxOptionsPerPage, 
-		uint32_t maxOptionsPerRow, bool showCurrentOption, 
-			uint32_t posXIncrementAmount, const char **lines);
+    uint32_t currentPage, uint32_t size, uint32_t maxOptionsPerPage, 
+        uint32_t maxOptionsPerRow, bool showCurrentOption, 
+            uint32_t posXIncrementAmount, const char **lines);
 
 void drawInventoryIconAndTextColumns();
 
 void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t size, 
-	int32_t posX, int32_t posY, uint32_t address, float scale);
+    int32_t posX, int32_t posY, uint32_t address, float scale);
 
 void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement, 
-	uint32_t size, int32_t posX, int32_t posY, uint32_t address, float scale);
+    uint32_t size, int32_t posX, int32_t posY, uint32_t address, float scale);
 
 void drawMarioSpecialMovesOptions();
 void drawFollowersOptions();
@@ -60,7 +60,7 @@ void drawBattlesActorsHeldItem();
 void drawCurrentFollowerOut();
 
 void drawMemoryWatchValueString(int32_t slot, int32_t posX, 
-	int32_t posY, uint32_t color, bool drawFontEdge, float scale);
+    int32_t posY, uint32_t color, bool drawFontEdge, float scale);
 
 void drawMemoryWatches();
 void drawMemoryModifyList();
@@ -83,13 +83,13 @@ void drawNotInBattleErrorMessage();
 void drawConfirmationWindow(const char *message);
 
 void drawSingleLineFromArray(int32_t posX, int32_t posY, 
-	int32_t currentMenuOption, const char **line);
+    int32_t currentMenuOption, const char **line);
 
 void drawSingleLineFromStringAndValue(int32_t posX, int32_t posY, 
-	const char *line, int32_t value);
+    const char *line, int32_t value);
 
 void drawSingleLineFromStringAndArray(int32_t posX, int32_t posY, 
-	int32_t currentMenuOption, const char *string, const char **line);
+    int32_t currentMenuOption, const char *string, const char **line);
 
 void drawAdjustableValueSpawnItem();
 void drawAdjustableValueMemoryEditor();

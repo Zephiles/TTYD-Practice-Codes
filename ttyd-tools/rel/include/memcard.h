@@ -19,13 +19,13 @@ int32_t openFileFromCard(const char *fileName, gc::card::CARDFileInfo *fileInfo)
 int32_t closeFileFromCard(gc::card::CARDFileInfo *fileInfo);
 
 int32_t createFileOnCard(const char *fileName, 
-	uint32_t size, gc::card::CARDFileInfo *fileInfo);
+    uint32_t size, gc::card::CARDFileInfo *fileInfo);
 
 int32_t readFromFileOnCard(gc::card::CARDFileInfo *fileInfo, 
-	void *buffer, int32_t length, int32_t offset);
+    void *buffer, int32_t length, int32_t offset);
 
 int32_t writeToFileOnCard(gc::card::CARDFileInfo *fileInfo, 
-	void *buffer, int32_t length, int32_t offset);
+    void *buffer, int32_t length, int32_t offset);
 
 int32_t deleteFileOnCard(const char *fileName);
 

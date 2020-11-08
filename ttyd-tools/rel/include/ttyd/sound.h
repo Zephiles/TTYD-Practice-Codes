@@ -42,7 +42,7 @@ extern "C" {
 // SoundEfxStop
 
 int32_t SoundEfxPlayEx(int32_t soundId, uint32_t unk1 /* channel? */, 
-	uint32_t unk2 /* volume? */, uint32_t unk3);
+    uint32_t unk2 /* volume? */, uint32_t unk3);
 
 // SoundSongCheck
 // SoundSongGetVolCh

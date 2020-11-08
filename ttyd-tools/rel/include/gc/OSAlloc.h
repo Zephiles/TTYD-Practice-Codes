@@ -6,16 +6,16 @@ namespace gc::OSAlloc {
 
 struct ChunkInfo
 {
-	ChunkInfo *prev;
-	ChunkInfo *next;
-	uint32_t size;
+    ChunkInfo *prev;
+    ChunkInfo *next;
+    uint32_t size;
 } __attribute__((__packed__));
 
 struct HeapInfo
 {
-	uint32_t capacity;
-	ChunkInfo *firstFree;
-	ChunkInfo *firstUsed;
+    uint32_t capacity;
+    ChunkInfo *firstFree;
+    ChunkInfo *firstUsed;
 } __attribute__((__packed__));
 
 static_assert(sizeof(ChunkInfo) == 0xC);

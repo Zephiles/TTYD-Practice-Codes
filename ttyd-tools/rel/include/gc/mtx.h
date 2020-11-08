@@ -33,7 +33,7 @@ void PSMTXScale(mtx34 mtx, float xScale, float yScale, float zScale);
 // C_MTXPerspective
 
 void C_MTXOrtho(mtx44 mtx, float topEdge, float bottomEdge, 
-	float leftEdge, float rightEdge, float nearClipPlain, float farClipPlain);
+    float leftEdge, float rightEdge, float nearClipPlain, float farClipPlain);
 
 // PSMTX44Copy
 // PSMTX44Concat

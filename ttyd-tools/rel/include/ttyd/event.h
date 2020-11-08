@@ -8,29 +8,29 @@ namespace ttyd::event {
 
 struct EventStageEventDescription
 {
-	uint8_t entryMotionType;
-	ttyd::party::PartyMembers partyId[2];
-	uint8_t pad_3;
-	uint16_t gsw0; // Sequence Position
-	uint16_t pad_6;
-	char *textId;
-	char *nameJp;
+    uint8_t entryMotionType;
+    ttyd::party::PartyMembers partyId[2];
+    uint8_t pad_3;
+    uint16_t gsw0; // Sequence Position
+    uint16_t pad_6;
+    char *textId;
+    char *nameJp;
 #ifndef TTYD_JP
-	char *nameEn;
+    char *nameEn;
 #endif
-	char *map;
-	char *bero;
-	void (*pfnInit)();
+    char *map;
+    char *bero;
+    void (*pfnInit)();
 } __attribute__((__packed__));
 
 struct EventStageDescription
 {
-	char *nameJp;
+    char *nameJp;
 #ifndef TTYD_JP
-	char *nameEn;
+    char *nameEn;
 #endif
-	EventStageEventDescription *pEvents;
-	int32_t eventCount;
+    EventStageEventDescription *pEvents;
+    int32_t eventCount;
 } __attribute__((__packed__));
 
 #ifdef TTYD_JP

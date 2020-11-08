@@ -6,60 +6,60 @@ namespace ttyd::memory {
 
 struct SmartAllocationData
 {
-	void *pMemory;
-	uint32_t usedSize;
-	void *pFileInfo; // FileEntryData *pFileInfo;
-	uint16_t bUsed;
-	uint8_t group;
-	uint8_t pad_f;
-	uint32_t unusedSize;
-	SmartAllocationData *pNext;
-	SmartAllocationData *pPrev;
+    void *pMemory;
+    uint32_t usedSize;
+    void *pFileInfo; // FileEntryData *pFileInfo;
+    uint16_t bUsed;
+    uint8_t group;
+    uint8_t pad_f;
+    uint32_t unusedSize;
+    SmartAllocationData *pNext;
+    SmartAllocationData *pPrev;
 } __attribute__((__packed__));
 
 struct SmartWork
 {
-	void *pArena;
-	SmartAllocationData allocations[2048];
-	uint32_t unallocatedArenaStartSize;
-	SmartAllocationData *pFirstUsed;
-	SmartAllocationData *pLastUsed;
-	SmartAllocationData *pFirstFree;
-	SmartAllocationData *pLastFree;
-	uint32_t lastFrameFreeCount;
+    void *pArena;
+    SmartAllocationData allocations[2048];
+    uint32_t unallocatedArenaStartSize;
+    SmartAllocationData *pFirstUsed;
+    SmartAllocationData *pLastUsed;
+    SmartAllocationData *pFirstFree;
+    SmartAllocationData *pLastFree;
+    uint32_t lastFrameFreeCount;
 } __attribute__((__packed__));
 
 struct HeapEnd
 {
-	void *pHeap0End;
-	void *pHeap1End;
-	void *pHeap2End;
-	void *pHeap3End;
-	void *pHeap4End;
+    void *pHeap0End;
+    void *pHeap1End;
+    void *pHeap2End;
+    void *pHeap3End;
+    void *pHeap4End;
 #ifdef TTYD_JP
-	void *pHeap5End;
+    void *pHeap5End;
 #endif
 } __attribute__((__packed__));
 
 struct HeapStart
 {
-	void *pHeap0Start;
-	void *pHeap1Start;
-	void *pHeap2Start;
-	void *pHeap3Start;
-	void *pHeap4Start;
+    void *pHeap0Start;
+    void *pHeap1Start;
+    void *pHeap2Start;
+    void *pHeap3Start;
+    void *pHeap4Start;
 #ifdef TTYD_JP
-	void *pHeap5Start;
+    void *pHeap5Start;
 #endif
 } __attribute__((__packed__));
 
 enum SmartAllocationGroup
 {
-	kNone = 0,
-	kArea,
-	kBattle,
-	kSingleFrame,
-	kDoubleFrame,
+    kNone = 0,
+    kArea,
+    kBattle,
+    kSingleFrame,
+    kDoubleFrame,
 };
 
 static_assert(sizeof(SmartAllocationData) == 0x1C);

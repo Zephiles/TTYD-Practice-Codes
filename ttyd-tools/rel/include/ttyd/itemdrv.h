@@ -6,9 +6,9 @@ namespace ttyd::itemdrv {
 
 struct ItemDrvWork
 {
-	uint32_t entries;
-	void *wItemsInField;
-	uint8_t unk_8[48];
+    uint32_t entries;
+    void *wItemsInField;
+    uint8_t unk_8[48];
 } __attribute__((__packed__));
 
 static_assert(sizeof(ItemDrvWork) == 0x38);
@@ -38,7 +38,7 @@ extern "C" {
 // itemDelete
 
 void *itemEntry(const char *name, int32_t id, uint32_t mode, 
-	int32_t wasCollectedExpr, void *pickupScript, float x, float y, float z);
+    int32_t wasCollectedExpr, void *pickupScript, float x, float y, float z);
 
 // itemModeChange
 // itemMain
