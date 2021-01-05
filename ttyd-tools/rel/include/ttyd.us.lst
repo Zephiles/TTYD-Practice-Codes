@@ -2118,7 +2118,7 @@
 
 // OSAlloc.c
 // text
-// 80296400:DLInsert
+80296400:DLInsert
 // 802964AC:OSAllocFromHeap
 // 802965A8:OSFreeToHeap
 // 80296624:OSSetCurrentHeap

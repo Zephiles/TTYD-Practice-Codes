@@ -23,7 +23,7 @@ static_assert(sizeof(HeapInfo) == 0xC);
 
 extern "C" {
 
-// DLInsert
+ChunkInfo *DLInsert(ChunkInfo *list, ChunkInfo *chunk);
 // OSAllocFromHeap
 // OSFreeToHeap
 // OSSetCurrentHeap
