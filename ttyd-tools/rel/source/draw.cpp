@@ -5506,7 +5506,7 @@ void drawEvtData()
     
     // Check if the evt is at a valid memory address
     void *Ptr = reinterpret_cast<void *>(
-        reinterpret_cast<uint32_t>(EvtEntry) + sizeof(ttyd::evtmgr::EvtEntry));
+        reinterpret_cast<uint32_t>(EvtEntry) + sizeof(ttyd::evtmgr::EvtEntry) - 1);
     
     float *TimeScheduledToRun = reinterpret_cast<float *>(&EvtEntry->timeScheduledToRun);
     
