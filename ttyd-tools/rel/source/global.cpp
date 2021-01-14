@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.50";
+const char *VersionNumber = "v3.0.51c";
 
 const char *RootLines[] = 
 {
@@ -1551,6 +1551,7 @@ const char *DisplaysLines[] =
     "Memory Usage",
     "Effs Active",
     "Evts Active",
+    "Evt Data",
     "Yoshi Skip",
     "Palace Skip",
     "Bridge Skip",
@@ -1568,6 +1569,12 @@ const char *OnScreenTimerOptions[] =
 {
     "Start/Pause/Resume Button Combo",
     "Reset Button Combo",
+};
+
+const char *DisplaysEvtDataOptionsLines[] = 
+{
+    "Turn On/Off",
+    "Set Distinct Id",
 };
 
 const char *WarpLines[] = 
@@ -1899,12 +1906,13 @@ uint8_t DisplaysOrder[] =
     EFFS_ACTIVE,
     MEMORY_USAGE,
     EVTS_ACTIVE,
+    EVT_DATA,
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[35];
+struct Menus Menu[36];
 struct Cheats Cheat[26];
-bool Displays[17];
+bool Displays[18];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -2042,6 +2050,14 @@ void initMenuVars()
     Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions     = sizeof(CheatsNoButtonComboOptionsLines) / sizeof(CheatsNoButtonComboOptionsLines[0]);
     Menu[DISPLAYS_NO_BUTTON_COMBO].ColumnSplitAmount    = Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions;
     Menu[DISPLAYS_NO_BUTTON_COMBO].Line                 = CheatsNoButtonComboOptionsLines;
+    
+    Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions      = sizeof(OnScreenTimerOptionsLines) / sizeof(OnScreenTimerOptionsLines[0]);
+    Menu[DISPLAYS_ONSCREEN_TIMER].ColumnSplitAmount     = Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions;
+    Menu[DISPLAYS_ONSCREEN_TIMER].Line                  = OnScreenTimerOptionsLines;
+    
+    Menu[DISPLAYS_EVT_DATA].TotalMenuOptions            = sizeof(DisplaysEvtDataOptionsLines) / sizeof(DisplaysEvtDataOptionsLines[0]);
+    Menu[DISPLAYS_EVT_DATA].ColumnSplitAmount           = Menu[DISPLAYS_EVT_DATA].TotalMenuOptions;
+    Menu[DISPLAYS_EVT_DATA].Line                        = DisplaysEvtDataOptionsLines;
     
     Menu[WARPS].TotalMenuOptions                        = sizeof(WarpLines) / sizeof(WarpLines[0]);
     Menu[WARPS].ColumnSplitAmount                       = Menu[WARPS].TotalMenuOptions;

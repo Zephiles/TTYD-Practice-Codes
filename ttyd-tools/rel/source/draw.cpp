@@ -3238,9 +3238,18 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     }
     
     // Adjust the current value if necessary
-    if (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS)
+    switch (currentMenu)
     {
-        adjustMenuItemBounds(0, currentMenu);
+        case MEMORY_WATCH_CHANGE_ADDRESS:
+        case DISPLAYS_EVT_DATA:
+        {
+            break;
+        }
+        default:
+        {
+            adjustMenuItemBounds(0, currentMenu);
+            break;
+        }
     }
     
     // Draw the window
@@ -3301,6 +3310,7 @@ void drawAdjustableValueHex(uint32_t currentMenu)
             break;
         }
         case MEMORY_EDITOR_MENU:
+        case DISPLAYS_EVT_DATA:
         {
             AmountOfNumbers = 8;
             
@@ -4174,6 +4184,29 @@ void drawDisplaysMemoryUsageMenu()
     // Draw the bool for the smart heap
     getOnOffTextAndColor(DisplayHeapInfo[NumHeaps], &String, &Color);
     drawText(String, PosX + 120, PosY, Color, Scale);
+}
+
+void drawDisplaysEvtDataMenu()
+{
+    uint32_t Color   = 0xFFFFFFFF;
+    // uint8_t Alpha = 0xFF;
+    int32_t PosX     = -232;
+    int32_t PosY     = 120;
+    float Scale      = 0.6;
+    
+    // Draw the bool
+    bool CurrentDisplay = Displays[EVT_DATA];
+    const char *CurrentLine = DisplaysLines[MenuVar.MenuSelectedOption];
+    drawBoolOnOrOff(CurrentDisplay, CurrentLine, PosY);
+    
+    // Draw the distinct id
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer,
+        "Distinct Id\n%" PRIu32,
+        *reinterpret_cast<uint32_t *>(0x80004148));
+    
+    PosY -= 60;
+    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawWarpsOptions()
@@ -5452,6 +5485,56 @@ void drawEvtsActive()
         MaxEntries);
     
     drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+}
+
+void drawEvtData()
+{
+    uint32_t Color = 0xFFFFFFFF;
+    uint8_t Alpha  = 0xFF;
+    int32_t PosX   = -232;
+    int32_t PosY   = 0;
+    float Scale    = 0.65;
+    
+    // Draw the text headers
+    const char *Headers = "EvtAddress\nFlags\nOpCode\nNextCmdPtr\nCurrentCmdArgs\nThread_Id\nTimeScale\nTimeSchToRun";
+    drawTextAndInit(Headers, PosX, PosY, Alpha, Color, true, Scale);
+    
+    // Get the desired evt
+    ttyd::evtmgr::EvtWork *EvtWrk = ttyd::evtmgr::evtGetWork();
+    uint32_t DistinctID = *reinterpret_cast<uint32_t *>(0x80004148);
+    ttyd::evtmgr::EvtEntry *EvtEntry = &EvtWrk->entries[DistinctID];
+    
+    // Check if the evt is at a valid memory address
+    void *Ptr = reinterpret_cast<void *>(
+        reinterpret_cast<uint32_t>(EvtEntry) + sizeof(ttyd::evtmgr::EvtEntry));
+    
+    float *TimeScheduledToRun = reinterpret_cast<float *>(&EvtEntry->timeScheduledToRun);
+    
+    char *tempDisplayBuffer = DisplayBuffer;
+    if (checkIfPointerIsValid(Ptr))
+    {
+        // Draw each desired variable
+        sprintf(tempDisplayBuffer,
+            "0x%" PRIX32 "\n0x%" PRIX32 "\n0x%" PRIX8 "\n0x%" PRIX32 "\n0x%" PRIX32 "\n0x%" PRIX32 "\n%f\n%f",
+            reinterpret_cast<uint32_t>(EvtEntry),
+            EvtEntry->flags,
+            EvtEntry->opcode,
+            EvtEntry->nextCommandPtr,
+            reinterpret_cast<uint32_t>(EvtEntry->currentCommandArguments),
+            EvtEntry->threadId,
+            EvtEntry->timescale,
+            *TimeScheduledToRun);
+    }
+    else
+    {
+        // Address range is invalid, so draw question marks
+        sprintf(tempDisplayBuffer,
+            "0x%" PRIX32 "\n?\n?\n?\n?\n?\n?\n?",
+            reinterpret_cast<uint32_t>(EvtEntry));
+    }
+    
+    PosX += 160;
+    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawSettingsCurrentWork()

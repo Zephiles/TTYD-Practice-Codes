@@ -41,6 +41,7 @@ enum MENU_NAMES
     BATTLES_STATUSES,
     DISPLAYS_ONSCREEN_TIMER,
     DISPLAYS_MEMORY_USAGE,
+    DISPLAYS_EVT_DATA,
     DISPLAYS_NO_BUTTON_COMBO,
     WARPS_EVENT,
     WARPS_INDEX,
@@ -376,6 +377,7 @@ enum DISPLAYS_OPTIONS
     MEMORY_USAGE,
     EFFS_ACTIVE,
     EVTS_ACTIVE,
+    EVT_DATA,
     YOSHI_SKIP,
     PALACE_SKIP,
     BRIDGE_SKIP,
@@ -387,6 +389,12 @@ enum ONSCREEN_TIMER_OPTIONS
     ONSCREEN_TIMER_TURN_ON_OR_OFF = 1,
     CHANGE_START_PAUSE_RESUME_BUTTON_COMBO,
     CHANGE_RESET_BUTTON_COMBO,
+};
+
+enum DISPLAYS_EVT_DATA_OPTIONS
+{
+    DISPLAYS_EVT_DATA_ON_OR_OFF = 1,
+    DISPLAYS_EVT_DATA_SET_ID,
 };
 
 enum DISPLAYS_NO_BUTTON_COMBO_OPTIONS
@@ -1004,9 +1012,9 @@ struct UnusedMapStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[35];
+extern Menus Menu[36];
 extern Cheats Cheat[26];
-extern bool Displays[17];
+extern bool Displays[18];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;

@@ -996,6 +996,7 @@ void Mod::run()
         displayActionCommandsTiming();
         displayEffsActive();
         displayEvtsActive();
+        displayEvtData();
         
         // Check the heaps
         checkHeaps();

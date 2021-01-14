@@ -1635,6 +1635,16 @@ void displayEvtsActive()
     drawFunctionOnDebugLayerWithOrder(drawEvtsActive, 1.f);
 }
 
+void displayEvtData()
+{
+    if (!Displays[EVT_DATA])
+    {
+        return;
+    }
+    
+    drawFunctionOnDebugLayerWithOrder(drawEvtData, 5.f);
+}
+
 int32_t warpToMap(uint32_t value)
 {
     // Make sure the player is currently in the game

@@ -722,6 +722,12 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
             }
             break;
         }
+        case DISPLAYS_EVT_DATA:
+        {
+            LowerBound = 0;
+            UpperBound = static_cast<int32_t>(0xFFFFFFFF);
+            break;
+        }
         case BATTLES_CURRENT_ACTOR:
         {
             uint32_t ActorAddress = reinterpret_cast<uint32_t>(getActorPointer(tempMenuSelectedOption));
@@ -1114,12 +1120,12 @@ void setAdjustableValueToMin(uint32_t currentMenu)
 
 uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 {
-    bool InMemoryEditorAddressMenu = (currentMenu == MEMORY_EDITOR_MENU) && 
-        (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS);
+    bool HandleAsUnsignedHex = (currentMenu == DISPLAYS_EVT_DATA) || ((currentMenu == MEMORY_EDITOR_MENU) && 
+        (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS));
     
     // Get the amount of numbers to draw
     uint32_t AmountOfNumbers;
-    if (InMemoryEditorAddressMenu)
+    if (HandleAsUnsignedHex)
     {
         AmountOfNumbers = getHighestAdjustableValueDigitUnsigned(currentMenu, true);
     }
@@ -1171,7 +1177,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                         IncrementAmount = -1;
                     }
                     
-                    if (InMemoryEditorAddressMenu)
+                    if (HandleAsUnsignedHex)
                     {
                         adjustAddByIdValue(IncrementAmount, currentMenu, true, true);
                     }
@@ -1250,7 +1256,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         case DPADDOWN:
         {
             // Decrement the current value for the current slot in the drawAddById function
-            if (InMemoryEditorAddressMenu)
+            if (HandleAsUnsignedHex)
             {
                 adjustAddByIdValue(-1, currentMenu, true, true);
             }
@@ -1265,7 +1271,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         case DPADUP:
         {
             // Increment the current value for the current slot in the drawAddById function
-            if (InMemoryEditorAddressMenu)
+            if (HandleAsUnsignedHex)
             {
                 adjustAddByIdValue(1, currentMenu, true, true);
             }
@@ -1515,6 +1521,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                     MenuVar.FrameCounter = 1;
                     return Button;
                 }
+                case DISPLAYS_EVT_DATA:
+                {
+                    *reinterpret_cast<uint32_t *>(0x80004148) = MenuVar.MenuSecondaryValueUnsigned;
+                    MenuVar.SelectedOption = 0;
+                    
+                    MenuVar.FrameCounter = 1;
+                    return Button;
+                }
                 default:
                 {
                     return 0;
@@ -1590,6 +1604,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                     case CHEATS_MANAGE_FLAGS_MAIN:
                     case BATTLES_CURRENT_ACTOR:
                     case BATTLES_STATUSES:
+                    case DISPLAYS_EVT_DATA:
                     case WARPS_EVENT:
                     case WARPS_INDEX:
                     {
@@ -2352,6 +2367,18 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
                 return;
             }
             break;
+        }
+        case DISPLAYS_EVT_DATA:
+        {
+            // Handle everything as unsigned
+            int32_t UpperAndLowerBounds[2];
+            getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
+            
+            uint32_t LowerBound = static_cast<uint32_t>(UpperAndLowerBounds[0]);
+            uint32_t UpperBound = static_cast<uint32_t>(UpperAndLowerBounds[1]);
+            
+            adjustMenuItemBoundsMainUnsigned(currentMenu, valueChangedBy, LowerBound, UpperBound);
+            return;
         }
         default:
         {

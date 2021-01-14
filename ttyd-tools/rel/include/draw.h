@@ -114,6 +114,7 @@ void drawCheatsLockFlags();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
 void drawDisplaysMemoryUsageMenu();
+void drawDisplaysEvtDataMenu();
 void drawWarpsOptions();
 void drawEventDetails(int32_t posX, int32_t posY, int32_t index);
 void drawWarpByEventMenuDetails();
@@ -141,6 +142,7 @@ void drawBlimpTicketSkipDetails();
 void drawActionCommandsTiming();
 void drawEffsActive();
 void drawEvtsActive();
+void drawEvtData();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();

@@ -2678,6 +2678,11 @@ void menuCheckButton()
                             MenuToEnter = DISPLAYS_MEMORY_USAGE;
                             break;
                         }
+                        case EVT_DATA:
+                        {
+                            MenuToEnter = DISPLAYS_EVT_DATA;
+                            break;
+                        }
                         default:
                         {
                             MenuToEnter = DISPLAYS_NO_BUTTON_COMBO;
@@ -2821,6 +2826,62 @@ void menuCheckButton()
                     // Go back to the previous menu
                     MenuVar.MenuSelectedOption = 0;
                     enterPreviousMenu();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case DISPLAYS_EVT_DATA:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    adjustMenuNoPageEdit(CurrentButton);
+                    break;
+                }
+                case A:
+                {
+                    if (tempSelectedOption == 0)
+                    {
+                        uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                        switch (CurrentMenuOptionCheck)
+                        {
+                            case DISPLAYS_EVT_DATA_ON_OR_OFF:
+                            {
+                                // Flip the bool for the current display
+                                bool DisplayActive = !Displays[tempMenuSelectedOption];
+                                Displays[tempMenuSelectedOption] = DisplayActive;
+                                break;
+                            }
+                            case DISPLAYS_EVT_DATA_SET_ID:
+                            {
+                                MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigitUnsigned(tempCurrentMenu, true) - 1;
+                                MenuVar.MenuSecondaryValueUnsigned = *reinterpret_cast<int32_t *>(0x80004148);
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    if (tempSelectedOption == 0)
+                    {
+                        // Go back to the previous menu
+                        MenuVar.MenuSelectedOption = 0;
+                        enterPreviousMenu();
+                    }
                     break;
                 }
                 default:
@@ -4045,6 +4106,20 @@ void drawMenu()
         {
             // Draw the text for the options
             drawDisplaysMemoryUsageMenu();
+            break;
+        }
+        case DISPLAYS_EVT_DATA:
+        {
+            // Draw the text for the options
+            drawSingleColumnSelectedOption();
+            
+            // Draw the bool and the distinct id
+            drawDisplaysEvtDataMenu();
+            
+            if (tempSelectedOption != 0)
+            {
+                drawAdjustableValueHex(tempCurrentMenu);
+            }
             break;
         }
         case DISPLAYS_NO_BUTTON_COMBO:
