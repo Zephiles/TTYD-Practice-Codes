@@ -19,7 +19,7 @@ extern "C" {
 // memcard_load
 // memcard_code
 
-extern const int32_t evt_memcard_save[]; // Script
+EVT_DECLARE(evt_memcard_save)
 
 }
 
