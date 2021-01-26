@@ -126,23 +126,10 @@ void *getActorPointer(uint32_t slot)
     return ttyd::battle::BattleGetUnitPtr(BattlePointer, slot);
 }
 
-ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot)
+ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData)
 {
-    // Get the work pointer
-    ttyd::npcdrv::NpcWork *NpcWorkPointer = ttyd::npcdrv::npcGetWorkPtr();
-    
-    // Adjust the pointer if currently in a battle
-    uint32_t BattleFlag = *reinterpret_cast<uint32_t *>(
-        reinterpret_cast<uint32_t>(
-            ttyd::mariost::globalWorkPointer) + 0x14);
-    
-    if (BattleFlag)
-    {
-        NpcWorkPointer = reinterpret_cast<ttyd::npcdrv::NpcWork *>(
-            reinterpret_cast<uint32_t>(NpcWorkPointer) - 0x14);
-    }
-    
-    // Get the pointer for the desired NPC
+    uint32_t Index = static_cast<uint32_t>(getBattleData);
+    ttyd::npcdrv::NpcWork *NpcWorkPointer = &ttyd::npcdrv::npcWork[Index];
     return &NpcWorkPointer->entries[slot];
 }
 

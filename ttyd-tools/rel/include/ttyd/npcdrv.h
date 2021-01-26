@@ -363,6 +363,8 @@ bool npcCheckBlow(const NpcEntry *npc);
 
 // N_fbatPreventMarioEventChk
 
+extern NpcWork npcWork[2]; // Index 0 used for field, index 1 used for battles
+
 }
 
 }

@@ -420,6 +420,7 @@
 80311524:worldData
 
 // npcdrv.o
+// text
 80043020:N_fbatPreventMarioEventChk
 80043054:npcCheckBlow
 80043194:npcCalcScore
@@ -493,6 +494,8 @@
 8004CE20:npcRecoveryFiledNpc
 8004CF40:npcReleaseFiledNpc
 8004D054:npcGetWorkPtr
+// data
+8042B1D4:npcWork
 
 // evt_npc.o
 8004D070:evt_npc_release_filednpc

@@ -4973,7 +4973,7 @@ void drawPalaceSkipDetails()
     }
     
     // Get Phantom Ember Y coordinate
-    ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(1); // NPC 2
+    ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(1, false); // NPC 2
     
     // Check if NPC 2 is active, followed by NPC 1, and then default to 0 if neither is active
     float PhantomEmberPosY = 0;
@@ -4984,7 +4984,7 @@ void drawPalaceSkipDetails()
     }
     else
     {
-        NPC = getNpcEntryData(0); // NPC 1
+        NPC = getNpcEntryData(0, false); // NPC 1
         if (NPC->flags & (1 << 0)) // Check if 0 bit is active
         {
             PhantomEmberPosY = NPC->position[1];

@@ -757,7 +757,7 @@ void bobberyEarly()
         return;
     }
     
-    ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(5); // NPC 6
+    ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(5, false); // NPC 6
     
     // Allow the Ember to be refought
     *reinterpret_cast<uint8_t *>(

@@ -21,7 +21,7 @@ void *getBattleWorkPointer();
 void *getMarioBattlePointer();
 void *getPartnerBattlePointer();
 void *getActorPointer(uint32_t slot);
-ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot);
+ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData);
 uint32_t secondsToFrames(uint32_t seconds);
 uint32_t getSequencePosition();
 void setSequencePosition(uint32_t value);
