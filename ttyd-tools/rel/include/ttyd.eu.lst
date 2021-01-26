@@ -351,6 +351,7 @@
 8042B150:heapStart
 
 // evtmgr.o
+// text
 80035B10:evtGetPtrID
 80035B70:evtGetPtr
 80035BAC:evtStartOther
@@ -378,6 +379,8 @@
 80037904:evtmgrInit
 // 80037A1C:make_pri_table
 80037B48:evtGetWork
+// data
+803E4D90:evtWork
 
 // evt_map.o
 80037D74:N_evt_mapdisp_onoff

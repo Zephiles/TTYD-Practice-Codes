@@ -5500,7 +5500,7 @@ void drawEvtData()
     drawTextAndInit(Headers, PosX, PosY, Alpha, Color, true, Scale);
     
     // Get the desired evt
-    ttyd::evtmgr::EvtWork *EvtWrk = ttyd::evtmgr::evtGetWork();
+    ttyd::evtmgr::EvtWork *EvtWrk = &ttyd::evtmgr::evtWork[0];
     uint32_t DistinctID = *reinterpret_cast<uint32_t *>(0x80004148);
     ttyd::evtmgr::EvtEntry *EvtEntry = &EvtWrk->entries[DistinctID];
     

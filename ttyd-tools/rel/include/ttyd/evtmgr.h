@@ -113,6 +113,8 @@ EvtEntry *evtGetPtrID(int32_t threadId);
 // void make_pri_table();
 // void evtEntryRunCheck(EvtEntry *evt);
 
+extern EvtWork evtWork[2]; // Index 0 used for field, index 1 used for battles
+
 }
 
 #define EVT_DECLARE_USER_FUNC(name, parameter_count) \
