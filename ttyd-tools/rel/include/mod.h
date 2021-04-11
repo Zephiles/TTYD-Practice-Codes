@@ -30,7 +30,7 @@ private:
     uint32_t setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *, uint32_t);
     int32_t fixMarioKeyOn();
     bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
-    ttyd::npcdrv::NpcEntry *disableBattles(uint32_t, void *);
+    ttyd::npcdrv::NpcEntry *fbatHitCheck_Work(uint32_t, void *);
     void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
     int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
     void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);

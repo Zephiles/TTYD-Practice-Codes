@@ -38,36 +38,6 @@
 
 namespace mod {
 
-ttyd::npcdrv::NpcEntry *Mod::disableBattles(uint32_t flags, void *unk)
-{
-    // Call the original function immediately
-    ttyd::npcdrv::NpcEntry *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
-    
-    uint32_t ReloadRoomCombo = PAD_L | PAD_B;
-    uint32_t OpenMenuCombo   = PAD_L | PAD_START;
-    
-    // Prevent entering a non-cutscene battle if opening the menu
-    if (checkButtonComboEveryFrame(OpenMenuCombo))
-    {
-        return nullptr;
-    }
-    else if (!MenuVar.ChangingCheatButtonCombo)
-    {
-        // Prevent entering a non-cutscene battle if reloading the room
-        if (checkButtonComboEveryFrame(ReloadRoomCombo))
-        {
-            return nullptr;
-        }
-        else if (Cheat[DISABLE_BATTLES].Active && 
-            checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
-        {
-            return nullptr;
-        }
-    }
-    
-    return Result;
-}
-
 uint32_t allowRunningFromBattles(void *ptr)
 {
     if (Cheat[RUN_FROM_BATTLES].Active)
@@ -453,6 +423,33 @@ void speedUpMario()
         player->unk_184 = SpeedUpMario.MarioVar[0];
         player->unk_188 = SpeedUpMario.MarioVar[1];
     }
+}
+
+bool disableBattles()
+{
+    uint32_t ReloadRoomCombo = PAD_L | PAD_B;
+    uint32_t OpenMenuCombo   = PAD_L | PAD_START;
+    
+    // Prevent entering a non-cutscene battle if opening the menu
+    if (checkButtonComboEveryFrame(OpenMenuCombo))
+    {
+        return true;
+    }
+    else if (!MenuVar.ChangingCheatButtonCombo)
+    {
+        // Prevent entering a non-cutscene battle if reloading the room
+        if (checkButtonComboEveryFrame(ReloadRoomCombo))
+        {
+            return true;
+        }
+        else if (Cheat[DISABLE_BATTLES].Active && 
+            checkButtonComboEveryFrame(Cheat[DISABLE_BATTLES].ButtonCombo))
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 bool Mod::infiniteItemUsage(int16_t item, uint32_t index)

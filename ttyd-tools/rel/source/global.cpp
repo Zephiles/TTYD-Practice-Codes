@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.51d";
+const char *VersionNumber = "v3.0.51";
 
 const char *RootLines[] = 
 {
@@ -1551,6 +1551,7 @@ const char *DisplaysLines[] =
     "Memory Usage",
     "Effs Active",
     "Evts Active",
+    "Enemy Encounter Notifier",
     "Yoshi Skip",
     "Palace Skip",
     "Bridge Skip",
@@ -1899,12 +1900,13 @@ uint8_t DisplaysOrder[] =
     EFFS_ACTIVE,
     MEMORY_USAGE,
     EVTS_ACTIVE,
+    ENEMY_ENCOUNTER_NOTIFIER,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[35];
 struct Cheats Cheat[26];
-bool Displays[17];
+bool Displays[18];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -1935,6 +1937,7 @@ struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
 struct NpcNameToPtrErrorStruct NpcNameToPtrError;
+struct EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 struct UnusedMapStruct UnusedMap;
 
 void initMenuVars()
@@ -2084,12 +2087,12 @@ void setInitialSettings()
     // Cheat[RELOAD_ROOM].Active            = false;
     // Cheat[LEVITATE].Active               = false;
     // Cheat[AUTO_MASH_TEXT].Active         = false;
+    Cheat[GENERATE_LAG_SPIKE].Active        = false;
     Cheat[LOCK_MARIO_HP_TO_MAX].Active      = false;
     Cheat[RUN_FROM_BATTLES].Active          = false;
     // Cheat[DISABLE_MENU_SOUNDS].Active    = false;
     // Cheat[BOBBERY_EARLY].Active          = false;
     Cheat[FORCE_ITEM_DROP].Active           = false;
-    Cheat[GENERATE_LAG_SPIKE].Active        = false;
     
     // Set the Cheats button combos
     Cheat[WALK_THROUGH_WALLS].ButtonCombo     = PAD_Z;
@@ -2123,8 +2126,13 @@ void setInitialSettings()
     // Displays[DPAD_OPTIONS_DISPLAY]         = true;
     Displays[GUARD_SUPERGUARD_TIMINGS]        = true;
     // Displays[ART_ATTACK_HITBOXES]          = true;
+    // Displays[MEMORY_USAGE]                 = true;
+    // Displays[EFFS_ACTIVE]                  = true;
+    // Displays[EVTS_ACTIVE]                  = true;
+    // Displays[ENEMY_ENCOUNTER_NOTIFIER]     = true;
     // Displays[YOSHI_SKIP]                   = true;
     // Displays[PALACE_SKIP]                  = true;
+    // Displays[BRIDGE_SKIP]                  = true;
     // Displays[BLIMP_TICKET_SKIP]            = true;
     
     // Set the Displays button combos

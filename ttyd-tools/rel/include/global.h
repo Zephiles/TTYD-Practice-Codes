@@ -376,6 +376,7 @@ enum DISPLAYS_OPTIONS
     MEMORY_USAGE,
     EFFS_ACTIVE,
     EVTS_ACTIVE,
+    ENEMY_ENCOUNTER_NOTIFIER,
     YOSHI_SKIP,
     PALACE_SKIP,
     BRIDGE_SKIP,
@@ -992,6 +993,12 @@ struct NpcNameToPtrErrorStruct
     uint16_t Timer;
 };
 
+struct EnemyEncounterNotifierStruct
+{
+    uint32_t Counter;
+    uint16_t Timer;
+};
+
 struct UnusedMapStruct
 {
     ttyd::mapdata::MapData UnusedMapData;
@@ -1006,7 +1013,7 @@ struct UnusedMapStruct
 extern MenuVars MenuVar;
 extern Menus Menu[35];
 extern Cheats Cheat[26];
-extern bool Displays[17];
+extern bool Displays[18];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;
@@ -1037,6 +1044,7 @@ extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
 extern NpcNameToPtrErrorStruct NpcNameToPtrError;
+extern EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 extern UnusedMapStruct UnusedMap;
 
 extern uint8_t CheatsOrder[];

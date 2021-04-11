@@ -5454,6 +5454,35 @@ void drawEvtsActive()
     drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
 }
 
+void drawEnemyEncounterNotifier()
+{
+    uint32_t Color = 0xFFFFFFFF;
+    uint8_t Alpha  = 0xFF;
+    int32_t PosX   = -232;
+    int32_t PosY   = 60;
+    float Scale    = 0.65;
+    
+    // Move the text down if the effs display is active
+    if (Displays[EFFS_ACTIVE])
+    {
+        PosY -= 20;
+    }
+    
+    // Move the text down if the evts display is active
+    if (Displays[EVTS_ACTIVE])
+    {
+        PosY -= 20;
+    }
+    
+    // Draw the text
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer,
+        "Encounter occured x%" PRIu32,
+        EnemyEncounterNotifier.Counter);
+    
+    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+}
+
 void drawSettingsCurrentWork()
 {
     const char *String;
@@ -5548,6 +5577,12 @@ void drawMemoryUsage()
     
     // Move the text down if the evts display is active
     if (Displays[EVTS_ACTIVE])
+    {
+        PosY -= 20;
+    }
+    
+    // Move the text down if the enemy encounter notifier is active
+    if (Displays[ENEMY_ENCOUNTER_NOTIFIER])
     {
         PosY -= 20;
     }

@@ -11,6 +11,7 @@ void saveAnywhere();
 void setTextStorage();
 void setTimeStopTextStorage();
 void speedUpMario();
+bool disableBattles();
 void checkIfSystemLevelShouldBeLowered();
 void reloadRoomMain();
 void reloadRoom();

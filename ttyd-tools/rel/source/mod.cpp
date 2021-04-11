@@ -122,7 +122,7 @@ void Mod::init()
     mPFN_fbatHitCheck_trampoline = patch::hookFunction(
         ttyd::npcdrv::fbatHitCheck, [](uint32_t flags, void *unk)
     {
-        return gMod->disableBattles(flags, unk);
+        return gMod->fbatHitCheck_Work(flags, unk);
     });
     
     mPFN_scissor_disp_control_trampoline = patch::hookFunction(

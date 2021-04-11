@@ -772,6 +772,57 @@ void displayNpcNameToPtrError()
     }
 }
 
+void checkForEnemyEncounters(void *ptr)
+{
+    if (!Displays[ENEMY_ENCOUNTER_NOTIFIER])
+    {
+        return;
+    }
+    
+    if (!ptr)
+    {
+        return;
+    }
+    
+    // ptr is set, so an encounter would normally occur now
+    EnemyEncounterNotifier.Timer = secondsToFrames(5);
+    EnemyEncounterNotifier.Counter++;
+}
+
+void displayEnemyEncounterNotifier()
+{
+    uint32_t Timer = EnemyEncounterNotifier.Timer;
+    if (Timer > 0)
+    {
+        Timer--;
+        EnemyEncounterNotifier.Timer = Timer;
+        drawFunctionOnDebugLayer(drawEnemyEncounterNotifier);
+    }
+    else
+    {
+        EnemyEncounterNotifier.Counter = 0;
+    }
+}
+
+ttyd::npcdrv::NpcEntry *Mod::fbatHitCheck_Work(uint32_t flags, void *unk)
+{
+    // Call the original function immediately
+    ttyd::npcdrv::NpcEntry *Result = mPFN_fbatHitCheck_trampoline(flags, unk);
+    
+    // Check for enemy encounters
+    checkForEnemyEncounters(Result);
+    
+    // Check if battles should be disabled
+    if (disableBattles())
+    {
+        return nullptr;
+    }
+    else
+    {
+        return Result;
+    }
+}
+
 void initAddressOverwrites()
 {
 #ifdef TTYD_US
@@ -996,6 +1047,7 @@ void Mod::run()
         displayActionCommandsTiming();
         displayEffsActive();
         displayEvtsActive();
+        displayEnemyEncounterNotifier();
         
         // Check the heaps
         checkHeaps();

@@ -141,6 +141,7 @@ void drawBlimpTicketSkipDetails();
 void drawActionCommandsTiming();
 void drawEffsActive();
 void drawEvtsActive();
+void drawEnemyEncounterNotifier();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();
