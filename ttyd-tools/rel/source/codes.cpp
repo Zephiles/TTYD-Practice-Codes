@@ -430,9 +430,14 @@ bool disableBattles()
     uint32_t ReloadRoomCombo = PAD_L | PAD_B;
     uint32_t OpenMenuCombo   = PAD_L | PAD_START;
     
-    // Prevent entering a non-cutscene battle if opening the menu
-    if (checkButtonComboEveryFrame(OpenMenuCombo))
+    if (Displays[ENEMY_ENCOUNTER_NOTIFIER])
     {
+        // Non-cutscene battles should always be disabled when the enemy encounter notifier display is on
+        return true;
+    }
+    else if (checkButtonComboEveryFrame(OpenMenuCombo))
+    {
+        // Prevent entering a non-cutscene battle if opening the menu
         return true;
     }
     else if (!MenuVar.ChangingCheatButtonCombo)

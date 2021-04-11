@@ -185,7 +185,7 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
 
 13. **Evts Active** displays the amount of **evt**s active out of the maximum valid amount. In this context, **evt**s are scripts.
 
-14. **Enemy Encounter Notifier** displays a message when a non-cutscene battle would normally occur upon touching an enemy. The message will be displayed for about 5 seconds, and will reset back to 5 seconds if an enemy is touched again.
+14. **Enemy Encounter Notifier** displays a message when a non-cutscene battle would normally occur upon touching an enemy. The message will be displayed for about 5 seconds, and will reset back to 5 seconds if an enemy is touched again. Additionally, all non-cutscene battles will be disabled while this display is active.
 
 15. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
 
