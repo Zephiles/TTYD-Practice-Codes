@@ -785,7 +785,7 @@ void checkForEnemyEncounters(void *ptr)
     }
     
     // ptr is set, so an encounter would normally occur now
-    EnemyEncounterNotifier.Timer = secondsToFrames(5);
+    EnemyEncounterNotifier.Timer = secondsToFrames(3);
     EnemyEncounterNotifier.Counter++;
 }
 
