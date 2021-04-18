@@ -12,15 +12,6 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size)
     gc::OSCache::ICInvalidateRange(ptr, size);
 }
 
-void writeStandardBranches(void *address, void functionStart(), void functionBranchBack())
-{
-    void *BranchBackAddress = reinterpret_cast<void *>(
-        reinterpret_cast<uint32_t>(address) + 0x4);
-    
-    writeBranch(address, reinterpret_cast<void *>(functionStart));
-    writeBranch(reinterpret_cast<void *>(functionBranchBack), BranchBackAddress);
-}
-
 void writeBranch(void *ptr, void *destination)
 {
     uint32_t branch = 0x48000000; // b

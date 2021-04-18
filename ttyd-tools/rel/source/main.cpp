@@ -913,43 +913,43 @@ void initAddressOverwrites()
     void *JumpOnWaterAddress                        = reinterpret_cast<void *>(0x80093CF0);
 #endif
     
-    patch::writeBranchBL(AllowRunningFromBattlesAddress, reinterpret_cast<void *>(StartAllowRunningFromBattles));
+    patch::writeBranchBL_Template(AllowRunningFromBattlesAddress, StartAllowRunningFromBattles);
     
-    patch::writeBranchBL(ForceNPCItemDropAddress, reinterpret_cast<void *>(StartForceNPCItemDrop));
+    patch::writeBranchBL_Template(ForceNPCItemDropAddress, StartForceNPCItemDrop);
     
-    patch::writeBranchBL(ReplaceJumpAnimAddress, reinterpret_cast<void *>(StartReplaceJumpFallAnim));
+    patch::writeBranchBL_Template(ReplaceJumpAnimAddress, StartReplaceJumpFallAnim);
     
-    patch::writeBranchBL(DisplayBattleMenuJumpAddress, reinterpret_cast<void *>(StartDisplayMegaJumpBadgeBattleMenu));
+    patch::writeBranchBL_Template(DisplayBattleMenuJumpAddress, StartDisplayMegaJumpBadgeBattleMenu);
     
-    patch::writeBranchBL(DisplayBattleMenuHammerAddress, reinterpret_cast<void *>(StartDisplayMegaHammerBadgesBattleMenu));
+    patch::writeBranchBL_Template(DisplayBattleMenuHammerAddress, StartDisplayMegaHammerBadgesBattleMenu);
     
-    patch::writeBranchBL(FixBlooperCrash1Address, reinterpret_cast<void *>(StartFixBlooperCrash1));
+    patch::writeBranchBL_Template(FixBlooperCrash1Address, StartFixBlooperCrash1);
     
-    patch::writeBranchBL(FixBlooperCrash2Address, reinterpret_cast<void *>(StartFixBlooperCrash2));
+    patch::writeBranchBL_Template(FixBlooperCrash2Address, StartFixBlooperCrash2);
     
-    patch::writeBranchBL(PreventTextboxSelectionAddress, reinterpret_cast<void *>(StartPreventTextboxSelection));
+    patch::writeBranchBL_Template(PreventTextboxSelectionAddress, StartPreventTextboxSelection);
     
-    patch::writeBranchBL(DisableDPadOptionsDisplayAddress, reinterpret_cast<void *>(StartDisableDPadOptionsDisplay));
+    patch::writeBranchBL_Template(DisableDPadOptionsDisplayAddress, StartDisableDPadOptionsDisplay);
     
-    patch::writeBranchBL(FixEvtMapBlendSetFlagPartnerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagPartnerCrash));
+    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagPartnerCrashAddress, StartFixEvtMapBlendSetFlagPartnerCrash);
     
-    patch::writeBranchBL(FixEvtMapBlendSetFlagFollowerCrashAddress, reinterpret_cast<void *>(StartFixEvtMapBlendSetFlagFollowerCrash));
+    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagFollowerCrashAddress, StartFixEvtMapBlendSetFlagFollowerCrash);
     
-    patch::writeBranchBL(PreventPouchInitMemoryLeakAddress, reinterpret_cast<void *>(preventPouchInitMemoryLeak));
+    patch::writeBranchBL_Template(PreventPouchInitMemoryLeakAddress, preventPouchInitMemoryLeak);
     
-    patch::writeBranchBL(InitStageEventsAddress, reinterpret_cast<void *>(initStageEvents));
+    patch::writeBranchBL_Template(InitStageEventsAddress, initStageEvents);
     
-    patch::writeBranchBL(FallThroughMostObjectsStandAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
-    patch::writeBranchBL(FallThroughMostObjectsTubeAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsStandard));
+    patch::writeBranchBL_Template(FallThroughMostObjectsStandAddress, StartFallThroughMostObjectsStandard);
+    patch::writeBranchBL_Template(FallThroughMostObjectsTubeAddress, StartFallThroughMostObjectsStandard);
     
-    patch::writeBranchBL(FallThroughMostObjectsBowserAddress, reinterpret_cast<void *>(StartFallThroughMostObjectsBowser));
+    patch::writeBranchBL_Template(FallThroughMostObjectsBowserAddress, StartFallThroughMostObjectsBowser);
     
-    patch::writeBranchBL(AutoMashThroughText1Address, reinterpret_cast<void *>(autoMashText));
-    patch::writeBranchBL(AutoMashThroughText2Address, reinterpret_cast<void *>(autoMashText));
-    patch::writeBranchBL(AutoMashThroughText3Address, reinterpret_cast<void *>(autoMashText));
+    patch::writeBranchBL_Template(AutoMashThroughText1Address, autoMashText);
+    patch::writeBranchBL_Template(AutoMashThroughText2Address, autoMashText);
+    patch::writeBranchBL_Template(AutoMashThroughText3Address, autoMashText);
     
 #ifdef TTYD_EU
-    patch::writeBranchBL(JumpOnWaterAddress, reinterpret_cast<void *>(StartJumpOnWater));
+    patch::writeBranchBL_Template(JumpOnWaterAddress, StartJumpOnWater);
 #endif
     
     *reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress)            = 0x3800FFFF; // li r0,-1
