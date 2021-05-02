@@ -46,7 +46,7 @@
 This menu allows you to modify your entire inventory, including standard items, important items, badges, and stored items.
 
 ### Cheats
-1. **Change Sequence** allows you to change the current Sequence value, which is the value used to tell what part of the game you're currently at. For clarification, the stage and event listed for the current Sequence value is effectively what has just been cleared, which differs from the **Warp By Event** menu, which is explained in the Warps section.
+1. **Change Sequence** allows you to change the current **Sequence** value, which is the value used to tell what part of the game you're currently at. For clarification, the stage and event listed for the current **Sequence** value is effectively what has just been cleared, which differs from the **Warp By Event** menu, which is explained in the Warps section.
 
 2. **Walk Through Most Objects** allows you to walk through most objects. It does now allow walking through NPCs. The button combination must be held for this code to work.
 
@@ -104,13 +104,15 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 * You are also able to change Yoshi's color from within the Partners menu. Upon changing it, you must respawn Yoshi for the changes to take effect. This is done by either swapping partners, entering pipes, or bringing Yoshi out via the menu itself.
 
 ### Settings
-This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The current settings included are as follows:
+This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to save the settings to either of the memory card slots. The current settings included are as follows:
 * Which Cheats are active
 * Cheats button combinations
 * Which Displays are active
 * Displays button combinations
 * Memory Watches (See below)
 * Memory Editor settings (See below)
+
+It should also be noted that the settings will be loaded automatically at boot, assuming that a settings file is present on one of the memory cards. If settings files exist on both memory cards, then the one in Slot A will be used.
 
 ### Memory
 This menu allows you to view and edit parts of the game's memory. The current options in this menu are as follows:
@@ -206,7 +208,7 @@ This menu allows you to warp to various places around the game. You have three s
      
      * After everything has been cleared, every upgrade/important item/partner/etc. that you should have gotten up to and including the current event will be given to you automatically.
      
-     * The Sequence value set by this option differs from the **Change Sequence** cheat above, in that this option sets the Sequence to what is about to happen, not what has already happened.
+     * The **Sequence** value set by this option differs from the **Change Sequence** cheat above, in that this option sets the **Sequence** to what is about to happen, not what has already happened.
      
      * The **Keep Inventory** option allows you to keep the standard items and badges that you currently have when warping to an event. If this is disabled, then all of your standard items and badges will be removed. Due to your BP being reset, all of the badges will be unequipped. The exception to this is Attack FX R, which will be equipped automatically if you're warping directly to the Hooktail fight.
      
@@ -226,13 +228,13 @@ This menu allows you to warp to various places around the game. You have three s
      
      * Some maps have entrances that don't actually work. Using them will simply place Mario at/near the center of the chosen map.
 4. **Warp To Boss** allows you to warp to most bosses/mini-bosses in the game.
-   * Note: Warping to a boss using this menu will adjust the game's Sequence value.
+   * Note: Warping to a boss using this menu will adjust the game's **Sequence** value.
 
 ## Misc
 There are several other changes that have been made outside of the menu:
 1. The build date on the title screen is always displayed.
 
-2. The current Sequence value is displayed in the pause menu next to Mario's stats.
+2. The current **Sequence** value is displayed in the pause menu next to Mario's stats.
 
 3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
 
@@ -243,11 +245,11 @@ There are several other changes that have been made outside of the menu:
 6. Several crashes have been fixed/prevented:
    * Petalburg intro cutscene - Mario will not have any greeting animation.
    
-   * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the Sequence is past 338, then the Sequence will be set to 338.
+   * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the **Sequence** is past 338, then the **Sequence** will be set to 338.
    
    * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated.
    
-   * If the Endless Room has been completed, and you enter it when the Sequence is at 385, then the room will be set to an incomplete state.
+   * If the Endless Room has been completed, and you enter it when the **Sequence** is at 385, then the room will be set to an incomplete state.
    
    * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn Gus.
    
