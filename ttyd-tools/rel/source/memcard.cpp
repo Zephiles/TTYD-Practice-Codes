@@ -71,7 +71,7 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
 {
     // If creating the file on slot B, unmount the current slot and mount slot A
     int32_t ReturnCode;
-    if (memoryCardSlot == CARD_SLOT_B)
+    if (memoryCardSlot != CARD_SLOT_A)
     {
         ReturnCode = gc::card::CARDUnmount(memoryCardSlot);
         if (ReturnCode != CARD_RESULT_READY)
@@ -119,7 +119,7 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     }
     
     // If creating the file on slot B, unmount the current slot and mount slot B
-    if (memoryCardSlot == CARD_SLOT_B)
+    if (memoryCardSlot != CARD_SLOT_A)
     {
         ReturnCode = gc::card::CARDUnmount(CARD_SLOT_A);
         if (ReturnCode != CARD_RESULT_READY)
