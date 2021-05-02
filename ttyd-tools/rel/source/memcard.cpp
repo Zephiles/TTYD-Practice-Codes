@@ -38,9 +38,7 @@ int32_t checkForMemoryCard()
 
 int32_t mountCard()
 {
-    void *WorkArea = *reinterpret_cast<uint32_t **>(
-        reinterpret_cast<uint32_t>(ttyd::cardmgr::cardMgrWorkPointer) + 0x4);
-    
+    void *WorkArea = ttyd::cardmgr::cardMgrWorkPointer->workArea;
     int32_t ReturnCode = gc::card::CARDMountAsync(CARD_SLOT_A, WorkArea, nullptr, nullptr);
     return finishAsyncFunction(ReturnCode);
 }
