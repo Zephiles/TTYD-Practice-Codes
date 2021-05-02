@@ -345,7 +345,7 @@ int64_t reportFrameTimeDifference(const char *label, int64_t startFrameTime, int
 uint16_t getMessageWidth(const char *text, float scale)
 {
     uint16_t LineLength = ttyd::fontmgr::FontGetMessageWidth(text);
-    float Width = static_cast<float>(LineLength + 15) * (scale + 0.05);
+    float Width = static_cast<float>(LineLength + 15) * (scale + 0.05f);
     return static_cast<uint16_t>(Width);
 }
 
@@ -451,7 +451,7 @@ void drawSingleColumn(int32_t posY, uint32_t maxOptionsPerPage,
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     // int32_t PosY  = 180;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     uint32_t Color;
     
     for (uint32_t i = IndexStart; i < (IndexStart + maxOptionsPerPage); i++)
@@ -495,7 +495,7 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
     uint32_t ColumnSplitAmount = 1 + ((maxOptionsPerPage - 1) / TotalColumns); // Round up
     
     // uint8_t Alpha           = 0xFF;
-    float Scale                = 0.6;
+    float Scale                = 0.6f;
     int32_t tempPosY           = posY;
     uint32_t Color;
     
@@ -542,8 +542,8 @@ void drawInventoryIconAndTextColumns()
     uint32_t tempSize            = tempArray[1];
     
     uint8_t Alpha                = 0xFF;
-    float TextScale              = 0.6;
-    float IconScale              = 0.6;
+    float TextScale              = 0.6f;
+    float IconScale              = 0.6f;
     int32_t PosX                 = -90;
     int32_t PosY                 = 125;
     
@@ -599,7 +599,7 @@ void drawInventoryIconAndTextColumns()
     // Draw the L and/or R buttons if appropriate
     if (tempCurrentMenu != INVENTORY_STANDARD)
     {
-        float L_and_R_buttons_scale = 0.5;
+        float L_and_R_buttons_scale = 0.5f;
     
         // Draw the L button if currently not on the first page
         if (tempCurrentPage > 0)
@@ -702,12 +702,12 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
             (CurrentItem <= ttyd::item_data::Item::UltraHammer))
         {
             // Decrease the size of these icons
-            tempScale = 0.5;
+            tempScale = 0.5f;
         }
         else if (CurrentItem == ttyd::item_data::Item::MagicalMapBigger)
         {
             // Decrease the size of the bigger magical map
-            tempScale = 0.4;
+            tempScale = 0.4f;
         }
         else
         {
@@ -778,7 +778,7 @@ void drawMarioSpecialMovesOptions()
     
     // Set the values for the text to use
     int32_t NewPosY = PosY - 79;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     PosX += 55;
     PosY = NewPosY;
     
@@ -876,7 +876,7 @@ void drawFollowersOptions()
     // Draw the help text
     const char *HelpText = "Press A to confirm\nPress B to cancel";
     uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     Color = 0xFFFFFFFF;
     PosX += 30;
     PosY -= 25;
@@ -935,8 +935,8 @@ void drawMarioStats()
     
     uint32_t Color              = 0xFFFFFFFF;
     uint8_t Alpha               = 0xFF;
-    float TextScale             = 0.6;
-    float IconScale             = 0.6;
+    float TextScale             = 0.6f;
+    float IconScale             = 0.6f;
     int32_t TextPosX            = -208;
     int32_t TextPosY            = 175;
     int32_t ValuesPosX          = TextPosX + 105;
@@ -1017,7 +1017,7 @@ void drawMarioStats()
     }
     
     // Draw the special moves
-    float SpecialMovesScale = 0.37;
+    float SpecialMovesScale = 0.37f;
     int16_t SpecialMoveIcon;
     IconPosition[IconPositionX] = 133;
     IconPosition[IconPositionY] = 101;
@@ -1112,7 +1112,7 @@ void drawPartnerStats()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -120;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     uint32_t Color;
     
     // Draw the main text
@@ -1291,7 +1291,7 @@ void drawPartnerChangeYoshiColorOptions()
     // Draw the help text
     const char *HelpText = "Press A to confirm\nPress B to cancel";
     uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     Color = 0xFFFFFFFF;
     PosX += 30;
     PosY -= 25;
@@ -1337,7 +1337,7 @@ void drawBattlesActorStats()
     // uint8_t Alpha = 0xFF;
     int32_t NamePosX = -232;
     int32_t NamePosY = 20;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     uint32_t CurrentActor = *reinterpret_cast<uint32_t *>(ActorAddress + 0x8);
     char *tempDisplayBuffer = DisplayBuffer;
@@ -1409,7 +1409,7 @@ void drawBattlesActorsHeldItem()
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX   = -50;
     int32_t PosY   = 80;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Draw the text for showing what the current item is
     const char *CurrentLine = "Current Held Item";
@@ -1488,7 +1488,7 @@ void drawCurrentFollowerOut()
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX = -232;
     int32_t PosY = 120;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
@@ -1561,7 +1561,7 @@ void drawMemoryWatches()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 80;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     
     const int32_t TypeOffset  = 150;
     const int32_t ValueOffset = TypeOffset + 90;
@@ -1647,7 +1647,7 @@ void drawMemoryModifyList()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 180;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     uint32_t Color;
     
     const int32_t PosX_Offset = 130;
@@ -1753,7 +1753,7 @@ void drawMemoryTypeList()
     // Draw the help text
     const char *HelpText = "Press A to confirm\nPress B to cancel";
     uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     Color = 0xFFFFFFFF;
     PosX += 30;
     PosY -= 25;
@@ -1796,7 +1796,7 @@ void drawMemoryChangeWatchPosition()
     int32_t PosY       = MemoryWatchPosition.PosY;
     uint32_t TextColor = 0xFFFFFFFF;
     uint8_t Alpha      = 0xFF;
-    float Scale        = 0.65;
+    float Scale        = 0.65f;
     
     // Start the text drawing sequence
     drawTextInit(Alpha, false); // Set to false since drawMemoryWatchValueString will manually enable the font edge
@@ -1814,7 +1814,7 @@ void drawMemoryChangeWatchPosition()
     uint32_t WindowColor = 0x151515F6;
     int32_t TextPosX     = -135;
     int32_t TextPosY     = 140;
-    Scale                = 0.6;
+    Scale                = 0.6f;
     
     const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to cancel";
     int32_t Width = static_cast<int32_t>(getMessageWidth(HelpText, Scale));
@@ -1848,7 +1848,7 @@ void drawMemoryChangeAddressList()
     uint8_t Alpha = 0xFF;
     int32_t PosX  = -232;
     int32_t PosY  = 100;
-    float Scale   = 0.6;
+    float Scale   = 0.6f;
     uint32_t Color;
     
     const int32_t PosX_Offset_Position  = 110;
@@ -1968,7 +1968,7 @@ void drawMemoryEditorSettingsWindow()
     uint8_t Alpha = 0xFF;
     int32_t PosX  = -232;
     int32_t PosY  = InitialPosY;
-    float Scale   = 0.6;
+    float Scale   = 0.6f;
     uint32_t Color;
     
     // Start the text drawing sequence
@@ -2034,7 +2034,7 @@ void drawMemoryEditorMainWindow()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = InitialPosX;
     int32_t PosY   = InitialPosY;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
 #ifdef TTYD_JP
     Scale += 0.05;
@@ -2444,7 +2444,7 @@ void drawBattlesActorsList()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 180;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     uint32_t Color;
     
     // Draw the main text
@@ -2513,8 +2513,8 @@ void drawBattlesStatusesList()
     uint32_t TotalOptions      = BattlesStatusesLinesSize;
     
     uint8_t Alpha    = 0xFF;
-    float TextScale  = 0.6;
-    float IconScale  = 0.6;
+    float TextScale  = 0.6f;
+    float IconScale  = 0.6f;
     int32_t TextPosX = -210;
     int32_t TextPosY = 175;
     int32_t IconPosX = TextPosX - 15;
@@ -2646,7 +2646,7 @@ void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY, in
     // int32_t TextPosY    = 60;
     uint8_t Alpha          = 0xFF;
     uint32_t TextColor     = 0xFFFFFFFF;
-    float Scale            = 0.6;
+    float Scale            = 0.6f;
     // int32_t WindowWidth = 415;
     uint32_t WindowColor   = 0x151515F4;
     int32_t WindowCurve    = 20;
@@ -2667,7 +2667,7 @@ void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t tex
         
         // int32_t TextPosX = -130;
         // int32_t TextPosY = 60;
-        float Scale         = 0.6;
+        float Scale         = 0.6f;
         int32_t WindowWidth = static_cast<int32_t>(getMessageWidth(message, Scale));
         
         drawErrorWindow(message, textPosX, textPosY, WindowWidth);
@@ -2870,7 +2870,7 @@ void drawConfirmationWindow(const char *message)
     // Draw the confirmation message
     Color         = 0xFFFFFFFF;
     uint8_t Alpha = 0xFF;
-    float Scale   = 0.6;
+    float Scale   = 0.6f;
     PosX          += 70;
     PosY          -= 40;
     
@@ -2883,7 +2883,7 @@ void drawConfirmationWindow(const char *message)
     // Draw the yes/no options
     PosX += 155;
     PosY -= 110;
-    Scale = 0.8;
+    Scale = 0.8f;
     const char *Option;
     
 #ifdef TTYD_JP
@@ -2914,7 +2914,7 @@ void drawSingleLineFromArray(int32_t posX, int32_t posY,
 {
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     const char *CurrentLine = line[currentMenuOption];
     
     drawText(CurrentLine, posX, posY, Color, Scale);
@@ -2931,7 +2931,7 @@ void drawSingleLineFromStringAndValue(int32_t posX,
     
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     drawText(tempDisplayBuffer, posX, posY, Color, Scale);
 }
@@ -2947,7 +2947,7 @@ void drawSingleLineFromStringAndArray(int32_t posX, int32_t posY,
     
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     drawText(tempDisplayBuffer, posX, posY, Color, Scale);
 }
@@ -3040,7 +3040,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
     
     // Draw the help text
     uint8_t alpha = 0xFF;
-    float scale   = 0.6;
+    float scale   = 0.6f;
     int32_t x     = PosX + 15;
     y             -= 13;
     color         = 0xFFFFFFFF;
@@ -3065,18 +3065,18 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
         IconPosition[IconPositionY] = y;
         IconPosition[2]             = 0;
         
-        float IconScale = 0.6;
+        float IconScale = 0.6f;
         
         if ((tempMenuSecondaryValue >= ttyd::item_data::Item::PaperModeCurse) && 
             (tempMenuSecondaryValue <= ttyd::item_data::Item::UltraHammer))
         {
             // Decrease the size of these icons
-            IconScale = 0.5;
+            IconScale = 0.5f;
         }
         else if (tempMenuSecondaryValue == ttyd::item_data::Item::MagicalMapBigger)
         {
             // Decrease the size of the bigger magical map
-            IconScale = 0.4;
+            IconScale = 0.4f;
         }
         
         // Draw the icon for the item
@@ -3169,11 +3169,11 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
     y -= 30;
     
 #ifdef TTYD_JP
-    scale = 1;
+    scale = 1.f;
     x -= 1;
     y += 3;
 #else
-    scale = 0.9;
+    scale = 0.9f;
 #endif
     
     // Calculate the X offset
@@ -3261,7 +3261,7 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     
     // Draw the help text
     uint8_t alpha = 0xFF;
-    float scale   = 0.6;
+    float scale   = 0.6f;
     int32_t x     = PosX + 15;
     y             -= 13;
     color         = 0xFFFFFFFF;
@@ -3320,11 +3320,11 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     x += 180;
     
 #ifdef TTYD_JP
-    scale = 1;
+    scale = 1.f;
     x -= 1;
     y += 2;
 #else
-    scale = 0.9;
+    scale = 0.9f;
 #endif
     
     // Calculate the X offset
@@ -3442,7 +3442,7 @@ void drawAddByIconMain(uint32_t currentMenu)
     IconPosition[IconPositionY] = tempIconPositionY;
     
     // Draw all of the icons for the current menu
-    float Scale = 0.6;
+    float Scale = 0.6f;
     uint32_t Counter = 0;
     
     for (int32_t i = LowerBound; i <= UpperBound; i++)
@@ -3451,16 +3451,16 @@ void drawAddByIconMain(uint32_t currentMenu)
             (i <= ttyd::item_data::Item::UltraHammer))
         {
             // Decrease the size of these icons
-            Scale = 0.5;
+            Scale = 0.5f;
         }
         else if (i == ttyd::item_data::Item::MagicalMapBigger)
         {
             // Decrease the size of the bigger magical map
-            Scale = 0.4;
+            Scale = 0.4f;
         }
         else
         {
-            Scale = 0.6;
+            Scale = 0.6f;
         }
         
         IconPosition[IconPositionX] = tempIconPositionX;
@@ -3529,7 +3529,7 @@ void drawVersionNumber(int32_t posX, int32_t posY)
 {
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     drawText(VersionNumber, posX, posY, Color, Scale);
 }
@@ -3538,7 +3538,7 @@ void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
 {
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     char *tempDisplayBuffer = DisplayBuffer;
     sprintf(tempDisplayBuffer,
@@ -3553,7 +3553,7 @@ void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
     // uint8_t Alpha = 0xFF;
     uint32_t Color   = 0xFFFFFFFF;
     int32_t PosX     = -232;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     
     // Draw the current option
     drawText(currentLine, PosX, posY, Color, Scale);
@@ -3572,7 +3572,7 @@ void drawCheatsChangeSequence()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 140;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     uint32_t SequencePosition = getSequencePosition();
     
@@ -3624,7 +3624,7 @@ void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description
     // uint8_t Alpha = 0xFF;
     uint32_t Color   = 0xFFFFFFFF;
     int32_t PosX     = -232;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     
     // Draw the text for telling what the button combo is
     drawText(description, PosX, posY, Color, Scale);
@@ -3672,7 +3672,7 @@ void drawChangeButtonCombo(uint16_t *currentButtonCombo)
     
     // Draw the help text
     uint8_t Alpha        = 0xFF;
-    float Scale          = 0.6;
+    float Scale          = 0.6f;
     PosX                 += 65;
     PosY                 -= 30;
     Color                = 0xFFFFFFFF;
@@ -3742,7 +3742,7 @@ void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo)
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 100;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     
     // Draw the bool
     drawCheatsBool(PosY);
@@ -3768,7 +3768,7 @@ void drawCheatsForcedDropItem()
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX   = -222;
     int32_t PosY   = 15;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Draw the current item icon
     // Set up array to use for displaying icons
@@ -3801,7 +3801,7 @@ void drawCheatsResolveFades()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     const int32_t PosYStart = PosY;
     
@@ -3862,7 +3862,7 @@ void drawCheatsLockFlags()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     uint32_t Color;
     
     const char *String;
@@ -4002,7 +4002,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 180;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     uint32_t Color;
     
     uint32_t tempSelectedOption = MenuVar.SelectedOption;
@@ -4139,7 +4139,7 @@ void drawDisplaysMemoryUsageMenu()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     uint32_t Color;
     
     // Draw each option for displaying memory usage about each heap
@@ -4220,7 +4220,7 @@ void drawEventDetails(int32_t posX, int32_t posY, int32_t index)
     // Draw the labels for the details for the current event
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
     drawText(Details, posX, posY, Color, Scale);
@@ -4310,7 +4310,7 @@ void drawWarpByEventMenuDetails()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     const char *ExplainText = "Note: Warping via this menu will clear all game states.";
     drawText(ExplainText, PosX, PosY, Color, Scale);
@@ -4345,7 +4345,7 @@ void drawWarpsBossesOptions()
     // uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = 180;
-    float Scale = 0.6;
+    float Scale = 0.6f;
     
     const char *ExplainText = "Note: Using this menu will modify the Sequence position";
     drawText(ExplainText, PosX, PosY, Color, Scale);
@@ -4373,7 +4373,7 @@ void drawWarpIndexMapAndEntrance()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = 80;
-    float Scale      = 0.6;
+    float Scale      = 0.6f;
     
     const char *String = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
     drawText(String, PosX, PosY, Color, Scale);
@@ -4438,7 +4438,7 @@ void drawWarpIndexEntranceList()
     // Draw the help text
     uint32_t Color = 0xFFFFFFFF;
     uint8_t Alpha  = 0xFF;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     PosY -= 20;
     
     const char *HelpText = "Press B to close this window\nPress D-Pad Up/Down to adjust the page";
@@ -4545,7 +4545,7 @@ void drawSequenceInPauseMenu()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = 43;
     int32_t PosY   = 47;
-    float Scale    = 0.8;
+    float Scale    = 0.8f;
     
     // Draw the sequence text
     const char *String = "Sequence";
@@ -4588,7 +4588,7 @@ void drawOnScreenTimer()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = 115;
     int32_t PosY   = -160;
-    float Scale    = 0.7;
+    float Scale    = 0.7f;
     
 #ifdef TTYD_JP
     PosX  += 5;
@@ -4636,7 +4636,7 @@ void drawFrameCounter()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = 115;
     int32_t PosY   = -160;
-    float Scale    = 0.7;
+    float Scale    = 0.7f;
     
 #ifdef TTYD_JP
     PosX  += 5;
@@ -4690,7 +4690,7 @@ void drawMarioCoordinates()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = -160;
-    float Scale      = 0.65;
+    float Scale      = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4714,7 +4714,7 @@ void drawMarioSpeedXZ()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = -160;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4748,7 +4748,7 @@ void drawJumpStorageDetails()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = 140;
     int32_t PosY   = 120;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     char *tempDisplayBuffer = DisplayBuffer;
@@ -4774,7 +4774,7 @@ void drawButtonInputs()
     uint8_t Alpha = 0xFF;
     int32_t PosX = -232;
     int32_t PosY = -160;
-    float Scale = 0.65;
+    float Scale = 0.65f;
     
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
     char *tempDisplayBuffer = DisplayBuffer;
@@ -4834,7 +4834,7 @@ void drawStickAngle()
     // uint8_t Alpha = 0xFF;
     int32_t PosX     = -232;
     int32_t PosY     = -160;
-    float Scale      = 0.65;
+    float Scale      = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4878,7 +4878,7 @@ void drawMemoryWatchesOnOverworld()
     
     uint32_t Color = 0xFFFFFFFF;
     uint8_t Alpha = 0xFF;
-    float Scale = 0.65;
+    float Scale = 0.65f;
     
     bool Initialized = false;
     for (uint32_t i = 0; i < Size; i++)
@@ -4915,7 +4915,7 @@ void drawYoshiSkipDetails()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = -120;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -4970,14 +4970,14 @@ void drawPalaceSkipDetails()
     else
     {
         // No partner is out, so set PartnerPosY to 0
-        PartnerPosY = 0;
+        PartnerPosY = 0.f;
     }
     
     // Get Phantom Ember Y coordinate
     ttyd::npcdrv::NpcEntry *NPC = getNpcEntryData(1, false); // NPC 2
     
     // Check if NPC 2 is active, followed by NPC 1, and then default to 0 if neither is active
-    float PhantomEmberPosY = 0;
+    float PhantomEmberPosY = 0.f;
     
     if (NPC->flags & (1 << 0)) // Check if 0 bit is active
     {
@@ -5052,7 +5052,7 @@ void drawPalaceSkipDetails()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = -80;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -5102,7 +5102,7 @@ void drawBridgeSkipDetails()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = -120;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -5180,7 +5180,7 @@ void drawBlimpTicketSkipDetails()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = -100;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text up if the input display is active
     if (Displays[BUTTON_INPUT_DISPLAY])
@@ -5373,7 +5373,7 @@ void drawActionCommandsTiming()
     int32_t TextPosY       = -105;
     // int32_t WindowWidth = 320;
     int32_t WindowCurve    = 10;
-    float Scale            = 0.7;
+    float Scale            = 0.7f;
     
     int32_t WindowWidth    = static_cast<int32_t>(getMessageWidth(TextToDraw, Scale));
     
@@ -5389,7 +5389,7 @@ void drawEffsActive()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 60;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Get the total amount of effs active
     ttyd::effdrv::EffWork *EffWrk = ttyd::effdrv::effWorkPointer;
@@ -5422,7 +5422,7 @@ void drawEvtsActive()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 60;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text down if the effs display is active
     if (Displays[EFFS_ACTIVE])
@@ -5461,7 +5461,7 @@ void drawEnemyEncounterNotifier()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 60;
-    float Scale    = 0.65;
+    float Scale    = 0.65f;
     
     // Move the text down if the effs display is active
     if (Displays[EFFS_ACTIVE])
@@ -5489,7 +5489,7 @@ void drawSettingsMemoryCardUsed()
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX   = -232;
     int32_t PosY   = 100;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Get the memory card slot being used
     char CurrentMemoryCardSlot;
@@ -5596,7 +5596,7 @@ void drawSettingsCurrentWork()
     uint8_t Alpha        = 0xFF;
     int32_t TextPosY     = 0;
     int32_t WindowCurve  = 10;
-    float Scale          = 0.6;
+    float Scale          = 0.6f;
     
     drawTextWithWindow(String, TextPosX, TextPosY, Alpha, 
         TextColor, Scale, WindowWidth, WindowColor, WindowCurve);
@@ -5611,7 +5611,7 @@ void drawHeapArrayErrors()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 100;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Draw the text
     char *tempHeapCorruptionBuffer = HeapInfo.HeapCorruptionBuffer;
@@ -5627,7 +5627,7 @@ void drawMemoryUsage()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 60;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Start the text drawing sequence
     drawTextInit(Alpha, true);
@@ -5701,7 +5701,7 @@ void drawNpcNameToPtrError()
     uint8_t Alpha  = 0xFF;
     int32_t PosX   = -232;
     int32_t PosY   = 120;
-    float Scale    = 0.6;
+    float Scale    = 0.6f;
     
     // Draw the text
     char *tempDisplayBuffer = DisplayBuffer;
@@ -5732,7 +5732,7 @@ void drawTitleScreenInfo()
     // Draw the text
     uint32_t TextColor = 0xFFFFFFFF;
     uint8_t Alpha      = 0xFF;
-    float Scale        = 0.75;
+    float Scale        = 0.75f;
     PosX               += 108;
     PosY               -= 14;
     
@@ -5759,7 +5759,7 @@ void drawFileSelectScreenInfo()
     // Draw the text
     uint32_t TextColor   = 0xFFFFFFFF;
     uint8_t Alpha        = 0xFF;
-    float Scale          = 0.6;
+    float Scale          = 0.6f;
     PosX                 += 15;
     PosY                 -= 13;
     
@@ -5838,12 +5838,12 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
         if (ActorFlags & (1 << 1)) // Check if 1 bit is on
         {
             // The current actor is hanging from the ceiling
-            DrawHitboxDirection = -1; // Draw down
+            DrawHitboxDirection = -1.f; // Draw down
         }
         else
         {
             // The current actor is not hanging from the ceiling
-            DrawHitboxDirection = 1; // Draw up
+            DrawHitboxDirection = 1.f; // Draw up
         }
         
         // Get the variables used to calculate the position of the hitbox
@@ -5862,8 +5862,8 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
         float DrawHitboxPosYStart = (DrawHitboxDirection * ActorHitboxPosOffsetY * ActorSizeScale) + ActorPos[1];
         
         // Get the amount to adjust the starting positions by
-        float DrawHitboxAdjustPosX = (ActorHitboxWidth * ActorSizeScale) * 0.5;
-        float DrawHitboxAdjustPosY = (ActorHitboxHeight * ActorSizeScale) * 0.5;
+        float DrawHitboxAdjustPosX = (ActorHitboxWidth * ActorSizeScale) * 0.5f;
+        float DrawHitboxAdjustPosY = (ActorHitboxHeight * ActorSizeScale) * 0.5f;
         
         // Set up a set of points, used to get the starts and ends of lines
         float ScreenPoint[3];

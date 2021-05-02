@@ -368,7 +368,7 @@ void setTimeStopTextStorage()
 void speedUpMario()
 {
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    float SpeedValueToSet = 16;
+    float SpeedValueToSet = 16.f;
     
     float current_unk_184 = SpeedUpMario.MarioVar[0];
     float current_unk_188 = SpeedUpMario.MarioVar[1];
@@ -820,12 +820,12 @@ void spawnItem()
                 if (player->wPlayerDirection <= 0)
                 {
                     // Mario is facing left
-                    CoordinateXAdjustment = -30;
+                    CoordinateXAdjustment = -30.f;
                 }
                 else
                 {
                     // Mario is facing right
-                    CoordinateXAdjustment = 30;
+                    CoordinateXAdjustment = 30.f;
                 }
                 
                 float ItemCoordinateX = player->playerPosition[0] + CoordinateXAdjustment;

@@ -962,7 +962,7 @@ void initAddressOverwrites()
     
     *reinterpret_cast<uint32_t *>(msgWindowMrAddress)                   = 0x38830001; // addi r4,r3,1
     
-    *reinterpret_cast<float *>(BacktraceScreenFontSizeAddress)          = 0.66;
+    *reinterpret_cast<float *>(BacktraceScreenFontSizeAddress)          = 0.66f;
     
 #ifndef TTYD_JP
     // This part of the backtrace screen does not need to be modified in JP
