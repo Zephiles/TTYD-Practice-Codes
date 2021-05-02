@@ -104,7 +104,7 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 * You are also able to change Yoshi's color from within the Partners menu. Upon changing it, you must respawn Yoshi for the changes to take effect. This is done by either swapping partners, entering pipes, or bringing Yoshi out via the menu itself.
 
 ### Settings
-This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to save the settings to either of the memory card slots. The current settings included are as follows:
+This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to save/load the settings to/from either of the memory card slots. The current settings included are as follows:
 * Which Cheats are active
 * Cheats button combinations
 * Which Displays are active
