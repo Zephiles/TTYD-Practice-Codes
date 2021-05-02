@@ -255,6 +255,7 @@ enum SETTINGS_OPTIONS
 
 enum SETTINGS_RETURN_CODES
 {
+    MEMCARD_IN_USE = -200,
     LOAD_FAILED = 1,
     LOAD_FAILED_NO_FILE,
     LOAD_SUCCESSFUL,
@@ -803,7 +804,7 @@ struct DisplayActionCommandsTiming
 
 struct MemoryCardStruct
 {
-    uint8_t ReturnCode;
+    int32_t ReturnCode;
     const char *SettingsFileName;
     const char *SettingsDescription;
     const char *RelFileName;

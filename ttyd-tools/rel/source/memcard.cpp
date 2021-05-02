@@ -201,6 +201,12 @@ int32_t createSettingsFile(gc::card::CARDFileInfo *settingsFileInfo)
 
 int32_t saveSettings()
 {
+    // Make sure the vanilla code isn't currently doing memory card stuff
+    if (ttyd::cardmgr::cardIsExec())
+    {
+        return MEMCARD_IN_USE;
+    }
+    
     // Make sure a memory card is inserted into slot A
     int32_t ReturnCode = checkForMemoryCard();
     if (ReturnCode != CARD_RESULT_READY)
@@ -369,6 +375,12 @@ int32_t saveSettings()
 
 int32_t loadSettings()
 {
+    // Make sure the vanilla code isn't currently doing memory card stuff
+    if (ttyd::cardmgr::cardIsExec())
+    {
+        return MEMCARD_IN_USE;
+    }
+    
     // Make sure a memory card is inserted into slot A
     int32_t ReturnCode = checkForMemoryCard();
     if (ReturnCode != CARD_RESULT_READY)

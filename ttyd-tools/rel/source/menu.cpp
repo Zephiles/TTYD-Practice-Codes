@@ -1679,6 +1679,12 @@ void menuCheckButton()
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }
+                                case MEMCARD_IN_USE:
+                                {
+                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
                                 default:
                                 {
                                     MenuSettings.ReturnCode = LOAD_FAILED;
@@ -1696,6 +1702,12 @@ void menuCheckButton()
                                 case CARD_RESULT_READY:
                                 {
                                     MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                                case MEMCARD_IN_USE:
+                                {
+                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }

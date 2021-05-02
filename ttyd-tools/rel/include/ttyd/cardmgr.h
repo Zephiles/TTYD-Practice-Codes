@@ -69,7 +69,7 @@ extern "C" {
 // cardCopy2Main
 // cardMain
 // cardGetCode
-// cardIsExec
+bool cardIsExec();
 // cardInit
 // cardBufReset
 // cardGetFilePtr

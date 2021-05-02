@@ -5487,6 +5487,7 @@ void drawSettingsCurrentWork()
 {
     const char *String;
     int32_t WindowWidth;
+    int32_t TextPosX = -50;
     
     switch (MenuSettings.ReturnCode)
     {
@@ -5494,30 +5495,65 @@ void drawSettingsCurrentWork()
         {
             String = "Load Failed";
             WindowWidth = 129;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 7;
+            TextPosX += 4;
+#endif
             break;
         }
         case LOAD_FAILED_NO_FILE:
         {
-            String = "Settings file not found";
-            WindowWidth = 218;
+            String = "Settings File Not Found";
+            WindowWidth = 226;
+            TextPosX -= 48;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 8;
+            TextPosX += 3;
+#endif
             break;
         }
         case LOAD_SUCCESSFUL:
         {
             String = "Load Successful";
             WindowWidth = 162;
+            TextPosX -= 16;
             break;
         }
         case SAVE_FAILED:
         {
             String = "Save Failed";
             WindowWidth = 129;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 7;
+            TextPosX += 4;
+#endif
             break;
         }
         case SAVE_SUCCESSFUL:
         {
             String = "Save Successful";
-            WindowWidth = 162;
+            WindowWidth = 160;
+            TextPosX -= 15;
+            
+#ifdef TTYD_JP
+            WindowWidth += 4;
+            TextPosX -= 2;
+#endif
+            break;
+        }
+        case MEMCARD_IN_USE:
+        {
+            String = "Memory Card Currently In Use";
+            WindowWidth = 275;
+            TextPosX -= 73;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 3;
+            TextPosX += 2;
+#endif
             break;
         }
         default:
@@ -5530,7 +5566,6 @@ void drawSettingsCurrentWork()
     uint32_t TextColor   = 0xFFFFFFFF;
     uint32_t WindowColor = 0x151515F4;
     uint8_t Alpha        = 0xFF;
-    int32_t TextPosX     = -80;
     int32_t TextPosY     = 0;
     int32_t WindowCurve  = 10;
     float Scale          = 0.6;

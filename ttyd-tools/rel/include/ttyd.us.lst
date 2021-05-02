@@ -1048,7 +1048,7 @@
 // 800B2388:cardCopy2Main
 // 800B2508:cardMain
 // 800B2B80:cardGetCode
-// 800B2B8C:cardIsExec
+800B2B8C:cardIsExec
 // 800B2C58:cardInit
 // 800B3060:cardBufReset
 // 800B33E4:cardGetFilePtr
