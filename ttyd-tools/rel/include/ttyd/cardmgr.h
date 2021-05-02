@@ -18,7 +18,7 @@ struct CardMgrWork
     uint32_t unk_18;
     gc::card::CARDFileInfo fileInfo;
     gc::card::CARDStat stat;
-    uint32_t code; // Return value from CARD functions
+    int32_t code; // Return value from CARD functions
     uint32_t unk_A0;
     uint32_t unk_A4;
     void *fileData; // Place where all 4 files are loaded to for the file select menu
