@@ -142,8 +142,9 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
     
     // Create the new file
+    // The new file should be opened automatically via CARDCreateAsync
     const char *SettingsFileName = MenuSettings.SettingsFileName;
-    ReturnCode = createFileOnCard(memoryCardSlot, SettingsFileName, FileSizeAdjusted, &FileInfo);
+    ReturnCode = createFileOnCard(memoryCardSlot, SettingsFileName, FileSizeAdjusted, settingsFileInfo);
     
     if (ReturnCode != CARD_RESULT_READY)
     {
@@ -153,13 +154,14 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     }
     
     // Get the stats for the new file
+    int32_t FileNumber = settingsFileInfo->fileNum;
     gc::card::CARDStat CardStat;
-    int32_t FileNumber = FileInfo.fileNum;
     
     ReturnCode = gc::card::CARDGetStatus(memoryCardSlot, FileNumber, &CardStat);
     if (ReturnCode != CARD_RESULT_READY)
     {
         delete[] (BannerIconData);
+        gc::card::CARDClose(settingsFileInfo);
         gc::card::CARDUnmount(memoryCardSlot);
         return ReturnCode;
     }
@@ -176,15 +178,7 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     if (ReturnCode != CARD_RESULT_READY)
     {
         delete[] (BannerIconData);
-        gc::card::CARDUnmount(memoryCardSlot);
-        return ReturnCode;
-    }
-    
-    // Open the new file
-    ReturnCode = gc::card::CARDOpen(memoryCardSlot, SettingsFileName, settingsFileInfo);
-    if (ReturnCode != CARD_RESULT_READY)
-    {
-        delete[] (BannerIconData);
+        gc::card::CARDClose(settingsFileInfo);
         gc::card::CARDUnmount(memoryCardSlot);
         return ReturnCode;
     }
