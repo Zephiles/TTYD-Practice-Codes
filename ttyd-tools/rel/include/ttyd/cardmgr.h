@@ -10,7 +10,7 @@ struct CardMgrWork
 {
     uint16_t wFlags;
     uint16_t unk_2;
-    void *workArea;
+    void *workArea; // Used for CARDMountAsync
     int32_t memCardSlot;
     uint32_t unk_C;
     uint32_t unk_10;
