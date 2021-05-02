@@ -9,6 +9,7 @@
 
 #include <gc/OSTime.h>
 #include <gc/OSError.h>
+#include <gc/card.h>
 #include <gc/gx.h>
 #include <gc/ppc.h>
 #include <gc/OSContext.h>
@@ -5481,6 +5482,33 @@ void drawEnemyEncounterNotifier()
         EnemyEncounterNotifier.Counter);
     
     drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+}
+
+void drawSettingsMemoryCardUsed()
+{
+    uint32_t Color = 0xFFFFFFFF;
+    int32_t PosX   = -232;
+    int32_t PosY   = 100;
+    float Scale    = 0.6;
+    
+    // Get the memory card slot being used
+    char CurrentMemoryCardSlot;
+    if (MenuSettings.MemoryCardSlot == CARD_SLOT_A)
+    {
+        CurrentMemoryCardSlot = 'A';
+    }
+    else
+    {
+        CurrentMemoryCardSlot = 'B';
+    }
+    
+    // Draw the text
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer,
+        "Memory Card Slot\nSlot %c",
+        CurrentMemoryCardSlot);
+    
+    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawSettingsCurrentWork()

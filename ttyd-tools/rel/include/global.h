@@ -249,7 +249,8 @@ enum STATS_FOLLOWER_SELECTION_OPTIONS
 
 enum SETTINGS_OPTIONS
 {
-    LOAD_SETTINGS = 1,
+    CHANGE_MEMORY_CARD_SLOT = 1,
+    LOAD_SETTINGS,
     SAVE_SETTINGS,
 };
 
@@ -804,6 +805,7 @@ struct DisplayActionCommandsTiming
 
 struct MemoryCardStruct
 {
+    int32_t MemoryCardSlot;
     int32_t ReturnCode;
     const char *SettingsFileName;
     const char *SettingsDescription;

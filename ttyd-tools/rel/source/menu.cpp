@@ -1660,11 +1660,26 @@ void menuCheckButton()
                 case A:
                 {
                     uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                    int32_t MemoryCardSlot = MenuSettings.MemoryCardSlot;
+                    
                     switch (CurrentMenuOptionCheck)
                     {
+                        case CHANGE_MEMORY_CARD_SLOT:
+                        {
+                            // Switch which memory card slot is being used
+                            if (MemoryCardSlot == CARD_SLOT_A)
+                            {
+                                MenuSettings.MemoryCardSlot = CARD_SLOT_B;
+                            }
+                            else
+                            {
+                                MenuSettings.MemoryCardSlot = CARD_SLOT_A;
+                            }
+                            break;
+                        }
                         case LOAD_SETTINGS:
                         {
-                            int32_t ReturnCode = loadSettings();
+                            int32_t ReturnCode = loadSettings(MemoryCardSlot);
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
@@ -1696,7 +1711,7 @@ void menuCheckButton()
                         }
                         case SAVE_SETTINGS:
                         {
-                            int32_t ReturnCode = saveSettings();
+                            int32_t ReturnCode = saveSettings(MemoryCardSlot);
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
@@ -3816,6 +3831,9 @@ void drawMenu()
         {
             // Draw the text for the options
             drawSingleColumnMain();
+            
+            // Draw the current memory card slot being used
+            drawSettingsMemoryCardUsed();
             
             if (MenuVar.Timer > 0)
             {

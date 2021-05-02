@@ -1186,6 +1186,7 @@ const char *StatsFollowerOptionsLines[] =
 
 const char *SettingsLines[] = 
 {
+    "Change Memory Card Slot",
     "Load Settings",
     "Save Settings",
 };
@@ -2066,7 +2067,12 @@ void initMenuVars()
     setInitialSettings();
     
     // Load the custom settings from the settings file if it exists
-    loadSettings();
+    // Try both memory card slots
+    int32_t ReturnCode = loadSettings(CARD_SLOT_A);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        loadSettings(CARD_SLOT_B);
+    }
 }
 
 void setInitialSettings()

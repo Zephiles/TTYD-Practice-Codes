@@ -142,6 +142,7 @@ void drawActionCommandsTiming();
 void drawEffsActive();
 void drawEvtsActive();
 void drawEnemyEncounterNotifier();
+void drawSettingsMemoryCardUsed();
 void drawSettingsCurrentWork();
 
 void drawHeapArrayErrors();
