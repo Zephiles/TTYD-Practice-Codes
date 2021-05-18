@@ -1378,10 +1378,10 @@ uint32_t memoryEditorButtonControls()
                         CurrentSelectionStatus ^= EDITOR_RAISE_SYSTEM_LEVEL;
                         MemoryEditor.CurrentSelectionStatus = CurrentSelectionStatus;
                         
-                        // Raise or lower the system level based on the new value
+                        // Raise or lower the System Level based on the new value
                         if (CurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
                         {
-                            raiseSystemLevel();
+                            raiseSystemLevel(1);
                         }
                         else
                         {
@@ -1611,7 +1611,7 @@ uint32_t memoryEditorButtonControls()
             }
             else // Haven't selected an option yet
             {
-                // Lower the system level if it was previously raised
+                // Lower the System Level if it was previously raised
                 if (CurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
                 {
                     lowerSystemLevel();

@@ -769,6 +769,7 @@
 // 8025E4AC:N_setupErrorHandler
 // data
 80415FD0:globalWorkPointer
+8041E940:_mariostSystemLevel
 
 // seq_battle.o
 // 800736EC:battle_exit

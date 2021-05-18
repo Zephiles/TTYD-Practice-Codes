@@ -288,14 +288,14 @@ void saveAnywhere()
             return;
         }
         
-        // Make sure a file is currently loaded, and that the pause menu is not currently open
+        // Make sure a file is currently loaded
         if (!checkIfInGame())
         {
             return;
         }
         
-        uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-        if ((SystemLevel & 15) == 15)
+        // Make sure the system level is not raised
+        if (checkIfSystemLevelIsRaised())
         {
             return;
         }
@@ -305,7 +305,7 @@ void saveAnywhere()
         SaveAnywhere.ThreadID = SaveScriptEvt->threadId;
         
         SaveAnywhere.ScriptIsRunning = true;
-        raiseSystemLevel();
+        ttyd::mariost::marioStSystemLevel(1);
         
         // Only turn the key off if it's not already off
         if (ttyd::mario::marioKeyOffChk() == 0)
@@ -317,7 +317,7 @@ void saveAnywhere()
     {
         // Save Script is no longer running, so give back control to the player
         SaveAnywhere.ScriptIsRunning = false;
-        lowerSystemLevel();
+        ttyd::mariost::marioStSystemLevel(0);
         
         // Only turn the key on if it's not already on
         if (ttyd::mario::marioKeyOffChk() != 0)
@@ -489,12 +489,11 @@ void checkIfSystemLevelShouldBeLowered()
         return;
     }
     
-    // Keep lowering the system level until the seq changes to Game
+    // Keep lowering the System Level until the seq changes to Game
     if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kGame))
     {
-        // Only lower the system level if it's not currently at 0
-        uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-        if (SystemLevel > 0)
+        // Only lower the System Level if it's not currently at 0
+        if (checkIfSystemLevelIsRaised())
         {
             ttyd::mariost::marioStSystemLevel(0);
         }
@@ -552,18 +551,14 @@ void reloadRoomMain()
     uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
     *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
     
-    uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-    if (SystemLevel == 0)
+    if (!checkIfSystemLevelIsRaised())
     {
         return;
     }
     
-    // Only run the following if the system level is not 0
-    if ((SystemLevel & 15) == 15)
-    {
-        // Currently in pause menu, so re-enable the 3D camera
-        ttyd::camdrv::L_camDispOn(ttyd::dispdrv::CameraId::k3d);
-    }
+    // Only run the following if the System Level is not 0
+    // Re-enable the 3D camera if necessary
+    ttyd::camdrv::L_camDispOn(ttyd::dispdrv::CameraId::k3d);
     
     // Enable sound effects, set the default camera id for Mario, and give back control to the player
     ttyd::pmario_sound::psndClearFlag(0x80);
@@ -785,8 +780,8 @@ void spawnItem()
             return;
         }
         
-        uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-        if ((SystemLevel & 15) == 15)
+        uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
+        if ((SystemLevelFlags & 15) == 15)
         {
             return;
         }
@@ -798,9 +793,9 @@ void spawnItem()
             // Check if the adjustable value menu should be opened
             if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo))
             {
-                // Disable the pause menu, raise the system level, and open the menu
+                // Disable the pause menu, raise the System Level, and open the menu
                 ttyd::win_main::winOpenDisable();
-                raiseSystemLevel();
+                raiseSystemLevel(1);
                 MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
                 SpawnItem.InAdjustableValueMenu = true;
             }
@@ -843,7 +838,7 @@ void spawnItem()
                 ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
                     -1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
                 
-                // Enable the pause menu and lower the system level
+                // Enable the pause menu and lower the System Level
                 SpawnItem.InAdjustableValueMenu = false;
                 ttyd::win_main::winOpenEnable();
                 lowerSystemLevel();
@@ -852,7 +847,7 @@ void spawnItem()
             case B:
             case NO_NUMBERS_TO_DISPLAY:
             {
-                // Enable the pause menu and lower the system level
+                // Enable the pause menu and lower the System Level
                 SpawnItem.InAdjustableValueMenu = false;
                 ttyd::win_main::winOpenEnable();
                 lowerSystemLevel();
@@ -869,7 +864,7 @@ void spawnItem()
     }
     else if (tempInAdjustableValueMenu)
     {
-        // Enable the pause menu and lower the system level
+        // Enable the pause menu and lower the System Level
         SpawnItem.InAdjustableValueMenu = false;
         ttyd::win_main::winOpenEnable();
         lowerSystemLevel();
@@ -991,8 +986,8 @@ void lockFlags()
 
 void displaySequenceInPauseMenu()
 {
-    uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-    if ((SystemLevel & 15) != 15)
+    uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
+    if ((SystemLevelFlags & 15) != 15)
     {
         return;
     }
@@ -1180,10 +1175,10 @@ void displayMemoryEditor()
         // Check if the memory editor should be opened
         if (checkButtonCombo(MemoryEditor.ButtonCombo))
         {
-            // Check if the system level should be raised
+            // Check if the System Level should be raised
             if (tempCurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
             {
-                raiseSystemLevel();
+                raiseSystemLevel(1);
             }
             
             // Check if the pause menu should be disabled
@@ -1264,14 +1259,14 @@ void displayPalaceSkipDetails()
         return;
     }
     
-    uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-    if ((SystemLevel & 15) == 15)
+    uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
+    if ((SystemLevelFlags & 15) == 15)
     {
         // Stop upon pausing
         PalaceSkip.TimerStopped = true;
         PalaceSkip.TimerPaused = true;
     }
-    else if ((SystemLevel == 0) && PalaceSkip.TimerPaused)
+    else if (PalaceSkip.TimerPaused && !checkIfSystemLevelIsRaised())
     {
         // Reset and Start when unpausing
         PalaceSkip.MainTimer = 0;
@@ -1420,15 +1415,15 @@ void displayBlimpTicketSkipDetails()
         return;
     }
     
-    uint32_t SystemLevel = ttyd::mariost::marioStGetSystemLevel();
-    if ((SystemLevel & 15) == 15)
+    uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
+    if ((SystemLevelFlags & 15) == 15)
     {
         // Stop upon pausing
         BlimpTicketSkip.UpRightTimerStopped    = true;
         BlimpTicketSkip.StraightUpTimerStopped = true;
         BlimpTicketSkip.TimersPaused           = true;
     }
-    else if ((SystemLevel == 0) && BlimpTicketSkip.TimersPaused)
+    else if (BlimpTicketSkip.TimersPaused && !checkIfSystemLevelIsRaised())
     {
         // Reset and Start when unpausing
         BlimpTicketSkip.UpRightTimer           = 0;

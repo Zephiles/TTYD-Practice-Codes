@@ -11,7 +11,7 @@ extern "C" {
 void marioStInit();
 void marioStMain();
 void marioStDisp();
-void marioStSystemLevel(uint32_t level);
+void marioStSystemLevel(int32_t level);
 uint32_t marioStGetSystemLevel();
 void viPostCallback(uint32_t retraceCount);
 void gcDvdCheckThread();
@@ -21,6 +21,7 @@ void N_systemErrorHandler(uint16_t error, gc::OSContext::OSContext *context, uin
 // N_setupErrorHandler
 
 extern void *globalWorkPointer;
+extern int32_t _mariostSystemLevel;
 
 }
 

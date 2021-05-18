@@ -548,6 +548,7 @@ struct MenuVars
     bool DrawChangingMemoryWatchPosition;
     uint8_t FrameCounter;
     uint16_t LagSpikeDuration; // Milliseconds
+    bool SystemMenuIsRaised;
     
     // Variables used by other stuff
     bool ResetMarioProperties;

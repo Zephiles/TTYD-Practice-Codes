@@ -4199,7 +4199,7 @@ void enableOrDisableMenu()
             MenuVar.FrameCounter = 1;
             
             // Raise the System Level if not in a battle
-            raiseSystemLevel();
+            raiseSystemLevel(1);
             
             // Disable the Pause Menu
             ttyd::win_main::winOpenDisable();

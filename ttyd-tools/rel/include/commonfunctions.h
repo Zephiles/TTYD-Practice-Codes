@@ -24,6 +24,7 @@ void *getActorPointer(uint32_t slot);
 ttyd::npcdrv::NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData);
 uint32_t secondsToFrames(uint32_t seconds);
 uint32_t getSequencePosition();
+bool checkIfSystemLevelIsRaised();
 void setSequencePosition(uint32_t value);
 void setNextMap(const char *map);
 void setNextBero(const char *bero);
