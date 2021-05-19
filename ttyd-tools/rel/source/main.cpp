@@ -409,6 +409,12 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
     // Call the original function immediately, as the REL file should be linked before applying patches
     const bool Result = mPFN_OSLink_trampoline(newModule, bss);
     
+    // Make sure the linking process succeeded
+    if (!Result)
+    {
+       return Result;
+    }
+    
     // Make sure a REL file is currently loaded
     gc::OSModule::OSModuleInfo *CurrentRelModuleInfo = getCurrentRelModuleInfo();
     if (!CurrentRelModuleInfo)
