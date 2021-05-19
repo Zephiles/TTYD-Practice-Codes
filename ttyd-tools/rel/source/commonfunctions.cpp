@@ -89,6 +89,15 @@ gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo()
 
 void *getBattleWorkPointer()
 {
+    // Make sure the battle byte is set, as otherwise not actually in a battle
+    uint32_t InBattleByte = *reinterpret_cast<uint32_t *>(
+        reinterpret_cast<uint32_t>(ttyd::mariost::globalWorkPointer) + 0x14);
+    
+    if (InBattleByte == 0)
+    {
+        return nullptr;
+    }
+    
     return ttyd::battle::battleWorkPointer;
 }
 
