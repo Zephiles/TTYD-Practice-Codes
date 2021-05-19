@@ -541,20 +541,18 @@ struct MenuVars
     uint8_t CurrentPage;
     uint8_t SecondaryPage;
     int8_t FunctionReturnCode;
-    uint32_t Timer;
+    uint8_t FrameCounter;
     uint8_t MenuSelectionStates;
+    bool DrawChangingMemoryWatchPosition;
+    bool SystemMenuIsRaised;
+    bool ResetMarioProperties;
+    bool MarioFreeze;
+    uint16_t LagSpikeDuration; // Milliseconds
+    int16_t ForcedNPCItemDrop;
+    uint16_t JumpStorageSetCounter;
+    uint32_t Timer;
     int32_t MenuSecondaryValue;
     uint32_t MenuSecondaryValueUnsigned;
-    bool DrawChangingMemoryWatchPosition;
-    uint8_t FrameCounter;
-    uint16_t LagSpikeDuration; // Milliseconds
-    bool SystemMenuIsRaised;
-    
-    // Variables used by other stuff
-    bool ResetMarioProperties;
-    int16_t ForcedNPCItemDrop;
-    bool MarioFreeze;
-    uint16_t JumpStorageSetCounter;
     const uint32_t *CurrentMapInitScript;
     
     MenuVars()
