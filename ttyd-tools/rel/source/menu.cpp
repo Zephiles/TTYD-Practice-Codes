@@ -4198,16 +4198,16 @@ void enableOrDisableMenu()
             // Prevent the menu from checking inputs on the frame that it is opened
             MenuVar.FrameCounter = 1;
             
-            // Raise the System Level if not in a battle
-            raiseSystemLevel(1);
+            // Set the System Level if not in a battle
+            setSystemLevel(1);
             
             // Disable the Pause Menu
             ttyd::win_main::winOpenDisable();
         }
         else
         {
-            // Lower the System Level if not in a battle
-            lowerSystemLevel();
+            // Reset the System Level if not in a battle
+            setSystemLevel(0);
             
             // Enable the Pause Menu
             ttyd::win_main::winOpenEnable();

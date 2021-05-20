@@ -1247,7 +1247,7 @@ const char *MemoryEditorSetupLines[] =
 const char *MemoryEditorSettingsLines[] = 
 {
     "Clear Cache",
-    "Raise System Level",
+    "Set System Level",
     "Disable Pause Menu",
     "Enable Vertical Separators",
     "Enable Horizontal Separators",

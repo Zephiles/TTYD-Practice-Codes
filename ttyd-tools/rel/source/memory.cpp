@@ -1375,17 +1375,17 @@ uint32_t memoryEditorButtonControls()
                     case EDITOR_SETTINGS_SYSTEM_LEVEL:
                     {
                         // Toggle the bit for the current option
-                        CurrentSelectionStatus ^= EDITOR_RAISE_SYSTEM_LEVEL;
+                        CurrentSelectionStatus ^= EDITOR_SET_SYSTEM_LEVEL;
                         MemoryEditor.CurrentSelectionStatus = CurrentSelectionStatus;
                         
-                        // Raise or lower the System Level based on the new value
-                        if (CurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
+                        // Set or reset the System Level based on the new value
+                        if (CurrentSelectionStatus & EDITOR_SET_SYSTEM_LEVEL)
                         {
-                            raiseSystemLevel(1);
+                            setSystemLevel(1);
                         }
                         else
                         {
-                            lowerSystemLevel();
+                            setSystemLevel(0);
                         }
                         break;
                     }
@@ -1611,10 +1611,10 @@ uint32_t memoryEditorButtonControls()
             }
             else // Haven't selected an option yet
             {
-                // Lower the System Level if it was previously raised
-                if (CurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
+                // Reset the System Level if it was previously set
+                if (CurrentSelectionStatus & EDITOR_SET_SYSTEM_LEVEL)
                 {
-                    lowerSystemLevel();
+                    setSystemLevel(0);
                 }
                 
                 // Enable the pause menu if it was disabled

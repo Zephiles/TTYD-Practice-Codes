@@ -294,8 +294,8 @@ void saveAnywhere()
             return;
         }
         
-        // Make sure the system level is not raised
-        if (checkIfSystemLevelIsRaised())
+        // Make sure the System Level is not set
+        if (checkIfSystemLevelIsSet())
         {
             return;
         }
@@ -489,11 +489,11 @@ void checkIfSystemLevelShouldBeLowered()
         return;
     }
     
-    // Keep lowering the System Level until the seq changes to Game
+    // Keep resetting the System Level until the seq changes to Game
     if (!checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kGame))
     {
-        // Only lower the System Level if it's not currently at 0
-        if (checkIfSystemLevelIsRaised())
+        // Only reset the System Level if it's not currently at 0
+        if (checkIfSystemLevelIsSet())
         {
             ttyd::mariost::marioStSystemLevel(0);
         }
@@ -551,10 +551,10 @@ void reloadRoomMain()
     uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
     *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
     
-    // Make sure the System Level can be raised again
-    MenuVar.SystemMenuIsRaised = false;
+    // Make sure the System Level can be set again
+    MenuVar.SystemMenuIsSet = false;
     
-    if (!checkIfSystemLevelIsRaised())
+    if (!checkIfSystemLevelIsSet())
     {
         return;
     }
@@ -796,9 +796,9 @@ void spawnItem()
             // Check if the adjustable value menu should be opened
             if (checkButtonCombo(Cheat[SPAWN_ITEM].ButtonCombo))
             {
-                // Disable the pause menu, raise the System Level, and open the menu
+                // Disable the pause menu, set the System Level, and open the menu
                 ttyd::win_main::winOpenDisable();
-                raiseSystemLevel(1);
+                setSystemLevel(1);
                 MenuVar.SecondaryMenuOption = getHighestAdjustableValueDigit(INVENTORY_STANDARD) - 1;
                 SpawnItem.InAdjustableValueMenu = true;
             }
@@ -841,19 +841,19 @@ void spawnItem()
                 ttyd::itemdrv::itemEntry(tempDisplayBuffer, MenuVar.MenuSecondaryValue, 16, 
                     -1, nullptr, ItemCoordinateX, ItemCoordinateY, ItemCoordinateZ);
                 
-                // Enable the pause menu and lower the System Level
+                // Enable the pause menu and reset the System Level
                 SpawnItem.InAdjustableValueMenu = false;
                 ttyd::win_main::winOpenEnable();
-                lowerSystemLevel();
+                setSystemLevel(0);
                 return;
             }
             case B:
             case NO_NUMBERS_TO_DISPLAY:
             {
-                // Enable the pause menu and lower the System Level
+                // Enable the pause menu and reset the System Level
                 SpawnItem.InAdjustableValueMenu = false;
                 ttyd::win_main::winOpenEnable();
-                lowerSystemLevel();
+                setSystemLevel(0);
                 return;
             }
             default:
@@ -867,10 +867,10 @@ void spawnItem()
     }
     else if (tempInAdjustableValueMenu)
     {
-        // Enable the pause menu and lower the System Level
+        // Enable the pause menu and reset the System Level
         SpawnItem.InAdjustableValueMenu = false;
         ttyd::win_main::winOpenEnable();
-        lowerSystemLevel();
+        setSystemLevel(0);
         return;
     }
 }
@@ -1178,10 +1178,10 @@ void displayMemoryEditor()
         // Check if the memory editor should be opened
         if (checkButtonCombo(MemoryEditor.ButtonCombo))
         {
-            // Check if the System Level should be raised
-            if (tempCurrentSelectionStatus & EDITOR_RAISE_SYSTEM_LEVEL)
+            // Check if the System Level should be set
+            if (tempCurrentSelectionStatus & EDITOR_SET_SYSTEM_LEVEL)
             {
-                raiseSystemLevel(1);
+                setSystemLevel(1);
             }
             
             // Check if the pause menu should be disabled
@@ -1269,7 +1269,7 @@ void displayPalaceSkipDetails()
         PalaceSkip.TimerStopped = true;
         PalaceSkip.TimerPaused = true;
     }
-    else if (PalaceSkip.TimerPaused && !checkIfSystemLevelIsRaised())
+    else if (PalaceSkip.TimerPaused && !checkIfSystemLevelIsSet())
     {
         // Reset and Start when unpausing
         PalaceSkip.MainTimer = 0;
@@ -1426,7 +1426,7 @@ void displayBlimpTicketSkipDetails()
         BlimpTicketSkip.StraightUpTimerStopped = true;
         BlimpTicketSkip.TimersPaused           = true;
     }
-    else if (BlimpTicketSkip.TimersPaused && !checkIfSystemLevelIsRaised())
+    else if (BlimpTicketSkip.TimersPaused && !checkIfSystemLevelIsSet())
     {
         // Reset and Start when unpausing
         BlimpTicketSkip.UpRightTimer           = 0;

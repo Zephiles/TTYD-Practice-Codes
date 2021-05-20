@@ -19,8 +19,7 @@ void resetImportantItemsPauseMenu();
 void resetPartnerPauseMenu();
 void recheckUpgradesBattles(int32_t item);
 
-void raiseSystemLevel(int32_t level);
-void lowerSystemLevel();
+void setSystemLevel(int32_t level);
 
 void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress);
 void lockFlagsMenuBackUpFlags(uint32_t index);

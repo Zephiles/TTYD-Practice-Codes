@@ -44,8 +44,8 @@ void closeMenu()
     
     resetMenuToRoot();
     
-    // Lower the System Level if not in a battle
-    lowerSystemLevel();
+    // Reset the System Level if not in a battle
+    setSystemLevel(0);
     
     // Enable the Pause Menu
     ttyd::win_main::winOpenEnable();
@@ -204,51 +204,58 @@ void recheckUpgradesBattles(int32_t item)
     }
 }
 
-void raiseSystemLevel(int32_t level)
+void setSystemLevel(int32_t level)
 {
-    // Only raise if not currently raised
-    if (MenuVar.SystemMenuIsRaised)
+    // Make sure the level is valid
+    if ((level < 0) || (level > 4))
     {
         return;
     }
     
-    // Only raise if not in a battle nor a screen transition
-    if (!checkIfInGame())
+    bool SystemMenuIsSet = MenuVar.SystemMenuIsSet;
+    if (level == 0) // Being reset
     {
-        return;
+        // Only reset if was previously set
+        if (!SystemMenuIsSet)
+        {
+            return;
+        }
+        
+        /* The only reason the System Level wouldn't be reset now is if in a screen 
+           transion/battle/etc., so reset SystemMenuIsSet */
+        MenuVar.SystemMenuIsSet = false;
+        
+        // Only reset if not in a battle nor a screen transition
+        if (!checkIfInGame())
+        {
+            return;
+        }
     }
-    
-    // Don't raise if it's already raised by something else
-    if (checkIfSystemLevelIsRaised())
+    else
     {
-        return;
+        // Only set if not currently set
+        if (SystemMenuIsSet)
+        {
+            return;
+        }
+        
+        // Only set if not in a battle nor a screen transition
+        if (!checkIfInGame())
+        {
+            return;
+        }
+        
+        // Don't set if it's already set by something else
+        if (checkIfSystemLevelIsSet())
+        {
+            return;
+        }
+        
+        MenuVar.SystemMenuIsSet = true;
     }
     
     // Set the new System Level
-    MenuVar.SystemMenuIsRaised = true;
     ttyd::mariost::marioStSystemLevel(level);
-}
-
-void lowerSystemLevel()
-{
-    // Only lower if was previously raised
-    if (!MenuVar.SystemMenuIsRaised)
-    {
-        return;
-    }
-    
-    /* The only reason the System Level wouldn't be lowered now is if in a screen 
-       transion/battle/etc., so reset SystemMenuIsRaised */
-    MenuVar.SystemMenuIsRaised = false;
-    
-    // Only lower if not in a battle nor a screen transition
-    if (!checkIfInGame())
-    {
-        return;
-    }
-    
-    // Reset the System Level
-    ttyd::mariost::marioStSystemLevel(0);
 }
 
 void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)

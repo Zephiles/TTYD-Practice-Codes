@@ -544,7 +544,7 @@ struct MenuVars
     uint8_t FrameCounter;
     uint8_t MenuSelectionStates;
     bool DrawChangingMemoryWatchPosition;
-    bool SystemMenuIsRaised;
+    bool SystemMenuIsSet;
     bool ResetMarioProperties;
     bool MarioFreeze;
     uint16_t LagSpikeDuration; // Milliseconds
@@ -864,7 +864,7 @@ struct MemoryEditorStruct
     #define EDITOR_SELECTED_BYTES_TO_EDIT    0x00000008
     #define EDITOR_EDITING_BYTES             0x00000010
     #define EDITOR_CLEAR_CACHE               0x00000020
-    #define EDITOR_RAISE_SYSTEM_LEVEL        0x00000040
+    #define EDITOR_SET_SYSTEM_LEVEL          0x00000040
     #define EDITOR_DISABLE_PAUSE_MENU        0x00000080
     #define EDITOR_VERTICAL_LINES            0x00000100
     #define EDITOR_HORIZONTAL_LINES          0x00000200
@@ -888,7 +888,7 @@ struct MemoryEditorStruct
     MemoryEditorStruct()
     {
         CurrentAddress = reinterpret_cast<uint8_t *>(0x80000000);
-        CurrentSelectionStatus = (EDITOR_RAISE_SYSTEM_LEVEL | EDITOR_DISABLE_PAUSE_MENU);
+        CurrentSelectionStatus = (EDITOR_SET_SYSTEM_LEVEL | EDITOR_DISABLE_PAUSE_MENU);
         NumBytesBeingEdited = 1;
     }
 };

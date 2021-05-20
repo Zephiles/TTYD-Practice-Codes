@@ -152,7 +152,7 @@ uint32_t getSequencePosition()
     return ttyd::swdrv::swByteGet(0);
 }
 
-bool checkIfSystemLevelIsRaised()
+bool checkIfSystemLevelIsSet()
 {
     uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
     int32_t SystemLevel = ttyd::mariost::_mariostSystemLevel;
