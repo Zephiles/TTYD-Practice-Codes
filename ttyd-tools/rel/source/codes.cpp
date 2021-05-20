@@ -551,6 +551,9 @@ void reloadRoomMain()
     uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
     *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
     
+    // Make sure the System Level can be raised again
+    MenuVar.SystemMenuIsRaised = false;
+    
     if (!checkIfSystemLevelIsRaised())
     {
         return;
