@@ -1,6 +1,6 @@
 #include <gc/card.h>
-#include <gc/os.h>
 #include <gc/OSTime.h>
+#include <gc/os.h>
 
 #include <cstring>
 
@@ -45,7 +45,7 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
     int32_t OldNameFileIndex = -1;
     
     // Loop through each entry and check for files that are named oldName and/or newName
-    for (int32_t i = 0; i < 127; i++)
+    for (int32_t i = 0; i < CARD_MAX_FILE; i++)
     {
         uint8_t *CurrentDirBlock = reinterpret_cast<uint8_t *>(DirBlock + (i * 0x40));
         

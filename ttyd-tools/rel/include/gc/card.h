@@ -7,6 +7,9 @@ namespace gc::card {
 #define CARD_SLOT_A             0    // Memory card slot A
 #define CARD_SLOT_B             1    // Memory card slot B
 
+#define CARD_READ_SIZE          512  // Minimum read size
+#define CARD_WRITE_SIZE         8192 // Minimum write size
+#define CARD_MAX_FILE           127  // Maximun number of files on memory card
 #define CARD_FILENAME_MAX       32   // Maximum filename length, excluding null terminator
 #define CARD_MAX_ICONS          8
 

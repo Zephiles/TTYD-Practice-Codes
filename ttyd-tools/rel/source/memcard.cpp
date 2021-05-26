@@ -142,10 +142,10 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     
     // Get the size of the new file
     uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
-    uint32_t FileSize = 0x2000 + SettingsStructSize + 0x200;
+    uint32_t FileSize = 0x2000 + SettingsStructSize + CARD_READ_SIZE;
     
-    // Adjust the file size to be in multiples of 0x2000, rounding up
-    uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
+    // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
+    uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
     
     // Create the new file
     // The new file should be opened automatically via CARDCreateAsync
@@ -227,10 +227,10 @@ int32_t saveSettings(int32_t memoryCardSlot)
     }
     
     // Get the size thats going to be written
-    uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
+    uint32_t FileSize = sizeof(struct SettingsStruct) + CARD_READ_SIZE;
     
-    // Adjust the file size to be in multiples of 0x2000, rounding up
-    uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
+    // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
+    uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
     
     // Open the settings file if it exists
     gc::card::CARDFileInfo FileInfo;
@@ -243,7 +243,7 @@ int32_t saveSettings(int32_t memoryCardSlot)
         case CARD_RESULT_READY:
         {
             // Set up the array to hold the area of the file that contains the size
-            char *FileData = new char[0x200];
+            char *FileData = new char[CARD_READ_SIZE];
             
             // Get the data from the area that holds the size
             ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, 0x200, 0x2000);
@@ -261,8 +261,8 @@ int32_t saveSettings(int32_t memoryCardSlot)
             // Delete the data that holds the size, as it's not needed anymore
             delete[] (FileData);
             
-            // Adjust the file size to be in multiples of 0x2000, rounding up
-            uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
+            // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
+            uint32_t StoredFileSizeAdjusted = (StoredFileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
             
             // Make sure the size being written does not exceed the current size
             if (FileSizeAdjusted > StoredFileSizeAdjusted)
@@ -411,7 +411,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     }
     
     // Set up the array to hold the area of the file that contains the size
-    char *FileData = new char[0x200];
+    char *FileData = new char[CARD_READ_SIZE];
     
     // Get the data from the area that holds the size
     ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, 0x200, 0x2000);
@@ -429,20 +429,20 @@ int32_t loadSettings(int32_t memoryCardSlot)
     // Delete the data that holds the size, as it's not needed anymore
     delete[] (FileData);
     
-    // Adjust the file size to be in multiples of 0x2000, rounding up
-    uint32_t StoredFileSizeAdjusted = (StoredFileSize + 0x2000 - 1) & ~(0x2000 - 1);
+    // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
+    uint32_t StoredFileSizeAdjusted = (StoredFileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
     
-    // Make sure the stored file size is at least 0x2000
-    if (StoredFileSizeAdjusted < 0x2000)
+    // Make sure the stored file size is at least CARD_WRITE_SIZE
+    if (StoredFileSizeAdjusted < CARD_WRITE_SIZE)
     {
-        StoredFileSizeAdjusted = 0x2000;
+        StoredFileSizeAdjusted = CARD_WRITE_SIZE;
     }
     
     // Get the size needed to be read
-    uint32_t FileSize = sizeof(struct SettingsStruct) + 0x200;
+    uint32_t FileSize = sizeof(struct SettingsStruct) + CARD_READ_SIZE;
     
-    // Adjust the struct size to be in multiples of 0x2000, rounding up
-    uint32_t FileSizeAdjusted = (FileSize + 0x2000 - 1) & ~(0x2000 - 1);
+    // Adjust the struct size to be in multiples of CARD_WRITE_SIZE, rounding up
+    uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
     
     // Set up the memory to be copied from the file
     char *MiscData = new char[FileSizeAdjusted];
