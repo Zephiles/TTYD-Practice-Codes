@@ -569,15 +569,9 @@ int32_t renameSettingsFile(int32_t memoryCardSlot)
     
     // Rename the settings file
     ReturnCode = renameFileOnCard(memoryCardSlot, "rel_settings", MenuSettings.SettingsFileName);
-    if (ReturnCode != CARD_RESULT_READY)
-    {
-        // Call separately to keep track of bad ReturnCode value
-        gc::card::CARDUnmount(memoryCardSlot);
-        return ReturnCode;
-    }
     
     // Unmount the memory card
-    ReturnCode = gc::card::CARDUnmount(memoryCardSlot);
+    gc::card::CARDUnmount(memoryCardSlot);
     return ReturnCode;
 }
 
