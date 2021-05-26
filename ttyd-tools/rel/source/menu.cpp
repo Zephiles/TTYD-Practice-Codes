@@ -1680,97 +1680,100 @@ void menuCheckButton()
                         case RENAME_SETTINGS_FILE:
                         {
                             int32_t ReturnCode = renameSettingsFile(MemoryCardSlot);
+                            int32_t Code;
+                            
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
                                 {
-                                    MenuSettings.ReturnCode = RENAME_SUCCESSFUL;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = RENAME_SUCCESSFUL;
                                     break;
                                 }
                                 case CARD_RESULT_NOFILE:
                                 {
-                                    MenuSettings.ReturnCode = FILE_NOT_FOUND;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = FILE_NOT_FOUND;
                                     break;
                                 }
                                 case CARD_RESULT_EXIST:
                                 {
-                                    MenuSettings.ReturnCode = FILE_ALREADY_RENAMED;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = FILE_ALREADY_RENAMED;
                                     break;
                                 }
                                 case MEMCARD_IN_USE:
                                 {
-                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = MEMCARD_IN_USE;
                                     break;
                                 }
                                 default:
                                 {
-                                    MenuSettings.ReturnCode = RENAME_FAILED;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = RENAME_FAILED;
                                     break;
                                 }
                             }
+                            
+                            MenuSettings.ReturnCode = Code;
+                            MenuVar.Timer = secondsToFrames(3);
                             break;
                         }
                         case SAVE_SETTINGS:
                         {
                             int32_t ReturnCode = saveSettings(MemoryCardSlot);
+                            int32_t Code;
+                            
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
                                 {
-                                    MenuSettings.ReturnCode = SAVE_SUCCESSFUL;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = SAVE_SUCCESSFUL;
                                     break;
                                 }
                                 case MEMCARD_IN_USE:
                                 {
-                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = MEMCARD_IN_USE;
                                     break;
                                 }
                                 default:
                                 {
-                                    MenuSettings.ReturnCode = SAVE_FAILED;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = SAVE_FAILED;
                                     break;
                                 }
                             }
+                            
+                            MenuSettings.ReturnCode = Code;
+                            MenuVar.Timer = secondsToFrames(3);
                             break;
                         }
                         case LOAD_SETTINGS:
                         {
                             int32_t ReturnCode = loadSettings(MemoryCardSlot);
+                            int32_t Code;
+                            
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
                                 {
-                                    MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = LOAD_SUCCESSFUL;
                                     break;
                                 }
                                 case CARD_RESULT_NOFILE:
                                 {
-                                    MenuSettings.ReturnCode = FILE_NOT_FOUND;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = FILE_NOT_FOUND;
                                     break;
                                 }
                                 case MEMCARD_IN_USE:
                                 {
-                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = MEMCARD_IN_USE;
                                     break;
                                 }
                                 default:
                                 {
-                                    MenuSettings.ReturnCode = LOAD_FAILED;
-                                    MenuVar.Timer = secondsToFrames(3);
+                                    Code = LOAD_FAILED;
                                     break;
                                 }
                             }
+                            
+                            MenuSettings.ReturnCode = Code;
+                            MenuVar.Timer = secondsToFrames(3);
                             break;
                         }
                         default:
