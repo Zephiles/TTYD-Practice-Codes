@@ -34,7 +34,7 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
     
     void *Card;
     int32_t ReturnCode = __CARDGetControlBlock(channel, reinterpret_cast<void **>(&Card));
-    if (ReturnCode < CARD_RESULT_READY)
+    if (ReturnCode != CARD_RESULT_READY)
     {
         return ReturnCode;
     }
@@ -92,7 +92,7 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
     uint8_t *CurrentDirBlock = reinterpret_cast<uint8_t *>(DirBlock + (OldNameFileIndex * 0x40));
     
     ReturnCode = __CARDAccess(Card, CurrentDirBlock);
-    if (ReturnCode < CARD_RESULT_READY)
+    if (ReturnCode != CARD_RESULT_READY)
     {
         __CARDPutControlBlock(Card, ReturnCode);
         return ReturnCode;
@@ -107,7 +107,7 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
     
     // Apply the changes
     ReturnCode = __CARDUpdateDir(channel, callback);
-    if (ReturnCode >= CARD_RESULT_READY)
+    if (ReturnCode == CARD_RESULT_READY)
     {
         return ReturnCode;
     }
