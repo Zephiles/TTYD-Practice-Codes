@@ -20,10 +20,14 @@ int32_t writeToFileOnCard(int32_t memoryCardSlot, gc::card::CARDFileInfo *fileIn
 
 int32_t setFileStatus(int32_t memoryCardSlot, int32_t fileNum, gc::card::CARDStat *stat);
 
+int32_t renameFileOnCard(int32_t memoryCardSlot, const char *oldName, const char *newName);
+
 int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *settingsFileInfo);
 
 int32_t saveSettings(int32_t memoryCardSlot);
 
 int32_t loadSettings(int32_t memoryCardSlot);
+
+int32_t renameSettingsFile(int32_t memoryCardSlot);
 
 }

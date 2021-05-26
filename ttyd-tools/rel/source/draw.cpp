@@ -5488,7 +5488,7 @@ void drawSettingsMemoryCardUsed()
 {
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX   = -232;
-    int32_t PosY   = 100;
+    int32_t PosY   = 80;
     float Scale    = 0.6f;
     
     // Get the memory card slot being used
@@ -5519,18 +5519,7 @@ void drawSettingsCurrentWork()
     
     switch (MenuSettings.ReturnCode)
     {
-        case LOAD_FAILED:
-        {
-            String = "Load Failed";
-            WindowWidth = 129;
-            
-#ifdef TTYD_JP
-            WindowWidth -= 7;
-            TextPosX += 4;
-#endif
-            break;
-        }
-        case LOAD_FAILED_NO_FILE:
+        case FILE_NOT_FOUND:
         {
             String = "Settings File Not Found";
             WindowWidth = 226;
@@ -5542,11 +5531,39 @@ void drawSettingsCurrentWork()
 #endif
             break;
         }
-        case LOAD_SUCCESSFUL:
+        case RENAME_FAILED:
         {
-            String = "Load Successful";
-            WindowWidth = 162;
-            TextPosX -= 16;
+            String = "Rename Failed";
+            WindowWidth = 151;
+            TextPosX -= 11;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 7;
+            TextPosX += 4;
+#endif
+            break;
+        }
+        case RENAME_SUCCESSFUL:
+        {
+            String = "Rename Successful";
+            WindowWidth = 183;
+            TextPosX -= 27;
+            
+#ifdef TTYD_JP
+            WindowWidth += 1;
+#endif
+            break;
+        }
+        case FILE_ALREADY_RENAMED:
+        {
+            String = "Settings File Already Renamed";
+            WindowWidth = 284;
+            TextPosX -= 77;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 6;
+            TextPosX += 3;
+#endif
             break;
         }
         case SAVE_FAILED:
@@ -5570,6 +5587,24 @@ void drawSettingsCurrentWork()
             WindowWidth += 4;
             TextPosX -= 2;
 #endif
+            break;
+        }
+        case LOAD_FAILED:
+        {
+            String = "Load Failed";
+            WindowWidth = 129;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 7;
+            TextPosX += 4;
+#endif
+            break;
+        }
+        case LOAD_SUCCESSFUL:
+        {
+            String = "Load Successful";
+            WindowWidth = 162;
+            TextPosX -= 16;
             break;
         }
         case MEMCARD_IN_USE:

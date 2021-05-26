@@ -1677,20 +1677,26 @@ void menuCheckButton()
                             }
                             break;
                         }
-                        case LOAD_SETTINGS:
+                        case RENAME_SETTINGS_FILE:
                         {
-                            int32_t ReturnCode = loadSettings(MemoryCardSlot);
+                            int32_t ReturnCode = renameSettingsFile(MemoryCardSlot);
                             switch (ReturnCode)
                             {
                                 case CARD_RESULT_READY:
                                 {
-                                    MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
+                                    MenuSettings.ReturnCode = RENAME_SUCCESSFUL;
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }
                                 case CARD_RESULT_NOFILE:
                                 {
-                                    MenuSettings.ReturnCode = LOAD_FAILED_NO_FILE;
+                                    MenuSettings.ReturnCode = FILE_NOT_FOUND;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                                case CARD_RESULT_EXIST:
+                                {
+                                    MenuSettings.ReturnCode = FILE_ALREADY_RENAMED;
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }
@@ -1702,7 +1708,7 @@ void menuCheckButton()
                                 }
                                 default:
                                 {
-                                    MenuSettings.ReturnCode = LOAD_FAILED;
+                                    MenuSettings.ReturnCode = RENAME_FAILED;
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }
@@ -1729,6 +1735,38 @@ void menuCheckButton()
                                 default:
                                 {
                                     MenuSettings.ReturnCode = SAVE_FAILED;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case LOAD_SETTINGS:
+                        {
+                            int32_t ReturnCode = loadSettings(MemoryCardSlot);
+                            switch (ReturnCode)
+                            {
+                                case CARD_RESULT_READY:
+                                {
+                                    MenuSettings.ReturnCode = LOAD_SUCCESSFUL;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                                case CARD_RESULT_NOFILE:
+                                {
+                                    MenuSettings.ReturnCode = FILE_NOT_FOUND;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                                case MEMCARD_IN_USE:
+                                {
+                                    MenuSettings.ReturnCode = MEMCARD_IN_USE;
+                                    MenuVar.Timer = secondsToFrames(3);
+                                    break;
+                                }
+                                default:
+                                {
+                                    MenuSettings.ReturnCode = LOAD_FAILED;
                                     MenuVar.Timer = secondsToFrames(3);
                                     break;
                                 }

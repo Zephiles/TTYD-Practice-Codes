@@ -65,6 +65,7 @@ static_assert(sizeof(CARDStat) == 0x6C);
 
 extern "C" {
 
+// Main functions
 int32_t CARDGetResultCode(int32_t channel);
 int32_t CARDProbeEx(int32_t channel, int32_t *memSize, int32_t *sectorSize);
 int32_t CARDMountAsync(int32_t channel, void *workArea, CARDCallback detachCallback, CARDCallback attachCallback);
@@ -78,6 +79,16 @@ int32_t CARDDelete(int32_t channel, const char *fileName);
 int32_t CARDGetStatus(int32_t channel, int32_t fileNum, CARDStat *stat);
 int32_t CARDSetStatusAsync(int32_t channel, int32_t fileNum, CARDStat *stat, CARDCallback callback);
 
+// Internal functions
+int32_t __CARDGetControlBlock(int32_t channel, void **card);
+int32_t __CARDPutControlBlock(void *card, int32_t result);
+void *__CARDGetDirBlock(void *card);
+int32_t __CARDUpdateDir(int32_t channel, CARDCallback callback);
+bool __CARDCompareFileName(void *dirBlock, const char *fileName);
+int32_t __CARDAccess(void *card, void *dirBlock);
 }
+
+// Manually-written functions
+int32_t card_rename_async(int32_t channel, const char *oldName, const char *newName, CARDCallback callback);
 
 }

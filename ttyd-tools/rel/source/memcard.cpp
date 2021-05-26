@@ -67,6 +67,12 @@ int32_t setFileStatus(int32_t memoryCardSlot, int32_t fileNum, gc::card::CARDSta
     return finishAsyncFunction(memoryCardSlot, ReturnCode);
 }
 
+int32_t renameFileOnCard(int32_t memoryCardSlot, const char *oldName, const char *newName)
+{
+    int32_t ReturnCode = gc::card::card_rename_async(memoryCardSlot, oldName, newName, nullptr);
+    return finishAsyncFunction(memoryCardSlot, ReturnCode);
+}
+
 int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *settingsFileInfo)
 {
     // If creating the file on slot B, unmount the current slot and mount slot A
@@ -537,6 +543,42 @@ int32_t loadSettings(int32_t memoryCardSlot)
     
     delete[] (MiscData);
     return CARD_RESULT_READY;
+}
+
+int32_t renameSettingsFile(int32_t memoryCardSlot)
+{
+    // Make sure the vanilla code isn't currently doing memory card stuff
+    if (ttyd::cardmgr::cardIsExec())
+    {
+        return MEMCARD_IN_USE;
+    }
+    
+    // Make sure a memory card is inserted into the selected memory card slot
+    int32_t ReturnCode = checkForMemoryCard(memoryCardSlot);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        return ReturnCode;
+    }
+    
+    // Mount the memory card
+    ReturnCode = mountCard(memoryCardSlot);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        return ReturnCode;
+    }
+    
+    // Rename the settings file
+    ReturnCode = renameFileOnCard(memoryCardSlot, "rel_settings", MenuSettings.SettingsFileName);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        // Call separately to keep track of bad ReturnCode value
+        gc::card::CARDUnmount(memoryCardSlot);
+        return ReturnCode;
+    }
+    
+    // Unmount the memory card
+    ReturnCode = gc::card::CARDUnmount(memoryCardSlot);
+    return ReturnCode;
 }
 
 }

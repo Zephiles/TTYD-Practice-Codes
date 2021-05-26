@@ -2088,6 +2088,12 @@
 80264AD8:__divdi3
 80264C10:__umoddi3
 
+// mem.c
+80269C68:memcmp
+// 80269CB4:__memrchr
+// 80269CE0:memchr
+// 80269D0C:memmove
+
 // printf.c
 8026A0B8:sprintf
 // unused:snprintf
@@ -2296,8 +2302,8 @@
 // 802AC53C:CARDInit
 // 802AC5E8:__CARDGetFontEncode
 // 802AC5F0:__CARDSetDiskID
-// 802AC628:__CARDGetControlBlock
-// 802AC6E0:__CARDPutControlBlock
+802AC628:__CARDGetControlBlock
+802AC6E0:__CARDPutControlBlock
 802AC744:CARDGetResultCode
 // 802AC774:CARDFreeBlocks
 // 802AC8C4:__CARDSync
@@ -2320,10 +2326,10 @@
 // 802AE090:__CARDAllocBlock
 // 802AE1A8:__CARDFreeBlock
 // 802AE244:__CARDUpdateFatBlock
-// 802AE2F0:__CARDGetDirBlock
+802AE2F0:__CARDGetDirBlock
 // 802AE2F8:WriteCallback
 // 802AE3C8:EraseCallback
-// 802AE490:__CARDUpdateDir
+802AE490:__CARDUpdateDir
 // 802AE554:__CARDCheckSum
 // 802AE704:VerifyID
 // 802AE988:VerifyDir
@@ -2342,8 +2348,8 @@
 // 802AFF84:FormatCallback
 // 802B00C8:__CARDFormatRegionAsync
 // 802B0720:CARDFormatAsync
-// 802B0768:__CARDCompareFileName
-// 802B07D0:__CARDAccess
+802B0768:__CARDCompareFileName
+802B07D0:__CARDAccess
 // 802B0864:__CARDIsWritable
 // 802B0998:__CARDIsReadable
 // 802B0A8C:__CARDGetFileNo

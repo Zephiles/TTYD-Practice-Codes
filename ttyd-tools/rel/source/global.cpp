@@ -1187,8 +1187,9 @@ const char *StatsFollowerOptionsLines[] =
 const char *SettingsLines[] = 
 {
     "Change Memory Card Slot",
-    "Load Settings",
+    "Rename Settings File",
     "Save Settings",
+    "Load Settings",
 };
 
 const char *MemoryLines[] = 

@@ -250,18 +250,22 @@ enum STATS_FOLLOWER_SELECTION_OPTIONS
 enum SETTINGS_OPTIONS
 {
     CHANGE_MEMORY_CARD_SLOT = 1,
-    LOAD_SETTINGS,
+    RENAME_SETTINGS_FILE,
     SAVE_SETTINGS,
+    LOAD_SETTINGS,
 };
 
 enum SETTINGS_RETURN_CODES
 {
     MEMCARD_IN_USE = -200,
-    LOAD_FAILED = 1,
-    LOAD_FAILED_NO_FILE,
-    LOAD_SUCCESSFUL,
+    FILE_NOT_FOUND = 1,
+    RENAME_FAILED,
+    RENAME_SUCCESSFUL,
+    FILE_ALREADY_RENAMED,
     SAVE_FAILED,
     SAVE_SUCCESSFUL,
+    LOAD_FAILED,
+    LOAD_SUCCESSFUL,
 };
 
 enum MEMORY_TYPES
@@ -812,7 +816,7 @@ struct MemoryCardStruct
     
     MemoryCardStruct()
     {
-        SettingsFileName = "rel_settings";
+        SettingsFileName = "Practice Codes Settings";
         
 #ifdef TTYD_US
         SettingsDescription = "Practice Codes Settings (US)";
