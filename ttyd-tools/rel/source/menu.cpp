@@ -1653,160 +1653,12 @@ void menuCheckButton()
                 case DPADDOWN:
                 case DPADUP:
                 {
-                    MenuVar.Timer = 0;
-                    adjustMenuNoPageEdit(CurrentButton);
-                    break;
-                }
-                case A:
-                {
-                    uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
-                    int32_t MemoryCardSlot = MenuSettings.MemoryCardSlot;
-                    
-                    switch (CurrentMenuOptionCheck)
+                    switch (tempSelectedOption)
                     {
-                        case CHANGE_MEMORY_CARD_SLOT:
+                        case 0:
                         {
-                            // Switch which memory card slot is being used
-                            if (MemoryCardSlot == CARD_SLOT_A)
-                            {
-                                MenuSettings.MemoryCardSlot = CARD_SLOT_B;
-                            }
-                            else
-                            {
-                                MenuSettings.MemoryCardSlot = CARD_SLOT_A;
-                            }
-                            break;
-                        }
-                        case RENAME_SETTINGS_FILE:
-                        {
-                            int32_t ReturnCode = renameSettingsFile(MemoryCardSlot);
-                            int32_t Code;
-                            
-                            switch (ReturnCode)
-                            {
-                                case CARD_RESULT_READY:
-                                {
-                                    Code = RENAME_SUCCESSFUL;
-                                    break;
-                                }
-                                case CARD_RESULT_NOFILE:
-                                {
-                                    Code = FILE_NOT_FOUND;
-                                    break;
-                                }
-                                case CARD_RESULT_EXIST:
-                                {
-                                    Code = FILE_ALREADY_RENAMED;
-                                    break;
-                                }
-                                case MEMCARD_IN_USE:
-                                {
-                                    Code = MEMCARD_IN_USE;
-                                    break;
-                                }
-                                default:
-                                {
-                                    Code = RENAME_FAILED;
-                                    break;
-                                }
-                            }
-                            
-                            MenuSettings.ReturnCode = Code;
-                            MenuVar.Timer = secondsToFrames(3);
-                            break;
-                        }
-                        case DELETE_SETTINGS_FILE:
-                        {
-                            int32_t ReturnCode = deleteSettingsFile(MemoryCardSlot);
-                            int32_t Code;
-                            
-                            switch (ReturnCode)
-                            {
-                                case CARD_RESULT_READY:
-                                {
-                                    Code = DELETE_SUCCESSFUL;
-                                    break;
-                                }
-                                case CARD_RESULT_NOFILE:
-                                {
-                                    Code = FILE_NOT_FOUND;
-                                    break;
-                                }
-                                case MEMCARD_IN_USE:
-                                {
-                                    Code = MEMCARD_IN_USE;
-                                    break;
-                                }
-                                default:
-                                {
-                                    Code = DELETE_FAILED;
-                                    break;
-                                }
-                            }
-                            
-                            MenuSettings.ReturnCode = Code;
-                            MenuVar.Timer = secondsToFrames(3);
-                            break;
-                        }
-                        case SAVE_SETTINGS:
-                        {
-                            int32_t ReturnCode = saveSettings(MemoryCardSlot);
-                            int32_t Code;
-                            
-                            switch (ReturnCode)
-                            {
-                                case CARD_RESULT_READY:
-                                {
-                                    Code = SAVE_SUCCESSFUL;
-                                    break;
-                                }
-                                case MEMCARD_IN_USE:
-                                {
-                                    Code = MEMCARD_IN_USE;
-                                    break;
-                                }
-                                default:
-                                {
-                                    Code = SAVE_FAILED;
-                                    break;
-                                }
-                            }
-                            
-                            MenuSettings.ReturnCode = Code;
-                            MenuVar.Timer = secondsToFrames(3);
-                            break;
-                        }
-                        case LOAD_SETTINGS:
-                        {
-                            int32_t ReturnCode = loadSettings(MemoryCardSlot);
-                            int32_t Code;
-                            
-                            switch (ReturnCode)
-                            {
-                                case CARD_RESULT_READY:
-                                {
-                                    Code = LOAD_SUCCESSFUL;
-                                    break;
-                                }
-                                case CARD_RESULT_NOFILE:
-                                {
-                                    Code = FILE_NOT_FOUND;
-                                    break;
-                                }
-                                case MEMCARD_IN_USE:
-                                {
-                                    Code = MEMCARD_IN_USE;
-                                    break;
-                                }
-                                default:
-                                {
-                                    Code = LOAD_FAILED;
-                                    break;
-                                }
-                            }
-                            
-                            MenuSettings.ReturnCode = Code;
-                            MenuVar.Timer = secondsToFrames(3);
+                            MenuVar.Timer = 0;
+                            adjustMenuNoPageEdit(CurrentButton);
                             break;
                         }
                         default:
@@ -1816,11 +1668,205 @@ void menuCheckButton()
                     }
                     break;
                 }
+                case A:
+                {
+                    MenuVar.Timer = 0;
+                    
+                    uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                    int32_t MemoryCardSlot = MenuSettings.MemoryCardSlot;
+                    
+                    if (CurrentMenuOptionCheck == CHANGE_MEMORY_CARD_SLOT)
+                    {
+                        // Switch which memory card slot is being used
+                        if (MemoryCardSlot == CARD_SLOT_A)
+                        {
+                            MenuSettings.MemoryCardSlot = CARD_SLOT_B;
+                        }
+                        else
+                        {
+                            MenuSettings.MemoryCardSlot = CARD_SLOT_A;
+                        }
+                    }
+                    else
+                    {
+                        switch (tempSelectedOption)
+                        {
+                            case 0:
+                            {
+                                MenuVar.SecondaryMenuOption = 1;
+                                MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                break;
+                            }
+                            default:
+                            {
+                                // SelectedOption should be cleared for both selections
+                                MenuVar.SelectedOption = 0;
+                                
+                                if (MenuVar.SecondaryMenuOption == 0) // Selected Yes
+                                {
+                                    switch (CurrentMenuOptionCheck)
+                                    {
+                                        case RENAME_SETTINGS_FILE:
+                                        {
+                                            int32_t ReturnCode = renameSettingsFile(MemoryCardSlot);
+                                            int32_t Code;
+                                            
+                                            switch (ReturnCode)
+                                            {
+                                                case CARD_RESULT_READY:
+                                                {
+                                                    Code = RENAME_SUCCESSFUL;
+                                                    break;
+                                                }
+                                                case CARD_RESULT_NOFILE:
+                                                {
+                                                    Code = FILE_NOT_FOUND;
+                                                    break;
+                                                }
+                                                case CARD_RESULT_EXIST:
+                                                {
+                                                    Code = FILE_ALREADY_RENAMED;
+                                                    break;
+                                                }
+                                                case MEMCARD_IN_USE:
+                                                {
+                                                    Code = MEMCARD_IN_USE;
+                                                    break;
+                                                }
+                                                default:
+                                                {
+                                                    Code = RENAME_FAILED;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            MenuSettings.ReturnCode = Code;
+                                            MenuVar.Timer = secondsToFrames(3);
+                                            break;
+                                        }
+                                        case DELETE_SETTINGS_FILE:
+                                        {
+                                            int32_t ReturnCode = deleteSettingsFile(MemoryCardSlot);
+                                            int32_t Code;
+                                            
+                                            switch (ReturnCode)
+                                            {
+                                                case CARD_RESULT_READY:
+                                                {
+                                                    Code = DELETE_SUCCESSFUL;
+                                                    break;
+                                                }
+                                                case CARD_RESULT_NOFILE:
+                                                {
+                                                    Code = FILE_NOT_FOUND;
+                                                    break;
+                                                }
+                                                case MEMCARD_IN_USE:
+                                                {
+                                                    Code = MEMCARD_IN_USE;
+                                                    break;
+                                                }
+                                                default:
+                                                {
+                                                    Code = DELETE_FAILED;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            MenuSettings.ReturnCode = Code;
+                                            MenuVar.Timer = secondsToFrames(3);
+                                            break;
+                                        }
+                                        case SAVE_SETTINGS:
+                                        {
+                                            int32_t ReturnCode = saveSettings(MemoryCardSlot);
+                                            int32_t Code;
+                                            
+                                            switch (ReturnCode)
+                                            {
+                                                case CARD_RESULT_READY:
+                                                {
+                                                    Code = SAVE_SUCCESSFUL;
+                                                    break;
+                                                }
+                                                case MEMCARD_IN_USE:
+                                                {
+                                                    Code = MEMCARD_IN_USE;
+                                                    break;
+                                                }
+                                                default:
+                                                {
+                                                    Code = SAVE_FAILED;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            MenuSettings.ReturnCode = Code;
+                                            MenuVar.Timer = secondsToFrames(3);
+                                            break;
+                                        }
+                                        case LOAD_SETTINGS:
+                                        {
+                                            int32_t ReturnCode = loadSettings(MemoryCardSlot);
+                                            int32_t Code;
+                                            
+                                            switch (ReturnCode)
+                                            {
+                                                case CARD_RESULT_READY:
+                                                {
+                                                    Code = LOAD_SUCCESSFUL;
+                                                    break;
+                                                }
+                                                case CARD_RESULT_NOFILE:
+                                                {
+                                                    Code = FILE_NOT_FOUND;
+                                                    break;
+                                                }
+                                                case MEMCARD_IN_USE:
+                                                {
+                                                    Code = MEMCARD_IN_USE;
+                                                    break;
+                                                }
+                                                default:
+                                                {
+                                                    Code = LOAD_FAILED;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            MenuSettings.ReturnCode = Code;
+                                            MenuVar.Timer = secondsToFrames(3);
+                                            break;
+                                        }
+                                        default:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
                 case B:
                 {
-                    // Go back to the previous menu
-                    resetMenu();
-                    enterPreviousMenu();
+                    switch (tempSelectedOption)
+                    {
+                        case 0:
+                        {
+                            // Go back to the previous menu
+                            resetMenu();
+                            enterPreviousMenu();
+                            break;
+                        }
+                        default:
+                        {
+                            MenuVar.SelectedOption = 0;
+                            break;
+                        }
+                    }
                     break;
                 }
                 default:
@@ -3904,10 +3950,43 @@ void drawMenu()
         case SETTINGS:
         {
             // Draw the text for the options
-            drawSingleColumnMain();
+            drawSingleColumnSelectedOption();
             
             // Draw the current memory card slot being used
             drawSettingsMemoryCardUsed();
+            
+            // Draw the window asking for confirmation for each option
+            switch (tempSelectedOption)
+            {
+                case RENAME_SETTINGS_FILE:
+                {
+                    const char *ConfirmationMessage = "Are you sure you want to rename the\nSettings file?";
+                    drawConfirmationWindow(ConfirmationMessage);
+                    break;
+                }
+                case DELETE_SETTINGS_FILE:
+                {
+                    const char *ConfirmationMessage = "Are you sure you want to delete the\nSettings file?";
+                    drawConfirmationWindow(ConfirmationMessage);
+                    break;
+                }
+                case SAVE_SETTINGS:
+                {
+                    const char *ConfirmationMessage = "Are you sure you want to save your\ncurrent settings? The settings in the\nsettings file will be overwritten with\nyour current settings.";
+                    drawConfirmationWindow(ConfirmationMessage);
+                    break;
+                }
+                case LOAD_SETTINGS:
+                {
+                    const char *ConfirmationMessage = "Are you sure you want to load the\nsettings from the Settings file? Your\ncurrent settings will be overwritten\nwith the settings from the Settings file.";
+                    drawConfirmationWindow(ConfirmationMessage);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
             
             if (MenuVar.Timer > 0)
             {
