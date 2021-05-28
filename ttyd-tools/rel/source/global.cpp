@@ -1188,6 +1188,7 @@ const char *SettingsLines[] =
 {
     "Change Memory Card Slot",
     "Rename Settings File",
+    "Delete Settings File",
     "Save Settings",
     "Load Settings",
 };

@@ -575,4 +575,34 @@ int32_t renameSettingsFile(int32_t memoryCardSlot)
     return ReturnCode;
 }
 
+int32_t deleteSettingsFile(int32_t memoryCardSlot)
+{
+    // Make sure the vanilla code isn't currently doing memory card stuff
+    if (ttyd::cardmgr::cardIsExec())
+    {
+        return MEMCARD_IN_USE;
+    }
+    
+    // Make sure a memory card is inserted into the selected memory card slot
+    int32_t ReturnCode = checkForMemoryCard(memoryCardSlot);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        return ReturnCode;
+    }
+    
+    // Mount the memory card
+    ReturnCode = mountCard(memoryCardSlot);
+    if (ReturnCode != CARD_RESULT_READY)
+    {
+        return ReturnCode;
+    }
+    
+    // Delete the settings file
+    ReturnCode = gc::card::CARDDelete(memoryCardSlot, MenuSettings.SettingsFileName);
+    
+    // Unmount the memory card
+    gc::card::CARDUnmount(memoryCardSlot);
+    return ReturnCode;
+}
+
 }

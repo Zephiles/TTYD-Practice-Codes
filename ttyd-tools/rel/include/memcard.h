@@ -30,4 +30,6 @@ int32_t loadSettings(int32_t memoryCardSlot);
 
 int32_t renameSettingsFile(int32_t memoryCardSlot);
 
+int32_t deleteSettingsFile(int32_t memoryCardSlot);
+
 }

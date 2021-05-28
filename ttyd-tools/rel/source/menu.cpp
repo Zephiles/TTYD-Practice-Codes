@@ -1715,6 +1715,39 @@ void menuCheckButton()
                             MenuVar.Timer = secondsToFrames(3);
                             break;
                         }
+                        case DELETE_SETTINGS_FILE:
+                        {
+                            int32_t ReturnCode = deleteSettingsFile(MemoryCardSlot);
+                            int32_t Code;
+                            
+                            switch (ReturnCode)
+                            {
+                                case CARD_RESULT_READY:
+                                {
+                                    Code = DELETE_SUCCESSFUL;
+                                    break;
+                                }
+                                case CARD_RESULT_NOFILE:
+                                {
+                                    Code = FILE_NOT_FOUND;
+                                    break;
+                                }
+                                case MEMCARD_IN_USE:
+                                {
+                                    Code = MEMCARD_IN_USE;
+                                    break;
+                                }
+                                default:
+                                {
+                                    Code = DELETE_FAILED;
+                                    break;
+                                }
+                            }
+                            
+                            MenuSettings.ReturnCode = Code;
+                            MenuVar.Timer = secondsToFrames(3);
+                            break;
+                        }
                         case SAVE_SETTINGS:
                         {
                             int32_t ReturnCode = saveSettings(MemoryCardSlot);

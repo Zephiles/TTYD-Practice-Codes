@@ -5488,7 +5488,7 @@ void drawSettingsMemoryCardUsed()
 {
     uint32_t Color = 0xFFFFFFFF;
     int32_t PosX   = -232;
-    int32_t PosY   = 80;
+    int32_t PosY   = 60;
     float Scale    = 0.6f;
     
     // Get the memory card slot being used
@@ -5563,6 +5563,30 @@ void drawSettingsCurrentWork()
 #ifdef TTYD_JP
             WindowWidth -= 6;
             TextPosX += 3;
+#endif
+            break;
+        }
+        case DELETE_SUCCESSFUL:
+        {
+            String = "Delete Successful";
+            WindowWidth = 175;
+            TextPosX -= 23;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 2;
+            TextPosX += 2;
+#endif
+            break;
+        }
+        case DELETE_FAILED:
+        {
+            String = "Delete Failed";
+            WindowWidth = 141;
+            TextPosX -= 6;
+            
+#ifdef TTYD_JP
+            WindowWidth -= 8;
+            TextPosX += 5;
 #endif
             break;
         }
