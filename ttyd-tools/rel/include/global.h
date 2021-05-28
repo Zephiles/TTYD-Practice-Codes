@@ -819,7 +819,7 @@ struct MemoryCardStruct
     
     MemoryCardStruct()
     {
-        SettingsFileName = "Practice Codes Settings";
+        SettingsFileName = "Practice_Codes_Settings";
         
 #ifdef TTYD_US
         SettingsDescription = "Practice Codes Settings (US)";
