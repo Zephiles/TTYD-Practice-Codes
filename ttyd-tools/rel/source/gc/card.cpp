@@ -21,6 +21,12 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
         return CARD_RESULT_FATAL_ERROR;
     }
     
+    // Make sure the strings are not the same
+    if (strncmp(oldName, newName, CARD_FILENAME_MAX) == 0)
+    {
+        return CARD_RESULT_FATAL_ERROR;
+    }
+    
     // Make sure each string does not exceed the max length
     if (strlen(oldName) > CARD_FILENAME_MAX)
     {
@@ -39,9 +45,8 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
         return ReturnCode;
     }
     
+    uint8_t *DefaultGameCodeLocation = *reinterpret_cast<uint8_t **>(reinterpret_cast<uint32_t>(Card) + 0x10C);
     uint32_t DirBlock = reinterpret_cast<uint32_t>(__CARDGetDirBlock(Card));
-    uint8_t *DefaultDirBlock = *reinterpret_cast<uint8_t **>(reinterpret_cast<uint32_t>(Card) + 0x10C);
-    int32_t NewNameFileIndex = -1;
     int32_t OldNameFileIndex = -1;
     
     // Loop through each entry and check for files that are named oldName and/or newName
@@ -56,29 +61,24 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
         }
         
         // Make sure the current entry's game code matches the default's game code
-        if (memcmp(CurrentDirBlock, DefaultDirBlock, 6) != 0)
+        if (memcmp(CurrentDirBlock, DefaultGameCodeLocation, 6) != 0)
         {
             continue;
         }
         
-        // If a file named newName is found, keep track of its index
+        // If a file named newName is found, then the desired name already exists, or the file was already renamed
         if (__CARDCompareFileName(CurrentDirBlock, newName))
         {
-            NewNameFileIndex = i;
+            ReturnCode = __CARDPutControlBlock(Card, CARD_RESULT_EXIST);
+            return ReturnCode;
         }
         
         // If a file named oldName is found, keep track of its index
         if (__CARDCompareFileName(CurrentDirBlock, oldName))
         {
             OldNameFileIndex = i;
+            break;
         }
-    }
-    
-    // If a file named newName was found, then the desired name already exists, or the file was already renamed
-    if (NewNameFileIndex != -1)
-    {
-        ReturnCode = __CARDPutControlBlock(Card, CARD_RESULT_EXIST);
-        return ReturnCode;
     }
     
     // Make sure a file named oldName was found
