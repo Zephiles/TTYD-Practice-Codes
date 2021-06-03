@@ -66,18 +66,18 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
             continue;
         }
         
+        // If a file named oldName is found, keep track of its index
+        if (__CARDCompareFileName(CurrentDirBlock, oldName))
+        {
+            OldNameFileIndex = i;
+            continue;
+        }
+        
         // If a file named newName is found, then the desired name already exists, or the file was already renamed
         if (__CARDCompareFileName(CurrentDirBlock, newName))
         {
             ReturnCode = __CARDPutControlBlock(Card, CARD_RESULT_EXIST);
             return ReturnCode;
-        }
-        
-        // If a file named oldName is found, keep track of its index
-        if (__CARDCompareFileName(CurrentDirBlock, oldName))
-        {
-            OldNameFileIndex = i;
-            break;
         }
     }
     
