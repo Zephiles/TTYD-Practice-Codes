@@ -14,6 +14,8 @@
 #include <ttyd/mariost.h>
 #include <ttyd/system.h>
 #include <ttyd/mario.h>
+#include <ttyd/evt_lecture.h>
+#include <ttyd/evt_mario.h>
 #include <ttyd/evt_memcard.h>
 #include <ttyd/evtmgr.h>
 #include <ttyd/seqdrv.h>
@@ -260,16 +262,33 @@ void loadMarioAndPartnerPositions()
     *reinterpret_cast<float *>(PartnerPointer + 0x110) = MarioPartnerPositions.PartnerPosition[6]; // Partner Direction
 }
 
-// Create a script to call evt_memcard_save
-// LW(0) needs to be set to 0 before evt_memcard_save can be called
-EVT_BEGIN(MemcardSaveScriptInit)
-SET(LW(0), 0)
-RUN_CHILD_EVT(ttyd::evt_memcard::evt_memcard_save)
-RETURN()
+// Custom script for handling saving
+EVT_BEGIN(MemcardSaveScript)
+
+    // Set the System Level
+    USER_FUNC(ttyd::evt_lecture::lect_set_systemlevel, 1)
+    
+    // Take away control from the player
+    USER_FUNC(ttyd::evt_mario::evt_mario_key_onoff, 0)
+    
+    // Call evt_memcard_save synchronously, which handles the main saving code
+    // LF(10) and LW(0) need to be set to 0 before evt_memcard_save can be called
+    SET(LF(10), 0)
+    SET(LW(0), 0)
+    RUN_CHILD_EVT(ttyd::evt_memcard::evt_memcard_save)
+    
+    // Give back control to the player
+    USER_FUNC(ttyd::evt_mario::evt_mario_key_onoff, 1)
+    
+    // Clear the System Level
+    USER_FUNC(ttyd::evt_lecture::lect_set_systemlevel, 0)
+    
+    RETURN()
 EVT_END()
 
 void saveAnywhere()
 {
+    // Don't allow starting the save script if it's already running
     if (!SaveAnywhere.ScriptIsRunning)
     {
         // Save script is not currently running
@@ -300,30 +319,15 @@ void saveAnywhere()
             return;
         }
         
-        // Take away control from the player and start the Save script
-        ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(MemcardSaveScriptInit, 0, 0, 0);
+        // Start the Save script
+        ttyd::evtmgr::EvtEntry *SaveScriptEvt = ttyd::evtmgr::evtEntryType(MemcardSaveScript, 0, 0, 0);
         SaveAnywhere.ThreadID = SaveScriptEvt->threadId;
-        
         SaveAnywhere.ScriptIsRunning = true;
-        ttyd::mariost::marioStSystemLevel(1);
-        
-        // Only turn the key off if it's not already off
-        if (ttyd::mario::marioKeyOffChk() == 0)
-        {
-            ttyd::mario::marioKeyOff();
-        }
     }
     else if (!ttyd::evtmgr::evtCheckID(SaveAnywhere.ThreadID))
     {
-        // Save Script is no longer running, so give back control to the player
+        // Save Script is no longer running
         SaveAnywhere.ScriptIsRunning = false;
-        ttyd::mariost::marioStSystemLevel(0);
-        
-        // Only turn the key on if it's not already on
-        if (ttyd::mario::marioKeyOffChk() != 0)
-        {
-            ttyd::mario::marioKeyOn();
-        }
     }
 }
 
