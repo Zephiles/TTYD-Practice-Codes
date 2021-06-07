@@ -102,9 +102,9 @@ void Mod::init()
     });
     
     mPFN_evt_bero_get_info_trampoline = patch::hookFunction(
-        ttyd::evt_bero::evt_bero_get_info, [](ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode)
+        ttyd::evt_bero::evt_bero_get_info, [](ttyd::evtmgr::EvtEntry *evt, bool isFirstCall)
     {
-        return gMod->setIndexWarpEntrance(evt, waitMode);
+        return gMod->setIndexWarpEntrance(evt, isFirstCall);
     });
     
     mPFN_marioKeyOn_trampoline = patch::hookFunction(

@@ -4208,12 +4208,12 @@ void *initStageEvents()
     
     // Perform a full recovery for Mario and the partners
     ttyd::mario_pouch::pouchReviseMarioParam();
-    ttyd::evt_pouch::evt_pouch_mario_recovery();
+    ttyd::evt_pouch::evt_pouch_mario_recovery(nullptr, false);
     
     /* Must call pouchRevisePartyParam to properly set each partner's stats, 
     otherwise they will each have a maximum of 10 HP */
     ttyd::mario_pouch::pouchRevisePartyParam();
-    ttyd::evt_pouch::evt_pouch_all_party_recovery();
+    ttyd::evt_pouch::evt_pouch_all_party_recovery(nullptr, false);
     
     // Make sure the values are properly changed when entering a battle
     ClearCacheForBattles.MarioStatsShouldBeCleared = true;

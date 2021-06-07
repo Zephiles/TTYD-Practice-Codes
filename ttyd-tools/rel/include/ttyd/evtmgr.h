@@ -120,7 +120,7 @@ EvtEntry *evtGetPtrID(int32_t threadId);
     int32_t name(ttyd::evtmgr::EvtEntry *evt, bool isFirstCall);
 
 #define EVT_DEFINE_USER_FUNC(name) \
-    int32_t name(ttyd::evtmgr::EvtEntry *evt, bool isFirstCall)
+    int32_t name(ttyd::evtmgr::EvtEntry *evt, bool isFirstCall);
 
 #define EVT_DECLARE(name) \
     extern const int32_t name[];

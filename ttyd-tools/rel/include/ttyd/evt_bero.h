@@ -33,7 +33,9 @@ extern "C" {
 // evt_bero_id_filter
 // evt_bero_read_mario_pera
 // evt_bero_get_into_info
-uint32_t evt_bero_get_info(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode);
+
+EVT_DEFINE_USER_FUNC(evt_bero_get_info)
+
 // evt_bero_get_now_number
 // evt_bero_set_now_number
 // evt_bero_get_info_nextarea

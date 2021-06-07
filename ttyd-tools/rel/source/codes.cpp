@@ -2121,7 +2121,7 @@ int32_t warpToMapByString(const char *map)
     return SUCCESS;
 }
 
-uint32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMode)
+int32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, bool isFirstCall)
 {
     // Clear the array holding the loading zone names
     clearMemory(WarpByIndex.EntranceList, sizeof(WarpByIndex.EntranceList));
@@ -2182,7 +2182,7 @@ uint32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, uint32_t waitMod
     }
     
     // Call original function
-    return mPFN_evt_bero_get_info_trampoline(evt, waitMode);
+    return mPFN_evt_bero_get_info_trampoline(evt, isFirstCall);
 }
 
 ttyd::mapdata::MapData *Mod::mapDataPtrHandleUnusedMaps(const char *mapName)
