@@ -556,7 +556,7 @@ void reloadRoomMain()
     *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
     
     // Make sure the System Level can be set again
-    MenuVar.SystemMenuIsSet = false;
+    MenuVar.SystemLevelIsSet = false;
     
     if (!checkIfSystemLevelIsSet())
     {

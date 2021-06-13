@@ -212,18 +212,18 @@ void setSystemLevel(int32_t level)
         return;
     }
     
-    bool SystemMenuIsSet = MenuVar.SystemMenuIsSet;
+    bool SystemLevelIsSet = MenuVar.SystemLevelIsSet;
     if (level == 0) // Being reset
     {
         // Only reset if was previously set
-        if (!SystemMenuIsSet)
+        if (!SystemLevelIsSet)
         {
             return;
         }
         
         /* The only reason the System Level wouldn't be reset now is if in a screen 
-           transion/battle/etc., so reset SystemMenuIsSet */
-        MenuVar.SystemMenuIsSet = false;
+           transion/battle/etc., so reset SystemLevelIsSet */
+        MenuVar.SystemLevelIsSet = false;
         
         // Only reset if not in a battle nor a screen transition
         if (!checkIfInGame())
@@ -234,7 +234,7 @@ void setSystemLevel(int32_t level)
     else
     {
         // Only set if not currently set
-        if (SystemMenuIsSet)
+        if (SystemLevelIsSet)
         {
             return;
         }
@@ -251,7 +251,7 @@ void setSystemLevel(int32_t level)
             return;
         }
         
-        MenuVar.SystemMenuIsSet = true;
+        MenuVar.SystemLevelIsSet = true;
     }
     
     // Set the new System Level
