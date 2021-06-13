@@ -7,6 +7,7 @@
 #include <ttyd/dispdrv.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/mapdata.h>
+#include <ttyd/seqdrv.h>
 
 #include <cstdint>
 
@@ -38,6 +39,7 @@ private:
     ttyd::mapdata::MapData *mapDataPtrHandleUnusedMaps(const char *);
     void _unloadHook(const char *, const char *, const char *);
     void relSetEvtAddrHook(const char *, const void *);
+    void preventBattlesOnReload(ttyd::seqdrv::SeqIndex, const char *, const char *);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -67,6 +69,7 @@ private:
     ttyd::mapdata::MapData *(*mPFN_mapDataPtr_trampoline)(const char *) = nullptr;
     void (*mPFN__unload_trampoline)(const char *, const char *, const char *) = nullptr;
     void (*mPFN_relSetEvtAddr_trampoline)(const char *, const void *) = nullptr;
+    void (*mPFN_seqSetSeq_trampoline)(ttyd::seqdrv::SeqIndex, const char *, const char *) = nullptr;
 };
 
 }

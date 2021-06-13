@@ -23,6 +23,7 @@
 #include <ttyd/battle_unit.h>
 #include <ttyd/mapdata.h>
 #include <ttyd/seq_mapchange.h>
+#include <ttyd/seqdrv.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -170,6 +171,12 @@ void Mod::init()
         ttyd::mapdata::relSetEvtAddr, [](const char *mapName, const void *pInitEvtCode)
     {
         gMod->relSetEvtAddrHook(mapName, pInitEvtCode);
+    });
+    
+    mPFN_seqSetSeq_trampoline = patch::hookFunction(
+        ttyd::seqdrv::seqSetSeq, [](ttyd::seqdrv::SeqIndex seq, const char *map, const char *bero)
+    {
+        gMod->preventBattlesOnReload(seq, map, bero);
     });
     
     // Initialize typesetting early

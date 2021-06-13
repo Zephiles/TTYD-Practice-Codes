@@ -641,6 +641,7 @@ struct SpeedUpMarioStruct
 
 struct ReloadRoomStruct
 {
+    bool ManuallyReloadingRoom;
     bool SystemLevelShouldBeLowered;
     char NewBero[32]; // 31 bytes for NextBero, 1 byte for NULL
     char NewMap[9]; // 8 bytes for NextMap, 1 byte for NULL

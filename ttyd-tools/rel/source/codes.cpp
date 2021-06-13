@@ -551,12 +551,16 @@ void reloadRoomMain()
     strcpy(tempNewMap, ttyd::seq_mapchange::NextMap);
     setSeqMapChange(tempNewMap, tempNewBero);
     
-    // Reset the camera - mainly for the black bars at the top and bottom of the screen
-    uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
-    *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
+    // Set a bool to prevent battles from starting
+    // This needs to be done after setSeqMapChange is called
+    ReloadRoom.ManuallyReloadingRoom = true;
     
     // Make sure the System Level can be set again
     MenuVar.SystemLevelIsSet = false;
+    
+    // Reset the camera - mainly for the black bars at the top and bottom of the screen
+    uint32_t CameraPointer = reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(ttyd::dispdrv::CameraId::k2d));
+    *reinterpret_cast<uint16_t *>(CameraPointer) &= ~((1 << 8) | (1 << 9)); // Turn off the 8 and 9 bits
     
     if (!checkIfSystemLevelIsSet())
     {
@@ -2183,6 +2187,24 @@ int32_t Mod::setIndexWarpEntrance(ttyd::evtmgr::EvtEntry *evt, bool isFirstCall)
     
     // Call original function
     return mPFN_evt_bero_get_info_trampoline(evt, isFirstCall);
+}
+
+void Mod::preventBattlesOnReload(ttyd::seqdrv::SeqIndex seq, const char *map, const char *bero)
+{
+    if (ReloadRoom.ManuallyReloadingRoom)
+    {
+        // Don't set the seq if trying to start a battle while reloading the room
+        if (seq == ttyd::seqdrv::SeqIndex::kBattle)
+        {
+            return;
+        }
+        
+        // Any other seq should be fine, so clear the bool
+        ReloadRoom.ManuallyReloadingRoom = false;
+    }
+    
+    // Call original function
+    mPFN_seqSetSeq_trampoline(seq, map, bero);
 }
 
 ttyd::mapdata::MapData *Mod::mapDataPtrHandleUnusedMaps(const char *mapName)
