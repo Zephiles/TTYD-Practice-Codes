@@ -128,7 +128,7 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/include/ttyd.$(VERSION).lst
+export MAPFILE		:= $(CURDIR)/include/lst/ttyd.$(VERSION).lst
 ifeq ($(VERSION),us)
 	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
 	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
