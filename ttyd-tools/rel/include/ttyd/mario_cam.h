@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/dispdrv.h>
+
 #include <cstdint>
 
 namespace ttyd::mario_cam {
@@ -22,7 +24,7 @@ extern "C" {
 // marioGetCamFollowRate
 // marioSetCamFollowRate
 // marioResetCamFollowRate
-void marioSetCamId(uint32_t id);
+void marioSetCamId(ttyd::dispdrv::CameraId cameraId);
 // marioGetCamId
 // marioInitCamId
 // marioResetCamShiftRate

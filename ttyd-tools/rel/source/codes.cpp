@@ -569,7 +569,7 @@ void reloadRoomMain()
     
     // Enable sound effects, set the default camera id for Mario, and give back control to the player
     ttyd::pmario_sound::psndClearFlag(0x80);
-    ttyd::mario_cam::marioSetCamId(4);
+    ttyd::mario_cam::marioSetCamId(ttyd::dispdrv::CameraId::k3d);
     ttyd::mariost::marioStSystemLevel(0);
     ReloadRoom.SystemLevelShouldBeLowered = true;
 }
