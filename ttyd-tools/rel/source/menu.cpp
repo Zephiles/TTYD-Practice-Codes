@@ -1505,7 +1505,7 @@ void menuCheckButton()
                                             }
                                             else
                                             {
-                                                partnerMenuRemoveOrBringOut(reinterpret_cast<void *>(PartnerEnabledAddress));
+                                                partnerMenuRemoveOrBringOut();
                                             }
                                             break;
                                         }
@@ -1515,7 +1515,7 @@ void menuCheckButton()
                                             ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
                                             if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
                                             {
-                                                partnerMenuRemoveOrBringOut(reinterpret_cast<void *>(PartnerEnabledAddress));
+                                                partnerMenuRemoveOrBringOut();
                                             }
                                             break;
                                         }

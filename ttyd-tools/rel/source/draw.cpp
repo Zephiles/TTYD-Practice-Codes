@@ -62,6 +62,7 @@ void drawFunctionOnDebugLayer(void (*func)())
     ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::kDebug3d, 2, 0.f, 
         [](ttyd::dispdrv::CameraId cameraId, void *user)
     {
+        (void)cameraId;
         reinterpret_cast<void (*)()>(user)();
     }, reinterpret_cast<void *>(func));
 }
@@ -71,6 +72,7 @@ void drawFunctionOnDebugLayerWithOrder(void (*func)(), float order)
     ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::kDebug3d, 2, order, 
         [](ttyd::dispdrv::CameraId cameraId, void *user)
     {
+        (void)cameraId;
         reinterpret_cast<void (*)()>(user)();
     }, reinterpret_cast<void *>(func));
 }
@@ -80,6 +82,7 @@ void drawFunctionOn2DLayer(void (*func)())
     ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::k2d, 2, 0.f, 
         [](ttyd::dispdrv::CameraId cameraId, void *user)
     {
+        (void)cameraId;
         reinterpret_cast<void (*)()>(user)();
     }, reinterpret_cast<void *>(func));
 }
@@ -89,6 +92,7 @@ void drawFunctionOn2DLayerWithOrder(void (*func)(), float order)
     ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::k2d, 2, order, 
         [](ttyd::dispdrv::CameraId cameraId, void *user)
     {
+        (void)cameraId;
         reinterpret_cast<void (*)()>(user)();
     }, reinterpret_cast<void *>(func));
 }

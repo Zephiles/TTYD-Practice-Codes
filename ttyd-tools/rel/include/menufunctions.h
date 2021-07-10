@@ -21,7 +21,7 @@ void recheckUpgradesBattles(int32_t item);
 
 void setSystemLevel(int32_t level);
 
-void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress);
+void partnerMenuRemoveOrBringOut();
 void lockFlagsMenuBackUpFlags(uint32_t index);
 void lockFlagsMenuSetNewArea(uint32_t index);
 char *lockFlagsMenuGetAreaLockedString(uint32_t index);
@@ -49,8 +49,8 @@ uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 
-void adjustMenuItemBoundsMain(uint32_t currentMenu, int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
-void adjustMenuItemBoundsMainUnsigned(uint32_t currentMenu, int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
+void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
+void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);
 void adjustAddByIdValue(int32_t value, uint32_t currentMenu, bool handleAsHex, bool handleAsUnsigned);
 

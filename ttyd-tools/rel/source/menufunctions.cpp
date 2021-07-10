@@ -258,7 +258,7 @@ void setSystemLevel(int32_t level)
     ttyd::mariost::marioStSystemLevel(level);
 }
 
-void partnerMenuRemoveOrBringOut(void *partnerEnabledAddress)
+void partnerMenuRemoveOrBringOut()
 {
     if (checkIfPartnerOutSelected())
     {
@@ -1550,7 +1550,11 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         }
         case B:
         {
-            if (currentMenu != SPAWN_ITEM_MENU_VALUE)
+            if (currentMenu == SPAWN_ITEM_MENU_VALUE)
+            {
+                return 0;
+            }
+            else
             {
                 switch (currentMenu)
                 {
@@ -2230,8 +2234,7 @@ uint32_t followersOptionsButtonControls()
     }
 }*/
 
-void adjustMenuItemBoundsMain(uint32_t currentMenu, 
-    int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
+void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound)
 {
     int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue + valueChangedBy;
     MenuVar.MenuSecondaryValue = tempMenuSecondaryValue;
@@ -2266,8 +2269,7 @@ void adjustMenuItemBoundsMain(uint32_t currentMenu,
     }
 }
 
-void adjustMenuItemBoundsMainUnsigned(uint32_t currentMenu, 
-    int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound)
+void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound)
 {
     int64_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValueUnsigned + valueChangedBy;
     MenuVar.MenuSecondaryValueUnsigned = static_cast<uint32_t>(tempMenuSecondaryValue);
@@ -2375,7 +2377,7 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
                 uint32_t LowerBound = static_cast<uint32_t>(UpperAndLowerBounds[0]);
                 uint32_t UpperBound = static_cast<uint32_t>(UpperAndLowerBounds[1]);
                 
-                adjustMenuItemBoundsMainUnsigned(currentMenu, valueChangedBy, LowerBound, UpperBound);
+                adjustMenuItemBoundsMainUnsigned(valueChangedBy, LowerBound, UpperBound);
                 return;
             }
             break;
@@ -2392,7 +2394,7 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
     int32_t LowerBound = UpperAndLowerBounds[0];
     int32_t UpperBound = UpperAndLowerBounds[1];
     
-    adjustMenuItemBoundsMain(currentMenu, valueChangedBy, LowerBound, UpperBound);
+    adjustMenuItemBoundsMain(valueChangedBy, LowerBound, UpperBound);
 }
 
 void adjustAddByIdValue(int32_t value, uint32_t currentMenu, 
@@ -4238,7 +4240,7 @@ bool getStageString(char *stageNameBuffer, uint32_t sequencePosition)
         return false;
     }
     
-    if ((sequencePosition >= 0) && (sequencePosition <= 22))
+    if (sequencePosition <= 22)
     {
         strcpy(stageNameBuffer, "Opening");
         return true;

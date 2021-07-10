@@ -20,9 +20,11 @@ void operator delete[](void *ptr)
 }
 void operator delete(void *ptr, std::size_t size)
 {
+    (void)size;
     return ttyd::memory::__memFree(0, ptr);
 }
 void operator delete[](void *ptr, std::size_t size)
 {
+    (void)size;
     return ttyd::memory::__memFree(0, ptr);
 }
