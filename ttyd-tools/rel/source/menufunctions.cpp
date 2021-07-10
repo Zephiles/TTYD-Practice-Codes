@@ -1550,104 +1550,102 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         }
         case B:
         {
-            if (currentMenu == SPAWN_ITEM_MENU_VALUE)
+            switch (currentMenu)
             {
-                return 0;
-            }
-            else
-            {
-                switch (currentMenu)
+                case INVENTORY_STANDARD:
+                case INVENTORY_IMPORTANT:
+                case INVENTORY_BADGES:
+                case INVENTORY_STORED_ITEMS:
                 {
-                    case INVENTORY_STANDARD:
-                    case INVENTORY_IMPORTANT:
-                    case INVENTORY_BADGES:
-                    case INVENTORY_STORED_ITEMS:
+                    if (MenuVar.SelectedOption == ADD_BY_ID)
                     {
-                        if (MenuVar.SelectedOption == ADD_BY_ID)
-                        {
-                            MenuVar.Timer = 0;
-                            closeSecondaryMenu();
-                        }
-                        else // (MenuVar.SelectedOption == CHANGE_BY_ID)
-                        {
-                            MenuVar.MenuSelectionStates = 0;
-                        }
-                        
-                        MenuVar.FrameCounter = 1;
-                        
-                        if (!NoNumbersToDisplay)
-                        {
-                            return Button;
-                        }
-                        else
-                        {
-                            return NO_NUMBERS_TO_DISPLAY;
-                        }
+                        MenuVar.Timer = 0;
+                        closeSecondaryMenu();
                     }
-                    case CHEATS_CHANGE_SEQUENCE:
-                    case CHEATS_NPC_FORCE_DROP:
+                    else // (MenuVar.SelectedOption == CHANGE_BY_ID)
                     {
                         MenuVar.MenuSelectionStates = 0;
-                        
-                        MenuVar.FrameCounter = 1;
-                        
-                        if (!NoNumbersToDisplay)
-                        {
-                            return Button;
-                        }
-                        else
-                        {
-                            return NO_NUMBERS_TO_DISPLAY;
-                        }
                     }
-                    case STATS_MARIO:
-                    case STATS_PARTNERS:
-                    case WARPS:
+                    
+                    MenuVar.FrameCounter = 1;
+                    
+                    if (!NoNumbersToDisplay)
                     {
-                        MenuVar.MenuSelectedOption = 0;
-                        
-                        MenuVar.FrameCounter = 1;
-                        
-                        if (!NoNumbersToDisplay)
-                        {
-                            return Button;
-                        }
-                        else
-                        {
-                            return NO_NUMBERS_TO_DISPLAY;
-                        }
-                    }
-                    case CHEATS_GENERATE_LAG_SPIKE:
-                    case CHEATS_MANAGE_FLAGS_MAIN:
-                    case BATTLES_CURRENT_ACTOR:
-                    case BATTLES_STATUSES:
-                    case WARPS_EVENT:
-                    case WARPS_INDEX:
-                    {
-                        MenuVar.SelectedOption = 0;
-                        
-                        MenuVar.FrameCounter = 1;
-                        
-                        if (!NoNumbersToDisplay)
-                        {
-                            return Button;
-                        }
-                        else
-                        {
-                            return NO_NUMBERS_TO_DISPLAY;
-                        }
-                    }
-                    case MEMORY_EDITOR_MENU:
-                    {
-                        MemoryEditor.CurrentSelectionStatus &= ~(EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES);
-                        
-                        MenuVar.FrameCounter = 1;
                         return Button;
                     }
-                    default:
+                    else
                     {
-                        return 0;
+                        return NO_NUMBERS_TO_DISPLAY;
                     }
+                }
+                case CHEATS_CHANGE_SEQUENCE:
+                case CHEATS_NPC_FORCE_DROP:
+                {
+                    MenuVar.MenuSelectionStates = 0;
+                    
+                    MenuVar.FrameCounter = 1;
+                    
+                    if (!NoNumbersToDisplay)
+                    {
+                        return Button;
+                    }
+                    else
+                    {
+                        return NO_NUMBERS_TO_DISPLAY;
+                    }
+                }
+                case STATS_MARIO:
+                case STATS_PARTNERS:
+                case WARPS:
+                {
+                    MenuVar.MenuSelectedOption = 0;
+                    
+                    MenuVar.FrameCounter = 1;
+                    
+                    if (!NoNumbersToDisplay)
+                    {
+                        return Button;
+                    }
+                    else
+                    {
+                        return NO_NUMBERS_TO_DISPLAY;
+                    }
+                }
+                case CHEATS_GENERATE_LAG_SPIKE:
+                case CHEATS_MANAGE_FLAGS_MAIN:
+                case BATTLES_CURRENT_ACTOR:
+                case BATTLES_STATUSES:
+                case WARPS_EVENT:
+                case WARPS_INDEX:
+                {
+                    MenuVar.SelectedOption = 0;
+                    
+                    MenuVar.FrameCounter = 1;
+                    
+                    if (!NoNumbersToDisplay)
+                    {
+                        return Button;
+                    }
+                    else
+                    {
+                        return NO_NUMBERS_TO_DISPLAY;
+                    }
+                }
+                case SPAWN_ITEM_MENU_VALUE:
+                {
+                    MenuVar.FrameCounter = 1;
+                    return Button;
+                }
+                case MEMORY_EDITOR_MENU:
+                {
+                    MemoryEditor.CurrentSelectionStatus &= ~(EDITOR_SELECT_CHANGE_ADDRESS | EDITOR_SELECT_CHANGE_BYTES);
+                    
+                    MenuVar.FrameCounter = 1;
+                    return Button;
+                }
+                default:
+                {
+                    return 0;
                 }
             }
         }
