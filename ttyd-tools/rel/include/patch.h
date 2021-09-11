@@ -64,24 +64,18 @@ Func unhookFunction(Func trampoline)
     uint32_t *instructions = reinterpret_cast<uint32_t *>(trampoline);
     
     // Restore the original instruction
+    int32_t branchLength = instructions[1] & 0x03FFFFFC;
+    
+    // Check if this is a negative branch
+    if (branchLength > 0x01FFFFFC)
+    {
+        const int32_t Width = 26;
+        const int32_t Mask = (1 << (Width - 1));
+        branchLength = (branchLength ^ Mask) - Mask - 0x4;
+    }
+    
     uint32_t instructionAddress = reinterpret_cast<uint32_t>(&instructions[1]);
-    uint32_t branchInstruction = instructions[1];
-    uint32_t branchLength;
-    uint32_t *address;
-    
-    if (branchInstruction >= 0x4A000000)
-    {
-        // Branch is negative
-        branchLength = 0x4C000000 - branchInstruction;
-        address = reinterpret_cast<uint32_t *>(instructionAddress - branchLength - 0x4);
-    }
-    else
-    {
-        // Branch is positive
-        branchLength = branchInstruction - 0x48000000;
-        address = reinterpret_cast<uint32_t *>(instructionAddress + branchLength - 0x4);
-    }
-    
+    uint32_t *address = reinterpret_cast<uint32_t *>(instructionAddress + branchLength);
     *address = instructions[0];
     
     // Clear the cache for both the address and where the instructions were stored
