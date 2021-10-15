@@ -4441,11 +4441,15 @@ char *getTimeString(char *stringOut, int64_t time)
     
     // Handle the value as unsigned
     uint64_t CurrentTimeUnsigned = static_cast<uint64_t>(CurrentTime);
+    uint32_t TotalSeconds = CurrentTimeUnsigned / FPS;
+    uint32_t TotalMinutes = TotalSeconds / 60;
     
-    uint32_t Hour = CurrentTimeUnsigned / 3600 / FPS;
-    uint32_t Minute = (CurrentTimeUnsigned / 60 / FPS) % 60;
-    uint32_t Second = (CurrentTimeUnsigned / FPS) % 60;
-    uint32_t Frame = CurrentTimeUnsigned % FPS;
+    uint32_t Hour = TotalMinutes / 60;
+    uint32_t Minute = TotalMinutes % 60;
+    uint32_t Second = TotalSeconds % 60;
+    
+    // Cast CurrentTimeUnsigned to avoid using __umoddi3 for modding
+    uint32_t Frame = static_cast<uint32_t>(CurrentTimeUnsigned) % FPS;
     
     sprintf(stringOut,
         Format,
