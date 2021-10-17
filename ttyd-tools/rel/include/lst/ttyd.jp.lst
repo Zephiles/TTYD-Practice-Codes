@@ -2191,6 +2191,16 @@
 8025EA3C:__udivdi3
 8025EB28:__divdi3
 8025EC60:__umoddi3
+8025ED44:__moddi3
+8025EE50:__ashldi3
+8025EE74:__lshrdi3
+8025EE98:__ashrdi3
+8025EEC0:__floatdidf
+8025EF74:__floatundidf
+8025F014:__fixsfdi
+8025F014:__fixdfdi
+8025F014:__fixunssfdi
+8025F014:__fixunsdfdi
 
 // mem.c
 80263CB8:memcmp

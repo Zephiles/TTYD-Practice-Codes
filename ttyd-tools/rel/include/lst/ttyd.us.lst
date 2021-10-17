@@ -2192,6 +2192,16 @@
 802649EC:__udivdi3
 80264AD8:__divdi3
 80264C10:__umoddi3
+80264CF4:__moddi3
+80264E00:__ashldi3
+80264E24:__lshrdi3
+80264E48:__ashrdi3
+80264E70:__floatdidf
+80264F24:__floatundidf
+80264FC4:__fixsfdi
+80264FC4:__fixdfdi
+80264FC4:__fixunssfdi
+80264FC4:__fixunsdfdi
 
 // mem.c
 80269C68:memcmp
