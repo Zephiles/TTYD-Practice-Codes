@@ -2196,8 +2196,8 @@
 80264E00:__ashldi3
 80264E24:__lshrdi3
 80264E48:__ashrdi3
-80264E70:__floatdidf
-80264F24:__floatundidf
+80264E70:__floatdisf
+80264F24:__floatundisf
 80264FC4:__fixsfdi
 80264FC4:__fixdfdi
 80264FC4:__fixunssfdi

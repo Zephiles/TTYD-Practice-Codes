@@ -2195,8 +2195,8 @@
 8025EE50:__ashldi3
 8025EE74:__lshrdi3
 8025EE98:__ashrdi3
-8025EEC0:__floatdidf
-8025EF74:__floatundidf
+8025EEC0:__floatdisf
+8025EF74:__floatundisf
 8025F014:__fixsfdi
 8025F014:__fixdfdi
 8025F014:__fixunssfdi
