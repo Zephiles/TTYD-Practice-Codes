@@ -11,6 +11,7 @@
 
 #include <gc/OSTime.h>
 #include <gc/vi.h>
+#include <gc/os.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mariost.h>
@@ -784,7 +785,8 @@ void generateLagSpike()
         MenuVar.LagSpikeDuration = static_cast<uint16_t>(Duration);
     }
     
-    uint32_t DurationTick = Duration * 40500;
+    uint32_t ConsoleBusSpeed = gc::os::OSBusClock;
+    uint32_t DurationTick = Duration * ((ConsoleBusSpeed / 4) / 1000);
     uint32_t StartTick = gc::OSTime::OSGetTick();
     
     while (1)
