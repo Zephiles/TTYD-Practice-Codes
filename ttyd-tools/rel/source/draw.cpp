@@ -3740,6 +3740,26 @@ void drawChangeButtonCombo(uint16_t *currentButtonCombo)
     clearMemory(CheatsDisplayButtons.CheatsCurrentButtonsHeld, (14 * sizeof(uint8_t)));
 }
 
+void drawCheatsFrameAdvance()
+{
+    // uint32_t Color = 0xFFFFFFFF;
+    // uint8_t Alpha  = 0xFF;
+    // int32_t PosX   = -232;
+    int32_t PosY      = 100;
+    // float Scale    = 0.6f;
+    
+    // Draw the bool
+    drawCheatsBool(PosY);
+    
+    // Draw the button combos
+    PosY -= 60;
+    const char *Description = "Button Combo (Can be pressed in any order)";
+    drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo, PosY, Description);
+    
+    PosY -= 60;
+    drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo, PosY, Description);
+}
+
 void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo)
 {
     uint32_t Color   = 0xFFFFFFFF;

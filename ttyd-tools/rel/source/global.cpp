@@ -53,6 +53,7 @@ const char *CheatsLines[] =
     "Reload Room",
     "Levitate",
     "Auto Mash Through Text",
+    "Frame Advance (Not currently implemented)",
     "Generate Lag Spike",
     "Lock Mario's HP To Its Max",
     "Allow Running From Any Battle",
@@ -1017,6 +1018,13 @@ const char *CheatsManageGlobalWordsOptions[]
     "Set New Value",
 };
 
+const char *CheatsFrameAdvanceOptions[]
+{
+    "Turn On/Off",
+    "Change Frame Advance Button Combo",
+    "Change Pause/Resume Button Combo",
+};
+
 const char *CheatsGenerateLagSpikeOptions[]
 {
     "Turn On/Off",
@@ -1882,6 +1890,7 @@ uint8_t CheatsOrder[] =
     LOCK_FLAGS,
     AUTO_MASH_TEXT,
     GENERATE_LAG_SPIKE,
+    FRAME_ADVANCE,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1907,8 +1916,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[35];
-struct Cheats Cheat[26];
+struct Menus Menu[36];
+struct Cheats Cheat[27];
 bool Displays[18];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1941,6 +1950,7 @@ struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
 struct NpcNameToPtrErrorStruct NpcNameToPtrError;
 struct EnemyEncounterNotifierStruct EnemyEncounterNotifier;
+struct FrameAdvanceStruct FrameAdvance;
 struct UnusedMapStruct UnusedMap;
 
 void initMenuVars()
@@ -1976,6 +1986,10 @@ void initMenuVars()
     Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions        = sizeof(CheatsForceItemDropOptionsLines) / sizeof(CheatsForceItemDropOptionsLines[0]);
     Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount       = Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
     Menu[CHEATS_NPC_FORCE_DROP].Line                    = CheatsForceItemDropOptionsLines;
+    
+    Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions         = sizeof(CheatsFrameAdvanceOptions) / sizeof(CheatsFrameAdvanceOptions[0]);
+    Menu[CHEATS_FRAME_ADVANCE].ColumnSplitAmount        = Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions;
+    Menu[CHEATS_FRAME_ADVANCE].Line                     = CheatsFrameAdvanceOptions;
     
     Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions    = sizeof(CheatsGenerateLagSpikeOptions) / sizeof(CheatsGenerateLagSpikeOptions[0]);
     Menu[CHEATS_GENERATE_LAG_SPIKE].ColumnSplitAmount   = Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions;
@@ -2095,6 +2109,7 @@ void setInitialSettings()
     // Cheat[RELOAD_ROOM].Active            = false;
     // Cheat[LEVITATE].Active               = false;
     // Cheat[AUTO_MASH_TEXT].Active         = false;
+    Cheat[FRAME_ADVANCE].Active             = false;
     Cheat[GENERATE_LAG_SPIKE].Active        = false;
     Cheat[LOCK_MARIO_HP_TO_MAX].Active      = false;
     Cheat[RUN_FROM_BATTLES].Active          = false;
@@ -2122,6 +2137,10 @@ void setInitialSettings()
     
     // Set the memory editor button combo
     MemoryEditor.ButtonCombo                  = PAD_R | PAD_Z;
+    
+    // Set up the frame advance button combos
+    FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo = PAD_Y;
+    FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo        = PAD_L | PAD_A | PAD_Z;
     
     // Set the Displays bools
     // Displays[ONSCREEN_TIMER]               = true;

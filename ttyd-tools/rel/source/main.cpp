@@ -11,6 +11,8 @@
 
 #include <gc/OSCache.h>
 #include <gc/OSAlloc.h>
+#include <gc/OSInterrupt.h>
+#include <gc/exi.h>
 #include <ttyd/item_data.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
@@ -827,6 +829,21 @@ ttyd::npcdrv::NpcEntry *Mod::fbatHitCheck_Work(uint32_t flags, void *unk)
     {
         return Result;
     }
+}
+
+void setOSTime(int64_t time)
+{
+    // Interrupts should be disabled for safety
+    bool enable = gc::OSInterrupt::OSDisableInterrupts();
+    
+    // Set the new time
+    setTime(time);
+    
+    // Reset EXI stuff
+    gc::exi::EXIProbeReset();
+    
+    // Restore interrupts
+    gc::OSInterrupt::OSRestoreInterrupts(enable);
 }
 
 void initAddressOverwrites()

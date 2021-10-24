@@ -24,6 +24,7 @@
 #include <ttyd/mapdata.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/system.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -178,6 +179,18 @@ void Mod::init()
     {
         gMod->preventBattlesOnReload(seq, map, bero);
     });
+    
+    /* mPFN_makeKey_trampoline = patch::hookFunction(
+        ttyd::system::makeKey, []()
+    {
+        gMod->frameAdvance();
+    });
+    
+    mPFN_viPostCallback_trampoline = patch::hookFunction(
+        ttyd::mariost::viPostCallback, [](uint32_t retraceCount)
+    {
+        gMod->preventViPostCallBackOnPause(retraceCount);
+    }); */
     
     // Initialize typesetting early
     ttyd::fontmgr::fontmgrTexSetup();

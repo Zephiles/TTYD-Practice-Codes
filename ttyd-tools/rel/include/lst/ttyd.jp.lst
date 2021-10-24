@@ -2308,6 +2308,19 @@
 80293954:L_OSInitFont
 80293B60:L_OSGetFontTexture
 
+// OSInterrupt.c
+80293CD0:OSDisableInterrupts
+// 80293CE4:OSEnableInterrupts
+80293CF8:OSRestoreInterrupts
+// 80293D1C:__OSSetInterruptHandler
+// 80293D38:__OSGetInterruptHandler
+// 80293D4C:__OSInterruptInit
+// 80293DC0:SetInterruptMask
+// 80294098:__OSMaskInterrupts
+// 80294120:__OSUnmaskInterrupts
+// 802941A8:__OSDispatchInterrupt
+// 802944EC:ExternalInterruptHandler
+
 // OSLink.c
 // 8029453C:OSNotifyLink
 // 80294540:OSNotifyUnlink
@@ -2373,7 +2386,7 @@
 // 8029D9F8:getTiming
 // 8029DAA0:__VIInit
 // 8029DCA4:VIInit
-// 8029E154:VIWaitForRetrace
+8029E154:VIWaitForRetrace
 // 8029E1A8:setFbbRegs
 // 8029E47C:setVerticalRegs
 // 8029E61C:VIConfigure
@@ -2695,6 +2708,39 @@
 // 802B58AC:GXReadVCacheMetric
 // 802B5940:GXClearVCacheMetric
 // 802B595C:GXReadXfRasMetric
+
+// exi.a
+// text
+// 802B5A20:SetExiInterruptMask
+// 802B5B14:EXIImm
+// 802B5D70:EXIImmEx
+// 802B5E10:EXIDma
+// 802B5EFC:EXISync
+// 802B6148:EXIClearInterrupts
+// 802B6190:EXISetExiCallback
+802B620C:__EXIProbe
+// 802B6380:EXIProbe
+// 802B6400:EXIProbeEx
+// 802B64B4:EXIAttach
+// 802B65C0:EXIDetach
+// 802B667C:EXISelect
+// 802B67A8:EXIDeselect
+// 802B68B8:EXIIntrruptHandler
+// 802B6980:TCIntrruptHandler
+// 802B6B98:EXTIntrruptHandler
+// 802B6C68:EXIInit
+// 802B6E3C:EXILock
+// 802B6F30:EXIUnlock
+// 802B700C:EXIGetState
+// 802B7024:UnlockedHandler
+// 802B704C:EXIGetID
+// 802B73FC:EXIGetType
+// 802B7514:ProbeBarnacle
+// 802B76A0:__OSEnableBarnacle
+// 802B785C:InitializeUART
+// 802B78CC:WriteUARTN
+// data
+8040EE50:Ecb
 
 // item_data.o
 // data

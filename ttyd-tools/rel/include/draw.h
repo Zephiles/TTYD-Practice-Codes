@@ -108,6 +108,7 @@ void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description);
 void drawChangeButtonCombo(uint16_t *currentButtonCombo);
 void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo);
+void drawCheatsFrameAdvance();
 void drawCheatsForcedDropItem();
 void drawCheatsResolveFades();
 void drawCheatsLockFlags();

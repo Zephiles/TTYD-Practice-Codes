@@ -47,6 +47,9 @@ bool disableDPadOptionsDisplay(uint16_t unkVar);
 bool StartErrorHandlerCheckPairedSinglesEnabled();
 void StartErrorHandlerInterrupts();
 
+// Misc assembly functions
+void setTime(int64_t time);
+
 }
 
 }

@@ -7,8 +7,10 @@
 #include "patch.h"
 #include "assembly.h"
 #include "evt_cmd.h"
+#include "main.h"
 
 #include <gc/OSTime.h>
+#include <gc/vi.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mariost.h>
@@ -24,6 +26,7 @@
 #include <ttyd/dispdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/mario_cam.h>
+#include <ttyd/cardmgr.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/mapdrv.h>
 #include <ttyd/swdrv.h>
@@ -664,6 +667,100 @@ uint32_t autoMashText(uint32_t controllerPort)
     
     // Return the value for B to make sure the text is being mashed through as fast as possible
     return PAD_B;
+}
+
+void Mod::frameAdvance()
+{
+    if (!Cheat[FRAME_ADVANCE].Active)
+    {
+        // Call original function
+        return mPFN_makeKey_trampoline();
+    }
+    
+    // If currently changing button combos, then don't run
+    if (MenuVar.ChangingCheatButtonCombo)
+    {
+        // Call original function
+        return mPFN_makeKey_trampoline();
+    }
+    
+    // Make sure memory card stuff isn't currently happening
+    if (ttyd::cardmgr::cardIsExec())
+    {
+        // Call original function
+        return mPFN_makeKey_trampoline();
+    }
+    
+    // If just unpaused, then don't run
+    if (FrameAdvance.JustResumedGameplay)
+    {
+        FrameAdvance.JustResumedGameplay = false;
+        
+        // Call original function
+        return mPFN_makeKey_trampoline();
+    }
+    
+    if (FrameAdvance.AdvanceFrame || checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
+    {
+        // The game should currently be paused and not currently frame advancing
+        // GameIsPaused needs to be set now to prevent viPostCallback from running
+        // AdvanceFrame isn't currently used anywhere else, but might be in the future, so adjust it now
+        FrameAdvance.AdvanceFrame = false;
+        FrameAdvance.GameIsPaused = true;
+        
+        // Back up the current OSTime
+        int64_t CurrentTime = gc::OSTime::OSGetTime();
+        
+        // Loop indefinitely until the button combo is pressed
+        while (1)
+        {
+            // Get the current button inputs
+            mPFN_makeKey_trampoline();
+            
+            // Check for advancing to the next frame or resuming the game
+            // Check for the pause combo first to prevent duplicate buttons causing softlocks
+            if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
+            {
+                // Restore the backed up OSTime
+                setOSTime(CurrentTime);
+                
+                // Resume gameplay
+                FrameAdvance.AdvanceFrame = false;
+                FrameAdvance.GameIsPaused = false;
+                FrameAdvance.JustResumedGameplay = true;
+                return;
+            }
+            else if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
+            {
+                // Restore the backed up OSTime
+                setOSTime(CurrentTime);
+                
+                // Advance one frame
+                FrameAdvance.AdvanceFrame = true;
+                FrameAdvance.GameIsPaused = false;
+                // FrameAdvance.JustResumedGameplay = false;
+                return;
+            }
+            
+            // Prevent running this code multiple times per frame
+            gc::vi::VIWaitForRetrace();
+        }
+    }
+    
+    // Call original function
+    return mPFN_makeKey_trampoline();
+}
+
+void Mod::preventViPostCallBackOnPause(uint32_t retraceCount)
+{
+    // If the game is paused, then don't run
+    if (FrameAdvance.GameIsPaused)
+    {
+        return;
+    }
+    
+    // Call original function
+    return mPFN_viPostCallback_trampoline(retraceCount);
 }
 
 void generateLagSpike()

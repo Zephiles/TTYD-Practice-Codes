@@ -12,7 +12,7 @@ extern "C" {
 // getTiming
 // __VIInit
 // VIInit
-// VIWaitForRetrace
+void VIWaitForRetrace();
 // setFbbRegs
 // setVerticalRegs
 // VIConfigure

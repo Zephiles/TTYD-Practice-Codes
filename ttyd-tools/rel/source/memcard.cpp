@@ -369,6 +369,10 @@ int32_t saveSettings(int32_t memoryCardSlot)
     Settings->MemoryEditorSave.NumBytesBeingEdited      = MemoryEditor.NumBytesBeingEdited;
     Settings->MemoryEditorSave.EditorCurrentlyDisplayed = MemoryEditor.EditorCurrentlyDisplayed;
     
+    // Copy the frame advance button combos
+    Settings->FrameAdvanceButtonCombos.AdvanceFrameButtonCombo = FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo;
+    Settings->FrameAdvanceButtonCombos.PauseButtonCombo = FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo;
+    
     // Write the data to the file
     ReturnCode = writeToFileOnCard(memoryCardSlot, &FileInfo, MiscData, FileSizeAdjusted, 0x2000);
     
@@ -539,6 +543,20 @@ int32_t loadSettings(int32_t memoryCardSlot)
     if (NumBytesBeingEdited)
     {
         MemoryEditor.NumBytesBeingEdited = NumBytesBeingEdited;
+    }
+    
+    // Get the frame advance button combos
+    // Don't get if they are 0
+    ButtonCombo = Settings->FrameAdvanceButtonCombos.AdvanceFrameButtonCombo;
+    if (ButtonCombo)
+    {
+        FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo = ButtonCombo;
+    }
+    
+    ButtonCombo = Settings->FrameAdvanceButtonCombos.PauseButtonCombo;
+    if (ButtonCombo)
+    {
+        FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo = ButtonCombo;
     }
     
     delete[] (MiscData);

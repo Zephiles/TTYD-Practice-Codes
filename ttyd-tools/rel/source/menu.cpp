@@ -534,6 +534,11 @@ void menuCheckButton()
                             MenuToEnter = CHEATS_STANDARD;
                             break;
                         }
+                        case FRAME_ADVANCE:
+                        {
+                            MenuToEnter = CHEATS_FRAME_ADVANCE;
+                            break;
+                        }
                         case GENERATE_LAG_SPIKE:
                         {
                             MenuToEnter = CHEATS_GENERATE_LAG_SPIKE;
@@ -693,6 +698,72 @@ void menuCheckButton()
                             enterPreviousMenu();
                             break;
                         }
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case CHEATS_FRAME_ADVANCE:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    if (tempSelectedOption == 0)
+                    {
+                        adjustMenuNoPageEdit(CurrentButton);
+                    }
+                    break;
+                }
+                case A:
+                {
+                    if (tempSelectedOption == 0)
+                    {
+                        uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                        switch (CurrentMenuOptionCheck)
+                        {
+                            case CHEATS_FRAME_ADVANCE_TURN_ON_OR_OFF:
+                            {
+                                // Flip the bool for the current cheat
+                                bool CheatActive = Cheat[tempMenuSelectedOption].Active;
+                                Cheat[tempMenuSelectedOption].Active = !CheatActive;
+                                break;
+                            }
+                            case CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO:
+                            {
+                                MenuVar.ChangingCheatButtonCombo = true;
+                                MenuVar.Timer                    = secondsToFrames(3);
+                                MenuVar.SelectedOption           = CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO;
+                                break;
+                            }
+                            case CHEATS_FRAME_ADVANCE_CHANGE_PAUSE_BUTTON_COMBO:
+                            {
+                                MenuVar.ChangingCheatButtonCombo = true;
+                                MenuVar.Timer                    = secondsToFrames(3);
+                                MenuVar.SelectedOption           = CHEATS_FRAME_ADVANCE_CHANGE_PAUSE_BUTTON_COMBO;
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    if (tempSelectedOption == 0)
+                    {
+                        // Go back to the previous menu
+                        MenuVar.MenuSelectedOption = 0;
+                        enterPreviousMenu();
                     }
                     break;
                 }
@@ -3764,6 +3835,33 @@ void drawMenu()
             // Draw the bool
             int32_t PosY = 140;
             drawCheatsBool(PosY);
+            break;
+        }
+        case CHEATS_FRAME_ADVANCE:
+        {
+            // Draw the text for the options
+            drawSingleColumnSelectedOption();
+            
+            // Draw the text for the other details
+            drawCheatsFrameAdvance();
+            
+            switch (tempSelectedOption)
+            {
+                case CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO:
+                {
+                    drawChangeButtonCombo(&FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo);
+                    break;
+                }
+                case CHEATS_FRAME_ADVANCE_CHANGE_PAUSE_BUTTON_COMBO:
+                {
+                    drawChangeButtonCombo(&FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
             break;
         }
         case CHEATS_GENERATE_LAG_SPIKE:

@@ -23,6 +23,7 @@ enum MENU_NAMES
     CHEATS_CHANGE_SEQUENCE,
     CHEATS_STANDARD,
     CHEATS_NO_BUTTON_COMBO,
+    CHEATS_FRAME_ADVANCE,
     CHEATS_GENERATE_LAG_SPIKE,
     CHEATS_NPC_FORCE_DROP,
     CHEATS_RESOLVE_FADES,
@@ -87,6 +88,7 @@ enum CHEATS_OPTIONS
     RELOAD_ROOM,
     LEVITATE,
     AUTO_MASH_TEXT,
+    FRAME_ADVANCE,
     GENERATE_LAG_SPIKE,
     LOCK_MARIO_HP_TO_MAX,
     RUN_FROM_BATTLES,
@@ -120,6 +122,13 @@ enum CHEATS_FORCE_ITEM_DROP_SELECTION
 #define FADE_NOT_ACTIVE      -2
 #define FADE_DONT_RESOLVE    -1
 #define FADE_RESOLVE_SUCCESS 1
+
+enum CHEATS_FRAME_ADVANCE
+{
+    CHEATS_FRAME_ADVANCE_TURN_ON_OR_OFF = 1,
+    CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO,
+    CHEATS_FRAME_ADVANCE_CHANGE_PAUSE_BUTTON_COMBO,
+};
 
 enum CHEATS_GENERATE_LAG_SPIKE_SELECTION
 {
@@ -910,6 +919,20 @@ struct MemoryEditorSaveStruct
     bool EditorCurrentlyDisplayed;
 } __attribute__((__packed__));
 
+struct FrameAdvanceButtonCombosStruct
+{
+    uint16_t AdvanceFrameButtonCombo;
+    uint16_t PauseButtonCombo;
+} __attribute__((__packed__));
+
+struct FrameAdvanceStruct
+{
+    FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
+    bool AdvanceFrame;
+    bool GameIsPaused;
+    bool JustResumedGameplay;
+};
+
 struct SettingsStruct
 {
     bool CheatsActive[100];
@@ -918,6 +941,7 @@ struct SettingsStruct
     uint16_t DisplaysButtonCombos[100];
     MemoryWatchStruct MemoryWatchSettings[60];
     MemoryEditorSaveStruct MemoryEditorSave;
+    FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
 } __attribute__((__packed__));
 
 struct SaveFileDecriptionInfo
@@ -1021,8 +1045,8 @@ struct UnusedMapStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[35];
-extern Cheats Cheat[26];
+extern Menus Menu[36];
+extern Cheats Cheat[27];
 extern bool Displays[18];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
@@ -1055,6 +1079,7 @@ extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
 extern NpcNameToPtrErrorStruct NpcNameToPtrError;
 extern EnemyEncounterNotifierStruct EnemyEncounterNotifier;
+extern FrameAdvanceStruct FrameAdvance;
 extern UnusedMapStruct UnusedMap;
 
 extern uint8_t CheatsOrder[];
