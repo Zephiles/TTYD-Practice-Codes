@@ -672,36 +672,31 @@ uint32_t autoMashText(uint32_t controllerPort)
 
 void Mod::frameAdvance()
 {
+    // Call the original function immediately to get the button inputs for this frame
+    mPFN_makeKey_trampoline();
+    
     if (!Cheat[FRAME_ADVANCE].Active)
     {
-        // Call original function
-        return mPFN_makeKey_trampoline();
+        return;
     }
     
     // If currently changing button combos, then don't run
     if (MenuVar.ChangingCheatButtonCombo)
     {
-        // Call original function
-        return mPFN_makeKey_trampoline();
+        return;
     }
     
     // Make sure memory card stuff isn't currently happening
     if (ttyd::cardmgr::cardIsExec())
     {
-        // Call original function
-        return mPFN_makeKey_trampoline();
+        return;
     }
     
-    // If just unpaused, then don't run
-    if (FrameAdvance.JustResumedGameplay)
-    {
-        FrameAdvance.JustResumedGameplay = false;
-        
-        // Call original function
-        return mPFN_makeKey_trampoline();
-    }
+    // Keep track of whether the player is in the process of advancing frames
+    // This is used to determine if initially pausing or not
+    bool AdvancingFrame = FrameAdvance.AdvanceFrame;
     
-    if (FrameAdvance.AdvanceFrame || checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
+    if (AdvancingFrame || checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
     {
         // The game should currently be paused and not currently frame advancing
         // GameIsPaused needs to be set now to prevent viPostCallback from running
@@ -715,21 +710,26 @@ void Mod::frameAdvance()
         // Loop indefinitely until the button combo is pressed
         while (1)
         {
-            // Get the current button inputs
-            mPFN_makeKey_trampoline();
-            
             // Check for advancing to the next frame or resuming the game
             // Check for the pause combo first to prevent duplicate buttons causing softlocks
             if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
             {
-                // Restore the backed up OSTime
-                setOSTime(CurrentTime);
-                
-                // Resume gameplay
-                FrameAdvance.AdvanceFrame = false;
-                FrameAdvance.GameIsPaused = false;
-                FrameAdvance.JustResumedGameplay = true;
-                return;
+                if (AdvancingFrame)
+                {
+                    // Was previously advancing frames, so can unpause
+                    // Restore the backed up OSTime
+                    setOSTime(CurrentTime);
+                    
+                    // Resume gameplay
+                    FrameAdvance.AdvanceFrame = false;
+                    FrameAdvance.GameIsPaused = false;
+                    return;
+                }
+                else
+                {
+                    // Just now pausing, so start the frame advance checks
+                    AdvancingFrame = true;
+                }
             }
             else if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
             {
@@ -739,17 +739,16 @@ void Mod::frameAdvance()
                 // Advance one frame
                 FrameAdvance.AdvanceFrame = true;
                 FrameAdvance.GameIsPaused = false;
-                // FrameAdvance.JustResumedGameplay = false;
                 return;
             }
+            
+            // Recheck the button inputs
+            mPFN_makeKey_trampoline();
             
             // Prevent running this code multiple times per frame
             gc::vi::VIWaitForRetrace();
         }
     }
-    
-    // Call original function
-    return mPFN_makeKey_trampoline();
 }
 
 void Mod::preventViPostCallBackOnPause(uint32_t retraceCount)

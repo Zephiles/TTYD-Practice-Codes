@@ -930,7 +930,6 @@ struct FrameAdvanceStruct
     FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
     bool AdvanceFrame;
     bool GameIsPaused;
-    bool JustResumedGameplay;
 };
 
 struct SettingsStruct
