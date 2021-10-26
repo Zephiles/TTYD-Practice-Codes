@@ -707,6 +707,16 @@ void Mod::frameAdvance()
         // Back up the current OSTime
         int64_t CurrentTime = gc::OSTime::OSGetTime();
         
+        // If just now pausing, then skip to the next frame immediately
+        if (!AdvancingFrame)
+        {
+            // Recheck the button inputs
+            mPFN_makeKey_trampoline();
+            
+            // Go to the next frame
+            gc::vi::VIWaitForRetrace();
+        }
+        
         // Loop indefinitely until the button combo is pressed
         while (1)
         {
@@ -714,22 +724,13 @@ void Mod::frameAdvance()
             // Check for the pause combo first to prevent duplicate buttons causing softlocks
             if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
             {
-                if (AdvancingFrame)
-                {
-                    // Was previously advancing frames, so can unpause
-                    // Restore the backed up OSTime
-                    setOSTime(CurrentTime);
-                    
-                    // Resume gameplay
-                    FrameAdvance.AdvanceFrame = false;
-                    FrameAdvance.GameIsPaused = false;
-                    return;
-                }
-                else
-                {
-                    // Just now pausing, so start the frame advance checks
-                    AdvancingFrame = true;
-                }
+                // Restore the backed up OSTime
+                setOSTime(CurrentTime);
+                
+                // Resume gameplay
+                FrameAdvance.AdvanceFrame = false;
+                FrameAdvance.GameIsPaused = false;
+                return;
             }
             else if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
             {
@@ -745,7 +746,7 @@ void Mod::frameAdvance()
             // Recheck the button inputs
             mPFN_makeKey_trampoline();
             
-            // Prevent running this code multiple times per frame
+            // Go to the next frame
             gc::vi::VIWaitForRetrace();
         }
     }
