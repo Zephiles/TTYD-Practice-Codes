@@ -710,14 +710,14 @@ void Mod::frameAdvance()
         // If just now pausing, then skip to the next frame immediately
         if (!AdvancingFrame)
         {
-            // Recheck the button inputs
-            mPFN_makeKey_trampoline();
-            
             // Go to the next frame
             gc::vi::VIWaitForRetrace();
+            
+            // Recheck the button inputs
+            mPFN_makeKey_trampoline();
         }
         
-        // Loop indefinitely until the button combo is pressed
+        // Loop indefinitely until a button combo is pressed
         while (1)
         {
             // Check for advancing to the next frame or resuming the game
@@ -743,11 +743,11 @@ void Mod::frameAdvance()
                 return;
             }
             
-            // Recheck the button inputs
-            mPFN_makeKey_trampoline();
-            
             // Go to the next frame
             gc::vi::VIWaitForRetrace();
+            
+            // Recheck the button inputs
+            mPFN_makeKey_trampoline();
         }
     }
 }
