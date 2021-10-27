@@ -8,22 +8,17 @@
 
 namespace mod {
 
-int32_t RoundUp(int32_t val, int32_t align)
-{
-    return (val + align - 1) & ~(align - 1);
-}
-
 void ShrinkAllocation(int32_t heap_id, gc::OSModule::OSModuleInfo *rel, int32_t new_size)
 {
     constexpr int32_t kGranularity = 32;
     
     // Round to heap granularity
-    new_size = RoundUp(new_size, kGranularity);
+    new_size = RelShrinkRoundUp(new_size, kGranularity);
     
     gc::OSAlloc::ChunkInfo *first_chunk = reinterpret_cast<gc::OSAlloc::ChunkInfo *>(
         reinterpret_cast<uint8_t *>(rel) - kGranularity);
     
-    int32_t old_size = first_chunk->size - kGranularity;
+    const int32_t old_size = first_chunk->size - kGranularity;
     
     // Check we have sufficient space to split
     if ((new_size + (2 * kGranularity)) > old_size)
@@ -49,13 +44,31 @@ void ShrinkAllocation(int32_t heap_id, gc::OSModule::OSModuleInfo *rel, int32_t 
 
 void MakeRelFixed(int32_t heap_id, gc::OSModule::OSModuleInfo *rel)
 {
-    // Clear imports to avoid invalid memory accesses during unlink
-    // 
-    // NB if you need to support RELs with relocations against other RELs, you
-    // must trim off only the self-relocations and relocations against the DOL.
-    // These will always be the last imports in the list if present, so it's
-    // sufficient to scan for them and reduce the size field appropriately.
-    rel->impSize = 0;
+    // Remove imports for the current rel and the dol to avoid invalid
+    // memory accesses during unlink.
+    
+    // The imports for the current rel and dol should always be at the
+    // end of the imp table.
+    constexpr int32_t kImpTableSectionSize = sizeof(gc::OSModule::OSModuleImpSection);
+    const uint32_t imp_size_rounded = RelShrinkRoundUp(rel->impSize, kImpTableSectionSize);
+    const int32_t total_sections = imp_size_rounded / kImpTableSectionSize;
+    
+    const gc::OSModule::OSModuleImpSection *impTable = 
+        reinterpret_cast<gc::OSModule::OSModuleImpSection *>(rel->impOffset);
+    
+    const int32_t rel_module_id = rel->id;
+    
+    // Loop through each entry until either the dol or rel id is found.
+    // If found, then that should be the end of the imp table.
+    for (int32_t i = 0; i < total_sections; i++)
+    {
+        const int32_t imp_module_id = impTable[i].moduleId;
+        if ((imp_module_id == 0) || (imp_module_id == rel_module_id))
+        {
+            rel->impSize = i * kImpTableSectionSize;
+            break;
+        }
+    }
     
     // Figure out fixed size
     int32_t fixed_size = rel->fixSize - reinterpret_cast<uint32_t>(rel);

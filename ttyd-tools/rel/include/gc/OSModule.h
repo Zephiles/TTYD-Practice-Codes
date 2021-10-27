@@ -4,6 +4,12 @@
 
 namespace gc::OSModule {
 
+struct OSModuleImpSection
+{
+    int32_t moduleId;
+    uint32_t offset;
+} __attribute__((__packed__));
+
 struct OSModuleInfo
 {
     uint32_t id;
@@ -30,6 +36,7 @@ struct OSModuleInfo
     uint32_t fixSize;
 } __attribute__((__packed__));
 
+static_assert(sizeof(OSModuleImpSection) == 0x8);
 static_assert(sizeof(OSModuleInfo) == 0x4C);
 
 extern "C" {
