@@ -72,7 +72,7 @@ private:
     void (*mPFN__unload_trampoline)(const char *, const char *, const char *) = nullptr;
     void (*mPFN_relSetEvtAddr_trampoline)(const char *, const void *) = nullptr;
     void (*mPFN_seqSetSeq_trampoline)(ttyd::seqdrv::SeqIndex, const char *, const char *) = nullptr;
-    void (*mPFN_makeKey_trampoline)() = nullptr;
+    void (*mPFN_DEMOPadRead_trampoline)() = nullptr;
     void (*mPFN_viPostCallback_trampoline)(uint32_t) = nullptr;
 };
 

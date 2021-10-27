@@ -1,5 +1,6 @@
 #include "commonfunctions.h"
 
+#include <gc/DEMOPad.h>
 #include <gc/OSModule.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
@@ -33,6 +34,20 @@ bool checkButtonComboEveryFrame(uint32_t combo)
 {
     uint32_t ButtonInput = ttyd::system::keyGetButton(0);
     return (ButtonInput & combo) == combo;
+}
+
+bool checkButtonComboDemo(uint32_t combo)
+{
+    gc::DEMOPad::DEMOPadStatus *demoPadPtr = &gc::DEMOPad::DemoPad[0];
+    uint32_t ButtonInput = demoPadPtr->buttons;
+    
+    if ((ButtonInput & combo) != combo)
+    {
+        return false;
+    }
+    
+    uint32_t ButtonInputTrg = demoPadPtr->buttonsDown;
+    return ButtonInputTrg & combo;
 }
 
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq)

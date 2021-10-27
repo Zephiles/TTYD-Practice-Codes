@@ -323,9 +323,12 @@
 8041E7C8:DemoFrameBuffer1
 
 // DEMOPad.o
+// text
 8002F03C:DEMOPadInit
-// 8002F0C4:DEMOPadRead
+8002F0C4:DEMOPadRead
 // 8002F184:DEMOPadCopy
+// data
+803CA398:DemoPad
 
 // memory.o
 // text

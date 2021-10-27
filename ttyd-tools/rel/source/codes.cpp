@@ -673,7 +673,7 @@ uint32_t autoMashText(uint32_t controllerPort)
 void Mod::frameAdvance()
 {
     // Call the original function immediately to get the button inputs for this frame
-    mPFN_makeKey_trampoline();
+    mPFN_DEMOPadRead_trampoline();
     
     if (!Cheat[FRAME_ADVANCE].Active)
     {
@@ -696,7 +696,7 @@ void Mod::frameAdvance()
     // This is used to determine if initially pausing or not
     bool AdvancingFrame = FrameAdvance.AdvanceFrame;
     
-    if (AdvancingFrame || checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
+    if (AdvancingFrame || checkButtonComboDemo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
     {
         // The game should currently be paused and not currently frame advancing
         // GameIsPaused needs to be set now to prevent viPostCallback from running
@@ -714,7 +714,7 @@ void Mod::frameAdvance()
             gc::vi::VIWaitForRetrace();
             
             // Recheck the button inputs
-            mPFN_makeKey_trampoline();
+            mPFN_DEMOPadRead_trampoline();
         }
         
         // Loop indefinitely until a button combo is pressed
@@ -722,7 +722,7 @@ void Mod::frameAdvance()
         {
             // Check for advancing to the next frame or resuming the game
             // Check for the pause combo first to prevent duplicate buttons causing softlocks
-            if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
+            if (checkButtonComboDemo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
             {
                 // Restore the backed up OSTime
                 setOSTime(CurrentTime);
@@ -732,7 +732,7 @@ void Mod::frameAdvance()
                 FrameAdvance.GameIsPaused = false;
                 return;
             }
-            else if (checkButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
+            else if (checkButtonComboDemo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
             {
                 // Restore the backed up OSTime
                 setOSTime(CurrentTime);
@@ -747,7 +747,7 @@ void Mod::frameAdvance()
             gc::vi::VIWaitForRetrace();
             
             // Recheck the button inputs
-            mPFN_makeKey_trampoline();
+            mPFN_DEMOPadRead_trampoline();
         }
     }
 }

@@ -6,6 +6,7 @@
 
 #include <gc/OSModule.h>
 #include <gc/OSContext.h>
+#include <gc/DEMOPad.h>
 #include <ttyd/mariost.h>
 #include <ttyd/battle_pad.h>
 #include <ttyd/win_root.h>
@@ -24,7 +25,6 @@
 #include <ttyd/mapdata.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
-#include <ttyd/system.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -180,8 +180,8 @@ void Mod::init()
         gMod->preventBattlesOnReload(seq, map, bero);
     });
     
-    /* mPFN_makeKey_trampoline = patch::hookFunction(
-        ttyd::system::makeKey, []()
+    /* mPFN_DEMOPadRead_trampoline = patch::hookFunction(
+        gc::DEMOPad::DEMOPadRead, []()
     {
         gMod->frameAdvance();
     });
