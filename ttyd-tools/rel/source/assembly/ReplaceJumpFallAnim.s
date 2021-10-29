@@ -1,6 +1,6 @@
-.global StartReplaceJumpFallAnim
+.global asmReplaceJumpFallAnim
 
-StartReplaceJumpFallAnim:
+asmReplaceJumpFallAnim:
 stwu %sp,-0x10(%sp)
 mflr %r3
 stw %r3,0x14(%sp)

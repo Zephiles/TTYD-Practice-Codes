@@ -1,6 +1,6 @@
-.global StartAllowRunningFromBattles
+.global asmAllowRunningFromBattles
 
-StartAllowRunningFromBattles:
+asmAllowRunningFromBattles:
 stwu %sp,-0x10(%sp)
 mflr %r0
 stw %r0,0x14(%sp)

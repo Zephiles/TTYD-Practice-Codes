@@ -1,6 +1,6 @@
-.global StartPreventTextboxSelection
+.global asmPreventTextboxSelection
 
-StartPreventTextboxSelection:
+asmPreventTextboxSelection:
 mr %r3,%r30 # currentText
 mr %r4,%r29 # storeAddress
 mr %r5,%r0 # selectedOption

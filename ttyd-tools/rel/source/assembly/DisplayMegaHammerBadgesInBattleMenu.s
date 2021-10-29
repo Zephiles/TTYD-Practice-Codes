@@ -1,6 +1,6 @@
-.global StartDisplayMegaHammerBadgesBattleMenu
+.global asmDisplayMegaHammerBadgesBattleMenu
 
-StartDisplayMegaHammerBadgesBattleMenu:
+asmDisplayMegaHammerBadgesBattleMenu:
 stwu %sp,-0x10(%sp)
 mflr %r3
 stw %r3,0x14(%sp)

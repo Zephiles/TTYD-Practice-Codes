@@ -7,24 +7,24 @@ namespace mod {
 extern "C" {
 
 // Assembly overwrite functions
-// mod.cpp
-void StartErrorHandlerEnableFPU();
-
 // main.cpp
-void StartReplaceJumpFallAnim();
-void StartAllowRunningFromBattles();
-void StartForceNPCItemDrop();
-void StartDisplayMegaJumpBadgeBattleMenu();
-void StartDisplayMegaHammerBadgesBattleMenu();
-void StartFixBlooperCrash1();
-void StartFixBlooperCrash2();
-void StartPreventTextboxSelection();
-void StartDisableDPadOptionsDisplay();
-void StartFixEvtMapBlendSetFlagPartnerCrash();
-void StartFixEvtMapBlendSetFlagFollowerCrash();
-void StartFallThroughMostObjectsStandard();
-void StartFallThroughMostObjectsBowser();
-void StartJumpOnWater();
+void asmReplaceJumpFallAnim();
+void asmAllowRunningFromBattles();
+void asmForceNPCItemDrop();
+void asmDisplayMegaJumpBadgeBattleMenu();
+void asmDisplayMegaHammerBadgesBattleMenu();
+void asmFixBlooperCrash1();
+void asmFixBlooperCrash2();
+void asmPreventTextboxSelection();
+void asmDisableDPadOptionsDisplay();
+void asmFixEvtMapBlendSetFlagPartnerCrash();
+void asmFixEvtMapBlendSetFlagFollowerCrash();
+void asmFallThroughMostObjectsStandard();
+void asmFallThroughMostObjectsBowser();
+
+#ifdef TTYD_EU
+void asmJumpOnWater();
+#endif
 
 // Functions accessed by assembly overwrites
 // main.cpp
@@ -44,11 +44,12 @@ void *fallThroughMostObjects(void *ptr);
 
 // draw.cpp
 bool disableDPadOptionsDisplay(uint16_t unkVar);
-bool StartErrorHandlerCheckPairedSinglesEnabled();
-void StartErrorHandlerInterrupts();
 
 // Misc assembly functions
-void setTime(int64_t time);
+bool asmErrorHandlerCheckPairedSinglesEnabled();
+void asmErrorHandlerInterrupts();
+void asmErrorHandlerEnableFPU();
+void asmSetTime(int64_t time);
 
 }
 

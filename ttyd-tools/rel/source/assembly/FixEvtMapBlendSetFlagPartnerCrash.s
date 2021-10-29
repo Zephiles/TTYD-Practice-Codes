@@ -1,6 +1,6 @@
-.global StartFixEvtMapBlendSetFlagPartnerCrash
+.global asmFixEvtMapBlendSetFlagPartnerCrash
 
-StartFixEvtMapBlendSetFlagPartnerCrash:
+asmFixEvtMapBlendSetFlagPartnerCrash:
 stwu %sp,-0x10(%sp)
 mflr %r0
 stw %r0,0x14(%sp)

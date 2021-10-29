@@ -6175,7 +6175,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
         sizeof(ErrorHandler->PairedSinglesValues[0]);
     
     // Only get them if they are enabled
-    bool PairedSinglesEnabled = StartErrorHandlerCheckPairedSinglesEnabled();
+    bool PairedSinglesEnabled = asmErrorHandlerCheckPairedSinglesEnabled();
     if (PairedSinglesEnabled)
     {
         for (uint32_t i = 0; i < PairedSinglesSize; i++)
@@ -6191,7 +6191,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
     ttyd::pmario_sound::psndExit();
     
     // Allow interrupts
-    StartErrorHandlerInterrupts();
+    asmErrorHandlerInterrupts();
     
     // Init memory for the font data
     ttyd::memory::SmartAllocationData *FontDataMemory;

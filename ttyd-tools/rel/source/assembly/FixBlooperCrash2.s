@@ -1,4 +1,4 @@
-.global StartFixBlooperCrash2
+.global asmFixBlooperCrash2
 
 #ifdef TTYD_US
 offset = 0x218
@@ -8,7 +8,7 @@ offset = 0x214
 offset = 0x218
 #endif
 
-StartFixBlooperCrash2:
+asmFixBlooperCrash2:
 stwu %sp,-0x10(%sp)
 mflr %r0
 stw %r0,0x14(%sp)

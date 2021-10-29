@@ -1,6 +1,6 @@
-.global StartErrorHandlerEnableFPU
+.global asmErrorHandlerEnableFPU
 
-StartErrorHandlerEnableFPU:
+asmErrorHandlerEnableFPU:
 mfmsr %r3
 ori %r3,%r3,0x2000
 mtmsr %r3

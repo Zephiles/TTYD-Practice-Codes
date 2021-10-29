@@ -145,7 +145,7 @@ void Mod::init()
             gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
     {
         // Enable the FPU registers
-        StartErrorHandlerEnableFPU();
+        asmErrorHandlerEnableFPU();
         gMod->errorHandler(error, context, dsisr, dar);
     }); */
     

@@ -1,6 +1,6 @@
-.global StartForceNPCItemDrop
+.global asmForceNPCItemDrop
 
-StartForceNPCItemDrop:
+asmForceNPCItemDrop:
 stwu %sp,-0x10(%sp)
 mflr %r0
 stw %r0,0x14(%sp)

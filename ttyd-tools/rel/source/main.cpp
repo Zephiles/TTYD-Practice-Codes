@@ -837,7 +837,7 @@ void setOSTime(int64_t time)
     bool enable = gc::OSInterrupt::OSDisableInterrupts();
     
     // Set the new time
-    setTime(time);
+    asmSetTime(time);
     
     // Reset EXI stuff
     gc::exi::EXIProbeReset();
@@ -936,43 +936,28 @@ void initAddressOverwrites()
     void *JumpOnWaterAddress                        = reinterpret_cast<void *>(0x80093CF0);
 #endif
     
-    patch::writeBranchBL_Template(AllowRunningFromBattlesAddress, StartAllowRunningFromBattles);
-    
-    patch::writeBranchBL_Template(ForceNPCItemDropAddress, StartForceNPCItemDrop);
-    
-    patch::writeBranchBL_Template(ReplaceJumpAnimAddress, StartReplaceJumpFallAnim);
-    
-    patch::writeBranchBL_Template(DisplayBattleMenuJumpAddress, StartDisplayMegaJumpBadgeBattleMenu);
-    
-    patch::writeBranchBL_Template(DisplayBattleMenuHammerAddress, StartDisplayMegaHammerBadgesBattleMenu);
-    
-    patch::writeBranchBL_Template(FixBlooperCrash1Address, StartFixBlooperCrash1);
-    
-    patch::writeBranchBL_Template(FixBlooperCrash2Address, StartFixBlooperCrash2);
-    
-    patch::writeBranchBL_Template(PreventTextboxSelectionAddress, StartPreventTextboxSelection);
-    
-    patch::writeBranchBL_Template(DisableDPadOptionsDisplayAddress, StartDisableDPadOptionsDisplay);
-    
-    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagPartnerCrashAddress, StartFixEvtMapBlendSetFlagPartnerCrash);
-    
-    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagFollowerCrashAddress, StartFixEvtMapBlendSetFlagFollowerCrash);
-    
+    patch::writeBranchBL_Template(AllowRunningFromBattlesAddress, asmAllowRunningFromBattles);
+    patch::writeBranchBL_Template(ForceNPCItemDropAddress, asmForceNPCItemDrop);
+    patch::writeBranchBL_Template(ReplaceJumpAnimAddress, asmReplaceJumpFallAnim);
+    patch::writeBranchBL_Template(DisplayBattleMenuJumpAddress, asmDisplayMegaJumpBadgeBattleMenu);
+    patch::writeBranchBL_Template(DisplayBattleMenuHammerAddress, asmDisplayMegaHammerBadgesBattleMenu);
+    patch::writeBranchBL_Template(FixBlooperCrash1Address, asmFixBlooperCrash1);
+    patch::writeBranchBL_Template(FixBlooperCrash2Address, asmFixBlooperCrash2);
+    patch::writeBranchBL_Template(PreventTextboxSelectionAddress, asmPreventTextboxSelection);
+    patch::writeBranchBL_Template(DisableDPadOptionsDisplayAddress, asmDisableDPadOptionsDisplay);
+    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagPartnerCrashAddress, asmFixEvtMapBlendSetFlagPartnerCrash);
+    patch::writeBranchBL_Template(FixEvtMapBlendSetFlagFollowerCrashAddress, asmFixEvtMapBlendSetFlagFollowerCrash);
     patch::writeBranchBL_Template(PreventPouchInitMemoryLeakAddress, preventPouchInitMemoryLeak);
-    
     patch::writeBranchBL_Template(InitStageEventsAddress, initStageEvents);
-    
-    patch::writeBranchBL_Template(FallThroughMostObjectsStandAddress, StartFallThroughMostObjectsStandard);
-    patch::writeBranchBL_Template(FallThroughMostObjectsTubeAddress, StartFallThroughMostObjectsStandard);
-    
-    patch::writeBranchBL_Template(FallThroughMostObjectsBowserAddress, StartFallThroughMostObjectsBowser);
-    
+    patch::writeBranchBL_Template(FallThroughMostObjectsStandAddress, asmFallThroughMostObjectsStandard);
+    patch::writeBranchBL_Template(FallThroughMostObjectsTubeAddress, asmFallThroughMostObjectsStandard);
+    patch::writeBranchBL_Template(FallThroughMostObjectsBowserAddress, asmFallThroughMostObjectsBowser);
     patch::writeBranchBL_Template(AutoMashThroughText1Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText2Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText3Address, autoMashText);
     
 #ifdef TTYD_EU
-    patch::writeBranchBL_Template(JumpOnWaterAddress, StartJumpOnWater);
+    patch::writeBranchBL_Template(JumpOnWaterAddress, asmJumpOnWater);
 #endif
     
     *reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress)            = 0x3800FFFF; // li r0,-1
