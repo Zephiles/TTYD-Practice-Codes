@@ -1,19 +1,36 @@
 #pragma once
 
+#include <gc/OSContext.h>
+
 #include <cstdint>
 
 namespace gc::exi {
 
-struct ECB
+typedef void (*EXICallback)(int32_t channel, gc::OSContext::OSContext *context);
+
+struct EXIQueue
 {
-    uint8_t unk_0[0x20];
-    uint32_t unk_20;
-    uint8_t unk_24[0x3C];
-    uint32_t unk_60;
-    uint8_t unk_64[0x5C];
+    uint32_t dev;
+    EXICallback callback;
 } __attribute__((__packed__));
 
-static_assert(sizeof(ECB) == 0xC0);
+struct EXIControl
+{
+    EXICallback exiCallback;
+    EXICallback tcCallback;
+    EXICallback extCallback;
+    uint32_t state;
+    int32_t immLength;
+    uint8_t *immBuffer;
+    uint32_t dev;
+    uint32_t id;
+    int32_t idTime;
+    int32_t items;
+    EXIQueue queue[3];
+} __attribute__((__packed__));
+
+static_assert(sizeof(EXIQueue) == 0x8);
+static_assert(sizeof(EXIControl) == 0x40);
 
 extern "C" {
 
@@ -45,7 +62,7 @@ bool __EXIProbe(int32_t channel);
 // InitializeUART
 // WriteUARTN
 
-extern ECB Ecb;
+extern EXIControl Ecb[3];
 
 // Manually-written functions
 void EXIProbeReset();

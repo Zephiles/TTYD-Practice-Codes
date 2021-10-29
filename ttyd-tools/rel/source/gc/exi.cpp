@@ -1,16 +1,17 @@
 #include <gc/exi.h>
+#include <gc/os.h>
 
 namespace gc::exi {
 
 void EXIProbeReset()
 {
-    uint32_t *EXIVarsPtr = reinterpret_cast<uint32_t *>(0x800030C0);
-    EXIVarsPtr[0] = 0;
-    EXIVarsPtr[1] = 0;
+    int32_t *EXIProbeStartTimePtr = &gc::os::EXIProbeStartTime[0];
+    EXIProbeStartTimePtr[0] = 0;
+    EXIProbeStartTimePtr[1] = 0;
     
-    ECB *EcbPtr = &Ecb;
-    EcbPtr->unk_20 = 0;
-    EcbPtr->unk_60 = 0;
+    EXIControl *EcbPtr = &Ecb[0];
+    EcbPtr[0].idTime = 0;
+    EcbPtr[1].idTime = 0;
     
     __EXIProbe(0);
     __EXIProbe(1);
