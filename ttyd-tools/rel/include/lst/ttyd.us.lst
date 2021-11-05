@@ -1248,7 +1248,7 @@
 // 800DC380:psndSetPosDirListener
 // 800DC3A8:psndPushGroup
 800DC430:psndExit
-// 800DC460:psndMainInt
+800DC460:psndMainInt
 // 800DC48C:psndMain
 // 800DC4E0:psndInit
 // 800DC650:searchPSSFXList

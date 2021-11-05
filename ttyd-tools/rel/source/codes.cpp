@@ -757,6 +757,9 @@ void Mod::preventViPostCallBackOnPause(uint32_t retraceCount)
     // If the game is paused, then don't run
     if (FrameAdvance.GameIsPaused)
     {
+        // Call psndMainInt to prevent the audio from looping
+        // viPostCallback normally does this right before returning
+        ttyd::pmario_sound::psndMainInt();
         return;
     }
     

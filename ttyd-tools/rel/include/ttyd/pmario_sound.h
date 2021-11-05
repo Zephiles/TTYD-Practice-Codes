@@ -49,7 +49,7 @@ void psndClearFlag(uint16_t unkBit);
 // psndSetPosDirListener
 // psndPushGroup
 void psndExit();
-// psndMainInt
+void psndMainInt();
 // psndMain
 // psndInit
 // searchPSSFXList
