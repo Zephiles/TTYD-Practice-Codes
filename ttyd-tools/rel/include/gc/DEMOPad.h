@@ -1,13 +1,10 @@
 #pragma once
 
+#include <gc/pad.h>
+
 #include <cstdint>
 
 namespace gc::DEMOPad {
-
-#define PAD_RESULT_NONE            0
-#define PAD_RESULT_NO_CONTROLLER   -1
-#define PAD_RESULT_NOT_READY       -2
-#define PAD_RESULT_TRANSFER        -3
 
 struct DEMOPadStatus
 {
@@ -20,7 +17,7 @@ struct DEMOPadStatus
     uint8_t analogR;
     uint8_t analogA;
     uint8_t analogB;
-    int8_t error; // see PAD_RESULT defines above
+    int8_t error; // see PAD_RESULT defines in pad.h
     uint8_t padding;
     uint16_t buttonsDown;
     uint16_t buttonsUp;
@@ -42,6 +39,7 @@ void DEMOPadRead();
 // DEMOPadCopy
 
 extern DEMOPadStatus DemoPad[4]; // One for each controller port
+extern gc::pad::PadStatus Pad[4]; // One for each controller port
 
 }
 

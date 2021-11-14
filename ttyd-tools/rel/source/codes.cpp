@@ -9,6 +9,8 @@
 #include "evt_cmd.h"
 #include "main.h"
 
+#include <gc/pad.h>
+#include <gc/DEMOPad.h>
 #include <gc/OSTime.h>
 #include <gc/vi.h>
 #include <gc/os.h>
@@ -672,32 +674,54 @@ uint32_t autoMashText(uint32_t controllerPort)
 
 void Mod::frameAdvance()
 {
-    // Call the original function immediately to get the button inputs for this frame
-    mPFN_DEMOPadRead_trampoline();
-    
     if (!Cheat[FRAME_ADVANCE].Active)
     {
-        return;
+        // Call original function
+        return mPFN_DEMOPadRead_trampoline();
     }
     
     // If currently changing button combos, then don't run
     if (MenuVar.ChangingCheatButtonCombo)
     {
-        return;
+        // Call original function
+        return mPFN_DEMOPadRead_trampoline();
     }
     
     // Make sure memory card stuff isn't currently happening
     if (ttyd::cardmgr::cardIsExec())
     {
-        return;
+        // Call original function
+        return mPFN_DEMOPadRead_trampoline();
     }
     
+    // Use various locals to keep the next section cleaner
+    constexpr uint32_t PadStatusSize = sizeof(gc::pad::PadStatus) * 4;
+    constexpr uint32_t DemoPadStatusSize = sizeof(gc::DEMOPad::DEMOPadStatus) * 4;
+    FrameAdvanceBackupInputs *BackupInputsPtr = &FrameAdvance.BackupInputs;
+    gc::pad::PadStatus *PadPtr = &gc::DEMOPad::Pad[0];
+    gc::DEMOPad::DEMOPadStatus *DemoPadPtr = &gc::DEMOPad::DemoPad[0];
+    
     // Keep track of whether the player is in the process of advancing frames
-    // This is used to determine if initially pausing or not
     bool AdvancingFrame = FrameAdvance.AdvanceFrame;
+    if (!AdvancingFrame)
+    {
+        // Get the button inputs for this frame
+        mPFN_DEMOPadRead_trampoline();
+            
+        // Back up the button inputs that were just generated
+        memcpy(BackupInputsPtr->padPreviousFrame, PadPtr, PadStatusSize);
+        memcpy(BackupInputsPtr->demoPadPreviousFrame, DemoPadPtr, DemoPadStatusSize);
+    }
     
     if (AdvancingFrame || checkButtonComboDemo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo))
     {
+        if (AdvancingFrame)
+        {
+            // Restore the button inputs from the previous frame
+            memcpy(BackupInputsPtr->padPreviousFrame, BackupInputsPtr->padCurrentFrame, PadStatusSize);
+            memcpy(BackupInputsPtr->demoPadPreviousFrame, BackupInputsPtr->demoPadCurrentFrame, DemoPadStatusSize);
+        }
+        
         // The game should currently be paused and not currently frame advancing
         // GameIsPaused needs to be set now to prevent viPostCallback from running
         // AdvanceFrame isn't currently used anywhere else, but might be in the future, so adjust it now
@@ -707,15 +731,11 @@ void Mod::frameAdvance()
         // Back up the current OSTime
         int64_t CurrentTime = gc::OSTime::OSGetTime();
         
-        // If just now pausing, then skip to the next frame immediately
-        if (!AdvancingFrame)
-        {
-            // Go to the next frame
-            gc::vi::VIWaitForRetrace();
-            
-            // Recheck the button inputs
-            mPFN_DEMOPadRead_trampoline();
-        }
+        // Go to the next frame to avoid button combos from the previous frame from activating
+        gc::vi::VIWaitForRetrace();
+        
+        // Recheck the button inputs
+        mPFN_DEMOPadRead_trampoline();
         
         // Loop indefinitely until a button combo is pressed
         while (1)
@@ -734,6 +754,14 @@ void Mod::frameAdvance()
             }
             else if (checkButtonComboDemo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo))
             {
+                // Back up the button inputs for this frame
+                memcpy(BackupInputsPtr->padCurrentFrame, PadPtr, PadStatusSize);
+                memcpy(BackupInputsPtr->demoPadCurrentFrame, DemoPadPtr, DemoPadStatusSize);
+                
+                // Restore the button inputs from the previous frame
+                memcpy(PadPtr, BackupInputsPtr->padPreviousFrame, PadStatusSize);
+                memcpy(DemoPadPtr, BackupInputsPtr->demoPadPreviousFrame, DemoPadStatusSize);
+                
                 // Restore the backed up OSTime
                 setOSTime(CurrentTime);
                 

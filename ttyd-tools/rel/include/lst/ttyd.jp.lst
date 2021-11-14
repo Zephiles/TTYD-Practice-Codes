@@ -330,6 +330,7 @@
 // 8002EB60:DEMOPadCopy
 // data
 803C6818:DemoPad
+804185B0:Pad
 
 // memory.o
 // text
@@ -2411,6 +2412,29 @@
 8029F53C:DEMOInitCaption
 8029F798:DEMOPuts
 8029FAA8:DEMOPrintf
+
+// pad.a
+// 802A08C4:ClampStick
+// 802A09F4:PADClamp
+// 802A0B08:UpdateOrigin
+// 802A0CAC:PADOriginCallback
+// 802A0D70:PADOriginUpdateCallback
+// 802A0E3C:PADProbeCallback
+// 802A0F14:PADTypeAndStatusCallback
+// 802A1240:PADReceiveCheckCallback
+// 802A1380:PADReset
+// 802A1490:PADRecalibrate
+// 802A15A4:PADInit
+// 802A16F4:PADRead
+// 802A19F4:U_PADControlMotor
+// 802A1AAC:PADSetSpec
+// 802A1B0C:SPEC0_MakeStatus
+// 802A1C80:SPEC1_MakeStatus
+// 802A1DF4:SPEC2_MakeStatus
+// 802A2264:OnReset
+// 802A2320:SamplingHandler
+// 802A2380:PADSetSamplingCallback
+// 802A23D4:__PADDisableRecalibration
 
 // card.a
 // 802A56A0:__CARDDefaultApiCallback

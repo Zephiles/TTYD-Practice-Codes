@@ -1,6 +1,8 @@
 #pragma once
 
 #include <gc/OSAlloc.h>
+#include <gc/pad.h>
+#include <gc/DEMOPad.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mapdata.h>
 
@@ -925,8 +927,17 @@ struct FrameAdvanceButtonCombosStruct
     uint16_t PauseButtonCombo;
 } __attribute__((__packed__));
 
+struct FrameAdvanceBackupInputs
+{
+    gc::pad::PadStatus padPreviousFrame[4];
+    gc::pad::PadStatus padCurrentFrame[4];
+    gc::DEMOPad::DEMOPadStatus demoPadPreviousFrame[4];
+    gc::DEMOPad::DEMOPadStatus demoPadCurrentFrame[4];
+};
+
 struct FrameAdvanceStruct
 {
+    FrameAdvanceBackupInputs BackupInputs;
     FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
     bool AdvanceFrame;
     bool GameIsPaused;

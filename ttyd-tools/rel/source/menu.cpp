@@ -733,6 +733,13 @@ void menuCheckButton()
                                 // Flip the bool for the current cheat
                                 bool CheatActive = Cheat[tempMenuSelectedOption].Active;
                                 Cheat[tempMenuSelectedOption].Active = !CheatActive;
+                                
+                                // Clear the bools used during the frame advancing process
+                                FrameAdvance.AdvanceFrame = false;
+                                FrameAdvance.GameIsPaused = false;
+                                
+                                // Clear any existing backup inputs
+                                clearMemory(&FrameAdvance.BackupInputs, sizeof(FrameAdvanceBackupInputs));
                                 break;
                             }
                             case CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO:
