@@ -718,8 +718,10 @@ void Mod::frameAdvance()
         if (AdvancingFrame)
         {
             // Restore the button inputs from the previous frame
-            memcpy(BackupInputsPtr->padPreviousFrame, BackupInputsPtr->padCurrentFrame, PadStatusSize);
-            memcpy(BackupInputsPtr->demoPadPreviousFrame, BackupInputsPtr->demoPadCurrentFrame, DemoPadStatusSize);
+            // Copy both sets at the same time
+            memcpy(BackupInputsPtr->padPreviousFrame, 
+                BackupInputsPtr->padCurrentFrame, 
+                PadStatusSize + DemoPadStatusSize);
         }
         
         // The game should currently be paused and not currently frame advancing

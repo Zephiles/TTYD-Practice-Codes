@@ -930,8 +930,8 @@ struct FrameAdvanceButtonCombosStruct
 struct FrameAdvanceBackupInputs
 {
     gc::pad::PadStatus padPreviousFrame[4];
-    gc::pad::PadStatus padCurrentFrame[4];
     gc::DEMOPad::DEMOPadStatus demoPadPreviousFrame[4];
+    gc::pad::PadStatus padCurrentFrame[4];
     gc::DEMOPad::DEMOPadStatus demoPadCurrentFrame[4];
 };
 
