@@ -697,7 +697,7 @@ void Mod::frameAdvance()
     // Use various locals to keep the next section cleaner
     constexpr uint32_t PadStatusSize = sizeof(gc::pad::PadStatus) * 4;
     constexpr uint32_t DemoPadStatusSize = sizeof(gc::DEMOPad::DEMOPadStatus) * 4;
-    FrameAdvanceBackupInputs *BackupInputsPtr = &FrameAdvance.BackupInputs;
+    FrameAdvanceBackupInputs *BackupInputsPtr = FrameAdvance.BackupInputs;
     gc::pad::PadStatus *PadPtr = &gc::DEMOPad::Pad[0];
     gc::DEMOPad::DEMOPadStatus *DemoPadPtr = &gc::DEMOPad::DemoPad[0];
     

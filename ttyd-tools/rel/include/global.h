@@ -929,6 +929,7 @@ struct FrameAdvanceButtonCombosStruct
 
 struct FrameAdvanceBackupInputs
 {
+    // These are ordered this way to allow memcpying from both current pads to both previous pads at once
     gc::pad::PadStatus padPreviousFrame[4];
     gc::DEMOPad::DEMOPadStatus demoPadPreviousFrame[4];
     gc::pad::PadStatus padCurrentFrame[4];
@@ -937,10 +938,23 @@ struct FrameAdvanceBackupInputs
 
 struct FrameAdvanceStruct
 {
-    FrameAdvanceBackupInputs BackupInputs;
+    FrameAdvanceBackupInputs *BackupInputs;
     FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
     bool AdvanceFrame;
     bool GameIsPaused;
+    
+    FrameAdvanceStruct()
+    {
+        BackupInputs = new FrameAdvanceBackupInputs;
+    }
+    
+    ~FrameAdvanceStruct()
+    {
+        if (BackupInputs)
+        {
+            delete BackupInputs;
+        }
+    }
 };
 
 struct SettingsStruct

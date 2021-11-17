@@ -739,7 +739,7 @@ void menuCheckButton()
                                 FrameAdvance.GameIsPaused = false;
                                 
                                 // Clear any existing backup inputs
-                                clearMemory(&FrameAdvance.BackupInputs, sizeof(FrameAdvanceBackupInputs));
+                                clearMemory(FrameAdvance.BackupInputs, sizeof(FrameAdvanceBackupInputs));
                                 break;
                             }
                             case CHEATS_FRAME_ADVANCE_CHANGE_ADVANCE_FRAME_BUTTON_COMBO:
