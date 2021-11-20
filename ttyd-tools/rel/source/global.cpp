@@ -53,7 +53,7 @@ const char *CheatsLines[] =
     "Reload Room",
     "Levitate",
     "Auto Mash Through Text",
-    "Frame Advance (Not currently implemented)",
+    "Frame Advance (Experimental)",
     "Generate Lag Spike",
     "Lock Mario's HP To Its Max",
     "Allow Running From Any Battle",

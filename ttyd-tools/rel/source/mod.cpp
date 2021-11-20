@@ -180,7 +180,7 @@ void Mod::init()
         gMod->preventBattlesOnReload(seq, map, bero);
     });
     
-    /* mPFN_DEMOPadRead_trampoline = patch::hookFunction(
+    mPFN_DEMOPadRead_trampoline = patch::hookFunction(
         gc::DEMOPad::DEMOPadRead, []()
     {
         gMod->frameAdvance();
@@ -190,7 +190,7 @@ void Mod::init()
         ttyd::mariost::viPostCallback, [](uint32_t retraceCount)
     {
         gMod->preventViPostCallBackOnPause(retraceCount);
-    }); */
+    });
     
     // Initialize typesetting early
     ttyd::fontmgr::fontmgrTexSetup();
