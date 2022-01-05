@@ -22,6 +22,10 @@ void asmFixEvtMapBlendSetFlagFollowerCrash();
 void asmFallThroughMostObjectsStandard();
 void asmFallThroughMostObjectsBowser();
 
+#ifdef TTYD_JP
+void asmBacktraceScreenIncrementYPos();
+#endif
+
 #ifdef TTYD_EU
 void asmJumpOnWater();
 #endif
@@ -36,6 +40,10 @@ void *fixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr);
 void *fixEvtMapBlendSetFlagFollowerCrash(void *followerPtr);
 const char *replaceJumpFallAnim(char *jumpFallString);
 void *jumpOnWater(void *ptr);
+
+#ifdef TTYD_JP
+int32_t backtraceScreenIncrementYPos();
+#endif
 
 // codes.cpp
 uint32_t allowRunningFromBattles(void *ptr);

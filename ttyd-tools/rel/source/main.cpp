@@ -255,6 +255,27 @@ void *jumpOnWater(void *ptr)
     }
 }
 
+int32_t backtraceScreenIncrementYPos()
+{
+    static int16_t IncrementCount = 0;
+    int32_t tempIncrementCount = IncrementCount;
+    
+    int32_t TextPosY = tempIncrementCount + 50;
+    tempIncrementCount--;
+    
+    if (tempIncrementCount < -960)
+    {
+        // Simulate incrementing exactly once to match the US/PAL code
+        IncrementCount = -1;
+        return 50;
+    }
+    else
+    {
+        IncrementCount = static_cast<int16_t>(tempIncrementCount);
+        return TextPosY;
+    }
+}
+
 void displayTitleScreenAndFileSelectScreenInfo()
 {
     if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kTitle))
@@ -892,6 +913,7 @@ void initAddressOverwrites()
     void *FixBlooperCrash1Address                   = reinterpret_cast<void *>(0x8010A724);
     void *FixBlooperCrash2Address                   = reinterpret_cast<void *>(0x8010A79C);
     void *PreventTextboxSelectionAddress            = reinterpret_cast<void *>(0x800CE01C);
+    void *BacktraceScreenPosYValueAddress           = reinterpret_cast<void *>(0x802582F8);
     void *BacktraceScreenFontSizeAddress            = reinterpret_cast<void *>(0x80422618);
     void *DisableDPadOptionsDisplayAddress          = reinterpret_cast<void *>(0x80137C1C);
     void *FixEvtMapBlendSetFlagPartnerCrashAddress  = reinterpret_cast<void *>(0x80038328);
@@ -955,6 +977,10 @@ void initAddressOverwrites()
     patch::writeBranchBL_Template(AutoMashThroughText1Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText2Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText3Address, autoMashText);
+    
+#ifdef TTYD_JP
+    patch::writeBranchBL_Template(BacktraceScreenPosYValueAddress, asmBacktraceScreenIncrementYPos);
+#endif
     
 #ifdef TTYD_EU
     patch::writeBranchBL_Template(JumpOnWaterAddress, asmJumpOnWater);
