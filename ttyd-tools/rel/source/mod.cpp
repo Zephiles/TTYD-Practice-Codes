@@ -25,6 +25,7 @@
 #include <ttyd/mapdata.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/pmario_sound.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
@@ -190,6 +191,20 @@ void Mod::init()
         ttyd::mariost::viPostCallback, [](uint32_t retraceCount)
     {
         gMod->preventViPostCallBackOnPause(retraceCount);
+    });
+    
+    mPFN_psndBGMOn_f_d_trampoline = patch::hookFunction(
+        ttyd::pmario_sound::psndBGMOn_f_d, [](int32_t flags, const char *bgmName, 
+            uint16_t wFadeTime, uint16_t wFadeTime2, bool unused)
+    {
+        return gMod->disableBGM(flags, bgmName, wFadeTime, wFadeTime2, unused);
+    });
+    
+    mPFN_psndENVOn_f_d_trampoline = patch::hookFunction(
+        ttyd::pmario_sound::psndENVOn_f_d, [](int32_t flags, 
+            const char *envName, int32_t wFadeTime, bool unused)
+    {
+        return gMod->disableENVSounds(flags, envName, wFadeTime, unused);
     });
     
     // Initialize typesetting early

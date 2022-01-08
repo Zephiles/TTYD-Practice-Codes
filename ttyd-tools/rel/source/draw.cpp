@@ -3786,6 +3786,31 @@ void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo)
     drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
+void drawCheatsDisableCertainSounds()
+{
+    // uint32_t Color   = 0xFFFFFFFF;
+    // uint8_t Alpha = 0xFF;
+    // int32_t PosX     = -232;
+    int32_t PosY     = 100;
+    // float Scale      = 0.6f;
+    
+    // Draw the bool for Disable Pause Menu/Z Menu Sounds
+    drawCheatsBool(PosY);
+    PosY -= 60;
+    
+    // Draw the bools for the additional options
+    bool *Bools = MenuVar.DisableCertainSounds;
+    const char** Lines = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].Line;
+    uint32_t TotalLines = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions;
+    
+    for (uint32_t i = 0; i < (TotalLines - 1); i++)
+    {
+        // Skip the first line, as it's used for Disable Pause Menu/Z Menu Sounds
+        drawBoolOnOrOff(Bools[i], Lines[i + 1], PosY);
+        PosY -= 60;
+    }
+}
+
 void drawCheatsForcedDropItem()
 {
     uint8_t Alpha  = 0xFF;

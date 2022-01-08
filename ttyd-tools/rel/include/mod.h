@@ -42,6 +42,8 @@ private:
     void preventBattlesOnReload(ttyd::seqdrv::SeqIndex, const char *, const char *);
     void frameAdvance();
     void preventViPostCallBackOnPause(uint32_t);
+    bool disableBGM(int32_t, const char *, uint16_t, uint16_t, bool);
+    bool disableENVSounds(int32_t, const char *, int32_t, bool);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -74,6 +76,8 @@ private:
     void (*mPFN_seqSetSeq_trampoline)(ttyd::seqdrv::SeqIndex, const char *, const char *) = nullptr;
     void (*mPFN_DEMOPadRead_trampoline)() = nullptr;
     void (*mPFN_viPostCallback_trampoline)(uint32_t) = nullptr;
+    bool (*mPFN_psndBGMOn_f_d_trampoline)(int32_t, const char *, uint16_t, uint16_t, bool) = nullptr;
+    bool (*mPFN_psndENVOn_f_d_trampoline)(int32_t, const char *, int32_t, bool) = nullptr;
 };
 
 }

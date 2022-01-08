@@ -7,9 +7,9 @@ namespace ttyd::pmario_sound {
 extern "C" {
 
 // psndENV_LPF
-// psndENVOff_f_d
-// psndENVOff
-// psndENVOn_f_d
+bool psndENVOff_f_d(int32_t flags, int32_t wFadeTime, bool unused);
+bool psndENVOff(int32_t flags);
+bool psndENVOn_f_d(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
 // psndENVOn
 // psndENVMain
 // psndENV_stop
@@ -32,9 +32,9 @@ extern "C" {
 // psndBGMScope
 // psndBGMChkSilent
 // psndBGMChk
-// psndBGMOff_f_d
-// psndBGMOff
-// psndBGMOn_f_d
+bool psndBGMOff_f_d(int32_t flags, uint16_t fadeTime, bool unkSwitch);
+bool psndBGMOff(int32_t flags);
+bool psndBGMOn_f_d(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
 // psndBGMOn
 // psndBGMMain
 // psndBGM_rate

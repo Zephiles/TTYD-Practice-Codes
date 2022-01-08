@@ -1209,9 +1209,9 @@
 
 // pmario_sound.o
 // 800D8224:psndENV_LPF
-// 800D826C:psndENVOff_f_d
-// 800D84B4:psndENVOff
-// 800D84DC:psndENVOn_f_d
+800D826C:psndENVOff_f_d
+800D84B4:psndENVOff
+800D84DC:psndENVOn_f_d
 // 800D8938:psndENVOn
 // 800D8960:psndENVMain
 // 800D9FE4:psndENV_stop
@@ -1234,9 +1234,9 @@
 // 800DB8E8:psndBGMScope
 // 800DB940:psndBGMChkSilent
 // 800DB980:psndBGMChk
-// 800DB9A8:psndBGMOff_f_d
-// 800DBCF8:psndBGMOff
-// 800DBD20:psndBGMOn_f_d
+800DB9A8:psndBGMOff_f_d
+800DBCF8:psndBGMOff
+800DBD20:psndBGMOn_f_d
 // 800DC59C:psndBGMOn
 // 800DC5C8:psndBGMMain
 // 800DCA5C:psndBGM_rate

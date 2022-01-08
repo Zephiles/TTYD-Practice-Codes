@@ -10,6 +10,7 @@
 #include <gc/card.h>
 #include <ttyd/mariost.h>
 #include <ttyd/seq_mapchange.h>
+#include <ttyd/pmario_sound.h>
 #include <ttyd/swdrv.h>
 #include <ttyd/evt_yuugijou.h>
 #include <ttyd/mario_pouch.h>
@@ -546,10 +547,14 @@ void menuCheckButton()
                         }
                         case LOCK_MARIO_HP_TO_MAX:
                         case RUN_FROM_BATTLES:
-                        case DISABLE_MENU_SOUNDS:
                         case BOBBERY_EARLY:
                         {
                             MenuToEnter = CHEATS_NO_BUTTON_COMBO;
+                            break;
+                        }
+                        case DISABLE_MENU_SOUNDS:
+                        {
+                            MenuToEnter = CHEATS_DISABLE_CERTAIN_SOUNDS;
                             break;
                         }
                         case FORCE_ITEM_DROP:
@@ -838,6 +843,73 @@ void menuCheckButton()
                         MenuVar.MenuSelectedOption = 0;
                         enterPreviousMenu();
                     }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case CHEATS_DISABLE_CERTAIN_SOUNDS:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    adjustMenuNoPageEdit(CurrentButton);
+                    break;
+                }
+                case A:
+                {
+                    uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                    switch (CurrentMenuOptionCheck)
+                    {
+                        case PAUSE_Z_MENU_SOUND_TURN_ON_OR_OFF:
+                        {
+                            // Flip the bool for the current cheat
+                            bool CheatActive = Cheat[tempMenuSelectedOption].Active;
+                            Cheat[tempMenuSelectedOption].Active = !CheatActive;
+                            break;
+                        }
+                        case BGM_TURN_ON_OR_OFF:
+                        case ENV_TURN_ON_OR_OFF:
+                        {
+                            // Flip the bool for whichever one is selected
+                            int32_t Index = CurrentMenuOptionCheck - 2;
+                            bool CheatActive = !MenuVar.DisableCertainSounds[Index];
+                            MenuVar.DisableCertainSounds[Index] = CheatActive;
+                            
+                            // Manually turn off sounds based on whichever is selected
+                            if (CheatActive)
+                            {
+                                if (CurrentMenuOptionCheck == BGM_TURN_ON_OR_OFF)
+                                {
+                                    ttyd::pmario_sound::psndBGMOff(0x200);
+                                    ttyd::pmario_sound::psndBGMOff(0x201);
+                                }
+                                else
+                                {
+                                    ttyd::pmario_sound::psndENVOff(0x200);
+                                    ttyd::pmario_sound::psndENVOff(0x201);
+                                }
+                            }
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    // Go back to the previous menu
+                    MenuVar.MenuSelectedOption = 0;
+                    enterPreviousMenu();
                     break;
                 }
                 default:
@@ -3897,6 +3969,15 @@ void drawMenu()
                     break;
                 }
             }
+            break;
+        }
+        case CHEATS_DISABLE_CERTAIN_SOUNDS:
+        {
+            // Draw the text for the options
+            drawSingleColumnMain();
+            
+            // Draw each option with its bool
+            drawCheatsDisableCertainSounds();
             break;
         }
         case CHEATS_NPC_FORCE_DROP:

@@ -1637,6 +1637,28 @@ int32_t Mod::preventMenuSounds(int32_t soundId, uint32_t unk1, uint32_t unk2, ui
     return mPFN_SoundEfxPlayEx_trampoline(soundId, unk1, unk2, unk3);
 }
 
+bool Mod::disableBGM(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused)
+{
+    if (MenuVar.DisableCertainSounds[BGM_TURN_ON_OR_OFF - 2])
+    {
+        return false;
+    }
+    
+    // Call original function
+    return mPFN_psndBGMOn_f_d_trampoline(flags, bgmName, wFadeTime, wFadeTime2, unused);
+}
+
+bool Mod::disableENVSounds(int32_t flags, const char *envName, int32_t wFadeTime, bool unused)
+{
+    if (MenuVar.DisableCertainSounds[ENV_TURN_ON_OR_OFF - 2])
+    {
+        return false;
+    }
+    
+    // Call original function
+    return mPFN_psndENVOn_f_d_trampoline(flags, envName, wFadeTime, unused);
+}
+
 int32_t Mod::displayActionCommandsTimingHook(void *battleUnitPtr, ttyd::battle_unit::AttackParams *attackParams)
 {
     // Credits to Jdaster64 for writing the original code for this function

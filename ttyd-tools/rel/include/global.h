@@ -27,6 +27,7 @@ enum MENU_NAMES
     CHEATS_NO_BUTTON_COMBO,
     CHEATS_FRAME_ADVANCE,
     CHEATS_GENERATE_LAG_SPIKE,
+    CHEATS_DISABLE_CERTAIN_SOUNDS,
     CHEATS_NPC_FORCE_DROP,
     CHEATS_RESOLVE_FADES,
     CHEATS_LOCK_FLAGS,
@@ -94,8 +95,8 @@ enum CHEATS_OPTIONS
     GENERATE_LAG_SPIKE,
     LOCK_MARIO_HP_TO_MAX,
     RUN_FROM_BATTLES,
-    DISABLE_MENU_SOUNDS,
     BOBBERY_EARLY,
+    DISABLE_MENU_SOUNDS,
     FORCE_ITEM_DROP,
     RESOLVE_FADES,
     LOCK_FLAGS,
@@ -118,6 +119,13 @@ enum CHEATS_FORCE_ITEM_DROP_SELECTION
 {
     ITEM_DROP_TURN_ON_OR_OFF = 1,
     ITEM_DROP_CHANGE_BY_ID,
+};
+
+enum CHEATS_DISABLE_CERTAIN_SOUNDS_SELECTION
+{
+    PAUSE_Z_MENU_SOUND_TURN_ON_OR_OFF = 1,
+    BGM_TURN_ON_OR_OFF,
+    ENV_TURN_ON_OR_OFF,
 };
 
 // Fades return values
@@ -565,6 +573,7 @@ struct MenuVars
     bool SystemLevelIsSet;
     bool ResetMarioProperties;
     bool MarioFreeze;
+    bool DisableCertainSounds[2];
     uint16_t LagSpikeDuration; // Milliseconds
     int16_t ForcedNPCItemDrop;
     uint16_t JumpStorageSetCounter;
@@ -1069,7 +1078,7 @@ struct UnusedMapStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[36];
+extern Menus Menu[37];
 extern Cheats Cheat[27];
 extern bool Displays[18];
 extern char DisplayBuffer[256];
