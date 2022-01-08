@@ -392,10 +392,23 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
     }
 }
 
-bool checkIfPointerIsValid(const void *ptr)
+uint32_t checkIfPointerIsValid(const void *ptr)
 {
     uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
-    return ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000));
+    
+    // Cached memory
+    if ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000))
+    {
+        return PTR_CACHED;
+    }
+    
+    // Unached memory
+    if ((ptrRaw >= 0xC0000000) && (ptrRaw < 0xC1800000))
+    {
+        return PTR_UNCACHED;
+    }
+    
+    return PTR_INVALID;
 }
 
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount)

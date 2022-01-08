@@ -739,8 +739,8 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
         {
             if (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS)
             {
-                LowerBound = 0x80000000;
-                UpperBound = 0x817FFFFF;
+                // LowerBound = 0;
+                UpperBound = 0xFFFFFFFF;
             }
             else // Changing the amount of bytes to modify
             {
@@ -1776,7 +1776,7 @@ uint32_t memoryAddressTypeButtonControls()
             uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
             MemoryWatch[tempMenuSelectedOption].Type = tempSecondaryMenuOption;
             
-            // Make sure the address being read does not exceed 0x817FFFFF
+            // Make sure the address being read does not exceed 0x817FFFFF/0xC17FFFFF
             MemoryWatch[tempMenuSelectedOption].Address = reinterpret_cast<uint32_t>(
                 fixBaseAddress(tempMenuSelectedOption, reinterpret_cast<void *>(
                     MemoryWatch[tempMenuSelectedOption].Address)));
@@ -2267,7 +2267,7 @@ void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_
     }
 }
 
-void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound)
+/* void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound)
 {
     int64_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValueUnsigned + valueChangedBy;
     MenuVar.MenuSecondaryValueUnsigned = static_cast<uint32_t>(tempMenuSecondaryValue);
@@ -2307,7 +2307,7 @@ void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBoun
             MenuVar.MenuSecondaryValueUnsigned = upperBound;
         }
     }
-}
+} */
 
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
 {
@@ -2368,14 +2368,8 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
             if ((currentMenu == MEMORY_EDITOR_MENU) && 
                 (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS))
             {
-                // Handle everything as unsigned
-                int32_t UpperAndLowerBounds[2];
-                getUpperAndLowerBounds(UpperAndLowerBounds, currentMenu);
-                
-                uint32_t LowerBound = static_cast<uint32_t>(UpperAndLowerBounds[0]);
-                uint32_t UpperBound = static_cast<uint32_t>(UpperAndLowerBounds[1]);
-                
-                adjustMenuItemBoundsMainUnsigned(valueChangedBy, LowerBound, UpperBound);
+                // No adjustments are needed, so write the new value immediately and return
+                MenuVar.MenuSecondaryValueUnsigned += valueChangedBy;
                 return;
             }
             break;
@@ -2395,8 +2389,7 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
     adjustMenuItemBoundsMain(valueChangedBy, LowerBound, UpperBound);
 }
 
-void adjustAddByIdValue(int32_t value, uint32_t currentMenu, 
-    bool handleAsHex, bool handleAsUnsigned)
+void adjustAddByIdValue(int32_t value, uint32_t currentMenu, bool handleAsHex, bool handleAsUnsigned)
 {
     int32_t multiplyAmount;
     if (handleAsHex)

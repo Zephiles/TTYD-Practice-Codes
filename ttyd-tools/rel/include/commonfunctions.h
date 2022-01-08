@@ -10,6 +10,13 @@
 
 namespace mod {
 
+enum PointerVerificationType : uint32_t
+{
+    PTR_INVALID = 0,
+    PTR_CACHED,
+    PTR_UNCACHED,
+};
+
 extern "C" {
 
 bool checkButtonCombo(uint32_t combo);
@@ -49,7 +56,7 @@ uint32_t getCurrentPitFloor();
 void setPitFloor(int32_t floor);
 uint32_t getCurrentFPS();
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
-bool checkIfPointerIsValid(const void *ptr);
+uint32_t checkIfPointerIsValid(const void *ptr);
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);
 
 }

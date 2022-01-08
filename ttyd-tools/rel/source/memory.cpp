@@ -82,7 +82,7 @@ const char *getAddressStringFromOffsets(int32_t slot, uint32_t maxOffset)
         return "???";
     }
     
-    // Make sure the address being read does not exceed 0x817FFFFF
+    // Make sure the address being read does not exceed 0x817FFFFF/0xC17FFFFF
     Address = reinterpret_cast<uint32_t>(fixBaseAddress(
         slot, reinterpret_cast<void *>(Address)));
     
@@ -107,7 +107,7 @@ const char *getValueString(int32_t slot)
         return "???";
     }
     
-    // Make sure the address being read does not exceed 0x817FFFFF
+    // Make sure the address being read does not exceed 0x817FFFFF/0xC17FFFFF
     Address = reinterpret_cast<uint32_t>(fixBaseAddress(
         slot, reinterpret_cast<void *>(Address)));
     
@@ -433,7 +433,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
                         IncrementAmount = -1;
                     }
                     
-                    adjustWatchTempValueAndBounds(slot, HighestDigit, IncrementAmount);
+                    adjustWatchTempValueAndBounds(HighestDigit, IncrementAmount);
                     MemoryWatchAdjustableValueMenu.WaitFramesToPerformIncrement = 0;
                     return Button;
                 }
@@ -498,7 +498,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
         case DPADDOWN:
         {
             // Decrement the current value for the current slot
-            adjustWatchTempValueAndBounds(slot, HighestDigit, -1);
+            adjustWatchTempValueAndBounds(HighestDigit, -1);
             
             MenuVar.FrameCounter = 1;
             return Button;
@@ -506,7 +506,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
         case DPADUP:
         {
             // Increment the current value for the current slot
-            adjustWatchTempValueAndBounds(slot, HighestDigit, 1);
+            adjustWatchTempValueAndBounds(HighestDigit, 1);
             
             MenuVar.FrameCounter = 1;
             return Button;
@@ -522,14 +522,22 @@ uint32_t adjustWatchValueControls(int32_t slot)
                         case 0:
                         {
                             // Modifying the address
-                            // Make sure the address being read does not exceed 0x817FFFFF
-                            MemoryWatch[slot].Address = reinterpret_cast<uint32_t>(
-                                fixBaseAddress(slot, reinterpret_cast<void *>(MenuVar.MenuSecondaryValueUnsigned)));
+                            // Make sure the address is valid
+                            uint32_t tempMenuSecondaryValueUnsigned = MenuVar.MenuSecondaryValueUnsigned;
+                            if (checkIfPointerIsValid(reinterpret_cast<void *>(tempMenuSecondaryValueUnsigned)))
+                            {
+                                MemoryWatch[slot].Address = tempMenuSecondaryValueUnsigned;
+                                
+                                MenuVar.MenuSelectionStates = 0;
                             
-                            MenuVar.MenuSelectionStates = 0;
-                            
-                            MenuVar.FrameCounter = 1;
-                            return Button;
+                                MenuVar.FrameCounter = 1;
+                                return Button;
+                            }
+                            else
+                            {
+                                // Tried to use an invalid address, so do nothing
+                                return 0;
+                            }
                         }
                         default:
                         {
@@ -584,7 +592,7 @@ uint32_t adjustWatchValueControls(int32_t slot)
     }
 }
 
-void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t valueChangedBy)
+void adjustWatchTempValueAndBounds(uint32_t highestDigit, int32_t valueChangedBy)
 {
     for (uint32_t i = 0; i < (highestDigit - MenuVar.SecondaryMenuOption - 1); i++)
     {
@@ -598,8 +606,8 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
     {
         case MEMORY_WATCH_CHANGE_ADDRESS:
         {
-            uint32_t UpperBoundUnsigned;
-            uint32_t LowerBoundUnsigned;
+            // uint32_t UpperBoundUnsigned;
+            // uint32_t LowerBoundUnsigned;
             int32_t UpperBoundSigned;
             int32_t LowerBoundSigned;
             
@@ -608,22 +616,7 @@ void adjustWatchTempValueAndBounds(int32_t slot, uint32_t highestDigit, int32_t 
                 case 0:
                 {
                     // Modifying the address
-                    // Make sure the upper bound does not exceed 0x817FFFFF
-                    UpperBoundUnsigned = reinterpret_cast<uint32_t>(
-                        fixBaseAddress(slot, reinterpret_cast<void *>(0x817FFFFF)));
-                    
-                    LowerBoundUnsigned = 0x80000000;
-                    
-                    if (tempMenuSecondaryValueUnsigned > UpperBoundUnsigned)
-                    {
-                        // Loop to the beginning
-                        MenuVar.MenuSecondaryValueUnsigned = LowerBoundUnsigned;
-                    }
-                    else if (tempMenuSecondaryValueUnsigned < LowerBoundUnsigned)
-                    {
-                        // Loop to the end
-                        MenuVar.MenuSecondaryValueUnsigned = UpperBoundUnsigned;
-                    }
+                    // Nothing needs to be done for this
                     break;
                 }
                 default:
@@ -690,9 +683,21 @@ void *fixBaseAddress(int32_t slot, void *address)
         }
     }
     
-    // Make sure the address does not exceed 0x817FFFFF
+    // Make sure the address does not exceed 0x817FFFFF/0xC17FFFFF
     uint32_t tempAddress = reinterpret_cast<uint32_t>(address);
-    while ((tempAddress + CurrentTypeSize - 1) >= 0x81800000)
+    
+    // Arbitrary check for cached memory
+    uint32_t AddressCap;
+    if (tempAddress < 0x90000000)
+    {
+        AddressCap = 0x81800000;
+    }
+    else
+    {
+        AddressCap = 0xC1800000;
+    }
+    
+    while ((tempAddress + CurrentTypeSize - 1) >= AddressCap)
     {
         tempAddress--;
     }
@@ -1271,13 +1276,9 @@ uint32_t memoryEditorButtonControls()
                 
                 if (RowCheck)
                 {
-                    // Only move down if there's at least one valid byte under the last row
-                    if (checkIfPointerIsValid(CurrentAddress + EDITOR_MAX_NUM_BYTES_DISPLAYED))
-                    {
-                        // Move down one row
-                        // Don't set CurrentEditorMenuOption, as it's already correct
-                        MemoryEditor.CurrentAddress = CurrentAddress + EDITOR_BYTES_PER_ROW;
-                    }
+                    // Move down one row
+                    // Don't set CurrentEditorMenuOption, as it's already correct
+                    MemoryEditor.CurrentAddress = CurrentAddress + EDITOR_BYTES_PER_ROW;
                 }
                 else
                 {
@@ -1340,13 +1341,9 @@ uint32_t memoryEditorButtonControls()
                 // Check to see if moving up goes to the previous row
                 if (CurrentEditorMenuOption < 0)
                 {
-                    // Only move up if there's at least one valid byte above the first row
-                    if (checkIfPointerIsValid(CurrentAddress - 0x1))
-                    {
-                        // Move up one row
-                        // Don't set CurrentEditorMenuOption, as it's already correct
-                        MemoryEditor.CurrentAddress = CurrentAddress - EDITOR_BYTES_PER_ROW;
-                    }
+                    // Move up one row
+                    // Don't set CurrentEditorMenuOption, as it's already correct
+                    MemoryEditor.CurrentAddress = CurrentAddress - EDITOR_BYTES_PER_ROW;
                 }
                 else
                 {
@@ -1449,6 +1446,14 @@ uint32_t memoryEditorButtonControls()
                     // Only clear the cache of valid memory
                     uint32_t Start = reinterpret_cast<uint32_t>(tempAddress);
                     uint32_t End = Start + NumBytesBeingEdited;
+                    
+                    // Arbitrary check for cached memory
+                    if (checkIfPointerIsValid(tempAddress) == PTR_UNCACHED)
+                    {
+                        // Only need to clear cached memory, so adjust the start and end to be in cached memory
+                        Start -= 0x40000000;
+                        End -= 0x40000000;
+                    }
                     
                     if (Start < 0x80000000)
                     {

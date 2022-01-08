@@ -241,6 +241,28 @@ const char *replaceJumpFallAnim(char *jumpFallString)
     return jumpFallString;
 }
 
+int32_t backtraceScreenIncrementYPos()
+{
+    constexpr int32_t kPosYIncrementAmount = 50;
+    static int16_t IncrementCount = 0;
+    int32_t tempIncrementCount = IncrementCount;
+    
+    int32_t TextPosY = tempIncrementCount + kPosYIncrementAmount;
+    tempIncrementCount--;
+    
+    if (tempIncrementCount < -960)
+    {
+        // Simulate incrementing exactly once to match the US/PAL code
+        IncrementCount = -1;
+        return kPosYIncrementAmount;
+    }
+    else
+    {
+        IncrementCount = static_cast<int16_t>(tempIncrementCount);
+        return TextPosY;
+    }
+}
+
 void *jumpOnWater(void *ptr)
 {
     // Allow jumping on water if the Bridge Skip display is active
@@ -252,27 +274,6 @@ void *jumpOnWater(void *ptr)
     {
         // Return the original value
         return ptr;
-    }
-}
-
-int32_t backtraceScreenIncrementYPos()
-{
-    static int16_t IncrementCount = 0;
-    int32_t tempIncrementCount = IncrementCount;
-    
-    int32_t TextPosY = tempIncrementCount + 50;
-    tempIncrementCount--;
-    
-    if (tempIncrementCount < -960)
-    {
-        // Simulate incrementing exactly once to match the US/PAL code
-        IncrementCount = -1;
-        return 50;
-    }
-    else
-    {
-        IncrementCount = static_cast<int16_t>(tempIncrementCount);
-        return TextPosY;
     }
 }
 
