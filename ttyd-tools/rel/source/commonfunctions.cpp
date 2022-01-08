@@ -402,7 +402,7 @@ uint32_t checkIfPointerIsValid(const void *ptr)
         return PTR_CACHED;
     }
     
-    // Unached memory
+    // Uncached memory
     if ((ptrRaw >= 0xC0000000) && (ptrRaw < 0xC1800000))
     {
         return PTR_UNCACHED;

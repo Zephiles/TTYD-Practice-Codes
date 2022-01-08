@@ -523,10 +523,13 @@ uint32_t adjustWatchValueControls(int32_t slot)
                         {
                             // Modifying the address
                             // Make sure the address is valid
-                            uint32_t tempMenuSecondaryValueUnsigned = MenuVar.MenuSecondaryValueUnsigned;
-                            if (checkIfPointerIsValid(reinterpret_cast<void *>(tempMenuSecondaryValueUnsigned)))
+                            void *tempMenuSecondaryValueUnsigned = reinterpret_cast<void *>(MenuVar.MenuSecondaryValueUnsigned);
+                            if (checkIfPointerIsValid(tempMenuSecondaryValueUnsigned))
                             {
-                                MemoryWatch[slot].Address = tempMenuSecondaryValueUnsigned;
+                                // Make sure the address is valid for the selected variable type
+                                tempMenuSecondaryValueUnsigned = fixBaseAddress(slot, tempMenuSecondaryValueUnsigned);
+                                
+                                MemoryWatch[slot].Address = reinterpret_cast<uint32_t>(tempMenuSecondaryValueUnsigned);
                                 
                                 MenuVar.MenuSelectionStates = 0;
                             
