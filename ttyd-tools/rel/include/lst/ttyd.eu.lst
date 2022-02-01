@@ -2237,6 +2237,12 @@
 // 8026F850:long2str
 // 8026FAA8:parse_format
 
+// scanf.c
+80270138:sscanf
+// 802701FC:__StringRead
+// 8027028C:__sformatter
+// 80270C38:parse_format
+
 // string.c
 // 80271180:strstr
 // 802711E8:strchr

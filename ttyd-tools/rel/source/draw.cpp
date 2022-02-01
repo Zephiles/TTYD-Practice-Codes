@@ -2742,6 +2742,26 @@ void drawNotInBattleErrorMessage()
     drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
 }
 
+void drawMarioCoordinatesErrorMessage()
+{
+    if (!checkErrorMessageReqs())
+    {
+        return;
+    }
+    
+    const char *CurrentLine = "This value must be modified as a hex value.";
+    int32_t TextPosX = -181;
+    int32_t TextPosY = -17;
+    int32_t WindowWidth = 392;
+    
+#ifdef TTYD_JP
+    TextPosX += 1;
+    WindowWidth -= 7;
+#endif
+    
+    drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
+}
+
 void drawResolveFadesMessage()
 {
     int32_t tempFunctionReturnCode = MenuVar.FunctionReturnCode;
@@ -3243,7 +3263,8 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     }
     
     // Adjust the current value if necessary
-    if (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS)
+    if ((currentMenu != CHEATS_MODIFY_COORDINATES) && 
+        (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS))
     {
         adjustMenuItemBounds(0, currentMenu);
     }
@@ -3282,6 +3303,11 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     
     switch (currentMenu)
     {
+        case CHEATS_MODIFY_COORDINATES:
+        {
+            AmountOfNumbers = 8;
+            break;
+        }
         case MEMORY_WATCH_CHANGE_ADDRESS:
         {
             AmountOfNumbers = 8;
@@ -3387,6 +3413,103 @@ void drawAdjustableValueHex(uint32_t currentMenu)
 
         drawText(tempDisplayBuffer, x, y, color, scale);
         x += 17;
+    }
+}
+
+void drawAdjustableValueDouble(uint32_t currentMenu, const char *value)
+{
+    // Check for button inputs
+    uint32_t ReturnCode;
+    if (currentMenu == CHEATS_MODIFY_COORDINATES)
+    {
+        ReturnCode = adjustableValueButtonControls(currentMenu);
+    }
+    else
+    {
+        // Nothing else currently uses this yet
+        return;
+    }
+    
+    switch (ReturnCode)
+    {
+        case NO_NUMBERS_TO_DISPLAY: // There are no numbers to display, so close the menu
+        {
+            return;
+        }
+        default:
+        {
+            break;
+        }
+    }
+    
+    // Draw the window
+    uint32_t Color = 0x151515E0;
+    int32_t PosX   = -189;
+    int32_t PosY   = 72;
+    int32_t Width  = 377;
+    int32_t Curve  = 10;
+    int32_t Height = 138;
+    
+#ifdef TTYD_JP
+    PosX += 4;
+    Width -= 6;
+#endif
+    
+    drawWindow(Color, PosX, PosY, Width, Height, Curve);
+    
+    // Draw the help text
+    uint8_t Alpha = 0xFF;
+    float Scale   = 0.6f;
+    PosX          += 15;
+    PosY          -= 13;
+    Color         = 0xFFFFFFFF;
+    const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
+    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    
+    PosX += 166;
+    PosY -= 90;
+    
+#ifdef TTYD_JP
+    Scale = 1.f;
+    PosX -= 1;
+    PosY += 3;
+#else
+    Scale = 0.9f;
+#endif
+    
+    uint32_t StringLength = strlen(value);
+    
+    // Calculate the X offset
+    int32_t tempPosX = 0;
+    for (uint32_t i = 0; i < (StringLength - 1); i++)
+    {
+        tempPosX += 17;
+    }
+    PosX -= (tempPosX / 2);
+    
+    // Draw each digit of the number
+    uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
+    
+    char *tempDisplayBuffer = DisplayBuffer;
+    for (uint32_t i = 0; i < StringLength; i++)
+    {
+        bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+        Color = getSelectedTextColor(CurrentOptionCheck);
+        
+        char CurrentChar = value[i];
+        sprintf(tempDisplayBuffer,
+            "%c",
+            CurrentChar);
+        
+        // If drawing the decimal point, move it further right
+        tempPosX = PosX;
+        if (CurrentChar == '.')
+        {
+            tempPosX += 5;
+        }
+        
+        drawText(tempDisplayBuffer, tempPosX, PosY, Color, Scale);
+        PosX += 17;
     }
 }
 
@@ -3611,6 +3734,68 @@ void drawCheatsChangeSequence()
     
     const char *String = "Stage\nEvent";
     drawText(String, PosX, PosY, Color, Scale);
+}
+
+void drawCheatsModifyMarioCoordinates()
+{
+    uint32_t Color;
+    // uint8_t Alpha = 0xFF;
+    int32_t PosX = -232;
+    int32_t PosY = 80;
+    float Scale = 0.6f;
+    
+    // Draw the value for the bool
+    const char *YesNoText;
+    getYesNoTextAndColor(ChangeMarioCoordinates.ModifyAsHex, &YesNoText, &Color);
+    drawText(YesNoText, PosX + 130, PosY + 40, Color, Scale);
+    
+    // Draw each of the coordinates, both as a float and as hex
+    Color = 0xFFFFFFFF;
+    char CoordinateLetter = 'X';
+    char *tempDisplayBuffer = DisplayBuffer;
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    
+    for (uint32_t i = 0; i < 3; i++)
+    {
+        float Coordinate = player->playerPosition[i];
+        
+        // Get the coordinate in text form first
+        const char *CoordinateText;
+        char CoordinateStringBuffer[128];
+        
+        int32_t StringLength = sprintf(
+            CoordinateStringBuffer,
+            "%.6f",
+            Coordinate);
+        
+        // Make sure the text wont go offscreen
+        int32_t CoordinateMaxStringLength = 34;
+        
+#ifdef TTYD_JP
+        CoordinateMaxStringLength += 4;
+#endif
+
+        if ((StringLength <= 0) || (StringLength > CoordinateMaxStringLength))
+        {
+            CoordinateText = "Too Big";
+        }
+        else
+        {
+            CoordinateText = CoordinateStringBuffer;
+        }
+        
+        // Get the actual text to draw
+        uint32_t *CoordinateHex = reinterpret_cast<uint32_t *>(&Coordinate);
+        sprintf(tempDisplayBuffer,
+            "%c = %s, 0x%08" PRIX32,
+            CoordinateLetter,
+            CoordinateText,
+            *CoordinateHex);
+        
+        drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+        CoordinateLetter++;
+        PosY -= 20;
+    }
 }
 
 void drawCheatsBool(int32_t posY)

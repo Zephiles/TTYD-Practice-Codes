@@ -80,6 +80,7 @@ void drawResolveFadesMessage();
 void drawWarpsErrorMessage(int32_t textPosY);
 void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner);
 void drawNotInBattleErrorMessage();
+void drawMarioCoordinatesErrorMessage();
 void drawConfirmationWindow(const char *message);
 
 void drawSingleLineFromArray(int32_t posX, int32_t posY, 
@@ -95,6 +96,7 @@ void drawAdjustableValueSpawnItem();
 void drawAdjustableValueMemoryEditor();
 void drawAdjustableValue(bool changingItem, uint32_t currentMenu);
 void drawAdjustableValueHex(uint32_t currentMenu);
+void drawAdjustableValueDouble(uint32_t currentMenu, const char *value);
 void drawAddByIconMain(uint32_t currentMenu);
 void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);
@@ -104,6 +106,7 @@ void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
 
 void drawCheatsChangeSequence();
+void drawCheatsModifyMarioCoordinates();
 void drawCheatsBool(int32_t posY);
 void drawButtonCombo(uint32_t buttonCombo, int32_t posY, const char *description);
 void drawChangeButtonCombo(uint16_t *currentButtonCombo);

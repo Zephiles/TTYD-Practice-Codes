@@ -16,6 +16,9 @@
 #include <ttyd/mario_pouch.h>
 #include <ttyd/win_main.h>
 #include <ttyd/party.h>
+#include <ttyd/mario.h>
+
+#include <cmath>
 
 namespace mod {
 
@@ -516,6 +519,11 @@ void menuCheckButton()
                             MenuToEnter = CHEATS_CHANGE_SEQUENCE;
                             break;
                         }
+                        case MODIFY_COORDINATES:
+                        {
+                            MenuToEnter = CHEATS_MODIFY_COORDINATES;
+                            break;
+                        }
                         case WALK_THROUGH_WALLS:
                         case FALL_THROUGH_FLOORS:
                         case SAVE_COORDINATES:
@@ -624,6 +632,103 @@ void menuCheckButton()
                     {
                         // Go back to the previous menu
                         MenuVar.MenuSelectedOption = 0;
+                        enterPreviousMenu();
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case CHEATS_MODIFY_COORDINATES:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    if (tempMenuSelectionStates == 0)
+                    {
+                        adjustMenuNoPageEdit(CurrentButton);
+                    }
+                    break;
+                }
+                case A:
+                {
+                    if (tempMenuSelectionStates == 0)
+                    {
+                        bool ModifyAsHex = ChangeMarioCoordinates.ModifyAsHex;
+                        uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                        
+                        switch (CurrentMenuOptionCheck)
+                        {
+                            case CHANGE_X_COORDINATE_VALUE:
+                            case CHANGE_Y_COORDINATE_VALUE:
+                            case CHANGE_Z_COORDINATE_VALUE:
+                            {
+                                float *CoordinateAddress = getMarioCoordinateFromIndex(
+                                    static_cast<int32_t>(tempCurrentMenuOption));
+                                
+                                if (!CoordinateAddress)
+                                {
+                                    // Shouldn't ever reach this
+                                    break;
+                                }
+                                
+                                if (ModifyAsHex)
+                                {
+                                    MenuVar.MenuSecondaryValueUnsigned = *reinterpret_cast<uint32_t *>(CoordinateAddress);
+                                    MenuVar.SecondaryMenuOption = 7;
+                                }
+                                else
+                                {
+                                    int32_t StringLength = convertDoubleToString(
+                                        ChangeMarioCoordinates.ValueString, 
+                                        CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED, 
+                                        6, 
+                                        static_cast<double>(*CoordinateAddress));
+                                    
+                                    // Make sure the string is a valid number
+                                    if ((StringLength <= 0) || 
+                                        (StringLength > CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED))
+                                    {
+                                        MenuVar.FunctionReturnCode = -1;
+                                        MenuVar.Timer = secondsToFrames(3);
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        MenuVar.SecondaryMenuOption = StringLength - 1;
+                                    }
+                                }
+                                
+                                MenuVar.MenuSelectionStates = MODIFY_COORDINATES;
+                                break;
+                            }
+                            case CHANGE_COORDINATES_MODIFY_AS_HEX:
+                            {
+                                ChangeMarioCoordinates.ModifyAsHex = !ModifyAsHex;
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    if (tempMenuSelectionStates == 0)
+                    {
+                        // Go back to the previous menu
+                        MenuVar.MenuSelectedOption = 0;
+                        MenuVar.FunctionReturnCode = 0;
+                        MenuVar.Timer = 0;
                         enterPreviousMenu();
                     }
                     break;
@@ -3882,6 +3987,33 @@ void drawMenu()
             if (tempMenuSelectionStates == CHANGE_SEQUENCE_VALUE)
             {
                 drawAdjustableValue(false, tempCurrentMenu);
+            }
+            break;
+        }
+        case CHEATS_MODIFY_COORDINATES:
+        {
+            // Draw the text for the options
+            drawSingleColumnMain();
+            
+            // Draw the values for the coordinates
+            drawCheatsModifyMarioCoordinates();
+            
+            if (tempMenuSelectionStates != 0)
+            {
+                if (ChangeMarioCoordinates.ModifyAsHex)
+                {
+                    drawAdjustableValueHex(tempCurrentMenu);
+                }
+                else
+                {
+                    drawAdjustableValueDouble(tempCurrentMenu, ChangeMarioCoordinates.ValueString);
+                }
+            }
+            
+            // Draw the error message for the coordinate's value not being able to be edited
+            if (tempFunctionReturnCode < 0)
+            {
+                drawMarioCoordinatesErrorMessage();
             }
             break;
         }

@@ -53,6 +53,7 @@ void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_
 void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);
 void adjustAddByIdValue(int32_t value, uint32_t currentMenu, bool handleAsHex, bool handleAsUnsigned);
+void adjustAddByIdDoubleValue(int32_t valueChangedBy, char *valueSource);
 
 uint32_t getMarioStatsValueOffset(uint32_t currentMenuOption);
 void setMarioStatsValue(uint32_t currentMenuOption);
@@ -107,6 +108,8 @@ void getButtonsPressed(uint8_t *buttonArrayOut, uint32_t currentButtonCombo);
 void createButtonStringArray(uint8_t *buttonArray, char *stringOut, uint32_t stringOutSize);
 bool incrementCheatsBButtonCounter(uint32_t buttonInput);
 bool cheatsManageTimer(uint32_t buttonInput);
+int32_t convertDoubleToString(char *strOut, int32_t totalLength, int32_t decimalCount, double value);
+float *getMarioCoordinateFromIndex(int32_t index);
 
 bool checkForDPADInput();
 uint32_t checkButtonSingleFrame();

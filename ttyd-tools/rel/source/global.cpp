@@ -42,6 +42,7 @@ const char *CheatsLines[] =
     "Fall Through Most Objects",
     "Save Coordinates",
     "Load Coordinates",
+    "Modify Mario's Coordinates",
     "Spawn Item",
     "Save Anywhere",
     "Text Storage",
@@ -69,6 +70,14 @@ const char *CheatsLines[] =
 const char *CheatsChangeSequenceOptionsLines[] = 
 {
     "Change Value",
+};
+
+const char *CheatsModifyCoordinatesOptionsLines[] = 
+{
+    "Modify X Coordinate",
+    "Modify Y Coordinate",
+    "Modify Z Coordinate",
+    "Modify As Hex",
 };
 
 #ifdef TTYD_JP
@@ -1898,6 +1907,7 @@ uint8_t CheatsOrder[] =
     AUTO_MASH_TEXT,
     GENERATE_LAG_SPIKE,
     FRAME_ADVANCE,
+    MODIFY_COORDINATES,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1923,8 +1933,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[37];
-struct Cheats Cheat[27];
+struct Menus Menu[38];
+struct Cheats Cheat[28];
 bool Displays[18];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1936,6 +1946,7 @@ struct AutoIncrement MemoryWatchAdjustableValueMenu;
 struct AutoIncrementCoordinates MemoryWatchPosition;
 struct CheatsHandleDisplayButtons CheatsDisplayButtons;
 struct CheatsManageFlags ManageFlags;
+struct ChangeMarioCoordinatesStruct ChangeMarioCoordinates;
 struct MarioPartnerPositionsStruct MarioPartnerPositions;
 struct SaveAnywhereStruct SaveAnywhere;
 struct SpeedUpMarioStruct SpeedUpMario;
@@ -1981,6 +1992,10 @@ void initMenuVars()
     Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions         = sizeof(CheatsChangeSequenceOptionsLines) / sizeof(CheatsChangeSequenceOptionsLines[0]);
     Menu[CHEATS_CHANGE_SEQUENCE].ColumnSplitAmount        = Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions;
     Menu[CHEATS_CHANGE_SEQUENCE].Line                     = CheatsChangeSequenceOptionsLines;
+    
+    Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions      = sizeof(CheatsModifyCoordinatesOptionsLines) / sizeof(CheatsModifyCoordinatesOptionsLines[0]);
+    Menu[CHEATS_MODIFY_COORDINATES].ColumnSplitAmount     = Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions;
+    Menu[CHEATS_MODIFY_COORDINATES].Line                  = CheatsModifyCoordinatesOptionsLines;
     
     Menu[CHEATS_STANDARD].TotalMenuOptions                = sizeof(CheatsStandardOptionsLines) / sizeof(CheatsStandardOptionsLines[0]);
     Menu[CHEATS_STANDARD].ColumnSplitAmount               = Menu[CHEATS_STANDARD].TotalMenuOptions;

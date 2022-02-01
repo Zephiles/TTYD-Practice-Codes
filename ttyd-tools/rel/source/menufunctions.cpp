@@ -514,6 +514,12 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
             UpperBound = 405;
             break;
         }
+        case CHEATS_MODIFY_COORDINATES:
+        {
+            // LowerBound = 0;
+            UpperBound = 0xFFFFFFFF;
+            break;
+        }
         case CHEATS_NPC_FORCE_DROP:
         {
             LowerBound = ttyd::item_data::Item::GoldBar;
@@ -1144,11 +1150,37 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
     bool InMemoryEditorAddressMenu = (currentMenu == MEMORY_EDITOR_MENU) && 
         (MemoryEditor.CurrentEditorMenuOption == EDITOR_HEADER_CHANGE_ADDRESS);
     
+    uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+    char *ValueString = ChangeMarioCoordinates.ValueString;
+    bool ChangingMarioCoordinateAsHex = ChangeMarioCoordinates.ModifyAsHex;
+    
     // Get the amount of numbers to draw
     uint32_t AmountOfNumbers;
     if (InMemoryEditorAddressMenu)
     {
         AmountOfNumbers = getHighestAdjustableValueDigitUnsigned(currentMenu, true);
+    }
+    else if (currentMenu == CHEATS_MODIFY_COORDINATES)
+    {
+        if (ChangingMarioCoordinateAsHex)
+        {
+            AmountOfNumbers = 8;
+        }
+        else
+        {
+            uint32_t StringLength = strlen(ValueString);
+        
+            // If the value has no valid digits, then exit
+            // If the value character count exceeds the maximum that fits in the window, then exit
+            if ((StringLength == 0) || (StringLength > CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED))
+            {
+                AmountOfNumbers = 0;
+            }
+            else
+            {
+                AmountOfNumbers = StringLength;
+            }
+        }
     }
     else
     {
@@ -1202,6 +1234,17 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                     {
                         adjustAddByIdValue(IncrementAmount, currentMenu, true, true);
                     }
+                    else if (currentMenu == CHEATS_MODIFY_COORDINATES)
+                    {
+                        if (ChangingMarioCoordinateAsHex)
+                        {
+                            adjustAddByIdValue(IncrementAmount, currentMenu, true, true);
+                        }
+                        else
+                        {
+                            adjustAddByIdDoubleValue(IncrementAmount, ValueString);
+                        }
+                    }
                     else
                     {
                         adjustAddByIdValue(IncrementAmount, currentMenu, false, false);
@@ -1236,7 +1279,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
     }
     
     uint32_t tempMenuSelectedOption = MenuVar.MenuSelectedOption;
-    uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+    // uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
     
     switch (Button)
     {
@@ -1251,7 +1294,18 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
             else
             {
                 // Move left once
-                MenuVar.SecondaryMenuOption = tempSecondaryMenuOption - 1;
+                tempSecondaryMenuOption--;
+                
+                if ((currentMenu == CHEATS_MODIFY_COORDINATES) && !ChangingMarioCoordinateAsHex)
+                {
+                    // If currently selecting the decimal point, then move left once more
+                    if (ValueString[tempSecondaryMenuOption] == '.')
+                    {
+                        tempSecondaryMenuOption--;
+                    }
+                }
+                
+                MenuVar.SecondaryMenuOption = tempSecondaryMenuOption;
             }
             
             MenuVar.FrameCounter = 1;
@@ -1268,7 +1322,18 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
             else
             {
                 // Move right once
-                MenuVar.SecondaryMenuOption = tempSecondaryMenuOption + 1;
+                tempSecondaryMenuOption++;
+                
+                if ((currentMenu == CHEATS_MODIFY_COORDINATES) && !ChangingMarioCoordinateAsHex)
+                {
+                    // If currently selecting the decimal point, then move right once more
+                    if (ValueString[tempSecondaryMenuOption] == '.')
+                    {
+                        tempSecondaryMenuOption++;
+                    }
+                }
+                
+                MenuVar.SecondaryMenuOption = tempSecondaryMenuOption;
             }
             
             MenuVar.FrameCounter = 1;
@@ -1280,6 +1345,17 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
             if (InMemoryEditorAddressMenu)
             {
                 adjustAddByIdValue(-1, currentMenu, true, true);
+            }
+            else if (currentMenu == CHEATS_MODIFY_COORDINATES)
+            {
+                if (ChangingMarioCoordinateAsHex)
+                {
+                    adjustAddByIdValue(-1, currentMenu, true, true);
+                }
+                else
+                {
+                    adjustAddByIdDoubleValue(-1, ValueString);
+                }
             }
             else
             {
@@ -1296,6 +1372,17 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
             {
                 adjustAddByIdValue(1, currentMenu, true, true);
             }
+            else if (currentMenu == CHEATS_MODIFY_COORDINATES)
+            {
+                if (ChangingMarioCoordinateAsHex)
+                {
+                    adjustAddByIdValue(1, currentMenu, true, true);
+                }
+                else
+                {
+                    adjustAddByIdDoubleValue(1, ValueString);
+                }
+            }
             else
             {
                 adjustAddByIdValue(1, currentMenu, false, false);
@@ -1306,7 +1393,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         }
         case Z:
         {
-            if (currentMenu == INVENTORY_MAIN)
+            if (currentMenu == CHEATS_MODIFY_COORDINATES)
+            {
+                if (ChangingMarioCoordinateAsHex)
+                {
+                    setAdjustableValueToMin(currentMenu);
+                }
+            }
+            else if (currentMenu == INVENTORY_MAIN)
             {
                 setAdjustableValueToMin(tempMenuSelectedOption);
             }
@@ -1364,6 +1458,39 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                 case CHEATS_CHANGE_SEQUENCE:
                 {
                     setSequencePosition(static_cast<uint32_t>(MenuVar.MenuSecondaryValue));
+                    MenuVar.MenuSelectionStates = 0;
+                    
+                    MenuVar.FrameCounter = 1;
+                    return Button;
+                }
+                case CHEATS_MODIFY_COORDINATES:
+                {
+                    float *Coordinate = getMarioCoordinateFromIndex(
+                        static_cast<int32_t>(tempCurrentMenuOption));
+                    
+                    if (!Coordinate)
+                    {
+                        // Shouldn't ever reach this
+                        return 0;
+                    }
+                    
+                    if (ChangingMarioCoordinateAsHex)
+                    {
+                        float *CoordinateAddress = reinterpret_cast<float *>(&MenuVar.MenuSecondaryValueUnsigned);
+                        *Coordinate = *CoordinateAddress;
+                    }
+                    else
+                    {
+                        // If the value string is positive, then it starts with +, so move the pointer past it
+                        if (ValueString[0] == '+')
+                        {
+                            ValueString++;
+                        }
+                        
+                        // Neither atof nor strtof are in the game, so have to use sscanf
+                        sscanf(ValueString, "%f", Coordinate);
+                    }
+                    
                     MenuVar.MenuSelectionStates = 0;
                     
                     MenuVar.FrameCounter = 1;
@@ -1579,6 +1706,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                     }
                 }
                 case CHEATS_CHANGE_SEQUENCE:
+                case CHEATS_MODIFY_COORDINATES:
                 case CHEATS_NPC_FORCE_DROP:
                 {
                     MenuVar.MenuSelectionStates = 0;
@@ -1651,7 +1779,14 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         }
         case Y:
         {
-            if (currentMenu == INVENTORY_MAIN)
+            if (currentMenu == CHEATS_MODIFY_COORDINATES)
+            {
+                if (ChangingMarioCoordinateAsHex)
+                {
+                    setAdjustableValueToMax(currentMenu);
+                }
+            }
+            else if (currentMenu == INVENTORY_MAIN)
             {
                 setAdjustableValueToMax(tempMenuSelectedOption);
             }
@@ -2314,6 +2449,12 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
     int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue + valueChangedBy;
     switch (currentMenu)
     {
+        case CHEATS_MODIFY_COORDINATES:
+        {
+            // No adjustments are needed, so write the new value immediately and return
+            MenuVar.MenuSecondaryValueUnsigned += valueChangedBy;
+            return;
+        }
         case CHEATS_NPC_FORCE_DROP:
         {
             if ((tempMenuSecondaryValue > ttyd::item_data::Item::FreshJuice) && 
@@ -2417,6 +2558,47 @@ void adjustAddByIdValue(int32_t value, uint32_t currentMenu, bool handleAsHex, b
     }
     
     adjustMenuItemBounds(value, currentMenu);
+}
+
+void adjustAddByIdDoubleValue(int32_t valueChangedBy, char *valueSource)
+{
+    uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
+    
+    // Make sure the decimal point isn't being modified somehow
+    char CurrentChar = valueSource[tempSecondaryMenuOption];
+    if (CurrentChar == '.')
+    {
+        return;
+    }
+    
+    // If modifying the plus, make it minus for negative
+    if (CurrentChar == '+')
+    {
+        valueSource[tempSecondaryMenuOption] = '-';
+        return;
+    }
+    
+    // If modifying the minus, make it plus for positive
+    if (CurrentChar == '-')
+    {
+        valueSource[tempSecondaryMenuOption] = '+';
+        return;
+    }
+    
+    // Increment the current value
+    CurrentChar += valueChangedBy;
+    
+    // Handle looping
+    if (CurrentChar > '9')
+    {
+        CurrentChar = '0';
+    }
+    else if (CurrentChar < '0')
+    {
+        CurrentChar = '9';
+    }
+    
+    valueSource[tempSecondaryMenuOption] = CurrentChar;
 }
 
 uint32_t getMarioStatsValueOffset(uint32_t currentMenuOption)
@@ -4771,6 +4953,81 @@ bool cheatsManageTimer(uint32_t buttonInput)
         MenuVar.Timer = secondsToFrames(3);
         return false;
     }
+}
+
+int32_t convertDoubleToString(char *strOut, int32_t totalLength, int32_t decimalCount, double value)
+{
+    // Make sure the number is one that can easily be edited
+    switch (std::fpclassify(value))
+    {
+        case FP_ZERO:
+        case FP_NORMAL:
+        {
+            break;
+        }
+        default:
+        {
+            return -1;
+        }
+    }
+    
+    // Make sure the length and decimal places are valid
+    if ((totalLength <= 0) || (totalLength > CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED))
+    {
+        totalLength = CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED;
+    }
+    
+    if ((decimalCount < 0) || (decimalCount > 6))
+    {
+        decimalCount = 6;
+    }
+    
+    // Get the value as a string
+    // The string is assumed to have a size of at least 64 bytes including the null terminator
+    // If the value is positive, then add a plus sign to the start of the string
+    char *ValueStringPtr = strOut;
+    bool ValueIsPositive;
+    
+    if (!std::signbit(value)) // Check if positive, works for checking against +0.0 and -0.0
+    {
+        ValueIsPositive = true;
+        ValueStringPtr[0] = '+';
+        ValueStringPtr++;
+        totalLength--;
+    }
+    else
+    {
+        ValueIsPositive = false;
+    }
+    
+    // Create the format string
+    char Format[32];
+    sprintf(Format, 
+        "%%0%" PRId32 ".%" PRId32 "f", 
+        totalLength, 
+        decimalCount);
+    
+    // Create the actual string
+    int32_t StringLength = sprintf(ValueStringPtr, Format, value);
+    if ((StringLength > 0) && ValueIsPositive)
+    {
+        // The plus sign must be included in the length
+        StringLength++;
+    }
+    
+    return StringLength;
+}
+
+float *getMarioCoordinateFromIndex(int32_t index)
+{
+    // Make sure the index is valid
+    if ((index < 0) || (index > 2))
+    {
+        return nullptr;
+    }
+    
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    return &player->playerPosition[index];
 }
 
 bool checkForDPADInput()

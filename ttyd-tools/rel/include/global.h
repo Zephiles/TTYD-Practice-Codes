@@ -23,6 +23,7 @@ enum MENU_NAMES
     WARPS,
     INVENTORY_MAIN,
     CHEATS_CHANGE_SEQUENCE,
+    CHEATS_MODIFY_COORDINATES,
     CHEATS_STANDARD,
     CHEATS_NO_BUTTON_COMBO,
     CHEATS_FRAME_ADVANCE,
@@ -80,6 +81,7 @@ enum CHEATS_OPTIONS
     FALL_THROUGH_FLOORS,
     SAVE_COORDINATES,
     LOAD_COORDINATES,
+    MODIFY_COORDINATES,
     SPAWN_ITEM,
     SAVE_ANYWHERE,
     TEXT_STORAGE,
@@ -107,6 +109,14 @@ enum CHEATS_OPTIONS
 enum CHEATS_CHANGE_SEQUENCE_SELECTION
 {
     CHANGE_SEQUENCE_VALUE = 1,
+};
+
+enum CHEATS_MODIFY_COORDINATES_SELECTION
+{
+    CHANGE_X_COORDINATE_VALUE = 1,
+    CHANGE_Y_COORDINATE_VALUE,
+    CHANGE_Z_COORDINATE_VALUE,
+    CHANGE_COORDINATES_MODIFY_AS_HEX,
 };
 
 enum CHEATS_STANDARD_SELECTION
@@ -641,6 +651,13 @@ struct CheatsManageFlags
     int32_t ValueToSet;
 };
 
+struct ChangeMarioCoordinatesStruct
+{
+    #define CHANGE_MARIO_COORDINATES_MAX_CHARACTERS_DISPLAYED 21
+    char ValueString[64];
+    bool ModifyAsHex;
+};
+
 struct MarioPartnerPositionsStruct
 {
     float MarioPosition[7];
@@ -1078,8 +1095,8 @@ struct UnusedMapStruct
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[37];
-extern Cheats Cheat[27];
+extern Menus Menu[38];
+extern Cheats Cheat[28];
 extern bool Displays[18];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
@@ -1090,6 +1107,7 @@ extern AutoIncrement MemoryWatchAdjustableValueMenu;
 extern AutoIncrementCoordinates MemoryWatchPosition;
 extern CheatsHandleDisplayButtons CheatsDisplayButtons;
 extern CheatsManageFlags ManageFlags;
+extern ChangeMarioCoordinatesStruct ChangeMarioCoordinates;
 extern MarioPartnerPositionsStruct MarioPartnerPositions;
 extern SaveAnywhereStruct SaveAnywhere;
 extern SpeedUpMarioStruct SpeedUpMario;
