@@ -1,4 +1,6 @@
 # User manual
+# Important Notice
+As of **v3.0.53**, the internal filename of the **settings** file has been changed from `rel_settings` to `Practice_Codes_Settings`. As such, if you previously had a settings file made, you must change the internal filename to be able to use it with versions **3.0.53** or newer. This can be done with either a hex editor (in which the internal filename starts at 0x8 in the GCI file) or via the Practice Codes' **Settings** menu, which is explained in the [Settings](#settings) section.
 
 ## Table of contents
 -   [Setup](#setup)
@@ -56,48 +58,57 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 5. **Load Coordinates** allows you to load the positions, directions, and angles saved from the previous code.
 
-6. **Spawn Item** allows you to spawn any item into the field.
+6. **Change Mario's Coordinates** allows you to change Mario's coordinates at will. You are able to change them in both decimal and hexidecimal form.
 
-7. **Save Anywhere** allows you to save the game at any location, even if a save block is not present in the current room.
+7. **Spawn Item** allows you to spawn any item into the field.
 
-8. **Text Storage** sets a specific value that causes Text Storage to be active. A partner is required to be out for this code to have an effect.
+8. **Save Anywhere** allows you to save the game at any location, even if a save block is not present in the current room.
 
-9. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
+9. **Text Storage** sets a specific value that causes Text Storage to be active. A partner is required to be out for this code to have an effect.
 
-10. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
+10. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
 
-11. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
+11. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
 
-12. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
+12. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
 
-13. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
+13. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
 
-14. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
+14. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
 
-15. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
+15. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
 
-16. **Auto Mash Through Text** allows you to automatically mash through all text boxes. Text boxes with questions (Yes, No, etc.) will still require you to manually select an option. The button combination must be held for this code to work. It should be noted that this cheat will not run when the **Palace Skip** display is on, as it would interfere with the textboxes that are used for **Palace Skip**.
+16. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
 
-17. **Generate Lag Spike** allows you to generate a lag spike at any given time.
+17. **Auto Mash Through Text** allows you to automatically mash through all text boxes. Text boxes with questions (Yes, No, etc.) will still require you to manually select an option. The button combination must be held for this code to work. It should be noted that this cheat will not run when the **Palace Skip** display is on, as it would interfere with the textboxes that are used for **Palace Skip**.
 
-18. **Lock Mario's HP To Max** locks Mario's current HP to the max.
+18. **Frame Advance (Experimental)** allows you to advance the game one frame at a time. Note that this cheat is still in an experimental state, and some things do not work properly when using it.
 
-19. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
+19. **Generate Lag Spike** allows you to generate a lag spike at any given time.
 
-20. **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+20. **Lock Mario's HP To Max** locks Mario's current HP to the max.
 
-21. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+21. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
 
-22. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+22. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
 
-23. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+23. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
+    * **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
+    
+    * **Background Music** disables the current background music, and prevents new background music from playing.
+    
+    * **Environment Sounds** disables any environment sounds, and prevents new environment sounds from playing.
 
-24. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+24. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+
+25. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+
+26. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
     * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on when not in use.
 
-25. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+27. **Manage Flags** allows you to manually change a lot of the important flags in the game.
 
-26. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+28. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
@@ -109,8 +120,8 @@ This menu allows you to save and load various settings. The settings are stored 
 * Cheats button combinations
 * Which Displays are active
 * Displays button combinations
-* Memory Watches (See below)
-* Memory Editor settings (See below)
+* Memory Watches (See [Memory](#memory))
+* Memory Editor settings (See [Memory](#memory))
 
 It should also be noted that the settings will be loaded automatically at boot, assuming that a settings file is present on one of the memory cards. If settings files exist on both memory cards, then the one in Slot A will be used.
 
@@ -129,7 +140,7 @@ This menu allows you to view and edit parts of the game's memory. The current op
       * **Enable Horizontal Separators** enables separators between each row of bytes
 
    Upon opening the editor, the settings menu can be opened by pressing Y, which will allow modifying the same settings as listed above. Three other options are also present, which can be moved between with the D-Pad and selected with A:
-      * **Address** allows you to change the address in which the editor starts displaying bytes for. The valid range that can be selected with this is from `0x80000000` to `0x817FFFFF`.
+      * **Address** allows you to change the address in which the editor starts displaying bytes for. The first valid range that can be selected with this is from `0x80000000` to `0x817FFFFF`, and the second valid range that can be selected with this is from `0xC0000000` to `0xC17FFFFF`.
       
       * **Bytes Size** allows you to change the range of bytes that are being modified at a single time. The maximum amount of bytes that can be selected is the total amount that is displayed at a single time in the editor. It's important to note that when the changes are applied, all of the bytes in the selected size will be changed all at once.
    
@@ -145,7 +156,7 @@ This menu allows you to view and edit parts of the game's memory. The current op
    Other notes about the memory editor:
       * When the editor is in a state that is after and including that of selecting which bytes in the bytes size should be edited, any of the **D-Pad** directions can be held to move automatically.
       
-      * It is possible to both display and select invalid portions of memory. These are portions of memory that come before `0x80000000` and after `0x817FFFFF`. When these portions of memory are displayed, they will be displayed as question marks and will be colored `red`. These portions of memory can be selected, but you will not be able to modify their values.
+      * It is possible to both display and select invalid portions of memory. These are portions of memory that come before `0x80000000` and after `0x817FFFFF`, as well as before `0xC0000000` and after `0xC17FFFFF`. When these portions of memory are displayed, they will be displayed as question marks and will be colored `red`. These portions of memory can be selected, but you will not be able to modify their values.
 
 ### Battles
 This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statuses of anyone in a battle (refered to as Actors).
@@ -234,15 +245,17 @@ This menu allows you to warp to various places around the game. You have three s
 There are several other changes that have been made outside of the menu:
 1. The build date on the title screen is always displayed.
 
-2. The current **Sequence** value is displayed in the pause menu next to Mario's stats.
+2. When the game crashes, the game's built-in backtrace screen will appear. This would normally only appear when the debug mode code has been entered on the title screen, but is always enabled with this project. Furthermore, the text size of it has been adjusted slightly, and the text in the Japanese version scrolls like it does in the North American/European versions.
 
-3. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
+3. The current **Sequence** value is displayed in the pause menu next to Mario's stats.
 
-4. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
+4. The unused Mega badges can be used in battles without the need for a boot/hammer upgrade.
 
-5. A function in the game called **npcNameToPtr** can sometimes return an improper pointer, so an error message will be displayed on-screen when this happens. The message will be displayed for about 5 seconds.
+5. The heaps used in the game are checked every frame, and messages are displayed on-screen when errors are found.
 
-6. Several crashes have been fixed/prevented:
+6. A function in the game called **npcNameToPtr** can sometimes return an improper pointer, so an error message will be displayed on-screen when this happens. The message will be displayed for about 5 seconds.
+
+7. Several crashes have been fixed/prevented:
    * Petalburg intro cutscene - Mario will not have any greeting animation.
    
    * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the **Sequence** is past 338, then the **Sequence** will be set to 338.
@@ -255,6 +268,6 @@ There are several other changes that have been made outside of the menu:
    
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
    
-7. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
+8. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
 
-8. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
+9. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
