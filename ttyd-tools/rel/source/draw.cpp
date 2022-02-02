@@ -3938,10 +3938,11 @@ void drawCheatsFrameAdvance()
     
     // Draw the button combos
     PosY -= 60;
-    const char *Description = "Button Combo (Can be pressed in any order)";
+    const char *Description = "Frame Advance Button Combo";
     drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo, PosY, Description);
     
     PosY -= 60;
+    Description = "Pause/Resume Button Combof";
     drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo, PosY, Description);
 }
 
@@ -3979,19 +3980,23 @@ void drawCheatsDisableCertainSounds()
     int32_t PosY     = 100;
     // float Scale      = 0.6f;
     
-    // Draw the bool for Disable Pause Menu/Z Menu Sounds
-    drawCheatsBool(PosY);
-    PosY -= 60;
-    
-    // Draw the bools for the additional options
+    // Draw the bools for the options
     bool *Bools = MenuVar.DisableCertainSounds;
     const char** Lines = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].Line;
     uint32_t TotalLines = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions;
     
-    for (uint32_t i = 0; i < (TotalLines - 1); i++)
+    for (uint32_t i = 0; i < TotalLines; i++)
     {
-        // Skip the first line, as it's used for Disable Pause Menu/Z Menu Sounds
-        drawBoolOnOrOff(Bools[i], Lines[i + 1], PosY);
+        // Disable Pause Menu/Z Menu Sounds must be handled separately
+        if (i == 0)
+        {
+            drawBoolOnOrOff(Cheat[MenuVar.MenuSelectedOption].Active, Lines[i], PosY);
+        }
+        else
+        {
+            drawBoolOnOrOff(Bools[i - 1], Lines[i], PosY);
+        }
+        
         PosY -= 60;
     }
 }

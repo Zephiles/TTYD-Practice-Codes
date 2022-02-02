@@ -18,8 +18,6 @@
 #include <ttyd/party.h>
 #include <ttyd/mario.h>
 
-#include <cmath>
-
 namespace mod {
 
 void menuCheckButton()
