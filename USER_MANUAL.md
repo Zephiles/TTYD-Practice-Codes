@@ -1,6 +1,6 @@
 # User manual
 # Important Notice
-As of **v3.0.53**, the internal filename of the **settings** file has been changed from `rel_settings` to `Practice_Codes_Settings`. As such, if you previously had a settings file made, you must change the internal filename to be able to use it with versions **3.0.53** or newer. This can be done with either a hex editor (in which the internal filename starts at 0x8 in the GCI file) or via the Practice Codes' **Settings** menu, which is explained in the [Settings](#settings) section.
+As of **v3.0.53**, the internal filename of the **settings** file has been changed from `rel_settings` to `Practice_Codes_Settings`. As such, if you previously had a settings file made, you must change the internal filename to be able to use it with versions **3.0.53** or newer. This can be done with either a hex editor (in which the internal filename starts at 0x8 in the GCI file) or via the Practice Codes' [Settings](#settings) menu via the **Rename Settings File** option.
 
 ## Table of contents
 -   [Setup](#setup)
