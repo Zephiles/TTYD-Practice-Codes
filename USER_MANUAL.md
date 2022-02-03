@@ -59,6 +59,7 @@ This menu allows you to modify your entire inventory, including standard items, 
 5. **Load Coordinates** allows you to load the positions, directions, and angles saved from the previous code.
 
 6. **Change Mario's Coordinates** allows you to change Mario's coordinates at will. You are able to change them in both decimal and hexidecimal form.
+    * Note: When modifying a coordinate in decimal form, the number will start with either a plus or minus sign. This **does not** mean that addition/subtraction is occuring; it simply means that the value is either positive or negative.
 
 7. **Spawn Item** allows you to spawn any item into the field.
 
@@ -115,7 +116,7 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 * You are also able to change Yoshi's color from within the Partners menu. Upon changing it, you must respawn Yoshi for the changes to take effect. This is done by either swapping partners, entering pipes, or bringing Yoshi out via the menu itself.
 
 ### Settings
-This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to save/load the settings to/from either of the memory card slots. The current settings included are as follows:
+This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to save/load the settings to/from either of the memory card slots, as well as rename (as in, change the internal filename of your current settings file to the new internal filename if the older one was being used) and delete the settings file on either of the memory cards. The settings that are currently saved are as follows:
 * Which Cheats are active
 * Cheats button combinations
 * Which Displays are active
