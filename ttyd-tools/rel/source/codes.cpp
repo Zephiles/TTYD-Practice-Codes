@@ -637,7 +637,7 @@ void levitate()
     }
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    player->wJumpVelocityY = 4.540000915527344;
+    player->wJumpVelocityY = 4.540000915527344f;
 }
 
 uint32_t autoMashText(uint32_t controllerPort)

@@ -277,33 +277,37 @@ void *jumpOnWater(void *ptr)
     }
 }
 
-void displayTitleScreenAndFileSelectScreenInfo()
+void Mod::displayTitleScreenInfo(ttyd::seqdrv::SeqInfo *seqInfo)
 {
-    if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kTitle))
+    // Check to see if the title screen is ready
+    // Check to see if the curtain is fully displayed or not
+    uint32_t TitleMainCheck = *reinterpret_cast<uint32_t *>(
+        reinterpret_cast<uint32_t>(ttyd::seq_title::seqTitleWorkPointer2) + 0x8);
+    
+    if ((TitleMainCheck >= 2) && (TitleMainCheck < 12))
     {
-        // Check to see if the title screen is ready
-        // Check to see if the curtain is fully displayed or not
-        uint32_t TitleMainCheck = *reinterpret_cast<uint32_t *>(
-            reinterpret_cast<uint32_t>(ttyd::seq_title::seqTitleWorkPointer2) + 0x8);
-        
-        if ((TitleMainCheck >= 2) && (TitleMainCheck < 12))
-        {
-            // Curtain is not fully displayed
-            // Draw the title screen info
-            drawFunctionOn2DLayerWithOrder(drawTitleScreenInfo, -1.f);
-        }
+        // Curtain is not fully displayed
+        // Draw the title screen info
+        drawFunctionOn2DLayerWithOrder(drawTitleScreenInfo, -1.f);
     }
-    else if (checkForSpecificSeq(ttyd::seqdrv::SeqIndex::kLoad))
+    
+    // Call original function
+    mPFN_titleMain_trampoline(seqInfo);
+}
+
+void Mod::displayFileSelectScreenInfo(ttyd::seqdrv::SeqInfo *seqInfo)
+{
+    // Check to see if the curtain is down or not
+    uint32_t SeqMainCheck = ttyd::seqdrv::seqWork.wFileSelectScreenProgress;
+    
+    if (SeqMainCheck == 2)
     {
-        // Check to see if the curtain is down or not
-        uint32_t SeqMainCheck = ttyd::seqdrv::seqWork.wFileSelectScreenProgress;
-        
-        if (SeqMainCheck == 2)
-        {
-            // Draw the file select screen info
-            drawFunctionOn2DLayerWithOrder(drawFileSelectScreenInfo, -1.f);
-        }
+        // Draw the file select screen info
+        drawFunctionOn2DLayerWithOrder(drawFileSelectScreenInfo, -1.f);
     }
+    
+    // Call original function
+    mPFN_seq_loadMain_trampoline(seqInfo);
 }
 
 int32_t Mod::pauseMenuPreventUnpause(void *pauseMenuPointer)
@@ -1013,9 +1017,6 @@ void initAddressOverwrites()
 
 void Mod::run()
 {
-    // Display the title screen and file select screen info
-    displayTitleScreenAndFileSelectScreenInfo();
-    
     // Update the On-Screen Timer variables if the display is on
     updateOnScreenTimerVars();
     

@@ -85,7 +85,7 @@
 // 800087B0:pressStartGX
 // 80008C50:disp2
 // 80008F68:disp1
-// 800090F4:titleMain
+800090F4:titleMain
 // 80009958:L_titleInit
 // 80009B3C:N_getDebugMode
 // 80009B48:seq_titleMain
@@ -1663,6 +1663,14 @@
 // 800EC2FC:evt_pouch_set_coin
 // 800EC32C:evt_pouch_add_coin
 // 800EC35C:evt_pouch_get_coin
+
+// seq_load.o
+// 800EED20:continueGame
+// 800EF270:loadDraw
+// 800F0BE8:loadMain
+800F207C:seq_loadMain
+// 800F2330:seq_loadExit
+// 800F236C:seq_loadInit
 
 // battle.o
 // text

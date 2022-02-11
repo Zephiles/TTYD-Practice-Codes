@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ttyd/seqdrv.h>
+
 #include <cstdint>
 
 namespace ttyd::seq_title {
@@ -9,7 +11,7 @@ extern "C" {
 // pressStartGX
 // disp2
 // disp1
-// titleMain
+void titleMain(ttyd::seqdrv::SeqInfo *seqInfo);
 // L_titleInit
 // N_getDebugMode
 // seq_titleMain

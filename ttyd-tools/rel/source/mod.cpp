@@ -27,6 +27,8 @@
 #include <ttyd/seqdrv.h>
 #include <ttyd/pmario_sound.h>
 #include <ttyd/fontmgr.h>
+#include <ttyd/seq_title.h>
+#include <ttyd/seq_load.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
 
@@ -205,6 +207,18 @@ void Mod::init()
             const char *envName, int32_t wFadeTime, bool unused)
     {
         return gMod->disableENVSounds(flags, envName, wFadeTime, unused);
+    });
+    
+    mPFN_titleMain_trampoline = patch::hookFunction(
+        ttyd::seq_title::titleMain, [](ttyd::seqdrv::SeqInfo *seqInfo)
+    {
+        gMod->displayTitleScreenInfo(seqInfo);
+    });
+    
+    mPFN_seq_loadMain_trampoline = patch::hookFunction(
+        ttyd::seq_load::seq_loadMain, [](ttyd::seqdrv::SeqInfo *seqInfo)
+    {
+        gMod->displayFileSelectScreenInfo(seqInfo);
     });
     
     // Initialize typesetting early

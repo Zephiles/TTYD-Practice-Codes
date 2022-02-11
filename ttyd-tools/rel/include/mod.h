@@ -44,6 +44,8 @@ private:
     void preventViPostCallBackOnPause(uint32_t);
     bool disableBGM(int32_t, const char *, uint16_t, uint16_t, bool);
     bool disableENVSounds(int32_t, const char *, int32_t, bool);
+    void displayTitleScreenInfo(ttyd::seqdrv::SeqInfo *);
+    void displayFileSelectScreenInfo(ttyd::seqdrv::SeqInfo *);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -78,6 +80,8 @@ private:
     void (*mPFN_viPostCallback_trampoline)(uint32_t) = nullptr;
     bool (*mPFN_psndBGMOn_f_d_trampoline)(int32_t, const char *, uint16_t, uint16_t, bool) = nullptr;
     bool (*mPFN_psndENVOn_f_d_trampoline)(int32_t, const char *, int32_t, bool) = nullptr;
+    void (*mPFN_titleMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
+    void (*mPFN_seq_loadMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
 };
 
 }
