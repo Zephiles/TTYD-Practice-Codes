@@ -166,7 +166,7 @@
 
 // icondrv.o
 // 80019060:iconNumberDispGx3D
-// 800192E4:iconNumberDispGx
+800192E4:iconNumberDispGx
 // 80019568:iconSetAlpha
 // 80019610:iconSetScale
 // 800196C8:iconFlagOff
@@ -1165,7 +1165,7 @@
 800D49B0:pouchGetMaxAP
 800D49BC:pouchSetAP
 // 800D49F8:pouchAddAP
-// 800D4A3C:pouchGetAP
+800D4A3C:pouchGetAP
 // 800D4A48:pouchSetMaxFP
 // 800D4A60:pouchSetFP
 // 800D4A84:pouchGetMaxFP
@@ -1937,6 +1937,37 @@
 // 8012AAC8:BtlUnit_Entry
 // 8012B17C:BtlUnit_Init
 
+// statuswindow.o
+// text
+// 8013DAAC:statusPartyHPBlink
+// 8013DAC8:statusMarioHPBlink
+// 8013DAE4:statusFPBlink
+// 8013DB00:N_statusClearBlink
+// 8013DB10:statusAPBlink
+// 8013DB38:statusGetApPos
+// 8013DBC8:statusWinForceUpdateCoin
+// 8013DBF8:statusWinForceUpdate
+// 8013DCAC:statusWinCheckUpdate
+// 8013DCD8:statusWinCheck
+// 8013DCF4:statusWinDispOff
+// 8013DD08:statusWinDispOn
+// 8013DD1C:statusWinForceOff
+// 8013DDE8:statusWinForceCloseClear
+// 8013DE00:statusWinForceClose
+// 8013DE3C:statusWinForceOpen
+// 8013DE78:statusWinClose
+// 8013DEA0:statusWinOpen
+// 8013DEC8:valueUpdate
+// 8013E2E8:valueCheck
+// 8013E494:statusGetValue
+8013E60C:statusWinDisp
+// 8013EF28:gaugeDisp
+// 8013F13C:statusWinMain
+// 8013F720:statusWinReInit
+// 8013F800:statusWinInit
+// data
+8042B50C:statusWindowWorkPointer
+
 // mario_party.o
 // 80142948:partyGetTechLv
 // 8014298C:partyGetHp
@@ -2372,7 +2403,7 @@
 // 802A2118:PSMTXRotTrig
 // 802A21C8:__PSMTXRotAxisRadInternal
 // 802A2278:PSMTXRotAxisRad
-// 802A22E8:PSMTXTrans
+802A22E8:PSMTXTrans
 // 802A231C:PSMTXTransApply
 802A2368:PSMTXScale
 // 802A2390:PSMTXScaleApply

@@ -19,7 +19,7 @@ extern "C" {
 // PSMTXRotTrig
 // __PSMTXRotAxisRadInternal
 // PSMTXRotAxisRad
-// PSMTXTrans
+void PSMTXTrans(mtx34 mtx, float x, float y, float z);
 // PSMTXTransApply
 void PSMTXScale(mtx34 mtx, float xScale, float yScale, float zScale);
 // PSMTXScaleApply

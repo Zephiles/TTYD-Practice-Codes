@@ -983,13 +983,19 @@ void initAddressOverwrites()
     patch::writeBranchBL_Template(AutoMashThroughText2Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText3Address, autoMashText);
     
-#ifdef TTYD_JP
-    patch::writeBranchBL_Template(BacktraceScreenPosYValueAddress, asmBacktraceScreenIncrementYPos);
-#endif
-    
 #ifdef TTYD_EU
     patch::writeBranchBL_Template(JumpOnWaterAddress, asmJumpOnWater);
 #endif
+
+    // Make the backtrace screen scroll
+#ifdef TTYD_JP
+    patch::writeBranchBL_Template(BacktraceScreenPosYValueAddress, asmBacktraceScreenIncrementYPos);
+#else
+    *reinterpret_cast<uint32_t *>(BacktraceScreenPPCHaltBranchAddress)  = 0x3B400000; // li r26,0
+    *reinterpret_cast<uint32_t *>(BacktraceScreenEndBranchAddress)      = 0x4BFFFDD4; // b -0x22C
+#endif
+    
+    *reinterpret_cast<float *>(BacktraceScreenFontSizeAddress)          = 0.66f;
     
     *reinterpret_cast<uint32_t *>(DebugModeInitialzeAddress)            = 0x3800FFFF; // li r0,-1
     *reinterpret_cast<uint32_t *>(DebugModeShowBuildDateAddress)        = 0x60000000; // nop
@@ -1000,14 +1006,6 @@ void initAddressOverwrites()
     *reinterpret_cast<uint32_t *>(PreventImportantItemCutscenesAddress) = 0x48000030; // b 0x30
     
     *reinterpret_cast<uint32_t *>(msgWindowMrAddress)                   = 0x38830001; // addi r4,r3,1
-    
-    *reinterpret_cast<float *>(BacktraceScreenFontSizeAddress)          = 0.66f;
-    
-#ifndef TTYD_JP
-    // This part of the backtrace screen does not need to be modified in JP
-    *reinterpret_cast<uint32_t *>(BacktraceScreenPPCHaltBranchAddress)  = 0x3B400000; // li r26,0
-    *reinterpret_cast<uint32_t *>(BacktraceScreenEndBranchAddress)      = 0x4BFFFDD4; // b -0x22C
-#endif
     
     // Set the initial value for the debug mode variable
     *reinterpret_cast<int32_t *>(

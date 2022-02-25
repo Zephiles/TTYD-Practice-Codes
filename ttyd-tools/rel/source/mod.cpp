@@ -31,6 +31,7 @@
 #include <ttyd/seq_load.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/seq_logo.h>
+#include <ttyd/statuswindow.h>
 
 namespace mod {
 
@@ -219,6 +220,12 @@ void Mod::init()
         ttyd::seq_load::seq_loadMain, [](ttyd::seqdrv::SeqInfo *seqInfo)
     {
         gMod->displayFileSelectScreenInfo(seqInfo);
+    });
+    
+    mPFN_statusWinDisp_trampoline = patch::hookFunction(
+        ttyd::statuswindow::statusWinDisp, []()
+    {
+        gMod->drawStarPowerValueUnderStatusWindow();
     });
     
     // Initialize typesetting early

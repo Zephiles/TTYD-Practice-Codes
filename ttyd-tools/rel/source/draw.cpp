@@ -31,6 +31,7 @@
 #include <ttyd/fadedrv.h>
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/mario.h>
+#include <ttyd/statuswindow.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
@@ -845,7 +846,7 @@ void drawMarioSpecialMovesOptions()
     
     // Draw the on/off text
     uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-    int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
+    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
     PosX += 130;
     PosY = NewPosY;
     
@@ -1026,7 +1027,7 @@ void drawMarioStats()
     IconPosition[IconPositionX] = 133;
     IconPosition[IconPositionY] = 101;
     
-    int16_t SpecialMovesBits = *reinterpret_cast<int16_t *>(PouchPtr + 0x8C);
+    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
     for (uint32_t i = 0; i < 8; i++)
     {
         if (SpecialMovesBits & (1 << i))
@@ -5106,6 +5107,49 @@ void drawStickAngle()
         StickAngleString);
     
     drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+}
+
+void Mod::drawStarPowerValueUnderStatusWindow()
+{
+    // Call the original function immediately
+    mPFN_statusWinDisp_trampoline();
+    
+    if (!Displays[STAR_POWER_VALUE])
+    {
+        return;
+    }
+    
+    // Credits to Jdaster64 for writing the original code for this function
+    // Don't display SP if no Star Powers have been unlocked yet
+    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    if (!SpecialMovesBits)
+    {
+        return;
+    }
+    
+    // Failsafe: Make sure the current SP is valid to prevent the text from glitching
+    int16_t CurrentSP = ttyd::mario_pouch::pouchGetAP();
+    if (CurrentSP <= 0)
+    {
+        return;
+    }
+    
+    // Don't display SP if the status bar is not on-screen
+    float MenuHeight = *reinterpret_cast<float *>(
+        reinterpret_cast<uint32_t>(ttyd::statuswindow::statusWindowWorkPointer) + 0x24);
+    
+    if ((MenuHeight > 330.f) || (MenuHeight < 100.f))
+    {
+        return;
+    }
+    
+    // Display SP
+    gc::mtx::mtx34 Mtx;
+    gc::mtx::PSMTXTrans(Mtx, 192.f, MenuHeight - 100.f, 0.f);
+    
+    uint32_t Color = 0xFFFFFFFF;
+    ttyd::icondrv::iconNumberDispGx(Mtx, CurrentSP, true, reinterpret_cast<uint8_t *>(&Color));
 }
 
 void drawMemoryWatchesOnOverworld()

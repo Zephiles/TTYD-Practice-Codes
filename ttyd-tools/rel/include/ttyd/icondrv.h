@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/mtx.h>
+
 #include <cstdint>
 
 namespace ttyd::icondrv {
@@ -7,7 +9,7 @@ namespace ttyd::icondrv {
 extern "C" {
 
 // iconNumberDispGx3D
-// iconNumberDispGx
+void iconNumberDispGx(gc::mtx::mtx34 mtx, int32_t number, bool isTextSmall, uint8_t color[4]);
 // iconSetAlpha
 // iconSetScale
 // iconFlagOff

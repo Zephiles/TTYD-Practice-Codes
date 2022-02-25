@@ -3,7 +3,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.53";
+const char *VersionNumber = "v3.0.54d";
 
 const char *RootLines[] = 
 {
@@ -1572,6 +1572,7 @@ const char *DisplaysLines[] =
     "Jump Storage",
     "Button Inputs",
     "Stick Angle",
+    "Star Power Value",
     "D-Pad Options",
     "Guard/Superguard Timings",
     "Art Attack Hitboxes",
@@ -1930,12 +1931,13 @@ uint8_t DisplaysOrder[] =
     MEMORY_USAGE,
     EVTS_ACTIVE,
     ENEMY_ENCOUNTER_NOTIFIER,
+    STAR_POWER_VALUE,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[38];
 struct Cheats Cheat[28];
-bool Displays[18];
+bool Displays[19];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -2078,7 +2080,7 @@ void initMenuVars()
     Menu[BATTLES_STATUSES].Line                           = BattlesStatusesLines;
     
     Menu[DISPLAYS].TotalMenuOptions                       = sizeof(DisplaysLines) / sizeof(DisplaysLines[0]);
-    Menu[DISPLAYS].ColumnSplitAmount                      = Menu[DISPLAYS].TotalMenuOptions;
+    Menu[DISPLAYS].ColumnSplitAmount                      = 18;
     Menu[DISPLAYS].Line                                   = DisplaysLines;
     
     Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions        = sizeof(OnScreenTimerOptionsLines) / sizeof(OnScreenTimerOptionsLines[0]);
@@ -2176,6 +2178,7 @@ void setInitialSettings()
     // Displays[JUMP_STORAGE]                 = true;
     // Displays[BUTTON_INPUT_DISPLAY]         = true;
     // Displays[STICK_ANGLE]                  = true;
+    // Displays[STAR_POWER_VALUE]             = true;
     // Displays[DPAD_OPTIONS_DISPLAY]         = true;
     Displays[GUARD_SUPERGUARD_TIMINGS]        = true;
     // Displays[ART_ATTACK_HITBOXES]          = true;

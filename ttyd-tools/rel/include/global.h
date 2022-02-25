@@ -408,6 +408,7 @@ enum DISPLAYS_OPTIONS
     JUMP_STORAGE,
     BUTTON_INPUT_DISPLAY,
     STICK_ANGLE,
+    STAR_POWER_VALUE,
     DPAD_OPTIONS_DISPLAY,
     GUARD_SUPERGUARD_TIMINGS,
     ART_ATTACK_HITBOXES,
@@ -1097,7 +1098,7 @@ struct UnusedMapStruct
 extern MenuVars MenuVar;
 extern Menus Menu[38];
 extern Cheats Cheat[28];
-extern bool Displays[18];
+extern bool Displays[19];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;

@@ -3058,7 +3058,7 @@ void menuCheckButton()
                 case DPADDOWN:
                 case DPADUP:
                 {
-                    adjustMenuNoPageEdit(CurrentButton);
+                    default_DPAD_Actions(CurrentButton);
                     break;
                 }
                 case A:
@@ -3962,6 +3962,7 @@ void drawMenu()
             break;
         }
         case CHEATS:
+        case DISPLAYS:
         {
             // Draw the text for the options
             uint32_t MaxOptionsPerPage = 18;

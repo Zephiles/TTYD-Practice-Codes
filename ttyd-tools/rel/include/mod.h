@@ -46,6 +46,7 @@ private:
     bool disableENVSounds(int32_t, const char *, int32_t, bool);
     void displayTitleScreenInfo(ttyd::seqdrv::SeqInfo *);
     void displayFileSelectScreenInfo(ttyd::seqdrv::SeqInfo *);
+    void drawStarPowerValueUnderStatusWindow();
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -82,6 +83,7 @@ private:
     bool (*mPFN_psndENVOn_f_d_trampoline)(int32_t, const char *, int32_t, bool) = nullptr;
     void (*mPFN_titleMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
     void (*mPFN_seq_loadMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
+    void (*mPFN_statusWinDisp_trampoline)() = nullptr;
 };
 
 }

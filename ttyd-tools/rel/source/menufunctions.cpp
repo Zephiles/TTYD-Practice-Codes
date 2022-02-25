@@ -2125,7 +2125,7 @@ uint32_t marioSpecialMovesButtonControls()
         case A:
         {
             uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-            *reinterpret_cast<int16_t *>(PouchPtr + 0x8C) ^= (1 << MenuVar.SecondaryMenuOption);
+            *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C) ^= (1 << MenuVar.SecondaryMenuOption);
             
             MenuVar.FrameCounter = 1;
             return Button;

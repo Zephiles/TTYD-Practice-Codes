@@ -40,7 +40,7 @@ uint32_t pouchGetJumpLv();
 int16_t pouchGetMaxAP();
 void pouchSetAP(int16_t sp);
 // pouchAddAP
-// pouchGetAP
+int16_t pouchGetAP();
 // pouchSetMaxFP
 // pouchSetFP
 // pouchGetMaxFP
