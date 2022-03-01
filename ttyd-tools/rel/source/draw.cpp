@@ -2202,14 +2202,23 @@ void drawMemoryEditorMainWindow()
     PosX = InitialEditorPosX + 6; // Add a bit extra to start at at the middle of the 2 digits
     PosY = InitialEditorPosY;
     
+    // Start at the last digit of the current address
+    uint32_t HeaderNumber = reinterpret_cast<uint32_t>(CurrentAddress) & 0xF;
     for (uint32_t i = 0; i < EDITOR_BYTES_PER_ROW; i++)
     {
         sprintf(tempDisplayBuffer,
             "%" PRIX32,
-            i);
+            HeaderNumber);
         
         drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
         PosX += (DigitSpace * 2) + 4;
+        
+        // Increment and handle looping
+        HeaderNumber++;
+        if (HeaderNumber > 0xF)
+        {
+            HeaderNumber = 0;
+        }
     }
     
     // Draw the bytes displayed in the editor
