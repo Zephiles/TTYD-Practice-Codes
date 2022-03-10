@@ -26,12 +26,13 @@
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/pmario_sound.h>
-#include <ttyd/fontmgr.h>
 #include <ttyd/seq_title.h>
 #include <ttyd/seq_load.h>
-#include <ttyd/windowdrv.h>
-#include <ttyd/seq_logo.h>
 #include <ttyd/statuswindow.h>
+#include <ttyd/win_mario.h>
+#include <ttyd/windowdrv.h>
+#include <ttyd/fontmgr.h>
+#include <ttyd/seq_logo.h>
 
 namespace mod {
 
@@ -226,6 +227,13 @@ void Mod::init()
         ttyd::statuswindow::statusWinDisp, []()
     {
         gMod->drawStarPowerValueUnderStatusWindow();
+    });
+    
+    mPFN_winMarioDisp_trampoline = patch::hookFunction(
+        ttyd::win_mario::winMarioDisp, [](
+            ttyd::dispdrv::CameraId cameraId, void *winWorkPtr, int32_t unk)
+    {
+        gMod->drawSequenceInPauseMenu(cameraId, winWorkPtr, unk);
     });
     
     // Initialize typesetting early

@@ -129,7 +129,6 @@ void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo);
 
 void drawOnScreenTimer();
 void drawFrameCounter();
-void drawSequenceInPauseMenu();
 void drawMarioCoordinatesInit();
 void drawMarioCoordinates();
 void drawMarioSpeedXZ();

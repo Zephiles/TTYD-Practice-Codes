@@ -1127,29 +1127,6 @@ void lockFlags()
     }
 }
 
-void displaySequenceInPauseMenu()
-{
-    uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
-    if ((SystemLevelFlags & 15) != 15)
-    {
-        return;
-    }
-    
-    uint32_t PauseMenuAddress = reinterpret_cast<uint32_t>(ttyd::win_main::winGetPtr());
-    uint32_t CurrentTab = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x40);
-    
-    if (CurrentTab != 0)
-    {
-        return;
-    }
-    
-    uint32_t CurrentMenu = *reinterpret_cast<uint32_t *>(PauseMenuAddress + 0x24);
-    if ((CurrentMenu == 10) || (CurrentMenu == 11))
-    {
-        drawFunctionOnDebugLayer(drawSequenceInPauseMenu);
-    }
-}
-
 void displayOnScreenTimer()
 {
     if (!Displays[ONSCREEN_TIMER])

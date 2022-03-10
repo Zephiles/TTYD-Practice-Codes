@@ -24,7 +24,6 @@ void spawnItem();
 void checkIfAreaFlagsShouldBeCleared();
 void lockFlags();
 
-void displaySequenceInPauseMenu();
 void displayOnScreenTimer();
 void displayFrameCounter();
 void displayMarioCoordinates();

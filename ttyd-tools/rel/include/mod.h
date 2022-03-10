@@ -47,6 +47,7 @@ private:
     void displayTitleScreenInfo(ttyd::seqdrv::SeqInfo *);
     void displayFileSelectScreenInfo(ttyd::seqdrv::SeqInfo *);
     void drawStarPowerValueUnderStatusWindow();
+    void drawSequenceInPauseMenu(ttyd::dispdrv::CameraId, void *, int32_t);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -84,6 +85,7 @@ private:
     void (*mPFN_titleMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
     void (*mPFN_seq_loadMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
     void (*mPFN_statusWinDisp_trampoline)() = nullptr;
+    void (*mPFN_winMarioDisp_trampoline)(ttyd::dispdrv::CameraId, void *, int32_t) = nullptr;
 };
 
 }

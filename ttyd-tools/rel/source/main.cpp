@@ -1077,7 +1077,6 @@ void Mod::run()
         displayNpcNameToPtrError();
         spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
         displayMemoryEditor(); // Needs to always run due to the adjustable value menu sometimes being displayed
-        displaySequenceInPauseMenu();
         displayActionCommandsTiming();
         displayEffsActive();
         displayEvtsActive();

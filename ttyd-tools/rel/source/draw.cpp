@@ -32,6 +32,7 @@
 #include <ttyd/seq_mapchange.h>
 #include <ttyd/mario.h>
 #include <ttyd/statuswindow.h>
+#include <ttyd/win_main.h>
 #include <ttyd/npcdrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_ac.h>
@@ -4788,49 +4789,6 @@ void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo)
     }
 }
 
-void drawSequenceInPauseMenu()
-{
-    uint32_t Color = 0xFFFFFFFF;
-    uint8_t Alpha  = 0xFF;
-    int32_t PosX   = 43;
-    int32_t PosY   = 47;
-    float Scale    = 0.8f;
-    
-    // Draw the sequence text
-    const char *String = "Sequence";
-    drawTextAndInit(String, PosX, PosY, Alpha, Color, true, Scale);
-    
-    // Draw the value
-    uint32_t SequencePosition = getSequencePosition();
-    char *tempDisplayBuffer   = DisplayBuffer;
-    
-    sprintf(tempDisplayBuffer,
-        "%" PRIu32,
-        SequencePosition);
-    
-    // Adjust the position of the value based on the Sequence Position
-#ifdef TTYD_JP
-    int32_t PosXIncrement = 186;
-#else
-    int32_t PosXIncrement = 182;
-#endif
-    
-    if (SequencePosition >= 100)
-    {
-        PosXIncrement -= 26;
-    }
-    else if (SequencePosition >= 10)
-    {
-        PosXIncrement -= 13;
-    }
-    
-#ifdef TTYD_JP
-    Scale += 0.05;
-#endif
-    
-    drawText(tempDisplayBuffer, PosX + PosXIncrement, PosY, Color, Scale);
-}
-
 void drawOnScreenTimer()
 {
     uint32_t Color = 0xFFFFFFFF;
@@ -5145,20 +5103,86 @@ void Mod::drawStarPowerValueUnderStatusWindow()
     }
     
     // Don't display SP if the status bar is not on-screen
-    float MenuHeight = *reinterpret_cast<float *>(
-        reinterpret_cast<uint32_t>(ttyd::statuswindow::statusWindowWorkPointer) + 0x24);
+    float *StatusBarPos = reinterpret_cast<float *>(
+        reinterpret_cast<uint32_t>(ttyd::statuswindow::statusWindowWorkPointer) + 0x20);
     
-    if ((MenuHeight > 330.f) || (MenuHeight < 100.f))
+    float StatusBarPosY = StatusBarPos[1];
+    if ((StatusBarPosY > 330.f) || (StatusBarPosY < 100.f))
     {
         return;
     }
     
     // Display SP
     gc::mtx::mtx34 Mtx;
-    gc::mtx::PSMTXTrans(Mtx, 192.f, MenuHeight - 100.f, 0.f);
+    gc::mtx::PSMTXTrans(Mtx, 192.f, StatusBarPosY - 100.f, 0.f);
     
     uint32_t Color = 0xFFFFFFFF;
     ttyd::icondrv::iconNumberDispGx(Mtx, CurrentSP, true, reinterpret_cast<uint8_t *>(&Color));
+}
+
+void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWorkPtr, int32_t unkIndex)
+{
+    // Call the original function immediately
+    mPFN_winMarioDisp_trampoline(cameraId, winWorkPtr, unkIndex);
+    
+    // Begin the drawing sequence
+    drawTextInit(0xFF, true);
+    
+    // Draw the sequence text
+#ifdef TTYD_JP
+    static float TextScale[3] = { 0.9f, 0.9f, 0.9f };
+#else
+    static float TextScale[3] = { 0.8f, 0.8f, 0.8f };
+#endif
+    
+    uint8_t Color[4];
+    *reinterpret_cast<uint32_t *>(Color) = 0xFFFFFFFF;
+    
+    // Get the position of the window
+    float *WindowPos = reinterpret_cast<float *>(
+        reinterpret_cast<uint32_t>(winWorkPtr) + 0xC4);
+    
+    float WindowPosX = WindowPos[0];
+    float WindowPosY = WindowPos[1];
+    float PosYIncrement = 50.f;
+    
+#ifdef TTYD_JP
+    PosYIncrement += 1.f;
+#endif
+    
+    float Pos[3];
+    Pos[0] = WindowPosX + 46.f;
+    Pos[1] = WindowPosY + PosYIncrement;
+    Pos[2] = 0.f;
+    
+    ttyd::win_main::winFontSet(
+        Pos, 
+        TextScale, 
+        Color, 
+        "Sequence");
+    
+    // Draw the sequence value
+#ifdef TTYD_JP
+    float *ValueScale = TextScale;
+#else
+    static float ValueScale[3] = { 0.9f, 0.9f, 0.9f };
+#endif
+    
+    Pos[0] = WindowPosX + 214.f;
+    // Pos[1] = WindowPosY + PosYIncrement;
+    // Pos[2] = 0.f;
+    
+    uint32_t SequencePosition = getSequencePosition();
+    
+    ttyd::win_main::winFontSetR(
+        Pos, 
+        ValueScale, 
+        Color, 
+        "%" PRIu32, 
+        SequencePosition);
+    
+    // Need to manually turn the font edge off
+    ttyd::fontmgr::FontDrawEdgeOff();
 }
 
 void drawMemoryWatchesOnOverworld()

@@ -506,7 +506,6 @@
 8004CF88:evt_npc_release_filednpc
 8004CFE8:evt_npc_sound_data_set
 8004D0F4:evt_npc_sound_data_reset
-// 8004D180:unk_US_PAL_01_8004d180
 8004D3CC:evt_fbat_trans_floor_position
 8004D514:evt_npc_kamek_kemuri2
 8004D614:evt_npc_kamek_kemuri1
@@ -2066,6 +2065,16 @@
 8016D43C:winItemInit
 // 8016D6A0:winMakeSkipList
 
+// win_mario.o
+8016D7C4:winMarioDisp
+// 8016F87C:fukidashi
+// 80170448:winZenkakuStr
+// 80170484:winMarioMain2
+// 80170488:winMarioMain
+// 80170C6C:winMarioExit
+// 80170C90:winMarioInit2
+// 80170DC0:winMarioInit
+
 // win_main.o
 // 8017B5B0:winLectureCheck
 // 8017B60C:winLectureOn
@@ -2080,9 +2089,9 @@
 // 8017CEF0:winTexInit
 // 8017D068:winFontSetLabel
 // 8017D28C:winFontSetEdge
-// 8017D3B8:winFontSetR
+8017D3B8:winFontSetR
 // 8017D52C:winFontSetPitch
-// 8017D6AC:winFontSet
+8017D6AC:winFontSet
 // 8017D7D0:winFontInit
 // 8017D7F0:winGhostDiaryChk
 // 8017D834:cam_r

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstdarg>
 
 namespace ttyd::win_main {
 
@@ -20,8 +21,15 @@ extern "C" {
 // winFontSetPitch
 // winFontSetLabel
 // winFontSetEdge
-// winFontSetR
-// winFontSet
+
+#ifdef TTYD_JP
+void winFontSetR(float pos[3], float scale[3], uint8_t color[4], ...);
+void winFontSet(float pos[3], float scale[3], uint8_t color[4], ...);
+#else
+void winFontSetR(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+void winFontSet(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+#endif
+
 // winFontInit
 // winGhostDiaryChk
 // cam_r

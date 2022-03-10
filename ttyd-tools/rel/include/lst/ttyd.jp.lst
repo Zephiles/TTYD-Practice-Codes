@@ -2064,6 +2064,16 @@
 8016758C:winItemInit
 // 801677D4:winMakeSkipList
 
+// win_mario.o
+801678F8:winMarioDisp
+// 8016A3F0:fukidashi
+// 8016B0A4:winZenkakuStr
+// 8016B1D0:winMarioMain2
+// 8016B1D4:winMarioMain
+// 8016B9B8:winMarioExit
+// 8016B9DC:winMarioInit2
+// 8016BB0C:winMarioInit
+
 // win_main.o
 // text
 // 80175BFC:winLectureCheck
@@ -2080,8 +2090,8 @@
 // 801776B4:winFontSetPitch
 // 801777B8:winFontSetLabel
 // 8017785C:winFontSetEdge
-// 80177970:winFontSetR
-// 80177AC4:winFontSet
+80177970:winFontSetR
+80177AC4:winFontSet
 // 80177BD0:winFontInit
 // 80177BF0:winGhostDiaryChk
 // 80177C34:cam_r

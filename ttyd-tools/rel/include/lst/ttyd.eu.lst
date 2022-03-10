@@ -506,7 +506,6 @@
 8004D070:evt_npc_release_filednpc
 8004D0D0:evt_npc_sound_data_set
 8004D1DC:evt_npc_sound_data_reset
-// 8004D268:unk_US_PAL_01_8004d268
 8004D4B4:evt_fbat_trans_floor_position
 8004D5FC:evt_npc_kamek_kemuri2
 8004D6FC:evt_npc_kamek_kemuri1
@@ -632,7 +631,6 @@
 // 80054A0C:evt_sub_countdown_end
 // 80054A30:evt_sub_countdown_get_status
 // 80054A7C:evt_sub_countdown_start
-// 80054ADC:zz_80054ADC_
 // 80054B10:evt_sub_animgroup_async
 // 80054B68:evt_sub_get_language
 // 80054B9C:evt_sub_load_progresstime
@@ -2068,6 +2066,16 @@
 8016EEDC:winItemInit
 // 8016F140:winMakeSkipList
 
+// win_mario.o
+8016F264:winMarioDisp
+// 8017131C:fukidashi
+// 80171EE8:winZenkakuStr
+// 80171F24:winMarioMain2
+// 80171F28:winMarioMain
+// 8017270C:winMarioExit
+// 80172730:winMarioInit2
+// 80172860:winMarioInit
+
 // win_main.o
 // text
 // 8017D050:winLectureCheck
@@ -2083,10 +2091,9 @@
 // 8017E990:winTexInit
 // 8017EB08:winFontSetLabel
 // 8017ED2C:winFontSetEdge
-// 8017EE58:zz_8017ee58_
-// 8017F0CC:winFontSetR
+8017F0CC:winFontSetR
 // 8017F240:winFontSetPitch
-// 8017F3C0:winFontSet
+8017F3C0:winFontSet
 // 8017F4E4:winFontInit
 // 8017F504:winGhostDiaryChk
 // 8017F548:cam_r
