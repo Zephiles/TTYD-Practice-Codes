@@ -846,8 +846,7 @@ void drawMarioSpecialMovesOptions()
     }
     
     // Draw the on/off text
-    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    uint16_t SpecialMovesBits = getSpecialMoveBits();
     PosX += 130;
     PosY = NewPosY;
     
@@ -1028,7 +1027,7 @@ void drawMarioStats()
     IconPosition[IconPositionX] = 133;
     IconPosition[IconPositionY] = 101;
     
-    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    uint16_t SpecialMovesBits = getSpecialMoveBits();
     for (uint32_t i = 0; i < 8; i++)
     {
         if (SpecialMovesBits & (1 << i))
@@ -5088,8 +5087,7 @@ void Mod::drawStarPowerValueUnderStatusWindow()
     
     // Credits to Jdaster64 for writing the original code for this function
     // Don't display SP if no Star Powers have been unlocked yet
-    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-    uint16_t SpecialMovesBits = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    uint16_t SpecialMovesBits = getSpecialMoveBits();
     if (!SpecialMovesBits)
     {
         return;

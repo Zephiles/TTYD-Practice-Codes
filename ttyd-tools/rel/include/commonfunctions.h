@@ -45,6 +45,7 @@ void *getPartnerPointer();
 void *getFollowerPointer();
 void removePartnerFromOverworld();
 void removeFollowerFromOverworld();
+uint16_t getSpecialMoveBits();
 uint32_t getCurrentYoshiColorId();
 void setNewYoshiColorId(uint32_t colorId);
 void spawnPartnerOrFollower(ttyd::party::PartyMembers id);

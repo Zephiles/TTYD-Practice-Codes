@@ -245,6 +245,12 @@ void removeFollowerFromOverworld()
     ttyd::party::partyKill2(Id);
 }
 
+uint16_t getSpecialMoveBits()
+{
+    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    return *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+}
+
 uint32_t getCurrentYoshiColorId()
 {
     const uint32_t YoshiPartnerId = 4;
