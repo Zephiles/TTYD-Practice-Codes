@@ -246,7 +246,7 @@ int32_t saveSettings(int32_t memoryCardSlot)
             char *FileData = new char[CARD_READ_SIZE];
             
             // Get the data from the area that holds the size
-            ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, 0x200, 0x2000);
+            ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, CARD_READ_SIZE, 0x2000);
             if (ReturnCode != CARD_RESULT_READY)
             {
                 delete[] (FileData);
@@ -418,7 +418,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     char *FileData = new char[CARD_READ_SIZE];
     
     // Get the data from the area that holds the size
-    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, 0x200, 0x2000);
+    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, FileData, CARD_READ_SIZE, 0x2000);
     if (ReturnCode != CARD_RESULT_READY)
     {
         delete[] (FileData);
@@ -433,20 +433,20 @@ int32_t loadSettings(int32_t memoryCardSlot)
     // Delete the data that holds the size, as it's not needed anymore
     delete[] (FileData);
     
-    // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
-    uint32_t StoredFileSizeAdjusted = (StoredFileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
+    // Adjust the file size to be in multiples of CARD_READ_SIZE, rounding up
+    uint32_t StoredFileSizeAdjusted = (StoredFileSize + CARD_READ_SIZE - 1) & ~(CARD_READ_SIZE - 1);
     
-    // Make sure the stored file size is at least CARD_WRITE_SIZE
-    if (StoredFileSizeAdjusted < CARD_WRITE_SIZE)
+    // Make sure the stored file size is at least CARD_READ_SIZE
+    if (StoredFileSizeAdjusted < CARD_READ_SIZE)
     {
-        StoredFileSizeAdjusted = CARD_WRITE_SIZE;
+        StoredFileSizeAdjusted = CARD_READ_SIZE;
     }
     
     // Get the size needed to be read
     uint32_t FileSize = sizeof(struct SettingsStruct) + CARD_READ_SIZE;
     
-    // Adjust the struct size to be in multiples of CARD_WRITE_SIZE, rounding up
-    uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
+    // Adjust the struct size to be in multiples of CARD_READ_SIZE, rounding up
+    uint32_t FileSizeAdjusted = (FileSize + CARD_READ_SIZE - 1) & ~(CARD_READ_SIZE - 1);
     
     // Set up the memory to be copied from the file
     char *MiscData = new char[FileSizeAdjusted];
@@ -454,7 +454,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     
     // Get the data from the file
     // Must read by the stored size, as the struct size may exceed the size of the file
-    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, MiscData, StoredFileSizeAdjusted, 0x2000);
+    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, MiscData, StoredFileSizeAdjusted, 0x2200);
     
     // Close and unmount the card, as it's no longer needed
     gc::card::CARDClose(&FileInfo);
@@ -467,7 +467,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     }
     
     // Get the settings struct from the file
-    SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
+    SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0]);
     
     // Get the desired variables from the struct
     // Get the Cheats bools and button combos
