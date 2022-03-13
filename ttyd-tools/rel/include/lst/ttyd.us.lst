@@ -1923,10 +1923,13 @@
 // 8017C6D0:winTexSetRot
 // 8017CC2C:winTexSet
 // 8017CEF0:winTexInit
-// 8017D068:winFontSetLabel
-// 8017D28C:winFontSetEdge
+// unused:winFontSetPitch
+8017D068:winFontSetLabel
+8017D10C:winFontSetEdgeWidth
+8017D28C:winFontSetEdge
+unused:winFontSetCenter
 8017D3B8:winFontSetR
-// 8017D52C:winFontSetPitch
+8017D52C:winFontSetWidth
 8017D6AC:winFontSet
 // 8017D7D0:winFontInit
 // 8017D7F0:winGhostDiaryChk
