@@ -20,31 +20,29 @@ extern "C" {
 // winTexInit
 
 #ifdef TTYD_JP
-void winFontSetPitch(float pos[3], float scale[3], uint8_t color[4], float pitch, ...);
+void winFontSetPitch(float pos[3], float scale[3], uint8_t color[4], float pitch, const char *format, ...);
 #endif
 
 // label is passed into msgSearch, and the returned string is drawn
 void winFontSetLabel(float pos[3], float scale[3], uint8_t color[4], const char *label);
 
-#ifdef TTYD_JP
-void winFontSetEdge(float pos[3], float scale[3], uint8_t color[4], ...);
-#else
-void winFontSetEdgeWidth(float pos[3], float scale[3], uint8_t color[4], float textWidth, const char *format, ...);
-void winFontSetEdge(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+#ifndef TTYD_JP
+void winFontSetEdgeWidth(float pos[3], float scale[3], uint8_t color[4], float width, const char *format, ...);
 #endif
+
+void winFontSetEdge(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
 
 #ifdef TTYD_EU
 void winFontSetCenter(float pos[3], float scale[3], uint8_t color[4], float center, const char *format, ...);
 #endif
 
-#ifdef TTYD_JP
-void winFontSetR(float pos[3], float scale[3], uint8_t color[4], ...);
-void winFontSet(float pos[3], float scale[3], uint8_t color[4], ...);
-#else
 void winFontSetR(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
-void winFontSetWidth(float pos[3], float scale[3], uint8_t color[4], float textWidth, const char *format, ...);
-void winFontSet(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+
+#ifndef TTYD_JP
+void winFontSetWidth(float pos[3], float scale[3], uint8_t color[4], float width, const char *format, ...);
 #endif
+
+void winFontSet(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
 
 // winFontInit
 // winGhostDiaryChk
