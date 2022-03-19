@@ -61,6 +61,13 @@ void winOpenEnable();
 // winInit
 void *winGetPtr();
 
+
+extern const char str_999_jpn_winMain[];
+
+#ifndef TTYD_JP
+extern const char str_999_winMain[];
+#endif
+
 }
 
 }

@@ -124,6 +124,42 @@ void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t hei
     ttyd::windowdrv::windowDispGX_Waku_col(0, NewColor, NewX, NewY, NewWidth, NewHeight, NewCurve);
 }
 
+// Credits to Jdaster64 for writing the original code for this function
+void getTextDimensions(const char *text, float scale, float *widthOut, float *heightOut)
+{
+    uint16_t LineCount;
+    uint32_t Length = ttyd::fontmgr::FontGetMessageWidthLine(text, &LineCount);
+    
+    *widthOut = static_cast<float>(Length) * scale;
+    *heightOut = static_cast<float>((28 * (LineCount + 1)) - 9) * scale;
+}
+
+// Credits to Jdaster64 for writing the original code for this function
+void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
+    uint32_t textColor, float textScale, uint32_t windowColor, int32_t windowCurve)
+{
+    float Width;
+    float Height;
+    getTextDimensions(text, textScale, &Width, &Height);
+    
+    // Convert the X and Y positions
+    float WindowPosX = static_cast<float>(textPosX) + (Width / 2.f);
+    float WindowPosY = static_cast<float>(textPosY) - (Height / 2.f) - (4.f * textScale);
+    
+    // Draw the window
+    ttyd::windowdrv::windowDispGX_Waku_col(
+        0, 
+        reinterpret_cast<uint8_t *>(&windowColor), 
+        WindowPosX - (Width / 2.f) - 15.f, 
+        WindowPosY + (Height / 2.f) + 15.f, 
+        Width + 30.f, 
+        Height + 30.f, 
+        static_cast<float>(windowCurve));
+    
+    // Draw the text
+    drawTextAndInit(text, textPosX, textPosY, alpha, textColor, false, textScale);
+}
+
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
 {
     float NewPosition[3];
@@ -215,96 +251,36 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
     return drawIcon(position, iconNum, scale);
 }
 
-// Replace the first \n found with \0, and return the index of the character after that
-uint32_t getNextLineIndex(char *str)
+void drawTextMain(const char *text, int32_t x, int32_t y, 
+    uint32_t color, bool alignRight, const char *alignBaseString, float scale)
 {
-    // Set the initial index
-    uint32_t i = 0;
-    
-    // Loop through the string until \n or \0 is found
-    while ((str[i] != '\n') && (str[i] != '\0'))
+    float NewPosX = static_cast<float>(x);
+    if (alignRight)
     {
-        i++;
+        uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(alignBaseString);
+        uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+        
+        NewPosX += static_cast<float>(BaseLength - TextLength) * scale;
     }
     
-    // Replace \n with \0 and increment the index to the next line
-    if (str[i] != '\0')
-    {
-        str[i] = '\0';
-        i++;
-    }
+    gc::mtx::mtx34 MtxTrans;
+    gc::mtx::PSMTXTrans(
+        MtxTrans, 
+        NewPosX, 
+        static_cast<float>(y), 
+        0.f);
     
-    // Return the index of the next line
-    // Returns 0 when at the end of the string
-    return i;
-}
-
-void drawStringMultiline(float x, float y, const char *text)
-{
-    // Copy the text to a temporary array, as it will be modified
-    uint32_t textSize = strlen(text);
-    char tempText[textSize + 1];
-    strcpy(tempText, text);
+    gc::mtx::mtx34 MtxScale;
+    gc::mtx::PSMTXScale(MtxScale, scale, scale, scale);
     
-    // Get the index for the next line
-    uint32_t index = getNextLineIndex(tempText);
-    
-    // Draw the first line
-    char *currentLine = tempText;
-    
-    do
-    {
-        // Only draw the line if not pointing to an empty string
-        // This will only occur if multiple newlines were directly next to each other
-        if (currentLine[0] != '\0')
-        {
-            ttyd::fontmgr::FontDrawString(x, y, currentLine);
-        }
-        
-        // Set currentLine to the next line
-        currentLine += index;
-        
-        // Get the following line index
-        index = getNextLineIndex(currentLine);
-        
-        // Implement the new line space
-        y -= 20.f;
-    }
-    while (index != 0);
+    gc::mtx::PSMTXConcat(MtxTrans, MtxScale, MtxTrans);
+    ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
+    ttyd::fontmgr::FontDrawMessageMtx(MtxTrans, text);
 }
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    ttyd::fontmgr::FontDrawScale(scale);
-    ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
-    
-    uint32_t i = 0;
-    char EndOfLineChar;
-    bool LoopDone = false;
-    
-    while (!LoopDone)
-    {
-        EndOfLineChar = text[i];
-        if ((EndOfLineChar == '\n') || (EndOfLineChar == '\0'))
-        {
-            LoopDone = true;
-        }
-        i++;
-    }
-    
-    float NewX = static_cast<float>(x);
-    float NewY = static_cast<float>(y);
-    
-    if (EndOfLineChar == '\n')
-    {
-        // The text has multiple lines
-        drawStringMultiline(NewX, NewY, text);
-    }
-    else
-    {
-        // The text has one line
-        ttyd::fontmgr::FontDrawString(NewX, NewY, text);
-    }
+    drawTextMain(text, x, y, color, false, nullptr, scale);
 }
 
 void drawTextInit(uint8_t alpha, bool drawFontEdge)
@@ -348,13 +324,6 @@ int64_t reportFrameTimeDifference(const char *label, int64_t startFrameTime, int
     return FrameTimeDifference;
 }
 
-uint16_t getMessageWidth(const char *text, float scale)
-{
-    uint16_t LineLength = ttyd::fontmgr::FontGetMessageWidth(text);
-    float Width = static_cast<float>(LineLength + 15) * (scale + 0.05f);
-    return static_cast<uint16_t>(Width);
-}
-
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut)
 {
     if (valueToCheck)
@@ -393,39 +362,6 @@ uint32_t getSelectedTextColor(bool valueToCheck)
     {
         return 0xFFFFFFFF; // White
     }
-}
-
-void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
-    uint32_t textColor, float textScale, int32_t windowWidth, uint32_t windowColor, float windowCurve)
-{
-    // Check if the text is one line or multiple lines
-    uint32_t AdditionalLines = 0;
-    uint32_t i = 0;
-    
-    bool LoopDone = false;
-    while (!LoopDone)
-    {
-        if (text[i] == '\n')
-        {
-            AdditionalLines++;
-        }
-        else if (text[i] == '\0')
-        {
-            LoopDone = true;
-        }
-        i++;
-    }
-    
-    // Get the Height, X, and Y for the window
-    int32_t WindowHeight = (AdditionalLines * 20) + 44;
-    int32_t WindowPosX   = textPosX - 15;
-    int32_t WindowPosY   = textPosY + 13;
-    
-    // Draw the window
-    drawWindow(windowColor, WindowPosX, WindowPosY, windowWidth, WindowHeight, windowCurve);
-    
-    // Draw the text
-    drawTextAndInit(text, textPosX, textPosY, alpha, textColor, false, textScale);
 }
 
 void drawSingleColumnMain()
@@ -1822,10 +1758,9 @@ void drawMemoryChangeWatchPosition()
     Scale                = 0.6f;
     
     const char *HelpText = "Press/Hold the D-Pad directions\nto move the watch\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to cancel";
-    int32_t Width = static_cast<int32_t>(getMessageWidth(HelpText, Scale));
     
     drawTextWithWindow(HelpText, TextPosX, TextPosY, Alpha, 
-        TextColor, Scale, Width, WindowColor, Curve);
+        TextColor, Scale, WindowColor, Curve);
 }
 
 void drawMemoryWatchChangeAddressListWindow(int32_t posY)
@@ -2654,22 +2589,21 @@ void drawBattlesStatusesList()
     }
 }
 
-void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY, int32_t windowWidth)
+void drawErrorWindow(const char *message, int32_t textPosX, int32_t textPosY)
 {
     // int32_t TextPosX    = -200;
     // int32_t TextPosY    = 60;
     uint8_t Alpha          = 0xFF;
     uint32_t TextColor     = 0xFFFFFFFF;
     float Scale            = 0.6f;
-    // int32_t WindowWidth = 415;
     uint32_t WindowColor   = 0x151515F4;
     int32_t WindowCurve    = 20;
     
     drawTextWithWindow(message, textPosX, textPosY, Alpha, 
-        TextColor, Scale, windowWidth, WindowColor, WindowCurve);
+        TextColor, Scale, WindowColor, WindowCurve);
 }
 
-void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t textPosY)
+void drawErrorWindowAutoCheckForClose(const char *message, int32_t textPosX, int32_t textPosY)
 {
     if ((MenuVar.FunctionReturnCode < 0) && (MenuVar.Timer > 0))
     {
@@ -2679,12 +2613,7 @@ void drawErrorWindowAutoWidth(const char *message, int32_t textPosX, int32_t tex
             return;
         }
         
-        // int32_t TextPosX = -130;
-        // int32_t TextPosY = 60;
-        float Scale         = 0.6f;
-        int32_t WindowWidth = static_cast<int32_t>(getMessageWidth(message, Scale));
-        
-        drawErrorWindow(message, textPosX, textPosY, WindowWidth);
+        drawErrorWindow(message, textPosX, textPosY);
     }
     else
     {
@@ -2700,7 +2629,6 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
     }
     
     int32_t TextPosX = -172;
-    int32_t WindowWidth = 375;
     
     // Get the text to use
     const char *PartnerOrFollowerText;
@@ -2710,16 +2638,11 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
         
 #ifdef TTYD_JP
         TextPosX += 3;
-        WindowWidth -= 7;
 #endif
     }
     else
     {
         PartnerOrFollowerText = "follower";
-        
-#ifdef TTYD_JP
-        WindowWidth -= 1;
-#endif
     }
     
     // Print error text if currently trying to spawn a partner/follower when not able to
@@ -2729,7 +2652,7 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
         "To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
         PartnerOrFollowerText);
     
-    drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY, WindowWidth);
+    drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY);
 }
 
 void drawNotInBattleErrorMessage()
@@ -2742,14 +2665,12 @@ void drawNotInBattleErrorMessage()
     const char *CurrentLine = "You must be in a battle to use the Battles menu.";
     int32_t TextPosX        = -205;
     int32_t TextPosY        = 0;
-    int32_t WindowWidth     = 440;
     
 #ifdef TTYD_JP
     TextPosX += 6;
-    WindowWidth -= 13;
 #endif
     
-    drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
+    drawErrorWindow(CurrentLine, TextPosX, TextPosY);
 }
 
 void drawMarioCoordinatesErrorMessage()
@@ -2762,14 +2683,12 @@ void drawMarioCoordinatesErrorMessage()
     const char *CurrentLine = "This value must be modified as a hex value.";
     int32_t TextPosX = -181;
     int32_t TextPosY = -17;
-    int32_t WindowWidth = 392;
     
 #ifdef TTYD_JP
     TextPosX += 1;
-    WindowWidth -= 7;
 #endif
     
-    drawErrorWindow(CurrentLine, TextPosX, TextPosY, WindowWidth);
+    drawErrorWindow(CurrentLine, TextPosX, TextPosY);
 }
 
 void drawResolveFadesMessage()
@@ -2791,7 +2710,6 @@ void drawResolveFadesMessage()
     }
     
     int32_t TextPosX;
-    int32_t WindowWidth;
     const char *Message;
     
     switch (tempFunctionReturnCode)
@@ -2799,36 +2717,30 @@ void drawResolveFadesMessage()
         case FADE_RESOLVE_SUCCESS:
         {
             TextPosX = -188;
-            WindowWidth = 404;
             Message = "The selected fade was successfully resolved.";
             
 #ifdef TTYD_JP
             TextPosX += 2;
-            WindowWidth -= 2;
 #endif
             break;
         }
         case FADE_NOT_ACTIVE:
         {
             TextPosX = -135;
-            WindowWidth = 299;
             Message = "The selected fade is not active.";
             
 #ifdef TTYD_JP
             TextPosX += 5;
-            WindowWidth -= 9;
 #endif
             break;
         }
         case FADE_DONT_RESOLVE:
         {
             TextPosX = -205;
-            WindowWidth = 440;
             Message = "The selected fade does not need to be resolved.";
             
 #ifdef TTYD_JP
             TextPosX += 5;
-            WindowWidth -= 11;
 #endif
             break;
         }
@@ -2839,7 +2751,7 @@ void drawResolveFadesMessage()
     }
     
     int32_t TextPosY = 5;
-    drawErrorWindow(Message, TextPosX, TextPosY, WindowWidth);
+    drawErrorWindow(Message, TextPosX, TextPosY);
 }
 
 void drawWarpsErrorMessage(int32_t textPosY)
@@ -2852,14 +2764,12 @@ void drawWarpsErrorMessage(int32_t textPosY)
     // Print error text if currently trying to warp when not able to
     const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
     int32_t TextPosX        = -195;
-    int32_t WindowWidth     = 415;
     
 #ifdef TTYD_JP
     TextPosX += 8;
-    WindowWidth -= 13;
 #endif
     
-    drawErrorWindow(CurrentLine, TextPosX, textPosY, WindowWidth);
+    drawErrorWindow(CurrentLine, TextPosX, textPosY);
 }
 
 void drawConfirmationWindow(const char *message)
@@ -3643,7 +3553,7 @@ void drawAddByIcon(uint32_t currentMenu)
         const char *CurrentLine = "The inventory is currently full.";
         int32_t TextPosX = -130;
         int32_t TextPosY = 40;
-        drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+        drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
     }
 }
 
@@ -3658,7 +3568,7 @@ void drawAddById(uint32_t currentMenu)
         const char *CurrentLine = "The inventory is currently full.";
         int32_t TextPosX = -130;
         int32_t TextPosY = 40;
-        drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+        drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
     }
 }
 
@@ -5123,64 +5033,55 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
     // Call the original function immediately
     mPFN_winMarioDisp_trampoline(cameraId, winWorkPtr, unkIndex);
     
-    // Begin the drawing sequence
-    drawTextInit(0xFF, true);
-    
     // Draw the sequence text
-#ifdef TTYD_JP
-    static float TextScale[3] = { 0.9f, 0.9f, 0.9f };
-#else
-    static float TextScale[3] = { 0.8f, 0.8f, 0.8f };
-#endif
-    
-    uint8_t Color[4];
-    *reinterpret_cast<uint32_t *>(Color) = 0xFFFFFFFF;
-    
     // Get the position of the window
     float *WindowPos = reinterpret_cast<float *>(
         reinterpret_cast<uint32_t>(winWorkPtr) + 0xC4);
     
-    float WindowPosX = WindowPos[0];
-    float WindowPosY = WindowPos[1];
-    float PosYIncrement = 50.f;
+    int32_t WindowPosX = static_cast<int32_t>(WindowPos[0]);
+    int32_t WindowPosY = static_cast<int32_t>(WindowPos[1]);
+    int32_t PosYIncrement = 50;
+    float Scale = 0.8f;
     
 #ifdef TTYD_JP
-    PosYIncrement += 1.f;
+    Scale += 0.1f;
+    PosYIncrement += 1;
 #endif
     
-    float Pos[3];
-    Pos[0] = WindowPosX + 46.f;
-    Pos[1] = WindowPosY + PosYIncrement;
-    Pos[2] = 0.f;
+    uint8_t Alpha = 0xFF;
+    uint32_t Color = 0xFFFFFFFF;
     
-    ttyd::win_main::winFontSet(
-        Pos, 
-        TextScale, 
+    drawTextAndInit(
+        "Sequence", 
+        WindowPosX + 46, 
+        WindowPosY + PosYIncrement,
+        Alpha,
         Color, 
-        "Sequence");
+        true, 
+        Scale);
     
-    // Draw the sequence value
-#ifdef TTYD_JP
-    float *ValueScale = TextScale;
-#else
-    static float ValueScale[3] = { 0.9f, 0.9f, 0.9f };
-#endif
-    
-    Pos[0] = WindowPosX + 214.f;
-    // Pos[1] = WindowPosY + PosYIncrement;
-    // Pos[2] = 0.f;
-    
-    uint32_t SequencePosition = getSequencePosition();
-    
-    ttyd::win_main::winFontSetR(
-        Pos, 
-        ValueScale, 
-        Color, 
+    // Draw the sequence value, and align it to the right
+    char *tempDisplaybuffer = DisplayBuffer;
+    sprintf(
+        tempDisplaybuffer, 
         "%" PRIu32, 
-        SequencePosition);
+        getSequencePosition());
     
-    // Need to manually turn the font edge off
-    ttyd::fontmgr::FontDrawEdgeOff();
+#ifdef TTYD_JP
+    const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
+#else
+    const char *AlignBase = ttyd::win_main::str_999_winMain;
+    Scale = 0.9f;
+#endif
+    
+    drawTextMain(
+        tempDisplaybuffer, 
+        WindowPosX + 214,
+        WindowPosY + PosYIncrement,
+        Color, 
+        true, 
+        AlignBase,
+        Scale);
 }
 
 void drawMemoryWatchesOnOverworld()
@@ -5685,14 +5586,11 @@ void drawActionCommandsTiming()
     uint8_t Alpha          = 0xFF;
     int32_t TextPosX       = -232;
     int32_t TextPosY       = -105;
-    // int32_t WindowWidth = 320;
     int32_t WindowCurve    = 10;
     float Scale            = 0.7f;
     
-    int32_t WindowWidth    = static_cast<int32_t>(getMessageWidth(TextToDraw, Scale));
-    
     drawTextWithWindow(TextToDraw, TextPosX, TextPosY, Alpha, 
-        TextColor, Scale, WindowWidth, WindowColor, WindowCurve);
+        TextColor, Scale, WindowColor, WindowCurve);
     
     DisplayActionCommands.DisplayTimer--;
 }
@@ -5828,7 +5726,6 @@ void drawSettingsMemoryCardUsed()
 void drawSettingsCurrentWork()
 {
     const char *String;
-    int32_t WindowWidth;
     int32_t TextPosX = -50;
     
     switch (MenuSettings.ReturnCode)
@@ -5836,11 +5733,9 @@ void drawSettingsCurrentWork()
         case FILE_NOT_FOUND:
         {
             String = "Settings File Not Found";
-            WindowWidth = 226;
             TextPosX -= 48;
             
 #ifdef TTYD_JP
-            WindowWidth -= 8;
             TextPosX += 3;
 #endif
             break;
@@ -5848,11 +5743,9 @@ void drawSettingsCurrentWork()
         case RENAME_FAILED:
         {
             String = "Rename Failed";
-            WindowWidth = 151;
             TextPosX -= 11;
             
 #ifdef TTYD_JP
-            WindowWidth -= 7;
             TextPosX += 4;
 #endif
             break;
@@ -5860,22 +5753,15 @@ void drawSettingsCurrentWork()
         case RENAME_SUCCESSFUL:
         {
             String = "Rename Successful";
-            WindowWidth = 183;
             TextPosX -= 27;
-            
-#ifdef TTYD_JP
-            WindowWidth += 1;
-#endif
             break;
         }
         case FILE_ALREADY_RENAMED:
         {
             String = "Settings File Already Renamed";
-            WindowWidth = 284;
             TextPosX -= 77;
             
 #ifdef TTYD_JP
-            WindowWidth -= 6;
             TextPosX += 3;
 #endif
             break;
@@ -5883,11 +5769,9 @@ void drawSettingsCurrentWork()
         case DELETE_SUCCESSFUL:
         {
             String = "Delete Successful";
-            WindowWidth = 175;
             TextPosX -= 23;
             
 #ifdef TTYD_JP
-            WindowWidth -= 2;
             TextPosX += 2;
 #endif
             break;
@@ -5895,11 +5779,9 @@ void drawSettingsCurrentWork()
         case DELETE_FAILED:
         {
             String = "Delete Failed";
-            WindowWidth = 141;
             TextPosX -= 6;
             
 #ifdef TTYD_JP
-            WindowWidth -= 8;
             TextPosX += 5;
 #endif
             break;
@@ -5907,10 +5789,8 @@ void drawSettingsCurrentWork()
         case SAVE_FAILED:
         {
             String = "Save Failed";
-            WindowWidth = 129;
             
 #ifdef TTYD_JP
-            WindowWidth -= 7;
             TextPosX += 4;
 #endif
             break;
@@ -5918,11 +5798,9 @@ void drawSettingsCurrentWork()
         case SAVE_SUCCESSFUL:
         {
             String = "Save Successful";
-            WindowWidth = 160;
             TextPosX -= 15;
             
 #ifdef TTYD_JP
-            WindowWidth += 4;
             TextPosX -= 2;
 #endif
             break;
@@ -5930,10 +5808,8 @@ void drawSettingsCurrentWork()
         case LOAD_FAILED:
         {
             String = "Load Failed";
-            WindowWidth = 129;
             
 #ifdef TTYD_JP
-            WindowWidth -= 7;
             TextPosX += 4;
 #endif
             break;
@@ -5941,18 +5817,15 @@ void drawSettingsCurrentWork()
         case LOAD_SUCCESSFUL:
         {
             String = "Load Successful";
-            WindowWidth = 162;
             TextPosX -= 16;
             break;
         }
         case MEMCARD_IN_USE:
         {
             String = "Memory Card Currently In Use";
-            WindowWidth = 275;
             TextPosX -= 73;
             
 #ifdef TTYD_JP
-            WindowWidth -= 3;
             TextPosX += 2;
 #endif
             break;
@@ -5972,7 +5845,7 @@ void drawSettingsCurrentWork()
     float Scale          = 0.6f;
     
     drawTextWithWindow(String, TextPosX, TextPosY, Alpha, 
-        TextColor, Scale, WindowWidth, WindowColor, WindowCurve);
+        TextColor, Scale, WindowColor, WindowCurve);
     
     uint32_t tempTimer = MenuVar.Timer;
     MenuVar.Timer = tempTimer - 1;

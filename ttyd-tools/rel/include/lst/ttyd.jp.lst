@@ -1948,6 +1948,9 @@
 // 80178EE8:winReInit
 // 80178F14:winInit
 80178F4C:winGetPtr
+// data
+802F6AF0:str_999_jpn_winMain
+// unused:str_999_winMain
 
 // mario_cam.o
 // 801A2724:marioCamZoomUpLevelMain
@@ -2241,7 +2244,7 @@
 // mtx.a
 // 80297F00:PSMTXIdentity
 // 80297F2C:PSMTXCopy
-// 80297F60:PSMTXConcat
+80297F60:PSMTXConcat
 // 8029802C:PSMTXInverse
 // 80298124:PSMTXInvXpose
 // 802981EC:PSMTXRotRad

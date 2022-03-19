@@ -3882,7 +3882,7 @@ void drawMenu()
                             const char *CurrentLine = "The inventory is currently full.";
                             int32_t TextPosX = -130;
                             int32_t TextPosY = 40;
-                            drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+                            drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
                         case INVENTORY_EMPTY:
@@ -3891,7 +3891,7 @@ void drawMenu()
                             const char *CurrentLine = "The inventory is currently empty.";
                             int32_t TextPosX = -130;
                             int32_t TextPosY = 40;
-                            drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+                            drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
                         default:
@@ -3923,7 +3923,7 @@ void drawMenu()
                             const char *CurrentLine = "The inventory is currently empty.";
                             int32_t TextPosX = -130;
                             int32_t TextPosY = 40;
-                            drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+                            drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
                         default:
@@ -4326,7 +4326,7 @@ void drawMenu()
                     const char *CurrentLine = "All slots are currently empty.";
                     int32_t TextPosX = -130;
                     int32_t TextPosY = 80;
-                    drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                     break;
                 }
                 case NO_SLOTS_LEFT:
@@ -4334,7 +4334,7 @@ void drawMenu()
                     const char *CurrentLine = "There are no more free slots.";
                     int32_t TextPosX = -130;
                     int32_t TextPosY = 80;
-                    drawErrorWindowAutoWidth(CurrentLine, TextPosX, TextPosY);
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                     break;
                 }
                 default:

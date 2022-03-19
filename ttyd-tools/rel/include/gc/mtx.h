@@ -12,7 +12,7 @@ extern "C" {
 
 // PSMTXIdentity
 // PSMTXCopy
-// PSMTXConcat
+void PSMTXConcat(const mtx34 a, const mtx34 b, mtx34 ab);
 // PSMTXInverse
 // PSMTXInvXpose
 // PSMTXRotRad

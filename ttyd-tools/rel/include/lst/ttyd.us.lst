@@ -1912,6 +1912,7 @@
 // 80170DC0:winMarioInit
 
 // win_main.o
+// text
 // 8017B5B0:winLectureCheck
 // 8017B60C:winLectureOn
 // 8017B670:winLectureKeyMask
@@ -1947,6 +1948,9 @@ unused:winFontSetCenter
 // 8017EB70:winReInit
 // 8017EB9C:winInit
 8017EBD4:winGetPtr
+// data
+802F7390:str_999_jpn_winMain
+80424018:str_999_winMain
 
 // mario_cam.o
 // 801A86F0:marioCamZoomUpLevelMain
@@ -2240,7 +2244,7 @@ unused:winFontSetCenter
 // mtx.a
 // 8029DD04:PSMTXIdentity
 // 8029DD30:PSMTXCopy
-// 8029DD64:PSMTXConcat
+8029DD64:PSMTXConcat
 // 8029DE30:PSMTXInverse
 // 8029DF28:PSMTXInvXpose
 // 8029DFF0:PSMTXRotRad
