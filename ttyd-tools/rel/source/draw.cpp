@@ -4638,13 +4638,12 @@ void drawWarpIndexEntranceList()
     char *tempDisplayBuffer = DisplayBuffer;
     sprintf(
         tempDisplayBuffer,
-        "<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s",
-        mapAndBeroDetails.MapColor,
+        "%s\n<col %" PRIx32 ">%s",
         mapAndBeroDetails.MapText,
         mapAndBeroDetails.BeroColor,
         mapAndBeroDetails.BeroText);
     
-    drawTextMultipleLines(tempDisplayBuffer, PosX + 170, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX + 170, PosY, mapAndBeroDetails.MapColor, Scale);
     
     // Draw the current page
     int32_t PageNumberPosX = 150;
