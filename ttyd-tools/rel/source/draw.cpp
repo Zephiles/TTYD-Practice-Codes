@@ -325,7 +325,7 @@ void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t colo
             
             // Advance to the next line.
             LineStart = i + 1;
-            y -= 20.f;
+            y -= 20;
         }
     }
     
