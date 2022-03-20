@@ -272,11 +272,12 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
     return drawIcon(position, iconNum, scale);
 }
 
+// Set alignBaseString to nullptr to not align the text to the right
 void drawTextMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, bool alignRight, const char *alignBaseString, float scale)
+    uint32_t color, const char *alignBaseString, float scale)
 {
     float NewPosX = static_cast<float>(x);
-    if (alignRight)
+    if (alignBaseString)
     {
         uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(alignBaseString);
         uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
@@ -301,7 +302,7 @@ void drawTextMain(const char *text, int32_t x, int32_t y,
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    drawTextMain(text, x, y, color, false, nullptr, scale);
+    drawTextMain(text, x, y, color, nullptr, scale);
 }
 
 // Credits to Jdaster64 for writing the original code for this function
@@ -5086,7 +5087,6 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
         WindowPosX + 214,
         WindowPosY + PosYIncrement,
         Color,
-        true,
         AlignBase,
         Scale);
 }

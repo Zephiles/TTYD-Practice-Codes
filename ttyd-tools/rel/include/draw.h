@@ -22,7 +22,7 @@ int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
 
 void drawTextMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, bool alignRight, const char *alignBaseString, float scale);
+    uint32_t color, const char *alignBaseString, float scale);
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
