@@ -25,9 +25,13 @@ void drawTextMain(const char *text, int32_t x, int32_t y,
     uint32_t color, bool alignRight, const char *alignBaseString, float scale);
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
+void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 void drawTextInit(uint8_t alpha, bool drawFontEdge);
 
 void drawTextAndInit(const char *text, int32_t x, int32_t y, 
+    uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
+
+void drawTextMultipleLinesAndInit(const char *text, int32_t x, int32_t y, 
     uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
 
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);

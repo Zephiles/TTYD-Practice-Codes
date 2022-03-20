@@ -1038,6 +1038,14 @@ struct WarpByEventDetailsStruct
     uint16_t SequencePosition;
 };
 
+struct MapAndBeroDetails
+{
+    uint32_t MapColor;
+    const char *MapText;
+    uint32_t BeroColor;
+    const char *BeroText;
+};
+
 struct WarpByIndexStruct
 {
     bool RunIndexWarpCode;

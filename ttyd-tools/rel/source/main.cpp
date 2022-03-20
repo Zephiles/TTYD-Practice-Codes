@@ -903,6 +903,7 @@ void initAddressOverwrites()
     void *AutoMashThroughText1Address               = reinterpret_cast<void *>(0x80080FCC);
     void *AutoMashThroughText2Address               = reinterpret_cast<void *>(0x80080FF0);
     void *AutoMashThroughText3Address               = reinterpret_cast<void *>(0x80084268);
+    void *FontDrawMessageMtxHandleColAddress        = reinterpret_cast<void *>(0x800759E0);
 #elif defined TTYD_JP
     void *AllowRunningFromBattlesAddress            = reinterpret_cast<void *>(0x8011E7DC);
     void *ForceNPCItemDropAddress                   = reinterpret_cast<void *>(0x8004DFB0);
@@ -931,6 +932,7 @@ void initAddressOverwrites()
     void *AutoMashThroughText1Address               = reinterpret_cast<void *>(0x8008047C);
     void *AutoMashThroughText2Address               = reinterpret_cast<void *>(0x800804A0);
     void *AutoMashThroughText3Address               = reinterpret_cast<void *>(0x80083390);
+    void *FontDrawMessageMtxHandleColAddress        = reinterpret_cast<void *>(0x8007471C);
 #elif defined TTYD_EU
     void *AllowRunningFromBattlesAddress            = reinterpret_cast<void *>(0x80124BE4);
     void *ForceNPCItemDropAddress                   = reinterpret_cast<void *>(0x8004ECDC);
@@ -960,6 +962,7 @@ void initAddressOverwrites()
     void *AutoMashThroughText1Address               = reinterpret_cast<void *>(0x80082288);
     void *AutoMashThroughText2Address               = reinterpret_cast<void *>(0x800822AC);
     void *AutoMashThroughText3Address               = reinterpret_cast<void *>(0x800855BC);
+    void *FontDrawMessageMtxHandleColAddress        = reinterpret_cast<void *>(0x80076C9C);
     void *JumpOnWaterAddress                        = reinterpret_cast<void *>(0x80093CF0);
 #endif
     
@@ -982,6 +985,7 @@ void initAddressOverwrites()
     patch::writeBranchBL_Template(AutoMashThroughText1Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText2Address, autoMashText);
     patch::writeBranchBL_Template(AutoMashThroughText3Address, autoMashText);
+    patch::writeBranchBL_Template(FontDrawMessageMtxHandleColAddress, asmFontDrawMessageMtxHandleCol);
     
 #ifdef TTYD_EU
     patch::writeBranchBL_Template(JumpOnWaterAddress, asmJumpOnWater);

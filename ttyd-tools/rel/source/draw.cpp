@@ -59,6 +59,27 @@ bool disableDPadOptionsDisplay(uint16_t unkVar)
     return (unkVar & (1 << 8)); // Check the 8 bit
 }
 
+bool fontDrawMessageMtxHandleCol(const char *command, const char *colorString)
+{
+    uint32_t Color;
+    
+    if (strcmp(command, "col") == 0)
+    {
+        sscanf(colorString, "%" PRIx32, &Color);
+        ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&Color));
+    }
+    else if (strcmp(command, "/col") == 0)
+    {
+        ttyd::fontmgr::FontDrawColorIDX(0);
+    }
+    else
+    {
+        return false;
+    }
+    
+    return true;
+}
+
 void drawFunctionOnDebugLayer(void (*func)())
 {
     ttyd::dispdrv::dispEntry(ttyd::dispdrv::CameraId::kDebug3d, 2, 0.f, 
@@ -283,6 +304,35 @@ void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scal
     drawTextMain(text, x, y, color, false, nullptr, scale);
 }
 
+// Credits to Jdaster64 for writing the original code for this function
+void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
+{
+    char LineBuffer[128];
+    int32_t LineStart = 0;
+    constexpr int32_t MaxSize = sizeof(LineBuffer) - 1;
+    
+    // Draw each individual line
+    for (int32_t i = 0; text[i]; i++)
+    {
+        if (text[i] == '\n')
+        {
+            // Copy this line to the temporary buffer and append a null byte.
+            int32_t LineLength = i - LineStart < MaxSize ? i - LineStart : MaxSize;
+            strncpy(LineBuffer, text + LineStart, LineLength);
+            LineBuffer[LineLength] = '\0';
+            
+            drawText(LineBuffer, x, y, color, scale);
+            
+            // Advance to the next line.
+            LineStart = i + 1;
+            y -= 20.f;
+        }
+    }
+    
+    // Draw the rest of the string
+    drawText(text + LineStart, x, y, color, scale);
+}
+
 void drawTextInit(uint8_t alpha, bool drawFontEdge)
 {
     ttyd::fontmgr::FontDrawStart_alpha(alpha);
@@ -298,6 +348,13 @@ void drawTextAndInit(const char *text, int32_t x, int32_t y, uint8_t alpha, uint
 {
     drawTextInit(alpha, drawFontEdge);
     drawText(text, x, y, color, scale);
+}
+
+void drawTextMultipleLinesAndInit(const char *text, int32_t x, int32_t y, 
+    uint8_t alpha, uint32_t color, bool drawDontEdge, float scale)
+{
+    drawTextInit(alpha, drawDontEdge);
+    drawTextMultipleLines(text, x, y, color, scale);
 }
 
 int64_t reportCurrentFrameTime(const char *label)
@@ -766,7 +823,7 @@ void drawMarioSpecialMovesOptions()
     HelpTextPosX -= 1;
 #endif
     
-    drawTextAndInit(HelpText, HelpTextPosX, HelpTextPosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, HelpTextPosX, HelpTextPosY, Alpha, Color, false, Scale);
     
     // Draw the main text
     PosY = NewPosY;
@@ -826,7 +883,7 @@ void drawFollowersOptions()
     PosX -= 1;
 #endif
     
-    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
     
     PosX += 45;
     PosY -= 54;
@@ -1241,7 +1298,7 @@ void drawPartnerChangeYoshiColorOptions()
     PosX -= 1;
 #endif
     
-    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
     
     // Set the values for the text to use
     uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
@@ -1287,7 +1344,7 @@ void drawBattlesActorStats()
         "Selected Actor\n%s",
         BattlesActorsLines[CurrentActor - 1]);
     
-    drawText(tempDisplayBuffer, NamePosX, NamePosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, NamePosX, NamePosY, Color, Scale);
     
     // Create array for each stat to go in
     int16_t ActorStats[4];
@@ -1385,14 +1442,13 @@ void drawBattlesActorsHeldItem()
         // Draw the text for the item
         PosX += 17;
         PosY += 18;
-        const char *ItemName = getItemName(tempitem);
         
+        const char *ItemName = getItemName(tempitem);
         drawTextAndInit(ItemName, PosX, PosY, Alpha, Color, false, Scale);
     }
     else
     {
         PosY -= 20;
-        
         drawText("None", PosX, PosY, Color, Scale);
     }
 }
@@ -1431,7 +1487,7 @@ void drawCurrentFollowerOut()
     int32_t PosY = 120;
     float Scale = 0.6f;
     
-    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawMemoryWatchValueString(int32_t slot, int32_t posX, 
@@ -1703,7 +1759,7 @@ void drawMemoryTypeList()
     PosX -= 1;
 #endif
     
-    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
     PosX += 42;
     PosY -= 50;
     
@@ -2822,7 +2878,7 @@ void drawConfirmationWindow(const char *message)
     PosX += 7;
 #endif
     
-    drawTextAndInit(message, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(message, PosX, PosY, Alpha, Color, false, Scale);
     
     // Draw the yes/no options
     PosX += 155;
@@ -2861,7 +2917,7 @@ void drawSingleLineFromArray(int32_t posX, int32_t posY,
     float Scale = 0.6f;
     const char *CurrentLine = line[currentMenuOption];
     
-    drawText(CurrentLine, posX, posY, Color, Scale);
+    drawTextMultipleLines(CurrentLine, posX, posY, Color, Scale);
 }
 
 void drawSingleLineFromStringAndValue(int32_t posX, 
@@ -2989,7 +3045,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
     y             -= 13;
     color         = 0xFFFFFFFF;
     const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress Y to set the value to max\nPress Z to set the value to min\nPress A to confirm\nPress B to cancel";
-    drawTextAndInit(HelpText, x, y, alpha, color, false, scale);
+    drawTextMultipleLinesAndInit(HelpText, x, y, alpha, color, false, scale);
     
     int32_t tempMenuSecondaryValue = MenuVar.MenuSecondaryValue;
     y -= 100;
@@ -3055,10 +3111,10 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
             StageAndEventNames[1]); // Event name
         
         int32_t NamesPosY = y - 35;
-        drawText(tempDisplayBuffer, x + 80, NamesPosY, color, scale);
+        drawTextMultipleLines(tempDisplayBuffer, x + 80, NamesPosY, color, scale);
         
         const char *String = "Stage\nEvent";
-        drawText(String, x, NamesPosY, color, scale);
+        drawTextMultipleLines(String, x, NamesPosY, color, scale);
         
         y -= 60;
     }
@@ -3211,7 +3267,7 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     y             -= 13;
     color         = 0xFFFFFFFF;
     const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
-    drawTextAndInit(HelpText, x, y, alpha, color, false, scale);
+    drawTextMultipleLinesAndInit(HelpText, x, y, alpha, color, false, scale);
     
     uint32_t tempMenuSecondaryValueUnsigned = MenuVar.MenuSecondaryValueUnsigned;
     int32_t tempMenuSecondaryValue;
@@ -3384,7 +3440,7 @@ void drawAdjustableValueDouble(uint32_t currentMenu, const char *value)
     PosY          -= 13;
     Color         = 0xFFFFFFFF;
     const char *HelpText = "Press D-Pad Up/Down to adjust the value\nPress D-Pad Left/Right to change digits\nPress A to confirm\nPress B to cancel";
-    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
     
     PosX += 166;
     PosY -= 90;
@@ -3539,7 +3595,7 @@ void drawAddByIconMain(uint32_t currentMenu)
     HelpTextPosX -= 2;
 #endif
     
-    drawTextAndInit(HelpText, HelpTextPosX, HelpTextPosPosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, HelpTextPosX, HelpTextPosPosY, Alpha, Color, false, Scale);
 }
 
 void drawAddByIcon(uint32_t currentMenu)
@@ -3650,10 +3706,10 @@ void drawCheatsChangeSequence()
         StageAndEventNames[1]); // Event name
     
     PosY -= 40;
-    drawText(tempDisplayBuffer, PosX + 80, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX + 80, PosY, Color, Scale);
     
     const char *String = "Stage\nEvent";
-    drawText(String, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(String, PosX, PosY, Color, Scale);
 }
 
 void drawCheatsModifyMarioCoordinates()
@@ -3787,7 +3843,7 @@ void drawChangeButtonCombo(uint16_t *currentButtonCombo)
     Color                = 0xFFFFFFFF;
     const char *HelpText = "Hold the button(s) for 3 seconds to set the\nnew button combo\n\nPress B three times in succession to cancel";
     
-    drawTextAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX, PosY, Alpha, Color, false, Scale);
     
     // Draw the timer
     // Get the proper FPS for the timer
@@ -3889,7 +3945,7 @@ void drawCheatsGenerateLagSpike(uint16_t currentButtonCombo)
         MenuVar.LagSpikeDuration);
     
     PosY -= 60;
-    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawCheatsDisableCertainSounds()
@@ -4213,7 +4269,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
             "%s To Set\nCurrent Value\nNew Value",
             FlagText);
         
-        drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+        drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
         
         // Draw the values
         sprintf(tempDisplayBuffer,
@@ -4222,7 +4278,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
             FlagValue,
             ManageFlags.ValueToSet);
         
-        drawText(tempDisplayBuffer, PosX + 150, PosY, Color, Scale);
+        drawTextMultipleLines(tempDisplayBuffer, PosX + 150, PosY, Color, Scale);
     }
     else
     {
@@ -4231,20 +4287,20 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
             "%s To Set\nCurrent Value",
             FlagText);
         
-        drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+        drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
         
         // Draw the values
-        // Draw the flag being changed
-        sprintf(tempDisplayBuffer,
-            "%" PRIu32,
-            FlagToSet);
-        
-        drawText(tempDisplayBuffer, PosX + 150, PosY, Color, Scale);
-        
-        // Draw the On/Off text
         const char *TextToDraw;
-        getOnOffTextAndColor(FlagValue, &TextToDraw, &Color);
-        drawText(TextToDraw, PosX + 150, PosY - 20, Color, Scale);
+        uint32_t OnOffColor;
+        getOnOffTextAndColor(FlagValue, &TextToDraw, &OnOffColor);
+        
+        sprintf(tempDisplayBuffer,
+            "%" PRIu32 "\n<col %" PRIx32 ">%s",
+            FlagToSet,
+            OnOffColor,
+            TextToDraw);
+        
+        drawTextMultipleLines(tempDisplayBuffer, PosX + 150, PosY, Color, Scale);
     }
 }
 
@@ -4382,7 +4438,7 @@ void drawEventDetails(int32_t posX, int32_t posY, int32_t index)
     float Scale = 0.6f;
     
     const char *Details = "Stage\nEvent\nSequence\nPartner\nFollower\nMap\nLZ";
-    drawText(Details, posX, posY, Color, Scale);
+    drawTextMultipleLines(Details, posX, posY, Color, Scale);
     
     // Draw the values for the details for the current event
     WarpByEventDetailsStruct WarpByEventDetails;
@@ -4391,75 +4447,56 @@ void drawEventDetails(int32_t posX, int32_t posY, int32_t index)
         return;
     }
     
-    char *tempDisplayBuffer = DisplayBuffer;
-    posX += 100;
-    
-    // Draw the values for the stage, event, and sequence
-    sprintf(tempDisplayBuffer,
-        "%s\n%s\n%" PRIu16,
-        WarpByEventDetails.Stage,
-        WarpByEventDetails.Event,
-        WarpByEventDetails.SequencePosition);
-    
-    drawText(tempDisplayBuffer, posX, posY, Color, Scale);
-    posY -= 60;
-    
-    // Draw the value for the partner
+    // Get the text and color for the partner
+    uint32_t PartnerColor;
     const char *PartnerString = WarpByEventDetails.Partner;
     if (!compareStrings(PartnerString, "None"))
     {
-        Color = 0xFFFFFFFF;
+        PartnerColor = 0xFFFFFFFF;
     }
     else
     {
-        Color = 0x4B4B4BFF;
+        PartnerColor = 0x4B4B4BFF;
     }
     
-    drawText(PartnerString, posX, posY, Color, Scale);
-    posY -= 20;
-    
-    // Draw the value for the follower
+    // Get the text and color for the partner
+    uint32_t FollowerColor;
     const char *FollowerString = WarpByEventDetails.Follower;
     if (!compareStrings(FollowerString, "None"))
     {
-        Color = 0xFFFFFFFF;
+        FollowerColor = 0xFFFFFFFF;
     }
     else
     {
-        Color = 0x4B4B4BFF;
+        FollowerColor = 0x4B4B4BFF;
     }
     
-    drawText(FollowerString, posX, posY, Color, Scale);
-    posY -= 20;
+    // Get the text and color for the map and bero
+    MapAndBeroDetails mapAndBeroDetails;
     
-    // Draw the value for the map
-    const char *Map = WarpByEventDetails.Map;
-    if (Map && (Map[0] != '\0'))
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        Map = "None";
-        Color = 0x4B4B4BFF;
-    }
+    getMapAndBeroTextAndColor(
+        WarpByEventDetails.Map, 
+        WarpByEventDetails.Bero, 
+        &mapAndBeroDetails);
     
-    drawText(Map, posX, posY, Color, Scale);
-    posY -= 20;
+    char *tempDisplayBuffer = DisplayBuffer;
+    posX += 100;
     
-    // Draw the value for the bero
-    const char *Bero = WarpByEventDetails.Bero;
-    if (Bero && (Bero[0] != '\0'))
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        Bero = "None";
-        Color = 0x4B4B4BFF;
-    }
+    sprintf(tempDisplayBuffer,
+        "%s\n%s\n%" PRIu16 "\n<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s", 
+        WarpByEventDetails.Stage, 
+        WarpByEventDetails.Event, 
+        WarpByEventDetails.SequencePosition, 
+        PartnerColor, 
+        PartnerString, 
+        FollowerColor, 
+        FollowerString, 
+        mapAndBeroDetails.MapColor,
+        mapAndBeroDetails.MapText,
+        mapAndBeroDetails.BeroColor,
+        mapAndBeroDetails.BeroText);
     
-    drawText(Bero, posX, posY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, posX, posY, Color, Scale);
 }
 
 void drawWarpByEventMenuDetails()
@@ -4535,51 +4572,32 @@ void drawWarpIndexMapAndEntrance()
     float Scale      = 0.6f;
     
     const char *String = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
-    drawText(String, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(String, PosX, PosY, Color, Scale);
     PosX += 170;
-    PosY -= 60;
+    
+    // Get the text and color for the map and bero
+    MapAndBeroDetails mapAndBeroDetails;
+    
+    getMapAndBeroTextAndColor(
+        ttyd::seq_mapchange::NextMap, 
+        ttyd::seq_mapchange::NextBero, 
+        &mapAndBeroDetails);
     
     const char *MapName = getMapFromIndex(static_cast<int32_t>(WarpByIndex.MapId));
     uint32_t EntranceId = WarpByIndex.EntranceId;
     
-    // Draw the new map and entrance
+    // Draw the new map, new entrance, current map, and current entrance
     char *tempDisplayBuffer = DisplayBuffer;
     sprintf(tempDisplayBuffer,
-        "%s\n%" PRIu32,
+        "%s\n%" PRIu32 "\n\n<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s",
         MapName,
-        EntranceId);
+        EntranceId,
+        mapAndBeroDetails.MapColor,
+        mapAndBeroDetails.MapText,
+        mapAndBeroDetails.BeroColor,
+        mapAndBeroDetails.BeroText);
     
-    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
-    PosY += 60;
-    
-    // Draw the current map
-    const char *NextMap = ttyd::seq_mapchange::NextMap;
-    if (NextMap[0] != '\0')
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        NextMap = "None";
-        Color = 0x4B4B4BFF;
-    }
-    
-    drawText(NextMap, PosX, PosY, Color, Scale);
-    PosY -= 20;
-    
-    // Draw the current bero
-    const char *NextBero = ttyd::seq_mapchange::NextBero;
-    if (NextBero[0] != '\0')
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        NextBero = "None";
-        Color = 0x4B4B4BFF;
-    }
-    
-    drawText(NextBero, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawWarpIndexEntranceList()
@@ -4601,40 +4619,32 @@ void drawWarpIndexEntranceList()
     PosY -= 20;
     
     const char *HelpText = "Press B to close this window\nPress D-Pad Up/Down to adjust the page";
-    drawTextAndInit(HelpText, PosX + 72, PosY, Alpha, Color, false, Scale);
+    drawTextMultipleLinesAndInit(HelpText, PosX + 72, PosY, Alpha, Color, false, Scale);
     PosX = -232;
     PosY -= 55;
     
     const char *String = "Current Map\nCurrent Entrance";
-    drawText(String, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(String, PosX, PosY, Color, Scale);
     
-    // Draw the current map
-    const char *NextMap = ttyd::seq_mapchange::NextMap;
-    if (NextMap[0] != '\0')
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        NextMap = "None";
-        Color = 0x4B4B4BFF;
-    }
+    // Get the text and color for the map and bero
+    MapAndBeroDetails mapAndBeroDetails;
     
-    drawText(NextMap, PosX + 170, PosY, Color, Scale);
+    getMapAndBeroTextAndColor(
+        ttyd::seq_mapchange::NextMap, 
+        ttyd::seq_mapchange::NextBero, 
+        &mapAndBeroDetails);
     
-    // Draw the current bero
-    const char *NextBero = ttyd::seq_mapchange::NextBero;
-    if (NextBero[0] != '\0')
-    {
-        Color = 0xFFFFFFFF;
-    }
-    else
-    {
-        NextBero = "None";
-        Color = 0x4B4B4BFF;
-    }
+    // Draw the text for the map and bero
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(
+        tempDisplayBuffer,
+        "<col %" PRIx32 ">%s\n<col %" PRIx32 ">%s",
+        mapAndBeroDetails.MapColor,
+        mapAndBeroDetails.MapText,
+        mapAndBeroDetails.BeroColor,
+        mapAndBeroDetails.BeroText);
     
-    drawText(NextBero, PosX + 170, PosY - 20, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX + 170, PosY, Color, Scale);
     
     // Draw the current page
     int32_t PageNumberPosX = 150;
@@ -4658,7 +4668,6 @@ void drawWarpIndexEntranceList()
     uint32_t MaxEntrancesPerPage = 12;
     uint32_t Index = MaxEntrancesPerPage * tempCurrentPage;
     
-    char *tempDisplayBuffer = DisplayBuffer;
     for (uint32_t i = Index; i < (Index + MaxEntrancesPerPage); i++)
     {
         if (i >= MaxSlotsInArray)
@@ -4867,21 +4876,20 @@ void drawJumpStorageDetails()
     float Scale    = 0.65f;
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    char *tempDisplayBuffer = DisplayBuffer;
+    bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
     
-    // Draw the main text
+    uint32_t OnOffColor;
+    const char *TextToDraw;
+    getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &OnOffColor);
+    
+    char *tempDisplayBuffer = DisplayBuffer;
     sprintf(tempDisplayBuffer,
-        "JS:\nSpdY: %.2f",
+        "JS: <col %" PRIx32 ">%s<col ffffffff>\nSpdY: %.2f",
+        OnOffColor,
+        TextToDraw,
         player->wJumpVelocityY);
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
-    
-    // Draw the On/Off Text
-    bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
-    const char *TextToDraw;
-    
-    getOnOffTextAndColor(JumpStorageFlag, &TextToDraw, &Color);
-    drawText(TextToDraw, PosX + 33, PosY, Color, Scale);
+    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
 }
 
 void drawButtonInputs()
@@ -5063,8 +5071,8 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
     // Draw the sequence value, and align it to the right
     char *tempDisplaybuffer = DisplayBuffer;
     sprintf(
-        tempDisplaybuffer, 
-        "%" PRIu32, 
+        tempDisplaybuffer,
+        "%" PRIu32,
         getSequencePosition());
     
 #ifdef TTYD_JP
@@ -5075,11 +5083,11 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
 #endif
     
     drawTextMain(
-        tempDisplaybuffer, 
+        tempDisplaybuffer,
         WindowPosX + 214,
         WindowPosY + PosYIncrement,
-        Color, 
-        true, 
+        Color,
+        true,
         AlignBase,
         Scale);
 }
@@ -5296,7 +5304,7 @@ void drawPalaceSkipDetails()
         PhantomEmberPosY,
         PartnerPosY);
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
     
     // Draw Mario's coordinates if they're not already drawn
     if (!Displays[MARIO_COORDINATES])
@@ -5374,7 +5382,7 @@ void drawBridgeSkipDetails()
         EarlyOrLate,
         reinterpret_cast<uint32_t>(player->wObjHazardRespawn));
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
     
     // Draw Mario's coordinates if they're not already drawn
     if (!Displays[MARIO_COORDINATES])
@@ -5416,7 +5424,7 @@ void drawBlimpTicketSkipDetails()
         BlimpTicketSkip.UpRightTimer,
         BlimpTicketSkip.StraightUpTimer);
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
     
     // Draw the Stick Angle if it's not already drawn
     if (!Displays[STICK_ANGLE])
@@ -5720,7 +5728,7 @@ void drawSettingsMemoryCardUsed()
         "Memory Card Slot\nSlot %c",
         CurrentMemoryCardSlot);
     
-    drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
+    drawTextMultipleLines(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
 
 void drawSettingsCurrentWork()
@@ -5861,7 +5869,7 @@ void drawHeapArrayErrors()
     
     // Draw the text
     char *tempHeapCorruptionBuffer = HeapInfo.HeapCorruptionBuffer;
-    drawTextAndInit(tempHeapCorruptionBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextMultipleLinesAndInit(tempHeapCorruptionBuffer, PosX, PosY, Alpha, Color, true, Scale);
     
     // Clear the heap corruption buffer
     clearHeapCorruptionBuffer();
@@ -5987,7 +5995,7 @@ void drawTitleScreenInfo()
         "Practice Codes %s\nCreated by Zephiles",
         VersionNumber);
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, false, Scale);
+    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, TextColor, false, Scale);
 }
 
 void drawFileSelectScreenInfo()
@@ -6011,7 +6019,7 @@ void drawFileSelectScreenInfo()
     
     const char *String = "Press L + Start to open the menu\n\nFor more info, go to the main page:\nhttps://github.com/Zephiles/TTYD-Practice-Codes";
     
-    drawTextAndInit(String, PosX, PosY, Alpha, TextColor, false, Scale);
+    drawTextMultipleLinesAndInit(String, PosX, PosY, Alpha, TextColor, false, Scale);
 }
 
 void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)

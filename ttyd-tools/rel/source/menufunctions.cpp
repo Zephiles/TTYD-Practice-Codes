@@ -4144,6 +4144,34 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
     return true;
 }
 
+void getMapAndBeroTextAndColor(const char *mapText, 
+    const char *beroText, MapAndBeroDetails *mapAndBeroDetails)
+{
+    // Get the map values
+    if (mapText && (mapText[0] != '\0'))
+    {
+        mapAndBeroDetails->MapText = mapText;
+        mapAndBeroDetails->MapColor = 0xFFFFFFFF;
+    }
+    else
+    {
+        mapAndBeroDetails->MapText = "None";
+        mapAndBeroDetails->MapColor = 0x4B4B4BFF;
+    }
+    
+    // Get the bero values
+    if (beroText && (beroText[0] != '\0'))
+    {
+        mapAndBeroDetails->BeroText = beroText;
+        mapAndBeroDetails->BeroColor = 0xFFFFFFFF;
+    }
+    else
+    {
+        mapAndBeroDetails->BeroText = "None";
+        mapAndBeroDetails->BeroColor = 0x4B4B4BFF;
+    }
+}
+
 void *initStageEvents()
 {
     if (!WarpByEvent.ShouldInit)
