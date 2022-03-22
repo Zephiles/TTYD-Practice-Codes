@@ -57,6 +57,8 @@ uint32_t getCurrentPitFloor();
 void setPitFloor(int32_t floor);
 uint32_t getCurrentFPS();
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound);
+float intToFloat(int32_t value);
+void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues);
 uint32_t checkIfPointerIsValid(const void *ptr);
 void *getLastPointerFromPath(void *address, int32_t *offset, uint32_t offsetAmount);
 

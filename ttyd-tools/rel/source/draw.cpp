@@ -135,14 +135,15 @@ void drawMenuWindow()
 
 void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t height, int32_t curve)
 {
-    uint8_t *NewColor = reinterpret_cast<uint8_t *>(&color);
-    float NewX        = static_cast<float>(x);
-    float NewY        = static_cast<float>(y);
-    float NewWidth    = static_cast<float>(width);
-    float NewHeight   = static_cast<float>(height);
-    float NewCurve    = static_cast<float>(curve);
+    float ValuesOut[5];
+    int32_t Values[5] = { x, y, width, height, curve };
+    constexpr int32_t NumValues = sizeof(Values) / sizeof(Values[0]);
     
-    ttyd::windowdrv::windowDispGX_Waku_col(0, NewColor, NewX, NewY, NewWidth, NewHeight, NewCurve);
+    intToFloatArray(Values, ValuesOut, NumValues);
+    uint8_t *NewColor = reinterpret_cast<uint8_t *>(&color);
+    
+    ttyd::windowdrv::windowDispGX_Waku_col(0, NewColor, ValuesOut[0], 
+        ValuesOut[1], ValuesOut[2], ValuesOut[3], ValuesOut[4]);
 }
 
 // Credits to Jdaster64 for writing the original code for this function
@@ -151,21 +152,27 @@ void getTextDimensions(const char *text, float scale, float *widthOut, float *he
     uint16_t LineCount;
     uint32_t Length = ttyd::fontmgr::FontGetMessageWidthLine(text, &LineCount);
     
-    *widthOut = static_cast<float>(Length) * scale;
-    *heightOut = static_cast<float>((28 * (LineCount + 1)) - 9) * scale;
+    *widthOut = intToFloat(static_cast<int32_t>(Length)) * scale;
+    *heightOut = intToFloat((28 * (LineCount + 1)) - 9) * scale;
 }
 
 // Credits to Jdaster64 for writing the original code for this function
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
     uint32_t textColor, float textScale, uint32_t windowColor, int32_t windowCurve)
 {
+    float ValuesOut[3];
+    int32_t Values[3] = { textPosX, textPosY, windowCurve };
+    constexpr int32_t NumValues = sizeof(Values) / sizeof(Values[0]);
+    
+    intToFloatArray(Values, ValuesOut, NumValues);
+    
     float Width;
     float Height;
     getTextDimensions(text, textScale, &Width, &Height);
     
     // Convert the X and Y positions
-    float WindowPosX = static_cast<float>(textPosX) + (Width / 2.f);
-    float WindowPosY = static_cast<float>(textPosY) - (Height / 2.f) - (4.f * textScale);
+    float WindowPosX = ValuesOut[0] + (Width / 2.f);
+    float WindowPosY = ValuesOut[1] - (Height / 2.f) - (4.f * textScale);
     
     // Draw the window
     ttyd::windowdrv::windowDispGX_Waku_col(
@@ -175,7 +182,7 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
         WindowPosY + (Height / 2.f) + 15.f, 
         Width + 30.f, 
         Height + 30.f, 
-        static_cast<float>(windowCurve));
+        ValuesOut[2]);
     
     // Draw the text
     drawTextAndInit(text, textPosX, textPosY, alpha, textColor, false, textScale);
@@ -184,13 +191,9 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
 {
     float NewPosition[3];
-    int32_t ArraySize = static_cast<int32_t>(sizeof(NewPosition) / sizeof(float));
+    int32_t NumValues = sizeof(NewPosition) / sizeof(NewPosition[0]);
     
-    for (int32_t i = 0; i < ArraySize; i++)
-    {
-        NewPosition[i] = static_cast<float>(position[i]);
-    }
-    
+    intToFloatArray(position, NewPosition, NumValues);
     ttyd::icondrv::iconDispGx(NewPosition, 24, iconNum, scale);
     return position;
 }
@@ -276,20 +279,21 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 void drawTextMain(const char *text, int32_t x, int32_t y, 
     uint32_t color, const char *alignBaseString, float scale)
 {
-    float NewPosX = static_cast<float>(x);
+    float NewPosX = intToFloat(x);
+    
     if (alignBaseString)
     {
         uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(alignBaseString);
         uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
         
-        NewPosX += static_cast<float>(BaseLength - TextLength) * scale;
+        NewPosX += intToFloat(BaseLength - TextLength) * scale;
     }
     
     gc::mtx::mtx34 MtxTrans;
     gc::mtx::PSMTXTrans(
         MtxTrans, 
         NewPosX, 
-        static_cast<float>(y), 
+        intToFloat(y), 
         0.f);
     
     gc::mtx::mtx34 MtxScale;
@@ -6533,8 +6537,8 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                 gc::mtx::mtx34 MtxTextImage;
                 gc::mtx::PSMTXScale(
                     MtxTextImage, 
-                    1.f / static_cast<float>(SheetWidth), 
-                    1.f / static_cast<float>(SheetHeight), 
+                    1.f / intToFloat(static_cast<int32_t>(SheetWidth)), 
+                    1.f / intToFloat(static_cast<int32_t>(SheetHeight)), 
                     1.f);
                 
                 gc::gx::GXLoadTexMtxImm(

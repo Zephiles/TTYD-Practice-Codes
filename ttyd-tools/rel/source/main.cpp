@@ -639,8 +639,8 @@ void handleStandardHeapChunkResults(void *addressWithError,
             "Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks",
             heapIndex,
             String,
-            static_cast<float>(Usage) / 1024.f,
-            static_cast<float>(heap->capacity) / 1024.f,
+            intToFloat(Usage) / 1024.f,
+            intToFloat(static_cast<int32_t>(heap->capacity)) / 1024.f,
             Chunks);
         
         // Add the text to the memory usage buffer
@@ -697,11 +697,11 @@ void handleSmartHeapChunkResults(void *addressWithError,
         uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeap4Start);
 #endif
         
-        uint32_t TotalSize = HeapEnd - HeapStart - 0x20;
+        int32_t TotalSize = HeapEnd - HeapStart - 0x20;
         sprintf(tempDisplayBuffer,
             "Smart Heap (used): %.2f/%.2fkb, %" PRId32 " cks",
-            static_cast<float>(Usage) / 1024.f,
-            static_cast<float>(TotalSize) / 1024.f,
+            intToFloat(Usage) / 1024.f,
+            intToFloat(TotalSize) / 1024.f,
             Chunks);
         
         // Add the text to the memory usage buffer

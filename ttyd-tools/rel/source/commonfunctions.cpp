@@ -398,6 +398,19 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
     }
 }
 
+float __attribute__ ((noinline)) intToFloat(int32_t value)
+{
+    return static_cast<float>(value);
+}
+
+void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues)
+{
+    for (int32_t i = 0; i < numValues; i++)
+    {
+        valuesOut[i] = intToFloat(values[i]);
+    }
+}
+
 uint32_t checkIfPointerIsValid(const void *ptr)
 {
     uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
