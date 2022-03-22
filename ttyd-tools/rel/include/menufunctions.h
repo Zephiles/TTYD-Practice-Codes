@@ -87,9 +87,6 @@ bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
 uint16_t getGsw0ForEvent(int32_t stageId, int32_t eventId);
 bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails);
 
-void getMapAndBeroTextAndColor(const char *mapText, 
-    const char *beroText, MapAndBeroDetails *mapAndBeroDetails);
-
 void *initStageEvents();
 
 #ifdef TTYD_JP

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global.h"
+
 #include <cstdint>
 
 namespace mod {
@@ -37,6 +39,9 @@ void drawTextMultipleLinesAndInit(const char *text, int32_t x, int32_t y,
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
 void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
 uint32_t getSelectedTextColor(bool valueToCheck);
+
+void getMapAndBeroTextAndColor(const char *mapText, 
+    const char *beroText, MapAndBeroDetails *mapAndBeroDetails);
 
 void drawSingleColumnMain();
 void drawSingleColumnSelectedOption();
