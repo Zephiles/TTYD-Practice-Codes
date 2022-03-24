@@ -114,6 +114,8 @@ void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);
 
 void drawVersionNumber(int32_t posX, int32_t posY);
+void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const char *alignBase);
+void drawPageNumberAlignLeft(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
 

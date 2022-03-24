@@ -3827,7 +3827,7 @@ void drawMenu()
             drawSingleColumnMain();
             
             // Draw the version number
-            int32_t PosX = 150;
+            int32_t PosX = 223;
             int32_t PosY = 180;
             drawVersionNumber(PosX, PosY);
             
@@ -3970,7 +3970,7 @@ void drawMenu()
             drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, false);
             
             // Draw the page number
-            int32_t PosX = 150;
+            int32_t PosX = 223;
             // int32_t PosY = 180;
             drawPageNumber(PosX, PosY, tempCurrentPage);
             break;
@@ -4419,7 +4419,7 @@ void drawMenu()
                 drawSingleColumnMain();
                 
                 // Draw the page number
-                int32_t PosX = 150;
+                int32_t PosX = 223;
                 int32_t PosY = 180;
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 
@@ -4492,7 +4492,7 @@ void drawMenu()
                 drawBattlesStatusesList();
                 
                 // Draw the page number
-                int32_t PosX = 150;
+                int32_t PosX = 223;
                 int32_t PosY = 180;
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 

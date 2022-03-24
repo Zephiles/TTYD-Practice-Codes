@@ -1080,7 +1080,7 @@ void drawMarioStats()
     // Draw the text
     PosX = TextPosX;
     PosY = TextPosY;
-    ValuesPosX = TextPosX + 105;
+    ValuesPosX = TextPosX + 120;
     ExitLoop = false;
     
     for (uint32_t j = 0; j < TotalColumns; j++)
@@ -1108,7 +1108,13 @@ void drawMarioStats()
                     "%" PRId32,
                     MarioStatsArray[Counter]);
                 
-                drawText(tempDisplayBuffer, ValuesPosX, PosY, Color, TextScale);
+#ifdef TTYD_JP
+                const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
+#else
+                const char *AlignBase = ttyd::win_main::str_999_winMain;
+#endif
+                
+                drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, AlignBase, TextScale);
                 Counter++;
             }
             
@@ -1121,7 +1127,7 @@ void drawMarioStats()
         }
         
         PosX += 190;
-        ValuesPosX += 230;
+        ValuesPosX += 250;
         PosY = TextPosY;
     }
 }
@@ -1597,7 +1603,7 @@ void drawMemoryWatches()
     const int32_t ValueOffset = TypeOffset + 90;
     
     // Draw the current page
-    drawPageNumber(PosX, PosY, tempCurrentPage);
+    drawPageNumberAlignLeft(PosX, PosY, tempCurrentPage);
     
     // Draw the total amount of watches out of the max
     int32_t CurrentWatchCount = 0;
@@ -2604,7 +2610,7 @@ void drawBattlesStatusesList()
             uint32_t WindowColor = 0x151515E0;
             int32_t WindowPosX = -245;
             int32_t WindowPosY = 185 - (DrawWindowCounter * 30);
-            int32_t Width = 363;
+            int32_t Width = 362;
             int32_t Height = 35;
             int32_t Curve = 0;
             drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
@@ -2673,7 +2679,13 @@ void drawBattlesStatusesList()
             Color = 0xFFFFFFFF;
         }
         
-        drawText(TextToDraw, TextPosX + 290, TextPosY, Color, TextScale);
+#ifdef TTYD_JP
+        const char *AlignBase = "\x82\x58\x82\x58"; // Japanese characters for 99
+#else
+        const char *AlignBase = "99";
+#endif
+        
+        drawTextMain(TextToDraw, TextPosX + 300, TextPosY, Color, AlignBase, TextScale);
         TextPosY -= 30;
     }
 }
@@ -3667,10 +3679,16 @@ void drawVersionNumber(int32_t posX, int32_t posY)
     // uint8_t Alpha = 0xFF;
     float Scale = 0.6f;
     
-    drawText(VersionNumber, posX, posY, Color, Scale);
+#ifdef TTYD_JP
+    const char *AlignBase = "\x82\x58"; // Japanese character for 9
+#else
+    const char *AlignBase = "9";
+#endif
+    
+    drawTextMain(VersionNumber, posX, posY, Color, AlignBase, Scale);
 }
 
-void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
+void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const char *alignBase)
 {
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
@@ -3681,7 +3699,25 @@ void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
         "Page %" PRIu32,
         currentPage + 1);
     
-    drawText(tempDisplayBuffer, posX, posY, Color, Scale);
+    drawTextMain(tempDisplayBuffer, posX, posY, Color, alignBase, Scale);
+}
+
+void drawPageNumberAlignLeft(int32_t posX, int32_t posY, uint32_t currentPage)
+{
+    drawPageNumberMain(posX, posY, currentPage, nullptr);
+}
+
+void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
+{
+    const char *AlignBase;
+    
+#ifdef TTYD_JP
+    AlignBase = "\x82\x58"; // Japanese character for 9
+#else
+    AlignBase = "9";
+#endif
+    
+    drawPageNumberMain(posX, posY, currentPage, AlignBase);
 }
 
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
@@ -4679,7 +4715,7 @@ void drawWarpIndexEntranceList()
     drawTextMultipleLines(tempDisplayBuffer, PosX + 170, PosY, mapAndBeroDetails.MapColor, Scale);
     
     // Draw the current page
-    int32_t PageNumberPosX = 150;
+    int32_t PageNumberPosX = 223;
     uint32_t tempCurrentPage = MenuVar.CurrentPage;
     drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
     
