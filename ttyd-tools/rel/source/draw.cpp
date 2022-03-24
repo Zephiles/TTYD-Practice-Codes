@@ -1119,9 +1119,19 @@ void drawMarioStats()
     
     for (uint32_t j = 0; j < TotalColumns; j++)
     {
+        float MaxWidth;
+        if ((j + 1) == TotalColumns)
+        {
+            // The last column can have longer texts, so the max width must be higher
+            MaxWidth = 60.f;
+        }
+        else
+        {
+            MaxWidth = 40.f;
+        }
+        
         uint32_t StartingIndex = j * ColumnSplitAmount;
-        for (uint32_t i = StartingIndex; i < 
-            (StartingIndex + ColumnSplitAmount); i++)
+        for (uint32_t i = StartingIndex; i < (StartingIndex + ColumnSplitAmount); i++)
         {
             if (i >= tempStatsMarioOptionsLinesSize)
             {
@@ -1147,17 +1157,6 @@ void drawMarioStats()
 #else
                 const char *AlignBase = ttyd::win_main::str_999_winMain;
 #endif
-                
-                float MaxWidth;
-                if ((j + 1) == TotalColumns)
-                {
-                    // The last column can have longer texts, so the max width must be higher
-                    MaxWidth = 60.f;
-                }
-                else
-                {
-                    MaxWidth = 40.f;
-                }
                 
                 drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, AlignBase, TextScale, MaxWidth);
                 Counter++;
