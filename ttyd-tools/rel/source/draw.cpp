@@ -46,6 +46,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cinttypes>
+#include <cmath>
 
 namespace mod {
 
@@ -276,11 +277,13 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 }
 
 // Set alignBaseString to nullptr to not align the text to the right
-void drawTextMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale)
+// Set width to a negative value to not have a width limit
+void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color, 
+    const char *alignBaseString, float scale, float width)
 {
     float NewPosX = intToFloat(x);
     
+    // Check if aligning the text to the right
     if (alignBaseString)
     {
         uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(alignBaseString);
@@ -289,24 +292,55 @@ void drawTextMain(const char *text, int32_t x, int32_t y,
         NewPosX += intToFloat(BaseLength - TextLength) * scale;
     }
     
+    // Check if there's a width limit
+    float ScaleX = scale;
+    if (!std::signbit(width)) // Check if positive, works for checking against +0.0 and -0.0
+    {
+        uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+        float TextLengthScaled = intToFloat(TextLength) * scale;
+        
+        if (TextLengthScaled > width)
+        {
+            ScaleX = (width / TextLengthScaled) * scale;
+            
+            // If aligning the text to the right, account for the new X scale
+            if (alignBaseString)
+            {
+                NewPosX += TextLengthScaled - width;
+            }
+        }
+    }
+    
+    gc::mtx::mtx34 MtxScale;
+    gc::mtx::PSMTXScale(MtxScale, ScaleX, scale, scale);
+    
     gc::mtx::mtx34 MtxTrans;
-    gc::mtx::PSMTXTrans(
+    gc::mtx::PSMTXTransApply(
+        MtxScale, 
         MtxTrans, 
         NewPosX, 
         intToFloat(y), 
         0.f);
     
-    gc::mtx::mtx34 MtxScale;
-    gc::mtx::PSMTXScale(MtxScale, scale, scale, scale);
-    
-    gc::mtx::PSMTXConcat(MtxTrans, MtxScale, MtxTrans);
     ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&color));
     ttyd::fontmgr::FontDrawMessageMtx(MtxTrans, text);
 }
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    drawTextMain(text, x, y, color, nullptr, scale);
+    drawTextMain(text, x, y, color, nullptr, scale, -0.f);
+}
+
+void drawTextWidth(const char *text, int32_t x, 
+    int32_t y, uint32_t color, float scale, float width)
+{
+    drawTextMain(text, x, y, color, nullptr, scale, width);
+}
+
+void drawTextAlignRight(const char *text, int32_t x, int32_t y, 
+    uint32_t color, const char *alignBaseString, float scale)
+{
+    drawTextMain(text, x, y, color, alignBaseString, scale, -0.f);
 }
 
 // Credits to Jdaster64 for writing the original code for this function
@@ -787,7 +821,7 @@ void drawItemTextColumn(uint32_t indexStart, uint32_t indexIncrement,
         TextColor = getSelectedTextColor(CurrentOptionCheck);
         
         const char *ItemName = getItemName(CurrentItem);
-        drawText(ItemName, posX, posY, TextColor, scale);
+        drawTextWidth(ItemName, posX, posY, TextColor, scale, 130.f);
         posY -= 30;
         IndexCounter += indexIncrement;
     }
@@ -1114,7 +1148,18 @@ void drawMarioStats()
                 const char *AlignBase = ttyd::win_main::str_999_winMain;
 #endif
                 
-                drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, AlignBase, TextScale);
+                float MaxWidth;
+                if ((j + 1) == TotalColumns)
+                {
+                    // The last column can have longer texts, so the max width must be higher
+                    MaxWidth = 60.f;
+                }
+                else
+                {
+                    MaxWidth = 40.f;
+                }
+                
+                drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, AlignBase, TextScale, MaxWidth);
                 Counter++;
             }
             
@@ -2685,7 +2730,7 @@ void drawBattlesStatusesList()
         const char *AlignBase = "99";
 #endif
         
-        drawTextMain(TextToDraw, TextPosX + 300, TextPosY, Color, AlignBase, TextScale);
+        drawTextAlignRight(TextToDraw, TextPosX + 300, TextPosY, Color, AlignBase, TextScale);
         TextPosY -= 30;
     }
 }
@@ -3685,7 +3730,7 @@ void drawVersionNumber(int32_t posX, int32_t posY)
     const char *AlignBase = "9";
 #endif
     
-    drawTextMain(VersionNumber, posX, posY, Color, AlignBase, Scale);
+    drawTextAlignRight(VersionNumber, posX, posY, Color, AlignBase, Scale);
 }
 
 void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const char *alignBase)
@@ -3699,7 +3744,7 @@ void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const 
         "Page %" PRIu32,
         currentPage + 1);
     
-    drawTextMain(tempDisplayBuffer, posX, posY, Color, alignBase, Scale);
+    drawTextAlignRight(tempDisplayBuffer, posX, posY, Color, alignBase, Scale);
 }
 
 void drawPageNumberAlignLeft(int32_t posX, int32_t posY, uint32_t currentPage)
@@ -5150,7 +5195,7 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
     Scale = 0.9f;
 #endif
     
-    drawTextMain(
+    drawTextAlignRight(
         tempDisplaybuffer,
         WindowPosX + 214,
         WindowPosY + PosYIncrement,

@@ -20,7 +20,7 @@ void PSMTXConcat(const mtx34 a, const mtx34 b, mtx34 ab);
 // __PSMTXRotAxisRadInternal
 // PSMTXRotAxisRad
 void PSMTXTrans(mtx34 mtx, float x, float y, float z);
-// PSMTXTransApply
+void PSMTXTransApply(const mtx34 source, mtx34 destination, float x, float y, float z);
 void PSMTXScale(mtx34 mtx, float xScale, float yScale, float zScale);
 // PSMTXScaleApply
 // C_MTXLookAt

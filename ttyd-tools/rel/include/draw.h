@@ -23,10 +23,17 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY,
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
 
-void drawTextMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale);
+void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color, 
+    const char *alignBaseString, float scale, float width);
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
+
+void drawTextWidth(const char *text, int32_t x, 
+    int32_t y, uint32_t color, float scale, float width);
+
+void drawTextAlignRight(const char *text, int32_t x, int32_t y, 
+    uint32_t color, const char *alignBaseString, float scale);
+
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 void drawTextInit(uint8_t alpha, bool drawFontEdge);
 
