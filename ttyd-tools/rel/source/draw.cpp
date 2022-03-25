@@ -136,9 +136,9 @@ void drawMenuWindow()
 
 void drawWindow(uint32_t color, int32_t x, int32_t y, int32_t width, int32_t height, int32_t curve)
 {
-    float ValuesOut[5];
-    int32_t Values[5] = { x, y, width, height, curve };
-    constexpr int32_t NumValues = sizeof(Values) / sizeof(Values[0]);
+    constexpr int32_t NumValues = 5;
+    int32_t Values[NumValues] = { x, y, width, height, curve };
+    float ValuesOut[NumValues];
     
     intToFloatArray(Values, ValuesOut, NumValues);
     uint8_t *NewColor = reinterpret_cast<uint8_t *>(&color);
@@ -161,9 +161,9 @@ void getTextDimensions(const char *text, float scale, float *widthOut, float *he
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
     uint32_t textColor, float textScale, uint32_t windowColor, int32_t windowCurve)
 {
-    float ValuesOut[3];
-    int32_t Values[3] = { textPosX, textPosY, windowCurve };
-    constexpr int32_t NumValues = sizeof(Values) / sizeof(Values[0]);
+    constexpr int32_t NumValues = 3;
+    int32_t Values[NumValues] = { textPosX, textPosY, windowCurve };
+    float ValuesOut[NumValues];
     
     intToFloatArray(Values, ValuesOut, NumValues);
     
@@ -191,8 +191,8 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
 {
-    float NewPosition[3];
-    int32_t NumValues = sizeof(NewPosition) / sizeof(NewPosition[0]);
+    constexpr int32_t NumValues = 3;
+    float NewPosition[NumValues];
     
     intToFloatArray(position, NewPosition, NumValues);
     ttyd::icondrv::iconDispGx(NewPosition, 24, iconNum, scale);
@@ -297,7 +297,7 @@ void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color,
     if (!std::signbit(width)) // Check if positive, works for checking against +0.0 and -0.0
     {
         uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
-        float TextLengthScaled = intToFloat(TextLength) * scale;
+        float TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
         
         if (TextLengthScaled > width)
         {
