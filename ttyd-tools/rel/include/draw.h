@@ -34,7 +34,14 @@ void drawTextWidth(const char *text, int32_t x,
 void drawTextAlignRight(const char *text, int32_t x, int32_t y, 
     uint32_t color, const char *alignBaseString, float scale);
 
+void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y, 
+    uint32_t color, const char *alignBaseString, float scale, float width);
+
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
+
+void drawTextMultipleLinesWidth(const char *text, int32_t x, 
+    int32_t y, uint32_t color, float scale, float width);
+
 void drawTextInit(uint8_t alpha, bool drawFontEdge);
 
 void drawTextAndInit(const char *text, int32_t x, int32_t y, 

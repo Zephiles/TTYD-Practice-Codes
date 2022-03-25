@@ -344,7 +344,8 @@ void drawTextAlignRight(const char *text, int32_t x, int32_t y,
 }
 
 // Credits to Jdaster64 for writing the original code for this function
-void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
+void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y, 
+    uint32_t color, const char *alignBaseString, float scale, float width)
 {
     char LineBuffer[128];
     int32_t LineStart = 0;
@@ -355,21 +356,32 @@ void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t colo
     {
         if (text[i] == '\n')
         {
-            // Copy this line to the temporary buffer and append a null byte.
+            // Copy this line to the temporary buffer and append a null byte
             int32_t LineLength = i - LineStart < MaxSize ? i - LineStart : MaxSize;
             strncpy(LineBuffer, text + LineStart, LineLength);
             LineBuffer[LineLength] = '\0';
             
-            drawText(LineBuffer, x, y, color, scale);
+            drawTextMain(LineBuffer, x, y, color, alignBaseString, scale, width);
             
-            // Advance to the next line.
+            // Advance to the next line
             LineStart = i + 1;
             y -= 20;
         }
     }
     
-    // Draw the rest of the string
-    drawText(text + LineStart, x, y, color, scale);
+    // Draw the rest of the text
+    drawTextMain(text + LineStart, x, y, color, alignBaseString, scale, width);
+}
+
+void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
+{
+    drawTextMultipleLinesMain(text, x, y, color, nullptr, scale, -0.f);
+}
+
+void drawTextMultipleLinesWidth(const char *text, int32_t x, 
+    int32_t y, uint32_t color, float scale, float width)
+{
+    drawTextMultipleLinesMain(text, x, y, color, nullptr, scale, width);
 }
 
 void drawTextInit(uint8_t alpha, bool drawFontEdge)
@@ -4821,11 +4833,15 @@ void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo)
 
 void drawOnScreenTimer()
 {
+    // Start the drawing sequence
+    uint8_t Alpha = 0xFF;
+    drawTextInit(Alpha, true);
+    
     uint32_t Color = 0xFFFFFFFF;
-    uint8_t Alpha  = 0xFF;
     int32_t PosX   = 115;
     int32_t PosY   = -160;
     float Scale    = 0.7f;
+    float MaxWidth = 120.f; // Failsafe
     
 #ifdef TTYD_JP
     PosX  += 5;
@@ -4847,33 +4863,40 @@ void drawOnScreenTimer()
     }
     
     char *CurrentTimeString = getTimeString(DisplayBuffer, OnScreenTimer.MainTimer);
-    drawTextAndInit(CurrentTimeString, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextWidth(CurrentTimeString, PosX, PosY, Color, Scale, MaxWidth);
 }
 
 void drawFrameCounter()
 {
+    // Start the drawing sequence
+    uint8_t Alpha = 0xFF;
+    drawTextInit(Alpha, true);
+    
     // Get the proper FPS for the timer
     uint32_t FPS = getCurrentFPS();
     
-    uint32_t tempTimer = FrameCounter.MainTimer;
-    uint32_t hour = tempTimer / 3600 / FPS;
-    uint32_t minute = (tempTimer / 60 / FPS) % 60;
-    uint32_t second = (tempTimer / FPS) % 60;
-    uint32_t frame = tempTimer % FPS;
+    uint32_t TempTimer = FrameCounter.MainTimer;
+    uint32_t TotalSeconds = TempTimer / FPS;
+    uint32_t TotalMinutes = TotalSeconds / 60;
+    
+    uint32_t Hour = TotalMinutes / 60;
+    uint32_t Minute = TotalMinutes % 60;
+    uint32_t Second = TotalSeconds % 60;
+    uint32_t Frame = TempTimer % FPS;
     
     char *tempDisplayBuffer = DisplayBuffer;
     sprintf(tempDisplayBuffer,
         "%02" PRIu32 ":%02" PRIu32 ":%02" PRIu32 ".%02" PRIu32,
-        hour,
-        minute,
-        second,
-        frame);
+        Hour,
+        Minute,
+        Second,
+        Frame);
     
     uint32_t Color = 0xFFFFFFFF;
-    uint8_t Alpha  = 0xFF;
     int32_t PosX   = 115;
     int32_t PosY   = -160;
     float Scale    = 0.7f;
+    float MaxWidth = 120.f; // Failsafe
     
 #ifdef TTYD_JP
     PosX  += 5;
@@ -4904,7 +4927,7 @@ void drawFrameCounter()
 #endif
     }
     
-    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextWidth(tempDisplayBuffer, PosX, PosY, Color, Scale, MaxWidth);
     
     if (!FrameCounter.TimerPaused)
     {
@@ -4981,11 +5004,15 @@ void drawMarioSpeedXZ()
 
 void drawJumpStorageDetails()
 {
+    // Start the text drawing sequence
+    uint8_t Alpha = 0xFF;
+    drawTextInit(Alpha, true);
+    
     uint32_t Color = 0xFFFFFFFF;
-    uint8_t Alpha  = 0xFF;
     int32_t PosX   = 140;
     int32_t PosY   = 120;
     float Scale    = 0.65f;
+    float MaxWidth = 110.f; // Failsafe
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
@@ -5001,7 +5028,7 @@ void drawJumpStorageDetails()
         TextToDraw,
         player->wJumpVelocityY);
     
-    drawTextMultipleLinesAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+    drawTextMultipleLinesWidth(tempDisplayBuffer, PosX, PosY, Color, Scale, MaxWidth);
 }
 
 void drawButtonInputs()
