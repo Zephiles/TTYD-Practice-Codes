@@ -161,6 +161,12 @@ void getTextDimensions(const char *text, float scale, float *widthOut, float *he
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, uint8_t alpha, 
     uint32_t textColor, float textScale, uint32_t windowColor, int32_t windowCurve)
 {
+    // Make sure the text isn't an empty string
+    if (text[0] == '\0')
+    {
+        return;
+    }
+    
     constexpr int32_t NumValues = 3;
     int32_t Values[NumValues] = { textPosX, textPosY, windowCurve };
     float ValuesOut[NumValues];
@@ -281,6 +287,12 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
 void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color, 
     const char *alignBaseString, float scale, float width)
 {
+    // Make sure the text isn't an empty string
+    if (text[0] == '\0')
+    {
+        return;
+    }
+    
     float NewPosX = intToFloat(x);
     
     // Check if aligning the text to the right
@@ -348,29 +360,46 @@ void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y,
     uint32_t color, const char *alignBaseString, float scale, float width)
 {
     char LineBuffer[128];
-    int32_t LineStart = 0;
-    constexpr int32_t MaxSize = sizeof(LineBuffer) - 1;
+    const char *CurrentLine = text;
+    constexpr int32_t MaxLength = sizeof(LineBuffer) - 1;
     
     // Draw each individual line
-    for (int32_t i = 0; text[i]; i++)
+    while (1)
     {
-        if (text[i] == '\n')
+        // Find the end of the current line
+        const char *Newline = strchr(CurrentLine, '\n');
+        
+        // If a newline is not found, then currently at the last line
+        if (!Newline)
         {
-            // Copy this line to the temporary buffer and append a null byte
-            int32_t LineLength = i - LineStart < MaxSize ? i - LineStart : MaxSize;
-            strncpy(LineBuffer, text + LineStart, LineLength);
-            LineBuffer[LineLength] = '\0';
-            
-            drawTextMain(LineBuffer, x, y, color, alignBaseString, scale, width);
-            
-            // Advance to the next line
-            LineStart = i + 1;
-            y -= 20;
+            break;
         }
+        
+        // Copy this line to the temporary buffer and append a null byte
+        int32_t LineLength = Newline - CurrentLine;
+        
+        // Make sure the current line won't be an empty string
+        if (LineLength > 0)
+        {
+            // Prevent a buffer overflow
+            if (LineLength > MaxLength)
+            {
+                LineLength = MaxLength;
+            }
+            
+            char *tempBuffer = strncpy(LineBuffer, CurrentLine, LineLength);
+            tempBuffer[LineLength] = '\0';
+            
+            drawTextMain(tempBuffer, x, y, color, alignBaseString, scale, width);
+        }
+        
+        // Advance to the next line
+        CurrentLine = Newline + 1;
+        y -= 20;
     }
     
     // Draw the rest of the text
-    drawTextMain(text + LineStart, x, y, color, alignBaseString, scale, width);
+    drawTextMain(CurrentLine, x, y, color, alignBaseString, scale, width);
 }
 
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale)

@@ -2133,7 +2133,7 @@
 
 // string.c
 // 80271180:strstr
-// 802711E8:strchr
+802711E8:strchr
 80271218:strncmp
 80271258:strcmp
 80271380:strcat

@@ -2132,7 +2132,7 @@
 
 // string.c
 // unused:strstr
-// 802673DC:strchr
+802673DC:strchr
 8026740C:strncmp
 8026744C:strcmp
 80267574:strcat
