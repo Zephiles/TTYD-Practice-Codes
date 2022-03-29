@@ -282,10 +282,9 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
     return drawIcon(position, iconNum, scale);
 }
 
-// Set alignBaseString to nullptr to not align the text to the right
 // Set width to a negative value to not have a width limit
-void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color, 
-    const char *alignBaseString, float scale, float width)
+void drawTextMain(const char *text, int32_t x, int32_t y, 
+    uint32_t color, bool alignRight, float scale, float width)
 {
     // Make sure the text isn't an empty string
     if (text[0] == '\0')
@@ -294,12 +293,18 @@ void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color,
     }
     
     float NewPosX = intToFloat(x);
+    uint32_t TextLength = 0;
     
     // Check if aligning the text to the right
-    if (alignBaseString)
+    if (alignRight)
     {
-        uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(alignBaseString);
-        uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+#ifdef TTYD_JP
+        const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
+#else
+        const char *AlignBase = ttyd::win_main::str_999_winMain;
+#endif
+        uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(AlignBase);
+        TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
         
         NewPosX += intToFloat(BaseLength - TextLength) * scale;
     }
@@ -308,15 +313,19 @@ void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color,
     float ScaleX = scale;
     if (!std::signbit(width)) // Check if positive, works for checking against +0.0 and -0.0
     {
-        uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
-        float TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
+        // Prevent calling FontGetMessageWidth again if unnecessary
+        if (TextLength == 0)
+        {
+            TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+        }
         
+        float TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
         if (TextLengthScaled > width)
         {
             ScaleX = (width / TextLengthScaled) * scale;
             
             // If aligning the text to the right, account for the new X scale
-            if (alignBaseString)
+            if (alignRight)
             {
                 NewPosX += TextLengthScaled - width;
             }
@@ -340,24 +349,23 @@ void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color,
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    drawTextMain(text, x, y, color, nullptr, scale, -0.f);
+    drawTextMain(text, x, y, color, false, scale, -0.f);
 }
 
 void drawTextWidth(const char *text, int32_t x, 
     int32_t y, uint32_t color, float scale, float width)
 {
-    drawTextMain(text, x, y, color, nullptr, scale, width);
+    drawTextMain(text, x, y, color, false, scale, width);
 }
 
-void drawTextAlignRight(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale)
+void drawTextAlignRight(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    drawTextMain(text, x, y, color, alignBaseString, scale, -0.f);
+    drawTextMain(text, x, y, color, true, scale, -0.f);
 }
 
 // Credits to Jdaster64 for writing the original code for this function
 void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale, float width)
+    uint32_t color, bool alignRight, float scale, float width)
 {
     char LineBuffer[128];
     const char *CurrentLine = text;
@@ -390,7 +398,7 @@ void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y,
             char *tempBuffer = strncpy(LineBuffer, CurrentLine, LineLength);
             tempBuffer[LineLength] = '\0';
             
-            drawTextMain(tempBuffer, x, y, color, alignBaseString, scale, width);
+            drawTextMain(tempBuffer, x, y, color, alignRight, scale, width);
         }
         
         // Advance to the next line
@@ -399,18 +407,18 @@ void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y,
     }
     
     // Draw the rest of the text
-    drawTextMain(CurrentLine, x, y, color, alignBaseString, scale, width);
+    drawTextMain(CurrentLine, x, y, color, alignRight, scale, width);
 }
 
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale)
 {
-    drawTextMultipleLinesMain(text, x, y, color, nullptr, scale, -0.f);
+    drawTextMultipleLinesMain(text, x, y, color, false, scale, -0.f);
 }
 
 void drawTextMultipleLinesWidth(const char *text, int32_t x, 
     int32_t y, uint32_t color, float scale, float width)
 {
-    drawTextMultipleLinesMain(text, x, y, color, nullptr, scale, width);
+    drawTextMultipleLinesMain(text, x, y, color, false, scale, width);
 }
 
 void drawTextInit(uint8_t alpha, bool drawFontEdge)
@@ -1193,13 +1201,7 @@ void drawMarioStats()
                     "%" PRId32,
                     MarioStatsArray[Counter]);
                 
-#ifdef TTYD_JP
-                const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
-#else
-                const char *AlignBase = ttyd::win_main::str_999_winMain;
-#endif
-                
-                drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, AlignBase, TextScale, MaxWidth);
+                drawTextMain(tempDisplayBuffer, ValuesPosX, PosY, Color, true, TextScale, MaxWidth);
                 Counter++;
             }
             
@@ -2698,6 +2700,7 @@ void drawBattlesStatusesList()
             int32_t Width = 362;
             int32_t Height = 35;
             int32_t Curve = 0;
+            
             drawWindow(WindowColor, WindowPosX, WindowPosY, Width, Height, Curve);
         }
         
@@ -2764,13 +2767,13 @@ void drawBattlesStatusesList()
             Color = 0xFFFFFFFF;
         }
         
+        int32_t TextPosXIncrement = 291;
+        
 #ifdef TTYD_JP
-        const char *AlignBase = "\x82\x58\x82\x58"; // Japanese characters for 99
-#else
-        const char *AlignBase = "99";
+        TextPosXIncrement -= 3;
 #endif
         
-        drawTextAlignRight(TextToDraw, TextPosX + 300, TextPosY, Color, AlignBase, TextScale);
+        drawTextAlignRight(TextToDraw, TextPosX + TextPosXIncrement, TextPosY, Color, TextScale);
         TextPosY -= 30;
     }
 }
@@ -3764,16 +3767,10 @@ void drawVersionNumber(int32_t posX, int32_t posY)
     // uint8_t Alpha = 0xFF;
     float Scale = 0.6f;
     
-#ifdef TTYD_JP
-    const char *AlignBase = "\x82\x58"; // Japanese character for 9
-#else
-    const char *AlignBase = "9";
-#endif
-    
-    drawTextAlignRight(VersionNumber, posX, posY, Color, AlignBase, Scale);
+    drawTextAlignRight(VersionNumber, posX, posY, Color, Scale);
 }
 
-void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const char *alignBase)
+void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, bool alignRight)
 {
     uint32_t Color = 0xFFFFFFFF;
     // uint8_t Alpha = 0xFF;
@@ -3784,25 +3781,17 @@ void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const 
         "Page %" PRIu32,
         currentPage + 1);
     
-    drawTextAlignRight(tempDisplayBuffer, posX, posY, Color, alignBase, Scale);
+    drawTextMain(tempDisplayBuffer, posX, posY, Color, alignRight, Scale, -0.f);
 }
 
 void drawPageNumberAlignLeft(int32_t posX, int32_t posY, uint32_t currentPage)
 {
-    drawPageNumberMain(posX, posY, currentPage, nullptr);
+    drawPageNumberMain(posX, posY, currentPage, false);
 }
 
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage)
 {
-    const char *AlignBase;
-    
-#ifdef TTYD_JP
-    AlignBase = "\x82\x58"; // Japanese character for 9
-#else
-    AlignBase = "9";
-#endif
-    
-    drawPageNumberMain(posX, posY, currentPage, AlignBase);
+    drawPageNumberMain(posX, posY, currentPage, true);
 }
 
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY)
@@ -5243,10 +5232,7 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
         "%" PRIu32,
         getSequencePosition());
     
-#ifdef TTYD_JP
-    const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
-#else
-    const char *AlignBase = ttyd::win_main::str_999_winMain;
+#ifndef TTYD_JP
     Scale = 0.9f;
 #endif
     
@@ -5255,7 +5241,6 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
         WindowPosX + 214,
         WindowPosY + PosYIncrement,
         Color,
-        AlignBase,
         Scale);
 }
 

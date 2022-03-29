@@ -3827,8 +3827,13 @@ void drawMenu()
             drawSingleColumnMain();
             
             // Draw the version number
-            int32_t PosX = 223;
+            int32_t PosX = 205;
             int32_t PosY = 180;
+            
+#ifdef TTYD_JP
+            PosX -= 3;
+#endif
+            
             drawVersionNumber(PosX, PosY);
             
             // Draw the error message if the player tried to use the battle menu while not in a battle
@@ -3970,8 +3975,13 @@ void drawMenu()
             drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, false);
             
             // Draw the page number
-            int32_t PosX = 223;
+            int32_t PosX = 205;
             // int32_t PosY = 180;
+            
+#ifdef TTYD_JP
+            PosX -= 3;
+#endif
+            
             drawPageNumber(PosX, PosY, tempCurrentPage);
             break;
         }
@@ -4419,8 +4429,13 @@ void drawMenu()
                 drawSingleColumnMain();
                 
                 // Draw the page number
-                int32_t PosX = 223;
+                int32_t PosX = 205;
                 int32_t PosY = 180;
+                
+#ifdef TTYD_JP
+                PosX -= 3;
+#endif
+                
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 
                 // Draw each actor
@@ -4492,8 +4507,13 @@ void drawMenu()
                 drawBattlesStatusesList();
                 
                 // Draw the page number
-                int32_t PosX = 223;
+                int32_t PosX = 208;
                 int32_t PosY = 180;
+                
+#ifdef TTYD_JP
+                PosX -= 2;
+#endif
+                
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 
                 if (tempSelectedOption > 0)

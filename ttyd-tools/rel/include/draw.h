@@ -23,19 +23,18 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY,
 int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
 int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
 
-void drawTextMain(const char *text, int32_t x, int32_t y, uint32_t color, 
-    const char *alignBaseString, float scale, float width);
+void drawTextMain(const char *text, int32_t x, int32_t y, 
+    uint32_t color, bool alignRight, float scale, float width);
 
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 
 void drawTextWidth(const char *text, int32_t x, 
     int32_t y, uint32_t color, float scale, float width);
 
-void drawTextAlignRight(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale);
+void drawTextAlignRight(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 
 void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, const char *alignBaseString, float scale, float width);
+    uint32_t color, bool alignRight, float scale, float width);
 
 void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 
@@ -128,7 +127,7 @@ void drawAddByIcon(uint32_t currentMenu);
 void drawAddById(uint32_t currentMenu);
 
 void drawVersionNumber(int32_t posX, int32_t posY);
-void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, const char *alignBase);
+void drawPageNumberMain(int32_t posX, int32_t posY, uint32_t currentPage, bool alignRight);
 void drawPageNumberAlignLeft(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawPageNumber(int32_t posX, int32_t posY, uint32_t currentPage);
 void drawBoolOnOrOff(bool tempBool, const char *currentLine, int32_t posY);
