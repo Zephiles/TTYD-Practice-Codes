@@ -293,33 +293,28 @@ void drawTextMain(const char *text, int32_t x, int32_t y,
     }
     
     float NewPosX = intToFloat(x);
-    uint32_t TextLength = 0;
+    float TextLengthScaled = 0.f; // Failsafe; 0.f value won't be used
     
     // Check if aligning the text to the right
     if (alignRight)
     {
-#ifdef TTYD_JP
-        const char *AlignBase = ttyd::win_main::str_999_jpn_winMain;
-#else
-        const char *AlignBase = ttyd::win_main::str_999_winMain;
-#endif
-        uint32_t BaseLength = ttyd::fontmgr::FontGetMessageWidth(AlignBase);
-        TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+        uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+        TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
         
-        NewPosX += intToFloat(BaseLength - TextLength) * scale;
+        NewPosX -= TextLengthScaled;
     }
     
     // Check if there's a width limit
     float ScaleX = scale;
     if (!std::signbit(width)) // Check if positive, works for checking against +0.0 and -0.0
     {
-        // Prevent calling FontGetMessageWidth again if unnecessary
-        if (TextLength == 0)
+        // If not aligning the text to the right, then TextLengthScaled needs to be calculated
+        if (!alignRight)
         {
-            TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+            uint32_t TextLength = ttyd::fontmgr::FontGetMessageWidth(text);
+            TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
         }
         
-        float TextLengthScaled = intToFloat(static_cast<int32_t>(TextLength)) * scale;
         if (TextLengthScaled > width)
         {
             ScaleX = (width / TextLengthScaled) * scale;
@@ -1163,7 +1158,7 @@ void drawMarioStats()
     // Draw the text
     PosX = TextPosX;
     PosY = TextPosY;
-    ValuesPosX = TextPosX + 120;
+    ValuesPosX = TextPosX + 148;
     ExitLoop = false;
     
     for (uint32_t j = 0; j < TotalColumns; j++)
@@ -2767,13 +2762,7 @@ void drawBattlesStatusesList()
             Color = 0xFFFFFFFF;
         }
         
-        int32_t TextPosXIncrement = 291;
-        
-#ifdef TTYD_JP
-        TextPosXIncrement -= 3;
-#endif
-        
-        drawTextAlignRight(TextToDraw, TextPosX + TextPosXIncrement, TextPosY, Color, TextScale);
+        drawTextAlignRight(TextToDraw, TextPosX + 319, TextPosY, Color, TextScale);
         TextPosY -= 30;
     }
 }
@@ -3887,7 +3876,7 @@ void drawCheatsModifyMarioCoordinates()
             "%.6f",
             Coordinate);
         
-        // Make sure the text wont go offscreen
+        // Make sure the text won't go offscreen
         int32_t CoordinateMaxStringLength = 34;
         
 #ifdef TTYD_JP
@@ -4789,7 +4778,7 @@ void drawWarpIndexEntranceList()
     drawTextMultipleLines(tempDisplayBuffer, PosX + 170, PosY, mapAndBeroDetails.MapColor, Scale);
     
     // Draw the current page
-    int32_t PageNumberPosX = 223;
+    int32_t PageNumberPosX = 233;
     uint32_t tempCurrentPage = MenuVar.CurrentPage;
     drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
     
@@ -5232,13 +5221,17 @@ void Mod::drawSequenceInPauseMenu(ttyd::dispdrv::CameraId cameraId, void *winWor
         "%" PRIu32,
         getSequencePosition());
     
-#ifndef TTYD_JP
+    int32_t PosXIncrement = 255;
+    
+#ifdef TTYD_JP
+    PosXIncrement += 4;
+#else
     Scale = 0.9f;
 #endif
     
     drawTextAlignRight(
         tempDisplaybuffer,
-        WindowPosX + 214,
+        WindowPosX + PosXIncrement,
         WindowPosY + PosYIncrement,
         Color,
         Scale);

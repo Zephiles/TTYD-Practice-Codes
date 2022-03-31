@@ -3827,12 +3827,8 @@ void drawMenu()
             drawSingleColumnMain();
             
             // Draw the version number
-            int32_t PosX = 205;
+            int32_t PosX = 233;
             int32_t PosY = 180;
-            
-#ifdef TTYD_JP
-            PosX -= 3;
-#endif
             
             drawVersionNumber(PosX, PosY);
             
@@ -3975,12 +3971,8 @@ void drawMenu()
             drawSingleColumn(PosY, MaxOptionsPerPage, tempCurrentPage, false);
             
             // Draw the page number
-            int32_t PosX = 205;
+            int32_t PosX = 233;
             // int32_t PosY = 180;
-            
-#ifdef TTYD_JP
-            PosX -= 3;
-#endif
             
             drawPageNumber(PosX, PosY, tempCurrentPage);
             break;
@@ -4429,12 +4421,8 @@ void drawMenu()
                 drawSingleColumnMain();
                 
                 // Draw the page number
-                int32_t PosX = 205;
+                int32_t PosX = 233;
                 int32_t PosY = 180;
-                
-#ifdef TTYD_JP
-                PosX -= 3;
-#endif
                 
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 
@@ -4507,12 +4495,8 @@ void drawMenu()
                 drawBattlesStatusesList();
                 
                 // Draw the page number
-                int32_t PosX = 208;
+                int32_t PosX = 236;
                 int32_t PosY = 180;
-                
-#ifdef TTYD_JP
-                PosX -= 2;
-#endif
                 
                 drawPageNumber(PosX, PosY, tempCurrentPage);
                 
