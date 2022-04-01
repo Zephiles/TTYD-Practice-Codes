@@ -60,13 +60,12 @@ bool disableDPadOptionsDisplay(uint16_t unkVar)
     return (unkVar & (1 << 8)); // Check the 8 bit
 }
 
-bool fontDrawMessageMtxHandleCol(const char *command, const char *colorString)
+bool fontDrawMessageMtxHandleCommand(const char *command, const char *commandValueString)
 {
-    uint32_t Color;
-    
     if (strcmp(command, "col") == 0)
     {
-        sscanf(colorString, "%" PRIx32, &Color);
+        uint32_t Color;
+        sscanf(commandValueString, "%" PRIx32, &Color);
         ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&Color));
     }
     else if (strcmp(command, "/col") == 0)
@@ -75,9 +74,11 @@ bool fontDrawMessageMtxHandleCol(const char *command, const char *colorString)
     }
     else
     {
+        // Command not found
         return false;
     }
     
+    // Command found
     return true;
 }
 

@@ -21,7 +21,7 @@ void asmFixEvtMapBlendSetFlagPartnerCrash();
 void asmFixEvtMapBlendSetFlagFollowerCrash();
 void asmFallThroughMostObjectsStandard();
 void asmFallThroughMostObjectsBowser();
-void asmFontDrawMessageMtxHandleCol();
+void asmFontDrawMessageMtxHandleCommand();
 
 #ifdef TTYD_JP
 void asmBacktraceScreenIncrementYPos();
@@ -53,7 +53,7 @@ void *fallThroughMostObjects(void *ptr);
 
 // draw.cpp
 bool disableDPadOptionsDisplay(uint16_t unkVar);
-bool fontDrawMessageMtxHandleCol(const char *command, const char *colorString);
+bool fontDrawMessageMtxHandleCommand(const char *command, const char *commandValueString);
 
 // Misc assembly functions
 bool asmErrorHandlerCheckPairedSinglesEnabled();
