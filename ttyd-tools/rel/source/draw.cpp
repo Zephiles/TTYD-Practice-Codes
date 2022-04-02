@@ -280,7 +280,7 @@ void drawIconFromItem(int32_t posX, int32_t posY, int16_t itemNum, float scale)
         }
     }
     
-    return drawIcon(posX, posY, iconNum, scale);
+    drawIcon(posX, posY, iconNum, scale);
 }
 
 // Set width to a negative value to not have a width limit
