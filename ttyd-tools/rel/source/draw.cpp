@@ -196,17 +196,17 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
     drawTextAndInit(text, textPosX, textPosY, alpha, textColor, false, textScale);
 }
 
-int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale)
+void drawIcon(int32_t posX, int32_t posY, int16_t iconNum, float scale)
 {
-    constexpr int32_t NumValues = 3;
-    float NewPosition[NumValues];
+    float Position[3];
+    Position[0] = intToFloat(posX);
+    Position[1] = intToFloat(posY);
+    Position[2] = 0.f;
     
-    intToFloatArray(position, NewPosition, NumValues);
-    ttyd::icondrv::iconDispGx(NewPosition, 24, iconNum, scale);
-    return position;
+    ttyd::icondrv::iconDispGx(Position, 24, iconNum, scale);
 }
 
-int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
+void drawIconFromItem(int32_t posX, int32_t posY, int16_t itemNum, float scale)
 {
 #ifdef TTYD_JP
     const int16_t DiamondStarIconValue  = 407;
@@ -280,7 +280,7 @@ int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale)
         }
     }
     
-    return drawIcon(position, iconNum, scale);
+    return drawIcon(posX, posY, iconNum, scale);
 }
 
 // Set width to a negative value to not have a width limit
@@ -656,6 +656,7 @@ void drawInventoryIconAndTextColumns()
     float TextScale              = 0.6f;
     float IconScale              = 0.6f;
     int32_t PosX                 = -90;
+    int32_t IconPosX             = 217;
     int32_t PosY                 = 125;
     
     const int32_t SetPosXText    = PosX + 15;
@@ -663,13 +664,6 @@ void drawInventoryIconAndTextColumns()
     const int32_t AdjustPosX     = PosX + 260;
     const int32_t AdjustPosYIcon = PosY;
     const int32_t AdjustPosYText = SetPosYText;
-    
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX  = 0;
-    const int32_t IconPositionY  = 1;
-    IconPosition[2]              = 0;
-    IconPosition[IconPositionX]  = 217;
     
 #ifdef TTYD_JP
     const int16_t ButtonL = 126;
@@ -715,17 +709,15 @@ void drawInventoryIconAndTextColumns()
         // Draw the L button if currently not on the first page
         if (tempCurrentPage > 0)
         {
-            IconPosition[IconPositionY] = 155;
             int16_t iconNum = ButtonL;
-            drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
+            drawIcon(IconPosX, 155, iconNum, L_and_R_buttons_scale);
         }
         
         // Draw the R button if more items are on the next page
         if (checkForItemsOnNextPage(tempCurrentPage))
         {
-            IconPosition[IconPositionY] = -175;
             int16_t iconNum = ButtonR;
-            drawIcon(IconPosition, iconNum, L_and_R_buttons_scale);
+            drawIcon(IconPosX, -175, iconNum, L_and_R_buttons_scale);
         }
     }
     
@@ -786,13 +778,6 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
     uint32_t IndexCounter      = newIndexStart;
     float tempScale;
     
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[2]             = 0;
-    IconPosition[IconPositionX] = posX;
-    
     for (uint32_t i = newIndexStart; i < (newIndexStart + MaxIconsPerColumn); i++)
     {
         if (i >= size)
@@ -800,8 +785,6 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
             // Reached the end of the array, so exit
             return;
         }
-        
-        IconPosition[IconPositionY] = posY;
         
         int16_t CurrentItem = *reinterpret_cast<int16_t *>(address + (IndexCounter * 0x2));
         if (CurrentItem == 0)
@@ -825,7 +808,7 @@ void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t 
             tempScale = scale;
         }
         
-        drawIconFromItem(IconPosition, CurrentItem, tempScale);
+        drawIconFromItem(posX, posY, CurrentItem, tempScale);
         posY -= 30;
         IndexCounter += indexIncrement;
     }
@@ -893,13 +876,8 @@ void drawMarioSpecialMovesOptions()
     PosX += 55;
     PosY = NewPosY;
     
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[2]             = 0;
-    IconPosition[IconPositionX] = PosX - 15;
-    IconPosition[IconPositionY] = PosY - 18;
+    int32_t IconPosX = PosX - 15;
+    int32_t IconPosY = PosY - 18;
     
     // Draw the icons and main text
     uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
@@ -920,8 +898,8 @@ void drawMarioSpecialMovesOptions()
             SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
         }
         
-        drawIconFromItem(IconPosition, SpecialMoveIcon, Scale);
-        IconPosition[IconPositionY] -= 30;
+        drawIconFromItem(IconPosX, IconPosY, SpecialMoveIcon, Scale);
+        IconPosY -= 30;
     }
     
     // Draw the help text
@@ -1051,15 +1029,8 @@ void drawMarioStats()
     int32_t TextPosY            = 175;
     int32_t ValuesPosX          = TextPosX + 105;
     int32_t IconPosX            = TextPosX - 15;
-    int32_t IconPosY            = TextPosY - 20;
-    
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[2]             = 0;
-    IconPosition[IconPositionX] = IconPosX;
-    IconPosition[IconPositionY] = IconPosY;
+    const int32_t IconPosYStart = TextPosY - 20;
+    int32_t IconPosY            = IconPosYStart;
     
     uint32_t tempStatsMarioOptionsLinesSize = StatsMarioOptionsLinesSize;
     uint32_t TotalRowsPerPage   = 1 + ((tempStatsMarioOptionsLinesSize - 1) / 2); // Round up
@@ -1108,10 +1079,10 @@ void drawMarioStats()
                 IconPosYIncrement = 0;
             }
             
-            drawIcon(IconPosition, StatsMarioIcons[i], IconScale);
+            drawIcon(IconPosX, IconPosY, StatsMarioIcons[i], IconScale);
             
             PosY -= 30;
-            IconPosition[IconPositionY] -= 30 + IconPosYIncrement;
+            IconPosY -= 30 + IconPosYIncrement;
         }
         
         if (ExitLoop)
@@ -1121,16 +1092,16 @@ void drawMarioStats()
         
         PosX += 190;
         ValuesPosX += 230;
-        IconPosition[IconPositionX] += 190;
+        IconPosX += 190;
         PosY = TextPosY;
-        IconPosition[IconPositionY] = IconPosY;
+        IconPosY = IconPosYStart;
     }
     
     // Draw the special moves
     float SpecialMovesScale = 0.37f;
     int16_t SpecialMoveIcon;
-    IconPosition[IconPositionX] = 133;
-    IconPosition[IconPositionY] = 101;
+    IconPosX = 133;
+    IconPosY = 101;
     
     uint16_t SpecialMovesBits = getSpecialMoveBits();
     for (uint32_t i = 0; i < 8; i++)
@@ -1147,10 +1118,10 @@ void drawMarioStats()
                 SpecialMoveIcon = (ttyd::item_data::Item::DiamondStar + i) - 1;
             }
             
-            drawIconFromItem(IconPosition, SpecialMoveIcon, SpecialMovesScale);
+            drawIconFromItem(IconPosX, IconPosY, SpecialMoveIcon, SpecialMovesScale);
         }
         
-        IconPosition[IconPositionX] += 13;
+        IconPosX += 13;
     }
     
     // Restart the text drawing sequence
@@ -1550,16 +1521,7 @@ void drawBattlesActorsHeldItem()
     {
         PosX += 10;
         PosY -= 45;
-        
-        // Set up array to use for displaying icons
-        int32_t IconPosition[3];
-        const int32_t IconPositionX = 0;
-        const int32_t IconPositionY = 1;
-        IconPosition[IconPositionX] = PosX;
-        IconPosition[IconPositionY] = PosY;
-        IconPosition[2]             = 0;
-        
-        drawIconFromItem(IconPosition, tempitem, Scale);
+        drawIconFromItem(PosX, PosY, tempitem, Scale);
         
         // Draw the text for the item
         PosX += 17;
@@ -2647,14 +2609,6 @@ void drawBattlesStatusesList()
     int32_t IconPosX = TextPosX - 15;
     int32_t IconPosY = TextPosY - 20;
     
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[2]             = 0;
-    IconPosition[IconPositionX] = IconPosX;
-    IconPosition[IconPositionY] = IconPosY;
-    
     // Get the initial address offset
     uint32_t DisplayValueCounter = 0;
     
@@ -2701,9 +2655,9 @@ void drawBattlesStatusesList()
         }
         
         // Draw the icon
-        drawIcon(IconPosition, BattlesStatusesIcons[i], IconScale);
+        drawIcon(IconPosX, IconPosY, BattlesStatusesIcons[i], IconScale);
         
-        IconPosition[IconPositionY] -= 30;
+        IconPosY -= 30;
         DrawWindowCounter++;
     }
     
@@ -3180,13 +3134,6 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
         y -= 50;
         
         // Draw the icon for the current item
-        // Set up array to use for displaying icons
-        int32_t IconPosition[3];
-        const int32_t IconPositionX = 0;
-        const int32_t IconPositionY = 1;
-        IconPosition[IconPositionX] = IconPosX;
-        IconPosition[IconPositionY] = y;
-        IconPosition[2]             = 0;
         
         float IconScale = 0.6f;
         
@@ -3204,7 +3151,7 @@ void drawAdjustableValue(bool changingItem, uint32_t currentMenu)
         
         // Draw the icon for the item
         int16_t CurrentItem = static_cast<int16_t>(tempMenuSecondaryValue);
-        drawIconFromItem(IconPosition, CurrentItem, IconScale);
+        drawIconFromItem(IconPosX, y, CurrentItem, IconScale);
         
         // Draw the text for the item
         color = 0xFFFFFFFF;
@@ -3657,15 +3604,8 @@ void drawAddByIconMain(uint32_t currentMenu)
     
     drawWindow(Color, PosX, PosY, Width, Height, Curve);
     
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[2]             = 0;
-    
     int32_t tempIconPositionX   = -225;
     int32_t tempIconPositionY   = 70;
-    IconPosition[IconPositionY] = tempIconPositionY;
     
     // Draw all of the icons for the current menu
     float Scale = 0.6f;
@@ -3689,8 +3629,7 @@ void drawAddByIconMain(uint32_t currentMenu)
             Scale = 0.6f;
         }
         
-        IconPosition[IconPositionX] = tempIconPositionX;
-        drawIconFromItem(IconPosition, static_cast<int16_t>(i), Scale);
+        drawIconFromItem(tempIconPositionX, tempIconPositionY, static_cast<int16_t>(i), Scale);
         
         tempIconPositionX += IconSpaceOccupied;
         
@@ -3699,7 +3638,6 @@ void drawAddByIconMain(uint32_t currentMenu)
             Counter = 0;
             tempIconPositionX = -225;
             tempIconPositionY -= IconSpaceOccupied;
-            IconPosition[IconPositionY] = tempIconPositionY;
         }
         else
         {
@@ -4119,16 +4057,8 @@ void drawCheatsForcedDropItem()
     float Scale    = 0.6f;
     
     // Draw the current item icon
-    // Set up array to use for displaying icons
-    int32_t IconPosition[3];
-    const int32_t IconPositionX = 0;
-    const int32_t IconPositionY = 1;
-    IconPosition[IconPositionX] = PosX;
-    IconPosition[IconPositionY] = PosY;
-    IconPosition[2]             = 0;
-    
     int16_t tempForcedNPCItemDrop = MenuVar.ForcedNPCItemDrop;
-    drawIconFromItem(IconPosition, tempForcedNPCItemDrop, Scale);
+    drawIconFromItem(PosX, PosY, tempForcedNPCItemDrop, Scale);
     
     // Draw the text for showing what the current item is
     const char *CurrentLine = "Current Item";

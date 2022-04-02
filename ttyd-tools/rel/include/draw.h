@@ -20,8 +20,8 @@ void getTextDimensions(const char *text, float scale, float *widthOut, float *he
 void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, 
     uint32_t textColor, float textScale, uint32_t windowColor, int32_t windowCurve);
 
-int32_t *drawIcon(int32_t position[3], int16_t iconNum, float scale);
-int32_t *drawIconFromItem(int32_t position[3], int16_t itemNum, float scale);
+void drawIcon(int32_t posX, int32_t posY, int16_t iconNum, float scale);
+void drawIconFromItem(int32_t posX, int32_t posY, int16_t itemNum, float scale);
 
 void drawTextMain(const char *text, int32_t x, int32_t y, 
     uint32_t color, bool alignRight, float scale, float width);
