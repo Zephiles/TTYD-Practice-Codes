@@ -26,6 +26,9 @@ void drawIconFromItem(int32_t posX, int32_t posY, int16_t itemNum, float scale);
 void drawTextMain(const char *text, int32_t x, int32_t y, 
     uint32_t color, bool alignRight, float scale, float width);
 
+void drawTextMultipleLines(const char *text, int32_t x, int32_t y, 
+    uint32_t color, bool alignRight, float scale, float width);
+
 void drawText(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 
 void drawTextWidth(const char *text, int32_t x, 
@@ -33,20 +36,9 @@ void drawTextWidth(const char *text, int32_t x,
 
 void drawTextAlignRight(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
 
-void drawTextMultipleLinesMain(const char *text, int32_t x, int32_t y, 
-    uint32_t color, bool alignRight, float scale, float width);
-
-void drawTextMultipleLines(const char *text, int32_t x, int32_t y, uint32_t color, float scale);
-
-void drawTextMultipleLinesWidth(const char *text, int32_t x, 
-    int32_t y, uint32_t color, float scale, float width);
-
 void drawTextInit(uint8_t alpha, bool drawFontEdge);
 
 void drawTextAndInit(const char *text, int32_t x, int32_t y, 
-    uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
-
-void drawTextMultipleLinesAndInit(const char *text, int32_t x, int32_t y, 
     uint8_t alpha, uint32_t color, bool drawDontEdge, float scale);
 
 void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut);
