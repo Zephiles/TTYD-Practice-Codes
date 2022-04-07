@@ -62,13 +62,13 @@ bool disableDPadOptionsDisplay(uint16_t unkVar)
 
 bool fontDrawMessageMtxHandleCommand(const char *command, const char *commandValueString)
 {
-    if (strcmp(command, "col") == 0)
+    if (compareStrings(command, "col"))
     {
         uint32_t Color;
         sscanf(commandValueString, "%" PRIx32, &Color);
         ttyd::fontmgr::FontDrawColor(reinterpret_cast<uint8_t *>(&Color));
     }
-    else if (strcmp(command, "/col") == 0)
+    else if (compareStrings(command, "/col"))
     {
         ttyd::fontmgr::FontDrawColorIDX(0);
     }
