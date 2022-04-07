@@ -193,7 +193,9 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
         ValuesOut[2]);
     
     // Draw the text
-    drawTextAndInit(text, textPosX, textPosY, alpha, textColor, false, textScale);
+    // drawTextMain must be called manually to avoid the hardcoded Y coordinate decrement in drawTextMultipleLines
+    drawTextInit(alpha, false);
+    drawTextMain(text, textPosX, textPosY, textColor, false, textScale, -0.f);
 }
 
 void drawIcon(int32_t posX, int32_t posY, int16_t iconNum, float scale)
