@@ -4944,6 +4944,12 @@ void drawJumpStorageDetails()
     float Scale    = 0.65f;
     float MaxWidth = 110.f; // Failsafe
     
+    // Move the text down if the star power value display is active
+    if (Displays[STAR_POWER_VALUE])
+    {
+        PosY -= 20;
+    }
+    
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     bool JumpStorageFlag = (player->flags3 & (1 << 16)) >> 16; // Get only the 16 bit
     
