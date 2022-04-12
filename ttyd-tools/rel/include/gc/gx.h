@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gc/ppc.h>
 #include <gc/mtx.h>
 
 #include <cstdint>
@@ -361,6 +362,19 @@ struct GXTexObj
 
 static_assert(sizeof(GXTexObj) == 0x20);
 
+// Inlined GX functions
+static inline void GXPosition1x16(const uint16_t x)
+{
+    gc::ppc::writeGatherPipe.u16 = x;
+}
+
+static inline void GXPosition3f32(const float x, const float y, const float z)
+{
+    gc::ppc::writeGatherPipe.f32 = x;
+    gc::ppc::writeGatherPipe.f32 = y;
+    gc::ppc::writeGatherPipe.f32 = z;
+}
+
 extern "C" {
 
 void GXSetVtxDesc(GXAttribute attribute, GXAttributeType type);
@@ -399,7 +413,7 @@ void GXSetAlphaUpdate(bool updateEnable);
 
 void GXSetZMode(bool compareEnable, GXCompare func, bool updateEnable);
 void GXSetProjection(const gc::mtx::mtx44 mtx, GXProjectionType type);
-void GXLoadPosMtxImm(const gc::mtx::mtx34 mtx, uint32_t id);
+void GXLoadPosMtxImm(const gc::mtx::mtx34 mtx, GXTexMtxType id);
 void GXSetCurrentMtx(uint32_t id);
 void GXLoadTexMtxImm(const gc::mtx::mtxUnk4 mtx, uint32_t id, GXTexMtxType type);
 

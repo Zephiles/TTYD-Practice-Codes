@@ -6257,14 +6257,8 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId)
             
             // Draw the line from corner 1 to corner 2
             gc::gx::GXBegin(gc::gx::GXPrimitive::GX_LINES, gc::gx::GXVtxFmt::GX_VTXFMT0, 2);
-            
-            gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineStart[0];
-            gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineStart[1];
-            gc::ppc::writeGatherPipe.f32 = 0;
-            
-            gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[0];
-            gc::ppc::writeGatherPipe.f32 = ScreenPointOutLineEnd[1];
-            gc::ppc::writeGatherPipe.f32 = 0;
+            gc::gx::GXPosition3f32(ScreenPointOutLineStart[0], ScreenPointOutLineStart[1], 0.f);
+            gc::gx::GXPosition3f32(ScreenPointOutLineEnd[0], ScreenPointOutLineEnd[1], 0.f);
         }
     }
 }
@@ -6627,7 +6621,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                 
                 gc::gx::GXLoadPosMtxImm(
                     MtxFontSize, 
-                    gc::gx::GXPosNormMtx::GX_PNMTX0);
+                    gc::gx::GXTexMtxType::GX_MTX2x4);
                 
                 gc::gx::GXSetCurrentMtx(gc::gx::GXPosNormMtx::GX_PNMTX0);
                 
@@ -6641,41 +6635,41 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                 uint16_t CellWidth = tempFontData->cellWidth;
                 uint16_t CellHeight = tempFontData->cellHeight;
                 
-                int16_t ImagePosLeft = static_cast<int16_t>(ImagePosX);
-                int16_t ImagePosRight = static_cast<int16_t>(ImagePosLeft + CellWidth);
-                int16_t ImagePosTop = static_cast<int16_t>(ImagePosY);
-                int16_t ImagePosBottom = static_cast<int16_t>(ImagePosTop + CellHeight);
+                uint16_t ImagePosLeft = static_cast<uint16_t>(ImagePosX);
+                uint16_t ImagePosRight = static_cast<uint16_t>(ImagePosLeft + CellWidth);
+                uint16_t ImagePosTop = static_cast<uint16_t>(ImagePosY);
+                uint16_t ImagePosBottom = static_cast<uint16_t>(ImagePosTop + CellHeight);
                 
-                int16_t TextPosLeft = static_cast<int16_t>(textPosX);
-                int16_t TextPosRight = static_cast<int16_t>(TextPosLeft + CellWidth);
-                int16_t TextPosTop = static_cast<int16_t>(textPosY);
-                int16_t TextPosBottom = static_cast<int16_t>(TextPosTop + CellHeight);
+                uint16_t TextPosLeft = static_cast<uint16_t>(textPosX);
+                uint16_t TextPosRight = static_cast<uint16_t>(TextPosLeft + CellWidth);
+                uint16_t TextPosTop = static_cast<uint16_t>(textPosY);
+                uint16_t TextPosBottom = static_cast<uint16_t>(TextPosTop + CellHeight);
                 
                 // Draw the images and text
-                gc::ppc::writeGatherPipe.s16 = TextPosLeft;
-                gc::ppc::writeGatherPipe.s16 = TextPosTop;
-                gc::ppc::writeGatherPipe.s16 = 0;
+                gc::gx::GXPosition1x16(TextPosLeft);
+                gc::gx::GXPosition1x16(TextPosTop);
+                gc::gx::GXPosition1x16(0);
                 
-                gc::ppc::writeGatherPipe.s16 = ImagePosLeft;
-                gc::ppc::writeGatherPipe.s16 = ImagePosTop;
-                gc::ppc::writeGatherPipe.s16 = TextPosRight;
-                gc::ppc::writeGatherPipe.s16 = TextPosTop;
-                gc::ppc::writeGatherPipe.s16 = 0;
+                gc::gx::GXPosition1x16(ImagePosLeft);
+                gc::gx::GXPosition1x16(ImagePosTop);
+                gc::gx::GXPosition1x16(TextPosRight);
+                gc::gx::GXPosition1x16(TextPosTop);
+                gc::gx::GXPosition1x16(0);
                 
-                gc::ppc::writeGatherPipe.s16 = ImagePosRight;
-                gc::ppc::writeGatherPipe.s16 = ImagePosTop;
-                gc::ppc::writeGatherPipe.s16 = TextPosRight;
-                gc::ppc::writeGatherPipe.s16 = TextPosBottom;
-                gc::ppc::writeGatherPipe.s16 = 0;
+                gc::gx::GXPosition1x16(ImagePosRight);
+                gc::gx::GXPosition1x16(ImagePosTop);
+                gc::gx::GXPosition1x16(TextPosRight);
+                gc::gx::GXPosition1x16(TextPosBottom);
+                gc::gx::GXPosition1x16(0);
                 
-                gc::ppc::writeGatherPipe.s16 = ImagePosRight;
-                gc::ppc::writeGatherPipe.s16 = ImagePosBottom;
-                gc::ppc::writeGatherPipe.s16 = TextPosLeft;
-                gc::ppc::writeGatherPipe.s16 = TextPosBottom;
-                gc::ppc::writeGatherPipe.s16 = 0;
+                gc::gx::GXPosition1x16(ImagePosRight);
+                gc::gx::GXPosition1x16(ImagePosBottom);
+                gc::gx::GXPosition1x16(TextPosLeft);
+                gc::gx::GXPosition1x16(TextPosBottom);
+                gc::gx::GXPosition1x16(0);
                 
-                gc::ppc::writeGatherPipe.s16 = ImagePosLeft;
-                gc::ppc::writeGatherPipe.s16 = ImagePosBottom;
+                gc::gx::GXPosition1x16(ImagePosLeft);
+                gc::gx::GXPosition1x16(ImagePosBottom);
                 
                 textPosX += ImageWidth;
             }
