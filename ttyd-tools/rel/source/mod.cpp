@@ -133,9 +133,9 @@ void Mod::init()
     });
     
     mPFN_scissor_disp_control_trampoline = patch::hookFunction(
-        ttyd::sac_scissor::scissor_disp_control, [](ttyd::dispdrv::CameraId cameraId)
+        ttyd::sac_scissor::scissor_disp_control, [](ttyd::dispdrv::CameraId cameraId, void *user)
     {
-        return gMod->drawArtAttackHitboxes(cameraId);
+        return gMod->drawArtAttackHitboxes(cameraId, user);
     });
     
     mPFN_BattleActionCommandCheckDefence_trampoline = patch::hookFunction(

@@ -14,7 +14,7 @@ extern "C" {
 // scissor_init
 // scissor_disp_region
 // scissor_offscreen
-void scissor_disp_control(ttyd::dispdrv::CameraId cameraId);
+void scissor_disp_control(ttyd::dispdrv::CameraId cameraId, void *user);
 // scissor_capture
 // scissor_ofscreen_ok
 // scissor_damage_sub2

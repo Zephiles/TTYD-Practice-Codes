@@ -32,7 +32,7 @@ private:
     int32_t fixMarioKeyOn();
     bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
     ttyd::npcdrv::NpcEntry *fbatHitCheck_Work(uint32_t, void *);
-    void drawArtAttackHitboxes(ttyd::dispdrv::CameraId);
+    void drawArtAttackHitboxes(ttyd::dispdrv::CameraId, void *);
     int32_t displayActionCommandsTimingHook(void *, ttyd::battle_unit::AttackParams *);
     void errorHandler(uint16_t, gc::OSContext::OSContext *, uint32_t, uint32_t);
     ttyd::npcdrv::NpcEntry *checkForNpcNameToPtrError(const char *);
@@ -65,7 +65,7 @@ private:
     int32_t (*mPFN_marioKeyOn_trampoline)() = nullptr;
     bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
     ttyd::npcdrv::NpcEntry *(*mPFN_fbatHitCheck_trampoline)(uint32_t, void *) = nullptr;
-    void (*mPFN_scissor_disp_control_trampoline)(ttyd::dispdrv::CameraId) = nullptr;
+    void (*mPFN_scissor_disp_control_trampoline)(ttyd::dispdrv::CameraId, void *) = nullptr;
     
     int32_t (*mPFN_BattleActionCommandCheckDefence_trampoline)(
         void *, ttyd::battle_unit::AttackParams *) = nullptr;
