@@ -59,6 +59,8 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
         uint32_t maxOptionsPerRow, bool showCurrentOption, 
             uint32_t posXIncrementAmount, const char **lines);
 
+bool setCustomText(char *textOut, uint32_t textSize);
+
 void drawInventoryIconAndTextColumns();
 
 void drawItemIconsColumn(uint32_t indexStart, uint32_t indexIncrement, uint32_t size, 

@@ -1972,6 +1972,7 @@ struct NpcNameToPtrErrorStruct NpcNameToPtrError;
 struct EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 struct FrameAdvanceStruct FrameAdvance;
 struct UnusedMapStruct UnusedMap;
+struct SetCustomText CustomText;
 
 void initMenuVars()
 {

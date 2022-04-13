@@ -1691,8 +1691,65 @@ void menuCheckButton()
                                 case 0:
                                 {
                                     uint32_t PartnerEnabledAddress = reinterpret_cast<uint32_t>(getPartnerEnabledAddress());
-                                    
+                                    ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
                                     uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                                    
+                                    // Check if currently on Yoshi
+                                    bool HandledYoshiOption = false;
+                                    if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
+                                    {
+                                        // Handle options specific to Yoshi
+                                        switch (CurrentMenuOptionCheck)
+                                        {
+                                            case CHANGE_YOSHI_COLOR:
+                                            {
+                                                HandledYoshiOption = true;
+                                                MenuVar.MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_COLORS;
+                                                uint32_t CurrentColorId = getCurrentYoshiColorId();
+                                                
+                                                // Make sure the current color is valid
+                                                const uint32_t ColorIdWhite = 6;
+                                                if (CurrentColorId <= ColorIdWhite)
+                                                {
+                                                    MenuVar.SecondaryMenuOption = CurrentColorId;
+                                                }
+                                                else
+                                                {
+                                                    MenuVar.SecondaryMenuOption = 0;
+                                                }
+                                                break;
+                                            }
+                                            case CHANGE_YOSHI_NAME:
+                                            {
+                                                HandledYoshiOption = true;
+                                                
+                                                // char NewYoshiName[11]; // One byte for NULL
+                                                CustomText.customTextInit(ttyd::mario_pouch::pouchGetYoshiName(), 11);
+                                                
+                                                MenuVar.MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_NAME;
+                                                MenuVar.SecondaryMenuOption = 0;
+                                                break;
+                                            }
+                                            case CHANGE_YOSHI_NAME + 1:
+                                            {
+                                                HandledYoshiOption = true;
+                                                partnerMenuRemoveOrBringOut();
+                                                break;
+                                            }
+                                            default:
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Exit if one of Yoshi's custom options were handled
+                                    if (HandledYoshiOption)
+                                    {
+                                        break;
+                                    }
+                                    
+                                    // Handle main partner options
                                     switch (CurrentMenuOptionCheck)
                                     {
                                         case PARTNER_HP:
@@ -1738,38 +1795,7 @@ void menuCheckButton()
                                         }
                                         case TOGGLE + 1:
                                         {
-                                            // Check if currently on Yoshi
-                                            ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
-                                            if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
-                                            {
-                                                MenuVar.MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_COLORS;
-                                                uint32_t CurrentColorId = getCurrentYoshiColorId();
-                                                
-                                                // Make sure the current color is valid
-                                                const uint32_t ColorIdWhite = 6;
-                                                if (CurrentColorId <= ColorIdWhite)
-                                                {
-                                                    MenuVar.SecondaryMenuOption = CurrentColorId;
-                                                }
-                                                else
-                                                {
-                                                    MenuVar.SecondaryMenuOption = 0;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                partnerMenuRemoveOrBringOut();
-                                            }
-                                            break;
-                                        }
-                                        case TOGGLE + 2:
-                                        {
-                                            // This option should only be available for Yoshi
-                                            ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
-                                            if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
-                                            {
-                                                partnerMenuRemoveOrBringOut();
-                                            }
+                                            partnerMenuRemoveOrBringOut();
                                             break;
                                         }
                                         default:
@@ -4213,13 +4239,31 @@ void drawMenu()
             // Draw each option to choose from
             drawPartnerStats();
             
-            if (tempMenuSelectedOption == STATS_PARTNER_DISPLAY_YOSHI_COLORS)
+            switch (tempMenuSelectedOption)
             {
-                drawPartnerChangeYoshiColorOptions();
-            }
-            else if (tempMenuSelectedOption != 0)
-            {
-                drawAdjustableValue(false, tempCurrentMenu);
+                case 0:
+                {
+                    break;
+                }
+                case STATS_PARTNER_DISPLAY_YOSHI_COLORS:
+                {
+                    drawPartnerChangeYoshiColorOptions();
+                    break;
+                }
+                case STATS_PARTNER_DISPLAY_YOSHI_NAME:
+                {
+                    char NewYoshiName[11]; // One byte for NULL
+                    if (setCustomText(NewYoshiName, sizeof(NewYoshiName)))
+                    {
+                        ttyd::mario_pouch::pouchSetYoshiName(NewYoshiName);
+                    }
+                    break;
+                }
+                default:
+                {
+                    drawAdjustableValue(false, tempCurrentMenu);
+                    break;
+                }
             }
             
             // Draw the error message if the player tried to spawn a partner while either not in the game or in a battle
@@ -4230,8 +4274,8 @@ void drawMenu()
                 uint32_t AdditionalOptions = 0;
                 if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
                 {
-                    // Add an extra line for Yoshi
-                    AdditionalOptions++;
+                    // Add two extra lines for Yoshi
+                    AdditionalOptions += 2;
                 }
                 
                 uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1

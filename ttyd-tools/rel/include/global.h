@@ -1,12 +1,16 @@
 #pragma once
 
+#include "commonfunctions.h"
+
 #include <gc/OSAlloc.h>
 #include <gc/pad.h>
 #include <gc/DEMOPad.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mapdata.h>
+#include <ttyd/msgdrv.h>
 
 #include <cstdint>
+#include <cstring>
 
 namespace mod {
 
@@ -240,6 +244,7 @@ enum CHEATS_CLEAR_AREA_FLAGS_AREAS
 #define ADDING_BY_ICON                     0x2108
 #define SPAWN_ITEM_MENU_VALUE              0x3000
 #define STATS_PARTNER_DISPLAY_YOSHI_COLORS 100
+#define STATS_PARTNER_DISPLAY_YOSHI_NAME   101
 
 enum STATS_MARIO_SELECTION_OPTIONS
 {
@@ -268,6 +273,8 @@ enum STATS_PARTNER_SELECTION_OPTIONS
     PARTNER_MAX_HP,
     PARTNER_RANK,
     TOGGLE,
+    CHANGE_YOSHI_COLOR,
+    CHANGE_YOSHI_NAME,
 };
 
 enum STATS_FOLLOWER_SELECTION_OPTIONS
@@ -595,8 +602,8 @@ struct MenuVars
     
     MenuVars()
     {
-        ForcedNPCItemDrop = ttyd::item_data::Item::SleepySheep;
         LagSpikeDuration  = 468;
+        ForcedNPCItemDrop = ttyd::item_data::Item::SleepySheep;
     }
 };
 
@@ -1103,6 +1110,69 @@ struct UnusedMapStruct
     }
 };
 
+struct SetCustomText
+{
+    #define CUSTOM_TEXT_BUFFER_SIZE 32
+    #define CUSTOM_TEXT_TOTAL_CHARS_ROWS 5
+    #define CUSTOM_TEXT_CANCEL 0x1100
+    #define CUSTOM_TEXT_DONE 0x1200
+    
+    char *Buffer;
+    const char *CharsToChooseFrom;
+    uint8_t CharsLength;
+    uint8_t CurrentIndex;
+    uint8_t CharsPerRow;
+    
+    SetCustomText()
+    {
+        Buffer = new char[CUSTOM_TEXT_BUFFER_SIZE];
+        CharsToChooseFrom = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
+        CharsLength = static_cast<uint8_t>(strlen(CharsToChooseFrom));
+        CharsPerRow = 1 + ((CharsLength - 1) / CUSTOM_TEXT_TOTAL_CHARS_ROWS); // Round up
+    }
+    
+    void customTextInit(const char *initialText, uint32_t maxTextSize)
+    {
+        char *tempBuffer = reinterpret_cast<char *>(
+            clearMemory(Buffer, CUSTOM_TEXT_BUFFER_SIZE));
+        
+        if (initialText)
+        {
+#ifdef TTYD_JP
+            // Custom text doesn't currently support Japanese characters
+            if (ttyd::msgdrv::_ismbblead(initialText[0]))
+            {
+                // Text starts with a Japanese character
+                CurrentIndex = 0;
+            }
+            else
+            {
+#endif
+                uint32_t MaxIndex = maxTextSize - 1;
+                if (MaxIndex > (CUSTOM_TEXT_BUFFER_SIZE - 1))
+                {
+                    MaxIndex = (CUSTOM_TEXT_BUFFER_SIZE - 1);
+                }
+                
+                uint32_t Length = strlen(initialText);
+                if (Length > MaxIndex)
+                {
+                    Length = MaxIndex;
+                }
+                
+                CurrentIndex = static_cast<uint8_t>(Length);
+                strncpy(tempBuffer, initialText, Length);
+#ifdef TTYD_JP
+            }
+#endif
+        }
+        else
+        {
+            CurrentIndex = 0;
+        }
+    }
+};
+
 extern MenuVars MenuVar;
 extern Menus Menu[38];
 extern Cheats Cheat[28];
@@ -1141,6 +1211,7 @@ extern NpcNameToPtrErrorStruct NpcNameToPtrError;
 extern EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 extern FrameAdvanceStruct FrameAdvance;
 extern UnusedMapStruct UnusedMap;
+extern SetCustomText CustomText;
 
 extern uint8_t CheatsOrder[];
 extern uint16_t StatsMarioIcons[];

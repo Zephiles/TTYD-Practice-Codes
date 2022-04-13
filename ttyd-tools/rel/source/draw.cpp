@@ -605,6 +605,147 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
     }
 }
 
+bool setCustomText(char *textOut, uint32_t textSize)
+{
+    // Failsafe to prevent a buffer overflow
+    if (textSize > CUSTOM_TEXT_BUFFER_SIZE)
+    {
+        textSize = CUSTOM_TEXT_BUFFER_SIZE;
+    }
+    
+    // Check for button inputs
+    uint32_t Button = setCustomTextButtonControls(textOut, textSize);
+    if (Button == CUSTOM_TEXT_CANCEL)
+    {
+        return false;
+    }
+    else if (Button == CUSTOM_TEXT_DONE)
+    {
+        return true;
+    }
+    
+    // Draw the window
+    int32_t PosX = -245;
+    int32_t PosY = 151;
+    
+    uint32_t WindowColor = 0x151515F6;
+    int32_t WindowPosX   = PosX;
+    int32_t WindowPosY   = PosY;
+    int32_t WindowWidth  = 490;
+    int32_t WindowHeight = 297;
+    int32_t WindowCurve  = 20;
+    
+    drawWindow(WindowColor, WindowPosX, WindowPosY, WindowWidth, WindowHeight, WindowCurve);
+    
+    // Draw a window for the current character of the buffer text
+    WindowColor  = 0x5B59DEC0;
+    WindowPosX   = PosX + 10 + (CustomText.CurrentIndex * 15);
+    WindowPosY   = PosY - 140;
+    WindowWidth  = 15;
+    WindowHeight = 15;
+    WindowCurve  = 0;
+    
+    drawWindow(WindowColor, WindowPosX, WindowPosY, WindowWidth, WindowHeight, WindowCurve);
+    
+    // Draw the help text
+    const char *HelpText = "Press Start to set the new text\nPress A to select a character\nPress B to undo/cancel\nPress Y to move backward one character\nPress X to move forward one character\nPress Z to cancel immediately";
+    
+    uint8_t Alpha  = 0xFF;
+    float Scale    = 0.6f;
+    uint32_t Color = 0xFFFFFFFF;
+    
+    PosY -= 10;
+    int32_t PosXIncrement = 71;
+    
+#ifdef TTYD_JP
+    PosXIncrement += 4;
+#endif
+    
+    drawTextAndInit(HelpText, PosX + PosXIncrement, PosY, Alpha, Color, false, Scale);
+    
+    // Draw the current amount of characters in the buffer out of the maximum
+    // Draw the counts as int32_ts, to prevent long text if they somehow become negative
+    char *tempBuffer = CustomText.Buffer;
+    uint32_t CurrentBufferLength = strlen(tempBuffer);
+    
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(
+        tempDisplayBuffer, 
+        "%" PRId32 "/%" PRId32, 
+        static_cast<int32_t>(CurrentBufferLength), 
+        textSize - 1);
+    
+    PosX += 13;
+    PosY -= 130;
+    drawText(tempDisplayBuffer, PosX, PosY - 20, Color, Scale);
+    
+    // Draw the current buffer text
+    // Set up a string to hold the current character being drawn
+    char CurrentChar[2];
+    CurrentChar[1] = '\0';
+    
+    int32_t CharsPosX = PosX;
+    for (uint32_t i = 0; i < CurrentBufferLength; i++)
+    {
+        char tempChar = tempBuffer[i];
+        if (tempChar == '\0')
+        {
+            break;
+        }
+        
+        CurrentChar[0] = tempChar;
+        drawText(CurrentChar, CharsPosX, PosY, Color, Scale);
+        CharsPosX += 15;
+    }
+    
+    // Draw the characters to choose from
+    PosY -= 30;
+    Scale = 0.7f;
+    PosX += 105;
+    
+#ifdef TTYD_JP
+    PosX += 1;
+#endif
+    
+    uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
+    uint32_t tempCharsLength = CustomText.CharsLength;
+    uint32_t tempCharsPerRow = CustomText.CharsPerRow;
+    const char *tempCustomTextChars = CustomText.CharsToChooseFrom;
+    
+    CharsPosX = PosX;
+    for (uint32_t i = 0; i < tempCharsLength; i++)
+    {
+        if ((i % tempCharsPerRow) == 0)
+        {
+            CharsPosX = PosX;
+            PosY -= 20;
+        }
+        
+        bool CurrentOptionCheck = tempSecondaryMenuOption == i;
+        if (CurrentOptionCheck)
+        {
+            // Draw a window for the current option
+            WindowColor  = 0x5B59DEC0;
+            WindowPosX   = CharsPosX - 5;
+            WindowPosY   = PosY + 1;
+            WindowWidth  = 20;
+            WindowHeight = 18;
+            WindowCurve  = 0;
+            
+            drawWindow(WindowColor, WindowPosX, WindowPosY, WindowWidth, WindowHeight, WindowCurve);
+            
+            // Restart the text drawing sequence
+            drawTextInit(Alpha, false);
+        }
+        
+        CurrentChar[0] = tempCustomTextChars[i];
+        drawText(CurrentChar, CharsPosX, PosY, Color, Scale);
+        CharsPosX += 20;
+    }
+    
+    return false;
+}
+
 void drawInventoryIconAndTextColumns()
 {
     uint32_t tempCurrentMenu = MenuVar.MenuSelectedOption;
@@ -1186,16 +1327,25 @@ void drawPartnerStats()
         PosY -= 20;
     }
     
-    // Draw the color text for Yoshi
+    // Draw text specific to Yoshi
     ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
-    
     uint32_t FirstFreeSlot = TOGGLE; // enum index starts at 1
+    
     if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
     {
+        // Draw the color text
         bool CurrentOptionCheck = (tempCurrentMenuOption == FirstFreeSlot) && (tempSelectedOption > 0);
         Color = getSelectedTextColor(CurrentOptionCheck);
         
         const char *String = "Color";
+        drawText(String, PosX, PosY, Color, Scale);
+        PosY -= 20;
+        
+        // Draw the name text
+        CurrentOptionCheck = (tempCurrentMenuOption == (FirstFreeSlot + 1)) && (tempSelectedOption > 0);
+        Color = getSelectedTextColor(CurrentOptionCheck);
+        
+        String = "Name";
         drawText(String, PosX, PosY, Color, Scale);
         PosY -= 20;
     }
@@ -1216,8 +1366,8 @@ void drawPartnerStats()
     uint32_t AdditionalOptions = 0;
     if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
     {
-        // Add an extra line for Yoshi
-        AdditionalOptions++;
+        // Add two extra lines for Yoshi
+        AdditionalOptions += 2;
     }
     
     bool CurrentOptionCheck = (tempCurrentMenuOption == (
@@ -1249,7 +1399,7 @@ void drawPartnerStats()
     getOnOffTextAndColor(PartnerEnabled, &String, &Color);
     drawText(String, PosX, PosY, Color, Scale);
     
-    // Draw Yoshi's color
+    // Draw Yoshi's color and name
     if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
     {
         // Get the current Yoshi color
@@ -1318,6 +1468,11 @@ void drawPartnerStats()
         
         PosY -= 20;
         drawText(YoshiColorString, PosX, PosY, YoshiColorText, Scale);
+        
+        PosY -= 20;
+        Color = 0xFFFFFFFF;
+        const char *YoshiName = ttyd::mario_pouch::pouchGetYoshiName();
+        drawText(YoshiName, PosX, PosY, Color, Scale);
     }
     
     // Check if a partner is out or not
@@ -4747,7 +4902,7 @@ void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo)
 
 void drawOnScreenTimer()
 {
-    // Start the drawing sequence
+    // Start the text drawing sequence
     uint8_t Alpha = 0xFF;
     drawTextInit(Alpha, true);
     
@@ -4782,7 +4937,7 @@ void drawOnScreenTimer()
 
 void drawFrameCounter()
 {
-    // Start the drawing sequence
+    // Start the text drawing sequence
     uint8_t Alpha = 0xFF;
     drawTextInit(Alpha, true);
     

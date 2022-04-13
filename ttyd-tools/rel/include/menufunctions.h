@@ -49,6 +49,8 @@ uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 
+uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize);
+
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
 void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
 void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu);

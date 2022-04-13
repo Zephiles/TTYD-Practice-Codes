@@ -750,7 +750,7 @@
 // 80082944:msgWindow_Entry
 // 80082CD8:msgIconStr2ID
 // 80082D5C:msgGetCommand
-// 80082DFC:_ismbblead
+80082DFC:_ismbblead
 80082E48:msgSearch
 // 80082F28:msg_compare
 // 80082F70:L_msgGetWork
@@ -965,8 +965,8 @@
 800BFEE8:partyGetPtr
 
 // mario_pouch.o
-// 800D3BAC:pouchGetYoshiName
-// 800D3BF4:pouchSetYoshiName
+800D3BAC:pouchGetYoshiName
+800D3BF4:pouchSetYoshiName
 800D3C20:pouchSetPartyColor
 800D3C3C:pouchGetPartyColor
 // 800D3C50:pouchCheckMail

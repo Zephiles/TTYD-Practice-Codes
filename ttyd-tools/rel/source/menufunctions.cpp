@@ -1807,9 +1807,13 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
 
 uint32_t addByIconButtonControls(uint32_t currentMenu)
 {
-    uint32_t tempSelectedOption = MenuVar.SelectedOption;
     uint32_t Button = checkButtonSingleFrame();
+    if (!Button)
+    {
+        return 0;
+    }
     
+    uint32_t tempSelectedOption = MenuVar.SelectedOption;
     switch (Button)
     {
         case DPADLEFT:
@@ -1886,8 +1890,12 @@ uint32_t addByIconButtonControls(uint32_t currentMenu)
 uint32_t memoryAddressTypeButtonControls()
 {
     uint32_t Button = checkButtonSingleFrame();
-    uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
+    if (!Button)
+    {
+        return 0;
+    }
     
+    uint32_t tempSecondaryMenuOption = MenuVar.SecondaryMenuOption;
     switch (Button)
     {
         case DPADDOWN:
@@ -2235,6 +2243,168 @@ uint32_t followersOptionsButtonControls()
             
             MenuVar.FrameCounter = 1;
             return Button;
+        }
+        default:
+        {
+            return 0;
+        }
+    }
+}
+
+uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize)
+{
+    uint32_t Button = checkButtonSingleFrame();
+    if (!Button)
+    {
+        return 0;
+    }
+    
+    uint32_t tempIndex = CustomText.CurrentIndex;
+    char *tempBuffer = CustomText.Buffer;
+    
+    switch (Button)
+    {
+        case DPADLEFT:
+        case DPADRIGHT:
+        case DPADDOWN:
+        case DPADUP:
+        {
+            uint32_t TotalMenuOptions = CustomText.CharsLength;
+            uint32_t MaxOptionsPerPage = TotalMenuOptions;
+            uint32_t MaxOptionsPerRow = CustomText.CharsPerRow;
+            
+            adjustMenuSelectionHorizontal(Button, MenuVar.SecondaryMenuOption, 
+                MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+                    MaxOptionsPerRow, true);
+            
+            MenuVar.FrameCounter = 1;
+            return Button;
+        }
+        case A:
+        {
+            // Append the selected character to the buffer
+            tempBuffer[tempIndex] = CustomText.CharsToChooseFrom[MenuVar.SecondaryMenuOption];
+            
+            // If not at the end of the buffer, increment the index
+            // Subtract 2 from textSize to account for index starting at 0 and null terminator
+            if (tempIndex < (textSize - 2))
+            {
+                CustomText.CurrentIndex = tempIndex + 1;
+            }
+            
+            MenuVar.FrameCounter = 1;
+            return Button;
+        }
+        case B:
+        {
+            if (tempIndex > 0)
+            {
+                // Move backward one character while clearing a specific char depending on circumstances
+                // If at the end of the buffer, don't decrement the index if tempBuffer[tempIndex] is not 0
+                // Subtract 2 from textSize to account for index starting at 0 and null terminator
+                if (tempIndex < (textSize - 2))
+                {
+                    // Not at the end of the buffer
+                    // If the char at the current index is not 0, then write a space instead of null
+                    if (tempBuffer[tempIndex--] != '\0')
+                    {
+                        tempBuffer[tempIndex] = ' ';
+                    }
+                    else
+                    {
+                        tempBuffer[tempIndex] = '\0';
+                    }
+                }
+                else
+                {
+                    // At the end of the buffer
+                    if (tempBuffer[tempIndex] != '\0')
+                    {
+                        // The index was not incremented beforehand, so don't decrement it now
+                        tempBuffer[tempIndex] = '\0';
+                    }
+                    else
+                    {
+                        // Current char is clear, so move back one and clear that char too
+                        tempBuffer[--tempIndex] = '\0';
+                    }
+                }
+                
+                CustomText.CurrentIndex = tempIndex;
+                
+                MenuVar.FrameCounter = 1;
+                return Button;
+            }
+            else if (tempBuffer[tempIndex] != '\0')
+            {
+                // Valid chars are after this, so only set the current char to a space
+                tempBuffer[tempIndex] = ' ';
+                
+                MenuVar.FrameCounter = 1;
+                return Button;
+            }
+            else
+            {
+                // Cancel
+                MenuVar.MenuSelectedOption = 0;
+            
+                MenuVar.FrameCounter = 1;
+                return CUSTOM_TEXT_CANCEL;
+            }
+        }
+        case Y:
+        {
+            // Move backward one character
+            // Only move backward if the index is not at 0
+            if (tempIndex > 0)
+            {
+                CustomText.CurrentIndex = tempIndex - 1;
+            }
+            
+            MenuVar.FrameCounter = 1;
+            return Button;
+        }
+        case X:
+        {
+            // Move forward one character
+            // Only move forward if not at the end of the buffer
+            // Subtract 2 from textSize to account for index starting at 0 and null terminator
+            if (tempIndex < (textSize - 2))
+            {
+                // If the current char is null, then set it to a space to allow more chars afterward
+                if (tempBuffer[tempIndex] == '\0')
+                {
+                    tempBuffer[tempIndex] = ' ';
+                }
+                
+                CustomText.CurrentIndex = tempIndex + 1;
+            }
+            
+            MenuVar.FrameCounter = 1;
+            return Button;
+        }
+        case Z:
+        {
+            MenuVar.MenuSelectedOption = 0;
+            
+            MenuVar.FrameCounter = 1;
+            return CUSTOM_TEXT_CANCEL;
+        }
+        case START:
+        {
+            MenuVar.MenuSelectedOption = 0;
+            MenuVar.FrameCounter = 1;
+            
+            // Don't set the new text if trying to set an empty string
+            if (tempBuffer[0] == '\0')
+            {
+                return CUSTOM_TEXT_CANCEL;
+            }
+            
+            // Subtract 1 from textSize to account for null terminator
+            strncpy(textOut, tempBuffer, textSize - 1);
+            textOut[textSize - 1] = '\0';
+            return CUSTOM_TEXT_DONE;
         }
         default:
         {
@@ -5375,11 +5545,11 @@ void adjustPartnerStatsSelection(uint32_t button)
     uint32_t tempStatsPartnerOptionsLinesSize = StatsPartnerOptionsLinesSize;
     uint32_t TotalMenuOptions = tempStatsPartnerOptionsLinesSize;
     
-    // Add the necessary extra lines
+    // Add one extra line for bringing out a partner, and two extra lines for Yoshi's options
     ttyd::party::PartyMembers CurrentPartner = getSelectedOptionPartnerValue();
     if (CurrentPartner == ttyd::party::PartyMembers::kYoshi)
     {
-        TotalMenuOptions += 2;
+        TotalMenuOptions += 3;
     }
     else
     {

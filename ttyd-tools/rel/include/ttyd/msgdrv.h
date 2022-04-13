@@ -19,7 +19,7 @@ extern "C" {
 // msgWindow_Entry
 // msgIconStr2ID
 // msgGetCommand
-// _ismbblead
+bool _ismbblead(const char chr); // Checks if chr is the start of a Japanese character
 const char *msgSearch(const char *key);
 // msg_compare
 // L_msgGetWork

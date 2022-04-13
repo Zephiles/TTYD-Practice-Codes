@@ -6,8 +6,8 @@ namespace ttyd::mario_pouch {
 
 extern "C" {
 
-// pouchGetYoshiName
-// pouchSetYoshiName
+const char *pouchGetYoshiName();
+void pouchSetYoshiName(const char *name);
 void pouchSetPartyColor(uint32_t partnerId, uint32_t colorId);
 uint32_t pouchGetPartyColor(uint32_t partnerId);
 // pouchCheckMail
