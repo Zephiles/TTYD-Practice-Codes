@@ -3,6 +3,7 @@
 #include "commonfunctions.h"
 
 #include <gc/card.h>
+#include <gc/OSCache.h>
 #include <ttyd/cardmgr.h>
 #include <ttyd/memory.h>
 
@@ -153,7 +154,7 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
             tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
         }
         
-        FileSize += tempTotalCustomStates * sizeof(CustomStateStruct);
+        FileSize += sizeof(CustomStateStruct) * tempTotalCustomStates;
     }
     
     // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
@@ -504,6 +505,9 @@ int32_t loadSettings(int32_t memoryCardSlot)
     // Set up a temporary local variable to use for getting memory
     char *MiscData = reinterpret_cast<char *>(SmartData->pMemory);
     clearMemory(MiscData, FileSizeAdjusted);
+    
+    // Be 100% certain that no memory issues occur, since the allocated memory wasn't cleared automatically
+    gc::OSCache::DCFlushRange(MiscData, FileSizeAdjusted);
     
     // Get the data from the file
     // Must read by the stored size, as the struct size may exceed the size of the file
