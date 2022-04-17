@@ -187,13 +187,21 @@ void setSequencePosition(uint32_t value)
 
 void setNextMap(const char *map)
 {
-    strcpy(ttyd::seq_mapchange::NextMap, map);
-    strncpy(ttyd::seq_mapchange::NextArea, map, 3);
+    char tempMap[9];
+    strncpy(tempMap, map, sizeof(tempMap) - 1);
+    tempMap[sizeof(tempMap) - 1] = '\0';
+    
+    strcpy(ttyd::seq_mapchange::NextMap, tempMap);
+    strncpy(ttyd::seq_mapchange::NextArea, tempMap, 3);
 }
 
 void setNextBero(const char *bero)
 {
-    strcpy(ttyd::seq_mapchange::NextBero, bero);
+    char tempBero[17];
+    strncpy(tempBero, bero, sizeof(tempBero) - 1);
+    tempBero[sizeof(tempBero) - 1] = '\0';
+    
+    strcpy(ttyd::seq_mapchange::NextBero, tempBero);
 }
 
 bool compareStrings(const char *str1, const char *str2)

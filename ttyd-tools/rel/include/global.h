@@ -6,11 +6,11 @@
 #include <gc/pad.h>
 #include <gc/DEMOPad.h>
 #include <ttyd/item_data.h>
+#include <ttyd/mario_pouch.h>
+#include <ttyd/party.h>
 #include <ttyd/mapdata.h>
-#include <ttyd/msgdrv.h>
 
 #include <cstdint>
-#include <cstring>
 
 namespace mod {
 
@@ -39,6 +39,7 @@ enum MENU_NAMES
     CHEATS_MANAGE_FLAGS,
     CHEATS_MANAGE_FLAGS_MAIN,
     CHEATS_CLEAR_AREA_FLAGS,
+    CHEATS_MANAGE_CUSTOM_STATES,
     STATS_MARIO,
     STATS_PARTNERS,
     STATS_FOLLOWERS,
@@ -108,6 +109,7 @@ enum CHEATS_OPTIONS
     LOCK_FLAGS,
     MANAGE_FLAGS,
     CLEAR_AREA_FLAGS,
+    MANAGE_CUSTOM_STATES,
 };
 
 enum CHEATS_CHANGE_SEQUENCE_SELECTION
@@ -236,6 +238,22 @@ enum CHEATS_CLEAR_AREA_FLAGS_AREAS
     AREA_AJI,
     AREA_LAS,
     AREA_JON,
+};
+
+enum CHEATS_MANAGE_CUSTOM_STATES_SELECTION
+{
+    LOAD_CUSTOM_STATE = 1,
+    CREATE_CUSTOM_STATE,
+    DELETE_CUSTOM_STATE,
+    RENAME_CUSTOM_STATE,
+};
+
+enum CHEATS_MANAGE_CUSTOM_STATES_RETURN_VALUES
+{
+    NO_STATES_EXIST = -4,
+    MAX_STATES_EXIST,
+    STATES_CREATE_NOT_IN_GAME,
+    STATES_WARP_NOT_IN_GAME,
 };
 
 // Various menu values
@@ -688,8 +706,8 @@ struct ReloadRoomStruct
 {
     bool ManuallyReloadingRoom;
     bool SystemLevelShouldBeLowered;
-    char NewBero[32]; // 31 bytes for NextBero, 1 byte for NULL
-    char NewMap[9]; // 8 bytes for NextMap, 1 byte for NULL
+    char NewBero[16]; // Not null terminated
+    char NewMap[8]; // Not null terminated
 };
 
 struct SpawnItems
@@ -991,6 +1009,65 @@ struct FrameAdvanceStruct
     }
 };
 
+struct CustomStateMarioVars
+{
+    int16_t currentHP;
+    int16_t maxHP;
+    int16_t currentFP;
+    int16_t maxFP;
+    int16_t maxHPEnteringBattle;
+    int16_t maxFPEnteringBattle;
+    int16_t currentSP;
+    int16_t maxSP;
+    int16_t availableBP;
+    int16_t maxBP;
+    int16_t rank;
+    int16_t level;
+    uint16_t starPowersObtained;
+    int16_t starPoints;
+    int16_t coins;
+} __attribute__((__packed__));
+
+struct CustomStateStruct
+{
+    int16_t StandardItems[20];
+    int16_t ImportantItems[121];
+    int16_t Badges[200];
+    int16_t EquippedBadges[200];
+    int16_t StoredItems[32];
+    uint16_t SequencePosition;
+    CustomStateMarioVars MarioVars;
+    ttyd::mario_pouch::PouchPartyData PartyData[7];
+    ttyd::party::PartyMembers PartnerOut;
+    ttyd::party::PartyMembers FollowerOut;
+    bool MarioIsShip;
+    char StateName[16]; // Does not include null terminator
+    char CurrentMap[8]; // Does not include null terminator
+    char CurrentBero[16]; // Does not include null terminator
+    uint8_t padding;
+} __attribute__((__packed__));
+
+struct ManageCustomStates
+{
+    #define CUSTOM_STATES_MAX_COUNT 10
+    #define CUSTOM_STATES_MAX_NAMES_PER_PAGE 18
+    
+    CustomStateStruct *State;
+    uint8_t TotalEntries;
+    bool StateWasSelected;
+    uint8_t SelectedState;
+    
+    // Do not inline createCustomState nor deleteCustomState
+    char *createCustomState();
+    uint32_t deleteCustomState(uint32_t stateIndex);
+};
+
+struct CustomStateSettingsStruct
+{
+    uint32_t CustomStateCount;
+    uint32_t OffsetToCustomStates;
+} __attribute__((__packed__));
+
 struct SettingsStruct
 {
     bool CheatsActive[100];
@@ -1000,6 +1077,7 @@ struct SettingsStruct
     MemoryWatchStruct MemoryWatchSettings[60];
     MemoryEditorSaveStruct MemoryEditorSave;
     FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
+    CustomStateSettingsStruct CustomStateSettings;
 } __attribute__((__packed__));
 
 struct SaveFileDecriptionInfo
@@ -1117,6 +1195,10 @@ struct SetCustomText
     #define CUSTOM_TEXT_CANCEL 0x1100
     #define CUSTOM_TEXT_DONE 0x1200
     
+    #define CUSTOM_TEXT_RETURN_CANCEL -1
+    #define CUSTOM_TEXT_RETURN_BUSY 0
+    #define CUSTOM_TEXT_RETURN_DONE 1
+    
     char *Buffer;
     const char *CharsToChooseFrom;
     uint8_t CharsLength;
@@ -1131,51 +1213,21 @@ struct SetCustomText
         CharsPerRow = 1 + ((CharsLength - 1) / CUSTOM_TEXT_TOTAL_CHARS_ROWS); // Round up
     }
     
-    void customTextInit(const char *initialText, uint32_t maxTextSize)
+    ~SetCustomText()
     {
-        char *tempBuffer = reinterpret_cast<char *>(
-            clearMemory(Buffer, CUSTOM_TEXT_BUFFER_SIZE));
-        
-        if (initialText)
+        if (Buffer)
         {
-#ifdef TTYD_JP
-            // Custom text doesn't currently support Japanese characters
-            if (ttyd::msgdrv::_ismbblead(initialText[0]))
-            {
-                // Text starts with a Japanese character
-                CurrentIndex = 0;
-            }
-            else
-            {
-#endif
-                uint32_t MaxIndex = maxTextSize - 1;
-                if (MaxIndex > (CUSTOM_TEXT_BUFFER_SIZE - 1))
-                {
-                    MaxIndex = (CUSTOM_TEXT_BUFFER_SIZE - 1);
-                }
-                
-                uint32_t Length = strlen(initialText);
-                if (Length > MaxIndex)
-                {
-                    Length = MaxIndex;
-                }
-                
-                CurrentIndex = static_cast<uint8_t>(Length);
-                strncpy(tempBuffer, initialText, Length);
-#ifdef TTYD_JP
-            }
-#endif
-        }
-        else
-        {
-            CurrentIndex = 0;
+            delete[] (Buffer);
         }
     }
+    
+    // Do not inline customTextInit
+    void customTextInit(const char *initialText, uint32_t maxTextSize);
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[38];
-extern Cheats Cheat[28];
+extern Menus Menu[39];
+extern Cheats Cheat[29];
 extern bool Displays[19];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
@@ -1212,6 +1264,7 @@ extern EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 extern FrameAdvanceStruct FrameAdvance;
 extern UnusedMapStruct UnusedMap;
 extern SetCustomText CustomText;
+extern ManageCustomStates CustomState;
 
 extern uint8_t CheatsOrder[];
 extern uint16_t StatsMarioIcons[];

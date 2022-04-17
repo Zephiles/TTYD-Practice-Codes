@@ -4,6 +4,19 @@
 
 namespace ttyd::mario_pouch {
 
+struct PouchPartyData
+{
+    uint16_t flags;
+    int16_t maxHP;
+    int16_t maxHPEnteringBattle;
+    int16_t currentHP;
+    int16_t hpLevel;
+    int16_t attackLevel;
+    int16_t techLevel;
+} __attribute__((__packed__));
+
+static_assert(sizeof(PouchPartyData) == 0xE);
+
 extern "C" {
 
 const char *pouchGetYoshiName();

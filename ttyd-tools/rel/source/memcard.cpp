@@ -4,6 +4,7 @@
 
 #include <gc/card.h>
 #include <ttyd/cardmgr.h>
+#include <ttyd/memory.h>
 
 #include <cstring>
 
@@ -141,8 +142,19 @@ int32_t createSettingsFile(int32_t memoryCardSlot, gc::card::CARDFileInfo *setti
     }
     
     // Get the size of the new file
-    uint32_t SettingsStructSize = sizeof(struct SettingsStruct);
-    uint32_t FileSize = 0x2000 + SettingsStructSize + CARD_READ_SIZE;
+    uint32_t FileSize = CARD_WRITE_SIZE + sizeof(struct SettingsStruct) + CARD_READ_SIZE;
+    
+    // Add on the total size of all of the custom states
+    uint32_t tempTotalCustomStates = CustomState.TotalEntries;
+    if (tempTotalCustomStates > 0)
+    {
+        if (tempTotalCustomStates > CUSTOM_STATES_MAX_COUNT)
+        {
+            tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
+        }
+        
+        FileSize += tempTotalCustomStates * sizeof(CustomStateStruct);
+    }
     
     // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
     uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
@@ -229,6 +241,18 @@ int32_t saveSettings(int32_t memoryCardSlot)
     // Get the size thats going to be written
     uint32_t FileSize = sizeof(struct SettingsStruct) + CARD_READ_SIZE;
     
+    // Add on the total size of all of the custom states
+    uint32_t tempTotalCustomStates = CustomState.TotalEntries;
+    if (tempTotalCustomStates > 0)
+    {
+        if (tempTotalCustomStates > CUSTOM_STATES_MAX_COUNT)
+        {
+            tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
+        }
+        
+        FileSize += sizeof(CustomStateStruct) * tempTotalCustomStates;
+    }
+    
     // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
     uint32_t FileSizeAdjusted = (FileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
     
@@ -264,10 +288,10 @@ int32_t saveSettings(int32_t memoryCardSlot)
             // Adjust the file size to be in multiples of CARD_WRITE_SIZE, rounding up
             uint32_t StoredFileSizeAdjusted = (StoredFileSize + CARD_WRITE_SIZE - 1) & ~(CARD_WRITE_SIZE - 1);
             
-            // Make sure the size being written does not exceed the current size
-            if (FileSizeAdjusted > StoredFileSizeAdjusted)
+            // Make sure the size being written matches the current size
+            if (FileSizeAdjusted != StoredFileSizeAdjusted)
             {
-                // The new size exceeds the current size, so a new file must be created
+                // The new size differs from the current size, so a new file must be created
                 // Close the file
                 ReturnCode = gc::card::CARDClose(&FileInfo);
                 if (ReturnCode != CARD_RESULT_READY)
@@ -373,6 +397,23 @@ int32_t saveSettings(int32_t memoryCardSlot)
     Settings->FrameAdvanceButtonCombos.AdvanceFrameButtonCombo = FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo;
     Settings->FrameAdvanceButtonCombos.PauseButtonCombo = FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo;
     
+    // Copy the custom states to the very end of the struct
+    Settings->CustomStateSettings.CustomStateCount = tempTotalCustomStates;
+    if (tempTotalCustomStates > 0)
+    {
+        uint32_t OffsetToCustomStates = 
+            (reinterpret_cast<uint32_t>(&Settings->CustomStateSettings) - 
+            reinterpret_cast<uint32_t>(Settings)) + 
+            sizeof(Settings->CustomStateSettings);
+        
+        Settings->CustomStateSettings.OffsetToCustomStates = OffsetToCustomStates;
+        
+        CustomStateStruct *CustomStatesSettings = reinterpret_cast<CustomStateStruct *>(
+            reinterpret_cast<uint32_t>(Settings) + OffsetToCustomStates);
+        
+        memcpy(CustomStatesSettings, CustomState.State, sizeof(CustomStateStruct) * tempTotalCustomStates);
+    }
+    
     // Write the data to the file
     ReturnCode = writeToFileOnCard(memoryCardSlot, &FileInfo, MiscData, FileSizeAdjusted, 0x2000);
     
@@ -448,8 +489,20 @@ int32_t loadSettings(int32_t memoryCardSlot)
     // Adjust the struct size to be in multiples of CARD_READ_SIZE, rounding up
     uint32_t FileSizeAdjusted = (FileSize + CARD_READ_SIZE - 1) & ~(CARD_READ_SIZE - 1);
     
+    // The stored size may exceed the struct size
+    if (FileSizeAdjusted < StoredFileSizeAdjusted)
+    {
+        FileSizeAdjusted = StoredFileSizeAdjusted;
+    }
+    
     // Set up the memory to be copied from the file
-    char *MiscData = new char[FileSizeAdjusted];
+    // Allocate the memory on the smart heap to avoid fragmentation
+    ttyd::memory::SmartAllocationData *SmartData = 
+        ttyd::memory::smartAlloc(FileSizeAdjusted, 
+            ttyd::memory::SmartAllocationGroup::kNone);
+    
+    // Set up a temporary local variable to use for getting memory
+    char *MiscData = reinterpret_cast<char *>(SmartData->pMemory);
     clearMemory(MiscData, FileSizeAdjusted);
     
     // Get the data from the file
@@ -462,7 +515,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     
     if (ReturnCode != CARD_RESULT_READY)
     {
-        delete[] (MiscData);
+        ttyd::memory::smartFree(SmartData);
         return ReturnCode;
     }
     
@@ -559,7 +612,34 @@ int32_t loadSettings(int32_t memoryCardSlot)
         FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo = ButtonCombo;
     }
     
-    delete[] (MiscData);
+    // Get the custom states
+    uint32_t tempTotalCustomStates = Settings->CustomStateSettings.CustomStateCount;
+    if (tempTotalCustomStates > 0)
+    {
+        if (tempTotalCustomStates > CUSTOM_STATES_MAX_COUNT)
+        {
+            tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
+        }
+        
+        CustomState.TotalEntries = tempTotalCustomStates;
+        CustomState.StateWasSelected = false;
+        
+        CustomStateStruct *tempState = CustomState.State;
+        if (tempState)
+        {
+            delete[] (tempState);
+        }
+        
+        tempState = new CustomStateStruct[tempTotalCustomStates];
+        CustomState.State = tempState;
+        
+        CustomStateStruct *CustomStatesSettings = reinterpret_cast<CustomStateStruct *>(
+            reinterpret_cast<uint32_t>(Settings) + Settings->CustomStateSettings.OffsetToCustomStates);
+        
+        memcpy(tempState, CustomStatesSettings, sizeof(CustomStateStruct) * tempTotalCustomStates);
+    }
+    
+    ttyd::memory::smartFree(SmartData);
     return CARD_RESULT_READY;
 }
 

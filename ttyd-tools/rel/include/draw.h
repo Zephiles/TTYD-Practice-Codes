@@ -59,7 +59,7 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
         uint32_t maxOptionsPerRow, bool showCurrentOption, 
             uint32_t posXIncrementAmount, const char **lines);
 
-bool setCustomText(char *textOut, uint32_t textSize);
+int32_t setCustomText(char *textOut, uint32_t textSize, bool applyNullTerminator);
 
 void drawInventoryIconAndTextColumns();
 
@@ -139,6 +139,8 @@ void drawCheatsResolveFades();
 void drawCheatsLockFlags();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
+void drawCheatsManageCustomStates();
+void drawCheatsHandleCustomStateAction();
 void drawDisplaysMemoryUsageMenu();
 void drawWarpsOptions();
 void drawEventDetails(int32_t posX, int32_t posY, int32_t index);

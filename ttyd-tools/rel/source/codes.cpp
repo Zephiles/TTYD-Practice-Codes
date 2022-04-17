@@ -551,10 +551,15 @@ void reloadRoomMain()
     // NewBero and NewMap need to be global variables
     
     char *tempNewBero = ReloadRoom.NewBero;
-    char *tempNewMap = ReloadRoom.NewMap;
+    constexpr uint32_t NewBeroSize = sizeof(ReloadRoom.NewBero);
+    strncpy(tempNewBero, ttyd::seq_mapchange::NextBero, NewBeroSize);
+    tempNewBero[NewBeroSize - 1] = '\0';
     
-    strcpy(tempNewBero, ttyd::seq_mapchange::NextBero);
-    strcpy(tempNewMap, ttyd::seq_mapchange::NextMap);
+    constexpr uint32_t NewMapSize = sizeof(ReloadRoom.NewMap);
+    char *tempNewMap = ReloadRoom.NewMap;
+    strncpy(tempNewMap, ttyd::seq_mapchange::NextMap, NewMapSize);
+    tempNewMap[NewMapSize - 1] = '\0';
+    
     setSeqMapChange(tempNewMap, tempNewBero);
     
     // Set a bool to prevent battles from starting

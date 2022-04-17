@@ -49,7 +49,7 @@ uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 
-uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize);
+uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool applyNullTerminator);
 
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
 void adjustMenuItemBoundsMainUnsigned(int32_t valueChangedBy, uint32_t lowerBound, uint32_t upperBound);
@@ -123,6 +123,7 @@ void adjustCheatsResolveFadesSelection(uint32_t button);
 void adjustCheatsManageFlagsMainMenu(uint32_t button);
 void adjustMenuSelectionInventory(uint32_t button);
 void adjustCheatClearAreaFlagSelection(uint32_t button);
+void adjustCustomStatesSelection(uint32_t button);
 void adjustMarioStatsSelection(uint32_t button);
 void adjustPartnerStatsSelection(uint32_t button);
 void adjustMemoryWatchSelection(uint32_t button);

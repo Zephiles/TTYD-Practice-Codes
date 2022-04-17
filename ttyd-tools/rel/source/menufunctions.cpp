@@ -2251,7 +2251,7 @@ uint32_t followersOptionsButtonControls()
     }
 }
 
-uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize)
+uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool applyNullTerminator)
 {
     uint32_t Button = checkButtonSingleFrame();
     if (!Button)
@@ -2403,7 +2403,12 @@ uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize)
             
             // Subtract 1 from textSize to account for null terminator
             strncpy(textOut, tempBuffer, textSize - 1);
-            textOut[textSize - 1] = '\0';
+            
+            if (applyNullTerminator)
+            {
+                textOut[textSize - 1] = '\0';
+            }
+            
             return CUSTOM_TEXT_DONE;
         }
         default:
@@ -4314,28 +4319,119 @@ bool getEventDetails(int32_t index, WarpByEventDetailsStruct *warpByEventDetails
     return true;
 }
 
-void *initStageEvents()
+void handleLoadCustomState()
 {
-    if (!WarpByEvent.ShouldInit)
+    CustomStateStruct *tempState = &CustomState.State[CustomState.SelectedState];
+    
+    // Restore the inventory
+    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    
+    // Standard items
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + 0x192), 
+        tempState->StandardItems, 
+        sizeof(tempState->StandardItems));
+    
+    // Important items
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + 0xA0), 
+        tempState->ImportantItems, 
+        sizeof(tempState->ImportantItems));
+    
+    // Badges
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + 0x1FA), 
+        tempState->Badges, 
+        sizeof(tempState->Badges));
+    
+    // Equipped badges
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + 0x38A), 
+        tempState->EquippedBadges, 
+        sizeof(tempState->EquippedBadges));
+    
+    // Stored items
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + 0x1BA), 
+        tempState->StoredItems, 
+        sizeof(tempState->StoredItems));
+    
+    // Restore some of Mario's data
+    CustomStateMarioVars *MarioVars = &tempState->MarioVars;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x70) = MarioVars->currentHP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x72) = MarioVars->maxHP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x74) = MarioVars->currentFP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x76) = MarioVars->maxFP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x8E) = MarioVars->maxHPEnteringBattle;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x90) = MarioVars->maxFPEnteringBattle;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x7A) = MarioVars->currentSP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x7C) = MarioVars->maxSP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x92) = MarioVars->availableBP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x94) = MarioVars->maxBP;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x88) = MarioVars->rank;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x8A) = MarioVars->level;
+    *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C) = MarioVars->starPowersObtained;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x96) = MarioVars->starPoints;
+    *reinterpret_cast<int16_t *>(PouchPtr + 0x78) = MarioVars->coins;
+    
+    // Restore the partner data
+    memcpy(
+        reinterpret_cast<void *>(PouchPtr + sizeof(ttyd::mario_pouch::PouchPartyData)), 
+        tempState->PartyData, 
+        sizeof(tempState->PartyData));
+    
+    // Restore the sequence position
+    setSequencePosition(tempState->SequencePosition);
+    
+    // Remove any partners and followers that are currently out from the overworld
+    ttyd::mario_party::marioPartyKill();
+    
+    // Reset the previous partner and follower ids
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    player->prevFollowerId[0] = ttyd::party::PartyMembers::kNone;
+    player->prevFollowerId[1] = ttyd::party::PartyMembers::kNone;
+    
+    // Restore which partner was out
+    ttyd::party::PartyMembers PartnerOut = tempState->PartnerOut;
+    if (PartnerOut != ttyd::party::PartyMembers::kNone)
     {
-        // Check to see if any fixes need to be applied to specific maps
-        fixRoomProblems();
-        
-        // The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
-        return ttyd::mariost::globalWorkPointer;
+        spawnPartnerOrFollower(PartnerOut);
     }
     
-    WarpByEvent.ShouldInit = false;
-    int32_t StageAndEventIds[2];
+    // Restore which follower was out
+    ttyd::party::PartyMembers FollowerOut = tempState->FollowerOut;
+    if (FollowerOut != ttyd::party::PartyMembers::kNone)
+    {
+        spawnPartnerOrFollower(FollowerOut);
+    }
     
+    // Properly update Mario and partner values
+    recheckJumpAndHammerLevels();
+    ttyd::mario_pouch::pouchReviseMarioParam();
+    ttyd::mario_pouch::pouchRevisePartyParam();
+    
+    // Reset Mario's motion
+    ttyd::mario_motion::marioChgMot(ttyd::mario_motion::MarioMotions::kStay);
+    
+    // Transform Mario into a ship if he was in that form
+    if (tempState->MarioIsShip)
+    {
+        ttyd::mario_motion::marioChgShipMotion();
+    }
+    else
+    {
+        ttyd::mario_motion::marioChgStayMotion();
+    }
+}
+
+void handleWarpByEvent()
+{
+    int32_t StageAndEventIds[2];
     int32_t CurrentIndex = WarpByEvent.CurrentIndex;
+    
     if (!indexToStageAndEvent(CurrentIndex, StageAndEventIds))
     {
-        // Check to see if any fixes need to be applied to specific maps
-        fixRoomProblems();
-        
-        // The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
-        return ttyd::mariost::globalWorkPointer;
+        return;
     }
     
     int32_t StageId = StageAndEventIds[0];
@@ -4343,11 +4439,7 @@ void *initStageEvents()
     
     if (!checkForValidStageAndEvent(StageId, EventId))
     {
-        // Check to see if any fixes need to be applied to specific maps
-        fixRoomProblems();
-        
-        // The overwritten instruction sets r3 to the global work pointer, so return the global work pointer
-        return ttyd::mariost::globalWorkPointer;
+        return;
     }
     
     // Back up the inventory if desired
@@ -4563,6 +4655,22 @@ void *initStageEvents()
     // Make sure the values are properly changed when entering a battle
     ClearCacheForBattles.MarioStatsShouldBeCleared = true;
     ClearCacheForBattles.PartnerStatsShouldBeCleared = true;
+}
+
+void *initStageEvents()
+{
+    if (CustomState.StateWasSelected)
+    {
+        CustomState.StateWasSelected = false;
+        WarpByEvent.ShouldInit = false; // Failsafe
+        handleLoadCustomState();
+    }
+    else if (WarpByEvent.ShouldInit)
+    {
+        WarpByEvent.ShouldInit = false;
+        CustomState.StateWasSelected = false; // Failsafe
+        handleWarpByEvent();
+    }
     
     // Override any flags set in this function if the previous flags were locked
     lockFlags();
@@ -5524,6 +5632,22 @@ void adjustCheatClearAreaFlagSelection(uint32_t button)
     
     adjustMenuSelectionVertical(button, MenuVar.SecondaryMenuOption, 
         MenuVar.SecondaryPage, TotalMenuOptions, MaxOptionsPerPage, 
+            MaxOptionsPerRow, false);
+}
+
+void adjustCustomStatesSelection(uint32_t button)
+{
+    uint32_t TotalMenuOptions = CustomState.TotalEntries;
+    if (TotalMenuOptions > CUSTOM_STATES_MAX_COUNT)
+    {
+        TotalMenuOptions = CUSTOM_STATES_MAX_COUNT;
+    }
+    
+    uint32_t MaxOptionsPerRow = 1;
+    uint32_t MaxOptionsPerPage = CUSTOM_STATES_MAX_NAMES_PER_PAGE;
+    
+    adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+        MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
             MaxOptionsPerRow, false);
 }
 

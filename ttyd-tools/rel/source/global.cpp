@@ -1,6 +1,15 @@
 #include "global.h"
 #include "memcard.h"
 
+#include <ttyd/msgdrv.h>
+#include <ttyd/mario_pouch.h>
+#include <ttyd/mariost.h>
+#include <ttyd/mario.h>
+#include <ttyd/mario_motion.h>
+#include <ttyd/seq_mapchange.h>
+
+#include <cstring>
+
 namespace mod {
 
 const char *VersionNumber = "v3.0.54d";
@@ -65,6 +74,7 @@ const char *CheatsLines[] =
     "Lock Flags",
     "Manage Flags",
     "Clear Area Flags",
+    "Manage Custom States",
 };
 
 const char *CheatsChangeSequenceOptionsLines[] = 
@@ -1123,6 +1133,14 @@ const char *CheatsClearAreaFlagsAreasFullNames[] =
     "Pit of 100 Trials",
 };
 
+const char *CheatsManageCustomStatesOptions[]
+{
+    "Load State",
+    "Create State",
+    "Delete State",
+    "Rename State",
+};
+
 const char *StatsLines[] = 
 {
     "Mario",
@@ -1909,6 +1927,7 @@ uint8_t CheatsOrder[] =
     GENERATE_LAG_SPIKE,
     FRAME_ADVANCE,
     MODIFY_COORDINATES,
+    MANAGE_CUSTOM_STATES,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -1935,8 +1954,8 @@ uint8_t DisplaysOrder[] =
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[38];
-struct Cheats Cheat[28];
+struct Menus Menu[39];
+struct Cheats Cheat[29];
 bool Displays[19];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
@@ -1973,6 +1992,7 @@ struct EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 struct FrameAdvanceStruct FrameAdvance;
 struct UnusedMapStruct UnusedMap;
 struct SetCustomText CustomText;
+struct ManageCustomStates CustomState;
 
 void initMenuVars()
 {
@@ -2035,6 +2055,10 @@ void initMenuVars()
     Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions        = sizeof(CheatsClearAreaFlags) / sizeof(CheatsClearAreaFlags[0]);
     Menu[CHEATS_CLEAR_AREA_FLAGS].ColumnSplitAmount       = Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions;
     Menu[CHEATS_CLEAR_AREA_FLAGS].Line                    = CheatsClearAreaFlags;
+    
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions    = sizeof(CheatsManageCustomStatesOptions) / sizeof(CheatsManageCustomStatesOptions[0]);
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].ColumnSplitAmount   = Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions;
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].Line                = CheatsManageCustomStatesOptions;
     
     Menu[STATS].TotalMenuOptions                          = sizeof(StatsLines) / sizeof(StatsLines[0]);
     Menu[STATS].ColumnSplitAmount                         = Menu[STATS].TotalMenuOptions;
@@ -2197,6 +2221,235 @@ void setInitialSettings()
     OnScreenTimer.ButtonCombo[RESET]              = PAD_L | PAD_DPAD_RIGHT;
     FrameCounter.ButtonCombo[START_PAUSE_RESUME]  = PAD_L | PAD_Z;
     FrameCounter.ButtonCombo[RESET]               = PAD_L | PAD_DPAD_RIGHT;
+}
+
+void SetCustomText::customTextInit(const char *initialText, uint32_t maxTextSize)
+{
+    char *tempBuffer = reinterpret_cast<char *>(
+        clearMemory(Buffer, CUSTOM_TEXT_BUFFER_SIZE));
+    
+    if (initialText)
+    {
+#ifdef TTYD_JP
+        // Custom text doesn't currently support Japanese characters
+        if (ttyd::msgdrv::_ismbblead(initialText[0]))
+        {
+            // Text starts with a Japanese character
+            CurrentIndex = 0;
+        }
+        else
+        {
+#endif
+            uint32_t MaxIndex = maxTextSize - 1;
+            if (MaxIndex > (CUSTOM_TEXT_BUFFER_SIZE - 1))
+            {
+                MaxIndex = (CUSTOM_TEXT_BUFFER_SIZE - 1);
+            }
+            
+            uint32_t Length = strlen(initialText);
+            if (Length > MaxIndex)
+            {
+                Length = MaxIndex;
+            }
+            
+            CurrentIndex = static_cast<uint8_t>(Length);
+            strncpy(tempBuffer, initialText, Length);
+#ifdef TTYD_JP
+        }
+#endif
+    }
+    else
+    {
+        CurrentIndex = 0;
+    }
+}
+
+char *ManageCustomStates::createCustomState()
+{
+    uint32_t tempTotalEntries = TotalEntries;
+    CustomStateStruct *tempState = State;
+    
+    if (tempTotalEntries == 0)
+    {
+        // No custom states exist, so create one
+        if (tempState)
+        {
+            delete[] (tempState);
+        }
+        
+        tempState = new CustomStateStruct;
+        State = tempState;
+        
+        tempTotalEntries = 1;
+        TotalEntries = tempTotalEntries;
+    }
+    else if (tempTotalEntries >= CUSTOM_STATES_MAX_COUNT)
+    {
+        // Maximum number of states have been made
+        return nullptr;
+    }
+    else
+    {
+        // Allocate new memory to hold the new state
+        CustomStateStruct *tempStateNew = new CustomStateStruct[tempTotalEntries + 1];
+        
+        // Copy the states from the old memory to the new memory
+        memcpy(tempStateNew, tempState, sizeof(CustomStateStruct) * tempTotalEntries);
+        
+        // Free the old memory
+        delete[] (tempState);
+        
+        tempState = tempStateNew;
+        State = tempState;
+        
+        tempTotalEntries++;
+        TotalEntries = tempTotalEntries;
+    }
+    
+    // Set the info for the new state
+    tempState = &tempState[tempTotalEntries - 1];
+    
+    // Back up the inventory
+    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    
+    // Standard items
+    memcpy(
+        tempState->StandardItems, 
+        reinterpret_cast<void *>(PouchPtr + 0x192), 
+        sizeof(tempState->StandardItems));
+    
+    // Important items
+    memcpy(
+        tempState->ImportantItems, 
+        reinterpret_cast<void *>(PouchPtr + 0xA0), 
+        sizeof(tempState->ImportantItems));
+    
+    // Badges
+    memcpy(
+        tempState->Badges, 
+        reinterpret_cast<void *>(PouchPtr + 0x1FA), 
+        sizeof(tempState->Badges));
+    
+    // Equipped badges
+    memcpy(
+        tempState->EquippedBadges, 
+        reinterpret_cast<void *>(PouchPtr + 0x38A), 
+        sizeof(tempState->EquippedBadges));
+    
+    // Stored items
+    memcpy(
+        tempState->StoredItems, 
+        reinterpret_cast<void *>(PouchPtr + 0x1BA), 
+        sizeof(tempState->StoredItems));
+    
+    // Back up some of Mario's data
+    CustomStateMarioVars *MarioVars = &tempState->MarioVars;
+    MarioVars->currentHP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x70);
+    MarioVars->maxHP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x72);
+    MarioVars->currentFP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x74);
+    MarioVars->maxFP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x76);
+    MarioVars->maxHPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x8E);
+    MarioVars->maxFPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x90);
+    MarioVars->currentSP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x7A);
+    MarioVars->maxSP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x7C);
+    MarioVars->availableBP         = *reinterpret_cast<int16_t *>(PouchPtr + 0x92);
+    MarioVars->maxBP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x94);
+    MarioVars->rank                = *reinterpret_cast<int16_t *>(PouchPtr + 0x88);
+    MarioVars->level               = *reinterpret_cast<int16_t *>(PouchPtr + 0x8A);
+    MarioVars->starPowersObtained  = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    MarioVars->starPoints          = *reinterpret_cast<int16_t *>(PouchPtr + 0x96);
+    MarioVars->coins               = *reinterpret_cast<int16_t *>(PouchPtr + 0x78);
+    
+    // Back up the partner data
+    memcpy(
+        tempState->PartyData, 
+        reinterpret_cast<void *>(PouchPtr + sizeof(ttyd::mario_pouch::PouchPartyData)), 
+        sizeof(tempState->PartyData));
+    
+    // Back up the sequence position
+    tempState->SequencePosition = getSequencePosition();
+    
+    // Back up which partner is currently out
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    uint32_t PartnerPtr = reinterpret_cast<uint32_t>(getPartnerPointer());
+    if (PartnerPtr)
+    {
+        tempState->PartnerOut = player->prevFollowerId[0];
+    }
+    
+    // Back up which follower is currently out
+    uint32_t FollowerPtr = reinterpret_cast<uint32_t>(getFollowerPointer());
+    if (FollowerPtr)
+    {
+        tempState->FollowerOut = player->prevFollowerId[1];
+    }
+    
+    // Back up if Mario is currently using Boat Mode or not
+    if (player->currentMotionId == ttyd::mario_motion::MarioMotions::kShip)
+    {
+        tempState->MarioIsShip = true;
+    }
+    else
+    {
+        tempState->MarioIsShip = false;
+    }
+    
+    // Back up the current map
+    strncpy(
+        tempState->CurrentMap, 
+        ttyd::seq_mapchange::NextMap, 
+        sizeof(tempState->CurrentMap));
+    
+    // Back up the current loading zone
+    strncpy(
+        tempState->CurrentBero, 
+        ttyd::seq_mapchange::NextBero, 
+        sizeof(tempState->CurrentBero));
+    
+    // Return a pointer to the new state's name
+    return tempState->StateName;
+}
+
+uint32_t ManageCustomStates::deleteCustomState(uint32_t stateIndex)
+{
+    CustomStateStruct *tempState = State;
+    uint32_t tempTotalEntries = TotalEntries;
+    
+    // Decrement TotalEntries now since it'll be used several times in the following code
+    tempTotalEntries--;
+    TotalEntries = tempTotalEntries;
+    
+    // Check if there are other states left after deleting the selected one
+    if (tempTotalEntries > 0)
+    {
+        // If deleting the last entry, don't do any moving beforehand
+        if (stateIndex < tempTotalEntries)
+        {
+            // Move all of the states under the one being deleted up by one slot
+            uint32_t CopySize = sizeof(CustomStateStruct) * (tempTotalEntries - stateIndex);
+            memcpy(&tempState[stateIndex], &tempState[stateIndex + 1], CopySize);
+        }
+        
+        // Allocate new memory to hold the states
+        CustomStateStruct *tempStateNew = new CustomStateStruct[tempTotalEntries];
+        
+        // Copy the states from the old memory to the new memory
+        uint32_t NewSize = sizeof(CustomStateStruct) * tempTotalEntries;
+        memcpy(tempStateNew, tempState, NewSize);
+        
+        // Free the old memory
+        delete[] (tempState);
+        State = tempStateNew;
+    }
+    else
+    {
+        // There are no more states left
+        delete[] (tempState);
+        State = nullptr;
+    }
+    
+    // Return the total number of entries
+    return tempTotalEntries;
 }
 
 }

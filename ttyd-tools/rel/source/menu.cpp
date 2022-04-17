@@ -584,6 +584,15 @@ void menuCheckButton()
                             break;
                         }
                         case CLEAR_AREA_FLAGS:
+                        {
+                            MenuToEnter = CHEATS_CLEAR_AREA_FLAGS;
+                            break;
+                        }
+                        case MANAGE_CUSTOM_STATES:
+                        {
+                            MenuToEnter = CHEATS_MANAGE_CUSTOM_STATES;
+                            break;
+                        }
                         default:
                         {
                             MenuToEnter = CHEATS_CLEAR_AREA_FLAGS;
@@ -591,7 +600,11 @@ void menuCheckButton()
                         }
                     }
                     
-                    MenuVar.MenuSelectedOption = tempCurrentMenuOption;
+                    if (tempCurrentMenuOption != MANAGE_CUSTOM_STATES)
+                    {
+                        MenuVar.MenuSelectedOption = tempCurrentMenuOption;
+                    }
+                    
                     enterNextMenu(MenuToEnter, tempCurrentMenuOption);
                     resetMenu();
                     break;
@@ -1525,6 +1538,201 @@ void menuCheckButton()
                             MenuVar.MenuSelectedOption = 0;
                             enterPreviousMenu();
                             break;
+                        }
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case CHEATS_MANAGE_CUSTOM_STATES:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    MenuVar.Timer = 0;
+                    switch (tempSelectedOption)
+                    {
+                        case 0:
+                        {
+                            adjustMenuNoPageEdit(CurrentButton);
+                            break;
+                        }
+                        case LOAD_CUSTOM_STATE:
+                        case DELETE_CUSTOM_STATE:
+                        case RENAME_CUSTOM_STATE:
+                        {
+                            adjustCustomStatesSelection(CurrentButton);
+                            break;
+                        }
+                        case CREATE_CUSTOM_STATE:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case A:
+                {
+                    MenuVar.Timer = 0;
+                    switch (tempSelectedOption)
+                    {
+                        case 0:
+                        {
+                            uint32_t tempTotalEntries = CustomState.TotalEntries;
+                            uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                            
+                            switch (CurrentMenuOptionCheck)
+                            {
+                                // Make sure the player is currently in the game if loading a state
+                                case LOAD_CUSTOM_STATE:
+                                {
+                                    if (!checkIfInGame())
+                                    {
+                                        MenuVar.FunctionReturnCode = STATES_WARP_NOT_IN_GAME;
+                                        MenuVar.Timer              = secondsToFrames(3);
+                                        break;
+                                    }
+                                    
+                                    // Use the delete and rename code if didn't break
+                                    [[fallthrough]];
+                                }
+                                case DELETE_CUSTOM_STATE:
+                                case RENAME_CUSTOM_STATE:
+                                {
+                                    if (tempTotalEntries > 0)
+                                    {
+                                        MenuVar.CurrentMenuOption = tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE;
+                                        MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                    }
+                                    else
+                                    {
+                                        MenuVar.FunctionReturnCode = NO_STATES_EXIST;
+                                        MenuVar.Timer              = secondsToFrames(3);
+                                    }
+                                    break;
+                                }
+                                case CREATE_CUSTOM_STATE:
+                                {
+                                    // Make sure the player is currently in the game
+                                    if (checkIfInGame())
+                                    {
+                                        if (tempTotalEntries < CUSTOM_STATES_MAX_COUNT)
+                                        {
+                                            CustomText.customTextInit(nullptr, 0);
+                                            MenuVar.SecondaryMenuOption = 0;
+                                            MenuVar.MenuSelectedOption = CurrentMenuOptionCheck;
+                                            MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                        }
+                                        else
+                                        {
+                                            MenuVar.FunctionReturnCode = MAX_STATES_EXIST;
+                                            MenuVar.Timer              = secondsToFrames(3);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MenuVar.FunctionReturnCode = STATES_CREATE_NOT_IN_GAME;
+                                        MenuVar.Timer              = secondsToFrames(3);
+                                    }
+                                    break;
+                                }
+                                default:
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case LOAD_CUSTOM_STATE:
+                        {
+                            // Make sure the player is currently in the game
+                            if (checkIfInGame())
+                            {
+                                CustomState.StateWasSelected = true;
+                                CustomState.SelectedState = tempCurrentMenuOption;
+                                
+                                CustomStateStruct *tempState = &CustomState.State[tempCurrentMenuOption];
+                                setNextMap(tempState->CurrentMap);
+                                setNextBero(tempState->CurrentBero);
+                                
+                                reloadRoomMain();
+                                closeMenu();
+                                return;
+                            }
+                            else
+                            {
+                                MenuVar.FunctionReturnCode = STATES_WARP_NOT_IN_GAME;
+                                MenuVar.Timer              = secondsToFrames(3);
+                            }
+                            break;
+                        }
+                        case DELETE_CUSTOM_STATE:
+                        {
+                            uint32_t TotalEntries = CustomState.deleteCustomState(tempCurrentMenuOption);
+                            if (TotalEntries == 0)
+                            {
+                                closeSecondaryMenu();
+                            }
+                            else if (tempCurrentMenuOption >= TotalEntries)
+                            {
+                                // The last entry was deleted, so decrement CurrentMenuOption
+                                MenuVar.CurrentMenuOption = TotalEntries - 1;
+                                
+                                // Make sure the current page is valid
+                                if ((tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE) > TotalEntries)
+                                {
+                                    MenuVar.CurrentPage = tempCurrentPage - 1;
+                                }
+                            }
+                            break;
+                        }
+                        case RENAME_CUSTOM_STATE:
+                        {
+                            if (tempMenuSelectedOption == 0)
+                            {
+                                const char *StateName = CustomState.State[tempCurrentMenuOption].StateName;
+                                
+                                constexpr uint32_t StateNameSize = 
+                                    sizeof(CustomState.State[tempCurrentMenuOption].StateName);
+                                
+                                // Add 1 to StateNameSize since it's not null terminated
+                                CustomText.customTextInit(StateName, StateNameSize + 1);
+                                
+                                MenuVar.SecondaryMenuOption = 0;
+                                MenuVar.MenuSelectedOption = tempSelectedOption;
+                            }
+                            break;
+                        }
+                        case CREATE_CUSTOM_STATE:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    if (tempMenuSelectedOption == 0)
+                    {
+                        if (tempSelectedOption == 0)
+                        {
+                            // Go back to the previous menu
+                            MenuVar.FunctionReturnCode = 0;
+                            resetMenu();
+                            enterPreviousMenu();
+                        }
+                        else
+                        {
+                            closeSecondaryMenu();
                         }
                     }
                     break;
@@ -4204,6 +4412,69 @@ void drawMenu()
             }
             break;
         }
+        case CHEATS_MANAGE_CUSTOM_STATES:
+        {
+            // Draw the text for the options
+            drawSingleColumnSelectedOption();
+            
+            // Draw the text for each of the custom states
+            drawCheatsManageCustomStates();
+            
+            if (tempMenuSelectedOption != 0)
+            {
+                drawCheatsHandleCustomStateAction();
+            }
+            
+            switch (tempFunctionReturnCode)
+            {
+                case NO_STATES_EXIST:
+                {
+                    const char *CurrentLine = "No custom states currently exist.";
+                    
+                    int32_t TextPosX = -138;
+                    int32_t TextPosY = 20;
+#ifdef TTYD_JP
+                    TextPosX += 2;
+#endif
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
+                    break;
+                }
+                case MAX_STATES_EXIST:
+                {
+                    const char *CurrentLine = "The maximum amount of custom\nstates currently exist.";
+                    int32_t TextPosX = -129;
+                    int32_t TextPosY = 20;
+#ifdef TTYD_JP
+                    TextPosX += 2;
+#endif
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
+                    break;
+                }
+                case STATES_CREATE_NOT_IN_GAME:
+                {
+                    const char *CurrentLine = "To create a custom state, you must have\na file loaded and not be in a battle nor a\nscreen transition.";
+                    
+                    int32_t TextPosX = -173;
+                    int32_t TextPosY = 20;
+#ifdef TTYD_JP
+                    TextPosX += 3;
+#endif
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
+                    break;
+                }
+                case STATES_WARP_NOT_IN_GAME:
+                {
+                    int32_t TextPosY = 20;
+                    drawWarpsErrorMessage(TextPosY);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
         case STATS_MARIO:
         {
             // Draw the text for the options
@@ -4253,7 +4524,8 @@ void drawMenu()
                 case STATS_PARTNER_DISPLAY_YOSHI_NAME:
                 {
                     char NewYoshiName[11]; // One byte for NULL
-                    if (setCustomText(NewYoshiName, sizeof(NewYoshiName)))
+                    int32_t CustomTextReturn = setCustomText(NewYoshiName, sizeof(NewYoshiName), true);
+                    if (CustomTextReturn == CUSTOM_TEXT_RETURN_DONE)
                     {
                         ttyd::mario_pouch::pouchSetYoshiName(NewYoshiName);
                     }

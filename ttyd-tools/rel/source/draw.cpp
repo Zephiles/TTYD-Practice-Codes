@@ -605,8 +605,14 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
     }
 }
 
-bool setCustomText(char *textOut, uint32_t textSize)
+int32_t setCustomText(char *textOut, uint32_t textSize, bool applyNullTerminator)
 {
+    // If not setting a null terminator, allow the last byte in textOut to be used
+    if (!applyNullTerminator)
+    {
+        textSize++;
+    }
+    
     // Failsafe to prevent a buffer overflow
     if (textSize > CUSTOM_TEXT_BUFFER_SIZE)
     {
@@ -614,14 +620,14 @@ bool setCustomText(char *textOut, uint32_t textSize)
     }
     
     // Check for button inputs
-    uint32_t Button = setCustomTextButtonControls(textOut, textSize);
+    uint32_t Button = setCustomTextButtonControls(textOut, textSize, applyNullTerminator);
     if (Button == CUSTOM_TEXT_CANCEL)
     {
-        return false;
+        return CUSTOM_TEXT_RETURN_CANCEL;
     }
     else if (Button == CUSTOM_TEXT_DONE)
     {
-        return true;
+        return CUSTOM_TEXT_RETURN_DONE;
     }
     
     // Draw the window
@@ -743,7 +749,7 @@ bool setCustomText(char *textOut, uint32_t textSize)
         CharsPosX += 20;
     }
     
-    return false;
+    return CUSTOM_TEXT_RETURN_BUSY;
 }
 
 void drawInventoryIconAndTextColumns()
@@ -3023,7 +3029,7 @@ void drawWarpsErrorMessage(int32_t textPosY)
     int32_t TextPosX        = -195;
     
 #ifdef TTYD_JP
-    TextPosX += 8;
+    TextPosX += 10;
 #endif
     
     drawErrorWindow(CurrentLine, TextPosX, textPosY);
@@ -4541,6 +4547,132 @@ void drawCheatsClearArea()
     const char *String = "Current Area: ";
     drawSingleLineFromStringAndArray(PosX, PosY, MenuVar.MenuSecondaryValue, 
         String, tempCheatsClearAreaFlagsAreas);
+}
+
+void drawCheatsManageCustomStates()
+{
+    // Draw the name for each custom state if there are any
+    uint32_t Color = 0xFFFFFFFF;
+    // uint8_t Alpha = 0xFF;
+    int32_t PosX = -72;
+    int32_t PosY = 180;
+    float Scale = 0.6f;
+    
+    // Draw the current amount of custom states out of the maximum
+    // Draw the counts as int32_ts, to prevent long text if they somehow become negative
+    uint32_t TotalEntries = CustomState.TotalEntries;
+    char *tempDisplayBuffer = DisplayBuffer;
+    
+    sprintf(
+        tempDisplayBuffer, 
+        "Total States\n%" PRId32 "/%" PRId32, 
+        static_cast<int32_t>(TotalEntries), 
+        CUSTOM_STATES_MAX_COUNT);
+    
+    drawText(tempDisplayBuffer, -232, PosY - 100, Color, Scale);
+    
+    // If no custom states currently exist, then exit
+    if (TotalEntries == 0)
+    {
+        return;
+    }
+    
+    // Draw the current page if there can be more than one
+    uint32_t tempCurrentPage = MenuVar.CurrentPage;
+    if (CUSTOM_STATES_MAX_COUNT > CUSTOM_STATES_MAX_NAMES_PER_PAGE)
+    {
+        int32_t PageNumberPosX = 233;
+        drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
+    }
+    
+    // Draw the names of each custom state
+    uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+    uint32_t tempSelectedOption = MenuVar.SelectedOption;
+    CustomStateStruct *tempCustomStates = &CustomState.State[0];
+    constexpr uint32_t MaxTextSize = sizeof(tempCustomStates->StateName);
+    
+    // The names are not null terminated, so create a temporary buffer for them
+    char StateNameBuffer[MaxTextSize + 1];
+    StateNameBuffer[MaxTextSize] = '\0';
+    
+    for (uint32_t i = (tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE); 
+        i < ((tempCurrentPage + 1) * CUSTOM_STATES_MAX_NAMES_PER_PAGE); i++)
+    {
+        // Exit if all of the custom state names have been drawn
+        // Also make sure the maximum entries haven't beed exceeded as a failsafe
+        if ((i >= TotalEntries) || (i >= CUSTOM_STATES_MAX_COUNT))
+        {
+            break;
+        }
+        
+        bool CurrentOptionCheck = (tempSelectedOption != 0) && (tempCurrentMenuOption == i);
+        Color = getSelectedTextColor(CurrentOptionCheck);
+        
+        char *tempBuf = strncpy(
+            StateNameBuffer, 
+            tempCustomStates[i].StateName, 
+            MaxTextSize);
+        
+        drawText(tempBuf, PosX, PosY, Color, Scale);
+        PosY -= 20;
+    }
+}
+
+void drawCheatsHandleCustomStateAction()
+{
+    constexpr uint32_t NameSize = sizeof(CustomState.State->StateName);
+    char NewName[NameSize];
+    
+    int32_t CustomTextReturn = setCustomText(NewName, NameSize, false);
+    if (CustomTextReturn == CUSTOM_TEXT_RETURN_DONE)
+    {
+        switch (MenuVar.SelectedOption)
+        {
+            case CREATE_CUSTOM_STATE:
+            {
+                // Make sure the player is currently in the game
+                if (checkIfInGame())
+                {
+                    char *NewStateName = CustomState.createCustomState();
+                    if (NewStateName)
+                    {
+                        strncpy(NewStateName, NewName, NameSize);
+                        closeSecondaryMenu();
+                    }
+                    else // Failsafe; shouldn't ever run
+                    {
+                        closeSecondaryMenu();
+                        MenuVar.FunctionReturnCode = MAX_STATES_EXIST;
+                        MenuVar.Timer              = secondsToFrames(3);
+                    }
+                }
+                else
+                {
+                    closeSecondaryMenu();
+                    MenuVar.FunctionReturnCode = STATES_CREATE_NOT_IN_GAME;
+                    MenuVar.Timer              = secondsToFrames(3);
+                }
+                break;
+            }
+            case RENAME_CUSTOM_STATE:
+            {
+                strncpy(CustomState.State[MenuVar.CurrentMenuOption].StateName, NewName, NameSize);
+                closeSecondaryMenu();
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+    else if (CustomTextReturn == CUSTOM_TEXT_RETURN_CANCEL)
+    {
+        if (MenuVar.SelectedOption == CREATE_CUSTOM_STATE)
+        {
+            closeSecondaryMenu();
+        }
+    }
 }
 
 void drawDisplaysMemoryUsageMenu()
@@ -6410,7 +6542,7 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
     // Init memory for the strings
     ttyd::memory::SmartAllocationData *ErrorHandlerStringsMemory = 
         ttyd::memory::smartAlloc(sizeof(ErrorHandlerStrings), 
-        ttyd::memory::SmartAllocationGroup::kNone);
+            ttyd::memory::SmartAllocationGroup::kNone);
     
     // Set up a temporary local variable to use for getting the strings memory
     ErrorHandlerStrings *ErrorHandler = reinterpret_cast<ErrorHandlerStrings *>(ErrorHandlerStringsMemory->pMemory);
