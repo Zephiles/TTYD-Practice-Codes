@@ -49,6 +49,7 @@ uint32_t marioSpecialMovesButtonControls();
 uint32_t partnerChangeYoshiColorButtonControls();
 uint32_t followersOptionsButtonControls();
 
+void customTextInit(const char *initialText, uint32_t maxTextSize);
 uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool applyNullTerminator);
 
 void adjustMenuItemBoundsMain(int32_t valueChangedBy, int32_t lowerBound, int32_t upperBound);
@@ -113,6 +114,10 @@ bool incrementCheatsBButtonCounter(uint32_t buttonInput);
 bool cheatsManageTimer(uint32_t buttonInput);
 int32_t convertDoubleToString(char *strOut, int32_t totalLength, int32_t decimalCount, double value);
 float *getMarioCoordinateFromIndex(int32_t index);
+
+CustomStateStruct *resizeStateMemory(CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount);
+char *createCustomState();
+uint32_t deleteCustomState(uint32_t stateIndex);
 
 bool checkForDPADInput();
 uint32_t checkButtonSingleFrame();

@@ -1626,7 +1626,7 @@ void menuCheckButton()
                                     {
                                         if (tempTotalEntries < CUSTOM_STATES_MAX_COUNT)
                                         {
-                                            CustomText.customTextInit(nullptr, 0);
+                                            customTextInit(nullptr, 0);
                                             MenuVar.SecondaryMenuOption = 0;
                                             MenuVar.MenuSelectedOption = CurrentMenuOptionCheck;
                                             MenuVar.SelectedOption = CurrentMenuOptionCheck;
@@ -1676,7 +1676,7 @@ void menuCheckButton()
                         }
                         case DELETE_CUSTOM_STATE:
                         {
-                            uint32_t TotalEntries = CustomState.deleteCustomState(tempCurrentMenuOption);
+                            uint32_t TotalEntries = deleteCustomState(tempCurrentMenuOption);
                             if (TotalEntries == 0)
                             {
                                 closeSecondaryMenu();
@@ -1704,7 +1704,7 @@ void menuCheckButton()
                                     sizeof(CustomState.State[tempCurrentMenuOption].StateName);
                                 
                                 // Add 1 to StateNameSize since it's not null terminated
-                                CustomText.customTextInit(StateName, StateNameSize + 1);
+                                customTextInit(StateName, StateNameSize + 1);
                                 
                                 MenuVar.SecondaryMenuOption = 0;
                                 MenuVar.MenuSelectedOption = tempSelectedOption;
@@ -1932,7 +1932,7 @@ void menuCheckButton()
                                                 HandledYoshiOption = true;
                                                 
                                                 // char NewYoshiName[11]; // One byte for NULL
-                                                CustomText.customTextInit(ttyd::mario_pouch::pouchGetYoshiName(), 11);
+                                                customTextInit(ttyd::mario_pouch::pouchGetYoshiName(), 11);
                                                 
                                                 MenuVar.MenuSelectedOption = STATS_PARTNER_DISPLAY_YOSHI_NAME;
                                                 MenuVar.SecondaryMenuOption = 0;

@@ -4605,7 +4605,10 @@ void drawCheatsManageCustomStates()
             break;
         }
         
-        bool CurrentOptionCheck = (tempSelectedOption != 0) && (tempCurrentMenuOption == i);
+        bool CurrentOptionCheck = (tempSelectedOption != 0) && 
+            (tempSelectedOption != CREATE_CUSTOM_STATE) && 
+            (tempCurrentMenuOption == i);
+        
         Color = getSelectedTextColor(CurrentOptionCheck);
         
         char *tempBuf = strncpy(
@@ -4633,25 +4636,24 @@ void drawCheatsHandleCustomStateAction()
                 // Make sure the player is currently in the game
                 if (checkIfInGame())
                 {
-                    char *NewStateName = CustomState.createCustomState();
+                    char *NewStateName = createCustomState();
                     if (NewStateName)
                     {
                         strncpy(NewStateName, NewName, NameSize);
-                        closeSecondaryMenu();
                     }
                     else // Failsafe; shouldn't ever run
                     {
-                        closeSecondaryMenu();
                         MenuVar.FunctionReturnCode = MAX_STATES_EXIST;
                         MenuVar.Timer              = secondsToFrames(3);
                     }
                 }
                 else
                 {
-                    closeSecondaryMenu();
                     MenuVar.FunctionReturnCode = STATES_CREATE_NOT_IN_GAME;
                     MenuVar.Timer              = secondsToFrames(3);
                 }
+                
+                closeSecondaryMenu();
                 break;
             }
             case RENAME_CUSTOM_STATE:

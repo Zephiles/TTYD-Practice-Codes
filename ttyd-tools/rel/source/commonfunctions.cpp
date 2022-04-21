@@ -235,7 +235,7 @@ ttyd::memory::SmartAllocationData *allocFromSmartHeap(uint32_t size, uint32_t gr
     // Allocate the memory
     ttyd::memory::SmartAllocationData *SmartData = ttyd::memory::smartAlloc(size, group);
     
-    // Set up a temporary local variable to use for getting memory
+    // Set up a temporary local variable to use for getting the memory
     void *Ptr = SmartData->pMemory;
     
     // Clear the memory, as this is not done automatically

@@ -1056,13 +1056,6 @@ struct ManageCustomStates
     uint8_t TotalEntries;
     bool StateWasSelected;
     uint8_t SelectedState;
-    
-    // Do not inline resizeStateMemory, createCustomState, nor deleteCustomState
-    CustomStateStruct *resizeStateMemory(
-        CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount);
-    
-    char *createCustomState();
-    uint32_t deleteCustomState(uint32_t stateIndex);
 };
 
 struct CustomStateSettingsStruct
@@ -1223,9 +1216,6 @@ struct SetCustomText
             delete[] (Buffer);
         }
     }
-    
-    // Do not inline customTextInit
-    void customTextInit(const char *initialText, uint32_t maxTextSize);
 };
 
 extern MenuVars MenuVar;
