@@ -1057,7 +1057,10 @@ struct ManageCustomStates
     bool StateWasSelected;
     uint8_t SelectedState;
     
-    // Do not inline createCustomState nor deleteCustomState
+    // Do not inline resizeStateMemory, createCustomState, nor deleteCustomState
+    CustomStateStruct *resizeStateMemory(
+        CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount);
+    
     char *createCustomState();
     uint32_t deleteCustomState(uint32_t stateIndex);
 };

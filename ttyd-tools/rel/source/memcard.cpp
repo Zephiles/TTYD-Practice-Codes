@@ -3,7 +3,6 @@
 #include "commonfunctions.h"
 
 #include <gc/card.h>
-#include <gc/OSCache.h>
 #include <ttyd/cardmgr.h>
 #include <ttyd/memory.h>
 
@@ -499,15 +498,11 @@ int32_t loadSettings(int32_t memoryCardSlot)
     // Set up the memory to be copied from the file
     // Allocate the memory on the smart heap to avoid fragmentation
     ttyd::memory::SmartAllocationData *SmartData = 
-        ttyd::memory::smartAlloc(FileSizeAdjusted, 
+        allocFromSmartHeap(FileSizeAdjusted, 
             ttyd::memory::SmartAllocationGroup::kNone);
     
-    // Set up a temporary local variable to use for getting memory
+    // Set up a temporary local variable to use for getting the memory
     char *MiscData = reinterpret_cast<char *>(SmartData->pMemory);
-    clearMemory(MiscData, FileSizeAdjusted);
-    
-    // Be 100% certain that no memory issues occur, since the allocated memory wasn't cleared automatically
-    gc::OSCache::DCFlushRange(MiscData, FileSizeAdjusted);
     
     // Get the data from the file
     // Must read by the stored size, as the struct size may exceed the size of the file

@@ -3,6 +3,7 @@
 #include <gc/OSModule.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/npcdrv.h>
+#include <ttyd/memory.h>
 #include <ttyd/party.h>
 
 #include <cstdint>
@@ -41,6 +42,7 @@ bool compareStringsSize(const char *str1, const char *str2, size_t size);
 bool compareStringToNextMap(const char *str);
 void setSeqMapChange(const char *map, const char *bero);
 void *clearMemory(void *destination, std::size_t size);
+ttyd::memory::SmartAllocationData *allocFromSmartHeap(uint32_t size, uint32_t group);
 void *getPartnerPointer();
 void *getFollowerPointer();
 void removePartnerFromOverworld();

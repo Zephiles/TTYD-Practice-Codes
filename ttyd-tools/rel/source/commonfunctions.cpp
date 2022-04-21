@@ -2,6 +2,7 @@
 
 #include <gc/DEMOPad.h>
 #include <gc/OSModule.h>
+#include <gc/OSCache.h>
 #include <ttyd/system.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/mariost.h>
@@ -227,6 +228,22 @@ void setSeqMapChange(const char *map, const char *bero)
 void *clearMemory(void *destination, std::size_t size)
 {
     return memset(destination, 0, size);
+}
+
+ttyd::memory::SmartAllocationData *allocFromSmartHeap(uint32_t size, uint32_t group)
+{
+    // Allocate the memory
+    ttyd::memory::SmartAllocationData *SmartData = ttyd::memory::smartAlloc(size, group);
+    
+    // Set up a temporary local variable to use for getting memory
+    void *Ptr = SmartData->pMemory;
+    
+    // Clear the memory, as this is not done automatically
+    Ptr = clearMemory(Ptr, size);
+    
+    // Be 100% certain that no memory issues occur
+    gc::OSCache::DCFlushRange(Ptr, size);
+    return SmartData;
 }
 
 void *getPartnerPointer()

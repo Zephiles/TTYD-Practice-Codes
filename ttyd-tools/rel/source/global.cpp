@@ -2,8 +2,8 @@
 #include "memcard.h"
 
 #include <ttyd/msgdrv.h>
+#include <ttyd/memory.h>
 #include <ttyd/mario_pouch.h>
-#include <ttyd/mariost.h>
 #include <ttyd/mario.h>
 #include <ttyd/mario_motion.h>
 #include <ttyd/seq_mapchange.h>
@@ -2264,6 +2264,37 @@ void SetCustomText::customTextInit(const char *initialText, uint32_t maxTextSize
     }
 }
 
+CustomStateStruct * ManageCustomStates::resizeStateMemory(
+    CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount)
+{
+    uint32_t CurrentStatesSize = sizeof(CustomStateStruct) * numEntries;
+    
+    // Allocate temporary memory to hold the states
+    // Allocate the memory on the smart heap to avoid fragmentation
+    ttyd::memory::SmartAllocationData *SmartData = 
+        allocFromSmartHeap(CurrentStatesSize, 
+            ttyd::memory::SmartAllocationGroup::kNone);
+    
+    // Set up a temporary local variable to use for getting the memory
+    CustomStateStruct *tempStateSmart = reinterpret_cast<CustomStateStruct *>(SmartData->pMemory);
+    
+    // Copy the states from the old memory to the temporary memory
+    memcpy(tempStateSmart, state, CurrentStatesSize);
+    
+    // Free the old memory
+    delete[] (state);
+    
+    // Allocate new memory to hold the states
+    state = new CustomStateStruct[numEntries + incrementAmount];
+    
+    // Copy the states from the temporary memory to the new memory
+    memcpy(state, tempStateSmart, CurrentStatesSize);
+    
+    // Free the temporary memory
+    ttyd::memory::smartFree(SmartData);
+    return state;
+}
+
 char *ManageCustomStates::createCustomState()
 {
     uint32_t tempTotalEntries = TotalEntries;
@@ -2290,16 +2321,7 @@ char *ManageCustomStates::createCustomState()
     }
     else
     {
-        // Allocate new memory to hold the new state
-        CustomStateStruct *tempStateNew = new CustomStateStruct[tempTotalEntries + 1];
-        
-        // Copy the states from the old memory to the new memory
-        memcpy(tempStateNew, tempState, sizeof(CustomStateStruct) * tempTotalEntries);
-        
-        // Free the old memory
-        delete[] (tempState);
-        
-        tempState = tempStateNew;
+        tempState = resizeStateMemory(tempState, tempTotalEntries, 1);
         State = tempState;
         
         tempTotalEntries++;
@@ -2430,16 +2452,7 @@ uint32_t ManageCustomStates::deleteCustomState(uint32_t stateIndex)
             memcpy(&tempState[stateIndex], &tempState[stateIndex + 1], CopySize);
         }
         
-        // Allocate new memory to hold the states
-        CustomStateStruct *tempStateNew = new CustomStateStruct[tempTotalEntries];
-        
-        // Copy the states from the old memory to the new memory
-        uint32_t NewSize = sizeof(CustomStateStruct) * tempTotalEntries;
-        memcpy(tempStateNew, tempState, NewSize);
-        
-        // Free the old memory
-        delete[] (tempState);
-        State = tempStateNew;
+        State = resizeStateMemory(tempState, tempTotalEntries, 0);
     }
     else
     {
