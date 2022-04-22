@@ -111,7 +111,7 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 28. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
-29. **Manage Custom States** allows you to create states that keep track of the following:
+29. **Manage Custom States** allows you to create up to 15 states that keep track of the following:
     * All of your current **standard items**, **important items**, **badges** (also **equipped badges**), and **stored items**
     * The current **Sequence Position**
     * The following data for **Mario**:
