@@ -4569,7 +4569,7 @@ void drawCheatsManageCustomStates()
         static_cast<int32_t>(TotalEntries), 
         CUSTOM_STATES_MAX_COUNT);
     
-    drawText(tempDisplayBuffer, -232, PosY - 100, Color, Scale);
+    drawText(tempDisplayBuffer, -232, PosY - 120, Color, Scale);
     
     // If no custom states currently exist, then exit
     if (TotalEntries == 0)

@@ -116,6 +116,7 @@ int32_t convertDoubleToString(char *strOut, int32_t totalLength, int32_t decimal
 float *getMarioCoordinateFromIndex(int32_t index);
 
 CustomStateStruct *resizeStateMemory(CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount);
+void setCustomStateData(CustomStateStruct *state);
 char *createCustomState();
 uint32_t deleteCustomState(uint32_t stateIndex);
 

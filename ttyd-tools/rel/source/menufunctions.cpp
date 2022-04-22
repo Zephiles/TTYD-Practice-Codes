@@ -5380,6 +5380,106 @@ CustomStateStruct *resizeStateMemory(CustomStateStruct *state, uint32_t numEntri
     return state;
 }
 
+void setCustomStateData(CustomStateStruct *state)
+{
+    // Back up the inventory
+    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
+    
+    // Standard items
+    memcpy(
+        state->StandardItems, 
+        reinterpret_cast<void *>(PouchPtr + 0x192), 
+        sizeof(state->StandardItems));
+    
+    // Important items
+    memcpy(
+        state->ImportantItems, 
+        reinterpret_cast<void *>(PouchPtr + 0xA0), 
+        sizeof(state->ImportantItems));
+    
+    // Badges
+    memcpy(
+        state->Badges, 
+        reinterpret_cast<void *>(PouchPtr + 0x1FA), 
+        sizeof(state->Badges));
+    
+    // Equipped badges
+    memcpy(
+        state->EquippedBadges, 
+        reinterpret_cast<void *>(PouchPtr + 0x38A), 
+        sizeof(state->EquippedBadges));
+    
+    // Stored items
+    memcpy(
+        state->StoredItems, 
+        reinterpret_cast<void *>(PouchPtr + 0x1BA), 
+        sizeof(state->StoredItems));
+    
+    // Back up some of Mario's data
+    CustomStateMarioVars *MarioVars = &state->MarioVars;
+    MarioVars->currentHP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x70);
+    MarioVars->maxHP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x72);
+    MarioVars->currentFP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x74);
+    MarioVars->maxFP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x76);
+    MarioVars->maxHPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x8E);
+    MarioVars->maxFPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x90);
+    MarioVars->currentSP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x7A);
+    MarioVars->maxSP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x7C);
+    MarioVars->availableBP         = *reinterpret_cast<int16_t *>(PouchPtr + 0x92);
+    MarioVars->maxBP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x94);
+    MarioVars->rank                = *reinterpret_cast<int16_t *>(PouchPtr + 0x88);
+    MarioVars->level               = *reinterpret_cast<int16_t *>(PouchPtr + 0x8A);
+    MarioVars->starPowersObtained  = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
+    MarioVars->starPoints          = *reinterpret_cast<int16_t *>(PouchPtr + 0x96);
+    MarioVars->coins               = *reinterpret_cast<int16_t *>(PouchPtr + 0x78);
+    
+    // Back up the partner data
+    memcpy(
+        state->PartyData, 
+        reinterpret_cast<void *>(PouchPtr + sizeof(ttyd::mario_pouch::PouchPartyData)), 
+        sizeof(state->PartyData));
+    
+    // Back up the sequence position
+    state->SequencePosition = getSequencePosition();
+    
+    // Back up which partner is currently out
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    uint32_t PartnerPtr = reinterpret_cast<uint32_t>(getPartnerPointer());
+    if (PartnerPtr)
+    {
+        state->PartnerOut = player->prevFollowerId[0];
+    }
+    
+    // Back up which follower is currently out
+    uint32_t FollowerPtr = reinterpret_cast<uint32_t>(getFollowerPointer());
+    if (FollowerPtr)
+    {
+        state->FollowerOut = player->prevFollowerId[1];
+    }
+    
+    // Back up if Mario is currently using Boat Mode or not
+    if (player->currentMotionId == ttyd::mario_motion::MarioMotions::kShip)
+    {
+        state->MarioIsShip = true;
+    }
+    else
+    {
+        state->MarioIsShip = false;
+    }
+    
+    // Back up the current map
+    strncpy(
+        state->CurrentMap, 
+        ttyd::seq_mapchange::NextMap, 
+        sizeof(state->CurrentMap));
+    
+    // Back up the current loading zone
+    strncpy(
+        state->CurrentBero, 
+        ttyd::seq_mapchange::NextBero, 
+        sizeof(state->CurrentBero));
+}
+
 char *createCustomState()
 {
     uint32_t tempTotalEntries = CustomState.TotalEntries;
@@ -5413,105 +5513,8 @@ char *createCustomState()
         CustomState.TotalEntries = tempTotalEntries;
     }
     
-    // Set the info for the new state
     tempState = &tempState[tempTotalEntries - 1];
-    
-    // Back up the inventory
-    uint32_t PouchPtr = reinterpret_cast<uint32_t>(ttyd::mario_pouch::pouchGetPtr());
-    
-    // Standard items
-    memcpy(
-        tempState->StandardItems, 
-        reinterpret_cast<void *>(PouchPtr + 0x192), 
-        sizeof(tempState->StandardItems));
-    
-    // Important items
-    memcpy(
-        tempState->ImportantItems, 
-        reinterpret_cast<void *>(PouchPtr + 0xA0), 
-        sizeof(tempState->ImportantItems));
-    
-    // Badges
-    memcpy(
-        tempState->Badges, 
-        reinterpret_cast<void *>(PouchPtr + 0x1FA), 
-        sizeof(tempState->Badges));
-    
-    // Equipped badges
-    memcpy(
-        tempState->EquippedBadges, 
-        reinterpret_cast<void *>(PouchPtr + 0x38A), 
-        sizeof(tempState->EquippedBadges));
-    
-    // Stored items
-    memcpy(
-        tempState->StoredItems, 
-        reinterpret_cast<void *>(PouchPtr + 0x1BA), 
-        sizeof(tempState->StoredItems));
-    
-    // Back up some of Mario's data
-    CustomStateMarioVars *MarioVars = &tempState->MarioVars;
-    MarioVars->currentHP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x70);
-    MarioVars->maxHP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x72);
-    MarioVars->currentFP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x74);
-    MarioVars->maxFP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x76);
-    MarioVars->maxHPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x8E);
-    MarioVars->maxFPEnteringBattle = *reinterpret_cast<int16_t *>(PouchPtr + 0x90);
-    MarioVars->currentSP           = *reinterpret_cast<int16_t *>(PouchPtr + 0x7A);
-    MarioVars->maxSP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x7C);
-    MarioVars->availableBP         = *reinterpret_cast<int16_t *>(PouchPtr + 0x92);
-    MarioVars->maxBP               = *reinterpret_cast<int16_t *>(PouchPtr + 0x94);
-    MarioVars->rank                = *reinterpret_cast<int16_t *>(PouchPtr + 0x88);
-    MarioVars->level               = *reinterpret_cast<int16_t *>(PouchPtr + 0x8A);
-    MarioVars->starPowersObtained  = *reinterpret_cast<uint16_t *>(PouchPtr + 0x8C);
-    MarioVars->starPoints          = *reinterpret_cast<int16_t *>(PouchPtr + 0x96);
-    MarioVars->coins               = *reinterpret_cast<int16_t *>(PouchPtr + 0x78);
-    
-    // Back up the partner data
-    memcpy(
-        tempState->PartyData, 
-        reinterpret_cast<void *>(PouchPtr + sizeof(ttyd::mario_pouch::PouchPartyData)), 
-        sizeof(tempState->PartyData));
-    
-    // Back up the sequence position
-    tempState->SequencePosition = getSequencePosition();
-    
-    // Back up which partner is currently out
-    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    uint32_t PartnerPtr = reinterpret_cast<uint32_t>(getPartnerPointer());
-    if (PartnerPtr)
-    {
-        tempState->PartnerOut = player->prevFollowerId[0];
-    }
-    
-    // Back up which follower is currently out
-    uint32_t FollowerPtr = reinterpret_cast<uint32_t>(getFollowerPointer());
-    if (FollowerPtr)
-    {
-        tempState->FollowerOut = player->prevFollowerId[1];
-    }
-    
-    // Back up if Mario is currently using Boat Mode or not
-    if (player->currentMotionId == ttyd::mario_motion::MarioMotions::kShip)
-    {
-        tempState->MarioIsShip = true;
-    }
-    else
-    {
-        tempState->MarioIsShip = false;
-    }
-    
-    // Back up the current map
-    strncpy(
-        tempState->CurrentMap, 
-        ttyd::seq_mapchange::NextMap, 
-        sizeof(tempState->CurrentMap));
-    
-    // Back up the current loading zone
-    strncpy(
-        tempState->CurrentBero, 
-        ttyd::seq_mapchange::NextBero, 
-        sizeof(tempState->CurrentBero));
+    setCustomStateData(tempState);
     
     // Return a pointer to the new state's name
     return tempState->StateName;

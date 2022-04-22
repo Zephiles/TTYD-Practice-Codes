@@ -1566,6 +1566,7 @@ void menuCheckButton()
                         }
                         case LOAD_CUSTOM_STATE:
                         case DELETE_CUSTOM_STATE:
+                        case OVERWRITE_CUSTOM_STATE:
                         case RENAME_CUSTOM_STATE:
                         {
                             adjustCustomStatesSelection(CurrentButton);
@@ -1601,10 +1602,11 @@ void menuCheckButton()
                                         break;
                                     }
                                     
-                                    // Use the delete and rename code if didn't break
+                                    // Use the delete, overwrite, and rename code if didn't break
                                     [[fallthrough]];
                                 }
                                 case DELETE_CUSTOM_STATE:
+                                case OVERWRITE_CUSTOM_STATE:
                                 case RENAME_CUSTOM_STATE:
                                 {
                                     if (tempTotalEntries > 0)
@@ -1692,6 +1694,15 @@ void menuCheckButton()
                                     MenuVar.CurrentPage = tempCurrentPage - 1;
                                 }
                             }
+                            break;
+                        }
+                        case OVERWRITE_CUSTOM_STATE:
+                        {
+                            setCustomStateData(&CustomState.State[tempCurrentMenuOption]);
+                            closeSecondaryMenu();
+                            
+                            MenuVar.FunctionReturnCode = SUCCESSFULLY_OVERWROTE_STATE;
+                            MenuVar.Timer              = secondsToFrames(3);
                             break;
                         }
                         case RENAME_CUSTOM_STATE:
@@ -4430,9 +4441,8 @@ void drawMenu()
                 case NO_STATES_EXIST:
                 {
                     const char *CurrentLine = "No custom states currently exist.";
-                    
                     int32_t TextPosX = -138;
-                    int32_t TextPosY = 20;
+                    int32_t TextPosY = 5;
 #ifdef TTYD_JP
                     TextPosX += 2;
 #endif
@@ -4443,7 +4453,7 @@ void drawMenu()
                 {
                     const char *CurrentLine = "The maximum amount of custom\nstates currently exist.";
                     int32_t TextPosX = -129;
-                    int32_t TextPosY = 20;
+                    int32_t TextPosY = 5;
 #ifdef TTYD_JP
                     TextPosX += 2;
 #endif
@@ -4455,7 +4465,7 @@ void drawMenu()
                     const char *CurrentLine = "To create a custom state, you must have\na file loaded and not be in a battle nor a\nscreen transition.";
                     
                     int32_t TextPosX = -173;
-                    int32_t TextPosY = 20;
+                    int32_t TextPosY = 5;
 #ifdef TTYD_JP
                     TextPosX += 3;
 #endif
@@ -4464,8 +4474,19 @@ void drawMenu()
                 }
                 case STATES_WARP_NOT_IN_GAME:
                 {
-                    int32_t TextPosY = 20;
+                    int32_t TextPosY = 5;
                     drawWarpsErrorMessage(TextPosY);
+                    break;
+                }
+                case SUCCESSFULLY_OVERWROTE_STATE:
+                {
+                    const char *CurrentLine = "The custom state was successfully overwritten.";
+                    int32_t TextPosX = -197;
+                    int32_t TextPosY = 5;
+#ifdef TTYD_JP
+                    TextPosX += 1;
+#endif
+                    drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                     break;
                 }
                 default:

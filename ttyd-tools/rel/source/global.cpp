@@ -1131,6 +1131,7 @@ const char *CheatsManageCustomStatesOptions[]
     "Load State",
     "Create State",
     "Delete State",
+    "Overwrite State",
     "Rename State",
 };
 
