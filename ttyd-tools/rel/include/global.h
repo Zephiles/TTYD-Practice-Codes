@@ -1051,7 +1051,7 @@ struct CustomStateStruct
 
 struct ManageCustomStates
 {
-    #define CUSTOM_STATES_MAX_COUNT 10
+    #define CUSTOM_STATES_MAX_COUNT 15
     #define CUSTOM_STATES_MAX_NAMES_PER_PAGE 18
     
     CustomStateStruct *State;
