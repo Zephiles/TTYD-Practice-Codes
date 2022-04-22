@@ -1714,7 +1714,7 @@ void menuCheckButton()
                                 constexpr uint32_t StateNameSize = 
                                     sizeof(CustomState.State[tempCurrentMenuOption].StateName);
                                 
-                                // Add 1 to StateNameSize since it's not null terminated
+                                // Add 1 to StateNameSize since it's not NULL terminated
                                 customTextInit(StateName, StateNameSize + 1);
                                 
                                 MenuVar.SecondaryMenuOption = 0;

@@ -2328,7 +2328,7 @@ uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool appl
             tempBuffer[tempIndex] = CustomText.CharsToChooseFrom[MenuVar.SecondaryMenuOption];
             
             // If not at the end of the buffer, increment the index
-            // Subtract 2 from textSize to account for index starting at 0 and null terminator
+            // Subtract 2 from textSize to account for index starting at 0 and NULL terminator
             if (tempIndex < (textSize - 2))
             {
                 CustomText.CurrentIndex = tempIndex + 1;
@@ -2343,11 +2343,11 @@ uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool appl
             {
                 // Move backward one character while clearing a specific char depending on circumstances
                 // If at the end of the buffer, don't decrement the index if tempBuffer[tempIndex] is not 0
-                // Subtract 2 from textSize to account for index starting at 0 and null terminator
+                // Subtract 2 from textSize to account for index starting at 0 and NULL terminator
                 if (tempIndex < (textSize - 2))
                 {
                     // Not at the end of the buffer
-                    // If the char at the current index is not 0, then write a space instead of null
+                    // If the char at the current index is not 0, then write a space instead of NULL
                     if (tempBuffer[tempIndex--] != '\0')
                     {
                         tempBuffer[tempIndex] = ' ';
@@ -2410,10 +2410,10 @@ uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool appl
         {
             // Move forward one character
             // Only move forward if not at the end of the buffer
-            // Subtract 2 from textSize to account for index starting at 0 and null terminator
+            // Subtract 2 from textSize to account for index starting at 0 and NULL terminator
             if (tempIndex < (textSize - 2))
             {
-                // If the current char is null, then set it to a space to allow more chars afterward
+                // If the current char is NULL, then set it to a space to allow more chars afterward
                 if (tempBuffer[tempIndex] == '\0')
                 {
                     tempBuffer[tempIndex] = ' ';
@@ -2443,7 +2443,7 @@ uint32_t setCustomTextButtonControls(char *textOut, uint32_t textSize, bool appl
                 return CUSTOM_TEXT_CANCEL;
             }
             
-            // Subtract 1 from textSize to account for null terminator
+            // Subtract 1 from textSize to account for NULL terminator
             strncpy(textOut, tempBuffer, textSize - 1);
             
             if (applyNullTerminator)
@@ -5303,7 +5303,7 @@ int32_t convertDoubleToString(char *strOut, int32_t totalLength, int32_t decimal
     }
     
     // Get the value as a string
-    // The string is assumed to have a size of at least 64 bytes including the null terminator
+    // The string is assumed to have a size of at least 64 bytes including the NULL terminator
     // If the value is positive, then add a plus sign to the start of the string
     char *ValueStringPtr = strOut;
     bool ValueIsPositive;

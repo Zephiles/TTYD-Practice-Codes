@@ -708,8 +708,8 @@ struct ReloadRoomStruct
 {
     bool ManuallyReloadingRoom;
     bool SystemLevelShouldBeLowered;
-    char NewBero[16]; // Not null terminated
-    char NewMap[8]; // Not null terminated
+    char NewBero[16]; // Not NULL terminated
+    char NewMap[8]; // Not NULL terminated
 };
 
 struct SpawnItems
@@ -1043,9 +1043,9 @@ struct CustomStateStruct
     ttyd::party::PartyMembers PartnerOut;
     ttyd::party::PartyMembers FollowerOut;
     bool MarioIsShip;
-    char StateName[16]; // Does not include null terminator
-    char CurrentMap[8]; // Does not include null terminator
-    char CurrentBero[16]; // Does not include null terminator
+    char StateName[16]; // Does not include NULL terminator
+    char CurrentMap[8]; // Does not include NULL terminator
+    char CurrentBero[16]; // Does not include NULL terminator
     uint8_t padding;
 } __attribute__((__packed__));
 

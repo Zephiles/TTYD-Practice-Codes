@@ -2359,7 +2359,7 @@ ttyd::mapdata::MapData *Mod::mapDataPtrHandleUnusedMaps(const char *mapName)
             ttyd::mapdata::MapData *tempUnusedMapData = &tempUnusedMap->UnusedMapData;
             char *tempUnusedMapName = tempUnusedMap->UnusedMapName;
             
-            strncpy(tempUnusedMapName, mapName, Size - 1); // Subtract 1 to make sure the string is properly null terminated
+            strncpy(tempUnusedMapName, mapName, Size - 1); // Subtract 1 to make sure the string is properly NULL terminated
             tempUnusedMapData->pInitEvtCode = MenuVar.CurrentMapInitScript;
             
             return tempUnusedMapData;

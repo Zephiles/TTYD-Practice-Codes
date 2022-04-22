@@ -349,7 +349,7 @@ void drawTextMultipleLines(const char *text, int32_t x, int32_t y,
             break;
         }
         
-        // Copy this line to the temporary buffer and append a null byte
+        // Copy this line to the temporary buffer and append a NULL byte
         int32_t LineLength = Newline - CurrentLine;
         
         // Make sure the current line won't be an empty string
@@ -607,7 +607,7 @@ void drawMultipleColumnsVertical(int32_t posX, int32_t posY, uint32_t currentMen
 
 int32_t setCustomText(char *textOut, uint32_t textSize, bool applyNullTerminator)
 {
-    // If not setting a null terminator, allow the last byte in textOut to be used
+    // If not setting a NULL terminator, allow the last byte in textOut to be used
     if (!applyNullTerminator)
     {
         textSize++;
@@ -4591,7 +4591,7 @@ void drawCheatsManageCustomStates()
     CustomStateStruct *tempCustomStates = &CustomState.State[0];
     constexpr uint32_t MaxTextSize = sizeof(tempCustomStates->StateName);
     
-    // The names are not null terminated, so create a temporary buffer for them
+    // The names are not NULL terminated, so create a temporary buffer for them
     char StateNameBuffer[MaxTextSize + 1];
     StateNameBuffer[MaxTextSize] = '\0';
     
