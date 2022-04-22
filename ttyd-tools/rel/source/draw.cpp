@@ -2891,7 +2891,11 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
         return;
     }
     
-    int32_t TextPosX = -172;
+    int32_t TextPosX = -158;
+    
+#ifdef TTYD_JP
+    TextPosX += 2;
+#endif
     
     // Get the text to use
     const char *PartnerOrFollowerText;
@@ -2912,7 +2916,7 @@ void drawPartnerFollowerMessage(int32_t textPosY, bool drawForPartner)
     char *tempDisplayBuffer = DisplayBuffer;
     
     sprintf(tempDisplayBuffer,
-        "To spawn a %s, you must have a file\nloaded and not be in a battle nor a\nscreen transition.",
+        "To spawn a %s, you must have a\nfile loaded and not be in a battle nor\na screen transition.",
         PartnerOrFollowerText);
     
     drawErrorWindow(tempDisplayBuffer, TextPosX, textPosY);
@@ -2926,7 +2930,7 @@ void drawNotInBattleErrorMessage()
     }
     
     const char *CurrentLine = "You must be in a battle to use the Battles menu.";
-    int32_t TextPosX        = -205;
+    int32_t TextPosX        = -204;
     int32_t TextPosY        = 0;
     
 #ifdef TTYD_JP
@@ -3025,11 +3029,11 @@ void drawWarpsErrorMessage(int32_t textPosY)
     }
     
     // Print error text if currently trying to warp when not able to
-    const char *CurrentLine = "To warp, you must have a file loaded and not\nbe in a battle nor a screen transition.";
-    int32_t TextPosX        = -195;
+    const char *CurrentLine = "To warp, you must have a file loaded and\nnot be in a battle nor a screen transition.";
+    int32_t TextPosX        = -175;
     
 #ifdef TTYD_JP
-    TextPosX += 10;
+    TextPosX += 5;
 #endif
     
     drawErrorWindow(CurrentLine, TextPosX, textPosY);
@@ -3804,8 +3808,12 @@ void drawAddByIcon(uint32_t currentMenu)
     else
     {
         const char *CurrentLine = "The inventory is currently full.";
-        int32_t TextPosX = -130;
+        int32_t TextPosX = -125;
         int32_t TextPosY = 40;
+        
+#ifdef TTYD_JP
+        TextPosX += 3;
+#endif
         drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
     }
 }
@@ -3819,8 +3827,12 @@ void drawAddById(uint32_t currentMenu)
     else
     {
         const char *CurrentLine = "The inventory is currently full.";
-        int32_t TextPosX = -130;
+        int32_t TextPosX = -125;
         int32_t TextPosY = 40;
+        
+#ifdef TTYD_JP
+        TextPosX += 3;
+#endif
         drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
     }
 }

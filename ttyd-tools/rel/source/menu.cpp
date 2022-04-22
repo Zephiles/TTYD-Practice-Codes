@@ -4126,8 +4126,11 @@ void drawMenu()
                         {
                             // Inventory is currently full
                             const char *CurrentLine = "The inventory is currently full.";
-                            int32_t TextPosX = -130;
+                            int32_t TextPosX = -125;
                             int32_t TextPosY = 40;
+#ifdef TTYD_JP
+                            TextPosX += 3;
+#endif
                             drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
@@ -4135,8 +4138,11 @@ void drawMenu()
                         {
                             // Inventory is currently empty
                             const char *CurrentLine = "The inventory is currently empty.";
-                            int32_t TextPosX = -130;
+                            int32_t TextPosX = -138;
                             int32_t TextPosY = 40;
+#ifdef TTYD_JP
+                            TextPosX += 5;
+#endif
                             drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
@@ -4167,8 +4173,11 @@ void drawMenu()
                         {
                             // Inventory is currently empty
                             const char *CurrentLine = "The inventory is currently empty.";
-                            int32_t TextPosX = -130;
+                            int32_t TextPosX = -138;
                             int32_t TextPosY = 40;
+#ifdef TTYD_JP
+                            TextPosX += 5;
+#endif
                             drawErrorWindowAutoCheckForClose(CurrentLine, TextPosX, TextPosY);
                             break;
                         }
