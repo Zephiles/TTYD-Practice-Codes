@@ -443,57 +443,91 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
        return Result;
     }
     
-    // Make sure a REL file is currently loaded
-    gc::OSModule::OSModuleInfo *CurrentRelModuleInfo = getCurrentRelModuleInfo();
-    if (!CurrentRelModuleInfo)
-    {
-        return Result;
-    }
-    
 #ifdef TTYD_US
-    const uint32_t LAS = 0x10;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
+    // BOM
+    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD2FC;
+    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x674;
+    
+    // LAS
+    constexpr uint32_t last_evt_3_2_Offset = 0x36FBC;
+    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x64;
+    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0x114;
+    
+    // MRI
+    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BE80;
+    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
 #elif defined TTYD_JP
-    const uint32_t LAS = 0x11;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FC0;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x58;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0xD4;
+    // BOM
+    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD2C4;
+    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x634;
+    
+    // LAS
+    constexpr uint32_t last_evt_3_2_Offset = 0x36FC0;
+    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x58;
+    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0xD4;
+    
+    // MRI
+    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BA98;
+    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
 #elif defined TTYD_EU
-    const uint32_t LAS = 0x11;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Offset = 0x36FBC;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset = 0x64;
-    const uint32_t SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset = 0x114;
+    // BOM
+    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD35C;
+    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x634;
+    
+    // LAS
+    constexpr uint32_t last_evt_3_2_Offset = 0x36FBC;
+    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x64;
+    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0x114;
+    
+    // MRI
+    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BE80;
+    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
 #endif
     
-    uint32_t CurrentRelModuleInfoRaw = reinterpret_cast<uint32_t>(CurrentRelModuleInfo);
-    switch (CurrentRelModuleInfo->id)
+    uint32_t CurrentRelPtrRaw = reinterpret_cast<uint32_t>(newModule);
+    switch (newModule->id)
     {
-        case LAS:
+        case ttyd::seq_mapchange::REL_ID::BOM:
         {
-            if (compareStringToNextMap("las_29"))
-            {
-                // Make changes to the function that spawns the textboxes, to prevent the standard heap from being corrupted
-                // Change the loop count from 10 to 5
-                *reinterpret_cast<uint32_t *>(
-                    CurrentRelModuleInfoRaw + 
-                        SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
-                            SQ_Cutscene_Spawn_Textboxes_Script_Loop_Offset) = 5;
-                
-                // Wait for 400ms instead of 200ms at the end of the loop
-                *reinterpret_cast<uint32_t *>(
-                    CurrentRelModuleInfoRaw + 
-                        SQ_Cutscene_Spawn_Textboxes_Script_Offset + 
-                            SQ_Cutscene_Spawn_Textboxes_Script_WaitMS_Offset) = 400;
-            }
-            return Result;
+            // Shadow Queen cutscene fix, just before 2nd fight
+            // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
+            // Wait 400ms instead of 300ms at the end of the loop
+            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
+                minnnanokoe_evt_bom_Offset + minnnanokoe_evt_bom_WaitMS_Offset) = 400;
+            
+            break;
+        }
+        case ttyd::seq_mapchange::REL_ID::LAS:
+        {
+            // Shadow Queen cutscene fix, just before 2nd fight
+            // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
+            // Change the loop count from 10 to 5
+            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
+                last_evt_3_2_Offset + last_evt_3_2_Loop_Offset) = 5;
+            
+            // Wait 400ms instead of 200ms at the end of the loop
+            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
+                last_evt_3_2_Offset + last_evt_3_2_WaitMS_Offset) = 400;
+            
+            break;
+        }
+        case ttyd::seq_mapchange::REL_ID::MRI:
+        {
+            // Shadow Queen cutscene fix, just before 2nd fight
+            // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
+            // Wait 400ms instead of 300ms at the end of the loop
+            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
+                minnnanokoe_evt_mri_Offset + minnnanokoe_evt_mri_WaitMS_Offset) = 400;
+            
+            break;
         }
         default:
         {
-            return Result;
+            break;
         }
     }
+    
+    return Result;
 }
 
 void clearHeapCorruptionBuffer()

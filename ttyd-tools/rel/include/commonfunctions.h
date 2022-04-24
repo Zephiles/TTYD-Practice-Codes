@@ -25,7 +25,7 @@ bool checkButtonComboEveryFrame(uint32_t combo);
 bool checkButtonComboDemo(uint32_t combo);
 bool checkForSpecificSeq(ttyd::seqdrv::SeqIndex wantedSeq);
 bool checkIfInGame();
-gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo();
+gc::OSModule::OSModuleInfo *getCurrentRelPtr();
 void *getBattleWorkPointer();
 void *getMarioBattlePointer();
 void *getPartnerBattlePointer();

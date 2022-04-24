@@ -79,24 +79,16 @@ bool checkIfInGame()
         return false;
     }
     
-    gc::OSModule::OSModuleInfo *CurrentRelModuleInfo = getCurrentRelModuleInfo();
-    if (!CurrentRelModuleInfo)
+    gc::OSModule::OSModuleInfo *CurrentRelPtr = getCurrentRelPtr();
+    if (!CurrentRelPtr)
     {
         return false;
     }
     
-#ifdef TTYD_US
-    const uint32_t DMO = 0x4;
-#elif defined TTYD_JP
-    const uint32_t DMO = 0x5;
-#elif defined TTYD_EU
-    const uint32_t DMO = 0x5;
-#endif
-    
-    return CurrentRelModuleInfo->id != DMO;
+    return CurrentRelPtr->id != ttyd::seq_mapchange::REL_ID::DMO;
 }
 
-gc::OSModule::OSModuleInfo *getCurrentRelModuleInfo()
+gc::OSModule::OSModuleInfo *getCurrentRelPtr()
 {
     return *reinterpret_cast<gc::OSModule::OSModuleInfo **>(
         reinterpret_cast<uint32_t>(
