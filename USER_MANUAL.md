@@ -294,6 +294,6 @@ There are several other changes that have been made outside of the menu:
    
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
    
-8. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted. The change is that less textboxes will appear at the start of the cutscene.
+8. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted, in which less textboxes will appear at the start of the cutscene. Similarly, the cutscenes in Fahr Outpost and The Great Tree before the final Shadow Queen fight have also been adjusted to prevent one of the game's heaps from becoming corrupted, in which the textboxes that appear in those cutscenes will appear less frequently.
 
 9. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
