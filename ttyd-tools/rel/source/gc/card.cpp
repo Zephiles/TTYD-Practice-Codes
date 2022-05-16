@@ -91,7 +91,7 @@ int32_t card_rename_async(int32_t channel, const char *oldName, const char *newN
     // Make sure this game has proper access to the file that is being renamed
     uint8_t *CurrentDirBlock = reinterpret_cast<uint8_t *>(DirBlock + (OldNameFileIndex * 0x40));
     
-    ReturnCode = __CARDAccess(Card, CurrentDirBlock);
+    ReturnCode = __CARDIsWritable(Card, CurrentDirBlock);
     if (ReturnCode != CARD_RESULT_READY)
     {
         __CARDPutControlBlock(Card, ReturnCode);

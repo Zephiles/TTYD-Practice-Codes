@@ -2403,7 +2403,7 @@ unused:winFontSetCenter
 // 802B0720:CARDFormatAsync
 802B0768:__CARDCompareFileName
 802B07D0:__CARDAccess
-// 802B0864:__CARDIsWritable
+802B0864:__CARDIsWritable
 // 802B0998:__CARDIsReadable
 // 802B0A8C:__CARDGetFileNo
 802B0BDC:CARDOpen

@@ -89,6 +89,7 @@ void *__CARDGetDirBlock(void *card);
 int32_t __CARDUpdateDir(int32_t channel, CARDCallback callback);
 bool __CARDCompareFileName(void *dirBlock, const char *fileName);
 int32_t __CARDAccess(void *card, void *dirBlock);
+int32_t __CARDIsWritable(void *card, void *dirBlock);
 }
 
 // Manually-written functions
