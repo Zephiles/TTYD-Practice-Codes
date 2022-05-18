@@ -708,8 +708,8 @@ struct ReloadRoomStruct
 {
     bool ManuallyReloadingRoom;
     bool SystemLevelShouldBeLowered;
-    char NewBero[16]; // Not NULL terminated
-    char NewMap[8]; // Not NULL terminated
+    char NewBero[17]; // 16 bytes for NewBero, one byte for NULL
+    char NewMap[9]; // 8 bytes for NewMap, one byte for NULL
 };
 
 struct SpawnItems
