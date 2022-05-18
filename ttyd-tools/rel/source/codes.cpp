@@ -551,14 +551,14 @@ void reloadRoomMain()
     // NewBero and NewMap need to be global variables
     
     char *tempNewBero = ReloadRoom.NewBero;
-    constexpr uint32_t NewBeroSize = sizeof(ReloadRoom.NewBero);
+    constexpr uint32_t NewBeroSize = sizeof(ReloadRoom.NewBero) - 1;
     strncpy(tempNewBero, ttyd::seq_mapchange::NextBero, NewBeroSize);
-    tempNewBero[NewBeroSize - 1] = '\0';
+    tempNewBero[NewBeroSize] = '\0';
     
-    constexpr uint32_t NewMapSize = sizeof(ReloadRoom.NewMap);
     char *tempNewMap = ReloadRoom.NewMap;
+    constexpr uint32_t NewMapSize = sizeof(ReloadRoom.NewMap) - 1;
     strncpy(tempNewMap, ttyd::seq_mapchange::NextMap, NewMapSize);
-    tempNewMap[NewMapSize - 1] = '\0';
+    tempNewMap[NewMapSize] = '\0';
     
     setSeqMapChange(tempNewMap, tempNewBero);
     
