@@ -4138,7 +4138,7 @@ void drawCheatsFrameAdvance()
     drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.AdvanceFrameButtonCombo, PosY, Description);
     
     PosY -= 60;
-    Description = "Pause/Resume Button Combof";
+    Description = "Pause/Resume Button Combo";
     drawButtonCombo(FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo, PosY, Description);
 }
 
