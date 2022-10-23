@@ -6528,6 +6528,8 @@ void drawHitCheckVisualizationResults(ttyd::dispdrv::CameraId cameraId, void *us
 
 void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)
 {
+    using namespace gc::gx;
+    
     // Call the original function immediately, as several functions need to run for the lines to be drawn properly
     mPFN_scissor_disp_control_trampoline(cameraId, user);
     
@@ -6582,7 +6584,7 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)
         uint32_t HitboxLineColor = ttyd::fontmgr::HSV2RGB(HSVA);
         
         // Set the color of the lines of the current hitbox
-        gc::gx::GXSetChanMatColor(gc::gx::GXChannelID::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
+        GXSetChanMatColor(GXChannelID::GX_COLOR0A0, reinterpret_cast<uint8_t *>(&HitboxLineColor));
         
         // Adjust the hue for the lines of the next hitbox
         HSVA[0] += 45;
@@ -6686,15 +6688,17 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)
             }
             
             // Draw the line from corner 1 to corner 2
-            gc::gx::GXBegin(gc::gx::GXPrimitive::GX_LINES, gc::gx::GXVtxFmt::GX_VTXFMT0, 2);
-            gc::gx::GXPosition3f32(ScreenPointOutLineStart.x, ScreenPointOutLineStart.y, 0.f);
-            gc::gx::GXPosition3f32(ScreenPointOutLineEnd.x, ScreenPointOutLineEnd.y, 0.f);
+            GXBegin(GXPrimitive::GX_LINES, GXVtxFmt::GX_VTXFMT0, 2);
+            GXPosition3f32(ScreenPointOutLineStart.x, ScreenPointOutLineStart.y, 0.f);
+            GXPosition3f32(ScreenPointOutLineEnd.x, ScreenPointOutLineEnd.y, 0.f);
         }
     }
 }
 
 void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32_t dsisr, uint32_t dar)
 {
+    using namespace gc::gx;
+    
     // Reinit the smart heap
     ttyd::memory::L_smartReInit();
     
@@ -6888,17 +6892,17 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
     // Various other init stuff
     // Clear EFB
     uint32_t CopyClearColor = 0x000000FF;
-    gc::gx::GXSetCopyClear(
+    GXSetCopyClear(
         reinterpret_cast<uint8_t *>(&CopyClearColor), 
         0x00FFFFFF);
     
-    gc::gx::GXCopyDisp(
+    GXCopyDisp(
         gc::DEMOInit::L_DEMOGetCurrentBuffer(), 
         true);
     
     // Set the visible screen region
-    gc::gx::GXSetViewport(0.f, 0.f, 608.f, 480.f, 0.f, 1.f);
-    gc::gx::GXSetScissor(0, 0, 608, 480);
+    GXSetViewport(0.f, 0.f, 608.f, 480.f, 0.f, 1.f);
+    GXSetScissor(0, 0, 608, 480);
     
     // Set matrices up to screen coordinates system
     gc::mtx::mtx44 MtxProjection;
@@ -6911,72 +6915,72 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
         0.f, 
         1.f);
     
-    gc::gx::GXSetProjection(
+    GXSetProjection(
         MtxProjection, 
-        gc::gx::GXProjectionType::GX_ORTHOGRAPHIC);
+        GXProjectionType::GX_ORTHOGRAPHIC);
     
     // Set the pixel processing mode
-    gc::gx::GXSetZMode(
+    GXSetZMode(
         true, 
-        gc::gx::GXCompare::GX_LEQUAL, 
+        GXCompare::GX_LEQUAL, 
         true);
     
     // Set the TEV parameters to replace the color
-    gc::gx::GXSetNumChans(0);
-    gc::gx::GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTevStages(1);
     
-    gc::gx::GXSetTevOp(
-        gc::gx::GXTevStageID::GX_TEVSTAGE0, 
-        gc::gx::GXTevMode::GX_REPLACE);
+    GXSetTevOp(
+        GXTevStageID::GX_TEVSTAGE0, 
+        GXTevMode::GX_REPLACE);
     
-    gc::gx::GXSetTevOrder(
-        gc::gx::GXTevStageID::GX_TEVSTAGE0, 
-        gc::gx::GXTexCoordID::GX_TEXCOORD0, 
-        gc::gx::GXTexMapID::GX_TEXMAP0, 
-        gc::gx::GXChannelID::GX_COLOR_NULL);
+    GXSetTevOrder(
+        GXTevStageID::GX_TEVSTAGE0, 
+        GXTexCoordID::GX_TEXCOORD0, 
+        GXTexMapID::GX_TEXMAP0, 
+        GXChannelID::GX_COLOR_NULL);
     
     // Set the number of texture coordinates
-    gc::gx::GXSetNumTexGens(1);
+    GXSetNumTexGens(1);
     
     // Specify specific texgen options
-    gc::gx::GXSetTexCoordGen2(
-        gc::gx::GXTexCoordID::GX_TEXCOORD0, 
-        gc::gx::GXTexGenType::GX_TG_MTX2x4, 
-        gc::gx::GXTexGenSrc::GX_TG_TEX0, 
-        gc::gx::GXTexMtx::GX_TEXMTX0, 
+    GXSetTexCoordGen2(
+        GXTexCoordID::GX_TEXCOORD0, 
+        GXTexGenType::GX_TG_MTX2x4, 
+        GXTexGenSrc::GX_TG_TEX0, 
+        GXTexMtx::GX_TEXMTX0, 
         false, 
         125);
     
     // Translucent mode
-    gc::gx::GXSetBlendMode(
-        gc::gx::GXBlendMode::GX_BM_BLEND, 
-        gc::gx::GXBlendFactor::GX_BL_ONE, 
-        gc::gx::GXBlendFactor::GX_BL_ONE, 
-        gc::gx::GXLogicOperation::GX_LO_CLEAR);
+    GXSetBlendMode(
+        GXBlendMode::GX_BM_BLEND, 
+        GXBlendFactor::GX_BL_ONE, 
+        GXBlendFactor::GX_BL_ONE, 
+        GXLogicOperation::GX_LO_CLEAR);
     
     // Set up vertex descriptors
-    gc::gx::GXClearVtxDesc();
+    GXClearVtxDesc();
     
-    gc::gx::GXSetVtxDesc(
-        gc::gx::GXAttribute::GX_VA_POS, 
-        gc::gx::GXAttributeType::GX_DIRECT);
+    GXSetVtxDesc(
+        GXAttribute::GX_VA_POS, 
+        GXAttributeType::GX_DIRECT);
     
-    gc::gx::GXSetVtxDesc(
-        gc::gx::GXAttribute::GX_VA_TEX0, 
-        gc::gx::GXAttributeType::GX_DIRECT);
+    GXSetVtxDesc(
+        GXAttribute::GX_VA_TEX0, 
+        GXAttributeType::GX_DIRECT);
     
-    gc::gx::GXSetVtxAttrFmt(
-        gc::gx::GXVtxFmt::GX_VTXFMT0, 
-        gc::gx::GXAttribute::GX_VA_POS, 
-        gc::gx::GXComponentContents::GX_POS_XYZ, 
-        gc::gx::GXComponentType::GX_S16, 
+    GXSetVtxAttrFmt(
+        GXVtxFmt::GX_VTXFMT0, 
+        GXAttribute::GX_VA_POS, 
+        GXComponentContents::GX_POS_XYZ, 
+        GXComponentType::GX_S16, 
         0);
     
-    gc::gx::GXSetVtxAttrFmt(
-        gc::gx::GXVtxFmt::GX_VTXFMT0, 
-        gc::gx::GXAttribute::GX_VA_TEX0, 
-        gc::gx::GXComponentContents::GX_POS_XYZ, 
-        gc::gx::GXComponentType::GX_S16, 
+    GXSetVtxAttrFmt(
+        GXVtxFmt::GX_VTXFMT0, 
+        GXAttribute::GX_VA_TEX0, 
+        GXComponentContents::GX_POS_XYZ, 
+        GXComponentType::GX_S16, 
         0);
     
     // Set up an auto function for drawing each string
@@ -7014,20 +7018,20 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                 uint16_t SheetWidth = tempFontData->sheetWidth;
                 uint16_t SheetHeight = tempFontData->sheetHeight;
                 
-                gc::gx::GXTexObj TexObj;
-                gc::gx::GXInitTexObj(
+                GXTexObj TexObj;
+                GXInitTexObj(
                     &TexObj, 
                     Image, 
                     SheetWidth, 
                     SheetHeight, 
-                    static_cast<gc::gx::GXTexFmt>(tempFontData->sheetFormat), 
-                    gc::gx::GXTexWrapMode::GX_CLAMP, 
-                    gc::gx::GXTexWrapMode::GX_CLAMP, 
+                    static_cast<GXTexFmt>(tempFontData->sheetFormat), 
+                    GXTexWrapMode::GX_CLAMP, 
+                    GXTexWrapMode::GX_CLAMP, 
                     false);
                 
-                gc::gx::GXLoadTexObj(
+                GXLoadTexObj(
                     &TexObj, 
-                    gc::gx::GXTexMapID::GX_TEXMAP0);
+                    GXTexMapID::GX_TEXMAP0);
                 
                 gc::mtx::mtx34 MtxTextImage;
                 gc::mtx::PSMTXScale(
@@ -7036,10 +7040,10 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                     1.f / intToFloat(static_cast<int32_t>(SheetHeight)), 
                     1.f);
                 
-                gc::gx::GXLoadTexMtxImm(
+                GXLoadTexMtxImm(
                     MtxTextImage, 
-                    gc::gx::GXTexMtx::GX_TEXMTX0, 
-                    gc::gx::GXTexMtxType::GX_MTX2x4);
+                    GXTexMtx::GX_TEXMTX0, 
+                    GXTexMtxType::GX_MTX2x4);
                 
                 // Set up the matrix to use for the text
                 gc::mtx::mtx34 MtxFontSize;
@@ -7049,16 +7053,16 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                     fontScale, 
                     1.f);
                 
-                gc::gx::GXLoadPosMtxImm(
+                GXLoadPosMtxImm(
                     MtxFontSize, 
-                    gc::gx::GXTexMtxType::GX_MTX2x4);
+                    GXTexMtxType::GX_MTX2x4);
                 
-                gc::gx::GXSetCurrentMtx(gc::gx::GXPosNormMtx::GX_PNMTX0);
+                GXSetCurrentMtx(GXPosNormMtx::GX_PNMTX0);
                 
                 // Start the drawing process
-                gc::gx::GXBegin(
-                    gc::gx::GXPrimitive::GX_QUADS, 
-                    gc::gx::GXVtxFmt::GX_VTXFMT0, 
+                GXBegin(
+                    GXPrimitive::GX_QUADS, 
+                    GXVtxFmt::GX_VTXFMT0, 
                     4);
                 
                 // Get the positions for the images and text
@@ -7076,30 +7080,30 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
                 uint16_t TextPosBottom = static_cast<uint16_t>(TextPosTop + CellHeight);
                 
                 // Draw the images and text
-                gc::gx::GXPosition1x16(TextPosLeft);
-                gc::gx::GXPosition1x16(TextPosTop);
-                gc::gx::GXPosition1x16(0);
+                GXPosition1x16(TextPosLeft);
+                GXPosition1x16(TextPosTop);
+                GXPosition1x16(0);
                 
-                gc::gx::GXPosition1x16(ImagePosLeft);
-                gc::gx::GXPosition1x16(ImagePosTop);
-                gc::gx::GXPosition1x16(TextPosRight);
-                gc::gx::GXPosition1x16(TextPosTop);
-                gc::gx::GXPosition1x16(0);
+                GXPosition1x16(ImagePosLeft);
+                GXPosition1x16(ImagePosTop);
+                GXPosition1x16(TextPosRight);
+                GXPosition1x16(TextPosTop);
+                GXPosition1x16(0);
                 
-                gc::gx::GXPosition1x16(ImagePosRight);
-                gc::gx::GXPosition1x16(ImagePosTop);
-                gc::gx::GXPosition1x16(TextPosRight);
-                gc::gx::GXPosition1x16(TextPosBottom);
-                gc::gx::GXPosition1x16(0);
+                GXPosition1x16(ImagePosRight);
+                GXPosition1x16(ImagePosTop);
+                GXPosition1x16(TextPosRight);
+                GXPosition1x16(TextPosBottom);
+                GXPosition1x16(0);
                 
-                gc::gx::GXPosition1x16(ImagePosRight);
-                gc::gx::GXPosition1x16(ImagePosBottom);
-                gc::gx::GXPosition1x16(TextPosLeft);
-                gc::gx::GXPosition1x16(TextPosBottom);
-                gc::gx::GXPosition1x16(0);
+                GXPosition1x16(ImagePosRight);
+                GXPosition1x16(ImagePosBottom);
+                GXPosition1x16(TextPosLeft);
+                GXPosition1x16(TextPosBottom);
+                GXPosition1x16(0);
                 
-                gc::gx::GXPosition1x16(ImagePosLeft);
-                gc::gx::GXPosition1x16(ImagePosBottom);
+                GXPosition1x16(ImagePosLeft);
+                GXPosition1x16(ImagePosBottom);
                 
                 textPosX += ImageWidth;
             }
@@ -7396,23 +7400,23 @@ void Mod::errorHandler(uint16_t error, gc::OSContext::OSContext *context, uint32
         }
         
         // Various post-drawing stuff
-        gc::gx::GXSetZMode(
+        GXSetZMode(
             true, 
-            gc::gx::GXCompare::GX_LEQUAL, 
+            GXCompare::GX_LEQUAL, 
             true);
         
-        gc::gx::GXSetColorUpdate(true);
+        GXSetColorUpdate(true);
         
-        gc::gx::GXSetAlphaCompare(
-            gc::gx::GXCompare::GX_ALWAYS, 
+        GXSetAlphaCompare(
+            GXCompare::GX_ALWAYS, 
             0, 
-            gc::gx::GXAlphaOperation::GX_AOP_OR, 
-            gc::gx::GXCompare::GX_ALWAYS, 
+            GXAlphaOperation::GX_AOP_OR, 
+            GXCompare::GX_ALWAYS, 
             0);
         
-        gc::gx::GXSetAlphaUpdate(true);
+        GXSetAlphaUpdate(true);
         
-        gc::gx::GXCopyDisp(
+        GXCopyDisp(
             gc::DEMOInit::DemoCurrentBuffer, 
             true);
         
