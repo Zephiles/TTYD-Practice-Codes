@@ -185,12 +185,12 @@ void drawTextWithWindow(const char *text, int32_t textPosX, int32_t textPosY, ui
 
 void drawIcon(int32_t posX, int32_t posY, int16_t iconNum, float scale)
 {
-    float Position[3];
-    Position[0] = intToFloat(posX);
-    Position[1] = intToFloat(posY);
-    Position[2] = 0.f;
+    gc::mtx::Vec3 Position;
+    Position.x = intToFloat(posX);
+    Position.y = intToFloat(posY);
+    Position.z = 0.f;
     
-    ttyd::icondrv::iconDispGx(Position, 24, iconNum, scale);
+    ttyd::icondrv::iconDispGx(&Position, 24, iconNum, scale);
 }
 
 void drawIconFromItem(int32_t posX, int32_t posY, int16_t itemNum, float scale)
@@ -3953,9 +3953,10 @@ void drawCheatsModifyMarioCoordinates()
     char *tempDisplayBuffer = DisplayBuffer;
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     
+    float* CoordinatePtr = reinterpret_cast<float *>(&player->playerPosition);
     for (uint32_t i = 0; i < 3; i++)
     {
-        float Coordinate = player->playerPosition[i];
+        float Coordinate = CoordinatePtr[i];
         
         // Get the coordinate in text form first
         const char *CoordinateText;
@@ -5226,7 +5227,7 @@ void drawMarioCoordinates()
     
     sprintf(tempDisplayBuffer,
         "MarPos: %.2f  %.2f  %.2f",
-        player->playerPosition[0], player->playerPosition[1], player->playerPosition[2]);
+        player->playerPosition.x, player->playerPosition.y, player->playerPosition.z);
     
     drawText(tempDisplayBuffer, PosX, PosY, Color, Scale);
 }
@@ -5611,14 +5612,14 @@ void drawPalaceSkipDetails()
     
     if (NPC->flags & (1 << 0)) // Check if 0 bit is active
     {
-        PhantomEmberPosY = NPC->position[1];
+        PhantomEmberPosY = NPC->position.y;
     }
     else
     {
         NPC = getNpcEntryData(0, false); // NPC 1
         if (NPC->flags & (1 << 0)) // Check if 0 bit is active
         {
-            PhantomEmberPosY = NPC->position[1];
+            PhantomEmberPosY = NPC->position.y;
         }
     }
     
@@ -6611,26 +6612,26 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)
         float ActorSizeScale        = *reinterpret_cast<float *>(BattleUnitPtrUint + 0x114);
         
         // Get the position of the current actor
-        float ActorPos[3];
-        ttyd::battle_unit::BtlUnit_GetPos(BattleUnitPtr, &ActorPos[0], &ActorPos[1], &ActorPos[2]);
+        gc::mtx::Vec3 ActorPos;
+        ttyd::battle_unit::BtlUnit_GetPos(BattleUnitPtr, &ActorPos.x, &ActorPos.y, &ActorPos.z);
         
         // Get the X and Y coordinate starting positions
-        float DrawHitboxPosXStart = (ActorHitboxPosOffsetX * ActorSizeScale) + ActorPos[0];
-        float DrawHitboxPosYStart = (DrawHitboxDirection * ActorHitboxPosOffsetY * ActorSizeScale) + ActorPos[1];
+        float DrawHitboxPosXStart = (ActorHitboxPosOffsetX * ActorSizeScale) + ActorPos.x;
+        float DrawHitboxPosYStart = (DrawHitboxDirection * ActorHitboxPosOffsetY * ActorSizeScale) + ActorPos.y;
         
         // Get the amount to adjust the starting positions by
         float DrawHitboxAdjustPosX = (ActorHitboxWidth * ActorSizeScale) * 0.5f;
         float DrawHitboxAdjustPosY = (ActorHitboxHeight * ActorSizeScale) * 0.5f;
         
         // Set up a set of points, used to get the starts and ends of lines
-        float ScreenPoint[3];
+        gc::mtx::Vec3 ScreenPoint;
         
         // Set the Z coordinate for all calculated points, as it will not change
-        ScreenPoint[2] = ActorPos[2];
+        ScreenPoint.z = ActorPos.z;
         
         // Set up 2 sets of points; One for the start of a line and one for the end of a line
-        float ScreenPointOutLineStart[3];
-        float ScreenPointOutLineEnd[3];
+        gc::mtx::Vec3 ScreenPointOutLineStart;
+        gc::mtx::Vec3 ScreenPointOutLineEnd;
         
         // Draw the 4 lines that show the hitbox
         for (uint32_t i = 0; i < 4; i++)
@@ -6638,56 +6639,56 @@ void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)
             if (i == 0)
             {
                 // Get the top-left corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+                ScreenPoint.x = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineStart);
                 
                 // Get the top-right corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+                ScreenPoint.x = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineEnd);
             }
             else if (i == 1)
             {
                 // Get the top-right corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+                ScreenPoint.x = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineStart);
                 
                 // Get the bottom-right corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+                ScreenPoint.x = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineEnd);
             }
             else if (i == 2)
             {
                 // Get the bottom-right corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+                ScreenPoint.x = DrawHitboxPosXStart + DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineStart);
                 
                 // Get the bottom-left corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+                ScreenPoint.x = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineEnd);
             }
             else // if (i == 3)
             {
                 // Get the bottom-left corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineStart);
+                ScreenPoint.x = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart - DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineStart);
                 
                 // Get the top-left corner of the hitbox
-                ScreenPoint[0] = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
-                ScreenPoint[1] = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
-                ttyd::battle_disp::btlGetScreenPoint(ScreenPoint, ScreenPointOutLineEnd);
+                ScreenPoint.x = DrawHitboxPosXStart - DrawHitboxAdjustPosX;
+                ScreenPoint.y = DrawHitboxPosYStart + DrawHitboxAdjustPosY;
+                ttyd::battle_disp::btlGetScreenPoint(&ScreenPoint, &ScreenPointOutLineEnd);
             }
             
             // Draw the line from corner 1 to corner 2
             gc::gx::GXBegin(gc::gx::GXPrimitive::GX_LINES, gc::gx::GXVtxFmt::GX_VTXFMT0, 2);
-            gc::gx::GXPosition3f32(ScreenPointOutLineStart[0], ScreenPointOutLineStart[1], 0.f);
-            gc::gx::GXPosition3f32(ScreenPointOutLineEnd[0], ScreenPointOutLineEnd[1], 0.f);
+            gc::gx::GXPosition3f32(ScreenPointOutLineStart.x, ScreenPointOutLineStart.y, 0.f);
+            gc::gx::GXPosition3f32(ScreenPointOutLineEnd.x, ScreenPointOutLineEnd.y, 0.f);
         }
     }
 }

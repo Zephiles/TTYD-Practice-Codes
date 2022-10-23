@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include <gc/mtx.h>
 #include <ttyd/database.h>
 
 namespace ttyd::npcdrv {
@@ -96,12 +97,12 @@ struct NpcEntry
     char currentAnimation[32];
     char stayAnimation[32];
     char talkAnimation[32];
-    float position[3];
-    float previousPosition[3];
-    float positionHistory[5][3];
-    float scale[3];
-    float rotation[3];
-    float rotationOffset[3];
+    gc::mtx::Vec3 position;
+    gc::mtx::Vec3 previousPosition;
+    gc::mtx::Vec3 positionHistory[5];
+    gc::mtx::Vec3 scale;
+    gc::mtx::Vec3 rotation;
+    gc::mtx::Vec3 rotationOffset;
     uint32_t poseId;
     uint32_t currentMotionAnimationState;
     char *wSomeAnimName_defaultM_I_2;
@@ -123,8 +124,8 @@ struct NpcEntry
     float width;
     float height;
     float wShadowSizeRelated;
-    float wJumpStartPosition[3];
-    float wJumpTargetPosition[3];
+    gc::mtx::Vec3 wJumpStartPosition;
+    gc::mtx::Vec3 wJumpTargetPosition;
 
     uint8_t gap_170[0x8];
 
@@ -166,9 +167,9 @@ struct NpcEntry
     char *landingSfxId;
     uint32_t cameraId;
     NpcTerritoryType territoryType;
-    float wTerritoryBase[3];
-    float wTerritoryLoiter[3];
-    float wTerritoryHoming[3];
+    gc::mtx::Vec3 wTerritoryBase;
+    gc::mtx::Vec3 wTerritoryLoiter;
+    gc::mtx::Vec3 wTerritoryHoming;
     float wSearchRange;
     float wSearchAngle;
     float wHomingRange;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/mtx.h>
+
 #include <cstdint>
 #include <cstdarg>
 
@@ -20,29 +22,29 @@ extern "C" {
 // winTexInit
 
 #ifdef TTYD_JP
-void winFontSetPitch(float pos[3], float scale[3], uint8_t color[4], float pitch, const char *format, ...);
+void winFontSetPitch(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], float pitch, const char *format, ...);
 #endif
 
 // label is passed into msgSearch, and the returned string is drawn
-void winFontSetLabel(float pos[3], float scale[3], uint8_t color[4], const char *label);
+void winFontSetLabel(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], const char *label);
 
 #ifndef TTYD_JP
-void winFontSetEdgeWidth(float pos[3], float scale[3], uint8_t color[4], float width, const char *format, ...);
+void winFontSetEdgeWidth(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], float width, const char *format, ...);
 #endif
 
-void winFontSetEdge(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+void winFontSetEdge(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], const char *format, ...);
 
 #ifdef TTYD_EU
-void winFontSetCenter(float pos[3], float scale[3], uint8_t color[4], float center, const char *format, ...);
+void winFontSetCenter(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], float center, const char *format, ...);
 #endif
 
-void winFontSetR(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+void winFontSetR(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], const char *format, ...);
 
 #ifndef TTYD_JP
-void winFontSetWidth(float pos[3], float scale[3], uint8_t color[4], float width, const char *format, ...);
+void winFontSetWidth(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], float width, const char *format, ...);
 #endif
 
-void winFontSet(float pos[3], float scale[3], uint8_t color[4], const char *format, ...);
+void winFontSet(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *scale, uint8_t color[4], const char *format, ...);
 
 // winFontInit
 // winGhostDiaryChk

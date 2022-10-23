@@ -5402,7 +5402,8 @@ float *getMarioCoordinateFromIndex(int32_t index)
     }
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    return &player->playerPosition[index];
+    float *Position = reinterpret_cast<float *>(&player->playerPosition);
+    return &Position[index];
 }
 
 CustomStateStruct *resizeStateMemory(CustomStateStruct *state, uint32_t numEntries, int32_t incrementAmount)

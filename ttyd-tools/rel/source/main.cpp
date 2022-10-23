@@ -219,13 +219,13 @@ const char *replaceJumpFallAnim(char *jumpFallString)
             {
                 ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
                 
-                int32_t MarPosX = static_cast<int32_t>(player->playerPosition[0]);
+                int32_t MarPosX = static_cast<int32_t>(player->playerPosition.x);
                 if ((MarPosX >= -9) && (MarPosX <= 8))
                 {
-                    int32_t MarPosZ = static_cast<int32_t>(player->playerPosition[2]);
+                    int32_t MarPosZ = static_cast<int32_t>(player->playerPosition.z);
                     if ((MarPosZ >= 245) && (MarPosZ <= 265))
                     {
-                        int32_t MarPosY = static_cast<int32_t>(player->playerPosition[1]);
+                        int32_t MarPosY = static_cast<int32_t>(player->playerPosition.y);
                         if (MarPosY >= 59)
                         {
                             MenuVar.MarioFreeze = true;

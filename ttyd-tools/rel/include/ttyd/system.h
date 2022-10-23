@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/mtx.h>
+
 #include <cstdint>
 
 namespace ttyd::system {
@@ -13,7 +15,7 @@ float sysMsec2FrameFloat(float milliseconds);
 uint32_t sysMsec2Frame(uint32_t milliseconds);
 float sysFrame2SecFloat(float frames);
 // getV60FPS
-void sysDummyDraw(float matrix[3][4]);
+void sysDummyDraw(gc::mtx::mtx34 matrix);
 void sysWaitDrawSync();
 uint16_t sysGetToken();
 

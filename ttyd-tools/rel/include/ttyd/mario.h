@@ -1,5 +1,6 @@
 #pragma once
 
+#include <gc/mtx.h>
 #include <ttyd/party.h>
 
 #include <cstdint>
@@ -47,17 +48,17 @@ struct Player
     float wJumpAccelerationY;
     float unk_84;
     float unk_88;
-    float playerPosition[3];
-    float wModelPosition[3];
-    float wAnimPosition[3];
+    gc::mtx::Vec3 playerPosition;
+    gc::mtx::Vec3 wModelPosition;
+    gc::mtx::Vec3 wAnimPosition;
     uint8_t gap_b0[20];
     float wRotationY;
-    float wSizeVector[3];
-    float wLastGroundPosition[3];
-    float unkPosition[3];
-    float wCameraPosition[3];
+    gc::mtx::Vec3 wSizeVector;
+    gc::mtx::Vec3 wLastGroundPosition;
+    gc::mtx::Vec3 unkPosition;
+    gc::mtx::Vec3 wCameraPosition;
     uint8_t gap_f8[24];
-    float wPlayerPosition2[3];
+    gc::mtx::Vec3 wPlayerPosition2;
     uint8_t gap_11c[16];
     float wJumpApopasis;
     uint32_t unk_130;
@@ -82,8 +83,8 @@ struct Player
     float wPlayerDirectionCurrent;
     float wPlayerDirection;
     uint32_t unk_1b4;
-    float wPlayerCollisionBox[3];
-    float wPlayerCollisionRelated[3];
+    gc::mtx::Vec3 wPlayerCollisionBox;
+    gc::mtx::Vec3 wPlayerCollisionRelated;
     uint8_t gap_1d0[8];
     void *touchNpcPtr;
     uint8_t gap_1dc[8];
@@ -130,7 +131,7 @@ struct Player
     float wHazardSpeed;
     uint8_t gap_2c8[24];
     uint32_t wbReloadMapOnBottomless;
-    float bottomlessResetPosition[3];
+    gc::mtx::Vec3 bottomlessResetPosition;
     uint32_t unk_2f0;
     uint32_t unk_2f4;
 } __attribute__((__packed__));

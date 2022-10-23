@@ -209,9 +209,9 @@ void saveMarioAndPartnerPositions()
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     
-    MarioPartnerPositions.MarioPosition[0] = player->playerPosition[0]; // Mario Coordinate X
-    MarioPartnerPositions.MarioPosition[1] = player->playerPosition[1]; // Mario Coordinate Y
-    MarioPartnerPositions.MarioPosition[2] = player->playerPosition[2]; // Mario Coordinate Z
+    MarioPartnerPositions.MarioPosition[0] = player->playerPosition.x; // Mario Coordinate X
+    MarioPartnerPositions.MarioPosition[1] = player->playerPosition.y; // Mario Coordinate Y
+    MarioPartnerPositions.MarioPosition[2] = player->playerPosition.z; // Mario Coordinate Z
     MarioPartnerPositions.MarioPosition[3] = player->wPlayerAngleCurrent;
     MarioPartnerPositions.MarioPosition[4] = player->wPlayerAngle;
     MarioPartnerPositions.MarioPosition[5] = player->wPlayerDirectionCurrent;
@@ -246,9 +246,9 @@ void loadMarioAndPartnerPositions()
     
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     
-    player->playerPosition[0]       = MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
-    player->playerPosition[1]       = MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
-    player->playerPosition[2]       = MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
+    player->playerPosition.x       = MarioPartnerPositions.MarioPosition[0]; // Mario Coordinate X
+    player->playerPosition.y       = MarioPartnerPositions.MarioPosition[1]; // Mario Coordinate Y
+    player->playerPosition.z       = MarioPartnerPositions.MarioPosition[2]; // Mario Coordinate Z
     player->wPlayerAngleCurrent     = MarioPartnerPositions.MarioPosition[3];
     player->wPlayerAngle            = MarioPartnerPositions.MarioPosition[4];
     player->wPlayerDirectionCurrent = MarioPartnerPositions.MarioPosition[5];
@@ -881,9 +881,9 @@ void bobberyEarly()
         player->wJumpVelocityY = 0;
         player->wJumpAccelerationY = 0;
         player->unk_84 = 0;
-        player->playerPosition[0] = -1;
-        player->playerPosition[1] = 59;
-        player->playerPosition[2] = RopePosZ + 10;
+        player->playerPosition.x = -1;
+        player->playerPosition.y = 59;
+        player->playerPosition.z = RopePosZ + 10;
         player->wPlayerAngleCurrent = 180;
         player->wPlayerAngle = 180;
         player->wPlayerDirectionCurrent = 180;
@@ -972,9 +972,9 @@ void spawnItem()
                     CoordinateXAdjustment = 30.f;
                 }
                 
-                float ItemCoordinateX = player->playerPosition[0] + CoordinateXAdjustment;
-                float ItemCoordinateY = player->playerPosition[1];
-                float ItemCoordinateZ = player->playerPosition[2];
+                float ItemCoordinateX = player->playerPosition.x + CoordinateXAdjustment;
+                float ItemCoordinateY = player->playerPosition.y;
+                float ItemCoordinateZ = player->playerPosition.z;
                 
                 char *tempDisplayBuffer = DisplayBuffer;
                 uint32_t tempTimer = SpawnItem.SpawnItemCounter;

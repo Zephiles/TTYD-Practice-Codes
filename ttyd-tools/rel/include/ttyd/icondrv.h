@@ -21,8 +21,8 @@ void iconNumberDispGx(gc::mtx::mtx34 mtx, int32_t number, bool isTextSmall, uint
 // iconGetTexObj
 // iconDispGxCol
 // iconDispGx2
-void iconDispGx(float position[3], uint16_t unkBits, int16_t iconNum, float scale);
-void iconDispGxAlpha(float position[3], uint16_t unkBits, int16_t iconNum, uint8_t alpha, float scale);
+void iconDispGx(gc::mtx::Vec3 *position, uint16_t unkBits, int16_t iconNum, float scale);
+void iconDispGxAlpha(gc::mtx::Vec3 *position, uint16_t unkBits, int16_t iconNum, uint8_t alpha, float scale);
 // iconDisp
 // iconChange
 // iconDelete

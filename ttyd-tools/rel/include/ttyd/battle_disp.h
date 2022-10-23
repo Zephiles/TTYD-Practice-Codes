@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gc/mtx.h>
+
 #include <cstdint>
 
 namespace ttyd::battle_disp {
@@ -10,7 +12,7 @@ extern "C" {
 // BattleStockExpDisp
 // _btlDispTex4
 // btlDispTex4
-void btlGetScreenPoint(float pos[3], float posOut[3]);
+void btlGetScreenPoint(gc::mtx::Vec3 *pos, gc::mtx::Vec3 *posOut);
 // btlDispAnimeSpeed
 // _pose_two_pattern
 // _pose_one_pattern
