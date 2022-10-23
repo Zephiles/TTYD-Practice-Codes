@@ -37,6 +37,7 @@
 #include <ttyd/itemdrv.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_ac.h>
+#include <ttyd/hitdrv.h>
 #include <ttyd/party.h>
 #include <ttyd/mapdata.h>
 
@@ -1777,6 +1778,99 @@ void displayEvtsActive()
     }
     
     drawFunctionOnDebugLayerWithOrder(drawEvtsActive, 1.f);
+}
+
+void displayHitCheckResults()
+{
+    if (!Displays[HIT_CHECK_VISUALIZATION])
+    {
+        return;
+    }
+    
+    // Make sure there is at least one hit/miss to draw
+    if (HitCheck.EntryCount == 0)
+    {
+        return;
+    }
+    
+    // Specific dispEntry usage
+    ttyd::dispdrv::dispEntry(
+        ttyd::dispdrv::CameraId::k3d, 
+        10, // RenderMode::kAlphaBlendLate
+        1.f, 
+        drawHitCheckVisualizationResults, 
+        nullptr);
+}
+
+// Credits to PistonMiner for writing the original code for this function
+ttyd::hitdrv::HitEntry *Mod::checkForVecHits(
+    ttyd::hitdrv::HitCheckQuery *pQuery, ttyd::hitdrv::PFN_HitFilterFunction filterFunction)
+{
+    // Call the original function immediately
+    ttyd::hitdrv::HitEntry *Result = mPFN_hitCheckVecFilter_trampoline(pQuery, filterFunction);
+    
+    // Exit if the display is not enabled
+    if (!Displays[HIT_CHECK_VISUALIZATION])
+    {
+        return Result;
+    }
+    
+    // If the current check is a hit and hits are disabled, then exit
+    bool Hits = HitCheck.Settings.DrawHits;
+    if (Result && !Hits)
+    {
+        return Result;
+    }
+    
+    // If the current check is a miss and misses are disabled, then exit
+    bool Misses = HitCheck.Settings.DrawMisses;
+    if (!Result && !Misses)
+    {
+        return Result;
+    }
+    
+    // If hits and misses are both disabled, then exit
+    if (!Hits && !Misses)
+    {
+        return Result;
+    }
+    
+    // If there are no more entry slots available, then exit
+    uint32_t Slot = HitCheck.EntryCount;
+    if (Slot >= HIT_CHECK_BUFFER_CAPACITY)
+    {
+        return Result;
+    }
+    
+    bool Hit;
+    gc::mtx::Vec3 TimeoutEndPos;
+    
+    gc::mtx::Vec3 *EndPos;
+    gc::mtx::Vec3 *StartPos = &pQuery->targetPosition;
+    
+    if (Result)
+    {
+        EndPos = &pQuery->hitPosition;
+        Hit = true;
+    }
+    else
+    {
+        EndPos = &TimeoutEndPos;
+        
+        gc::mtx::PSVECScale(&pQuery->targetDirection, EndPos, pQuery->inOutTargetDistance);
+        gc::mtx::PSVECAdd(EndPos, StartPos, EndPos);
+        
+        Hit = false;
+    }
+    
+    HitCheckResult* currentResult = &HitCheck.Buffer[Slot];
+    memcpy(&currentResult->StartPos, StartPos, sizeof(gc::mtx::Vec3));
+    memcpy(&currentResult->EndPos, EndPos, sizeof(gc::mtx::Vec3));
+    currentResult->Hit = Hit;
+    
+    HitCheck.EntryCount = static_cast<uint16_t>(Slot + 1);
+    
+    return Result;
 }
 
 int32_t warpToMap(uint32_t value)

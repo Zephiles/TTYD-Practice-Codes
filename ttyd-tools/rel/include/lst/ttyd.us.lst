@@ -164,6 +164,49 @@
 // data
 8041E620:gpFadeWork
 
+// hitdrv.o
+80013CEC:hitBindUpdate
+80013DF8:hitBindMapObj
+80013EF0:hitGetDamageReturnPos
+80013EFC:hitGrpDamageReturnSet
+80013FC4:hitDamageReturnSet
+80014310:hitGetAttr
+80014328:hitGetName
+800143C4:hitObjGetNormal
+8001449C:hitObjGetPos
+800145EC:hitObjGetPosSub
+80014B58:hitNameToPtr
+80014C08:hitCheckSphereFilter
+800151A0:hitCheckAttr
+800152D4:chkFilterAttr
+800152EC:hitCheckVecHitObjXZ
+800153D0:checkTriVec_xz
+8001577C:hitCheckFilter
+800158A4:hitCheckVecFilter
+800165A8:hitCalcVtxPosition
+80016A5C:hitReCalcMatrix2
+80016F08:hitReCalcMatrix
+80016F68:hitGrpAttrOff
+80017040:hitGrpAttrOn
+80017118:hitAtrOff
+8001742C:hitAtrOn
+8001773C:hitObjAttrOff
+80017810:hitObjAttrOn
+800178E4:hitGrpFlagOff
+800179BC:hitGrpFlagOn
+80017A94:hitFlgOff
+80017DAC:hitFlgOn
+800180BC:hitObjFlagOff
+80018190:hitObjFlagOn
+80018264:hitMain
+800184B0:hitDelete
+800185E8:hitEntryMOBJ
+80018658:hitEntry
+800186F4:hitEntrySub
+8001896C:_hitEnt
+80018DF8:hitReInit
+80018E98:hitInit
+
 // icondrv.o
 // 80018E9C:iconNumberDispGx3D
 80019120:iconNumberDispGx
@@ -2269,9 +2312,9 @@ unused:winFontSetCenter
 // 8029EA98:PSMTX44Trans
 // 8029EAD4:PSMTX44Scale
 // 8029EB08:PSMTX44MultVec
-// 8029EB80:PSVECAdd
+8029EB80:PSVECAdd
 // 8029EBA4:PSVECSubtract
-// 8029EBC8:PSVECScale
+8029EBC8:PSVECScale
 // 8029EBE4:PSVECNormalize
 // 8029EC28:PSVECSquareMag
 // 8029EC40:PSVECMag
@@ -2499,10 +2542,10 @@ unused:winFontSetCenter
 // 802B59EC:__GXSetDirtyState
 802B5A6C:GXBegin
 // 802B5B3C:__GXSendFlushPrim
-// 802B5BC4:GXSetLineWidth
+802B5BC4:GXSetLineWidth
 // 802B5C04:GXSetPointSize
 // 802B5C44:GXEnableTexOffsets
-// 802B5C8C:GXSetCullMode
+802B5C8C:GXSetCullMode
 // 802B5CB4:GXGetCullMode
 // 802B5CD0:GXSetCoPlanar
 // 802B5D04:__GXSetGenMode
@@ -2532,7 +2575,7 @@ unused:winFontSetCenter
 // 802B6D6C:GXSetChanAmbColor
 802B6E54:GXSetChanMatColor
 802B6F3C:GXSetNumChans
-// 802B6F78:GXSetChanCtrl
+802B6F78:GXSetChanCtrl
 // 802B7028:__GXGetTexTileShift
 // 802B708C:GXGetTexBufferSize
 // 802B71E8:__GetImageTileCount

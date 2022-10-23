@@ -1119,6 +1119,7 @@ void Mod::run()
         displayEffsActive();
         displayEvtsActive();
         displayEnemyEncounterNotifier();
+        displayHitCheckResults();
         
         // Check the heaps
         checkHeaps();

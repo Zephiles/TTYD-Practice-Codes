@@ -38,6 +38,7 @@
 #include <ttyd/battle_ac.h>
 #include <ttyd/effdrv.h>
 #include <ttyd/evtmgr.h>
+#include <ttyd/camdrv.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_disp.h>
 #include <ttyd/pmario_sound.h>
@@ -3446,7 +3447,8 @@ void drawAdjustableValueHex(uint32_t currentMenu)
     
     // Adjust the current value if necessary
     if ((currentMenu != CHEATS_MODIFY_COORDINATES) && 
-        (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS))
+        (currentMenu != MEMORY_WATCH_CHANGE_ADDRESS) && 
+        (currentMenu != DISPLAYS_HIT_CHECK_VISUALIZATION))
     {
         adjustMenuItemBounds(0, currentMenu);
     }
@@ -3515,6 +3517,7 @@ void drawAdjustableValueHex(uint32_t currentMenu)
             }
             break;
         }
+        case DISPLAYS_HIT_CHECK_VISUALIZATION:
         case MEMORY_EDITOR_MENU:
         {
             AmountOfNumbers = 8;
@@ -4730,6 +4733,51 @@ void drawDisplaysMemoryUsageMenu()
     // Draw the bool for the smart heap
     getOnOffTextAndColor(DisplayHeapInfo[NumHeaps], &String, &Color);
     drawText(String, PosX + 120, PosY, Color, Scale);
+}
+
+void drawDisplaysHitCheckVisualization()
+{
+    // uint8_t Alpha = 0xFF;
+    int32_t PosX = -117;
+    int32_t PosY = 180;
+    float Scale = 0.6f;
+    uint32_t Color;
+    
+    // Draw the bool for whether the display is enabled or not
+    const char *TextToDraw;
+    getOnOffTextAndColor(Displays[HIT_CHECK_VISUALIZATION], &TextToDraw, &Color);
+    drawText(TextToDraw, PosX, PosY, Color, Scale);
+    PosY -= 20;
+    
+    // Draw the bool for whether hits should be drawn
+    getYesNoTextAndColor(HitCheck.Settings.DrawHits, &TextToDraw, &Color);
+    drawText(TextToDraw, PosX, PosY, Color, Scale);
+    PosY -= 20;
+    
+    // Draw the bool for whether misses should be drawn
+    getYesNoTextAndColor(HitCheck.Settings.DrawMisses, &TextToDraw, &Color);
+    drawText(TextToDraw, PosX, PosY, Color, Scale);
+    PosY -= 20;
+    
+    // Draw the hits color
+    char* tempDisplayBuffer = DisplayBuffer;
+    uint32_t HitsColor = HitCheck.Settings.HitsColor;
+    
+    sprintf(tempDisplayBuffer,
+        "0x%08" PRIX32,
+        HitsColor);
+    
+    drawText(tempDisplayBuffer, PosX, PosY, HitsColor, Scale);
+    PosY -= 20;
+    
+    // Draw the misses color
+    uint32_t MissColor = HitCheck.Settings.MissesColor;
+    
+    sprintf(tempDisplayBuffer,
+        "0x%08" PRIX32,
+        MissColor);
+    
+    drawText(tempDisplayBuffer, PosX, PosY, MissColor, Scale);
 }
 
 void drawWarpsOptions()
@@ -6379,6 +6427,102 @@ void drawFileSelectScreenInfo()
     const char *String = "Press L + Start to open the menu\n\nFor more info, go to the main page:\nhttps://github.com/Zephiles/TTYD-Practice-Codes";
     
     drawTextAndInit(String, PosX, PosY, Alpha, TextColor, false, Scale);
+}
+
+// Credits to PistonMiner for writing the original code for this function
+void drawHitCheckVisualizationResults(ttyd::dispdrv::CameraId cameraId, void *user)
+{
+    using namespace gc::gx;
+    
+    (void)user;
+    
+    GXSetCullMode(GXCullMode::GX_CULL_NONE);
+    
+    // Configure vertex format
+    GXClearVtxDesc();
+    GXSetVtxDesc(GXAttribute::GX_VA_POS, GXAttributeType::GX_DIRECT); // Enable position, not indexed
+    
+    GXSetVtxAttrFmt(GXVtxFmt::GX_VTXFMT0, 
+        GXAttribute::GX_VA_POS, 
+        GXComponentContents::GX_POS_XYZ, 
+        GXComponentType::GX_F32, 
+        0);  // xyz, float
+    
+    // Configure color output
+    GXSetNumChans(1);
+    
+    GXSetChanCtrl(
+        GXChannelID::GX_COLOR0A0, 
+        false, 
+        GXColorSrc::GX_SRC_REG, 
+        GXColorSrc::GX_SRC_REG, 
+        GXLightID::GX_LIGHT_NULL, 
+        GXDiffuseFn::GX_DF_NONE, 
+        GXAttnFn::GX_AF_NONE); // No lighting, use mat color from reg
+    
+    // Disable texgens
+    GXSetNumTexGens(0);
+    
+    // Configure TEV to directly output raster color
+    GXSetNumTevStages(1);
+    
+    GXSetTevOrder(GXTevStageID::GX_TEVSTAGE0, 
+        GXTexCoordID::GX_TEXCOORD_NULL, 
+        GXTexMapID::GX_TEXMAP_NULL, 
+        GXChannelID::GX_COLOR0A0);
+    
+    GXSetTevOp(GXTevStageID::GX_TEVSTAGE0, GXTevMode::GX_PASSCLR); // Pass through color
+    
+    // Configure view transform
+    gc::mtx::mtx34 *ViewMatrix = reinterpret_cast<gc::mtx::mtx34 *>(
+        reinterpret_cast<uint32_t>(ttyd::camdrv::camGetPtr(cameraId)) + 0x11C);
+    
+    GXLoadPosMtxImm(*ViewMatrix, GXTexMtxType::GX_MTX3x4);
+    GXSetCurrentMtx(0);
+    
+    // Set line width to something reasonable
+    GXSetLineWidth(9, GXTexOffset::GX_TO_ZERO);
+    
+    // Figure out how many entries we get
+    uint32_t NumResults = HitCheck.EntryCount;
+    HitCheck.EntryCount = 0;
+    
+    if (NumResults > HIT_CHECK_BUFFER_CAPACITY)
+    {
+        NumResults = HIT_CHECK_BUFFER_CAPACITY;
+    }
+    
+    // Ready to draw
+    uint8_t *HitsColor = reinterpret_cast<uint8_t*>(&HitCheck.Settings.HitsColor);
+    uint8_t *MissesColor = reinterpret_cast<uint8_t*>(&HitCheck.Settings.MissesColor);
+    
+    for (uint32_t i = 0; i < NumResults; i++)
+    {
+        const HitCheckResult *Result = &HitCheck.Buffer[i];
+        
+        // Get the line color
+        uint8_t *LineColor;
+        if (Result->Hit)
+        {
+            LineColor = HitsColor;
+        }
+        else
+        {
+            LineColor = MissesColor;
+        }
+        
+        // Set the line color
+        GXSetChanMatColor(GXChannelID::GX_COLOR0A0, LineColor);
+        
+        // Draw the line
+        GXBegin(GXPrimitive::GX_LINES, GXVtxFmt::GX_VTXFMT0, 2);
+        
+        const gc::mtx::Vec3 *startPos = &Result->StartPos;
+        GXPosition3f32(startPos->x, startPos->y, startPos->z);
+        
+        const gc::mtx::Vec3 *endPos = &Result->EndPos;
+        GXPosition3f32(endPos->x, endPos->y, endPos->z);
+    }
 }
 
 void Mod::drawArtAttackHitboxes(ttyd::dispdrv::CameraId cameraId, void *user)

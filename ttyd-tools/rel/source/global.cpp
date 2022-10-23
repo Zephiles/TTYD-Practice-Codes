@@ -5,7 +5,7 @@
 
 namespace mod {
 
-const char *VersionNumber = "v3.0.54";
+const char *VersionNumber = "v3.0.55d";
 
 const char *RootLines[] = 
 {
@@ -1592,6 +1592,7 @@ const char *DisplaysLines[] =
     "Effs Active",
     "Evts Active",
     "Enemy Encounter Notifier",
+    "Hit Check Visualization",
     "Yoshi Skip",
     "Palace Skip",
     "Bridge Skip",
@@ -1609,6 +1610,15 @@ const char *OnScreenTimerOptions[] =
 {
     "Start/Pause/Resume Button Combo",
     "Reset Button Combo",
+};
+
+const char *hitCheckVisualizationOptionsLines[] = 
+{
+    "Turn On/Off",
+    "Draw Hits",
+    "Draw Misses",
+    "Hits Color",
+    "Misses Color",
 };
 
 const char *WarpLines[] = 
@@ -1945,12 +1955,13 @@ uint8_t DisplaysOrder[] =
     EVTS_ACTIVE,
     ENEMY_ENCOUNTER_NOTIFIER,
     STAR_POWER_VALUE,
+    HIT_CHECK_VISUALIZATION,
 };
 
 struct MenuVars MenuVar;
-struct Menus Menu[39];
+struct Menus Menu[40];
 struct Cheats Cheat[29];
-bool Displays[19];
+bool Displays[20];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -1987,144 +1998,149 @@ struct FrameAdvanceStruct FrameAdvance;
 struct UnusedMapStruct UnusedMap;
 struct SetCustomText CustomText;
 struct ManageCustomStates CustomState;
+struct HitCheckStruct HitCheck;
 
 void initMenuVars()
 {
-    Menu[ROOT].TotalMenuOptions                           = sizeof(RootLines) / sizeof(RootLines[0]);
-    Menu[ROOT].ColumnSplitAmount                          = Menu[ROOT].TotalMenuOptions;
-    Menu[ROOT].Line                                       = RootLines;
+    Menu[ROOT].TotalMenuOptions                              = sizeof(RootLines) / sizeof(RootLines[0]);
+    Menu[ROOT].ColumnSplitAmount                             = Menu[ROOT].TotalMenuOptions;
+    Menu[ROOT].Line                                          = RootLines;
 
-    Menu[INVENTORY].TotalMenuOptions                      = sizeof(InventoryLines) / sizeof(InventoryLines[0]);
-    Menu[INVENTORY].ColumnSplitAmount                     = Menu[INVENTORY].TotalMenuOptions;
-    Menu[INVENTORY].Line                                  = InventoryLines;
+    Menu[INVENTORY].TotalMenuOptions                         = sizeof(InventoryLines) / sizeof(InventoryLines[0]);
+    Menu[INVENTORY].ColumnSplitAmount                        = Menu[INVENTORY].TotalMenuOptions;
+    Menu[INVENTORY].Line                                     = InventoryLines;
     
-    Menu[INVENTORY_MAIN].TotalMenuOptions                 = sizeof(InventoryOptionLines) / sizeof(InventoryOptionLines[0]);
-    Menu[INVENTORY_MAIN].ColumnSplitAmount                = Menu[INVENTORY_MAIN].TotalMenuOptions;
-    Menu[INVENTORY_MAIN].Line                             = InventoryOptionLines;
+    Menu[INVENTORY_MAIN].TotalMenuOptions                    = sizeof(InventoryOptionLines) / sizeof(InventoryOptionLines[0]);
+    Menu[INVENTORY_MAIN].ColumnSplitAmount                   = Menu[INVENTORY_MAIN].TotalMenuOptions;
+    Menu[INVENTORY_MAIN].Line                                = InventoryOptionLines;
     
-    Menu[CHEATS].TotalMenuOptions                         = sizeof(CheatsLines) / sizeof(CheatsLines[0]);
-    Menu[CHEATS].ColumnSplitAmount                        = 18;
-    Menu[CHEATS].Line                                     = CheatsLines;
+    Menu[CHEATS].TotalMenuOptions                            = sizeof(CheatsLines) / sizeof(CheatsLines[0]);
+    Menu[CHEATS].ColumnSplitAmount                           = 18;
+    Menu[CHEATS].Line                                        = CheatsLines;
     
-    Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions         = sizeof(CheatsChangeSequenceOptionsLines) / sizeof(CheatsChangeSequenceOptionsLines[0]);
-    Menu[CHEATS_CHANGE_SEQUENCE].ColumnSplitAmount        = Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions;
-    Menu[CHEATS_CHANGE_SEQUENCE].Line                     = CheatsChangeSequenceOptionsLines;
+    Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions            = sizeof(CheatsChangeSequenceOptionsLines) / sizeof(CheatsChangeSequenceOptionsLines[0]);
+    Menu[CHEATS_CHANGE_SEQUENCE].ColumnSplitAmount           = Menu[CHEATS_CHANGE_SEQUENCE].TotalMenuOptions;
+    Menu[CHEATS_CHANGE_SEQUENCE].Line                        = CheatsChangeSequenceOptionsLines;
     
-    Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions      = sizeof(CheatsModifyCoordinatesOptionsLines) / sizeof(CheatsModifyCoordinatesOptionsLines[0]);
-    Menu[CHEATS_MODIFY_COORDINATES].ColumnSplitAmount     = Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions;
-    Menu[CHEATS_MODIFY_COORDINATES].Line                  = CheatsModifyCoordinatesOptionsLines;
+    Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions         = sizeof(CheatsModifyCoordinatesOptionsLines) / sizeof(CheatsModifyCoordinatesOptionsLines[0]);
+    Menu[CHEATS_MODIFY_COORDINATES].ColumnSplitAmount        = Menu[CHEATS_MODIFY_COORDINATES].TotalMenuOptions;
+    Menu[CHEATS_MODIFY_COORDINATES].Line                     = CheatsModifyCoordinatesOptionsLines;
     
-    Menu[CHEATS_STANDARD].TotalMenuOptions                = sizeof(CheatsStandardOptionsLines) / sizeof(CheatsStandardOptionsLines[0]);
-    Menu[CHEATS_STANDARD].ColumnSplitAmount               = Menu[CHEATS_STANDARD].TotalMenuOptions;
-    Menu[CHEATS_STANDARD].Line                            = CheatsStandardOptionsLines;
+    Menu[CHEATS_STANDARD].TotalMenuOptions                   = sizeof(CheatsStandardOptionsLines) / sizeof(CheatsStandardOptionsLines[0]);
+    Menu[CHEATS_STANDARD].ColumnSplitAmount                  = Menu[CHEATS_STANDARD].TotalMenuOptions;
+    Menu[CHEATS_STANDARD].Line                               = CheatsStandardOptionsLines;
     
-    Menu[CHEATS_NO_BUTTON_COMBO].TotalMenuOptions         = sizeof(CheatsNoButtonComboOptionsLines) / sizeof(CheatsNoButtonComboOptionsLines[0]);
-    Menu[CHEATS_NO_BUTTON_COMBO].ColumnSplitAmount        = Menu[CHEATS_NO_BUTTON_COMBO].TotalMenuOptions;
-    Menu[CHEATS_NO_BUTTON_COMBO].Line                     = CheatsNoButtonComboOptionsLines;
+    Menu[CHEATS_NO_BUTTON_COMBO].TotalMenuOptions            = sizeof(CheatsNoButtonComboOptionsLines) / sizeof(CheatsNoButtonComboOptionsLines[0]);
+    Menu[CHEATS_NO_BUTTON_COMBO].ColumnSplitAmount           = Menu[CHEATS_NO_BUTTON_COMBO].TotalMenuOptions;
+    Menu[CHEATS_NO_BUTTON_COMBO].Line                        = CheatsNoButtonComboOptionsLines;
     
-    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions  = sizeof(CheatsDisableCertainSoundsOptionsLines) / sizeof(CheatsDisableCertainSoundsOptionsLines[0]);
-    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].ColumnSplitAmount = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions;
-    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].Line              = CheatsDisableCertainSoundsOptionsLines;
+    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions     = sizeof(CheatsDisableCertainSoundsOptionsLines) / sizeof(CheatsDisableCertainSoundsOptionsLines[0]);
+    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].ColumnSplitAmount    = Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].TotalMenuOptions;
+    Menu[CHEATS_DISABLE_CERTAIN_SOUNDS].Line                 = CheatsDisableCertainSoundsOptionsLines;
     
-    Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions          = sizeof(CheatsForceItemDropOptionsLines) / sizeof(CheatsForceItemDropOptionsLines[0]);
-    Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount         = Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
-    Menu[CHEATS_NPC_FORCE_DROP].Line                      = CheatsForceItemDropOptionsLines;
+    Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions             = sizeof(CheatsForceItemDropOptionsLines) / sizeof(CheatsForceItemDropOptionsLines[0]);
+    Menu[CHEATS_NPC_FORCE_DROP].ColumnSplitAmount            = Menu[CHEATS_NPC_FORCE_DROP].TotalMenuOptions;
+    Menu[CHEATS_NPC_FORCE_DROP].Line                         = CheatsForceItemDropOptionsLines;
     
-    Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions           = sizeof(CheatsFrameAdvanceOptions) / sizeof(CheatsFrameAdvanceOptions[0]);
-    Menu[CHEATS_FRAME_ADVANCE].ColumnSplitAmount          = Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions;
-    Menu[CHEATS_FRAME_ADVANCE].Line                       = CheatsFrameAdvanceOptions;
+    Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions              = sizeof(CheatsFrameAdvanceOptions) / sizeof(CheatsFrameAdvanceOptions[0]);
+    Menu[CHEATS_FRAME_ADVANCE].ColumnSplitAmount             = Menu[CHEATS_FRAME_ADVANCE].TotalMenuOptions;
+    Menu[CHEATS_FRAME_ADVANCE].Line                          = CheatsFrameAdvanceOptions;
     
-    Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions      = sizeof(CheatsGenerateLagSpikeOptions) / sizeof(CheatsGenerateLagSpikeOptions[0]);
-    Menu[CHEATS_GENERATE_LAG_SPIKE].ColumnSplitAmount     = Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions;
-    Menu[CHEATS_GENERATE_LAG_SPIKE].Line                  = CheatsGenerateLagSpikeOptions;
+    Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions         = sizeof(CheatsGenerateLagSpikeOptions) / sizeof(CheatsGenerateLagSpikeOptions[0]);
+    Menu[CHEATS_GENERATE_LAG_SPIKE].ColumnSplitAmount        = Menu[CHEATS_GENERATE_LAG_SPIKE].TotalMenuOptions;
+    Menu[CHEATS_GENERATE_LAG_SPIKE].Line                     = CheatsGenerateLagSpikeOptions;
     
-    Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions              = sizeof(CheatsLockFlagsOptions) / sizeof(CheatsLockFlagsOptions[0]);
-    Menu[CHEATS_LOCK_FLAGS].ColumnSplitAmount             = Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions;
-    Menu[CHEATS_LOCK_FLAGS].Line                          = CheatsLockFlagsOptions;
+    Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions                 = sizeof(CheatsLockFlagsOptions) / sizeof(CheatsLockFlagsOptions[0]);
+    Menu[CHEATS_LOCK_FLAGS].ColumnSplitAmount                = Menu[CHEATS_LOCK_FLAGS].TotalMenuOptions;
+    Menu[CHEATS_LOCK_FLAGS].Line                             = CheatsLockFlagsOptions;
     
-    Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions            = sizeof(CheatsManageFlagsOptions) / sizeof(CheatsManageFlagsOptions[0]);
-    Menu[CHEATS_MANAGE_FLAGS].ColumnSplitAmount           = Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions;
-    Menu[CHEATS_MANAGE_FLAGS].Line                        = CheatsManageFlagsOptions;
+    Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions               = sizeof(CheatsManageFlagsOptions) / sizeof(CheatsManageFlagsOptions[0]);
+    Menu[CHEATS_MANAGE_FLAGS].ColumnSplitAmount              = Menu[CHEATS_MANAGE_FLAGS].TotalMenuOptions;
+    Menu[CHEATS_MANAGE_FLAGS].Line                           = CheatsManageFlagsOptions;
     
-    Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions        = sizeof(CheatsClearAreaFlags) / sizeof(CheatsClearAreaFlags[0]);
-    Menu[CHEATS_CLEAR_AREA_FLAGS].ColumnSplitAmount       = Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions;
-    Menu[CHEATS_CLEAR_AREA_FLAGS].Line                    = CheatsClearAreaFlags;
+    Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions           = sizeof(CheatsClearAreaFlags) / sizeof(CheatsClearAreaFlags[0]);
+    Menu[CHEATS_CLEAR_AREA_FLAGS].ColumnSplitAmount          = Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions;
+    Menu[CHEATS_CLEAR_AREA_FLAGS].Line                       = CheatsClearAreaFlags;
     
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions    = sizeof(CheatsManageCustomStatesOptions) / sizeof(CheatsManageCustomStatesOptions[0]);
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].ColumnSplitAmount   = Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions;
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].Line                = CheatsManageCustomStatesOptions;
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions       = sizeof(CheatsManageCustomStatesOptions) / sizeof(CheatsManageCustomStatesOptions[0]);
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].ColumnSplitAmount      = Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions;
+    Menu[CHEATS_MANAGE_CUSTOM_STATES].Line                   = CheatsManageCustomStatesOptions;
     
-    Menu[STATS].TotalMenuOptions                          = sizeof(StatsLines) / sizeof(StatsLines[0]);
-    Menu[STATS].ColumnSplitAmount                         = Menu[STATS].TotalMenuOptions;
-    Menu[STATS].Line                                      = StatsLines;
+    Menu[STATS].TotalMenuOptions                             = sizeof(StatsLines) / sizeof(StatsLines[0]);
+    Menu[STATS].ColumnSplitAmount                            = Menu[STATS].TotalMenuOptions;
+    Menu[STATS].Line                                         = StatsLines;
     
-    Menu[STATS_PARTNERS].TotalMenuOptions                 = sizeof(StatsPartnerLines) / sizeof(StatsPartnerLines[0]);
-    Menu[STATS_PARTNERS].ColumnSplitAmount                = Menu[STATS_PARTNERS].TotalMenuOptions;
-    Menu[STATS_PARTNERS].Line                             = StatsPartnerLines;
+    Menu[STATS_PARTNERS].TotalMenuOptions                    = sizeof(StatsPartnerLines) / sizeof(StatsPartnerLines[0]);
+    Menu[STATS_PARTNERS].ColumnSplitAmount                   = Menu[STATS_PARTNERS].TotalMenuOptions;
+    Menu[STATS_PARTNERS].Line                                = StatsPartnerLines;
     
-    Menu[STATS_FOLLOWERS].TotalMenuOptions                = sizeof(StatsFollowerLines) / sizeof(StatsFollowerLines[0]);
-    Menu[STATS_FOLLOWERS].ColumnSplitAmount               = Menu[STATS_FOLLOWERS].TotalMenuOptions;
-    Menu[STATS_FOLLOWERS].Line                            = StatsFollowerLines;
+    Menu[STATS_FOLLOWERS].TotalMenuOptions                   = sizeof(StatsFollowerLines) / sizeof(StatsFollowerLines[0]);
+    Menu[STATS_FOLLOWERS].ColumnSplitAmount                  = Menu[STATS_FOLLOWERS].TotalMenuOptions;
+    Menu[STATS_FOLLOWERS].Line                               = StatsFollowerLines;
     
-    Menu[SETTINGS].TotalMenuOptions                       = sizeof(SettingsLines) / sizeof(SettingsLines[0]);
-    Menu[SETTINGS].ColumnSplitAmount                      = Menu[SETTINGS].TotalMenuOptions;
-    Menu[SETTINGS].Line                                   = SettingsLines;
+    Menu[SETTINGS].TotalMenuOptions                          = sizeof(SettingsLines) / sizeof(SettingsLines[0]);
+    Menu[SETTINGS].ColumnSplitAmount                         = Menu[SETTINGS].TotalMenuOptions;
+    Menu[SETTINGS].Line                                      = SettingsLines;
     
-    Menu[MEMORY].TotalMenuOptions                         = sizeof(MemoryLines) / sizeof(MemoryLines[0]);
-    Menu[MEMORY].ColumnSplitAmount                        = Menu[MEMORY].TotalMenuOptions;
-    Menu[MEMORY].Line                                     = MemoryLines;
+    Menu[MEMORY].TotalMenuOptions                            = sizeof(MemoryLines) / sizeof(MemoryLines[0]);
+    Menu[MEMORY].ColumnSplitAmount                           = Menu[MEMORY].TotalMenuOptions;
+    Menu[MEMORY].Line                                        = MemoryLines;
     
-    Menu[MEMORY_WATCH].TotalMenuOptions                   = sizeof(MemoryWatchLines) / sizeof(MemoryWatchLines[0]);
-    Menu[MEMORY_WATCH].ColumnSplitAmount                  = Menu[MEMORY_WATCH].TotalMenuOptions;
-    Menu[MEMORY_WATCH].Line                               = MemoryWatchLines;
+    Menu[MEMORY_WATCH].TotalMenuOptions                      = sizeof(MemoryWatchLines) / sizeof(MemoryWatchLines[0]);
+    Menu[MEMORY_WATCH].ColumnSplitAmount                     = Menu[MEMORY_WATCH].TotalMenuOptions;
+    Menu[MEMORY_WATCH].Line                                  = MemoryWatchLines;
     
-    Menu[MEMORY_WATCH_MODIFY].TotalMenuOptions            = sizeof(MemoryWatchModifyLines) / sizeof(MemoryWatchModifyLines[0]);
-    Menu[MEMORY_WATCH_MODIFY].ColumnSplitAmount           = Menu[MEMORY_WATCH_MODIFY].TotalMenuOptions;
-    Menu[MEMORY_WATCH_MODIFY].Line                        = MemoryWatchModifyLines;
+    Menu[MEMORY_WATCH_MODIFY].TotalMenuOptions               = sizeof(MemoryWatchModifyLines) / sizeof(MemoryWatchModifyLines[0]);
+    Menu[MEMORY_WATCH_MODIFY].ColumnSplitAmount              = Menu[MEMORY_WATCH_MODIFY].TotalMenuOptions;
+    Menu[MEMORY_WATCH_MODIFY].Line                           = MemoryWatchModifyLines;
     
-    Menu[MEMORY_WATCH_CHANGE_ADDRESS].TotalMenuOptions    = sizeof(MemoryWatchChangeAddressLines) / sizeof(MemoryWatchChangeAddressLines[0]);
-    Menu[MEMORY_WATCH_CHANGE_ADDRESS].ColumnSplitAmount   = Menu[MEMORY_WATCH_CHANGE_ADDRESS].TotalMenuOptions;
-    Menu[MEMORY_WATCH_CHANGE_ADDRESS].Line                = MemoryWatchChangeAddressLines;
+    Menu[MEMORY_WATCH_CHANGE_ADDRESS].TotalMenuOptions       = sizeof(MemoryWatchChangeAddressLines) / sizeof(MemoryWatchChangeAddressLines[0]);
+    Menu[MEMORY_WATCH_CHANGE_ADDRESS].ColumnSplitAmount      = Menu[MEMORY_WATCH_CHANGE_ADDRESS].TotalMenuOptions;
+    Menu[MEMORY_WATCH_CHANGE_ADDRESS].Line                   = MemoryWatchChangeAddressLines;
     
-    Menu[MEMORY_EDITOR_SETUP].TotalMenuOptions            = sizeof(MemoryEditorSetupLines) / sizeof(MemoryEditorSetupLines[0]);
-    Menu[MEMORY_EDITOR_SETUP].ColumnSplitAmount           = Menu[MEMORY_EDITOR_SETUP].TotalMenuOptions;
-    Menu[MEMORY_EDITOR_SETUP].Line                        = MemoryEditorSetupLines;
+    Menu[MEMORY_EDITOR_SETUP].TotalMenuOptions               = sizeof(MemoryEditorSetupLines) / sizeof(MemoryEditorSetupLines[0]);
+    Menu[MEMORY_EDITOR_SETUP].ColumnSplitAmount              = Menu[MEMORY_EDITOR_SETUP].TotalMenuOptions;
+    Menu[MEMORY_EDITOR_SETUP].Line                           = MemoryEditorSetupLines;
     
-    Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions          = sizeof(BattlesCurrentActorLines) / sizeof(BattlesCurrentActorLines[0]);
-    Menu[BATTLES_CURRENT_ACTOR].ColumnSplitAmount         = Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions;
-    Menu[BATTLES_CURRENT_ACTOR].Line                      = BattlesCurrentActorLines;
+    Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions             = sizeof(BattlesCurrentActorLines) / sizeof(BattlesCurrentActorLines[0]);
+    Menu[BATTLES_CURRENT_ACTOR].ColumnSplitAmount            = Menu[BATTLES_CURRENT_ACTOR].TotalMenuOptions;
+    Menu[BATTLES_CURRENT_ACTOR].Line                         = BattlesCurrentActorLines;
     
-    Menu[BATTLES_STATUSES].TotalMenuOptions               = sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
-    Menu[BATTLES_STATUSES].ColumnSplitAmount              = 12;
-    Menu[BATTLES_STATUSES].Line                           = BattlesStatusesLines;
+    Menu[BATTLES_STATUSES].TotalMenuOptions                  = sizeof(BattlesStatusesLines) / sizeof(BattlesStatusesLines[0]);
+    Menu[BATTLES_STATUSES].ColumnSplitAmount                 = 12;
+    Menu[BATTLES_STATUSES].Line                              = BattlesStatusesLines;
     
-    Menu[DISPLAYS].TotalMenuOptions                       = sizeof(DisplaysLines) / sizeof(DisplaysLines[0]);
-    Menu[DISPLAYS].ColumnSplitAmount                      = 18;
-    Menu[DISPLAYS].Line                                   = DisplaysLines;
+    Menu[DISPLAYS].TotalMenuOptions                          = sizeof(DisplaysLines) / sizeof(DisplaysLines[0]);
+    Menu[DISPLAYS].ColumnSplitAmount                         = 18;
+    Menu[DISPLAYS].Line                                      = DisplaysLines;
     
-    Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions        = sizeof(OnScreenTimerOptionsLines) / sizeof(OnScreenTimerOptionsLines[0]);
-    Menu[DISPLAYS_ONSCREEN_TIMER].ColumnSplitAmount       = Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions;
-    Menu[DISPLAYS_ONSCREEN_TIMER].Line                    = OnScreenTimerOptionsLines;
+    Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions           = sizeof(OnScreenTimerOptionsLines) / sizeof(OnScreenTimerOptionsLines[0]);
+    Menu[DISPLAYS_ONSCREEN_TIMER].ColumnSplitAmount          = Menu[DISPLAYS_ONSCREEN_TIMER].TotalMenuOptions;
+    Menu[DISPLAYS_ONSCREEN_TIMER].Line                       = OnScreenTimerOptionsLines;
     
-    Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions       = sizeof(CheatsNoButtonComboOptionsLines) / sizeof(CheatsNoButtonComboOptionsLines[0]);
-    Menu[DISPLAYS_NO_BUTTON_COMBO].ColumnSplitAmount      = Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions;
-    Menu[DISPLAYS_NO_BUTTON_COMBO].Line                   = CheatsNoButtonComboOptionsLines;
+    Menu[DISPLAYS_HIT_CHECK_VISUALIZATION].TotalMenuOptions  = sizeof(hitCheckVisualizationOptionsLines) / sizeof(hitCheckVisualizationOptionsLines[0]);
+    Menu[DISPLAYS_HIT_CHECK_VISUALIZATION].ColumnSplitAmount = Menu[DISPLAYS_HIT_CHECK_VISUALIZATION].TotalMenuOptions;
+    Menu[DISPLAYS_HIT_CHECK_VISUALIZATION].Line              = hitCheckVisualizationOptionsLines;
     
-    Menu[WARPS].TotalMenuOptions                          = sizeof(WarpLines) / sizeof(WarpLines[0]);
-    Menu[WARPS].ColumnSplitAmount                         = Menu[WARPS].TotalMenuOptions;
-    Menu[WARPS].Line                                      = WarpLines;
+    Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions          = sizeof(CheatsNoButtonComboOptionsLines) / sizeof(CheatsNoButtonComboOptionsLines[0]);
+    Menu[DISPLAYS_NO_BUTTON_COMBO].ColumnSplitAmount         = Menu[DISPLAYS_NO_BUTTON_COMBO].TotalMenuOptions;
+    Menu[DISPLAYS_NO_BUTTON_COMBO].Line                      = CheatsNoButtonComboOptionsLines;
     
-    Menu[WARPS_INDEX].TotalMenuOptions                    = sizeof(WarpIndexLines) / sizeof(WarpIndexLines[0]);
-    Menu[WARPS_INDEX].ColumnSplitAmount                   = Menu[WARPS_INDEX].TotalMenuOptions;
-    Menu[WARPS_INDEX].Line                                = WarpIndexLines;
+    Menu[WARPS].TotalMenuOptions                             = sizeof(WarpLines) / sizeof(WarpLines[0]);
+    Menu[WARPS].ColumnSplitAmount                            = Menu[WARPS].TotalMenuOptions;
+    Menu[WARPS].Line                                         = WarpLines;
     
-    Menu[WARPS_EVENT].TotalMenuOptions                    = sizeof(WarpEventLines) / sizeof(WarpEventLines[0]);
-    Menu[WARPS_EVENT].ColumnSplitAmount                   = Menu[WARPS_EVENT].TotalMenuOptions;
-    Menu[WARPS_EVENT].Line                                = WarpEventLines;
+    Menu[WARPS_INDEX].TotalMenuOptions                       = sizeof(WarpIndexLines) / sizeof(WarpIndexLines[0]);
+    Menu[WARPS_INDEX].ColumnSplitAmount                      = Menu[WARPS_INDEX].TotalMenuOptions;
+    Menu[WARPS_INDEX].Line                                   = WarpIndexLines;
     
-    Menu[WARPS_BOSS].TotalMenuOptions                     = sizeof(WarpBossLines) / sizeof(WarpBossLines[0]);
-    Menu[WARPS_BOSS].ColumnSplitAmount                    = Menu[WARPS_BOSS].TotalMenuOptions;
-    Menu[WARPS_BOSS].Line                                 = WarpBossLines;
+    Menu[WARPS_EVENT].TotalMenuOptions                       = sizeof(WarpEventLines) / sizeof(WarpEventLines[0]);
+    Menu[WARPS_EVENT].ColumnSplitAmount                      = Menu[WARPS_EVENT].TotalMenuOptions;
+    Menu[WARPS_EVENT].Line                                   = WarpEventLines;
+    
+    Menu[WARPS_BOSS].TotalMenuOptions                        = sizeof(WarpBossLines) / sizeof(WarpBossLines[0]);
+    Menu[WARPS_BOSS].ColumnSplitAmount                       = Menu[WARPS_BOSS].TotalMenuOptions;
+    Menu[WARPS_BOSS].Line                                    = WarpBossLines;
     
     // Set the initial settings
     setInitialSettings();

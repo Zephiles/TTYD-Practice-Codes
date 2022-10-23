@@ -8,6 +8,7 @@
 #include <ttyd/battle_unit.h>
 #include <ttyd/mapdata.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/hitdrv.h>
 
 #include <cstdint>
 
@@ -48,6 +49,7 @@ private:
     void displayFileSelectScreenInfo(ttyd::seqdrv::SeqInfo *);
     void drawStarPowerValueUnderStatusWindow();
     void drawSequenceInPauseMenu(ttyd::dispdrv::CameraId, void *, int32_t);
+    ttyd::hitdrv::HitEntry *checkForVecHits(ttyd::hitdrv::HitCheckQuery *, ttyd::hitdrv::PFN_HitFilterFunction);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -86,6 +88,9 @@ private:
     void (*mPFN_seq_loadMain_trampoline)(ttyd::seqdrv::SeqInfo *) = nullptr;
     void (*mPFN_statusWinDisp_trampoline)() = nullptr;
     void (*mPFN_winMarioDisp_trampoline)(ttyd::dispdrv::CameraId, void *, int32_t) = nullptr;
+    
+    ttyd::hitdrv::HitEntry *(*mPFN_hitCheckVecFilter_trampoline)
+        (ttyd::hitdrv::HitCheckQuery *, ttyd::hitdrv::PFN_HitFilterFunction) = nullptr;
 };
 
 }

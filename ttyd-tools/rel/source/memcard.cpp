@@ -414,6 +414,23 @@ int32_t saveSettings(int32_t memoryCardSlot)
         memcpy(CustomStatesSettings, CustomState.State, sizeof(CustomStateStruct) * tempTotalCustomStates);
     }
     
+    // Copy the hit check visualization data
+    Settings->HitCheckSettings.DrawHits = HitCheck.Settings.DrawHits;
+    Settings->HitCheckSettings.DrawMisses = HitCheck.Settings.DrawMisses;
+    
+    // Only copy the colors if their alphas are not 0
+    uint32_t HitsColor = HitCheck.Settings.HitsColor;
+    if ((HitsColor & 0xFF) != 0)
+    {
+        Settings->HitCheckSettings.HitsColor = HitsColor;
+    }
+    
+    uint32_t MissesColor = HitCheck.Settings.MissesColor;
+    if ((MissesColor & 0xFF) != 0)
+    {
+        Settings->HitCheckSettings.MissesColor = MissesColor;
+    }
+    
     // Write the data to the file
     ReturnCode = writeToFileOnCard(memoryCardSlot, &FileInfo, MiscData, FileSizeAdjusted, 0x2000);
     
@@ -636,6 +653,23 @@ int32_t loadSettings(int32_t memoryCardSlot)
             reinterpret_cast<uint32_t>(Settings) + Settings->CustomStateSettings.OffsetToCustomStates);
         
         memcpy(tempState, CustomStatesSettings, sizeof(CustomStateStruct) * tempTotalCustomStates);
+    }
+    
+    // Get the hit check visualization data
+    HitCheck.Settings.DrawHits = Settings->HitCheckSettings.DrawHits;
+    HitCheck.Settings.DrawMisses = Settings->HitCheckSettings.DrawMisses;
+    
+    // Only get the colors if their alphas are not 0
+    uint32_t HitsColor = Settings->HitCheckSettings.HitsColor;
+    if ((HitsColor & 0xFF) != 0)
+    {
+        HitCheck.Settings.HitsColor = HitsColor;
+    }
+    
+    uint32_t MissesColor = Settings->HitCheckSettings.MissesColor;
+    if ((MissesColor & 0xFF) != 0)
+    {
+        HitCheck.Settings.MissesColor = MissesColor;
     }
     
     ttyd::memory::smartFree(SmartData);

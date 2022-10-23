@@ -355,6 +355,59 @@ enum class GXTexMtxType
     GX_MTX2x4,
 };
 
+enum class GXCullMode
+{
+    GX_CULL_NONE = 0,
+    GX_CULL_FRONT,
+    GX_CULL_BACK,
+    GX_CULL_ALL,
+};
+
+enum class GXColorSrc
+{
+    GX_SRC_REG = 0,
+    GX_SRC_VTX,
+};
+
+enum class GXLightID
+{
+    GX_LIGHT_NULL = 0,
+    GX_LIGHT0,
+    GX_LIGHT1,
+    GX_LIGHT2 = 4,
+    GX_LIGHT3 = 8,
+    GX_LIGHT4 = 16,
+    GX_LIGHT5 = 32,
+    GX_LIGHT6 = 64,
+    GX_LIGHT7 = 128,
+    GX_MAX_LIGHT = 256,
+};
+
+enum class GXDiffuseFn
+{
+    GX_DF_NONE = 0,
+    GX_DF_SIGN,
+    GX_DF_CLAMP,
+};
+
+enum class GXAttnFn
+{
+    GX_AF_SPEC = 0,
+    GX_AF_SPOT,
+    GX_AF_NONE,
+};
+
+enum class GXTexOffset
+{
+    GX_TO_ZERO = 0,
+    GX_TO_SIXTEENTH,
+    GX_TO_EIGHTH,
+    GX_TO_FOURTH,
+    GX_TO_HALF,
+    GX_TO_ONE,
+    GX_MAX_TEXOFFSET,
+};
+
 struct GXTexObj
 {
     uint32_t padding[8]; 
@@ -388,10 +441,15 @@ void GXSetTexCoordGen2(GXTexCoordID dstCoord, GXTexGenType func,
 
 void GXSetNumTexGens(uint8_t nTexGens);
 void GXBegin(GXPrimitive type, GXVtxFmt vtxFmt, uint16_t nVerts);
+void GXSetLineWidth(uint8_t width, GXTexOffset texOffsets);
+void GXSetCullMode(GXCullMode mode);
 void GXSetCopyClear(uint8_t clearColor[4], uint32_t clearZ);
 void GXCopyDisp(void *dest, bool clear);
 void GXSetChanMatColor(GXChannelID chan, uint8_t matColor[4]);
 void GXSetNumChans(uint8_t nChans);
+
+void GXSetChanCtrl(GXChannelID channel, bool enable, GXColorSrc ambientColor, 
+    GXColorSrc materialColor, GXLightID lightMask, GXDiffuseFn diffuseFn, GXAttnFn attnFn);
 
 void GXInitTexObj(GXTexObj *obj, void *image, uint16_t width, uint16_t height, 
     GXTexFmt format, GXTexWrapMode wrapS, GXTexWrapMode wrapT, bool mipMap);

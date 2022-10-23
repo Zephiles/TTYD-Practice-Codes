@@ -8,6 +8,13 @@ typedef float mtx34[3][4];
 typedef float mtx44[4][4];
 typedef float mtxUnk4[][4];
 
+struct Vec3
+{
+    float x, y, z;
+} __attribute__((__packed__));
+
+static_assert(sizeof(Vec3) == 0xC);
+
 extern "C" {
 
 // PSMTXIdentity
@@ -40,9 +47,9 @@ void C_MTXOrtho(mtx44 mtx, float topEdge, float bottomEdge,
 // PSMTX44Trans
 // PSMTX44Scale
 // PSMTX44MultVec
-// PSVECAdd
+void PSVECAdd(const Vec3 *a, const Vec3 *b, Vec3 *ab);
 // PSVECSubtract
-// PSVECScale
+void PSVECScale(const Vec3 *source, Vec3 *destination, float scale);
 // PSVECNormalize
 // PSVECSquareMag
 // PSVECMag

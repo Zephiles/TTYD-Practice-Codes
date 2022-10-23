@@ -826,6 +826,12 @@ void getUpperAndLowerBounds(int32_t arrayOut[2], uint32_t currentMenu)
             }
             break;
         }
+        case DISPLAYS_HIT_CHECK_VISUALIZATION:
+        {
+            // LowerBound = 0;
+            UpperBound = 0xFFFFFFFF;
+            break;
+        }
         case WARPS:
         {
             LowerBound = 1;
@@ -1183,6 +1189,10 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
             }
         }
     }
+    else if (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION)
+    {
+        AmountOfNumbers = 8;
+    }
     else
     {
         AmountOfNumbers = getHighestAdjustableValueDigit(currentMenu);
@@ -1231,7 +1241,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                         IncrementAmount = -1;
                     }
                     
-                    if (InMemoryEditorAddressMenu)
+                    if (InMemoryEditorAddressMenu || (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION))
                     {
                         adjustAddByIdValue(IncrementAmount, currentMenu, true, true);
                     }
@@ -1343,7 +1353,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         case DPADDOWN:
         {
             // Decrement the current value for the current slot in the drawAddById function
-            if (InMemoryEditorAddressMenu)
+            if (InMemoryEditorAddressMenu || (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION))
             {
                 adjustAddByIdValue(-1, currentMenu, true, true);
             }
@@ -1369,7 +1379,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
         case DPADUP:
         {
             // Increment the current value for the current slot in the drawAddById function
-            if (InMemoryEditorAddressMenu)
+            if (InMemoryEditorAddressMenu || (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION))
             {
                 adjustAddByIdValue(1, currentMenu, true, true);
             }
@@ -1400,6 +1410,10 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                 {
                     setAdjustableValueToMin(currentMenu);
                 }
+            }
+            else if (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION)
+            {
+                // Has no minimum, so do nothing
             }
             else if (currentMenu == INVENTORY_MAIN)
             {
@@ -1591,6 +1605,41 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                     MenuVar.FrameCounter = 1;
                     return Button;
                 }
+                case DISPLAYS_HIT_CHECK_VISUALIZATION:
+                {
+                    switch (MenuVar.SelectedOption)
+                    {
+                        case HIT_CHECK_VISUALIZATION_SET_HITS_COLOR:
+                        {
+                            // Only assign the new color if the alpha is not 0
+                            uint32_t Color = MenuVar.MenuSecondaryValueUnsigned;
+                            if ((Color & 0xFF) != 0)
+                            {
+                                HitCheck.Settings.HitsColor = Color;
+                                MenuVar.SelectedOption = 0;
+                            }
+                            break;
+                        }
+                        case HIT_CHECK_VISUALIZATION_SET_MISSES_COLOR:
+                        {
+                            // Only assign the new color if the alpha is not 0
+                            uint32_t Color = MenuVar.MenuSecondaryValueUnsigned;
+                            if ((Color & 0xFF) != 0)
+                            {
+                                HitCheck.Settings.MissesColor = Color;
+                                MenuVar.SelectedOption = 0;
+                            }
+                            break;
+                        }
+                        default:
+                        {
+                            return 0;
+                        }
+                    }
+                    
+                    MenuVar.FrameCounter = 1;
+                    return Button;
+                }
                 case WARPS:
                 {
                     setPitFloor(MenuVar.MenuSecondaryValue);
@@ -1744,6 +1793,7 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                 case CHEATS_MANAGE_FLAGS_MAIN:
                 case BATTLES_CURRENT_ACTOR:
                 case BATTLES_STATUSES:
+                case DISPLAYS_HIT_CHECK_VISUALIZATION:
                 case WARPS_EVENT:
                 case WARPS_INDEX:
                 {
@@ -1786,6 +1836,10 @@ uint32_t adjustableValueButtonControls(uint32_t currentMenu)
                 {
                     setAdjustableValueToMax(currentMenu);
                 }
+            }
+            else if (currentMenu == DISPLAYS_HIT_CHECK_VISUALIZATION)
+            {
+                // Has no maximum, so do nothing
             }
             else if (currentMenu == INVENTORY_MAIN)
             {
@@ -2667,6 +2721,7 @@ void adjustMenuItemBounds(int32_t valueChangedBy, uint32_t currentMenu)
     switch (currentMenu)
     {
         case CHEATS_MODIFY_COORDINATES:
+        case DISPLAYS_HIT_CHECK_VISUALIZATION:
         {
             // No adjustments are needed, so write the new value immediately and return
             MenuVar.MenuSecondaryValueUnsigned += valueChangedBy;

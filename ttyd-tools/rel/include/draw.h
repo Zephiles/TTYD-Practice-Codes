@@ -1,6 +1,7 @@
 #pragma once
 
 #include "global.h"
+#include <ttyd/dispdrv.h>
 
 #include <cstdint>
 
@@ -142,6 +143,7 @@ void drawCheatsClearArea();
 void drawCheatsManageCustomStates();
 void drawCheatsHandleCustomStateAction();
 void drawDisplaysMemoryUsageMenu();
+void drawDisplaysHitCheckVisualization();
 void drawWarpsOptions();
 void drawEventDetails(int32_t posX, int32_t posY, int32_t index);
 void drawWarpByEventMenuDetails();
@@ -177,5 +179,6 @@ void drawMemoryUsage();
 void drawNpcNameToPtrError();
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();
+void drawHitCheckVisualizationResults(ttyd::dispdrv::CameraId cameraId, void *user);
 
 }

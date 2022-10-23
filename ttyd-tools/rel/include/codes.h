@@ -41,6 +41,7 @@ void displayBlimpTicketSkipDetails();
 void displayActionCommandsTiming();
 void displayEffsActive();
 void displayEvtsActive();
+void displayHitCheckResults();
 
 int32_t warpToMap(uint32_t value);
 int32_t warpToMapByEvent(int32_t index);

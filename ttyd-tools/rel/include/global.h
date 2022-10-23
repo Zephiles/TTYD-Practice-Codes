@@ -5,6 +5,7 @@
 #include <gc/OSAlloc.h>
 #include <gc/pad.h>
 #include <gc/DEMOPad.h>
+#include <gc/mtx.h>
 #include <ttyd/item_data.h>
 #include <ttyd/mario_pouch.h>
 #include <ttyd/party.h>
@@ -51,6 +52,7 @@ enum MENU_NAMES
     BATTLES_STATUSES,
     DISPLAYS_ONSCREEN_TIMER,
     DISPLAYS_MEMORY_USAGE,
+    DISPLAYS_HIT_CHECK_VISUALIZATION,
     DISPLAYS_NO_BUTTON_COMBO,
     WARPS_EVENT,
     WARPS_INDEX,
@@ -443,6 +445,7 @@ enum DISPLAYS_OPTIONS
     EFFS_ACTIVE,
     EVTS_ACTIVE,
     ENEMY_ENCOUNTER_NOTIFIER,
+    HIT_CHECK_VISUALIZATION,
     YOSHI_SKIP,
     PALACE_SKIP,
     BRIDGE_SKIP,
@@ -454,6 +457,15 @@ enum ONSCREEN_TIMER_OPTIONS
     ONSCREEN_TIMER_TURN_ON_OR_OFF = 1,
     CHANGE_START_PAUSE_RESUME_BUTTON_COMBO,
     CHANGE_RESET_BUTTON_COMBO,
+};
+
+enum HIT_CHECK_VISUALIZATION_OPTIONS
+{
+    HIT_CHECK_VISUALIZATION_TURN_ON_OFF = 1,
+    HIT_CHECK_VISUALIZATION_TOGGLE_HITS,
+    HIT_CHECK_VISUALIZATION_TOGGLE_MISSES,
+    HIT_CHECK_VISUALIZATION_SET_HITS_COLOR,
+    HIT_CHECK_VISUALIZATION_SET_MISSES_COLOR,
 };
 
 enum DISPLAYS_NO_BUTTON_COMBO_OPTIONS
@@ -1060,6 +1072,47 @@ struct ManageCustomStates
     uint8_t SelectedState;
 };
 
+struct HitCheckResult
+{
+    gc::mtx::Vec3 StartPos;
+    gc::mtx::Vec3 EndPos;
+    bool Hit;
+};
+
+struct HitCheckSettingsStruct
+{
+    bool DrawHits;
+    bool DrawMisses;
+    uint32_t HitsColor;
+    uint32_t MissesColor;
+};
+
+struct HitCheckStruct
+{
+    #define HIT_CHECK_BUFFER_CAPACITY 256
+    
+    HitCheckResult* Buffer;
+    uint16_t EntryCount;
+    HitCheckSettingsStruct Settings;
+    
+    HitCheckStruct()
+    {
+        Buffer = new HitCheckResult[HIT_CHECK_BUFFER_CAPACITY];
+        Settings.DrawHits = true;
+        Settings.DrawMisses = true;
+        Settings.HitsColor = 0xA000D0E0; // Purple
+        Settings.MissesColor = 0x00D000E0; // Green
+    }
+    
+    ~HitCheckStruct()
+    {
+        if (Buffer)
+        {
+            delete[] (Buffer);
+        }
+    }
+};
+
 struct CustomStateSettingsStruct
 {
     uint32_t CustomStateCount;
@@ -1076,6 +1129,7 @@ struct SettingsStruct
     MemoryEditorSaveStruct MemoryEditorSave;
     FrameAdvanceButtonCombosStruct FrameAdvanceButtonCombos;
     CustomStateSettingsStruct CustomStateSettings;
+    HitCheckSettingsStruct HitCheckSettings;
 } __attribute__((__packed__));
 
 struct SaveFileDecriptionInfo
@@ -1221,9 +1275,9 @@ struct SetCustomText
 };
 
 extern MenuVars MenuVar;
-extern Menus Menu[39];
+extern Menus Menu[40];
 extern Cheats Cheat[29];
-extern bool Displays[19];
+extern bool Displays[20];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;
@@ -1260,6 +1314,7 @@ extern FrameAdvanceStruct FrameAdvance;
 extern UnusedMapStruct UnusedMap;
 extern SetCustomText CustomText;
 extern ManageCustomStates CustomState;
+extern HitCheckStruct HitCheck;
 
 extern uint8_t CheatsOrder[];
 extern uint16_t StatsMarioIcons[];

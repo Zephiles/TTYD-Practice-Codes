@@ -164,6 +164,49 @@
 // data
 8042AF40:gpFadeWork
 
+// hitdrv.o
+80013EB0:hitBindUpdate
+80013FBC:hitBindMapObj
+800140B4:hitGetDamageReturnPos
+800140C0:hitGrpDamageReturnSet
+80014188:hitDamageReturnSet
+800144D4:hitGetAttr
+800144EC:hitGetName
+80014588:hitObjGetNormal
+80014660:hitObjGetPos
+800147B0:hitObjGetPosSub
+80014D1C:hitNameToPtr
+80014DCC:hitCheckSphereFilter
+80015364:hitCheckAttr
+80015498:chkFilterAttr
+800154B0:hitCheckVecHitObjXZ
+80015594:checkTriVec_xz
+80015940:hitCheckFilter
+80015A68:hitCheckVecFilter
+8001676C:hitCalcVtxPosition
+80016C20:hitReCalcMatrix2
+800170CC:hitReCalcMatrix
+8001712C:hitGrpAttrOff
+80017204:hitGrpAttrOn
+800172DC:hitAtrOff
+800175F0:hitAtrOn
+80017900:hitObjAttrOff
+800179D4:hitObjAttrOn
+80017AA8:hitGrpFlagOff
+80017B80:hitGrpFlagOn
+80017C58:hitFlgOff
+80017F70:hitFlgOn
+80018280:hitObjFlagOff
+80018354:hitObjFlagOn
+80018428:hitMain
+80018674:hitDelete
+800187AC:hitEntryMOBJ
+8001881C:hitEntry
+800188B8:hitEntrySub
+80018B30:_hitEnt
+80018FBC:hitReInit
+8001905C:hitInit
+
 // icondrv.o
 // 80019060:iconNumberDispGx3D
 800192E4:iconNumberDispGx
@@ -2270,9 +2313,9 @@
 // 802A2B50:PSMTX44Trans
 // 802A2B8C:PSMTX44Scale
 // 802A2BC0:PSMTX44MultVec
-// 802A2C38:PSVECAdd
+802A2C38:PSVECAdd
 // 802A2C5C:PSVECSubtract
-// 802A2C80:PSVECScale
+802A2C80:PSVECScale
 // 802A2C9C:PSVECNormalize
 // 802A2CE0:PSVECSquareMag
 // 802A2CF8:PSVECMag
@@ -2499,10 +2542,10 @@
 // 802B9A68:__GXSetDirtyState
 802B9AE8:GXBegin
 // 802B9BB8:__GXSendFlushPrim
-// 802B9C40:GXSetLineWidth
+802B9C40:GXSetLineWidth
 // 802B9C80:GXSetPointSize
 // 802B9CC0:GXEnableTexOffsets
-// 802B9D08:GXSetCullMode
+802B9D08:GXSetCullMode
 // 802B9D30:GXGetCullMode
 // 802B9D4C:GXSetCoPlanar
 // 802B9D80:__GXSetGenMode
@@ -2532,7 +2575,7 @@
 // 802BADE8:GXSetChanAmbColor
 802BAED0:GXSetChanMatColor
 802BAFB8:GXSetNumChans
-// 802BAFF4:GXSetChanCtrl
+802BAFF4:GXSetChanCtrl
 // 802BB0A4:__GXGetTexTileShift
 // 802BB108:GXGetTexBufferSize
 // 802BB264:__GetImageTileCount

@@ -3318,6 +3318,11 @@ void menuCheckButton()
                             MenuToEnter = DISPLAYS_ONSCREEN_TIMER;
                             break;
                         }
+                        case HIT_CHECK_VISUALIZATION:
+                        {
+                            MenuToEnter = DISPLAYS_HIT_CHECK_VISUALIZATION;
+                            break;
+                        }
                         case MEMORY_USAGE:
                         {
                             MenuToEnter = DISPLAYS_MEMORY_USAGE;
@@ -3423,6 +3428,93 @@ void menuCheckButton()
                         break;
                     }
                     else
+                    {
+                        // Go back to the previous menu
+                        MenuVar.MenuSelectedOption = 0;
+                        enterPreviousMenu();
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case DISPLAYS_HIT_CHECK_VISUALIZATION:
+        {
+            switch (CurrentButton)
+            {
+                case DPADDOWN:
+                case DPADUP:
+                {
+                    adjustMenuNoPageEdit(CurrentButton);
+                    break;
+                }
+                case A:
+                {
+                    switch (tempSelectedOption)
+                    {
+                        case 0:
+                        {
+                            uint32_t CurrentMenuOptionCheck = tempCurrentMenuOption + 1;
+                            switch (CurrentMenuOptionCheck)
+                            {
+                                case HIT_CHECK_VISUALIZATION_TURN_ON_OFF:
+                                {
+                                    // Flip the bool for the current display
+                                    bool DisplayActive = !Displays[tempMenuSelectedOption];
+                                    Displays[tempMenuSelectedOption] = DisplayActive;
+                                    break;
+                                }
+                                case HIT_CHECK_VISUALIZATION_TOGGLE_HITS:
+                                {
+                                    // Flip the bool for drawing hits
+                                    bool DrawHits = !HitCheck.Settings.DrawHits;
+                                    HitCheck.Settings.DrawHits = DrawHits;
+                                    break;
+                                }
+                                case HIT_CHECK_VISUALIZATION_TOGGLE_MISSES:
+                                {
+                                    // Flip the bool for drawing misses
+                                    bool DrawMisses = !HitCheck.Settings.DrawMisses;
+                                    HitCheck.Settings.DrawMisses = DrawMisses;
+                                    break;
+                                }
+                                case HIT_CHECK_VISUALIZATION_SET_HITS_COLOR:
+                                case HIT_CHECK_VISUALIZATION_SET_MISSES_COLOR:
+                                {
+                                    if (CurrentMenuOptionCheck == HIT_CHECK_VISUALIZATION_SET_HITS_COLOR)
+                                    {
+                                        MenuVar.MenuSecondaryValueUnsigned = HitCheck.Settings.HitsColor;
+                                    }
+                                    else
+                                    {
+                                        MenuVar.MenuSecondaryValueUnsigned = HitCheck.Settings.MissesColor;
+                                    }
+                                    
+                                    MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                    MenuVar.SecondaryMenuOption = 7;
+                                    break;
+                                }
+                                default:
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case B:
+                {
+                    if (tempSelectedOption == 0)
                     {
                         // Go back to the previous menu
                         MenuVar.MenuSelectedOption = 0;
@@ -4895,6 +4987,20 @@ void drawMenu()
         {
             // Draw the text for the options
             drawDisplaysMemoryUsageMenu();
+            break;
+        }
+        case DISPLAYS_HIT_CHECK_VISUALIZATION:
+        {
+            // Draw the text for the options
+            drawSingleColumnSelectedOption();
+            
+            // Draw the text for the option values
+            drawDisplaysHitCheckVisualization();
+            
+            if (tempSelectedOption != 0)
+            {
+                drawAdjustableValueHex(tempCurrentMenu);
+            }
             break;
         }
         case DISPLAYS_NO_BUTTON_COMBO:

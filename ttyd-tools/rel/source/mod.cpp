@@ -30,6 +30,7 @@
 #include <ttyd/seq_load.h>
 #include <ttyd/statuswindow.h>
 #include <ttyd/win_mario.h>
+#include <ttyd/hitdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/seq_logo.h>
@@ -234,6 +235,13 @@ void Mod::init()
             ttyd::dispdrv::CameraId cameraId, void *winWorkPtr, int32_t unk)
     {
         gMod->drawSequenceInPauseMenu(cameraId, winWorkPtr, unk);
+    });
+    
+    mPFN_hitCheckVecFilter_trampoline = patch::hookFunction(
+        ttyd::hitdrv::hitCheckVecFilter, [](
+            ttyd::hitdrv::HitCheckQuery* pQuery, ttyd::hitdrv::PFN_HitFilterFunction filterFunction)
+    {
+        return gMod->checkForVecHits(pQuery, filterFunction);
     });
     
     // Initialize typesetting early
