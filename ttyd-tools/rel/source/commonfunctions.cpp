@@ -344,12 +344,12 @@ void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
     if (shouldSpawnPartner)
     {
         // Get the previous partner out
-        PreviousOut = player->prevFollowerId[0];
+        PreviousOut = player->prevPartyId[0];
     }
     else
     {
         // Get the previous follower out
-        PreviousOut = player->prevFollowerId[1];
+        PreviousOut = player->prevPartyId[1];
     }
 
     // Check if a partner/follower was previously out

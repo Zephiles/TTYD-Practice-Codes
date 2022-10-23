@@ -4485,8 +4485,8 @@ void handleLoadCustomState()
     
     // Reset the previous partner and follower ids
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    player->prevFollowerId[0] = ttyd::party::PartyMembers::kNone;
-    player->prevFollowerId[1] = ttyd::party::PartyMembers::kNone;
+    player->prevPartyId[0] = ttyd::party::PartyMembers::kNone;
+    player->prevPartyId[1] = ttyd::party::PartyMembers::kNone;
     
     // Restore which partner was out
     ttyd::party::PartyMembers PartnerOut = tempState->PartnerOut;
@@ -4723,8 +4723,8 @@ void handleWarpByEvent()
     
     // Reset the previous partner and follower ids
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
-    player->prevFollowerId[0] = ttyd::party::PartyMembers::kNone;
-    player->prevFollowerId[1] = ttyd::party::PartyMembers::kNone;
+    player->prevPartyId[0] = ttyd::party::PartyMembers::kNone;
+    player->prevPartyId[1] = ttyd::party::PartyMembers::kNone;
     
     // Spawn the partner for the current event
     ttyd::party::PartyMembers PartnerId = TargetEvent->partyId[0];
@@ -5503,14 +5503,14 @@ void setCustomStateData(CustomStateStruct *state)
     uint32_t PartnerPtr = reinterpret_cast<uint32_t>(getPartnerPointer());
     if (PartnerPtr)
     {
-        state->PartnerOut = player->prevFollowerId[0];
+        state->PartnerOut = player->prevPartyId[0];
     }
     
     // Back up which follower is currently out
     uint32_t FollowerPtr = reinterpret_cast<uint32_t>(getFollowerPointer());
     if (FollowerPtr)
     {
-        state->FollowerOut = player->prevFollowerId[1];
+        state->FollowerOut = player->prevPartyId[1];
     }
     
     // Back up if Mario is currently using Boat Mode or not

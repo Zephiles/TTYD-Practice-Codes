@@ -103,8 +103,8 @@ struct Player
     float playerGravity;
     uint8_t gap_22c[24];
     uint8_t unk_244;
-    uint8_t wFollowerFlags[2];
-    ttyd::party::PartyMembers prevFollowerId[2];
+    ttyd::party::PartyMembers partyId[2];
+    ttyd::party::PartyMembers prevPartyId[2];
     uint8_t unk_249;
     uint16_t wPauseButtonBuffer;
     uint16_t unk_24c;
