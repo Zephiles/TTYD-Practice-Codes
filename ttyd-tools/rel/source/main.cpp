@@ -492,9 +492,13 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
             // Wait 400ms instead of 300ms at the end of the loop
-            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
-                minnnanokoe_evt_bom_Offset + minnnanokoe_evt_bom_WaitMS_Offset) = 400;
+            uint32_t *WaitMsAddress = reinterpret_cast<uint32_t *>(
+                CurrentRelPtrRaw + minnnanokoe_evt_bom_Offset + minnnanokoe_evt_bom_WaitMS_Offset);
             
+            *WaitMsAddress = 400;
+            
+            // Clear the cache for the modified address to be safe
+            gc::OSCache::DCFlushRange(WaitMsAddress, sizeof(uint32_t));
             break;
         }
         case ttyd::seq_mapchange::REL_ID::LAS:
@@ -502,13 +506,20 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
             // Change the loop count from 10 to 5
-            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
-                last_evt_3_2_Offset + last_evt_3_2_Loop_Offset) = 5;
+            uint32_t *LoopAddress = reinterpret_cast<uint32_t *>(
+                CurrentRelPtrRaw + last_evt_3_2_Offset + last_evt_3_2_Loop_Offset);
+            
+            *LoopAddress = 5;
             
             // Wait 400ms instead of 200ms at the end of the loop
-            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
-                last_evt_3_2_Offset + last_evt_3_2_WaitMS_Offset) = 400;
+            uint32_t *WaitMsAddress = reinterpret_cast<uint32_t *>(
+                CurrentRelPtrRaw + last_evt_3_2_Offset + last_evt_3_2_WaitMS_Offset);
             
+            *WaitMsAddress = 400;
+            
+            // Clear the cache for the modified addresses to be safe
+            gc::OSCache::DCFlushRange(LoopAddress, sizeof(uint32_t));
+            gc::OSCache::DCFlushRange(WaitMsAddress, sizeof(uint32_t));
             break;
         }
         case ttyd::seq_mapchange::REL_ID::MRI:
@@ -516,9 +527,13 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
             // Wait 400ms instead of 300ms at the end of the loop
-            *reinterpret_cast<uint32_t *>(CurrentRelPtrRaw + 
-                minnnanokoe_evt_mri_Offset + minnnanokoe_evt_mri_WaitMS_Offset) = 400;
+            uint32_t *WaitMsAddress = reinterpret_cast<uint32_t *>(
+                CurrentRelPtrRaw + minnnanokoe_evt_mri_Offset + minnnanokoe_evt_mri_WaitMS_Offset);
             
+            *WaitMsAddress = 400;
+            
+            // Clear the cache for the modified address to be safe
+            gc::OSCache::DCFlushRange(WaitMsAddress, sizeof(uint32_t));
             break;
         }
         default:
