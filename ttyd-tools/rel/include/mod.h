@@ -50,6 +50,7 @@ private:
     void drawStarPowerValueUnderStatusWindow();
     void drawSequenceInPauseMenu(ttyd::dispdrv::CameraId, void *, int32_t);
     ttyd::hitdrv::HitEntry *checkForVecHits(ttyd::hitdrv::HitCheckQuery *, ttyd::hitdrv::PFN_HitFilterFunction);
+    void preventAnimPoseMainCrash(int32_t);
 
 private:
     void (*mPFN_marioStMain_trampoline)() = nullptr;
@@ -91,6 +92,8 @@ private:
     
     ttyd::hitdrv::HitEntry *(*mPFN_hitCheckVecFilter_trampoline)
         (ttyd::hitdrv::HitCheckQuery *, ttyd::hitdrv::PFN_HitFilterFunction) = nullptr;
+    
+    void (*mPFN_animPoseMain_trampoline)(int32_t) = nullptr;
 };
 
 }

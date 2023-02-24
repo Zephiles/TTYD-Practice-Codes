@@ -31,6 +31,7 @@
 #include <ttyd/statuswindow.h>
 #include <ttyd/win_mario.h>
 #include <ttyd/hitdrv.h>
+#include <ttyd/animdrv.h>
 #include <ttyd/windowdrv.h>
 #include <ttyd/fontmgr.h>
 #include <ttyd/seq_logo.h>
@@ -242,6 +243,12 @@ void Mod::init()
             ttyd::hitdrv::HitCheckQuery* pQuery, ttyd::hitdrv::PFN_HitFilterFunction filterFunction)
     {
         return gMod->checkForVecHits(pQuery, filterFunction);
+    });
+    
+    mPFN_animPoseMain_trampoline = patch::hookFunction(
+        ttyd::animdrv::animPoseMain, [](int32_t poseId)
+    {
+        gMod->preventAnimPoseMainCrash(poseId);
     });
     
     // Initialize typesetting early

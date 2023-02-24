@@ -502,7 +502,7 @@
 // 8003D660:animSetMaterial_Texture
 // 8003DC0C:pushGXModelMtx_JointNode__
 // 8003E150:pushGXModelMtx_TransformNode__
-// 8003E690:animPoseMain
+8003E690:animPoseMain
 // 8003FFD0:animPoseGetMaterialEvtColor
 // 8003FFE8:animPoseGetMaterialLightFlag
 // 80040000:animPoseGetMaterialFlag

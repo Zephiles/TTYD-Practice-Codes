@@ -1066,6 +1066,18 @@ void initAddressOverwrites()
             ttyd::seq_title::seqTitleWorkPointer2) + 0x30) = -1;
 }
 
+void Mod::preventAnimPoseMainCrash(int32_t poseId)
+{
+    // Make sure poseId is valid
+    if (poseId < 0)
+    {
+        return;
+    }
+    
+    // Call original function
+    return mPFN_animPoseMain_trampoline(poseId);
+}
+
 void Mod::run()
 {
     // Update the On-Screen Timer variables if the display is on
