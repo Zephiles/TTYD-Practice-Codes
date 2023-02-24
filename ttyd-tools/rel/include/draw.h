@@ -177,6 +177,7 @@ void drawSettingsCurrentWork();
 void drawHeapArrayErrors();
 void drawMemoryUsage();
 void drawNpcNameToPtrError();
+void drawAnimPoseMainInvalidParam();
 void drawTitleScreenInfo();
 void drawFileSelectScreenInfo();
 void drawHitCheckVisualizationResults(ttyd::dispdrv::CameraId cameraId, void *user);

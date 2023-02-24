@@ -855,6 +855,36 @@ void displayNpcNameToPtrError()
     }
 }
 
+void Mod::preventAnimPoseMainCrash(int32_t poseId)
+{
+    // Make sure poseId is valid
+    if (poseId < 0)
+    {
+        // poseId is invalid, so print error text
+        AnimPoseMainInvalidParam.Timer = secondsToFrames(5);
+        AnimPoseMainInvalidParam.Counter++;
+        return;
+    }
+    
+    // Call original function
+    return mPFN_animPoseMain_trampoline(poseId);
+}
+
+void displayAnimPoseMainInvalidParam()
+{
+    uint32_t Timer = AnimPoseMainInvalidParam.Timer;
+    if (Timer > 0)
+    {
+        Timer--;
+        AnimPoseMainInvalidParam.Timer = Timer;
+        drawFunctionOnDebugLayerWithOrder(drawAnimPoseMainInvalidParam, 100.f);
+    }
+    else
+    {
+        AnimPoseMainInvalidParam.Counter = 0;
+    }
+}
+
 void checkForEnemyEncounters(void *ptr)
 {
     if (!Displays[ENEMY_ENCOUNTER_NOTIFIER])
@@ -1066,18 +1096,6 @@ void initAddressOverwrites()
             ttyd::seq_title::seqTitleWorkPointer2) + 0x30) = -1;
 }
 
-void Mod::preventAnimPoseMainCrash(int32_t poseId)
-{
-    // Make sure poseId is valid
-    if (poseId < 0)
-    {
-        return;
-    }
-    
-    // Call original function
-    return mPFN_animPoseMain_trampoline(poseId);
-}
-
 void Mod::run()
 {
     // Update the On-Screen Timer variables if the display is on
@@ -1140,6 +1158,7 @@ void Mod::run()
         displayStickAngle();
         displayMemoryWatches();
         displayNpcNameToPtrError();
+        displayAnimPoseMainInvalidParam();
         spawnItem(); // Needs to always run due to the adjustable value menu sometimes being displayed
         displayMemoryEditor(); // Needs to always run due to the adjustable value menu sometimes being displayed
         displayActionCommandsTiming();

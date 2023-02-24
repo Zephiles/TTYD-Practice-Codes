@@ -1229,6 +1229,12 @@ struct EnemyEncounterNotifierStruct
     uint16_t Timer;
 };
 
+struct AnimPoseMainInvalidParamStruct
+{
+    uint32_t Counter;
+    uint16_t Timer;
+};
+
 struct UnusedMapStruct
 {
     ttyd::mapdata::MapData UnusedMapData;
@@ -1309,6 +1315,7 @@ extern WarpByEventStruct WarpByEvent;
 extern WarpByIndexStruct WarpByIndex;
 extern MenuPrevMenuAndOption PrevMenuAndOption;
 extern NpcNameToPtrErrorStruct NpcNameToPtrError;
+extern AnimPoseMainInvalidParamStruct AnimPoseMainInvalidParam;
 extern EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 extern FrameAdvanceStruct FrameAdvance;
 extern UnusedMapStruct UnusedMap;

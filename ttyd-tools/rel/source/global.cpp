@@ -1993,6 +1993,7 @@ struct WarpByEventStruct WarpByEvent;
 struct WarpByIndexStruct WarpByIndex;
 struct MenuPrevMenuAndOption PrevMenuAndOption;
 struct NpcNameToPtrErrorStruct NpcNameToPtrError;
+struct AnimPoseMainInvalidParamStruct AnimPoseMainInvalidParam;
 struct EnemyEncounterNotifierStruct EnemyEncounterNotifier;
 struct FrameAdvanceStruct FrameAdvance;
 struct UnusedMapStruct UnusedMap;

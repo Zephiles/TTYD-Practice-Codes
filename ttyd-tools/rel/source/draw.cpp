@@ -6374,6 +6374,29 @@ void drawNpcNameToPtrError()
     drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
 }
 
+void drawAnimPoseMainInvalidParam()
+{
+    uint32_t Color = 0xFFFFFFFF;
+    uint8_t Alpha  = 0xFF;
+    int32_t PosX   = -232;
+    int32_t PosY   = 120;
+    float Scale    = 0.6f;
+    
+    // Move the text down if an npcNameToPtr error is also being drawn
+    if (NpcNameToPtrError.Counter > 0)
+    {
+        PosY -= 20;
+    }
+    
+    // Draw the text
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer,
+        "animPoseMain error occured x%" PRIu32,
+        AnimPoseMainInvalidParam.Counter);
+    
+    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+}
+
 void drawTitleScreenInfo()
 {
     // Draw the window for the text
