@@ -1595,6 +1595,7 @@ const char *DisplaysLines[] =
     "Hit Check Visualization",
     "Yoshi Skip",
     "Palace Skip",
+    "Jabbi Hive Skip",
     "Bridge Skip",
     "Blimp Ticket Skip",
 };
@@ -1956,12 +1957,13 @@ uint8_t DisplaysOrder[] =
     ENEMY_ENCOUNTER_NOTIFIER,
     STAR_POWER_VALUE,
     HIT_CHECK_VISUALIZATION,
+    JABBI_HIVE_SKIP,
 };
 
 struct MenuVars MenuVar;
 struct Menus Menu[40];
 struct Cheats Cheat[29];
-bool Displays[20];
+bool Displays[21];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -1983,6 +1985,7 @@ struct ClearCacheForBattlesStruct ClearCacheForBattles;
 struct LockFlagsStruct LockFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
+struct JabbiHiveSkipStruct JabbiHiveSkip;
 struct BridgeSkipStruct BridgeSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
 struct OnScreenTimerDisplay OnScreenTimer;
@@ -2224,6 +2227,7 @@ void setInitialSettings()
     // Displays[ENEMY_ENCOUNTER_NOTIFIER]     = true;
     // Displays[YOSHI_SKIP]                   = true;
     // Displays[PALACE_SKIP]                  = true;
+    // Displays[JABBI_HIVE_SKIP]              = true;
     // Displays[BRIDGE_SKIP]                  = true;
     // Displays[BLIMP_TICKET_SKIP]            = true;
     

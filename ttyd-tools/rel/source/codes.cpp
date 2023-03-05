@@ -35,6 +35,7 @@
 #include <ttyd/swdrv.h>
 #include <ttyd/win_main.h>
 #include <ttyd/itemdrv.h>
+#include <ttyd/mario_motion.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/battle_ac.h>
 #include <ttyd/hitdrv.h>
@@ -1425,6 +1426,132 @@ void displayPalaceSkipDetails()
     }
     
     drawFunctionOnDebugLayer(drawPalaceSkipDetails);
+}
+
+void displayJabbiHiveSkipDetails()
+{
+    using namespace ttyd::mario_motion;
+    
+    if (!Displays[JABBI_HIVE_SKIP])
+    {
+        return;
+    }
+    
+    uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
+    ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
+    
+    /* If Mario is in Paper Mode, both timers are stopped, and D-Pad Left 
+       or A was pressed are pressed, then reset everything before continuing */
+    constexpr uint32_t PossibleButtons = PAD_DPAD_LEFT | PAD_A;
+    uint32_t ButtonsCheck = ButtonInputTrg & PossibleButtons;
+    
+    bool inPaperMode = (player->currentMotionId == MarioMotions::kSlit) || 
+        ((player->currentMotionId == MarioMotions::kJump) && (player->flags1 & 0x100000));
+    
+    if (inPaperMode && JabbiHiveSkip.InitialOpenPauseMenuFramesStopped && 
+        JabbiHiveSkip.PauseMenuOpenFramesStopped && ButtonsCheck)
+    {
+        clearMemory(&JabbiHiveSkip, sizeof(JabbiHiveSkip));
+    }
+    
+    // Check for opening the pause menu
+    if (!JabbiHiveSkip.InitialOpenPauseMenuFramesStopped)
+    {
+        // Check if either buttons have been pressed yet
+        if (!JabbiHiveSkip.InitialOpenPauseButtonPressed)
+        {
+            // Only check for buttons if Mario is currently in Paper Mode
+            // Check if D-Pad Left or A was pressed
+            if (inPaperMode && ButtonsCheck)
+            {
+                JabbiHiveSkip.InitialOpenPauseButtonPressed = true;
+                    
+                // Figure out which was pressed first, or if both pressed at the same time
+                if (ButtonsCheck == PossibleButtons)
+                {
+                    // Pressed at the same time
+                    JabbiHiveSkip.ButtonPressedFirst = 0;
+                    JabbiHiveSkip.InitialOpenPauseMenuFramesStopped = true;
+                }
+                else if (ButtonInputTrg & PAD_DPAD_LEFT)
+                {
+                    // D-Pad Left pressed first
+                    JabbiHiveSkip.ButtonPressedFirst = PAD_DPAD_LEFT;
+                    
+                    // Increment the timer
+                    JabbiHiveSkip.InitialOpenPauseMenuFrames++;
+                }
+                else // if (ButtonInputTrg & PAD_A)
+                {
+                    // A pressed first
+                    JabbiHiveSkip.ButtonPressedFirst = PAD_A;
+                    
+                    // Increment the timer
+                    JabbiHiveSkip.InitialOpenPauseMenuFrames++;
+                }
+            }
+        }
+        else
+        {
+            // Check for the next button pressed
+            uint32_t ButtonPressedFirst = JabbiHiveSkip.ButtonPressedFirst;
+            if ((ButtonPressedFirst == PAD_A) && (ButtonInputTrg == PAD_DPAD_LEFT))
+            {
+                // A was pressed first, and D-Pad Left was just pressed
+                JabbiHiveSkip.InitialOpenPauseMenuFramesStopped = true;
+                
+                // Increment the timer for the pause menu being open
+                JabbiHiveSkip.PauseMenuOpenFrames++;
+            }
+            else if ((ButtonPressedFirst == PAD_DPAD_LEFT) && (ButtonInputTrg == PAD_A))
+            {
+                // D-Pad Left was pressed first, and A was just pressed
+                JabbiHiveSkip.InitialOpenPauseMenuFramesStopped = true;
+            }
+            else
+            {
+                // Increment the timer
+                JabbiHiveSkip.InitialOpenPauseMenuFrames++;
+            }
+        }
+    }
+    else if (!JabbiHiveSkip.PauseMenuOpenFramesStopped)
+    {
+        // Check if A was pressed
+        if (ButtonInputTrg & PAD_A)
+        {
+            JabbiHiveSkip.PauseMenuOpenFramesStopped = true;
+        }
+        else
+        {
+            // Increment the timer
+            JabbiHiveSkip.PauseMenuOpenFrames++;
+        }
+    }
+    
+    uint32_t ResetCounter = JabbiHiveSkip.ResetCounter;
+    if ((ButtonInputTrg & PAD_B) == PAD_B)
+    {
+        // Increment ResetCounter if B is pressed
+        ResetCounter++;
+        
+        if (ResetCounter >= 3)
+        {
+            // Reset everything if B is pressed 3 times consecutively
+            clearMemory(&JabbiHiveSkip, sizeof(JabbiHiveSkip));
+        }
+        else
+        {
+            JabbiHiveSkip.ResetCounter = static_cast<uint8_t>(ResetCounter);
+        }
+    }
+    else if (ButtonInputTrg != 0)
+    {
+        // Reset ResetCounter if any other buttons are pressed
+        JabbiHiveSkip.ResetCounter = 0;
+    }
+    
+    drawFunctionOnDebugLayer(drawJabbiHiveSkipDetails);
 }
 
 void displayBridgeSkipDetails()

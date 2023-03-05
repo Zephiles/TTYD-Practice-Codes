@@ -36,6 +36,7 @@ void displayMemoryEditor();
 
 void displayYoshiSkipDetails();
 void displayPalaceSkipDetails();
+void displayJabbiHiveSkipDetails();
 void displayBridgeSkipDetails();
 void displayBlimpTicketSkipDetails();
 void displayActionCommandsTiming();

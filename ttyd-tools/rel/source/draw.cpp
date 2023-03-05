@@ -5727,6 +5727,83 @@ void drawPalaceSkipDetails()
     }
 }
 
+void drawJabbiHiveSkipDetails()
+{
+    uint32_t Color = 0xFFFFFFFF;
+    uint8_t Alpha  = 0xFF;
+    int32_t PosX   = -232;
+    int32_t PosY   = -120;
+    float Scale    = 0.65f;
+    
+    // Move the text up if the input display is active
+    if (Displays[BUTTON_INPUT_DISPLAY])
+    {
+        PosY += 20;
+    }
+    
+    // Move the text up if the Mario Coordinates display is active
+    if (Displays[MARIO_COORDINATES])
+    {
+        PosY += 20;
+    }
+    
+    // Move the text up if the Mario Speed XZ display is active
+    if (Displays[MARIO_SPEED_XZ])
+    {
+        PosY += 20;
+    }
+    
+    // Move the text up if the Stick Angle display is active
+    if (Displays[STICK_ANGLE])
+    {
+        PosY += 20;
+    }
+    
+    // Check which buttons were pressed first, or if at the same time
+    char ButtonPressedFirst[32];
+    
+    if (!JabbiHiveSkip.InitialOpenPauseButtonPressed)
+    {
+        // No buttons have been pressed yet
+        strcpy(ButtonPressedFirst, "Nothing pressed yet");
+    }
+    else
+    {
+        uint32_t ButtonsPressed = JabbiHiveSkip.ButtonPressedFirst;
+        if (ButtonsPressed == 0)
+        {
+            // Pressed at the same time
+            strcpy(ButtonPressedFirst, "Pressed at same time");
+        }
+        else
+        {
+            const char* Button;
+            if (ButtonsPressed == PAD_A)
+            {
+                // A pressed first
+                Button = "A";
+            }
+            else // if (ButtonsPressed == PAD_DPAD_LEFT)
+            {
+                // D-Pad Left pressed first
+                Button = "D-Pad Left";
+            }
+            
+            sprintf(ButtonPressedFirst, "Pressed %s first", Button);
+        }
+    }
+    
+    // Draw the text
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer,
+        "%s\nFBP: %" PRIu32 "\nFBUP: %" PRIu32,
+        ButtonPressedFirst,
+        JabbiHiveSkip.InitialOpenPauseMenuFrames,
+        JabbiHiveSkip.PauseMenuOpenFrames);
+    
+    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+}
+
 void drawBridgeSkipDetails()
 {
     uint32_t Color = 0xFFFFFFFF;

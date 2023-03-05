@@ -448,6 +448,7 @@ enum DISPLAYS_OPTIONS
     HIT_CHECK_VISUALIZATION,
     YOSHI_SKIP,
     PALACE_SKIP,
+    JABBI_HIVE_SKIP,
     BRIDGE_SKIP,
     BLIMP_TICKET_SKIP,
 };
@@ -788,6 +789,20 @@ struct TrickDisplay
     {
         TimerStopped = true;
     }
+};
+
+struct JabbiHiveSkipStruct
+{
+    uint32_t InitialOpenPauseMenuFrames; // Frames between pressing D-Pad Left and A when opening the pause menu
+    uint32_t PauseMenuOpenFrames;        // How long the pause menu is open for, between the two A presses
+    
+    uint16_t ButtonPressedFirst;         /* Which button was pressed first when opening the pause
+                                            menu. Will be 0 when pressed at the same time. */
+    
+    uint8_t ResetCounter;
+    bool InitialOpenPauseButtonPressed;  // Either D-Pad Left or A was pressed for opening the pause menu
+    bool InitialOpenPauseMenuFramesStopped;
+    bool PauseMenuOpenFramesStopped;
 };
 
 struct BridgeSkipStruct
@@ -1283,7 +1298,7 @@ struct SetCustomText
 extern MenuVars MenuVar;
 extern Menus Menu[40];
 extern Cheats Cheat[29];
-extern bool Displays[20];
+extern bool Displays[21];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;
@@ -1304,6 +1319,7 @@ extern ClearCacheForBattlesStruct ClearCacheForBattles;
 extern LockFlagsStruct LockFlags;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
+extern JabbiHiveSkipStruct JabbiHiveSkip;
 extern BridgeSkipStruct BridgeSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
 extern OnScreenTimerDisplay OnScreenTimer;

@@ -1144,6 +1144,7 @@ void Mod::run()
         {
             displayYoshiSkipDetails();
             displayPalaceSkipDetails();
+            displayJabbiHiveSkipDetails();
             displayBridgeSkipDetails();
             displayBlimpTicketSkipDetails();
             displayOnScreenTimer();
