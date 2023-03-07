@@ -5762,7 +5762,7 @@ void drawJabbiHiveSkipDetails()
     // Check which buttons were pressed first, or if at the same time
     char ButtonPressedFirst[32];
     
-    if (!JabbiHiveSkip.InitialOpenPauseButtonPressed)
+    if (!JabbiHiveSkip.InitialOpenPauseMenuButtonPressed)
     {
         // No buttons have been pressed yet
         strcpy(ButtonPressedFirst, "Nothing pressed yet");

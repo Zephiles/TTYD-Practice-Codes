@@ -793,14 +793,17 @@ struct TrickDisplay
 
 struct JabbiHiveSkipStruct
 {
-    uint32_t InitialOpenPauseMenuFrames; // Frames between pressing D-Pad Left and A when opening the pause menu
-    uint32_t PauseMenuOpenFrames;        // How long the pause menu is open for, between the two A presses
+    uint32_t InitialOpenPauseMenuFrames;    // Frames between pressing D-Pad Left and A when opening the pause menu
+    uint32_t PauseMenuOpenFrames;           // How long the pause menu is open for, between the two A presses
     
-    uint16_t ButtonPressedFirst;         /* Which button was pressed first when opening the pause
-                                            menu. Will be 0 when pressed at the same time. */
+    uint16_t ButtonPressedFirst;            /* Which button was pressed first when opening the pause
+                                               menu. Will be 0 when pressed at the same time. */
     
+    uint8_t BoolsSetCounter;                /* Starts counting once InitialOpenPauseMenuFramesStopped and 
+                                               PauseMenuOpenFramesStopped are both set, and is used to prevent clearing
+                                               everything until an amount of frames have passed after the 2nd A press */
     uint8_t ResetCounter;
-    bool InitialOpenPauseButtonPressed;  // Either D-Pad Left or A was pressed for opening the pause menu
+    bool InitialOpenPauseMenuButtonPressed; // Either D-Pad Left or A was pressed for opening the pause menu
     bool InitialOpenPauseMenuFramesStopped;
     bool PauseMenuOpenFramesStopped;
 };

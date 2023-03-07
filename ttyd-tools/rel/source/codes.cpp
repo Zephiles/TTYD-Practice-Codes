@@ -1440,31 +1440,43 @@ void displayJabbiHiveSkipDetails()
     uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     
-    /* If Mario is in Paper Mode, both timers are stopped, and D-Pad Left 
-       or A was pressed are pressed, then reset everything before continuing */
-    constexpr uint32_t PossibleButtons = PAD_DPAD_LEFT | PAD_A;
-    uint32_t ButtonsCheck = ButtonInputTrg & PossibleButtons;
-    
-    bool inPaperMode = (player->currentMotionId == MarioMotions::kSlit) || 
+    /* If Mario is in Paper Mode, both timers are stopped, BoolsSetCounter is at 450 milliseconds
+       or higher, and D-Pad Left or A was pressed, then reset everything before continuing */
+    const bool InPaperMode = (player->currentMotionId == MarioMotions::kSlit) || 
         ((player->currentMotionId == MarioMotions::kJump) && (player->flags1 & 0x100000));
     
-    if (inPaperMode && JabbiHiveSkip.InitialOpenPauseMenuFramesStopped && 
-        JabbiHiveSkip.PauseMenuOpenFramesStopped && ButtonsCheck)
+    constexpr uint32_t PossibleButtons = PAD_DPAD_LEFT | PAD_A;
+    const uint32_t ButtonsCheck = ButtonInputTrg & PossibleButtons;
+    
+    // Check if Mario is in Paper Mode
+    if (InPaperMode)
     {
-        clearMemory(&JabbiHiveSkip, sizeof(JabbiHiveSkip));
+        // Check if both timers are stopped
+        if (JabbiHiveSkip.InitialOpenPauseMenuFramesStopped && JabbiHiveSkip.PauseMenuOpenFramesStopped)
+        {
+            // Check if BoolsSetCounter is at 450 milliseconds or higher
+            if (JabbiHiveSkip.BoolsSetCounter >= ttyd::system::sysMsec2Frame(450))
+            {
+                // Check if D-Pad Left or A was pressed
+                if (ButtonsCheck)
+                {
+                    clearMemory(&JabbiHiveSkip, sizeof(JabbiHiveSkip));
+                }
+            }
+        }
     }
     
     // Check for opening the pause menu
     if (!JabbiHiveSkip.InitialOpenPauseMenuFramesStopped)
     {
         // Check if either buttons have been pressed yet
-        if (!JabbiHiveSkip.InitialOpenPauseButtonPressed)
+        if (!JabbiHiveSkip.InitialOpenPauseMenuButtonPressed)
         {
             // Only check for buttons if Mario is currently in Paper Mode
             // Check if D-Pad Left or A was pressed
-            if (inPaperMode && ButtonsCheck)
+            if (InPaperMode && ButtonsCheck)
             {
-                JabbiHiveSkip.InitialOpenPauseButtonPressed = true;
+                JabbiHiveSkip.InitialOpenPauseMenuButtonPressed = true;
                     
                 // Figure out which was pressed first, or if both pressed at the same time
                 if (ButtonsCheck == PossibleButtons)
@@ -1526,6 +1538,17 @@ void displayJabbiHiveSkipDetails()
         {
             // Increment the timer
             JabbiHiveSkip.PauseMenuOpenFrames++;
+        }
+    }
+    else
+    {
+        // Both bools are set, so increment BoolsSetCounter
+        // Do not increment if 450 milliseconds has been reached
+        uint32_t BoolsSetCounter = JabbiHiveSkip.BoolsSetCounter;
+        if (BoolsSetCounter < ttyd::system::sysMsec2Frame(450))
+        {
+            BoolsSetCounter++;
+            JabbiHiveSkip.BoolsSetCounter = static_cast<uint8_t>(BoolsSetCounter);
         }
     }
     
