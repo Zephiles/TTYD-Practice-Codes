@@ -799,7 +799,7 @@ struct JabbiHiveSkipStruct
     uint16_t ButtonPressedFirst;            /* Which button was pressed first when opening the pause
                                                menu. Will be 0 when pressed at the same time. */
     
-    uint8_t BoolsSetCounter;                /* Starts counting once InitialOpenPauseMenuFramesStopped and 
+    uint8_t BoolsSetTimer;                  /* Starts counting once InitialOpenPauseMenuFramesStopped and 
                                                PauseMenuOpenFramesStopped are both set, and is used to prevent clearing
                                                everything until an amount of frames have passed after the 2nd A press */
     uint8_t ResetCounter;

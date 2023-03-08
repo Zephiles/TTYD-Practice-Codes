@@ -1440,7 +1440,7 @@ void displayJabbiHiveSkipDetails()
     uint32_t ButtonInputTrg = ttyd::system::keyGetButtonTrg(0);
     ttyd::mario::Player *player = ttyd::mario::marioGetPtr();
     
-    /* If Mario is in Paper Mode, both timers are stopped, BoolsSetCounter is at 450 milliseconds
+    /* If Mario is in Paper Mode, both timers are stopped, BoolsSetTimer is at 450 milliseconds
        or higher, and D-Pad Left or A was pressed, then reset everything before continuing */
     const bool InPaperMode = (player->currentMotionId == MarioMotions::kSlit) || 
         ((player->currentMotionId == MarioMotions::kJump) && (player->flags1 & 0x100000));
@@ -1454,8 +1454,8 @@ void displayJabbiHiveSkipDetails()
         // Check if both timers are stopped
         if (JabbiHiveSkip.InitialOpenPauseMenuFramesStopped && JabbiHiveSkip.PauseMenuOpenFramesStopped)
         {
-            // Check if BoolsSetCounter is at 450 milliseconds or higher
-            if (JabbiHiveSkip.BoolsSetCounter >= ttyd::system::sysMsec2Frame(450))
+            // Check if BoolsSetTimer is at 450 milliseconds or higher
+            if (JabbiHiveSkip.BoolsSetTimer >= ttyd::system::sysMsec2Frame(450))
             {
                 // Check if D-Pad Left or A was pressed
                 if (ButtonsCheck)
@@ -1542,13 +1542,13 @@ void displayJabbiHiveSkipDetails()
     }
     else
     {
-        // Both bools are set, so increment BoolsSetCounter
-        // Do not increment if 450 milliseconds has been reached
-        uint32_t BoolsSetCounter = JabbiHiveSkip.BoolsSetCounter;
-        if (BoolsSetCounter < ttyd::system::sysMsec2Frame(450))
+        // Both bools are set, so increment BoolsSetTimer
+        // Do not increment if 450 milliseconds have been reached
+        uint32_t BoolsSetTimer = JabbiHiveSkip.BoolsSetTimer;
+        if (BoolsSetTimer < ttyd::system::sysMsec2Frame(450))
         {
-            BoolsSetCounter++;
-            JabbiHiveSkip.BoolsSetCounter = static_cast<uint8_t>(BoolsSetCounter);
+            BoolsSetTimer++;
+            JabbiHiveSkip.BoolsSetTimer = static_cast<uint8_t>(BoolsSetTimer);
         }
     }
     

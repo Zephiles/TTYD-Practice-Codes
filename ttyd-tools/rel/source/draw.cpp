@@ -5760,12 +5760,13 @@ void drawJabbiHiveSkipDetails()
     }
     
     // Check which buttons were pressed first, or if at the same time
+    const char* ButtonsPressedFirstPtr;
     char ButtonPressedFirst[32];
     
     if (!JabbiHiveSkip.InitialOpenPauseMenuButtonPressed)
     {
         // No buttons have been pressed yet
-        strcpy(ButtonPressedFirst, "Nothing pressed yet");
+        ButtonsPressedFirstPtr = "Nothing pressed yet";
     }
     else
     {
@@ -5773,7 +5774,7 @@ void drawJabbiHiveSkipDetails()
         if (ButtonsPressed == 0)
         {
             // Pressed at the same time
-            strcpy(ButtonPressedFirst, "Pressed at same time");
+            ButtonsPressedFirstPtr = "Pressed at same time";
         }
         else
         {
@@ -5790,6 +5791,7 @@ void drawJabbiHiveSkipDetails()
             }
             
             sprintf(ButtonPressedFirst, "Pressed %s first", Button);
+            ButtonsPressedFirstPtr = ButtonPressedFirst;
         }
     }
     
@@ -5797,7 +5799,7 @@ void drawJabbiHiveSkipDetails()
     char *tempDisplayBuffer = DisplayBuffer;
     sprintf(tempDisplayBuffer,
         "%s\nFBP: %" PRIu32 "\nFBUP: %" PRIu32,
-        ButtonPressedFirst,
+        ButtonsPressedFirstPtr,
         JabbiHiveSkip.InitialOpenPauseMenuFrames,
         JabbiHiveSkip.PauseMenuOpenFrames);
     
