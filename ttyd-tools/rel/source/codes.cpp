@@ -1358,9 +1358,9 @@ void displayYoshiSkipDetails()
         YoshiSkip.TimerStopped = true;
     }
     
-    if (checkButtonComboEveryFrame(PAD_Y))
+    if (checkButtonComboEveryFrame(PAD_B))
     {
-        // Hold Y to increment the reset counter
+        // Hold B to increment the reset counter
         YoshiSkip.ResetTimer++;
     }
     else
@@ -1407,9 +1407,9 @@ void displayPalaceSkipDetails()
         PalaceSkip.TimerStopped = true;
     }
     
-    if (checkButtonComboEveryFrame(PAD_Y))
+    if (checkButtonComboEveryFrame(PAD_B))
     {
-        // Hold Y to increment the counter
+        // Hold B to increment the counter
         PalaceSkip.ResetTimer++;
     }
     else
@@ -1660,9 +1660,9 @@ void displayBridgeSkipDetails()
         BridgeSkip.TimerStopped = true;
     }
     
-    if (checkButtonComboEveryFrame(PAD_Y))
+    if (checkButtonComboEveryFrame(PAD_B))
     {
-        // Hold Y to increment the reset counter
+        // Hold B to increment the reset counter
         BridgeSkip.ResetTimer++;
     }
     else
@@ -1730,9 +1730,9 @@ void displayBlimpTicketSkipDetails()
         }
     }
     
-    if (checkButtonComboEveryFrame(PAD_Y))
+    if (checkButtonComboEveryFrame(PAD_B))
     {
-        // Hold Y to increment the counter
+        // Hold B to increment the counter
         BlimpTicketSkip.ResetTimer++;
     }
     else
