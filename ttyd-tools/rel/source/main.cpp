@@ -800,10 +800,12 @@ void handleMapHeapChunkResults(void *addressWithError,
         
         // Get the battle text if checking the battle heap
         const char *CurrentHeap = nullptr;
+#ifndef TTYD_JP
         if (battleHeap)
         {
             CurrentHeap = "Battle ";
         }
+#endif
         
         sprintf(tempDisplayBuffer,
             "%sMap Heap (%s) corrupt at 0x%08" PRIX32 "\n",
