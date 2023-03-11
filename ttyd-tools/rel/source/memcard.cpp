@@ -522,7 +522,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     
     // Get the data from the file
     // Must read by the stored size, as the struct size may exceed the size of the file
-    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, MiscData, StoredFileSizeAdjusted, 0x2000);
+    ReturnCode = readFromFileOnCard(memoryCardSlot, &FileInfo, MiscData, StoredFileSizeAdjusted - CARD_READ_SIZE, 0x2200);
     
     // Close and unmount the card, as it's no longer needed
     gc::card::CARDClose(&FileInfo);
@@ -535,7 +535,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     }
     
     // Get the settings struct from the file
-    SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0x200]);
+    SettingsStruct *Settings = reinterpret_cast<SettingsStruct *>(&MiscData[0]);
     
     // Get the desired variables from the struct
     // Get the Cheats bools and button combos
