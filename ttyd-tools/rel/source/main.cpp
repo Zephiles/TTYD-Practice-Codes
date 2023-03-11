@@ -547,15 +547,21 @@ bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
 
 void clearHeapCorruptionBuffer()
 {
-    clearMemory(HeapInfo.HeapCorruptionBuffer, sizeof(HeapInfo.HeapCorruptionBuffer));
+    clearMemory(HeapInfo.HeapCorruptionBuffer, HEAP_CORRUPTION_BUFFER_SIZE);
 }
 
 void clearMemoryUsageBuffer()
 {
     int32_t ArrayCount = HeapInfo.ArrayCount;
     
-    // Subtract 1 for not displaying the free portion of the smart heap
-    int32_t MemoryUsageArrays = (ArrayCount * 2) - 1;
+#ifndef TTYD_JP
+    constexpr uint32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
+#else
+    constexpr uint32_t ExtraHeaps = 2; // Smart heap, map heap
+#endif
+    
+    // Subtract ExtraHeaps for not displaying the free portions of the smart heap and map heap(s)
+    int32_t MemoryUsageArrays = (ArrayCount * 2) - ExtraHeaps;
     clearMemory(HeapInfo.MemoryUsageBuffer, MemoryUsageArrays * MEMORY_USAGE_LINE_BUFFER_SIZE);
 }
 
@@ -566,11 +572,9 @@ void addTextToHeapCorruptionBuffer(char *text)
     // Make sure adding the new text will not result in an overflow
     uint32_t NewTextSize = strlen(text);
     uint32_t CurrentHeapBufferSize = strlen(tempHeapCorruptionBuffer);
-    
     uint32_t NewHeapBufferSize = CurrentHeapBufferSize + NewTextSize + 1;
-    uint32_t MaxHeapBufferSize = sizeof(HeapInfo.HeapCorruptionBuffer);
     
-    if (NewHeapBufferSize > MaxHeapBufferSize)
+    if (NewHeapBufferSize > HEAP_CORRUPTION_BUFFER_SIZE)
     {
         // Adding the new text will result in an overflow, so don't add it
         return;
@@ -637,6 +641,28 @@ void *checkIndividualSmartHeap(ttyd::memory::SmartAllocationData *start)
         }
         
         prevChunk = currentChunk;
+    }
+    
+    return nullptr;
+}
+
+void* checkIndividualMapHeap(ttyd::memory::MapAllocEntry *start)
+{
+    ttyd::memory::MapAllocEntry *currentChunk = nullptr;
+    
+    for (currentChunk = start; currentChunk; currentChunk = currentChunk->next)
+    {
+        // Check pointer sanity
+        if (!checkIfPointerIsValid(currentChunk))
+        {
+            return currentChunk;
+        }
+        
+        // Sanity check size
+        if (currentChunk->size >= 0x1800000)
+        {
+            return currentChunk;
+        }
     }
     
     return nullptr;
@@ -738,19 +764,92 @@ void handleSmartHeapChunkResults(void *addressWithError,
             Chunks++;
         }
         
-#ifdef TTYD_JP
-        uint32_t HeapEnd = reinterpret_cast<uint32_t>(ttyd::memory::heapEnd.pHeap5End);
-        uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeap5Start);
-#else
-        uint32_t HeapEnd = reinterpret_cast<uint32_t>(ttyd::memory::heapEnd.pHeap4End);
-        uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeap4Start);
-#endif
+        uint32_t HeapEnd = reinterpret_cast<uint32_t>(ttyd::memory::heapEnd.pHeapSmart);
+        uint32_t HeapStart = reinterpret_cast<uint32_t>(ttyd::memory::heapStart.pHeapSmart);
         
         int32_t TotalSize = HeapEnd - HeapStart - 0x20;
         sprintf(tempDisplayBuffer,
             "Smart Heap (used): %.2f/%.2fkb, %" PRId32 " cks",
             intToFloat(Usage) / 1024.f,
             intToFloat(TotalSize) / 1024.f,
+            Chunks);
+        
+        // Add the text to the memory usage buffer
+        strncpy(&HeapInfo.MemoryUsageBuffer[memoryUsageBufferIndex * MEMORY_USAGE_LINE_BUFFER_SIZE], 
+            tempDisplayBuffer, MEMORY_USAGE_LINE_BUFFER_SIZE - 1);
+    }
+}
+
+void handleMapHeapChunkResults(void *addressWithError, 
+    ttyd::memory::MapAllocEntry *chunk, 
+    int32_t memoryUsageBufferIndex, bool battleHeap)
+{
+    char *tempDisplayBuffer = DisplayBuffer;
+    if (addressWithError)
+    {
+        // Get the used or free text
+        const char *String;
+        if (chunk->inUse)
+        {
+            String = "used";
+        }
+        else
+        {
+            String = "free";
+        }
+        
+        // Get the battle text if checking the battle heap
+        const char *CurrentHeap = nullptr;
+        if (battleHeap)
+        {
+            CurrentHeap = "Battle ";
+        }
+        
+        sprintf(tempDisplayBuffer,
+            "%sMap Heap (%s) corrupt at 0x%08" PRIX32 "\n",
+            CurrentHeap,
+            String,
+            reinterpret_cast<uint32_t>(addressWithError));
+        
+        // Add the text to the heap corruption buffer
+        addTextToHeapCorruptionBuffer(tempDisplayBuffer);
+    }
+    else
+    {
+        // Add info about the memory usage to the memory usage buffer
+        int32_t Usage = 0;
+        int32_t Chunks = 0;
+        
+        for (ttyd::memory::MapAllocEntry *tempChunk = chunk; 
+            tempChunk; tempChunk = tempChunk->next)
+        {
+            if (chunk->inUse) // Don't draw the free portion
+            {
+                Usage += tempChunk->size;
+                Chunks++;
+            }
+        }
+        
+        // Get the battle text if checking the battle heap, as well as the size of the current heap
+        const char *CurrentHeap = nullptr;
+        uint32_t heapSize = 0;
+        
+        if (!battleHeap)
+        {
+            heapSize = ttyd::memory::mapalloc_size;
+        }
+#ifndef TTYD_JP
+        else
+        {
+            CurrentHeap = "Battle ";
+            heapSize = ttyd::memory::R_battlemapalloc_size;
+        }
+#endif
+        sprintf(tempDisplayBuffer,
+            "%sMap Heap (used): %.2f/%.2fkb, %" PRId32 " cks",
+            CurrentHeap,
+            intToFloat(Usage) / 1024.f,
+            intToFloat(static_cast<int32_t>(heapSize)) / 1024.f,
             Chunks);
         
         // Add the text to the memory usage buffer
@@ -800,9 +899,24 @@ void checkHeaps()
     handleSmartHeapChunkResults(AddressWithError, tempChunk, MemoryUsageCounter++, true);
     
     // Check the free entries
+    // Don't incrememt MemoryUsageCounter since free entries are not drawn
     tempChunk = SmartWorkPtr->pFirstFree;
     AddressWithError = checkIndividualSmartHeap(tempChunk);
     handleSmartHeapChunkResults(AddressWithError, tempChunk, MemoryUsageCounter, false);
+    
+    // Check the map heap
+    ttyd::memory::MapAllocEntry *MapHeapPtr = ttyd::memory::mapalloc_base_ptr;
+    AddressWithError = checkIndividualMapHeap(MapHeapPtr);
+    handleMapHeapChunkResults(AddressWithError, MapHeapPtr, MemoryUsageCounter, false);
+    
+#ifndef TTYD_JP
+    // Check the battle map heap
+    MapHeapPtr = ttyd::memory::R_battlemapalloc_base_ptr;
+    AddressWithError = checkIndividualMapHeap(MapHeapPtr);
+    
+    MemoryUsageCounter++;
+    handleMapHeapChunkResults(AddressWithError, MapHeapPtr, MemoryUsageCounter, true);
+#endif
     
     // Draw any errors that occured
     if (HeapInfo.HeapCorruptionBuffer[0] != '\0')
@@ -812,8 +926,14 @@ void checkHeaps()
     
     // Draw the memory usage details
     // Make sure at least one heap is being drawn
+#ifndef TTYD_JP
+    constexpr int32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
+#else
+    constexpr int32_t ExtraHeaps = 2; // Smart heap, map heap
+#endif
+    
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-    for (int32_t i = 0; i <= NumHeaps; i++)
+    for (int32_t i = 0; i < NumHeaps + ExtraHeaps; i++)
     {
         if (DisplayHeapInfo[i])
         {

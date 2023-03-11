@@ -4702,8 +4702,17 @@ void drawDisplaysMemoryUsageMenu()
     uint32_t Color;
     
     // Draw each option for displaying memory usage about each heap
+    int32_t PosXBoolOffset = 110;
+    
+#ifndef TTYD_JP
+    constexpr int32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
+    PosXBoolOffset += 40;
+#else
+    constexpr int32_t ExtraHeaps = 2; // Smart heap, map heap
+#endif
+    
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-    int32_t NumHeaps = HeapInfo.ArrayCount - 1; // Remove the smart heap from the total
+    int32_t NumHeaps = HeapInfo.ArrayCount - ExtraHeaps; // Remove the smart heap and map heap(s) from the total
     
     int32_t tempCurrentMenuOption = static_cast<int32_t>(MenuVar.CurrentMenuOption);
     char *tempDisplayBuffer = DisplayBuffer;
@@ -4722,18 +4731,45 @@ void drawDisplaysMemoryUsageMenu()
         
         // Draw the bool for each heap
         getOnOffTextAndColor(DisplayHeapInfo[i], &String, &Color);
-        drawText(String, PosX + 120, PosY, Color, Scale);
+        drawText(String, PosX + PosXBoolOffset, PosY, Color, Scale);
         PosY -= 20;
     }
     
-    // Draw the smart heap text
-    bool CurrentOptionCheck = tempCurrentMenuOption == NumHeaps;
-    Color = getSelectedTextColor(CurrentOptionCheck);
-    drawText("Smart Heap", PosX, PosY, Color, Scale);
-    
-    // Draw the bool for the smart heap
-    getOnOffTextAndColor(DisplayHeapInfo[NumHeaps], &String, &Color);
-    drawText(String, PosX + 120, PosY, Color, Scale);
+    // Draw the text for the smart heap and battle heap(s)
+    for (int32_t i = 0; i < ExtraHeaps; i++)
+    {
+        switch (i)
+        {
+            case 0: // Smart heap
+            {
+                String = "Smart Heap";
+                break;
+            }
+            case 1: // Map heap
+            default:
+            {
+                String = "Map Heap";
+                break;
+            }
+#ifndef TTYD_JP
+            case 2: // Battle Map heap
+            {
+                String = "Battle Map Heap";
+                break;
+            }
+#endif
+        }
+        
+        // Draw the main text
+        bool CurrentOptionCheck = tempCurrentMenuOption == NumHeaps + i;
+        Color = getSelectedTextColor(CurrentOptionCheck);
+        drawText(String, PosX, PosY, Color, Scale);
+        
+        // Draw the bool for the option
+        getOnOffTextAndColor(DisplayHeapInfo[NumHeaps + i], &String, &Color);
+        drawText(String, PosX + PosXBoolOffset, PosY, Color, Scale);
+        PosY -= 20;
+    }
 }
 
 void drawDisplaysHitCheckVisualization()
@@ -6394,7 +6430,13 @@ void drawMemoryUsage()
     char *tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
     
-    int32_t NumHeaps = HeapInfo.ArrayCount - 1; // Remove the smart heap from the total
+#ifndef TTYD_JP
+    constexpr uint32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
+#else
+    constexpr uint32_t ExtraHeaps = 2; // Smart heap, map heap
+#endif
+    
+    int32_t NumHeaps = HeapInfo.ArrayCount - ExtraHeaps; // Remove the smart heap and map heap(s) from the total
     uint32_t MemoryUsageCounter = 0;
     
     // Draw the text for the main heaps
@@ -6421,15 +6463,19 @@ void drawMemoryUsage()
         MemoryUsageCounter += 2;
     }
     
-    // Draw the text for the smart heap
-    if (DisplayHeapInfo[NumHeaps])
+    // Draw the texts for the smart heap and map heap(s)
+    for (uint32_t i = 0; i < ExtraHeaps; i++)
     {
-        // Draw the used text
-        uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
-        if (tempMemoryUsageBuffer[MemoryUsageBufferIndex] != '\0')
+        if (DisplayHeapInfo[NumHeaps + i])
         {
-            drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Color, Scale);
+            uint32_t MemoryUsageBufferIndex = MemoryUsageCounter * MEMORY_USAGE_LINE_BUFFER_SIZE;
+            if (tempMemoryUsageBuffer[MemoryUsageBufferIndex] != '\0')
+            {
+                drawText(&tempMemoryUsageBuffer[MemoryUsageBufferIndex], PosX, PosY, Color, Scale);
+                PosY -= 20;
+            }
         }
+        MemoryUsageCounter++;
     }
     
     // Clear each of the memory usage buffers

@@ -4,6 +4,15 @@
 
 namespace ttyd::memory {
 
+enum SmartAllocationGroup
+{
+    kNone = 0,
+    kArea,
+    kBattle,
+    kSingleFrame,
+    kDoubleFrame,
+};
+
 struct SmartAllocationData
 {
     void *pMemory;
@@ -29,41 +38,42 @@ struct SmartWork
     uint32_t lastFrameFreeCount;
 } __attribute__((__packed__));
 
+struct MapAllocEntry
+{
+    MapAllocEntry *next;
+    uint32_t size;
+    uint16_t inUse;
+    uint16_t currentId;
+    uint8_t unk[0x14];
+} __attribute__((__packed__));
+
 struct HeapEnd
 {
-    void *pHeap0End;
-    void *pHeap1End;
-    void *pHeap2End;
-    void *pHeap3End;
-    void *pHeap4End;
+    void *pHeapDefault;
+    void *pHeapMap;
+    void *pHeapExt;
+    void *pHeapEffect;
 #ifdef TTYD_JP
-    void *pHeap5End;
+    void *pHeapBattle;
 #endif
+    void *pHeapSmart;
 } __attribute__((__packed__));
 
 struct HeapStart
 {
-    void *pHeap0Start;
-    void *pHeap1Start;
-    void *pHeap2Start;
-    void *pHeap3Start;
-    void *pHeap4Start;
+    void *pHeapDefault;
+    void *pHeapMap;
+    void *pHeapExt;
+    void *pHeapEffect;
 #ifdef TTYD_JP
-    void *pHeap5Start;
+    void *pHeapBattle;
 #endif
+    void *pHeapSmart;
 } __attribute__((__packed__));
-
-enum SmartAllocationGroup
-{
-    kNone = 0,
-    kArea,
-    kBattle,
-    kSingleFrame,
-    kDoubleFrame,
-};
 
 static_assert(sizeof(SmartAllocationData) == 0x1C);
 static_assert(sizeof(SmartWork) == 0xE01C);
+static_assert(sizeof(MapAllocEntry) == 0x20);
 
 #ifdef TTYD_JP
 static_assert(sizeof(HeapEnd) == 0x18);
@@ -91,6 +101,14 @@ SmartAllocationData *smartAlloc(uint32_t size, uint32_t group);
 // smartTexObj
 
 extern SmartWork *smartWorkPointer;
+extern uint32_t mapalloc_size;
+extern MapAllocEntry *mapalloc_base_ptr;
+
+#ifndef TTYD_JP
+extern MapAllocEntry *R_battlemapalloc_base_ptr;
+extern uint32_t R_battlemapalloc_size;
+#endif
+
 extern HeapEnd heapEnd;
 extern HeapStart heapStart;
 

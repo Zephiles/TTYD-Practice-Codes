@@ -867,20 +867,28 @@ struct OnScreenTimerDisplayFrameCounter
 struct HeapInfoDisplay
 {
     #define MEMORY_USAGE_LINE_BUFFER_SIZE 64
+    #define HEAP_CORRUPTION_BUFFER_SIZE 512
+    
     int32_t ArrayCount;
     bool *DisplayHeapInfo;
     char *MemoryUsageBuffer;
-    char HeapCorruptionBuffer[512];
+    char *HeapCorruptionBuffer;
     
     HeapInfoDisplay()
     {
-        int32_t NumHeaps = gc::OSAlloc::NumHeaps + 1; // Add one for the smart heap
+#ifndef TTYD_JP
+        constexpr uint32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
+#else
+        constexpr uint32_t ExtraHeaps = 2; // Smart heap, map heap
+#endif
+        int32_t NumHeaps = gc::OSAlloc::NumHeaps + ExtraHeaps; // Add ExtraHeaps for the smart heap and map heap(s)
         ArrayCount = NumHeaps;
         DisplayHeapInfo = new bool[NumHeaps];
         
-        // Subtract 1 for not displaying the free portion of the smart heap
-        int32_t MemoryUsageArrays = (NumHeaps * 2) - 1;
+        // Subtract ExtraHeaps for not displaying the free portions of the smart heap and map heap(s)
+        int32_t MemoryUsageArrays = (NumHeaps * 2) - ExtraHeaps;
         MemoryUsageBuffer = new char[MemoryUsageArrays * MEMORY_USAGE_LINE_BUFFER_SIZE];
+        HeapCorruptionBuffer = new char[HEAP_CORRUPTION_BUFFER_SIZE];
     }
     
     ~HeapInfoDisplay()
@@ -893,6 +901,11 @@ struct HeapInfoDisplay
         if (MemoryUsageBuffer)
         {
             delete[] (MemoryUsageBuffer);
+        }
+        
+        if (HeapCorruptionBuffer)
+        {
+            delete[] (HeapCorruptionBuffer);
         }
     }
 };

@@ -395,6 +395,8 @@
 8002FBB4:memInit
 // data
 8040F508:smartWorkPointer
+804185F0:mapalloc_size
+804185F4:mapalloc_base_ptr
 804185F8:heapEnd
 80418610:heapStart
 

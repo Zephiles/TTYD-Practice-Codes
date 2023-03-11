@@ -395,6 +395,10 @@
 80030218:memInit
 // data
 804151E0:smartWorkPointer
+8041E808:mapalloc_base_ptr
+8041E80C:R_battlemapalloc_base_ptr
+8041E814:R_battlemapalloc_size
+8041E818:mapalloc_size
 8041E81C:heapEnd
 8041E830:heapStart
 
