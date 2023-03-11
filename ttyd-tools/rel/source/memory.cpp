@@ -51,7 +51,7 @@ const char *getAddressString(int32_t slot)
     }
     else
     {
-        tempPointerText = "";
+        tempPointerText = nullptr;
     }
     
     char *tempDisplayBuffer = DisplayBuffer;

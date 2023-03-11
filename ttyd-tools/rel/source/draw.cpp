@@ -4426,7 +4426,7 @@ void drawCheatsManageFlagsMain(uint32_t currentMenu)
         }
         default:
         {
-            FlagText = "";
+            FlagText = nullptr;
         }
     }
     
@@ -5887,7 +5887,7 @@ void drawBridgeSkipDetails()
     const char *FramesPlural;
     if (MainTimer == 1)
     {
-        FramesPlural = "";
+        FramesPlural = nullptr;
     }
     else
     {
@@ -6088,7 +6088,7 @@ void drawActionCommandsTiming()
             }
             else
             {
-                CheckForPlural = "";
+                CheckForPlural = nullptr;
             }
             
             sprintf(tempDisplayBuffer,
