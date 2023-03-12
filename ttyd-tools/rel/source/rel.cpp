@@ -1,3 +1,7 @@
+#include "rel_shrink.h"
+
+#include <gc/OSModule.h>
+
 extern "C" {
 
 typedef void (*PFN_voidfunc)();
@@ -20,6 +24,10 @@ extern void main();
 
 void _prolog()
 {
+    // Free the memory used by the relocation data of this project's REL file, as this REL file shouldn't ever be unlinked
+    gc::OSModule::OSModuleInfo *rel = *reinterpret_cast<gc::OSModule::OSModuleInfo **>(0x80004150); // Stored by the REL Loader code
+    MakeRelFixed(0, rel);
+    
     // Run global constructors
     for (PFN_voidfunc *ctor = _ctors_start; ctor != _ctors_end && *ctor; ++ctor)
     {

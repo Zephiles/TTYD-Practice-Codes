@@ -6,8 +6,6 @@
 // Origial code made by PistonMiner:
 // https://gist.github.com/PistonMiner/3cf955e887bc87f149f5349807a77f8b
 
-namespace mod {
-
 void ShrinkAllocation(int32_t heap_id, gc::OSModule::OSModuleInfo *rel, int32_t new_size)
 {
     constexpr int32_t kGranularity = 32;
@@ -60,14 +58,22 @@ void MakeRelFixed(int32_t heap_id, gc::OSModule::OSModuleInfo *rel)
     
     // Loop through each entry until either the dol or rel id is found.
     // If found, then that should be the end of the imp table.
+    bool shouldShrinkRel = false;
     for (int32_t i = 0; i < total_sections; i++)
     {
         const int32_t imp_module_id = impTable[i].moduleId;
         if ((imp_module_id == 0) || (imp_module_id == rel_module_id))
         {
+            shouldShrinkRel = true;
             rel->impSize = i * kImpTableSectionSize;
             break;
         }
+    }
+    
+    // Make sure the rel should be actually be shrunk
+    if (!shouldShrinkRel)
+    {
+        return;
     }
     
     // Figure out fixed size
@@ -75,6 +81,4 @@ void MakeRelFixed(int32_t heap_id, gc::OSModule::OSModuleInfo *rel)
     
     // Free up unused space
     ShrinkAllocation(heap_id, rel, fixed_size);
-}
-
 }

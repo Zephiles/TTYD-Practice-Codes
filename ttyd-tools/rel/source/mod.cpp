@@ -1,5 +1,4 @@
 #include "mod.h"
-#include "rel_shrink.h"
 #include "global.h"
 #include "patch.h"
 #include "assembly.h"
@@ -42,10 +41,6 @@ Mod *gMod = nullptr;
 
 void main()
 {
-    // Free the memory used by the relocation data of this project's REL file, as this REL file shouldn't ever be unlinked
-    gc::OSModule::OSModuleInfo *rel = *reinterpret_cast<gc::OSModule::OSModuleInfo **>(0x80004150); // Stored by the REL Loader code
-    MakeRelFixed(0, rel);
-    
     Mod *mod = new Mod();
     mod->init();
 }

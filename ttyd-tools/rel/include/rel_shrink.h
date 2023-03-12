@@ -7,8 +7,4 @@
 #define RelShrinkRoundUp(val, align) \
     (val + align - 1) & ~(align - 1)
 
-namespace mod {
-
 void MakeRelFixed(int32_t heap_id, gc::OSModule::OSModuleInfo *rel);
-
-}
