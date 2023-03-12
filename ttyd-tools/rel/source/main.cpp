@@ -554,14 +554,8 @@ void clearMemoryUsageBuffer()
 {
     int32_t ArrayCount = HeapInfo.ArrayCount;
     
-#ifndef TTYD_JP
-    constexpr uint32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
-#else
-    constexpr uint32_t ExtraHeaps = 2; // Smart heap, map heap
-#endif
-    
-    // Subtract ExtraHeaps for not displaying the free portions of the smart heap and map heap(s)
-    int32_t MemoryUsageArrays = (ArrayCount * 2) - ExtraHeaps;
+    // Subtract HEAP_INFO_EXTRA_HEAPS for not displaying the free portions of the smart heap and map heap(s)
+    int32_t MemoryUsageArrays = (ArrayCount * 2) - HEAP_INFO_EXTRA_HEAPS;
     clearMemory(HeapInfo.MemoryUsageBuffer, MemoryUsageArrays * MEMORY_USAGE_LINE_BUFFER_SIZE);
 }
 
@@ -928,14 +922,10 @@ void checkHeaps()
     
     // Draw the memory usage details
     // Make sure at least one heap is being drawn
-#ifndef TTYD_JP
-    constexpr int32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
-#else
-    constexpr int32_t ExtraHeaps = 2; // Smart heap, map heap
-#endif
-    
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-    for (int32_t i = 0; i < NumHeaps + ExtraHeaps; i++)
+    int32_t LoopCount = NumHeaps + HEAP_INFO_EXTRA_HEAPS;
+    
+    for (int32_t i = 0; i < LoopCount; i++)
     {
         if (DisplayHeapInfo[i])
         {

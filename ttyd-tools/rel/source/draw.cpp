@@ -4705,14 +4705,11 @@ void drawDisplaysMemoryUsageMenu()
     int32_t PosXBoolOffset = 110;
     
 #ifndef TTYD_JP
-    constexpr int32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
     PosXBoolOffset += 40;
-#else
-    constexpr int32_t ExtraHeaps = 2; // Smart heap, map heap
 #endif
     
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
-    int32_t NumHeaps = HeapInfo.ArrayCount - ExtraHeaps; // Remove the smart heap and map heap(s) from the total
+    int32_t NumHeaps = HeapInfo.ArrayCount - HEAP_INFO_EXTRA_HEAPS; // Remove the smart heap and map heap(s) from the total
     
     int32_t tempCurrentMenuOption = static_cast<int32_t>(MenuVar.CurrentMenuOption);
     char *tempDisplayBuffer = DisplayBuffer;
@@ -4736,7 +4733,7 @@ void drawDisplaysMemoryUsageMenu()
     }
     
     // Draw the text for the smart heap and battle heap(s)
-    for (int32_t i = 0; i < ExtraHeaps; i++)
+    for (int32_t i = 0; i < HEAP_INFO_EXTRA_HEAPS; i++)
     {
         switch (i)
         {
@@ -6430,13 +6427,7 @@ void drawMemoryUsage()
     char *tempMemoryUsageBuffer = HeapInfo.MemoryUsageBuffer;
     bool *DisplayHeapInfo = HeapInfo.DisplayHeapInfo;
     
-#ifndef TTYD_JP
-    constexpr uint32_t ExtraHeaps = 3; // Smart heap, map heap, battle map heap
-#else
-    constexpr uint32_t ExtraHeaps = 2; // Smart heap, map heap
-#endif
-    
-    int32_t NumHeaps = HeapInfo.ArrayCount - ExtraHeaps; // Remove the smart heap and map heap(s) from the total
+    int32_t NumHeaps = HeapInfo.ArrayCount - HEAP_INFO_EXTRA_HEAPS; // Remove the smart heap and map heap(s) from the total
     uint32_t MemoryUsageCounter = 0;
     
     // Draw the text for the main heaps
@@ -6464,7 +6455,7 @@ void drawMemoryUsage()
     }
     
     // Draw the texts for the smart heap and map heap(s)
-    for (uint32_t i = 0; i < ExtraHeaps; i++)
+    for (uint32_t i = 0; i < HEAP_INFO_EXTRA_HEAPS; i++)
     {
         if (DisplayHeapInfo[NumHeaps + i])
         {
