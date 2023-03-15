@@ -5936,22 +5936,6 @@ void adjustCheatClearAreaFlagSelection(uint32_t button)
             MaxOptionsPerRow, false);
 }
 
-void adjustCustomStatesSelection(uint32_t button)
-{
-    uint32_t TotalMenuOptions = CustomState.TotalEntries;
-    if (TotalMenuOptions > CUSTOM_STATES_MAX_COUNT)
-    {
-        TotalMenuOptions = CUSTOM_STATES_MAX_COUNT;
-    }
-    
-    uint32_t MaxOptionsPerRow = 1;
-    uint32_t MaxOptionsPerPage = CUSTOM_STATES_MAX_NAMES_PER_PAGE;
-    
-    adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
-        MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
-            MaxOptionsPerRow, false);
-}
-
 void adjustMarioStatsSelection(uint32_t button)
 {
     uint32_t tempStatsMarioOptionsLinesSize = StatsMarioOptionsLinesSize;
@@ -6196,6 +6180,22 @@ void adjustIndexWarpCurrentMapEntrancesPage(uint32_t button)
             break;
         }
     }
+}
+
+void adjustCustomStatesSelection(uint32_t button)
+{
+    uint32_t TotalMenuOptions = CustomState.TotalEntries;
+    if (TotalMenuOptions > CUSTOM_STATES_MAX_COUNT)
+    {
+        TotalMenuOptions = CUSTOM_STATES_MAX_COUNT;
+    }
+    
+    uint32_t MaxOptionsPerRow = 1;
+    uint32_t MaxOptionsPerPage = CUSTOM_STATES_MAX_NAMES_PER_PAGE;
+    
+    adjustMenuSelectionVertical(button, MenuVar.CurrentMenuOption, 
+        MenuVar.CurrentPage, TotalMenuOptions, MaxOptionsPerPage, 
+            MaxOptionsPerRow, false);
 }
 
 void adjustMenuSelectionVertical(uint32_t button, uint8_t &currentMenuOption, 

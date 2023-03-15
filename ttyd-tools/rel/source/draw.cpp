@@ -4565,134 +4565,6 @@ void drawCheatsClearArea()
         String, tempCheatsClearAreaFlagsAreas);
 }
 
-void drawCheatsManageCustomStates()
-{
-    // Draw the name for each custom state if there are any
-    uint32_t Color = 0xFFFFFFFF;
-    // uint8_t Alpha = 0xFF;
-    int32_t PosX = -72;
-    int32_t PosY = 180;
-    float Scale = 0.6f;
-    
-    // Draw the current amount of custom states out of the maximum
-    // Draw the counts as int32_ts, to prevent long text if they somehow become negative
-    uint32_t TotalEntries = CustomState.TotalEntries;
-    char *tempDisplayBuffer = DisplayBuffer;
-    
-    sprintf(
-        tempDisplayBuffer, 
-        "Total States\n%" PRId32 "/%" PRId32, 
-        static_cast<int32_t>(TotalEntries), 
-        CUSTOM_STATES_MAX_COUNT);
-    
-    drawText(tempDisplayBuffer, -232, PosY - 120, Color, Scale);
-    
-    // If no custom states currently exist, then exit
-    if (TotalEntries == 0)
-    {
-        return;
-    }
-    
-    // Draw the current page if there can be more than one
-    uint32_t tempCurrentPage = MenuVar.CurrentPage;
-    if (CUSTOM_STATES_MAX_COUNT > CUSTOM_STATES_MAX_NAMES_PER_PAGE)
-    {
-        int32_t PageNumberPosX = 233;
-        drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
-    }
-    
-    // Draw the names of each custom state
-    uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
-    uint32_t tempSelectedOption = MenuVar.SelectedOption;
-    CustomStateStruct *tempCustomStates = &CustomState.State[0];
-    constexpr uint32_t MaxTextSize = sizeof(tempCustomStates->StateName);
-    
-    // The names are not NULL terminated, so create a temporary buffer for them
-    char StateNameBuffer[MaxTextSize + 1];
-    StateNameBuffer[MaxTextSize] = '\0';
-    
-    for (uint32_t i = (tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE); 
-        i < ((tempCurrentPage + 1) * CUSTOM_STATES_MAX_NAMES_PER_PAGE); i++)
-    {
-        // Exit if all of the custom state names have been drawn
-        // Also make sure the maximum entries haven't beed exceeded as a failsafe
-        if ((i >= TotalEntries) || (i >= CUSTOM_STATES_MAX_COUNT))
-        {
-            break;
-        }
-        
-        bool CurrentOptionCheck = (tempSelectedOption != 0) && 
-            (tempSelectedOption != CREATE_CUSTOM_STATE) && 
-            (tempCurrentMenuOption == i);
-        
-        Color = getSelectedTextColor(CurrentOptionCheck);
-        
-        char *tempBuf = strncpy(
-            StateNameBuffer, 
-            tempCustomStates[i].StateName, 
-            MaxTextSize);
-        
-        drawText(tempBuf, PosX, PosY, Color, Scale);
-        PosY -= 20;
-    }
-}
-
-void drawCheatsHandleCustomStateAction()
-{
-    constexpr uint32_t NameSize = sizeof(CustomState.State->StateName);
-    char NewName[NameSize];
-    
-    int32_t CustomTextReturn = setCustomText(NewName, NameSize, false);
-    if (CustomTextReturn == CUSTOM_TEXT_RETURN_DONE)
-    {
-        switch (MenuVar.SelectedOption)
-        {
-            case CREATE_CUSTOM_STATE:
-            {
-                // Make sure the player is currently in the game
-                if (checkIfInGame())
-                {
-                    char *NewStateName = createCustomState();
-                    if (NewStateName)
-                    {
-                        strncpy(NewStateName, NewName, NameSize);
-                    }
-                    else // Failsafe; shouldn't ever run
-                    {
-                        MenuVar.FunctionReturnCode = MAX_STATES_EXIST;
-                        MenuVar.Timer              = secondsToFrames(3);
-                    }
-                }
-                else
-                {
-                    MenuVar.FunctionReturnCode = STATES_CREATE_NOT_IN_GAME;
-                    MenuVar.Timer              = secondsToFrames(3);
-                }
-                
-                closeSecondaryMenu();
-                break;
-            }
-            case RENAME_CUSTOM_STATE:
-            {
-                strncpy(CustomState.State[MenuVar.CurrentMenuOption].StateName, NewName, NameSize);
-                closeSecondaryMenu();
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-    }
-    else if (CustomTextReturn == CUSTOM_TEXT_RETURN_CANCEL)
-    {
-        if (MenuVar.SelectedOption == CREATE_CUSTOM_STATE)
-        {
-            closeSecondaryMenu();
-        }
-    }
-}
-
 void drawDisplaysMemoryUsageMenu()
 {
     // uint8_t Alpha = 0xFF;
@@ -4821,7 +4693,7 @@ void drawWarpsOptions()
     const char **tempWarpDestinations = WarpDestinations;
     
     int32_t PosX                      = -232;
-    int32_t PosY                      = 80;
+    int32_t PosY                      = 60;
     uint32_t Size                     = tempWarpDestinationsSize;
     uint32_t MaxOptionsPerPage        = tempWarpDestinationsSize;
     uint32_t MaxOptionsPerRow         = 4;
@@ -4983,6 +4855,134 @@ void drawWarpsBossesOptions()
     drawMultipleColumnsVertical(PosX, PosY, tempCurrentMenuOption, tempPage, 
         Size, MaxOptionsPerPage, MaxOptionsPerRow, true, 
             PosXIncrementAmount, tempWarpBossLines);
+}
+
+void drawWarpsCustomStates()
+{
+    // Draw the name for each custom state if there are any
+    uint32_t Color = 0xFFFFFFFF;
+    // uint8_t Alpha = 0xFF;
+    int32_t PosX = -72;
+    int32_t PosY = 180;
+    float Scale = 0.6f;
+    
+    // Draw the current amount of custom states out of the maximum
+    // Draw the counts as int32_ts, to prevent long text if they somehow become negative
+    uint32_t TotalEntries = CustomState.TotalEntries;
+    char *tempDisplayBuffer = DisplayBuffer;
+    
+    sprintf(
+        tempDisplayBuffer, 
+        "Total States\n%" PRId32 "/%" PRId32, 
+        static_cast<int32_t>(TotalEntries), 
+        CUSTOM_STATES_MAX_COUNT);
+    
+    drawText(tempDisplayBuffer, -232, PosY - 120, Color, Scale);
+    
+    // If no custom states currently exist, then exit
+    if (TotalEntries == 0)
+    {
+        return;
+    }
+    
+    // Draw the current page if there can be more than one
+    uint32_t tempCurrentPage = MenuVar.CurrentPage;
+    if (CUSTOM_STATES_MAX_COUNT > CUSTOM_STATES_MAX_NAMES_PER_PAGE)
+    {
+        int32_t PageNumberPosX = 233;
+        drawPageNumber(PageNumberPosX, PosY, tempCurrentPage);
+    }
+    
+    // Draw the names of each custom state
+    uint32_t tempCurrentMenuOption = MenuVar.CurrentMenuOption;
+    uint32_t tempSelectedOption = MenuVar.SelectedOption;
+    CustomStateStruct *tempCustomStates = &CustomState.State[0];
+    constexpr uint32_t MaxTextSize = sizeof(tempCustomStates->StateName);
+    
+    // The names are not NULL terminated, so create a temporary buffer for them
+    char StateNameBuffer[MaxTextSize + 1];
+    StateNameBuffer[MaxTextSize] = '\0';
+    
+    for (uint32_t i = (tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE); 
+        i < ((tempCurrentPage + 1) * CUSTOM_STATES_MAX_NAMES_PER_PAGE); i++)
+    {
+        // Exit if all of the custom state names have been drawn
+        // Also make sure the maximum entries haven't beed exceeded as a failsafe
+        if ((i >= TotalEntries) || (i >= CUSTOM_STATES_MAX_COUNT))
+        {
+            break;
+        }
+        
+        bool CurrentOptionCheck = (tempSelectedOption != 0) && 
+            (tempSelectedOption != CREATE_CUSTOM_STATE) && 
+            (tempCurrentMenuOption == i);
+        
+        Color = getSelectedTextColor(CurrentOptionCheck);
+        
+        char *tempBuf = strncpy(
+            StateNameBuffer, 
+            tempCustomStates[i].StateName, 
+            MaxTextSize);
+        
+        drawText(tempBuf, PosX, PosY, Color, Scale);
+        PosY -= 20;
+    }
+}
+
+void drawWarpsHandleCustomStateAction()
+{
+    constexpr uint32_t NameSize = sizeof(CustomState.State->StateName);
+    char NewName[NameSize];
+    
+    int32_t CustomTextReturn = setCustomText(NewName, NameSize, false);
+    if (CustomTextReturn == CUSTOM_TEXT_RETURN_DONE)
+    {
+        switch (MenuVar.SelectedOption)
+        {
+            case CREATE_CUSTOM_STATE:
+            {
+                // Make sure the player is currently in the game
+                if (checkIfInGame())
+                {
+                    char *NewStateName = createCustomState();
+                    if (NewStateName)
+                    {
+                        strncpy(NewStateName, NewName, NameSize);
+                    }
+                    else // Failsafe; shouldn't ever run
+                    {
+                        MenuVar.FunctionReturnCode = MAX_STATES_EXIST;
+                        MenuVar.Timer              = secondsToFrames(3);
+                    }
+                }
+                else
+                {
+                    MenuVar.FunctionReturnCode = STATES_CREATE_NOT_IN_GAME;
+                    MenuVar.Timer              = secondsToFrames(3);
+                }
+                
+                closeSecondaryMenu();
+                break;
+            }
+            case RENAME_CUSTOM_STATE:
+            {
+                strncpy(CustomState.State[MenuVar.CurrentMenuOption].StateName, NewName, NameSize);
+                closeSecondaryMenu();
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+    else if (CustomTextReturn == CUSTOM_TEXT_RETURN_CANCEL)
+    {
+        if (MenuVar.SelectedOption == CREATE_CUSTOM_STATE)
+        {
+            closeSecondaryMenu();
+        }
+    }
 }
 
 void drawWarpIndexMapAndEntrance()

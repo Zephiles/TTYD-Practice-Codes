@@ -140,8 +140,6 @@ void drawCheatsResolveFades();
 void drawCheatsLockFlags();
 void drawCheatsManageFlagsMain(uint32_t currentMenu);
 void drawCheatsClearArea();
-void drawCheatsManageCustomStates();
-void drawCheatsHandleCustomStateAction();
 void drawDisplaysMemoryUsageMenu();
 void drawDisplaysHitCheckVisualization();
 void drawWarpsOptions();
@@ -150,6 +148,8 @@ void drawWarpByEventMenuDetails();
 void drawWarpsBossesOptions();
 void drawWarpIndexMapAndEntrance();
 void drawWarpIndexEntranceList();
+void drawWarpsCustomStates();
+void drawWarpsHandleCustomStateAction();
 void drawOnScreenTimerButtonCombos(uint16_t *buttonCombo);
 
 void drawOnScreenTimer();

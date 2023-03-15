@@ -67,7 +67,6 @@ const char *CheatsLines[] =
     "Lock Flags",
     "Manage Flags",
     "Clear Area Flags",
-    "Manage Custom States",
 };
 
 const char *CheatsChangeSequenceOptionsLines[] = 
@@ -1126,15 +1125,6 @@ const char *CheatsClearAreaFlagsAreasFullNames[] =
     "Pit of 100 Trials",
 };
 
-const char *CheatsManageCustomStatesOptions[]
-{
-    "Load State",
-    "Create State",
-    "Delete State",
-    "Overwrite State",
-    "Rename State",
-};
-
 const char *StatsLines[] = 
 {
     "Mario",
@@ -1628,6 +1618,7 @@ const char *WarpLines[] =
     "Warp By Event",
     "Warp By Index",
     "Warp To Boss",
+    "Custom States",
 };
 
 const char *WarpDestinations[] = 
@@ -1739,6 +1730,15 @@ const char *UnusedMapsArray[] =
     "rsh_05_c",
     "rsh_06_b",
     "rsh_06_c",
+};
+
+const char *WarpsManageCustomStatesOptions[]
+{
+    "Load State",
+    "Create State",
+    "Delete State",
+    "Overwrite State",
+    "Rename State",
 };
 
 #ifdef TTYD_JP
@@ -1932,7 +1932,6 @@ uint8_t CheatsOrder[] =
     GENERATE_LAG_SPIKE,
     FRAME_ADVANCE,
     MODIFY_COORDINATES,
-    MANAGE_CUSTOM_STATES,
 };
 
 uint8_t DisplaysOrder[] = 
@@ -2066,10 +2065,6 @@ void initMenuVars()
     Menu[CHEATS_CLEAR_AREA_FLAGS].ColumnSplitAmount          = Menu[CHEATS_CLEAR_AREA_FLAGS].TotalMenuOptions;
     Menu[CHEATS_CLEAR_AREA_FLAGS].Line                       = CheatsClearAreaFlags;
     
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions       = sizeof(CheatsManageCustomStatesOptions) / sizeof(CheatsManageCustomStatesOptions[0]);
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].ColumnSplitAmount      = Menu[CHEATS_MANAGE_CUSTOM_STATES].TotalMenuOptions;
-    Menu[CHEATS_MANAGE_CUSTOM_STATES].Line                   = CheatsManageCustomStatesOptions;
-    
     Menu[STATS].TotalMenuOptions                             = sizeof(StatsLines) / sizeof(StatsLines[0]);
     Menu[STATS].ColumnSplitAmount                            = Menu[STATS].TotalMenuOptions;
     Menu[STATS].Line                                         = StatsLines;
@@ -2145,6 +2140,10 @@ void initMenuVars()
     Menu[WARPS_BOSS].TotalMenuOptions                        = sizeof(WarpBossLines) / sizeof(WarpBossLines[0]);
     Menu[WARPS_BOSS].ColumnSplitAmount                       = Menu[WARPS_BOSS].TotalMenuOptions;
     Menu[WARPS_BOSS].Line                                    = WarpBossLines;
+    
+    Menu[WARPS_CUSTOM_STATES].TotalMenuOptions               = sizeof(WarpsManageCustomStatesOptions) / sizeof(WarpsManageCustomStatesOptions[0]);
+    Menu[WARPS_CUSTOM_STATES].ColumnSplitAmount              = Menu[WARPS_CUSTOM_STATES].TotalMenuOptions;
+    Menu[WARPS_CUSTOM_STATES].Line                           = WarpsManageCustomStatesOptions;
     
     // Set the initial settings
     setInitialSettings();
