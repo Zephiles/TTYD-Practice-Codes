@@ -4,7 +4,6 @@
 
 #include <gc/card.h>
 #include <ttyd/cardmgr.h>
-#include <ttyd/memory.h>
 
 #include <cstring>
 
@@ -512,13 +511,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     }
     
     // Set up the memory to be copied from the file
-    // Allocate the memory on the smart heap to avoid fragmentation
-    ttyd::memory::SmartAllocationData *SmartData = 
-        allocFromSmartHeap(FileSizeAdjusted, 
-            ttyd::memory::SmartAllocationGroup::kNone);
-    
-    // Set up a temporary local variable to use for getting the memory
-    char *MiscData = reinterpret_cast<char *>(SmartData->pMemory);
+    char *MiscData = new char[FileSizeAdjusted];
     
     // Get the data from the file
     // Must read by the stored size, as the struct size may exceed the size of the file
@@ -530,7 +523,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
     
     if (ReturnCode != CARD_RESULT_READY)
     {
-        ttyd::memory::smartFree(SmartData);
+        delete[] (MiscData);
         return ReturnCode;
     }
     
@@ -671,7 +664,7 @@ int32_t loadSettings(int32_t memoryCardSlot)
         HitCheck.Settings.MissesColor = MissesColor;
     }
     
-    ttyd::memory::smartFree(SmartData);
+    delete[] (MiscData);
     return CARD_RESULT_READY;
 }
 
