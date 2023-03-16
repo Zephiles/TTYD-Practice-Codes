@@ -620,33 +620,6 @@ int32_t loadSettings(int32_t memoryCardSlot)
         FrameAdvance.FrameAdvanceButtonCombos.PauseButtonCombo = ButtonCombo;
     }
     
-    // Get the custom states
-    uint32_t tempTotalCustomStates = Settings->CustomStateSettings.CustomStateCount;
-    if (tempTotalCustomStates > 0)
-    {
-        if (tempTotalCustomStates > CUSTOM_STATES_MAX_COUNT)
-        {
-            tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
-        }
-        
-        CustomState.TotalEntries = tempTotalCustomStates;
-        CustomState.StateWasSelected = false;
-        
-        CustomStateStruct *tempState = CustomState.State;
-        if (tempState)
-        {
-            delete[] (tempState);
-        }
-        
-        tempState = new CustomStateStruct[tempTotalCustomStates];
-        CustomState.State = tempState;
-        
-        CustomStateStruct *CustomStatesSettings = reinterpret_cast<CustomStateStruct *>(
-            reinterpret_cast<uint32_t>(Settings) + Settings->CustomStateSettings.OffsetToCustomStates);
-        
-        memcpy(tempState, CustomStatesSettings, sizeof(CustomStateStruct) * tempTotalCustomStates);
-    }
-    
     // Get the hit check visualization data
     HitCheck.Settings.DrawHits = Settings->HitCheckSettings.DrawHits;
     HitCheck.Settings.DrawMisses = Settings->HitCheckSettings.DrawMisses;
@@ -664,7 +637,49 @@ int32_t loadSettings(int32_t memoryCardSlot)
         HitCheck.Settings.MissesColor = MissesColor;
     }
     
+    // Get the custom states
+    // If there were any previously, then delete them
+    CustomStateStruct *CustomStates = CustomState.State;
+    if (CustomStates)
+    {
+        delete[] (CustomStates);
+        CustomState.State = nullptr;
+    }
+    
+    uint32_t tempTotalCustomStates = Settings->CustomStateSettings.CustomStateCount;
+    uint32_t tempTotalCustomStatesSize;
+    CustomStateStruct *tempState;
+    
+    if (tempTotalCustomStates > 0)
+    {
+        if (tempTotalCustomStates > CUSTOM_STATES_MAX_COUNT)
+        {
+            tempTotalCustomStates = CUSTOM_STATES_MAX_COUNT;
+        }
+        
+        tempTotalCustomStatesSize = sizeof(CustomStateStruct) * tempTotalCustomStates;
+        
+        CustomStateStruct *CustomStatesSettings = reinterpret_cast<CustomStateStruct *>(
+            reinterpret_cast<uint32_t>(Settings) + Settings->CustomStateSettings.OffsetToCustomStates);
+        
+        tempState = new CustomStateStruct[tempTotalCustomStates];
+        memcpy(tempState, CustomStatesSettings, tempTotalCustomStatesSize);
+    }
+    
     delete[] (MiscData);
+    
+    // If there are any custom states, reallocate memory for them now to avoid fragmentation
+    if (tempTotalCustomStates > 0)
+    {
+        CustomStates = new CustomStateStruct[tempTotalCustomStates];
+        
+        CustomState.State = CustomStates;
+        CustomState.TotalEntries = static_cast<uint8_t>(tempTotalCustomStates);
+        memcpy(CustomStates, tempState, tempTotalCustomStatesSize);
+        
+        delete[] (tempState);
+    }
+    
     return CARD_RESULT_READY;
 }
 
