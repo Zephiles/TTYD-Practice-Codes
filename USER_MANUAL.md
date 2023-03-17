@@ -111,28 +111,6 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 28. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
-29. **Manage Custom States** allows you to create up to 15 states that keep track of the following:
-    * All of your current **standard items**, **important items**, **badges** (also **equipped badges**), and **stored items**
-    * The current **Sequence Position**
-    * The following data for **Mario**:
-        * Current HP
-        * Max HP
-        * Current FP
-        * Max FP
-        * Current SP
-        * Max SP
-        * Available BP
-        * Max BP
-        * Rank
-        * Level
-        * Star Powers
-        * Star Points
-        * Coins
-    * All of the **partner**s' current stats
-    * Which **partner**/**follower** is currently out
-    * Whether or not **Mario** is currently in **Boat Mode**
-    * The current **map** and **loading zone**
-
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
 * You are also able to change Yoshi's color and name from within the **Partners** menu. Upon changing the color, you must respawn Yoshi for the changes to take effect. This is done by either swapping partners, entering pipes, or bringing Yoshi out via the menu itself.
@@ -145,7 +123,7 @@ This menu allows you to save and load various settings. The settings are stored 
 * Displays button combinations
 * Memory Watches (See [Memory](#memory))
 * Memory Editor settings (See [Memory](#memory))
-* Custom States
+* Custom States (See [Warps](#warps))
 
 It should also be noted that the settings will be loaded automatically at boot, assuming that a settings file is present on one of the memory cards. If settings files exist on both memory cards, then the one in Slot A will be used.
 
@@ -228,14 +206,16 @@ This menu allows you to change the HP, Max HP, FP, Max FP, held items, and statu
 
 16. **Hit Check Visualization** displays lines for collision detections for anything that runs through the **hitCheckVecFilter** function.
 
-17. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding Y for two seconds.
+17. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding B for two seconds.
 
-18. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding Y for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
+18. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding B for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
 
-19. **Bridge Skip** displays various information about performing this skip. The first field in this display is how many frames early/late you were with pressing A. If you press A on the correct frame, then the counter will remain at 0. You can also manually reset this counter by holding Y for two seconds. **HRP** is the pointer to the area of ground in the current room that you will respawn at upon touching a hazard. In order for **Bridge Skip** to work (as well as any other **Hazard Respawn Glitch**), this pointer must not be set, in which the value will be `0x00000000`.
+19. **Jabbi Hive Skip** displays various information about performing this skip. The first field in this display tells you how well your pause jump was (pressed **D-Pad Left** first, pressed **A** first, or pressed both buttons at the same time). **FBP** is the amount of frames between pressing **D-Pad Left** and **A** to do the unspin jump, and **FBUP** is the amount of frames between the two **A** presses for closing the menu.
+
+19. **Bridge Skip** displays various information about performing this skip. The first field in this display is how many frames early/late you were with pressing A. If you press A on the correct frame, then the counter will remain at 0. You can also manually reset this counter by holding B for two seconds. **HRP** is the pointer to the area of ground in the current room that you will respawn at upon touching a hazard. In order for **Bridge Skip** to work (as well as any other **Hazard Respawn Glitch**), this pointer must not be set, in which the value will be `0x00000000`.
      * Note: **Bridge Skip** will be possible in the PAL version of the game when this display is active.
 
-20. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding Y for two seconds.
+20. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding B for two seconds.
 
 ### Warps
 This menu allows you to warp to various places around the game. You have three separate options to choose from:
@@ -266,8 +246,31 @@ This menu allows you to warp to various places around the game. You have three s
      * If an invalid entrance is used, then Mario will be placed at/near the center of the chosen map.
      
      * Some maps have entrances that don't actually work. Using them will simply place Mario at/near the center of the chosen map.
+
 4. **Warp To Boss** allows you to warp to most bosses/mini-bosses in the game.
    * Note: Warping to a boss using this menu will adjust the game's **Sequence** value.
+
+5. **Custom States** allows you to create up to 15 states that keep track of the following:
+    * All of your current **standard items**, **important items**, **badges** (also **equipped badges**), and **stored items**
+    * The current **Sequence Position**
+    * The following data for **Mario**:
+        * Current HP
+        * Max HP
+        * Current FP
+        * Max FP
+        * Current SP
+        * Max SP
+        * Available BP
+        * Max BP
+        * Rank
+        * Level
+        * Star Powers
+        * Star Points
+        * Coins
+    * All of the **partner**s' current stats
+    * Which **partner**/**follower** is currently out
+    * Whether or not **Mario** is currently in **Boat Mode**
+    * The current **map** and **loading zone**
 
 ## Misc
 There are several other changes that have been made outside of the menu:
@@ -283,7 +286,9 @@ There are several other changes that have been made outside of the menu:
 
 6. A function in the game called **npcNameToPtr** can sometimes return an improper pointer, so an error message will be displayed on-screen when this happens. The message will be displayed for about 5 seconds.
 
-7. Several crashes have been fixed/prevented:
+7. A function in the game called **animPoseMain** will crash if a negative value is passed to it, so the function will be prevented from running to avoid the crash, and an error message will be displayed on-screen when this would occur. The message will be displayed for about 5 seconds.
+
+8. Several crashes have been fixed/prevented:
    * Petalburg intro cutscene - Mario will not have any greeting animation.
    
    * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the **Sequence** is past 338, then the **Sequence** will be set to 338.
@@ -296,6 +301,6 @@ There are several other changes that have been made outside of the menu:
    
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
    
-8. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted, in which less textboxes will appear at the start of the cutscene. Similarly, the cutscenes in Fahr Outpost and The Great Tree before the final Shadow Queen fight have also been adjusted to prevent one of the game's heaps from becoming corrupted, in which the textboxes that appear in those cutscenes will appear less frequently.
+9. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted, in which less textboxes will appear at the start of the cutscene. Similarly, the cutscenes in Fahr Outpost and The Great Tree before the final Shadow Queen fight have also been adjusted to prevent one of the game's heaps from becoming corrupted, in which the textboxes that appear in those cutscenes will appear less frequently.
 
-9. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
+10. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
