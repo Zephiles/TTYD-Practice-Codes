@@ -584,10 +584,6 @@ void menuCheckButton()
                             break;
                         }
                         case CLEAR_AREA_FLAGS:
-                        {
-                            MenuToEnter = CHEATS_CLEAR_AREA_FLAGS;
-                            break;
-                        }
                         default:
                         {
                             MenuToEnter = CHEATS_CLEAR_AREA_FLAGS;
@@ -595,6 +591,7 @@ void menuCheckButton()
                         }
                     }
                     
+                    MenuVar.MenuSelectedOption = tempCurrentMenuOption;
                     enterNextMenu(MenuToEnter, tempCurrentMenuOption);
                     resetMenu();
                     break;
