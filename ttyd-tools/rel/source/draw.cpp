@@ -5619,6 +5619,45 @@ void drawYoshiSkipDetails()
         YoshiSkip.MainTimer++;
     }
 }
+void drawMinimalPalaceSkipDetails() {
+    uint32_t Color = 0xFFFFFFFF;
+    uint8_t Alpha = 0xFF;
+    int32_t PosX = -232;
+    int32_t PosY = -160;
+    float Scale = 0.65f;
+
+    // Move the text up if the Mario's coordinates are active
+    if (Displays[MARIO_COORDINATES]) {
+        PosY += 20;
+    }
+
+    // Move the text up if the input display is active
+    if (Displays[BUTTON_INPUT_DISPLAY]) {
+        PosY += 20;
+    }
+
+    // Move the text up if the stick angle display is active
+    if (Displays[STICK_ANGLE]) {
+        PosY += 20;
+    }
+
+    // Move the text up if the Mario Speed XZ display is active
+    if (Displays[MARIO_SPEED_XZ]) {
+        PosY += 20;
+    }
+
+    // Draw the text
+    char *tempDisplayBuffer = DisplayBuffer;
+    sprintf(tempDisplayBuffer, "PST: %" PRIu32, MinimalPalaceSkip.MainTimer);
+
+    drawTextAndInit(tempDisplayBuffer, PosX, PosY, Alpha, Color, true, Scale);
+
+    // Increment the main timer
+    if (!MinimalPalaceSkip.TimerStopped) {
+        MinimalPalaceSkip.MainTimer++;
+    }
+}
+
 
 void drawPalaceSkipDetails()
 {
