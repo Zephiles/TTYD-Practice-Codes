@@ -3953,6 +3953,7 @@ void menuCheckButton()
                             adjustMenuNoPageEdit(CurrentButton);
                             break;
                         }
+                        case MOVE_CUSTOM_STATE:
                         case LOAD_CUSTOM_STATE:
                         case DELETE_CUSTOM_STATE:
                         case OVERWRITE_CUSTOM_STATE:
@@ -3993,6 +3994,20 @@ void menuCheckButton()
                                     
                                     // Use the delete, overwrite, and rename code if didn't break
                                     [[fallthrough]];
+                                }
+                                case MOVE_CUSTOM_STATE: {
+                                    if (tempTotalEntries > 1)
+                                    {
+                                        MenuVar.CurrentMenuOption = tempCurrentPage * CUSTOM_STATES_MAX_NAMES_PER_PAGE;
+                                        MenuVar.SelectedOption = CurrentMenuOptionCheck;
+                                    }
+                                    else
+                                    {
+                                        MenuVar.FunctionReturnCode = NO_STATES_EXIST;
+                                        MenuVar.Timer              = secondsToFrames(3);
+                                    }
+                                    MenuVar.MenuSecondaryValue = CUSTOM_STATES_MAX_COUNT;
+                                    break;
                                 }
                                 case DELETE_CUSTOM_STATE:
                                 case OVERWRITE_CUSTOM_STATE:
@@ -4099,15 +4114,28 @@ void menuCheckButton()
                             if (tempMenuSelectedOption == 0)
                             {
                                 const char *StateName = CustomState.State[tempCurrentMenuOption].StateName;
-                                
-                                constexpr uint32_t StateNameSize = 
+
+                                constexpr uint32_t StateNameSize =
                                     sizeof(CustomState.State[tempCurrentMenuOption].StateName);
-                                
+
                                 // Add 1 to StateNameSize since it's not NULL terminated
                                 customTextInit(StateName, StateNameSize + 1);
-                                
+
                                 MenuVar.SecondaryMenuOption = 0;
                                 MenuVar.MenuSelectedOption = tempSelectedOption;
+                            }
+                            break;
+                        }
+                        case MOVE_CUSTOM_STATE:
+                        {
+                            if (MenuVar.MenuSecondaryValue == CUSTOM_STATES_MAX_COUNT) {
+                                MenuVar.MenuSecondaryValue = tempCurrentMenuOption;
+                                MenuVar.CurrentMenuOption = 0;
+                            } else if(MenuVar.MenuSecondaryValue != (int32_t) tempCurrentMenuOption) {
+                                CustomStateStruct customState = CustomState.State[MenuVar.MenuSecondaryValue];
+                                CustomState.State[MenuVar.MenuSecondaryValue] = CustomState.State[tempCurrentMenuOption];
+                                CustomState.State[tempCurrentMenuOption] = customState;
+                                closeSecondaryMenu();
                             }
                             break;
                         }
@@ -4121,6 +4149,14 @@ void menuCheckButton()
                 }
                 case B:
                 {
+                    if(tempSelectedOption == MOVE_CUSTOM_STATE) {
+                        if(MenuVar.MenuSecondaryValue != CUSTOM_STATES_MAX_COUNT) {
+                            MenuVar.MenuSecondaryValue = CUSTOM_STATES_MAX_COUNT;
+                        } else {
+                            closeSecondaryMenu();
+                        }
+                        break;
+                    }
                     if (tempMenuSelectedOption == 0)
                     {
                         if (tempSelectedOption == 0)
