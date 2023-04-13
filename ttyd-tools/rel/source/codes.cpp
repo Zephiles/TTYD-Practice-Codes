@@ -1428,6 +1428,55 @@ void displayPalaceSkipDetails()
     drawFunctionOnDebugLayer(drawPalaceSkipDetails);
 }
 
+void displayMinimalPalaceSkipDetails()
+{
+    if (!Displays[MINIMAL_PALACE_SKIP])
+    {
+        return;
+    }
+
+    uint32_t SystemLevelFlags = ttyd::mariost::marioStGetSystemLevel();
+    if ((SystemLevelFlags & 15) == 15)
+    {
+        // Stop upon pausing
+        MinimalPalaceSkip.TimerStopped = true;
+        MinimalPalaceSkip.TimerPaused = true;
+    }
+    else if (MinimalPalaceSkip.TimerPaused && !checkIfSystemLevelIsSet())
+    {
+        // Reset and Start when unpausing
+        MinimalPalaceSkip.MainTimer = 0;
+        MinimalPalaceSkip.TimerStopped = false;
+        MinimalPalaceSkip.TimerPaused = false;
+    }
+
+    if (checkButtonCombo(PAD_X))
+    {
+        // Stop when pressing X
+        MinimalPalaceSkip.TimerStopped = true;
+    }
+
+    if (checkButtonComboEveryFrame(PAD_B))
+    {
+        // Hold B to increment the counter
+        MinimalPalaceSkip.ResetTimer++;
+    }
+    else
+    {
+        MinimalPalaceSkip.ResetTimer = 0;
+    }
+
+    if (MinimalPalaceSkip.ResetTimer > secondsToFrames(2))
+    {
+        // Reset the timer when button is held for 2 seconds
+        MinimalPalaceSkip.TimerStopped = true;
+        MinimalPalaceSkip.MainTimer = 0;
+        MinimalPalaceSkip.ResetTimer = 0;
+    }
+
+    drawFunctionOnDebugLayer(drawMinimalPalaceSkipDetails);
+}
+
 void displayJabbiHiveSkipDetails()
 {
     using namespace ttyd::mario_motion;

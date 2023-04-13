@@ -3369,14 +3369,25 @@ void menuCheckButton()
                     {
                         case YOSHI_SKIP:
                         {
+                            Displays[MINIMAL_PALACE_SKIP] = false;
                             Displays[PALACE_SKIP] = false;
                             Displays[JABBI_HIVE_SKIP] = false;
                             Displays[BRIDGE_SKIP] = false;
                             Displays[BLIMP_TICKET_SKIP] = false;
                             break;
                         }
+                        case MINIMAL_PALACE_SKIP:
+                        {
+                            Displays[PALACE_SKIP] = false;
+                            Displays[JABBI_HIVE_SKIP] = false;
+                            Displays[YOSHI_SKIP] = false;
+                            Displays[BRIDGE_SKIP] = false;
+                            Displays[BLIMP_TICKET_SKIP] = false;
+                            break;
+                        }
                         case PALACE_SKIP:
                         {
+                            Displays[MINIMAL_PALACE_SKIP] = false;
                             Displays[JABBI_HIVE_SKIP] = false;
                             Displays[YOSHI_SKIP] = false;
                             Displays[BRIDGE_SKIP] = false;
@@ -3385,6 +3396,7 @@ void menuCheckButton()
                         }
                         case JABBI_HIVE_SKIP:
                         {
+                            Displays[MINIMAL_PALACE_SKIP] = false;
                             Displays[YOSHI_SKIP] = false;
                             Displays[PALACE_SKIP] = false;
                             Displays[BRIDGE_SKIP] = false;
@@ -3393,6 +3405,7 @@ void menuCheckButton()
                         }
                         case BRIDGE_SKIP:
                         {
+                            Displays[MINIMAL_PALACE_SKIP] = false;
                             Displays[YOSHI_SKIP] = false;
                             Displays[PALACE_SKIP] = false;
                             Displays[JABBI_HIVE_SKIP] = false;
@@ -3401,6 +3414,7 @@ void menuCheckButton()
                         }
                         case BLIMP_TICKET_SKIP:
                         {
+                            Displays[MINIMAL_PALACE_SKIP] = false;
                             Displays[YOSHI_SKIP] = false;
                             Displays[PALACE_SKIP] = false;
                             Displays[JABBI_HIVE_SKIP] = false;

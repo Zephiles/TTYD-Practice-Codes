@@ -429,6 +429,7 @@ enum DISPLAYS_OPTIONS
     HIT_CHECK_VISUALIZATION,
     YOSHI_SKIP,
     PALACE_SKIP,
+    MINIMAL_PALACE_SKIP,
     JABBI_HIVE_SKIP,
     BRIDGE_SKIP,
     BLIMP_TICKET_SKIP,
@@ -1317,7 +1318,7 @@ struct SetCustomText
 extern MenuVars MenuVar;
 extern Menus Menu[40];
 extern Cheats Cheat[29];
-extern bool Displays[21];
+extern bool Displays[22];
 extern char DisplayBuffer[256];
 extern MemoryWatchStruct MemoryWatch[60];
 extern MemoryEditorStruct MemoryEditor;
@@ -1338,6 +1339,7 @@ extern ClearCacheForBattlesStruct ClearCacheForBattles;
 extern LockFlagsStruct LockFlags;
 extern TrickDisplay YoshiSkip;
 extern TrickDisplay PalaceSkip;
+extern TrickDisplay MinimalPalaceSkip;
 extern JabbiHiveSkipStruct JabbiHiveSkip;
 extern BridgeSkipStruct BridgeSkip;
 extern BlimpTicketSkipStruct BlimpTicketSkip;
