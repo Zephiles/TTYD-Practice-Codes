@@ -4873,7 +4873,7 @@ void drawWarpsCustomStates()
     
     sprintf(
         tempDisplayBuffer, 
-        "Total States\n%" PRId32 "/%" PRId32, 
+        "\nTotal States\n%" PRId32 "/%" PRId32,
         static_cast<int32_t>(TotalEntries), 
         CUSTOM_STATES_MAX_COUNT);
     
@@ -4914,11 +4914,13 @@ void drawWarpsCustomStates()
         }
         
         bool CurrentOptionCheck = (tempSelectedOption != 0) && 
-            (tempSelectedOption != CREATE_CUSTOM_STATE) && 
+            (tempSelectedOption != CREATE_CUSTOM_STATE) &&
             (tempCurrentMenuOption == i);
-        
-        Color = getSelectedTextColor(CurrentOptionCheck);
-        
+
+        bool CurrentOptionSecondary = (tempSelectedOption == MOVE_CUSTOM_STATE) && (MenuVar.MenuSecondaryValue < CUSTOM_STATES_MAX_COUNT) && (MenuVar.MenuSecondaryValue == (int32_t) i);
+
+        Color = getSelectedTextColor(CurrentOptionCheck || CurrentOptionSecondary);
+
         char *tempBuf = strncpy(
             StateNameBuffer, 
             tempCustomStates[i].StateName, 

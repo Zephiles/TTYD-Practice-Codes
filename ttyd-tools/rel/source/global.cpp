@@ -1739,6 +1739,7 @@ const char *WarpsManageCustomStatesOptions[]
     "Delete State",
     "Overwrite State",
     "Rename State",
+    "Move State",
 };
 
 #ifdef TTYD_JP
