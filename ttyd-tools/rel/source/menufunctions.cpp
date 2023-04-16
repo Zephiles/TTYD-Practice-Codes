@@ -6483,6 +6483,7 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
     uint32_t tempCurrentPage       = currentPage;
     
     uint32_t LastValidOption       = totalMenuOptions - 1;
+    uint32_t FirstOptionOnPage     = maxOptionsPerPage * tempCurrentPage;
     uint32_t CurrentColumn         = tempCurrentMenuOption % maxOptionsPerRow;
     uint32_t LastColumn            = maxOptionsPerRow - 1;
     uint32_t LastPage              = (1 + ((totalMenuOptions - 1) / maxOptionsPerPage)) - 1;
@@ -6510,6 +6511,12 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
                 {
                     if (allowUpwardsSnapFromLeftOrRight)
                     {
+                        // If currently on the first option of the current page, then there are no valid options to the right, so do nothing
+                        if (tempCurrentMenuOption == FirstOptionOnPage)
+                        {
+                            return;
+                        }
+                        
                         // Go to the furthest right option and up one column
                         currentMenuOption = tempCurrentMenuOption - 1;
                     }
@@ -6547,6 +6554,12 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
                 {
                     if (allowUpwardsSnapFromLeftOrRight)
                     {
+                        // If currently on the first option of the current page, then there are no valid options to the right, so do nothing
+                        if (tempCurrentMenuOption == FirstOptionOnPage)
+                        {
+                            return;
+                        }
+                        
                         // Go to the next right option and up one column
                         currentMenuOption = tempCurrentMenuOption - LastColumn;
                     }
@@ -6596,7 +6609,15 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
                 {
                     // Go to the next page
                     currentPage = tempCurrentPage + 1;
-                    currentMenuOption = tempCurrentMenuOption + maxOptionsPerRow;
+                    tempCurrentMenuOption += maxOptionsPerRow;
+                    
+                    // Make sure the current option is valid
+                    if (tempCurrentMenuOption > LastValidOption)
+                    {
+                        tempCurrentMenuOption = LastValidOption;
+                    }
+                    
+                    currentMenuOption = tempCurrentMenuOption;
                 }
             }
             else if ((tempCurrentMenuOption + maxOptionsPerRow) > LastValidOption)
@@ -6617,7 +6638,6 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
         case DPADUP:
         {
             // Check if currently at the top of the current column
-            uint32_t FirstOptionOnPage = maxOptionsPerPage * tempCurrentPage;
             bool CurrentlyAtTop = false;
             
             for (uint32_t i = 0; i < TotalColumns; i++)
@@ -6636,7 +6656,8 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
                 if (tempCurrentPage == 0)
                 {
                     // Go to the last page
-                    currentPage = LastPage;
+                    tempCurrentPage = LastPage;
+                    currentPage = tempCurrentPage;
                     
                     // Go to the last option in the current column
                     tempCurrentMenuOption += (TotalRows - 1) * maxOptionsPerRow;
@@ -6646,6 +6667,12 @@ void adjustMenuSelectionHorizontal(uint32_t button, uint8_t &currentMenuOption,
                     {
                         // Go to the option in the previous row
                         tempCurrentMenuOption -= maxOptionsPerRow;
+                    }
+                    
+                    // If the option in the previous row is on the previous page, then go to the last valid option
+                    if (tempCurrentMenuOption < (tempCurrentPage * maxOptionsPerPage))
+                    {
+                        tempCurrentMenuOption = LastValidOption;
                     }
                     
                     currentMenuOption = tempCurrentMenuOption;
