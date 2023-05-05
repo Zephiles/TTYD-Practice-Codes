@@ -1,0 +1,154 @@
+#include "menuUtils.h"
+#include "drawText.h"
+#include "mod.h"
+#include "classes/window.h"
+#include "menus/root.h"
+#include "menus/inventory.h"
+#include "misc/utils.h"
+#include "ttyd/dispdrv.h"
+#include "ttyd/win_main.h"
+
+#include <cstdint>
+
+Window *gRootWindow = nullptr;
+Root *gRoot = nullptr;
+
+const MenuOption rootMenuOptions[] = {
+    "Inventory",
+    inventoryMenuInit,
+
+    "Cheats",
+    nullptr,
+
+    "Stats",
+    nullptr,
+
+    "Settings",
+    nullptr,
+
+    "Memory",
+    nullptr,
+
+    "Battles",
+    nullptr,
+
+    "Displays",
+    nullptr,
+
+    "Warps",
+    nullptr,
+};
+
+const MenuFunctions rootMenuFuncs = {
+    controlsBasicMenuLayout,
+    rootMenuDraw,
+    rootMenuExit,
+};
+
+float value = -120.f;
+
+void getValue(const void *valuePtr)
+{
+    *reinterpret_cast<float *>(0x80003F88) = *reinterpret_cast<const float *>(valuePtr);
+}
+
+void rootMenuInit()
+{
+    // Set the system level if not in a battle
+    setSystemLevel(1);
+
+    // Disable the pause menu
+    winOpenDisable();
+
+    // Need to enter the root menu before initializing gRoot
+    constexpr uint32_t totalOptions = sizeof(rootMenuOptions) / sizeof(rootMenuOptions[0]);
+    enterNextMenu(rootMenuOptions, &rootMenuFuncs, totalOptions);
+
+    // Failsafe: Make sure memory isn't already allocated for gRoot
+    Root *rootPtr = gRoot;
+    if (rootPtr)
+    {
+        delete rootPtr;
+    }
+
+    const char *battlesErrorMessage = "You must be in a battle\nto use the Battles menu.";
+    gRoot = new Root(battlesErrorMessage, 0.6);
+
+    ValueEditor *valueEditor = gRoot->getValueEditor();
+
+    uint32_t flags = 0;
+    // flags = valueEditor->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
+    flags = valueEditor->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = valueEditor->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = valueEditor->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = valueEditor->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
+    // flags = valueEditor->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+
+    valueEditor->init(&value, nullptr, nullptr, flags, VariableType::f32, gRoot->getScale());
+    valueEditor->startDrawing(getValue, nullptr);
+}
+
+void rootMenuExit()
+{
+    delete gRoot;
+    gRoot = nullptr;
+
+    // Reset the system level if not in a battle
+    setSystemLevel(0);
+
+    // Enable the pause menu
+    winOpenEnable();
+}
+
+void rootMenuDraw(CameraId cameraId, void *user)
+{
+    // Draw the main window and text
+    drawBasicMenuLayout(cameraId, user);
+
+    Window *rootWindowPtr = gRootWindow;
+    Root *rootPtr = gRoot;
+
+    const float scale = rootPtr->getScale();
+
+    // Draw the version number at the top-right of the main window
+    float posX;
+    float posY;
+
+    const char *text = VERSION_STRING;
+    rootWindowPtr->getTextPosXY(text, WindowAlignment::TOP_RIGHT, scale, &posX, &posY);
+    drawText(text, posX, posY, scale, getColorWhite(0xFF));
+
+    // Draw the error message for trying to enter the Battles menu while not in a battle
+    ErrorWindow *errorWindowPtr = rootPtr->getErrorWindow();
+    if (errorWindowPtr->shouldDraw())
+    {
+        errorWindowPtr->draw();
+    }
+
+    ValueEditor *valueEditorPtr = rootPtr->getValueEditor();
+    valueEditorPtr->controls(getMenuButtonInput(true));
+    valueEditorPtr->draw();
+}
+
+void rootMenuExitBattleMenu()
+{
+    // Close all menus until the root menu is reached
+    Root *rootPtr = gRoot;
+    Menu *menuPtr = gMenu;
+    Menu *rootMenu = rootPtr->getRootMenu();
+
+    while (menuPtr != rootMenu)
+    {
+        enterPrevMenu();
+        menuPtr = gMenu;
+
+        // Failsafe: Make sure gMenu doesn't end up being nullptr
+        if (!menuPtr)
+        {
+            return;
+        }
+    }
+
+    // Draw the error message for trying to enter the Battles menu while not in a battle
+    rootPtr->getErrorWindow()->setTimer(3000);
+}

@@ -1,0 +1,12 @@
+.global asmFixEvtMapBlendSetFlagFollowerCrashStart
+.global asmFixEvtMapBlendSetFlagFollowerCrashBranchBack
+
+asmFixEvtMapBlendSetFlagFollowerCrashStart:
+# r3 already contains followerPtr
+bl cFixEvtMapBlendSetFlagFollowerCrash
+
+# Restore the overwritten instruction
+cmpwi %r31,1
+
+asmFixEvtMapBlendSetFlagFollowerCrashBranchBack:
+b 0
