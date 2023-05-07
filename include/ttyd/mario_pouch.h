@@ -53,7 +53,9 @@ struct PouchData
     int8_t pad_57e[2];
     uint32_t emailReceived[4]; // Bitfield
     uint32_t emailRead[4];     // Bitfield
-    uint8_t unk_5a0[0x18];
+    uint8_t unk_5a0[0x10];
+    int16_t shopPoints;
+    uint8_t unk_5b4[0x6];
     int8_t merleeCurseUsesRemaining;
     int8_t turnsUntilMerleeActivation;
     int8_t nextMerleeCurseType;

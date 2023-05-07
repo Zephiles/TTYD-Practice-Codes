@@ -4,6 +4,7 @@
 #include "classes/window.h"
 #include "menus/root.h"
 #include "menus/inventory.h"
+#include "menus/stats.h"
 #include "misc/utils.h"
 #include "ttyd/dispdrv.h"
 #include "ttyd/win_main.h"
@@ -21,7 +22,7 @@ const MenuOption rootMenuOptions[] = {
     nullptr,
 
     "Stats",
-    nullptr,
+    statsMenuInit,
 
     "Settings",
     nullptr,

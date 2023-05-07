@@ -192,13 +192,13 @@ void drawIconWithText(float posX,
     drawTextInit(alpha, false);
 
     // Icons are rotated on the Y axis by default, so the text will need to be moved down by the height of it
-    const float iconHeightAdjustment = ICON_SIZE_FLOAT * scale;
+    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
 
     // Align the text so that the icon is roughly centered with it
-    const float textPosY = posY + iconHeightAdjustment - (7.f * scale);
+    const float textPosY = posY + iconAdjustment - (7.f * scale);
 
     // Draw the text
-    const float textPosX = posX + (ICON_SIZE_FLOAT * scale) - (15.f * scale);
+    const float textPosX = posX + iconAdjustment - (15.f * scale);
     drawText(text, textPosX, textPosY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
 
     /*

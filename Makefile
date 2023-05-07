@@ -39,9 +39,14 @@ else
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
+
+# rwildcard taken from stackoverflow:
+# https://stackoverflow.com/questions/2483182/recursive-wildcards-in-gnu-make
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
 TARGET		:=	$(notdir $(CURDIR)).$(VERSION)
 BUILD		:=	build.$(VERSION)
-SOURCES		:=	source $(wildcard source/*)
+SOURCES		:=	source $(call rwildcard,source,*)
 DATA		:=	data
 INCLUDES	:=	include
 
