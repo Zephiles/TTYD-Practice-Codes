@@ -504,9 +504,7 @@ void Inventory::drawCurrentInventory()
     inventoryWindow->draw();
     */
 
-    // Initialize text drawing
-    drawTextInit(false);
-
+    // To avoid a lot of unnecessary extra GX calls, draw the text first, as text drawing should already be initialized
     // Figure out how many items/badges the player currently has out of the max
     const int32_t currentItemCount = static_cast<int32_t>(this->getTotalItemsInInventory());
     const int32_t totalItems = this->inventorySize;
@@ -526,37 +524,12 @@ void Inventory::drawCurrentInventory()
     uint32_t textColor = getColorWhite(0xFF);
     drawText(displayBufferPtr, itemCountPosX, itemCountPosY, scale, textColor);
 
-    // Draw the icons for the L and R buttons if applicable
-    // The standard inventory will only have one page, so neither are required
-    const uint32_t inventoryType = this->inventoryType;
-    if (inventoryType != InventoryType::STANDARD)
-    {
-        const float iconLRPosX = inventoryWindow->getIconPosX(WindowAlignment::TOP_RIGHT, scale);
-        const float iconLRScale = scale - 0.1f;
-
-        // Draw the L button if currently not on the first page
-        if (currentPage > 0)
-        {
-            const float iconLPosY = inventoryWindow->getIconPosY(WindowAlignment::TOP_RIGHT, scale);
-            drawIcon(iconLRPosX, iconLPosY, iconLRScale, IconId::ICON_BUTTON_L_UNPRESSED);
-        }
-
-        // Draw the R button if more items are on the next page
-        if (this->checkIfItemsOnNextPage(static_cast<uint32_t>(currentItemCount)))
-        {
-            const float iconRPosY = inventoryWindow->getIconPosY(WindowAlignment::BOTTOM_RIGHT, scale);
-            drawIcon(iconLRPosX, iconRPosY, iconLRScale, IconId::ICON_BUTTON_R_UNPRESSED);
-        }
-    }
-
     // Start drawing the items/badges with their icons
     const float padding = inventoryWindow->getPadding() * scale;
     float tempItemPosXBase;
     float tempItemPosYBase;
     inventoryWindow->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &tempItemPosXBase, &tempItemPosYBase);
 
-    // Retrieve itemPosXBase and itemPosYBase as separate variables to avoid repeatedly loading them from the stack when using
-    // them
     const float itemPosXBase = tempItemPosXBase - padding;
     const float itemPosYBase = tempItemPosYBase - (LINE_HEIGHT_FLOAT * scale) + LINE_HEIGHT_ADJUSTMENT_5(scale) - padding;
 
@@ -565,17 +538,15 @@ void Inventory::drawCurrentInventory()
     const float itemPosXIncrement = textWidth + (ICON_SIZE_FLOAT * scale) + widthAdjustment;
     const float itemLineDecrement = SPACE_USED_PER_ICON(scale);
 
-    float itemPosX = itemPosXBase;
-    float itemPosY = itemPosYBase;
+    float textPosXBase;
+    float textPosYBase;
+    getTextPosXYByIcon(itemPosXBase, itemPosYBase, scale, &textPosXBase, &textPosYBase);
+
+    float textPosX = textPosXBase;
+    float textPosY = textPosYBase;
 
     const Menu *menuPtr = gMenu;
-    uint32_t counter = 0;
-    float iconScale;
-
-    const uint32_t currentPage = this->currentPage;
-    const uint32_t currentIndex = this->currentIndex;
-    const uint32_t startingIndex = INVENTORY_ITEMS_PER_PAGE * currentPage;
-
+    const uint32_t inventoryType = this->inventoryType;
     const bool drawVertical = (inventoryType == InventoryType::BADGES) || (inventoryType == InventoryType::STORED);
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
 
@@ -589,7 +560,16 @@ void Inventory::drawCurrentInventory()
 
     const ItemId *inventoryItemPtr = this->inventoryItemPtr;
 
-    for (uint32_t i = startingIndex; i < (startingIndex + INVENTORY_ITEMS_PER_PAGE); i++, counter++)
+    const uint32_t currentPage = this->currentPage;
+    const uint32_t currentIndex = this->currentIndex;
+    const uint32_t startingIndex = INVENTORY_ITEMS_PER_PAGE * currentPage;
+    const uint32_t endingIndex = startingIndex + INVENTORY_ITEMS_PER_PAGE;
+
+    uint32_t counter = 0;
+    float iconScale;
+
+    // Draw the item/badge texts
+    for (uint32_t i = startingIndex; i < endingIndex; i++, counter++)
     {
         if (static_cast<int32_t>(i) >= currentItemCount)
         {
@@ -604,8 +584,8 @@ void Inventory::drawCurrentInventory()
                 counter = 0;
 
                 // Move to the next column
-                itemPosX += itemPosXIncrement;
-                itemPosY = itemPosYBase;
+                textPosX += itemPosXIncrement;
+                textPosY = textPosYBase;
             }
         }
         else
@@ -615,8 +595,8 @@ void Inventory::drawCurrentInventory()
                 counter = 0;
 
                 // Move to the next row
-                itemPosX = itemPosXBase;
-                itemPosY -= itemLineDecrement;
+                textPosX = textPosXBase;
+                textPosY -= itemLineDecrement;
             }
         }
 
@@ -656,10 +636,61 @@ void Inventory::drawCurrentInventory()
             }
         }
 
+        const char *itemName = getItemName(currentItem);
+        drawText(itemName, textPosX, textPosY, scale, textWidth, textColor);
+
+        if (drawVertical)
+        {
+            textPosY -= itemLineDecrement;
+        }
+        else
+        {
+            textPosX += itemPosXIncrement;
+        }
+    }
+
+    // Draw the item/badge icons
+    float itemPosX = itemPosXBase;
+    float itemPosY = itemPosYBase;
+    counter = 0;
+
+    for (uint32_t i = startingIndex; i < endingIndex; i++, counter++)
+    {
+        if (static_cast<int32_t>(i) >= currentItemCount)
+        {
+            // Reached the end of the array, so exit
+            break;
+        }
+
+        if (drawVertical)
+        {
+            if (counter >= INVENTORY_ITEMS_PER_COLUMN)
+            {
+                counter = 0;
+
+                // Move to the next column
+                itemPosX += itemPosXIncrement;
+                itemPosY = itemPosYBase;
+            }
+        }
+        else
+        {
+            if (counter >= INVENTORY_ITEMS_PER_ROW)
+            {
+                counter = 0;
+
+                // Move to the next row
+                itemPosX = itemPosXBase;
+                itemPosY -= itemLineDecrement;
+            }
+        }
+
+        const ItemId currentItem = inventoryItemPtr[i];
+
         // Several items need to have their icon scales adjusted
         iconScale = adjustItemIconScale(currentItem, scale);
 
-        drawItemIconWithText(itemPosX, itemPosY, iconScale, scale, textWidth, currentItem, textColor);
+        drawIcon(itemPosX, itemPosY, iconScale, getIconFromItem(currentItem));
 
         if (drawVertical)
         {
@@ -668,6 +699,28 @@ void Inventory::drawCurrentInventory()
         else
         {
             itemPosX += itemPosXIncrement;
+        }
+    }
+
+    // Draw the icons for the L and R buttons if applicable
+    // The standard inventory will only have one page, so neither are required
+    if (inventoryType != InventoryType::STANDARD)
+    {
+        const float iconLRPosX = inventoryWindow->getIconPosX(WindowAlignment::TOP_RIGHT, scale);
+        const float iconLRScale = scale - 0.1f;
+
+        // Draw the L button if currently not on the first page
+        if (currentPage > 0)
+        {
+            const float iconLPosY = inventoryWindow->getIconPosY(WindowAlignment::TOP_RIGHT, scale);
+            drawIcon(iconLRPosX, iconLPosY, iconLRScale, IconId::ICON_BUTTON_L_UNPRESSED);
+        }
+
+        // Draw the R button if more items are on the next page
+        if (this->checkIfItemsOnNextPage(static_cast<uint32_t>(currentItemCount)))
+        {
+            const float iconRPosY = inventoryWindow->getIconPosY(WindowAlignment::BOTTOM_RIGHT, scale);
+            drawIcon(iconLRPosX, iconRPosY, iconLRScale, IconId::ICON_BUTTON_R_UNPRESSED);
         }
     }
 }

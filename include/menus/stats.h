@@ -9,6 +9,7 @@
 
 #define STATS_MARIO_TOTAL_ENTRIES 17
 #define STATS_MARIO_ENTRIES_PER_COLUMN 9
+#define STATS_MARIO_ENTRIES_PER_ROW (1 + ((STATS_MARIO_TOTAL_ENTRIES - 1) / STATS_MARIO_ENTRIES_PER_COLUMN)) // Round up
 
 enum StatsMarioOptions
 {
@@ -52,11 +53,15 @@ class Stats
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     int32_t *getMinValuePtr() { return &this->minValue; }
     int32_t *getMaxValuePtr() { return &this->maxValue; }
+    float getScale() const { return this->scale; }
+    uint32_t getCurrentIndex() const { return this->currentIndex; }
+    uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
     void setMinValue(int32_t value) { this->minValue = value; }
     void setMaxValue(int32_t value) { this->maxValue = value; }
+    void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
-    void drawMarioStats();
+    void drawMarioStats() const;
 
    private:
     ValueEditor valueEditor;
@@ -71,6 +76,8 @@ extern Stats *gStats;
 void statsMenuMarioInit(Menu *menuPtr);
 void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button);
 void statsMenuMarioDraw(CameraId cameraId, void *user);
+
+void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
 
 // Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
 void statsMenuInit(Menu *menuPtr);

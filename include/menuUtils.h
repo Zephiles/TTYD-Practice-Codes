@@ -31,7 +31,7 @@ void drawBasicMenuLayout(CameraId cameraId, void *user);
 void handleMenu();
 
 // Controls vertical D-Pad movements. Allows for multiple pages and columns. If there is only one page, then currentPagePtr
-// should be set to nullptr.
+// should be set to nullptr. totalOptionsPerPage should be a multiple of totalOptionsPerRow.
 void menuControlsVertical(MenuButtonInput button,
                           uint8_t *currentIndexPtr,
                           uint8_t *currentPagePtr,
@@ -41,7 +41,7 @@ void menuControlsVertical(MenuButtonInput button,
                           bool allowUpwardsSnap);
 
 // Controls horizontal D-Pad movements. Allows for multiple pages and columns. If there is only one page, then currentPagePtr
-// should be set to nullptr.
+// should be set to nullptr. totalOptionsPerPage should be a multiple of totalOptionsPerRow.
 void menuControlsHorizontal(MenuButtonInput button,
                             uint8_t *currentIndexPtr,
                             uint8_t *currentPagePtr,

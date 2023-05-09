@@ -19,6 +19,19 @@ const char *getItemName(ItemId item);
 // If either the width or the height are not needed, then they can be set to nullptr
 void getIconWidthHeight(IconId icon, float *widthOut, float *heightOut);
 
+// Gets the X coordinate for text that would be displayed directly to the right of an icon. This function is assumed to be used
+// with 40x40 icons, such as inventory items.
+float getTextPosXByIcon(float iconPosX, float scale);
+
+// Gets the Y coordinate for text that would be displayed directly to the right of an icon. The text is assumed to be roughly
+// centered with the icon. This function is assumed to be used with 40x40 icons, such as inventory items.
+float getTextPosYByIcon(float iconPosY, float scale);
+
+// Gets the X and Y coordinates for text that would be displayed directly to the right of an icon. The text is assumed to be
+// roughly centered with the icon. This function is assumed to be used with 40x40 icons, such as inventory items. If either
+// posXOut or posYOut are not needed, then they can be set to nullptr.
+void getTextPosXYByIcon(float iconPosX, float iconPosY, float scale, float *posXOut, float *posYOut);
+
 // Sets the alpha to 0xFF
 void drawIcon(float posX, float posY, float scale, IconId icon);
 

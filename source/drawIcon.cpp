@@ -174,6 +174,34 @@ void drawIconWithText(float posX,
     drawIconWithText(posX, posY, iconScale, scale, width, icon, text, textColor, 0xFF);
 }
 
+float getTextPosXByIcon(float iconPosX, float scale)
+{
+    // Align the text so that the icon is roughly centered with it
+    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
+    return iconPosX + iconAdjustment - (15.f * scale);
+}
+
+float getTextPosYByIcon(float iconPosY, float scale)
+{
+    // Icons are rotated on the Y axis by default, so the text will need to be moved down by the height of it
+    // Align the text so that the icon is roughly centered with it
+    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
+    return iconPosY + iconAdjustment - (7.f * scale);
+}
+
+void getTextPosXYByIcon(float iconPosX, float iconPosY, float scale, float *posXOut, float *posYOut)
+{
+    if (posXOut)
+    {
+        *posXOut = getTextPosXByIcon(iconPosX, scale);
+    }
+
+    if (posYOut)
+    {
+        *posYOut = getTextPosYByIcon(iconPosY, scale);
+    }
+}
+
 void drawIconWithText(float posX,
                       float posY,
                       float iconScale,
@@ -191,15 +219,11 @@ void drawIconWithText(float posX,
     // Initialize text drawing
     drawTextInit(alpha, false);
 
-    // Icons are rotated on the Y axis by default, so the text will need to be moved down by the height of it
-    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
-
-    // Align the text so that the icon is roughly centered with it
-    const float textPosY = posY + iconAdjustment - (7.f * scale);
+    // Get the position of the text
+    getTextPosXYByIcon(posX, posY, scale, &posX, &posY);
 
     // Draw the text
-    const float textPosX = posX + iconAdjustment - (15.f * scale);
-    drawText(text, textPosX, textPosY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
+    drawText(text, posX, posY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
 
     /*
     // Based on text position

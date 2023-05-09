@@ -36,59 +36,59 @@ const IconId statsMenuMarioTextIcons[] = {
 
 const MenuOption statsMenuMarioOptions[] = {
     "Coins",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "HP",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "FP",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "BP",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Max HP",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Max FP",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Level",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Rank",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Star Points",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Star Pieces",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Shine Sprites",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Special Moves",
     nullptr,
 
     "Star Power",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Max Star Power",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Shop Points",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Piantas Stored",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 
     "Current Piantas",
-    nullptr,
+    selectedOptionMenuMarioChangeValue,
 };
 
 const MenuFunctions statsMenuMarioFuncs = {
-    controlsBasicMenuLayout,
+    statsMenuMarioControls,
     statsMenuMarioDraw,
     nullptr, // Exit function not needed
 };
@@ -97,12 +97,69 @@ void statsMenuMarioInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
+    // Reset currentIndex
+    gStats->setCurrentIndex(0);
+
     constexpr uint32_t totalOptions = sizeof(statsMenuMarioOptions) / sizeof(statsMenuMarioOptions[0]);
     enterNextMenu(statsMenuMarioOptions, &statsMenuMarioFuncs, totalOptions);
 }
 
+void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
+{
+    Stats *statsPtr = gStats;
+
+    // If the value editor is open, then handle the controls for that
+    if (menuPtr->flagIsSet(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID))
+    {
+        statsPtr->getValueEditor()->controls(button);
+        return;
+    }
+
+    switch (button)
+    {
+        case MenuButtonInput::DPAD_LEFT:
+        case MenuButtonInput::DPAD_RIGHT:
+        case MenuButtonInput::DPAD_DOWN:
+        case MenuButtonInput::DPAD_UP:
+        {
+            menuControlsVertical(button,
+                                 statsPtr->getCurrentIndexPtr(),
+                                 nullptr,
+                                 STATS_MARIO_TOTAL_ENTRIES,
+                                 STATS_MARIO_ENTRIES_PER_COLUMN * STATS_MARIO_ENTRIES_PER_ROW,
+                                 STATS_MARIO_ENTRIES_PER_ROW,
+                                 true);
+            break;
+        }
+        case MenuButtonInput::A:
+        {
+            // Currently using currentIndex from gStats, so need to update currentIndex in menuPtr
+            menuPtr->setCurrentIndex(statsPtr->getCurrentIndex());
+
+            menuPtr->runSelectedOptionFunc();
+            break;
+        }
+        case MenuButtonInput::B:
+        {
+            enterPrevMenu();
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void cancelMenuMarioChangeValue()
+{
+    gStats->getValueEditor()->stopDrawing();
+    gMenu->clearFlag(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID);
+}
+
 int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
 {
+    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
     switch (index)
     {
         case StatsMarioOptions::STATS_MARIO_COINS:
@@ -161,6 +218,14 @@ int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
         {
             return pouchPtr->shopPoints;
         }
+        case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
+        {
+            return *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x4);
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
+        {
+            return *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x8);
+        }
         default:
         {
             return 0;
@@ -168,7 +233,113 @@ int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
     }
 }
 
-void Stats::drawMarioStats()
+int32_t getMarioStatMaxValue(PouchData *pouchPtr, uint32_t index)
+{
+    switch (index)
+    {
+        case StatsMarioOptions::STATS_MARIO_COINS:
+        case StatsMarioOptions::STATS_MARIO_MAX_HP:
+        case StatsMarioOptions::STATS_MARIO_MAX_FP:
+        case StatsMarioOptions::STATS_MARIO_STAR_PIECES:
+        case StatsMarioOptions::STATS_MARIO_SHINE_SPRITES:
+        {
+            return 999;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
+        {
+            return pouchPtr->maxHp;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_FP:
+        {
+            return pouchPtr->maxFp;
+        }
+        case StatsMarioOptions::STATS_MARIO_BP:
+        case StatsMarioOptions::STATS_MARIO_LEVEL:
+        case StatsMarioOptions::STATS_MARIO_STAR_POINTS:
+        {
+            return 99;
+        }
+        case StatsMarioOptions::STATS_MARIO_RANK:
+        {
+            return 3;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
+        {
+            return pouchPtr->maxSp;
+        }
+        case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
+        {
+            return 800;
+        }
+        case StatsMarioOptions::STATS_MARIO_SHOP_POINTS:
+        {
+            return 300;
+        }
+        case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
+        case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
+        {
+            return 99999;
+        }
+        default:
+        {
+            return 0;
+        }
+    }
+}
+
+void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
+{
+    Stats *statsPtr = gStats;
+
+    // Make sure currentIndex is valid
+    const uint32_t index = statsPtr->getCurrentIndex();
+    if (index >= STATS_MARIO_TOTAL_ENTRIES)
+    {
+        return;
+    }
+
+    // Bring up the window for selecting an id
+    menuPtr->setFlag(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID);
+
+    // Get the current value
+    PouchData *pouchPtr = pouchGetPtr();
+    int32_t currentValue = getMarioStat(pouchPtr, index);
+
+    // Make sure the value isn't negative
+    if (currentValue < 0)
+    {
+        currentValue = 0;
+    }
+
+    // Get the max value
+    int32_t maxValue = getMarioStatMaxValue(pouchPtr, index);
+
+    // Make sure the value isn't negative
+    if (maxValue < 0)
+    {
+        maxValue = 0;
+    }
+
+    // Set the min and max values
+    statsPtr->setMinValue(0);
+    statsPtr->setMaxValue(maxValue);
+
+    // Initialize the value editor
+    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+
+    uint32_t flags = 0;
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+
+    const int32_t *minValuePtr = statsPtr->getMinValuePtr();
+    const int32_t *maxValuePtr = statsPtr->getMaxValuePtr();
+
+    valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, gRootWindow, flags, VariableType::s32, statsPtr->getScale());
+    valueEditorPtr->startDrawing(nullptr, cancelMenuMarioChangeValue);
+}
+
+void Stats::drawMarioStats() const
 {
     // Draw the main text and icons
     const Window *rootWindowPtr = gRootWindow;
@@ -253,13 +424,11 @@ void Stats::drawMarioStats()
     // Initalize text drawing
     drawTextInit(false);
 
-    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
+    float textPosXBase;
+    float textPosYBase;
+    getTextPosXYByIcon(iconPosXBase, iconPosYBase, scale, &textPosXBase, &textPosYBase);
+
     const MenuOption *options = statsMenuMarioOptions;
-
-    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
-    const float textPosYBase = iconPosYBase + iconAdjustment - (7.f * scale);
-    const float textPosXBase = iconPosXBase + iconAdjustment - (15.f * scale);
-
     float textPosX = textPosXBase;
     float textPosY = textPosYBase;
 
@@ -288,26 +457,6 @@ void Stats::drawMarioStats()
             maxWidth = 68.f;
         }
 
-        // Get the value for the current option
-        switch (i)
-        {
-            case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
-            {
-                value = *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x4);
-                break;
-            }
-            case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
-            {
-                value = *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x8);
-                break;
-            }
-            default:
-            {
-                value = getMarioStat(pouchPtr, i);
-                break;
-            }
-        }
-
         // Draw the main text
         uint32_t color = getCurrentOptionColor(currentIndex == i, 0xFF);
         drawText(options[i].name, textPosX, textPosY, scale, color);
@@ -315,6 +464,9 @@ void Stats::drawMarioStats()
         // Draw the value
         if (i != StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
+            // Get the value for the current option
+            value = getMarioStat(pouchPtr, i);
+
             snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "%" PRId32, value);
             drawTextMain(displayBufferPtr, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), true);
         }
@@ -332,5 +484,13 @@ void statsMenuMarioDraw(CameraId cameraId, void *user)
     gRootWindow->draw();
 
     // Draw Mario's stats
-    gStats->drawMarioStats();
+    Stats *statsPtr = gStats;
+    statsPtr->drawMarioStats();
+
+    // Draw the value editor if applicable
+    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+    if (valueEditorPtr->shouldDraw())
+    {
+        valueEditorPtr->draw();
+    }
 }
