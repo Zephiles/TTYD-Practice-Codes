@@ -136,6 +136,34 @@ void getIconWidthHeight(IconId icon, float *widthOut, float *heightOut)
     }
 }
 
+float getTextPosXByIcon(float iconPosX, float scale)
+{
+    // Align the text so that the icon is roughly centered with it
+    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
+    return iconPosX + iconAdjustment - (15.f * scale);
+}
+
+float getTextPosYByIcon(float iconPosY, float scale)
+{
+    // Icons are rotated on the Y axis by default, so the text will need to be moved down by the height of it
+    // Align the text so that the icon is roughly centered with it
+    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
+    return iconPosY + iconAdjustment - (7.f * scale);
+}
+
+void getTextPosXYByIcon(float iconPosX, float iconPosY, float scale, float *posXOut, float *posYOut)
+{
+    if (posXOut)
+    {
+        *posXOut = getTextPosXByIcon(iconPosX, scale);
+    }
+
+    if (posYOut)
+    {
+        *posYOut = getTextPosYByIcon(iconPosY, scale);
+    }
+}
+
 void drawIcon(float posX, float posY, float scale, IconId icon)
 {
     drawIcon(posX, posY, scale, icon, 0xFF);
@@ -174,34 +202,6 @@ void drawIconWithText(float posX,
     drawIconWithText(posX, posY, iconScale, scale, width, icon, text, textColor, 0xFF);
 }
 
-float getTextPosXByIcon(float iconPosX, float scale)
-{
-    // Align the text so that the icon is roughly centered with it
-    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
-    return iconPosX + iconAdjustment - (15.f * scale);
-}
-
-float getTextPosYByIcon(float iconPosY, float scale)
-{
-    // Icons are rotated on the Y axis by default, so the text will need to be moved down by the height of it
-    // Align the text so that the icon is roughly centered with it
-    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
-    return iconPosY + iconAdjustment - (7.f * scale);
-}
-
-void getTextPosXYByIcon(float iconPosX, float iconPosY, float scale, float *posXOut, float *posYOut)
-{
-    if (posXOut)
-    {
-        *posXOut = getTextPosXByIcon(iconPosX, scale);
-    }
-
-    if (posYOut)
-    {
-        *posYOut = getTextPosYByIcon(iconPosY, scale);
-    }
-}
-
 void drawIconWithText(float posX,
                       float posY,
                       float iconScale,
@@ -220,10 +220,12 @@ void drawIconWithText(float posX,
     drawTextInit(alpha, false);
 
     // Get the position of the text
-    getTextPosXYByIcon(posX, posY, scale, &posX, &posY);
+    float textPosX;
+    float textPosY;
+    getTextPosXYByIcon(posX, posY, scale, &textPosX, &textPosY);
 
     // Draw the text
-    drawText(text, posX, posY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
+    drawText(text, textPosX, textPosY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
 
     /*
     // Based on text position
