@@ -3,6 +3,7 @@
 
 #include "classes/window.h"
 #include "classes/menu.h"
+#include "ttyd/icondrv.h"
 
 #include <cstdint>
 
