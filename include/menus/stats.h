@@ -3,6 +3,7 @@
 
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
+#include "classes/specialMoveToggler.h"
 #include "ttyd/dispdrv.h"
 
 #include <cstdint>
@@ -39,9 +40,10 @@ enum StatsMenu
     STATS_MENU_FOLLOWERS,
 };
 
-enum StatsFlag
+enum StatsFlagMario
 {
-    STATS_FLAG_CURRENTLY_SELECTING_ID = 0,
+    STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID = 0,
+    STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES,
 };
 
 class Stats
@@ -51,6 +53,7 @@ class Stats
     ~Stats() {};
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
+    SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
     int32_t *getMinValuePtr() { return &this->minValue; }
     int32_t *getMaxValuePtr() { return &this->maxValue; }
     float getScale() const { return this->scale; }
@@ -65,6 +68,7 @@ class Stats
 
    private:
     ValueEditor valueEditor;
+    SpecialMoveToggler specialMoveToggler;
     int32_t minValue;
     int32_t maxValue;
     float scale;
@@ -78,6 +82,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button);
 void statsMenuMarioDraw(CameraId cameraId, void *user);
 
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
+void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr);
 
 // Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
 void statsMenuInit(Menu *menuPtr);

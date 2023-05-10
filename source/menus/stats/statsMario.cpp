@@ -4,7 +4,6 @@
 #include "menus/stats.h"
 #include "menus/root.h"
 #include "ttyd/icondrv.h"
-#include "ttyd/item_data.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/evt_yuugijou.h"
 #include "ttyd/dispdrv.h"
@@ -69,7 +68,7 @@ const MenuOption statsMenuMarioOptions[] = {
     selectedOptionMenuMarioChangeValue,
 
     "Special Moves",
-    nullptr,
+    selectedOptionMenuMarioSpecialMoves,
 
     "Star Power",
     selectedOptionMenuMarioChangeValue,
@@ -109,9 +108,16 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     Stats *statsPtr = gStats;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID))
     {
         statsPtr->getValueEditor()->controls(button);
+        return;
+    }
+
+    // If the window for toggling a special move is open, then handle the controls for that
+    else if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES))
+    {
+        statsPtr->getSpecialMoveToggler()->controls(button);
         return;
     }
 
@@ -149,12 +155,6 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
             break;
         }
     }
-}
-
-void cancelMenuMarioChangeValue()
-{
-    gStats->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID);
 }
 
 int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
@@ -287,6 +287,12 @@ int32_t getMarioStatMaxValue(PouchData *pouchPtr, uint32_t index)
     }
 }
 
+void cancelMenuMarioChangeValue()
+{
+    gStats->getValueEditor()->stopDrawing();
+    gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
+}
+
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 {
     Stats *statsPtr = gStats;
@@ -299,7 +305,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     }
 
     // Bring up the window for selecting an id
-    menuPtr->setFlag(StatsFlag::STATS_FLAG_CURRENTLY_SELECTING_ID);
+    menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 
     // Get the current value
     PouchData *pouchPtr = pouchGetPtr();
@@ -337,6 +343,25 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 
     valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, gRootWindow, flags, VariableType::s32, statsPtr->getScale());
     valueEditorPtr->startDrawing(nullptr, cancelMenuMarioChangeValue);
+}
+
+void cancelMenuMarioToggleSpecialMoves()
+{
+    gStats->getSpecialMoveToggler()->stopDrawing();
+    gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
+}
+
+void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
+{
+    // Bring up the window for toggling special moves
+    menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
+
+    // Initialize the special move toggler
+    Stats *statsPtr = gStats;
+    SpecialMoveToggler *specialMoveTogglerPtr = statsPtr->getSpecialMoveToggler();
+
+    specialMoveTogglerPtr->init(gRootWindow, statsPtr->getScale());
+    specialMoveTogglerPtr->startDrawing(cancelMenuMarioToggleSpecialMoves);
 }
 
 void Stats::drawMarioStats() const
@@ -386,31 +411,20 @@ void Stats::drawMarioStats() const
         // Draw the icons for the special moves
         if (i == StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
-            ItemId specialMoveItem;
             const float specialMovesPosXIncrement = 22.f * scale;
+            const IconId *specialMoveIconsPtr = specialMoveIcons;
             const uint32_t starPowersObtained = pouchPtr->starPowersObtained;
 
             const float specialMovesScale = 0.37f;
             float specialMovesPosX = iconPosX + (273.f * scale);
             float specialMovesPosY = iconPosY + starPowerAdjustment;
 
-            for (uint32_t i = 0; i < 8; i++)
+            for (uint32_t j = 0; j < TOTAL_SPECIAL_MOVES; j++)
             {
                 // Make sure the bit for the current special move is set
-                // The crystal star icons are not in the proper order, so get the icon from the item
-                if ((starPowersObtained >> i) & 1U)
+                if ((starPowersObtained >> j) & 1U)
                 {
-                    if (i == 0)
-                    {
-                        // Set the icon for Sweet Treat
-                        specialMoveItem = ItemId::ITEM_MAGICAL_MAP_SMALL;
-                    }
-                    else
-                    {
-                        specialMoveItem = static_cast<ItemId>(static_cast<int32_t>(ItemId::ITEM_DIAMOND_STAR) + (i - 1));
-                    }
-
-                    drawIcon(specialMovesPosX, specialMovesPosY, specialMovesScale, getIconFromItem(specialMoveItem));
+                    drawIcon(specialMovesPosX, specialMovesPosY, specialMovesScale, specialMoveIconsPtr[j]);
                 }
 
                 specialMovesPosX += specialMovesPosXIncrement;
@@ -492,5 +506,12 @@ void statsMenuMarioDraw(CameraId cameraId, void *user)
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
+    }
+
+    // Draw the special move toggler if applicable
+    SpecialMoveToggler *specialMoveTogglerPtr = statsPtr->getSpecialMoveToggler();
+    if (specialMoveTogglerPtr->shouldDraw())
+    {
+        specialMoveTogglerPtr->draw();
     }
 }

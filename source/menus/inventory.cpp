@@ -442,17 +442,14 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
         return;
     }
 
-    const bool currentlySelectingIcon = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
-    const bool currentlySelectingId = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
-
     // If a separate window is currently open for selecting an item/badge, then only call the control functions for those
     // This should include all flags except for selecting an item/icon
-    if (currentlySelectingIcon)
+    if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON))
     {
         inventoryPtr->getItemIconSelector()->controls(button);
         return;
     }
-    else if (currentlySelectingId)
+    else if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID))
     {
         inventoryPtr->getValueEditor()->controls(button);
         return;

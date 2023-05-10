@@ -122,10 +122,10 @@ class ValueEditor
 
     uint32_t flags;                   // Flags for what should be drawn in the window alongside the value
 
-    uint16_t waitFramesToBegin;       // Used to figure out when values should be auto-incremented when D-Pad Up/down is held
-    bool shouldIncrementNow;          // Used to figure out when values should be auto-incremented when D-Pad Up/down is held
+    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when a D-Pad direction is held
+    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when a D-Pad direction is held
 
-    uint8_t currentIndex;             // Current cursor position
+    uint8_t currentIndex;       // Current cursor position
     uint8_t maxDigits;
     uint8_t alpha;
 
