@@ -157,7 +157,7 @@ void selectedOptionAddByIcon(Menu *menuPtr)
 
 void Inventory::duplicateItem(Menu *menuPtr)
 {
-    // Make sure the current index is valid
+    // Make sure currentIndex is valid
     const uint32_t index = this->currentIndex;
     if (index >= this->inventorySize)
     {
@@ -220,7 +220,7 @@ void changeItemFromId(const ValueType *valuePtr)
 {
     Inventory *inventoryPtr = gInventory;
 
-    // Make sure the current index is valid
+    // Make sure currentIndex is valid
     const uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -255,7 +255,7 @@ void selectedOptionChangeById(Menu *menuPtr)
         return;
     }
 
-    // Make sure the current index is valid
+    // Make sure currentIndex is valid
     uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -295,7 +295,7 @@ void changeItemFromIcon(ItemId item)
 {
     Inventory *inventoryPtr = gInventory;
 
-    // Make sure the current index is valid
+    // Make sure currentIndex is valid
     const uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -330,7 +330,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
         return;
     }
 
-    // Make sure the current index is valid
+    // Make sure currentIndex is valid
     uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -357,7 +357,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
 
 void Inventory::deleteItem(Menu *menuPtr)
 {
-    // Make sure the index is valid
+    // Make sure currentIndex is valid
     uint32_t index = this->currentIndex;
     if (index >= this->inventorySize)
     {

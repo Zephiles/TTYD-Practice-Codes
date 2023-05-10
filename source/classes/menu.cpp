@@ -31,6 +31,8 @@ void Menu::runSelectedOptionFunc()
     const uint32_t index = this->currentIndex;
     if (index >= this->totalOptions)
     {
+        // Failsafe: Reset currentIndex to 0
+        this->currentIndex = 0;
         return;
     }
 

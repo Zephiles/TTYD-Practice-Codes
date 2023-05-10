@@ -100,7 +100,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
             const ItemId item = static_cast<ItemId>(index + startingItem);
 
             // Call the selected item function
-            SelectedItemFunc func = this->selectedItemFunc;
+            const SelectedItemFunc func = this->selectedItemFunc;
             if (func)
             {
                 func(item);
@@ -111,7 +111,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
         case MenuButtonInput::B:
         {
             // Call the cancel function
-            ItemSelectorCancelFunc func = this->cancelFunc;
+            const ItemSelectorCancelFunc func = this->cancelFunc;
             if (func)
             {
                 func();

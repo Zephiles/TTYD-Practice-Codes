@@ -301,6 +301,8 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     const uint32_t index = statsPtr->getCurrentIndex();
     if (index >= STATS_MARIO_TOTAL_ENTRIES)
     {
+        // Failsafe: Reset currentIndex to 0
+        statsPtr->setCurrentIndex(0);
         return;
     }
 

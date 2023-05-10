@@ -1362,6 +1362,8 @@ void ValueEditor::adjustValue(bool increment)
 
     if (currentIndex >= strlen(editorValue))
     {
+        // Failsafe: Reset currentIndex to 0
+        this->currentIndex = 0;
         return;
     }
 
@@ -2502,7 +2504,7 @@ void ValueEditor::controls(MenuButtonInput button)
         case MenuButtonInput::B:
         {
             // Cancel editing the value
-            ValueEditorCancelFunc func = this->cancelFunc;
+            const ValueEditorCancelFunc func = this->cancelFunc;
             if (func)
             {
                 func();

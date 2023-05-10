@@ -142,10 +142,12 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            // Make sure the index is valid
-            uint32_t currentIndex = this->currentIndex;
+            // Make sure currentIndex is valid
+            const uint32_t currentIndex = this->currentIndex;
             if (currentIndex >= TOTAL_SPECIAL_MOVES)
             {
+                // Failsafe: Reset currentIndex to 0
+                this->currentIndex = 0;
                 break;
             }
 
@@ -156,7 +158,7 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
         case MenuButtonInput::B:
         {
             // Cancel toggling special moves
-            SpecialMoveTogglerCancelFunc func = this->cancelFunc;
+            const SpecialMoveTogglerCancelFunc func = this->cancelFunc;
             if (func)
             {
                 func();
