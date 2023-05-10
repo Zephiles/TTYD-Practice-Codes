@@ -101,9 +101,16 @@ void selectedOptionAddById(Menu *menuPtr)
 
     const ItemId *minValuePtr = inventoryPtr->getMinValuePtr();
     const ItemId *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr
-        ->init(minValuePtr, minValuePtr, maxValuePtr, gRootWindow, flags, VariableType::s16, inventoryPtr->getScale());
+    valueEditorPtr->init(minValuePtr,
+                         minValuePtr,
+                         maxValuePtr,
+                         rootWindowPtr,
+                         flags,
+                         VariableType::s16,
+                         rootWindowPtr->getAlpha(),
+                         inventoryPtr->getScale());
 
     valueEditorPtr->startDrawing(addItemFromId, cancelAddItemFromId);
 }
@@ -286,8 +293,17 @@ void selectedOptionChangeById(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
     const ItemId *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr->init(&item, minValuePtr, maxValuePtr, gRootWindow, flags, VariableType::s16, inventoryPtr->getScale());
+    valueEditorPtr->init(&item,
+                         minValuePtr,
+                         maxValuePtr,
+                         rootWindowPtr,
+                         flags,
+                         VariableType::s16,
+                         rootWindowPtr->getAlpha(),
+                         inventoryPtr->getScale());
+
     valueEditorPtr->startDrawing(changeItemFromId, cancelAddItemFromId);
 }
 
@@ -878,17 +894,19 @@ void Inventory::inventoryMenuItemControls(MenuButtonInput button)
     }
 }
 
-Inventory::Inventory(const Window *parent, float scale)
+Inventory::Inventory(float scale)
 {
     this->scale = scale;
 
+    const Window *rootWindowPtr = gRootWindow;
     ErrorWindow *errorWindowPtr = this->getErrorWindow();
+
     errorWindowPtr->setScale(scale);
-    errorWindowPtr->setAlpha(parent->getAlpha());
+    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
 
     // Place the inventory window inside of the root window
     Window *inventoryWindowPtr = &this->inventoryWindow;
-    inventoryWindowPtr->copyWindow(parent);
+    inventoryWindowPtr->copyWindow(rootWindowPtr);
 
     // Get the width that is being used by the main text options
     float textWidth;
@@ -934,9 +952,6 @@ bool Inventory::inventoryIsFull() const
 
 void inventoryMenuMainInit(Menu *menuPtr)
 {
-    const float scale = gRoot->getScale();
-    const Window *rootWindowPtr = gRootWindow;
-
     // Failsafe: Make sure memory isn't already allocated for gInventory
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr)
@@ -944,7 +959,9 @@ void inventoryMenuMainInit(Menu *menuPtr)
         delete inventoryPtr;
     }
 
-    inventoryPtr = new Inventory(rootWindowPtr, scale);
+    const float scale = gRoot->getScale();
+
+    inventoryPtr = new Inventory(scale);
     gInventory = inventoryPtr;
 
     PouchData *pouchPtr = pouchGetPtr();
@@ -1002,6 +1019,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
 
     inventoryPtr->setInventoryType(inventoryType);
 
+    const Window *rootWindowPtr = gRootWindow;
     inventoryPtr->getItemIconSelector()->init(rootWindowPtr,
                                               *inventoryPtr->getMinValuePtr(),
                                               *inventoryPtr->getMaxValuePtr(),

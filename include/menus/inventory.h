@@ -41,7 +41,7 @@ enum InventoryFlag
 class Inventory
 {
    public:
-    Inventory(const Window *parent, float scale);
+    Inventory(float scale);
     ~Inventory() {}
 
     void setinventoryItemPtr(ItemId *ptr) { this->inventoryItemPtr = ptr; }
@@ -55,11 +55,12 @@ class Inventory
     ItemIconSelector *getItemIconSelector() { return &this->itemIconSelector; }
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
-    ItemId *getInventoryItemPtr() { return this->inventoryItemPtr; }
-
     float getScale() const { return this->scale; }
+
+    ItemId *getInventoryItemPtr() { return this->inventoryItemPtr; }
     ItemId *getMinValuePtr() { return &this->minValue; }
     ItemId *getMaxValuePtr() { return &this->maxValue; }
+
     uint32_t getInventoryType() const { return this->inventoryType; }
     uint32_t getInventorySize() const { return this->inventorySize; }
     uint32_t getCurrentPage() const { return this->currentPage; }
@@ -94,10 +95,9 @@ class Inventory
     ItemIconSelector itemIconSelector;
     ValueEditor valueEditor;
     ErrorWindow errorWindow;
+    float scale;
 
     ItemId *inventoryItemPtr; // Pointer to the inventory that is currently being worked with
-
-    float scale;
     ItemId minValue;
     ItemId maxValue;
 

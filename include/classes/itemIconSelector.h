@@ -30,6 +30,7 @@ class ItemIconSelector
         this->currentIndex = static_cast<uint8_t>(static_cast<uint32_t>(item) - static_cast<uint32_t>(this->startingItem));
     }
 
+    void dpadControls(MenuButtonInput button, uint32_t totalIcons);
     void controls(MenuButtonInput button);
 
     void startDrawing(SelectedItemFunc selectedItemFunc, ItemSelectorCancelFunc cancelFunc)
@@ -55,8 +56,11 @@ class ItemIconSelector
     ItemId startingItem;               // Starting index
     ItemId endingItem;                 // Ending index
 
-    bool enabled;                      // Whether this window is enabled/drawn or not
-    uint8_t currentIndex;              // Current cursor position
+    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when a D-Pad direction is held
+    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when a D-Pad direction is held
+
+    bool enabled;               // Whether this window is enabled/drawn or not
+    uint8_t currentIndex;       // Current cursor position
 };
 
 #endif

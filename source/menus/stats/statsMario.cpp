@@ -342,8 +342,17 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 
     const int32_t *minValuePtr = statsPtr->getMinValuePtr();
     const int32_t *maxValuePtr = statsPtr->getMaxValuePtr();
+    const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, gRootWindow, flags, VariableType::s32, statsPtr->getScale());
+    valueEditorPtr->init(&currentValue,
+                         minValuePtr,
+                         maxValuePtr,
+                         rootWindowPtr,
+                         flags,
+                         VariableType::s32,
+                         rootWindowPtr->getAlpha(),
+                         statsPtr->getScale());
+
     valueEditorPtr->startDrawing(nullptr, cancelMenuMarioChangeValue);
 }
 
@@ -362,7 +371,8 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
     Stats *statsPtr = gStats;
     SpecialMoveToggler *specialMoveTogglerPtr = statsPtr->getSpecialMoveToggler();
 
-    specialMoveTogglerPtr->init(gRootWindow, statsPtr->getScale());
+    const Window *rootWindowPtr = gRootWindow;
+    specialMoveTogglerPtr->init(rootWindowPtr, statsPtr->getScale(), rootWindowPtr->getAlpha());
     specialMoveTogglerPtr->startDrawing(cancelMenuMarioToggleSpecialMoves);
 }
 
@@ -400,11 +410,26 @@ void Stats::drawMarioStats() const
             iconPosY = iconPosYBase;
         }
 
-        // The icons for star power need to be moved up slightly
+        // The icons for the Diamond Star and star power need to be moved up slightly
         float tempPosY = iconPosY;
-        if ((i == StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER) || (i == StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER))
+
+        switch (i)
         {
-            tempPosY += starPowerAdjustment;
+            case StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES:
+            {
+                tempPosY += (3.f * scale);
+                break;
+            }
+            case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
+            case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
+            {
+                tempPosY += starPowerAdjustment;
+                break;
+            }
+            default:
+            {
+                break;
+            }
         }
 
         // Draw the icon
@@ -417,7 +442,7 @@ void Stats::drawMarioStats() const
             const IconId *specialMoveIconsPtr = specialMoveIcons;
             const uint32_t starPowersObtained = pouchPtr->starPowersObtained;
 
-            const float specialMovesScale = 0.37f;
+            constexpr float specialMovesScale = 0.37f;
             float specialMovesPosX = iconPosX + (273.f * scale);
             float specialMovesPosY = iconPosY + starPowerAdjustment;
 

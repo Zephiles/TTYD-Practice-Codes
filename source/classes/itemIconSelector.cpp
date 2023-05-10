@@ -70,11 +70,41 @@ void ItemIconSelector::init(const Window *parentWindow,
     iconsWindowPtr->placeInWindow(windowPtr, WindowAlignment::BOTTOM_CENTER, scale);
 }
 
+void ItemIconSelector::dpadControls(MenuButtonInput button, uint32_t totalIcons)
+{
+    menuControlsHorizontal(button, &this->currentIndex, nullptr, totalIcons, totalIcons, TOTAL_ICONS_PER_ROW, false);
+}
+
 void ItemIconSelector::controls(MenuButtonInput button)
 {
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
+
     const uint32_t startingItem = static_cast<uint32_t>(this->startingItem);
     const uint32_t totalIcons = static_cast<uint32_t>(this->endingItem) - startingItem + 1;
 
+    // Handle held button inputs if auto-incrementing should be done
+    if (autoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_LEFT:
+            case MenuButtonInput::DPAD_RIGHT:
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                this->dpadControls(buttonHeld, totalIcons);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Handle the button inputs pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:
@@ -82,7 +112,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            menuControlsHorizontal(button, &this->currentIndex, nullptr, totalIcons, totalIcons, TOTAL_ICONS_PER_ROW, false);
+            this->dpadControls(button, totalIcons);
             break;
         }
         case MenuButtonInput::A:

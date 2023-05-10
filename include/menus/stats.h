@@ -54,9 +54,9 @@ class Stats
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
+    float getScale() const { return this->scale; }
     int32_t *getMinValuePtr() { return &this->minValue; }
     int32_t *getMaxValuePtr() { return &this->maxValue; }
-    float getScale() const { return this->scale; }
     uint32_t getCurrentIndex() const { return this->currentIndex; }
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
@@ -69,9 +69,9 @@ class Stats
    private:
     ValueEditor valueEditor;
     SpecialMoveToggler specialMoveToggler;
+    float scale;
     int32_t minValue;
     int32_t maxValue;
-    float scale;
     uint8_t currentIndex; // Current cursor position
 };
 

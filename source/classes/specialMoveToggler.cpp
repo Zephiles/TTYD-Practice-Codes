@@ -102,13 +102,10 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
 
-    // Check for D-Pad Up/Down first to handle auto-incrementing
-    const MenuButtonInput buttonHeld = getMenuButtonInput(false);
-
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
     {
-        switch (buttonHeld)
+        switch (getMenuButtonInput(false))
         {
             case MenuButtonInput::DPAD_DOWN:
             {
@@ -193,7 +190,7 @@ void SpecialMoveToggler::draw()
     iconPosYBase += spaceUsedByIcons;
 
     float iconPosX = iconPosXBase;
-    float iconPosY = iconPosYBase;
+    float iconPosY = iconPosYBase + (3.f * scale); // Move up slightly since the star icons are not quite properly aligned
     const IconId *icons = specialMoveIcons;
 
     // Draw the icons
@@ -211,7 +208,7 @@ void SpecialMoveToggler::draw()
     float textPosYBase;
 
     const char *helpTextPtr = helpText;
-    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &textPosXBase, &textPosYBase);
+    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
     drawText(helpTextPtr, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
 
     // Get the starting position for the special move texts

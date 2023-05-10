@@ -16,15 +16,6 @@ class Root
     {
         this->rootMenu = gMenu;
         this->scale = scale;
-        this->alpha = 0xFF;
-        this->initErrorWindow(battlesErrorMessage);
-    }
-
-    Root(const char *battlesErrorMessage, float scale, uint8_t alpha)
-    {
-        this->rootMenu = gMenu;
-        this->scale = scale;
-        this->alpha = alpha;
         this->initErrorWindow(battlesErrorMessage);
     }
 
@@ -32,25 +23,25 @@ class Root
 
     void initErrorWindow(const char *battlesErrorMessage)
     {
+        const Window *rootWindowPtr = gRootWindow;
         ErrorWindow *errorWindowPtr = this->getErrorWindow();
+
         errorWindowPtr->setScale(this->scale);
-        errorWindowPtr->setAlpha(this->alpha);
+        errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
         errorWindowPtr->setText(battlesErrorMessage);
-        errorWindowPtr->placeInWindow(gRootWindow, WindowAlignment::BOTTOM_CENTER);
+        errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
     }
 
-    Menu *getRootMenu() { return this->rootMenu; }
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
     float getScale() const { return this->scale; }
-    uint8_t getAlpha() const { return this->alpha; }
+    Menu *getRootMenu() { return this->rootMenu; }
 
    private:
     ValueEditor valueEditor;
     ErrorWindow errorWindow;
-    Menu *rootMenu; // Backup of gMenu when the root menu was initially opened
     float scale;
-    uint8_t alpha;
+    Menu *rootMenu; // Backup of gMenu when the root menu was initially opened
 };
 
 extern Root *gRoot;

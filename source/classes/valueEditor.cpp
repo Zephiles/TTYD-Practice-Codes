@@ -2415,16 +2415,13 @@ void ValueEditor::controls(MenuButtonInput button)
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
 
-    // Check for D-Pad Up/Down first to handle auto-incrementing
-    const MenuButtonInput buttonHeld = getMenuButtonInput(false);
-
     const char *editorValue = this->editorValue;
     const uint32_t maxDigit = strlen(editorValue) - 1;
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
     {
-        switch (buttonHeld)
+        switch (getMenuButtonInput(false))
         {
             case MenuButtonInput::DPAD_LEFT:
             {
@@ -2486,7 +2483,7 @@ void ValueEditor::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            SetValueFunc func = this->setValueFunc;
+            const SetValueFunc func = this->setValueFunc;
             if (!func)
             {
                 break;
