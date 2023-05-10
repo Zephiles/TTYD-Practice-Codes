@@ -31,8 +31,8 @@ void Menu::runSelectedOptionFunc()
     const uint32_t index = this->currentIndex;
     if (index >= this->totalOptions)
     {
-        // Failsafe: Reset currentIndex to 0
-        this->currentIndex = 0;
+        // Failsafe: Reset currentIndex to the first option on the current page
+        this->currentIndex = this->totalOptionsPerPage * this->currentPage;
         return;
     }
 
