@@ -829,6 +829,10 @@ void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
     {
         // Clear all flags to be safe
         menuPtr->clearAllFlags();
+
+        // Make sure the windows for selecting an item/badge are closed
+        cancelAddItemFromId();
+        cancelAddItemFromIcon();
     }
 }
 
