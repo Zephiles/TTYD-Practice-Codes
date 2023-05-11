@@ -800,7 +800,13 @@ void inventoryMenuMainDraw(CameraId cameraId, void *user)
 void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
 {
     // Verify that the current page is correct
-    const uint32_t totalItems = this->getTotalItemsInInventory();
+    uint32_t totalItems = this->getTotalItemsInInventory();
+    if (totalItems == 0)
+    {
+        // Set totalItems to 1 to allow the following checks to work correctly
+        totalItems = 1;
+    }
+
     const uint32_t totalPages = roundIntUpUnsigned(totalItems, INVENTORY_ITEMS_PER_PAGE);
     bool foundIssue = false;
 
