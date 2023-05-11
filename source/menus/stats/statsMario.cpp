@@ -103,6 +103,17 @@ void statsMenuMarioInit(Menu *menuPtr)
     enterNextMenu(statsMenuMarioOptions, &statsMenuMarioFuncs, totalOptions);
 }
 
+void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+{
+    menuControlsVertical(button,
+                         currentIndexPtr,
+                         nullptr,
+                         STATS_MARIO_TOTAL_ENTRIES,
+                         STATS_MARIO_ENTRIES_PER_COLUMN * STATS_MARIO_ENTRIES_PER_ROW,
+                         STATS_MARIO_ENTRIES_PER_ROW,
+                         true);
+}
+
 void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
 {
     Stats *statsPtr = gStats;
@@ -121,6 +132,32 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
         return;
     }
 
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    const bool autoIncrement =
+        handleMenuAutoIncrement(statsPtr->getWaitFramesToBeginPtr(), statsPtr->getShouldIncrementNowPtr());
+
+    // Handle held button inputs if auto-incrementing should be done
+    if (autoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_LEFT:
+            case MenuButtonInput::DPAD_RIGHT:
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                statsMenuMarioDPadControls(buttonHeld, statsPtr->getCurrentIndexPtr());
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Handle the button inputs pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:
@@ -128,13 +165,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            menuControlsVertical(button,
-                                 statsPtr->getCurrentIndexPtr(),
-                                 nullptr,
-                                 STATS_MARIO_TOTAL_ENTRIES,
-                                 STATS_MARIO_ENTRIES_PER_COLUMN * STATS_MARIO_ENTRIES_PER_ROW,
-                                 STATS_MARIO_ENTRIES_PER_ROW,
-                                 true);
+            statsMenuMarioDPadControls(button, statsPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:

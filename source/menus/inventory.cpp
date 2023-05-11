@@ -471,6 +471,32 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
         return;
     }
 
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    const bool autoIncrement =
+        handleMenuAutoIncrement(inventoryPtr->getWaitFramesToBeginPtr(), inventoryPtr->getShouldIncrementNowPtr());
+
+    // Handle held button inputs if auto-incrementing should be done
+    if (autoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_LEFT:
+            case MenuButtonInput::DPAD_RIGHT:
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                inventoryPtr->inventoryMenuItemControls(buttonHeld);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Handle the button inputs pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:

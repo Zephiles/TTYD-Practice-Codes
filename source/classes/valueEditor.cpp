@@ -2496,7 +2496,7 @@ void ValueEditor::controlsMoveRightOnce(uint32_t maxDigit)
 void ValueEditor::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
+    const bool autoIncrement = handleMenuAutoIncrement(&this->waitFramesToBegin, &this->shouldIncrementNow);
 
     const char *editorValue = this->editorValue;
     const uint32_t maxDigit = strlen(editorValue) - 1;

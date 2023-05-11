@@ -65,7 +65,7 @@ void ItemIconSelector::dpadControls(MenuButtonInput button, uint32_t totalIcons)
 void ItemIconSelector::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
+    const bool autoIncrement = handleMenuAutoIncrement(&this->waitFramesToBegin, &this->shouldIncrementNow);
 
     const uint32_t startingItem = static_cast<uint32_t>(this->startingItem);
     const uint32_t totalIcons = static_cast<uint32_t>(this->endingItem) - startingItem + 1;

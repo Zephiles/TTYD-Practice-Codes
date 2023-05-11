@@ -46,7 +46,7 @@ void closeAllMenus()
     }
 }
 
-bool handleMenuAutoIncrementDigit(uint16_t *waitFramesToBeginPtr, bool *shouldIncrementNowPtr)
+bool handleMenuAutoIncrement(uint16_t *waitFramesToBeginPtr, bool *shouldIncrementNowPtr)
 {
     // Check to see if any of the D-Pad buttons are held
     constexpr uint32_t buttons =

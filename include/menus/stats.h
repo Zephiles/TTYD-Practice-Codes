@@ -58,6 +58,10 @@ class Stats
     float getScale() const { return this->scale; }
     int32_t *getMinValuePtr() { return &this->minValue; }
     int32_t *getMaxValuePtr() { return &this->maxValue; }
+
+    uint16_t *getWaitFramesToBeginPtr() { return &this->waitFramesToBegin; }
+    bool *getShouldIncrementNowPtr() { return &this->shouldIncrementNow; }
+
     uint32_t getCurrentIndex() const { return this->currentIndex; }
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
@@ -71,9 +75,14 @@ class Stats
     ValueEditor valueEditor;
     SpecialMoveToggler specialMoveToggler;
     float scale;
+
     int32_t minValue;
     int32_t maxValue;
-    uint8_t currentIndex; // Current cursor position
+
+    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when a D-Pad direction is held
+    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when a D-Pad direction is held
+
+    uint8_t currentIndex;       // Current cursor position
 };
 
 extern Stats *gStats;

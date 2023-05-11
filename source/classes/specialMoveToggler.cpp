@@ -100,7 +100,7 @@ void SpecialMoveToggler::controlsMoveUpOnce()
 void SpecialMoveToggler::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrementDigit(&this->waitFramesToBegin, &this->shouldIncrementNow);
+    const bool autoIncrement = handleMenuAutoIncrement(&this->waitFramesToBegin, &this->shouldIncrementNow);
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
