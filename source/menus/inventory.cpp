@@ -472,8 +472,7 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement =
-        handleMenuAutoIncrement(inventoryPtr->getWaitFramesToBeginPtr(), inventoryPtr->getShouldIncrementNowPtr());
+    const bool autoIncrement = handleMenuAutoIncrement(inventoryPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)

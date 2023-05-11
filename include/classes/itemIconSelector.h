@@ -55,11 +55,9 @@ class ItemIconSelector
     ItemId startingItem;               // Starting index
     ItemId endingItem;                 // Ending index
 
-    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when a D-Pad direction is held
-    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when a D-Pad direction is held
-
-    bool enabled;               // Whether this window is enabled/drawn or not
-    uint8_t currentIndex;       // Current cursor position
+    MenuAutoIncrement autoIncrement;
+    bool enabled;         // Whether this window is enabled/drawn or not
+    uint8_t currentIndex; // Current cursor position
 };
 
 #endif

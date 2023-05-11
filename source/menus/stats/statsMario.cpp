@@ -1,3 +1,4 @@
+#include "menuUtils.h"
 #include "drawIcon.h"
 #include "drawText.h"
 #include "classes/window.h"
@@ -133,8 +134,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement =
-        handleMenuAutoIncrement(statsPtr->getWaitFramesToBeginPtr(), statsPtr->getShouldIncrementNowPtr());
+    const bool autoIncrement = handleMenuAutoIncrement(statsPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)

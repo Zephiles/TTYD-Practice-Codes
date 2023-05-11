@@ -23,6 +23,13 @@ enum class MenuButtonInput
     START,
 };
 
+// Used to figure out when values should be auto-incremented when a D-Pad direction is held
+struct MenuAutoIncrement
+{
+    uint16_t waitFramesToBegin;
+    bool shouldIncrementNow;
+} __attribute__((__packed__));
+
 class Menu;
 typedef void (*MenuSelectedOptionFunc)(Menu *menuPtr);
 typedef void (*MenuExitFunc)();

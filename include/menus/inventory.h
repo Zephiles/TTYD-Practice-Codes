@@ -61,9 +61,7 @@ class Inventory
     ItemId *getMinValuePtr() { return &this->minValue; }
     ItemId *getMaxValuePtr() { return &this->maxValue; }
 
-    uint16_t *getWaitFramesToBeginPtr() { return &this->waitFramesToBegin; }
-    bool *getShouldIncrementNowPtr() { return &this->shouldIncrementNow; }
-
+    MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
     uint32_t getInventoryType() const { return this->inventoryType; }
     uint32_t getInventorySize() const { return this->inventorySize; }
     uint32_t getCurrentPage() const { return this->currentPage; }
@@ -104,13 +102,11 @@ class Inventory
     ItemId minValue;
     ItemId maxValue;
 
-    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when a D-Pad direction is held
-    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when a D-Pad direction is held
-
-    uint8_t inventoryType;      // Specifier for the inventory that is currently being worked with
-    uint8_t inventorySize;      // Size of the inventory that is currently being worked with
+    MenuAutoIncrement autoIncrement;
+    uint8_t inventoryType; // Specifier for the inventory that is currently being worked with
+    uint8_t inventorySize; // Size of the inventory that is currently being worked with
     uint8_t currentPage;
-    uint8_t currentIndex;       // Current cursor position
+    uint8_t currentIndex;  // Current cursor position
 };
 
 extern Inventory *gInventory;

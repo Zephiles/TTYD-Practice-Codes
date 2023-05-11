@@ -43,11 +43,10 @@ class SpecialMoveToggler
     float scale;
 
     SpecialMoveTogglerCancelFunc cancelFunc; // Called when the player presses B to toggling special moves
-    uint16_t waitFramesToBegin; // Used to figure out when values should be auto-incremented when D-Pad Up/down is held
-    bool shouldIncrementNow;    // Used to figure out when values should be auto-incremented when D-Pad Up/down is held
+    MenuAutoIncrement autoIncrement;
 
-    bool enabled;               // Whether this window is enabled/drawn or not
-    uint8_t currentIndex;       // Current cursor position
+    bool enabled;         // Whether this window is enabled/drawn or not
+    uint8_t currentIndex; // Current cursor position
     uint8_t alpha;
 };
 

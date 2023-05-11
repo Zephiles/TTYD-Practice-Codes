@@ -16,7 +16,7 @@ void enterPrevMenu();
 // Closes all menus, calls each of their exit functions, and sets gMenu to nullptr
 void closeAllMenus();
 
-bool handleMenuAutoIncrement(uint16_t *waitFramesToBeginPtr, bool *shouldIncrementNowPtr);
+bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement);
 
 // Converts the standard button inputs into the simplified inputs
 MenuButtonInput getMenuButtonInput(bool singleFrame);

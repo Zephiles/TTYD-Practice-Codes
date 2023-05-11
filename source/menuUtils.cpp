@@ -46,7 +46,7 @@ void closeAllMenus()
     }
 }
 
-bool handleMenuAutoIncrement(uint16_t *waitFramesToBeginPtr, bool *shouldIncrementNowPtr)
+bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement)
 {
     // Check to see if any of the D-Pad buttons are held
     constexpr uint32_t buttons =
@@ -55,28 +55,28 @@ bool handleMenuAutoIncrement(uint16_t *waitFramesToBeginPtr, bool *shouldIncreme
     if (!(keyGetButton(PadId::CONTROLLER_ONE) & buttons))
     {
         // Reset the counter and bool
-        *waitFramesToBeginPtr = 0;
-        *shouldIncrementNowPtr = false;
+        autoIncrement->waitFramesToBegin = 0;
+        autoIncrement->shouldIncrementNow = false;
         return false;
     }
 
     // Check to see if the value should begin to auto-increment
-    uint32_t waitFramesToBegin = *waitFramesToBeginPtr;
+    uint32_t waitFramesToBegin = autoIncrement->waitFramesToBegin;
     if (waitFramesToBegin < sysMsec2Frame(500))
     {
-        *waitFramesToBeginPtr = static_cast<uint16_t>(++waitFramesToBegin);
+        autoIncrement->waitFramesToBegin = static_cast<uint16_t>(++waitFramesToBegin);
         return false;
     }
 
     // Check to see if the number should increment or not
-    if (!*shouldIncrementNowPtr)
+    if (!autoIncrement->shouldIncrementNow)
     {
-        *shouldIncrementNowPtr = true;
+        autoIncrement->shouldIncrementNow = true;
         return false;
     }
 
     // Auto-increment the value
-    *shouldIncrementNowPtr = false;
+    autoIncrement->shouldIncrementNow = false;
     return true;
 }
 
@@ -116,6 +116,31 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
 
 void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
 {
+    static MenuAutoIncrement autoIncrement = {0, false};
+
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    const bool shouldAutoIncrement = handleMenuAutoIncrement(&autoIncrement);
+
+    // Handle held button inputs if auto-incrementing should be done
+    if (shouldAutoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                menuPtr->basicLayoutControls(buttonHeld);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Handle the button inputs pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_DOWN:

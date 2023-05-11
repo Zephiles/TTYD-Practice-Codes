@@ -43,8 +43,8 @@ void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t a
     this->scale = scale;
     this->alpha = alpha;
     this->cancelFunc = nullptr;
-    this->waitFramesToBegin = 0;
-    this->shouldIncrementNow = false;
+    this->autoIncrement.waitFramesToBegin = 0;
+    this->autoIncrement.shouldIncrementNow = false;
     this->enabled = false;
     this->currentIndex = 0;
 
@@ -100,7 +100,7 @@ void SpecialMoveToggler::controlsMoveUpOnce()
 void SpecialMoveToggler::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(&this->waitFramesToBegin, &this->shouldIncrementNow);
+    const bool autoIncrement = handleMenuAutoIncrement(&this->autoIncrement);
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)

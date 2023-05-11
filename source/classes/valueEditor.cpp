@@ -40,8 +40,8 @@ void ValueEditor::init(const void *valuePtr,
     this->scale = scale;
     this->setValueFunc = nullptr;
     this->cancelFunc = nullptr;
-    this->waitFramesToBegin = 0;
-    this->shouldIncrementNow = false;
+    this->autoIncrement.waitFramesToBegin = 0;
+    this->autoIncrement.shouldIncrementNow = false;
     this->enabled = false;
 
     // If the value is not being handled as signed, then change the type to unsigned
@@ -2496,7 +2496,7 @@ void ValueEditor::controlsMoveRightOnce(uint32_t maxDigit)
 void ValueEditor::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(&this->waitFramesToBegin, &this->shouldIncrementNow);
+    const bool autoIncrement = handleMenuAutoIncrement(&this->autoIncrement);
 
     const char *editorValue = this->editorValue;
     const uint32_t maxDigit = strlen(editorValue) - 1;
