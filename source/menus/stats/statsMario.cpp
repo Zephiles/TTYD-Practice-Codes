@@ -139,7 +139,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            // Currently using currentIndex from gStats, so need to update currentIndex in menuPtr
+            // Currently using currentIndex from gStats, so need to update the current index in menuPtr
             menuPtr->setCurrentIndex(statsPtr->getCurrentIndex());
 
             menuPtr->runSelectedOptionFunc();
@@ -297,11 +297,11 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 {
     Stats *statsPtr = gStats;
 
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     const uint32_t index = statsPtr->getCurrentIndex();
     if (index >= STATS_MARIO_TOTAL_ENTRIES)
     {
-        // Failsafe: Reset currentIndex to 0
+        // Failsafe: Reset the current index to 0
         statsPtr->setCurrentIndex(0);
         return;
     }

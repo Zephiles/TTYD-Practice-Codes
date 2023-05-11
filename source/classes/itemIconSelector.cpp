@@ -44,7 +44,7 @@ void ItemIconSelector::init(const Window *parentWindow,
 
     // Adjust the height of the main window to account for all of the icons
     const int32_t totalIcons = static_cast<int32_t>(endingItem) - static_cast<int32_t>(startingItem) + 1;
-    const int32_t totalIconRows = 1 + ((totalIcons - 1) / TOTAL_ICONS_PER_ROW); // Round up
+    const int32_t totalIconRows = roundIntUpUnsigned(totalIcons, TOTAL_ICONS_PER_ROW);
 
     const float iconsWindowPaddingAdjustment = 12.f * scale;
     const float currentHeight = windowPtr->getHeight() - iconsWindowPaddingAdjustment;
@@ -55,19 +55,6 @@ void ItemIconSelector::init(const Window *parentWindow,
 
     // Place the main window in the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
-
-    // Set the icons window to be a bit under the text
-    Window *iconsWindowPtr = &this->iconsWindow;
-    iconsWindowPtr->copyWindow(windowPtr);
-
-    // Adjust the window to exclude the space used by the text, plus a bit extra
-    const float totalTextHeight = textHeight - iconsWindowPaddingAdjustment + padding;
-    iconsWindowPtr->setPosY(iconsWindowPtr->getPosY() - totalTextHeight);
-    iconsWindowPtr->setHeight(iconsWindowPtr->getHeight() - totalTextHeight);
-    iconsWindowPtr->setPadding(12.f);
-
-    // Place the icons window in the main window
-    iconsWindowPtr->placeInWindow(windowPtr, WindowAlignment::BOTTOM_CENTER, scale);
 }
 
 void ItemIconSelector::dpadControls(MenuButtonInput button, uint32_t totalIcons)
@@ -117,11 +104,11 @@ void ItemIconSelector::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            // Make sure currentIndex is valid
+            // Make sure the current index is valid
             const uint32_t index = this->currentIndex;
             if (index >= totalIcons)
             {
-                // Failsafe: Reset currentIndex to 0
+                // Failsafe: Reset the current index to 0
                 this->currentIndex = 0;
                 break;
             }
@@ -162,13 +149,6 @@ void ItemIconSelector::draw()
     const Window *windowPtr = &this->window;
     windowPtr->draw();
 
-    /*
-    // Draw the icons window for debugging purposes
-    Window *iconsWindowPtr = &this->iconsWindow;
-    iconsWindowPtr->setColor(0x505050FF);
-    iconsWindowPtr->draw();
-    */
-
     // Initialize text drawing
     drawTextInit(false);
 
@@ -181,23 +161,27 @@ void ItemIconSelector::draw()
     windowPtr->getTextPosXY(text, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(text, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
-    // Draw the icons
-    const Window *iconsWindowPtr = &this->iconsWindow;
-    iconsWindowPtr->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
-
-    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    float posX = tempPosX;
-    float posY = tempPosY;
+    // Get the intitial position for the icons
+    windowPtr->getIconPosXY(WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
 
     int32_t index = static_cast<int32_t>(this->startingItem);
     const int32_t endingIndex = static_cast<int32_t>(this->endingItem);
-    const uint32_t currentIndex = this->currentIndex + index;
 
-    const float posXBase = posX;
+    // Get the amount of space used by the icons based on the number of rows that there are
+    const int32_t totalIconRows = roundIntUpUnsigned(endingIndex - index + 1, TOTAL_ICONS_PER_ROW);
     const float posXYIncrement = SPACE_USED_PER_ICON(scale);
+    const float spaceUsedByIcons = intToFloat(totalIconRows - 1) * posXYIncrement;
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    float posX = tempPosX - (8.f * scale); // Account for padding difference on X axis; 20.f for text vs 12.f for icons
+    float posY = tempPosY + spaceUsedByIcons;
+    const float posXBase = posX;
+
+    const uint32_t currentIndex = this->currentIndex + index;
     uint32_t counter = 0;
     float iconScale;
 
+    // Draw the icons
     for (; index <= endingIndex; index++, counter++)
     {
         if (counter >= TOTAL_ICONS_PER_ROW)

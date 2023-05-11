@@ -16,6 +16,7 @@ enum PointerVerificationType
     PTR_UNCACHED,
 };
 
+#define roundIntUpUnsigned(value, alignment) ((((value) + (alignment)-1)) / (alignment))
 #define roundUp(size, alignment) (((size) + (alignment)-1) & ~((alignment)-1))
 #define roundDown(size, alignment) (((size) / (alignment)) * (alignment))
 

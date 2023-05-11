@@ -207,9 +207,9 @@ void menuControlsVertical(MenuButtonInput button,
 
     uint32_t currentIndex = *currentIndexPtr;
 
-    const uint32_t totalRowsPerPage = 1 + ((totalOptionsPerPage - 1) / totalOptionsPerRow); // Round up
-    const uint32_t totalColumns = 1 + ((totalOptionsPerPage - 1) / totalRowsPerPage);       // Round up
-    const uint32_t columnSplitAmount = 1 + ((totalOptionsPerPage - 1) / totalColumns);      // Round up
+    const uint32_t totalRowsPerPage = roundIntUpUnsigned(totalOptionsPerPage, totalOptionsPerRow);
+    const uint32_t totalColumns = roundIntUpUnsigned(totalOptionsPerPage, totalRowsPerPage);
+    const uint32_t columnSplitAmount = roundIntUpUnsigned(totalOptionsPerPage, totalColumns);
 
     const uint32_t lastValidOption = totalOptions - 1;
     const uint32_t firstOptionOnPage = totalOptionsPerPage * currentPage;
@@ -418,7 +418,7 @@ void menuControlsVertical(MenuButtonInput button,
                 if (currentPage == 0)
                 {
                     // Go to the last option of the current column on the last page
-                    const uint32_t lastPage = (1 + ((totalOptions - 1) / totalOptionsPerPage)) - 1;
+                    const uint32_t lastPage = roundIntUpUnsigned(totalOptions, totalOptionsPerPage) - 1;
                     const uint32_t lastPageLastColumnLastOption = (totalOptionsPerPage * (lastPage + 1)) - 1;
 
                     uint32_t decrementAmount = columnSplitAmount * (totalColumns - 1);
@@ -491,9 +491,9 @@ void menuControlsHorizontal(MenuButtonInput button,
     const uint32_t firstOptionOnPage = totalOptionsPerPage * currentPage;
     const uint32_t currentColumn = currentIndex % totalOptionsPerRow;
     const uint32_t lastColumn = totalOptionsPerRow - 1;
-    const uint32_t lastPage = (1 + ((totalOptions - 1) / totalOptionsPerPage)) - 1;
+    const uint32_t lastPage = roundIntUpUnsigned(totalOptions, totalOptionsPerPage) - 1;
 
-    const uint32_t totalRows = 1 + ((totalOptions - 1) / totalOptionsPerRow); // Round up
+    const uint32_t totalRows = roundIntUpUnsigned(totalOptions, totalOptionsPerRow);
     const uint32_t totalFreeSpaces = ((totalRows * totalOptionsPerRow) - 1) - (totalOptions - 1);
 
     uint32_t totalColumns = totalOptionsPerRow;

@@ -164,7 +164,7 @@ void selectedOptionAddByIcon(Menu *menuPtr)
 
 void Inventory::duplicateItem(Menu *menuPtr)
 {
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     const uint32_t index = this->currentIndex;
     if (index >= this->inventorySize)
     {
@@ -227,7 +227,7 @@ void changeItemFromId(const ValueType *valuePtr)
 {
     Inventory *inventoryPtr = gInventory;
 
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     const uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -262,7 +262,7 @@ void selectedOptionChangeById(Menu *menuPtr)
         return;
     }
 
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -311,7 +311,7 @@ void changeItemFromIcon(ItemId item)
 {
     Inventory *inventoryPtr = gInventory;
 
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     const uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -346,7 +346,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
         return;
     }
 
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     uint32_t index = inventoryPtr->getCurrentIndex();
     if (index >= inventoryPtr->getInventorySize())
     {
@@ -373,7 +373,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
 
 void Inventory::deleteItem(Menu *menuPtr)
 {
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     uint32_t index = this->currentIndex;
     if (index >= this->inventorySize)
     {
@@ -775,17 +775,11 @@ void inventoryMenuMainDraw(CameraId cameraId, void *user)
 void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
 {
     // Verify that the current page is correct
-    uint32_t maxIndex = this->getTotalItemsInInventory();
-    if (maxIndex > 0)
-    {
-        maxIndex--;
-    }
-
-    const uint32_t totalPages = 1 + (maxIndex / INVENTORY_ITEMS_PER_PAGE); // Round up
-    const uint32_t maxPageNumber = totalPages - 1;
+    const uint32_t totalItems = this->getTotalItemsInInventory();
+    const uint32_t totalPages = roundIntUpUnsigned(totalItems, INVENTORY_ITEMS_PER_PAGE);
     bool foundIssue = false;
 
-    if (this->currentPage > maxPageNumber)
+    if (this->currentPage >= totalPages)
     {
         // Reset to the first page
         this->setCurrentPage(0);
@@ -793,7 +787,7 @@ void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
     }
 
     // Verify that the current index is correct
-    if (this->currentIndex > maxIndex)
+    if (this->currentIndex >= totalItems)
     {
         // Reset to the first item of the current page
         this->setCurrentIndex(this->currentPage * INVENTORY_ITEMS_PER_PAGE);

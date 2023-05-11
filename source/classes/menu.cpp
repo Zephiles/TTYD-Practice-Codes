@@ -27,11 +27,11 @@ void Menu::runControlsFunc(MenuButtonInput button)
 
 void Menu::runSelectedOptionFunc()
 {
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     const uint32_t index = this->currentIndex;
     if (index >= this->totalOptions)
     {
-        // Failsafe: Reset currentIndex to the first option on the current page
+        // Failsafe: Reset the current index to the first option on the current page
         this->currentIndex = this->totalOptionsPerPage * this->currentPage;
         return;
     }

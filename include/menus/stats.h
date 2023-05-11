@@ -4,13 +4,14 @@
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
 #include "classes/specialMoveToggler.h"
+#include "misc/utils.h"
 #include "ttyd/dispdrv.h"
 
 #include <cstdint>
 
 #define STATS_MARIO_TOTAL_ENTRIES 17
 #define STATS_MARIO_ENTRIES_PER_COLUMN 9
-#define STATS_MARIO_ENTRIES_PER_ROW (1 + ((STATS_MARIO_TOTAL_ENTRIES - 1) / STATS_MARIO_ENTRIES_PER_COLUMN)) // Round up
+#define STATS_MARIO_ENTRIES_PER_ROW roundIntUpUnsigned(STATS_MARIO_TOTAL_ENTRIES, STATS_MARIO_ENTRIES_PER_COLUMN)
 
 enum StatsMarioOptions
 {

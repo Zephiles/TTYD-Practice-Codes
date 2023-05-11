@@ -139,11 +139,11 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            // Make sure currentIndex is valid
+            // Make sure the current index is valid
             const uint32_t currentIndex = this->currentIndex;
             if (currentIndex >= TOTAL_SPECIAL_MOVES)
             {
-                // Failsafe: Reset currentIndex to 0
+                // Failsafe: Reset the current index to 0
                 this->currentIndex = 0;
                 break;
             }

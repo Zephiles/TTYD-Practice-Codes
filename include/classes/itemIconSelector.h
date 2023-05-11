@@ -47,7 +47,6 @@ class ItemIconSelector
 
    private:
     Window window;
-    Window iconsWindow;
     float scale;
 
     SelectedItemFunc selectedItemFunc; // Called when the player presses A to select an item/badge

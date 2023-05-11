@@ -1375,13 +1375,13 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
 
 void ValueEditor::adjustValue(bool increment)
 {
-    // Make sure currentIndex is valid
+    // Make sure the current index is valid
     char *editorValue = this->editorValue;
     uint32_t currentIndex = this->currentIndex;
 
     if (currentIndex >= strlen(editorValue))
     {
-        // Failsafe: Reset currentIndex to 0
+        // Failsafe: Reset the current index to 0
         this->currentIndex = 0;
         return;
     }
@@ -2422,7 +2422,7 @@ void ValueEditor::controlsMoveLeftOnce(uint32_t maxDigit)
             // Move left twice
             currentIndex -= 2;
 
-            // If currentIndex is now invalid, then loop to the last option
+            // If the current index is now invalid, then loop to the last option
             if (currentIndex < 0)
             {
                 currentIndex = static_cast<int32_t>(maxDigit);
