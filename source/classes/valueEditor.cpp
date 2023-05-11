@@ -1087,7 +1087,7 @@ bool ValueEditor::getValueFromString(ValueType *valuePtr) const
     return true;
 }
 
-bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive)
+bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive, uint32_t specialCase)
 {
     // Both a min and a max need to be set to use either of them
     // Handle the min and max as ValueType
@@ -1098,6 +1098,25 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
     if (!minAndMaxSet)
     {
         return false;
+    }
+
+    // Handle special cases
+    switch (specialCase)
+    {
+        case MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN:
+        {
+            this->setValueToMin();
+            return true;
+        }
+        case MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX:
+        {
+            this->setValueToMax();
+            return true;
+        }
+        default:
+        {
+            break;
+        }
     }
 
     // Make sure the value does not exceed the min or max
@@ -1395,7 +1414,7 @@ void ValueEditor::adjustValue(bool increment)
             currentDigit[0] = '-';
 
             // Make sure the value does not exceed the min or max
-            this->handleCheckMinMax(&value, false);
+            this->handleCheckMinMax(&value, false, MinMaxSpecialCases::SPECIAL_CASE_NONE);
             return;
         }
         case '-':
@@ -1404,7 +1423,7 @@ void ValueEditor::adjustValue(bool increment)
             currentDigit[0] = '+';
 
             // Make sure the value does not exceed the min or max
-            this->handleCheckMinMax(&value, true);
+            this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE);
             return;
         }
         case '.':
@@ -1441,7 +1460,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.s8 = static_cast<int8_t>(newValue);
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }
@@ -1487,7 +1506,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.s16 = static_cast<int16_t>(newValue);
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }
@@ -1530,7 +1549,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.s32 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }
@@ -1573,7 +1592,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.s64 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }
@@ -1616,10 +1635,26 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value is in the proper format
             newValue = static_cast<uint8_t>(newValue);
 
+            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
+
+            // If the new value was incremented and is now lower than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the min
+            if (increment && (newValue < currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
+            }
+
+            // If the new value was decremented and is now higher than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the max
+            else if (!increment && (newValue > currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
+            }
+
             // Make sure the value does not exceed the min or max
             // The value can only be positive, so just pass in true
             value.u8 = static_cast<uint8_t>(newValue);
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, specialCase))
             {
                 return;
             }
@@ -1637,10 +1672,26 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value is in the proper format
             newValue = static_cast<uint16_t>(newValue);
 
+            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
+
+            // If the new value was incremented and is now lower than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the min
+            if (increment && (newValue < currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
+            }
+
+            // If the new value was decremented and is now higher than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the max
+            else if (!increment && (newValue > currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
+            }
+
             // Make sure the value does not exceed the min or max
             // The value can only be positive, so just pass in true
             value.u16 = static_cast<uint16_t>(newValue);
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, specialCase))
             {
                 return;
             }
@@ -1655,10 +1706,26 @@ void ValueEditor::adjustValue(bool increment)
             const uint32_t currentValue = value.u32;
             uint32_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
 
+            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
+
+            // If the new value was incremented and is now lower than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the min
+            if (increment && (newValue < currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
+            }
+
+            // If the new value was decremented and is now higher than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the max
+            else if (!increment && (newValue > currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
+            }
+
             // Make sure the value does not exceed the min or max
             // The value can only be positive, so just pass in true
             value.u32 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, specialCase))
             {
                 return;
             }
@@ -1673,10 +1740,26 @@ void ValueEditor::adjustValue(bool increment)
             const uint64_t currentValue = value.u64;
             uint64_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
 
+            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
+
+            // If the new value was incremented and is now lower than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the min
+            if (increment && (newValue < currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
+            }
+
+            // If the new value was decremented and is now higher than the original value, then the new value would be negative
+            // if it was being handled as a signed value, so set it to the max
+            else if (!increment && (newValue > currentValue))
+            {
+                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
+            }
+
             // Make sure the value does not exceed the min or max
             // The value can only be positive, so just pass in true
             value.u64 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, specialCase))
             {
                 return;
             }
@@ -1739,7 +1822,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.f32 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }
@@ -1899,7 +1982,7 @@ void ValueEditor::adjustValue(bool increment)
             // Make sure the value does not exceed the min or max
             // The value is already converted to negative, so just pass in true
             value.f64 = newValue;
-            if (this->handleCheckMinMax(&value, true))
+            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
             {
                 return;
             }

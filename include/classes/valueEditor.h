@@ -34,6 +34,14 @@ typedef void (*ValueEditorCancelFunc)();
 
 class ValueEditor
 {
+    // Currently only used for when unsigned values go from UINT_MIN to UINT_MAX and vice versa
+    enum MinMaxSpecialCases
+    {
+        SPECIAL_CASE_NONE = 0,
+        SPECIAL_CASE_SET_TO_MIN,
+        SPECIAL_CASE_SET_TO_MAX,
+    };
+
    public:
     ValueEditor() {}
     ~ValueEditor() {}
@@ -98,7 +106,7 @@ class ValueEditor
 
     // Must use const void instead of ValueType for valuePtr, as the value is stored in a fixed size (int32_t, uint32_t,
     // etc.)
-    bool handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive);
+    bool handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive, uint32_t specialCase);
 
     void adjustValue(bool increment);
     void setValueToMin();
