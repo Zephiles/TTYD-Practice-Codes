@@ -157,8 +157,15 @@ void selectedOptionAddByIcon(Menu *menuPtr)
     menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
 
     // Initialize the item icon selector
+    const Window *rootWindowPtr = gRootWindow;
     ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
-    itemIconSelectorPtr->setCurrentIndex(0);
+
+    itemIconSelectorPtr->init(rootWindowPtr,
+                              *inventoryPtr->getMinValuePtr(),
+                              *inventoryPtr->getMaxValuePtr(),
+                              rootWindowPtr->getAlpha(),
+                              inventoryPtr->getScale());
+
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
@@ -353,6 +360,19 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
         return;
     }
 
+    // Bring up the window for selecting an icon
+    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
+
+    // Initialize the item icon selector
+    const Window *rootWindowPtr = gRootWindow;
+    ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
+
+    itemIconSelectorPtr->init(rootWindowPtr,
+                              *inventoryPtr->getMinValuePtr(),
+                              *inventoryPtr->getMaxValuePtr(),
+                              rootWindowPtr->getAlpha(),
+                              inventoryPtr->getScale());
+
     // Set the cursor of the item icon selector to the item that is being changed
     ItemId item = inventoryPtr->getInventoryItemPtr()[index];
 
@@ -362,11 +382,6 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
         item = *inventoryPtr->getMinValuePtr();
     }
 
-    // Bring up the window for selecting an icon
-    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
-
-    // Initialize the item icon selector
-    ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
     itemIconSelectorPtr->setCurrentIndexFromItem(item);
     itemIconSelectorPtr->startDrawing(changeItemFromIcon, cancelAddItemFromIcon);
 }
@@ -988,9 +1003,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
         delete inventoryPtr;
     }
 
-    const float scale = gRoot->getScale();
-
-    inventoryPtr = new Inventory(scale);
+    inventoryPtr = new Inventory(gRoot->getScale());
     gInventory = inventoryPtr;
 
     PouchData *pouchPtr = pouchGetPtr();
@@ -1047,13 +1060,6 @@ void inventoryMenuMainInit(Menu *menuPtr)
     }
 
     inventoryPtr->setInventoryType(inventoryType);
-
-    const Window *rootWindowPtr = gRootWindow;
-    inventoryPtr->getItemIconSelector()->init(rootWindowPtr,
-                                              *inventoryPtr->getMinValuePtr(),
-                                              *inventoryPtr->getMaxValuePtr(),
-                                              rootWindowPtr->getAlpha(),
-                                              scale);
 
     constexpr uint32_t totalOptions = sizeof(inventoryMenuMainOptions) / sizeof(inventoryMenuMainOptions[0]);
     enterNextMenu(inventoryMenuMainOptions, &inventoryMenuMainFuncs, totalOptions);
