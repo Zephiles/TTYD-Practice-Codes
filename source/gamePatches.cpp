@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "gc/types.h"
 #include "gc/pad.h"
+#include "gc/OSCache.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/seq_mapchange.h"
@@ -342,6 +343,34 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
     }
 
     return ret;
+}
+
+bool performPreBattleActions()
+{
+    // Make sure the Jump and Hammer upgrades have been properly checked
+    recheckJumpAndHammerLevels();
+
+    PouchData *pouchPtr = pouchGetPtr();
+    Mod *modPtr = gMod;
+
+    // Clear the cache for Mario's stats if they were changed manually
+    if (modPtr->shouldClearMarioStatsCache())
+    {
+        modPtr->resetMarioStatsCacheBool();
+
+        const uint32_t size = (&pouchPtr->starPoints - &pouchPtr->currentHp) * sizeof(int16_t);
+        DCFlushRange(&pouchPtr->currentHp, size + sizeof(int16_t));
+    }
+
+    // Clear the cache for the partners' stats if they were changed manually
+    if (modPtr->shouldClearPartnerStatsCache())
+    {
+        modPtr->resetPartnerStatsCacheBool();
+        DCFlushRange(pouchPtr->partyData, sizeof(pouchPtr->partyData));
+    }
+
+    // Call the original function
+    return battle_init_trampoline();
 }
 
 void applyGameFixes()

@@ -35,10 +35,31 @@ union ValueType
     double f64;
 };
 
+// Used to clear the cache for Mario/partner stats before a battle starts
+struct ClearStatsCacheForBattles
+{
+    bool clearMarioStats;
+    bool clearPartnerStats;
+} __attribute__((__packed__));
+
 class Mod
 {
    public:
+    bool checkIfSystemLevelIsSet() const { return this->systemLevelIsSet; }
+    void setSystemLevel() { this->systemLevelIsSet = true; }
+    void clearSystemLevel() { this->systemLevelIsSet = false; }
+
+    bool shouldClearMarioStatsCache() const { return this->clearStatsCacheForBattles.clearMarioStats; }
+    void clearMarioStatsCache() { this->clearStatsCacheForBattles.clearMarioStats = true; }
+    void resetMarioStatsCacheBool() { this->clearStatsCacheForBattles.clearMarioStats = false; }
+
+    bool shouldClearPartnerStatsCache() const { return this->clearStatsCacheForBattles.clearPartnerStats; }
+    void clearPartnerStatsCache() { this->clearStatsCacheForBattles.clearPartnerStats = true; }
+    void resetPartnerStatsCacheBool() { this->clearStatsCacheForBattles.clearPartnerStats = false; }
+
+   private:
     bool systemLevelIsSet;
+    ClearStatsCacheForBattles clearStatsCacheForBattles;
 };
 
 extern Mod *gMod;

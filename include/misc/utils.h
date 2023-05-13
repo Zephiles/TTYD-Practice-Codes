@@ -35,6 +35,7 @@ void *getPartnerPtr();
 void *getFollowerPtr();
 void spawnPartnerOrFollower(PartyMembers id);
 void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner);
+void recheckJumpAndHammerLevels();
 void recheckBattleUpgrades(ItemId item);
 bool checkIfBadgeEquipped(ItemId badge);
 void resetPauseMenuImportantItems();

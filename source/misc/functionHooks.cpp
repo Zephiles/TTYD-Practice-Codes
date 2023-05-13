@@ -11,3 +11,4 @@ const char *(*msgSearch_trampoline)(const char *key);
 int32_t (*winRootMain_trampoline)(void *pauseMenuPtr);
 int32_t (*marioKeyOn_trampoline)();
 bool (*OSLink_trampoline)(OSModuleInfo *module, void *bss);
+bool (*battle_init_trampoline)();

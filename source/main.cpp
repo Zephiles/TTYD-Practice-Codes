@@ -14,6 +14,7 @@
 #include "ttyd/msgdrv.h"
 #include "ttyd/win_root.h"
 #include "ttyd/mario.h"
+#include "ttyd/seq_battle.h"
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
 
@@ -58,6 +59,9 @@ void init()
 
     // For fixing various issues within rel files
     OSLink_trampoline = hookFunction(OSLink, applyRelPatches);
+
+    // For performing various actions immediately before a battle starts
+    battle_init_trampoline = hookFunction(battle_init, performPreBattleActions);
 
     // Initialize text stuff early
     fontmgrTexSetup();

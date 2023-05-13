@@ -1,9 +1,11 @@
+#include "mod.h"
 #include "menuUtils.h"
 #include "drawIcon.h"
 #include "drawText.h"
 #include "classes/window.h"
 #include "menus/stats.h"
 #include "menus/root.h"
+#include "misc/utils.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/evt_yuugijou.h"
@@ -324,6 +326,169 @@ void cancelMenuMarioChangeValue()
     gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 }
 
+void menuMarioChangeValue(const ValueType *valuePtr)
+{
+    Stats *statsPtr = gStats;
+
+    // Make sure the current index is valid
+    const uint32_t index = statsPtr->getCurrentIndex();
+    if (index >= STATS_MARIO_TOTAL_ENTRIES)
+    {
+        // Failsafe: Reset the current index to 0
+        statsPtr->setCurrentIndex(0);
+        return;
+    }
+
+    const int32_t value = valuePtr->s32;
+    PouchData *pouchPtr = pouchGetPtr();
+    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
+
+    // Set the new value
+    switch (index)
+    {
+        case StatsMarioOptions::STATS_MARIO_COINS:
+        {
+            pouchPtr->coins = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
+        {
+            pouchPtr->currentHp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_FP:
+        {
+            pouchPtr->currentFp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_BP:
+        {
+            pouchPtr->totalBp = static_cast<int16_t>(value);
+
+            // Force the game to recalculate how much BP is left
+            pouchReviseMarioParam();
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_MAX_HP:
+        {
+            pouchPtr->maxHp = static_cast<int16_t>(value);
+
+            // Reset the value for entering battles
+            pouchPtr->baseMaxHp = static_cast<int16_t>(value);
+
+            // Prevent the current value from exceeding the max value
+            if (pouchPtr->currentHp > value)
+            {
+                pouchPtr->currentHp = static_cast<int16_t>(value);
+            }
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_MAX_FP:
+        {
+            pouchPtr->maxFp = static_cast<int16_t>(value);
+
+            // Reset the value for entering battles
+            pouchPtr->baseMaxFp = static_cast<int16_t>(value);
+
+            // Prevent the current value from exceeding the max value
+            if (pouchPtr->currentFp > value)
+            {
+                pouchPtr->currentFp = static_cast<int16_t>(value);
+            }
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_LEVEL:
+        {
+            pouchPtr->level = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_RANK:
+        {
+            pouchPtr->rank = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_STAR_POINTS:
+        {
+            pouchPtr->starPoints = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_STAR_PIECES:
+        {
+            pouchPtr->starPieces = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_SHINE_SPRITES:
+        {
+            pouchPtr->shineSprites = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
+        {
+            pouchPtr->currentSp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
+        {
+            pouchPtr->maxSp = static_cast<int16_t>(value);
+
+            // Prevent the current value from exceeding the max value
+            if (pouchPtr->currentSp > value)
+            {
+                pouchPtr->currentSp = static_cast<int16_t>(value);
+            }
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_SHOP_POINTS:
+        {
+            pouchPtr->shopPoints = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
+        {
+            *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x4) = value;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
+        {
+            *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x8) = value;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // Depending on whicb option was selected, the cache for it will need to be cleared before a battle starts
+    switch (index)
+    {
+        case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
+        case StatsMarioOptions::STATS_MARIO_CURRENT_FP:
+        case StatsMarioOptions::STATS_MARIO_MAX_HP:
+        case StatsMarioOptions::STATS_MARIO_MAX_FP:
+        case StatsMarioOptions::STATS_MARIO_LEVEL:
+        case StatsMarioOptions::STATS_MARIO_RANK:
+        case StatsMarioOptions::STATS_MARIO_STAR_POINTS:
+        case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
+        case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
+        {
+            // Only set the flag for clearing the cache if not in a battle
+            if (!checkForSpecificSeq(SeqIndex::kBattle))
+            {
+                gMod->clearMarioStatsCache();
+            }
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // Close the value editor
+    cancelMenuMarioChangeValue();
+}
+
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 {
     Stats *statsPtr = gStats;
@@ -384,7 +549,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
                          rootWindowPtr->getAlpha(),
                          statsPtr->getScale());
 
-    valueEditorPtr->startDrawing(nullptr, cancelMenuMarioChangeValue);
+    valueEditorPtr->startDrawing(menuMarioChangeValue, cancelMenuMarioChangeValue);
 }
 
 void cancelMenuMarioToggleSpecialMoves()

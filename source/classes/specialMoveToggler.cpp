@@ -1,3 +1,4 @@
+#include "mod.h"
 #include "drawIcon.h"
 #include "menuUtils.h"
 #include "drawText.h"
@@ -150,6 +151,13 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
 
             // Toggle the bit for the current special move
             pouchGetPtr()->starPowersObtained ^= (1UL << currentIndex);
+
+            // The cache for the special moves will need to be cleared before entering a battle
+            // Only set the flag for clearing the cache if not in a battle
+            if (!checkForSpecificSeq(SeqIndex::kBattle))
+            {
+                gMod->clearMarioStatsCache();
+            }
             break;
         }
         case MenuButtonInput::B:

@@ -14,6 +14,7 @@ extern const char *(*msgSearch_trampoline)(const char *key);
 extern int32_t (*winRootMain_trampoline)(void *pauseMenuPtr);
 extern int32_t (*marioKeyOn_trampoline)();
 extern bool (*OSLink_trampoline)(OSModuleInfo *module, void *bss);
+extern bool (*battle_init_trampoline)();
 
 // Functions used for hooks
 void runOncePerFrame();
@@ -23,5 +24,6 @@ const char *getCustomMessage(const char *key);
 int32_t pauseMenuPreventUnpause(void *pauseMenuPtr);
 int32_t fixMarioKeyOn();
 bool applyRelPatches(OSModuleInfo *module, void *bss);
+bool performPreBattleActions();
 
 #endif
