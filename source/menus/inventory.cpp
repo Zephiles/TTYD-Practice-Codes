@@ -67,7 +67,15 @@ void addItemFromId(const ValueType *valuePtr)
     }
 
     // Set the new item
-    inventoryPtr->getInventoryItemPtr()[totalItems] = static_cast<ItemId>(valuePtr->s16);
+    const ItemId item = static_cast<ItemId>(valuePtr->s16);
+    inventoryPtr->getInventoryItemPtr()[totalItems] = item;
+
+    // The battle menu will not properly update when an upgrade is given, so manually update it
+    recheckBattleUpgrades(item);
+
+    // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
 
     // If the inventory is now full, then stop adding items
     if (inventoryPtr->inventoryIsFull())
@@ -136,6 +144,13 @@ void addItemFromIcon(ItemId item)
     // Add the new item
     inventoryPtr->getInventoryItemPtr()[totalItems] = item;
 
+    // The battle menu will not properly update when an upgrade is given, so manually update it
+    recheckBattleUpgrades(item);
+
+    // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
+
     // If the inventory is now full, then stop adding items
     if (inventoryPtr->inventoryIsFull())
     {
@@ -192,6 +207,10 @@ void Inventory::duplicateItem(Menu *menuPtr)
     // Add the item to the next empty slot in the array
     inventoryItemPtr[this->getTotalItemsInInventory()] = item;
 
+    // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
+
     // If the inventory is now full, then stop duplicating items
     if (this->inventoryIsFull())
     {
@@ -243,7 +262,15 @@ void changeItemFromId(const ValueType *valuePtr)
     }
 
     // Set the new item
-    inventoryPtr->getInventoryItemPtr()[index] = static_cast<ItemId>(valuePtr->s16);
+    const ItemId item = static_cast<ItemId>(valuePtr->s16);
+    inventoryPtr->getInventoryItemPtr()[index] = item;
+
+    // The battle menu will not properly update when an upgrade is changed, so manually update it
+    recheckBattleUpgrades(item);
+
+    // The Important Items in the pause menu will not visually update when an important item is changed, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
 
     // Close the value editor
     cancelAddItemFromId();
@@ -328,6 +355,13 @@ void changeItemFromIcon(ItemId item)
 
     // Set the new item
     inventoryPtr->getInventoryItemPtr()[index] = item;
+
+    // The battle menu will not properly update when an upgrade is changed, so manually update it
+    recheckBattleUpgrades(item);
+
+    // The Important Items in the pause menu will not visually update when an important item is changed, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
 
     // Close the item icon selector
     cancelAddItemFromIcon();
@@ -422,11 +456,11 @@ void Inventory::deleteItem(Menu *menuPtr)
         }
     }
 
-    // If the player is currently in a battle and a boot/hammer upgrade was deleted, then update what boot/hammer upgrade the
-    // player has access to in the battle
+    // The battle menu will not properly update if an upgrade is removed, so manually update it
     recheckBattleUpgrades(deletedItem);
 
-    // If the pause menu is currently open and a boot/hammer upgrade was deleted, then reset important items menu
+    // The Important Items in the pause menu will not visually update when an important item is removed, so manually reset the
+    // Important Items menu
     resetPauseMenuImportantItems();
 
     // If the inventory is now empty, then stop deleting items
