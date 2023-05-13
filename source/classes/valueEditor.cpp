@@ -41,7 +41,7 @@ void ValueEditor::init(const void *valuePtr,
     this->setValueFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
-    this->autoIncrement.shouldIncrementNow = false;
+    this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
 
     // If the value is not being handled as signed, then change the type to unsigned

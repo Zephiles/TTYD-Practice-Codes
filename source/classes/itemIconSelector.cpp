@@ -28,7 +28,7 @@ void ItemIconSelector::init(const Window *parentWindow,
     this->selectedItemFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
-    this->autoIncrement.shouldIncrementNow = false;
+    this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
     this->currentIndex = 0;
 

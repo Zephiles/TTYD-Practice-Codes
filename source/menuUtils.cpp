@@ -54,13 +54,14 @@ bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement)
 
     if (!(keyGetButton(PadId::CONTROLLER_ONE) & buttons))
     {
-        // Reset the counter and bool
+        // Reset the counters
         autoIncrement->waitFramesToBegin = 0;
-        autoIncrement->shouldIncrementNow = false;
+        autoIncrement->framesBeforeIncrement = 0;
         return false;
     }
 
     // Check to see if the value should begin to auto-increment
+    // Require holding a direction for 500ms before auto-incrementing starts
     uint32_t waitFramesToBegin = autoIncrement->waitFramesToBegin;
     if (waitFramesToBegin < sysMsec2Frame(500))
     {
@@ -68,15 +69,17 @@ bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement)
         return false;
     }
 
-    // Check to see if the number should increment or not
-    if (!autoIncrement->shouldIncrementNow)
+    // Check to see if the number should be auto-incremented or not
+    // Increment at a rate of 50ms
+    uint32_t framesBeforeIncrement = autoIncrement->framesBeforeIncrement;
+    if (framesBeforeIncrement < sysMsec2Frame(50))
     {
-        autoIncrement->shouldIncrementNow = true;
+        autoIncrement->framesBeforeIncrement = static_cast<uint16_t>(++framesBeforeIncrement);
         return false;
     }
 
     // Auto-increment the value
-    autoIncrement->shouldIncrementNow = false;
+    autoIncrement->framesBeforeIncrement = 0;
     return true;
 }
 
@@ -116,7 +119,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
 
 void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
 {
-    static MenuAutoIncrement autoIncrement = {0, false};
+    static MenuAutoIncrement autoIncrement = {0, 0};
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool shouldAutoIncrement = handleMenuAutoIncrement(&autoIncrement);

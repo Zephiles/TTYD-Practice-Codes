@@ -44,7 +44,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t a
     this->alpha = alpha;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
-    this->autoIncrement.shouldIncrementNow = false;
+    this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
     this->currentIndex = 0;
 

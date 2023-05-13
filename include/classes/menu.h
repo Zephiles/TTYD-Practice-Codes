@@ -26,8 +26,8 @@ enum class MenuButtonInput
 // Used to figure out when values should be auto-incremented when a D-Pad direction is held
 struct MenuAutoIncrement
 {
-    uint16_t waitFramesToBegin;
-    bool shouldIncrementNow;
+    uint16_t waitFramesToBegin;     // Used to figure out long to wait before checking if auto-incrementing should be done
+    uint16_t framesBeforeIncrement; // Used to limit how fast auto-incrementing should occur
 } __attribute__((__packed__));
 
 class Menu;
