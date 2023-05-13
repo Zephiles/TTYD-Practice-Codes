@@ -33,6 +33,8 @@ void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues);
 uint32_t ptrIsValid(void *ptr);
 void *getPartnerPtr();
 void *getFollowerPtr();
+void removePartnerFromOverworld();
+void removeFollowerFromOverworld();
 void spawnPartnerOrFollower(PartyMembers id);
 void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner);
 void recheckJumpAndHammerLevels();

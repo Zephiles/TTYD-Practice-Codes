@@ -4,6 +4,8 @@
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
 #include "classes/specialMoveToggler.h"
+#include "classes/followerSelector.h"
+#include "classes/errorWindow.h"
 #include "misc/utils.h"
 #include "ttyd/dispdrv.h"
 
@@ -47,6 +49,11 @@ enum StatsFlagMario
     STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES,
 };
 
+enum StatsFlagFollower
+{
+    STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER = 0,
+};
+
 class Stats
 {
    public:
@@ -55,6 +62,9 @@ class Stats
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
+    FollowerSelector *getFollowerSelector() { return &this->followerSelector; }
+    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
+
     float getScale() const { return this->scale; }
     int32_t *getMinValuePtr() { return &this->minValue; }
     int32_t *getMaxValuePtr() { return &this->maxValue; }
@@ -67,18 +77,24 @@ class Stats
     void setMaxValue(int32_t value) { this->maxValue = value; }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
+    void initErrorWindow(bool drawForPartner);
     void drawMarioStats() const;
+    void drawFollowerOut() const;
 
    private:
     ValueEditor valueEditor;
     SpecialMoveToggler specialMoveToggler;
+    FollowerSelector followerSelector;
+    ErrorWindow errorWindow;
     float scale;
 
     int32_t minValue;
     int32_t maxValue;
 
     MenuAutoIncrement autoIncrement;
-    uint8_t currentIndex; // Current cursor position
+    uint8_t currentIndex;   // Current cursor position
+
+    char errorMessage[128]; // Needed since the error message is created via snprintf
 };
 
 extern Stats *gStats;
@@ -89,6 +105,13 @@ void statsMenuMarioDraw(CameraId cameraId, void *user);
 
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr);
+
+void statsMenuFollowersInit(Menu *menuPtr);
+void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button);
+void statsMenuFollowersDraw(CameraId cameraId, void *user);
+
+void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr);
+void selectedOptionMenuFollowersRemoveFollower(Menu *menuPtr);
 
 // Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
 void statsMenuInit(Menu *menuPtr);

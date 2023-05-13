@@ -977,7 +977,7 @@ Inventory::Inventory(float scale)
     this->scale = scale;
 
     const Window *rootWindowPtr = gRootWindow;
-    ErrorWindow *errorWindowPtr = this->getErrorWindow();
+    ErrorWindow *errorWindowPtr = &this->errorWindow;
 
     errorWindowPtr->setScale(scale);
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
@@ -999,7 +999,7 @@ Inventory::Inventory(float scale)
 
 void Inventory::initErrorWindow(const char *text)
 {
-    ErrorWindow *errorWindowPtr = this->getErrorWindow();
+    ErrorWindow *errorWindowPtr = &this->errorWindow;
     errorWindowPtr->setText(text);
     errorWindowPtr->setTimer(3000);
     errorWindowPtr->placeInWindow(gRootWindow, WindowAlignment::MIDDLE_CENTER);

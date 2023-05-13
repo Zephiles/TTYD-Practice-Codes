@@ -185,10 +185,20 @@ void *getFollowerPtr()
     return partyGetPtr(Id);
 }
 
+void removePartnerFromOverworld()
+{
+    partyKill2(marioGetPartyId());
+}
+
+void removeFollowerFromOverworld()
+{
+    partyKill2(marioGetExtraPartyId());
+}
+
 void spawnPartnerOrFollower(PartyMembers id)
 {
     // Make sure the partner/follower is valid
-    if ((id <= PartyMembers::kNone) || (id >= PartyMembers::kMsMowzFollower))
+    if ((id <= PartyMembers::kNone) || (id > PartyMembers::kMsMowzFollower))
     {
         return;
     }

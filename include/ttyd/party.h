@@ -3,6 +3,12 @@
 
 #include <cstdint>
 
+#define TOTAL_PARTNERS 7
+#define TOTAL_FOLLOWERS 12 // Includes all partners as well
+
+#define TOTAL_PARTNERS_FLOAT 7.f
+#define TOTAL_FOLLOWERS_FLOAT 12.f // Includes all partners as well
+
 enum class PartySlotId : int32_t
 {
     kNone = -1,

@@ -10,6 +10,8 @@
 
 #include <cstdint>
 
+const char *specialMoveTogglerHelpText = "Press A to turn on/off\nPress B to cancel";
+
 const IconId specialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_MAGICAL_MAP_SMALL,
     IconId::ICON_DIAMOND_STAR,
@@ -20,8 +22,6 @@ const IconId specialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_GARNET_STAR,
     IconId::ICON_CRYSTAL_STAR,
 };
-
-const char *helpText = "Press A to turn on/off\nPress B to cancel";
 
 const char *specialMoves[TOTAL_SPECIAL_MOVES] = {
     "Sweet Treat",
@@ -52,7 +52,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t a
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(specialMoveTogglerHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the icon and item texts
     const float spaceUsedByIcons = SPACE_USED_PER_ICON(scale) * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);
@@ -215,7 +215,7 @@ void SpecialMoveToggler::draw()
     float textPosXBase;
     float textPosYBase;
 
-    const char *helpTextPtr = helpText;
+    const char *helpTextPtr = specialMoveTogglerHelpText;
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
     drawText(helpTextPtr, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
 

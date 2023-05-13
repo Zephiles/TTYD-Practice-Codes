@@ -20,8 +20,6 @@
 
 #include <cstdint>
 
-Mod *gMod = nullptr;
-
 void init()
 {
     // Apply fixes to various bugs in the game

@@ -18,7 +18,8 @@ class ErrorWindow
     ErrorWindow() {}
     ~ErrorWindow() {}
 
-    // Initializes the text variable, and then calls setWidthHeightFromTextAndInit for the window
+    // Initializes the text variable, and then calls setWidthHeightFromTextAndInit for the window. The scale and alpha need to
+    // be set before calling this function.
     void setText(const char *text);
 
     void setTimer(uint32_t milliseconds);
@@ -40,8 +41,8 @@ class ErrorWindow
 
    private:
     Window window;
-    const char *text;
     float scale;
+    const char *text;
     uint16_t timer;
     uint8_t alpha;
     bool shouldCheckForInputs; // Used to avoid checking for button inputs on the frame that the window starts being drawn
