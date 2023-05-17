@@ -1095,7 +1095,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
 
     inventoryPtr->setInventoryType(inventoryType);
 
-    constexpr uint32_t totalOptions = sizeof(inventoryMenuMainOptions) / sizeof(inventoryMenuMainOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(inventoryMenuMainOptions) / sizeof(MenuOption);
     enterNextMenu(inventoryMenuMainOptions, &inventoryMenuMainFuncs, totalOptions);
 }
 
@@ -1130,6 +1130,6 @@ void inventoryMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(inventoryMenuInitOptions) / sizeof(inventoryMenuInitOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(inventoryMenuInitOptions) / sizeof(MenuOption);
     enterNextMenu(inventoryMenuInitOptions, &inventoryMenuInitFuncs, totalOptions);
 }

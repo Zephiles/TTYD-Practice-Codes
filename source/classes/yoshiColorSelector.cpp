@@ -179,7 +179,7 @@ void YoshiColorSelector::draw()
     const float scale = this->scale;
     const char *helpTextPtr = helpTextAConfirmBCancel;
 
-    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
+    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Get the position for the options

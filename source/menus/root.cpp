@@ -55,7 +55,7 @@ void rootMenuInit()
     winOpenDisable();
 
     // Need to enter the root menu before initializing gRoot
-    constexpr uint32_t totalOptions = sizeof(rootMenuOptions) / sizeof(rootMenuOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(rootMenuOptions) / sizeof(MenuOption);
     enterNextMenu(rootMenuOptions, &rootMenuFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gRoot

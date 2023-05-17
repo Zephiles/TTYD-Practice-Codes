@@ -30,7 +30,7 @@ void statsMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuInitOptions) / sizeof(statsMenuInitOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(statsMenuInitOptions) / sizeof(MenuOption);
     enterNextMenu(statsMenuInitOptions, &statsMenuInitFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gStats

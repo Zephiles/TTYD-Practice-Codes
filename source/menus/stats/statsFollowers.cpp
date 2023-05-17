@@ -75,7 +75,7 @@ void statsMenuFollowersInit(Menu *menuPtr)
     // Reset currentIndex
     gStats->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuFollowersOptions) / sizeof(statsMenuFollowersOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(statsMenuFollowersOptions) / sizeof(MenuOption);
     enterNextMenu(statsMenuFollowersOptions, &statsMenuFollowersFuncs, totalOptions);
 }
 

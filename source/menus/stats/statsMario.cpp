@@ -102,7 +102,7 @@ void statsMenuMarioInit(Menu *menuPtr)
     // Reset currentIndex
     gStats->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuMarioOptions) / sizeof(statsMenuMarioOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(statsMenuMarioOptions) / sizeof(MenuOption);
     enterNextMenu(statsMenuMarioOptions, &statsMenuMarioFuncs, totalOptions);
 }
 

@@ -78,9 +78,6 @@ void statsMenuPartnersInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    // Reset currentIndex
-    gStats->setCurrentIndex(0);
-
     constexpr uint32_t totalOptions = sizeof(statsMenuPartnersOptions) / sizeof(statsMenuPartnersOptions[0]);
     enterNextMenu(statsMenuPartnersOptions, &statsMenuPartnersFuncs, totalOptions);
 }
@@ -89,6 +86,9 @@ void statsMenuPartnersSelectedPartner(Menu *menuPtr)
 {
     // Set the flag for a partner being selected
     menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER);
+
+    // Reset currentIndex
+    gStats->setCurrentIndex(0);
 }
 
 uint32_t menuPartnersGetTotalPartnerOptions(uint32_t currentIndex)
@@ -101,17 +101,17 @@ uint32_t menuPartnersGetTotalPartnerOptions(uint32_t currentIndex)
     return totalOptions;
 }
 
-bool verifyMenuAndCurrentIndexes()
+void verifyMenuAndCurrentIndexes()
 {
     Menu *menuPtr = gMenu;
-    const uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
+    uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
 
     // Make sure the menu current index is valid
     if (menuCurrentIndex >= menuPtr->getTotalOptions())
     {
-        // Failsafe: Reset the menu current index to 0
-        menuPtr->setCurrentIndex(0);
-        return false;
+        // Reset the menu current index to 0
+        menuCurrentIndex = 0;
+        menuPtr->setCurrentIndex(menuCurrentIndex);
     }
 
     // Make sure the current index is valid
@@ -121,12 +121,18 @@ bool verifyMenuAndCurrentIndexes()
 
     if (currentIndex >= totalOptions)
     {
-        // Failsafe: Reset the current index to 0
+        // Reset the current index to 0
         statsPtr->setCurrentIndex(0);
-        return false;
     }
+}
 
-    return true;
+PouchPartyData *getCurrentPartnerData()
+{
+    // Make sure both of the current indexes are valid
+    verifyMenuAndCurrentIndexes();
+
+    const uint32_t mainCurrentIndex = gMenu->getCurrentIndex();
+    return &pouchGetPtr()->partyData[static_cast<uint32_t>(partnersIds[mainCurrentIndex])];
 }
 
 void cancelMenuPartnersChangeValue()
@@ -137,45 +143,35 @@ void cancelMenuPartnersChangeValue()
 
 void menuPartnersChangeValue(const ValueType *valuePtr)
 {
-    // Make sure the menu current index and the current index are valid
-    if (!verifyMenuAndCurrentIndexes())
-    {
-        return;
-    }
-
-    const Menu *menuPtr = gMenu;
-    const uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
-    PouchPartyData *partyData = &pouchGetPtr()->partyData[static_cast<uint32_t>(partnersIds[menuCurrentIndex])];
-
-    Stats *statsPtr = gStats;
-    const uint32_t currentIndex = statsPtr->getCurrentIndex();
     const int32_t value = valuePtr->s32;
+    PouchPartyData *partnerData = getCurrentPartnerData();
+    const uint32_t currentIndex = gStats->getCurrentIndex();
 
     // Set the new value
     switch (currentIndex)
     {
         case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_CURRENT_HP:
         {
-            partyData->currentHp = static_cast<int16_t>(value);
+            partnerData->currentHp = static_cast<int16_t>(value);
             break;
         }
         case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_MAX_HP:
         {
-            partyData->maxHp = static_cast<int16_t>(value);
+            partnerData->maxHp = static_cast<int16_t>(value);
 
             // Reset the value for entering battles
-            partyData->baseMaxHp = static_cast<int16_t>(value);
+            partnerData->baseMaxHp = static_cast<int16_t>(value);
             break;
         }
         case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_RANK:
         {
-            partyData->attackLevel = static_cast<int16_t>(value);
+            partnerData->attackLevel = static_cast<int16_t>(value);
 
             // Set the rank for battles
-            partyData->techLevel = static_cast<int16_t>(value);
+            partnerData->techLevel = static_cast<int16_t>(value);
 
             // Set the rank used to verify the partner's stats when equipping/unequipping badges
-            partyData->hpLevel = static_cast<int16_t>(value);
+            partnerData->hpLevel = static_cast<int16_t>(value);
             break;
         }
         default:
@@ -288,13 +284,9 @@ void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
 void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput button)
 {
     // Make sure the menu current index and the current index are valid
-    if (!verifyMenuAndCurrentIndexes())
-    {
-        return;
-    }
+    verifyMenuAndCurrentIndexes();
 
     const uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
-    const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
 
     Stats *statsPtr = gStats;
     const uint32_t currentIndex = statsPtr->getCurrentIndex();
@@ -304,6 +296,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
+            const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
             menuControlsVertical(button, statsPtr->getCurrentIndexPtr(), nullptr, totalOptions, totalOptions, 1, true);
             break;
         }
@@ -360,35 +353,34 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
             // Handle options for all partners
             if (!handledYoshiOption)
             {
-                PouchPartyData *partyData = &pouchGetPtr()->partyData[static_cast<uint32_t>(partnersIds[menuCurrentIndex])];
-
+                PouchPartyData *partnerData = getCurrentPartnerData();
                 switch (currentIndex)
                 {
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_CURRENT_HP:
                     {
                         statsPtr->setMinValue(0);
-                        statsPtr->setMaxValue(partyData->maxHp); // Make sure the current HP does not exceed the max HP
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partyData->currentHp);
+                        statsPtr->setMaxValue(partnerData->maxHp); // Make sure the current HP does not exceed the max HP
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->currentHp);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_MAX_HP:
                     {
                         statsPtr->setMinValue(0);
                         statsPtr->setMaxValue(999);
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partyData->maxHp);
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->maxHp);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_RANK:
                     {
                         statsPtr->setMinValue(0);
                         statsPtr->setMaxValue(2);
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partyData->attackLevel);
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->attackLevel);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_TOGGLE_ENABLED_BOOL:
                     {
                         // Toggle the enabled bit
-                        partyData->flags ^= 1U;
+                        partnerData->flags ^= 1U;
 
                         // The Partners menu in the pause menu will not visually update when a partner is added/removed, so
                         // manually reset the Partners menu
@@ -482,22 +474,14 @@ void Stats::drawPartnerStats()
     float posY = posYBase;
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
+    // Make sure the menu current index and the current index are valid
+    verifyMenuAndCurrentIndexes();
+
     // Draw the first 4 options, as they will always be in the same order
     Menu *menuPtr = gMenu;
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
     uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
     uint32_t currentIndex = this->currentIndex;
-
-    // Make sure the menu current index and the current index are valid
-    if (!verifyMenuAndCurrentIndexes())
-    {
-        // Failsafe: Reset the menu current index and the current index to 0
-        menuCurrentIndex = 0;
-        menuPtr->setCurrentIndex(menuCurrentIndex);
-
-        currentIndex = 0;
-        this->currentIndex = static_cast<uint8_t>(currentIndex);
-    }
 
     const char **partnerStatsInitialStringsPtr = partnerStatsInitialStrings;
     uint32_t counter = 0;
@@ -551,12 +535,12 @@ void Stats::drawPartnerStats()
 
     // Draw the first 4 values, as they will always be in the same order
     // Get the HP, Max HP, and Rank first, as they can all be drawn in the same loop
-    const PouchPartyData *partyData = &pouchGetPtr()->partyData[static_cast<uint32_t>(currentPartnerInMenu)];
+    const PouchPartyData *partnerData = getCurrentPartnerData();
     int32_t partnerStats[3];
 
-    partnerStats[0] = partyData->currentHp;
-    partnerStats[1] = partyData->maxHp;
-    partnerStats[2] = partyData->attackLevel; // Rank
+    partnerStats[0] = partnerData->currentHp;
+    partnerStats[1] = partnerData->maxHp;
+    partnerStats[2] = partnerData->attackLevel; // Rank
 
     // Set the values text to be a bit to the right of the previous text
     getTextWidthHeight("Bring Out", scale, &textWidth, nullptr);
@@ -575,7 +559,7 @@ void Stats::drawPartnerStats()
 
     // Draw the on or off text for Toggle
     const char *onOrOffText;
-    getOnOffTextAndColor(partyData->flags & 1U, &onOrOffText, &color, 0xFF);
+    getOnOffTextAndColor(partnerData->flags & 1U, &onOrOffText, &color, 0xFF);
     drawText(onOrOffText, posX, posY, scale, color);
     posY -= lineDecrement;
 
