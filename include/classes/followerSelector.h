@@ -38,13 +38,13 @@ class FollowerSelector
     }
 
     void controls(MenuButtonInput button);
-    void draw();
+    void draw() const;
 
    private:
     Window window;
     float scale;
 
-    FollowerSelectorCancelFunc cancelFunc; // Called when the player presses B to toggling special moves
+    FollowerSelectorCancelFunc cancelFunc; // Called when the player presses B to cancel selecting a follower
     FollowerSelectorErrorFunc errorFunc;   // Called when the player tries to bring out a follower while not being able to
     MenuAutoIncrement autoIncrement;
 

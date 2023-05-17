@@ -2566,7 +2566,7 @@ void ValueEditor::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            const SetValueFunc func = this->setValueFunc;
+            const ValueEditorSetValueFunc func = this->setValueFunc;
             if (!func)
             {
                 break;

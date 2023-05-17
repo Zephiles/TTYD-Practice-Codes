@@ -1,3 +1,4 @@
+#include "mod.h"
 #include "drawText.h"
 #include "menuUtils.h"
 #include "classes/followerSelector.h"
@@ -6,8 +7,6 @@
 #include "ttyd/party.h"
 
 #include <cstdint>
-
-const char *followerSelectorHelpText = "Press A to confirm\nPress B to cancel";
 
 const char *followersOptions[TOTAL_FOLLOWERS] = {
     "Goombella",
@@ -59,7 +58,7 @@ void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alp
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(followerSelectorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(helpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the width of the window to account for the options if necessary
     float longestWidthLeftColumn;
@@ -150,18 +149,18 @@ void FollowerSelector::controls(MenuButtonInput button)
             }
             else
             {
-                const FollowerSelectorErrorFunc func = this->errorFunc;
-                if (func)
+                const FollowerSelectorErrorFunc errorFunc = this->errorFunc;
+                if (errorFunc)
                 {
-                    func();
+                    errorFunc();
                 }
             }
 
             // Close the follower selector
-            const FollowerSelectorCancelFunc func = this->cancelFunc;
-            if (func)
+            const FollowerSelectorCancelFunc cancelFunc = this->cancelFunc;
+            if (cancelFunc)
             {
-                func();
+                cancelFunc();
             }
             break;
         }
@@ -182,7 +181,7 @@ void FollowerSelector::controls(MenuButtonInput button)
     }
 }
 
-void FollowerSelector::draw()
+void FollowerSelector::draw() const
 {
     // Draw the window
     const Window *windowPtr = &this->window;
@@ -196,7 +195,7 @@ void FollowerSelector::draw()
     float tempPosY;
 
     const float scale = this->scale;
-    const char *helpTextPtr = followerSelectorHelpText;
+    const char *helpTextPtr = helpTextAConfirmBCancel;
 
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));

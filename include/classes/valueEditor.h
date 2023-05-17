@@ -29,7 +29,7 @@ enum ValueEditorFlag
     DRAW_WARP_BY_EVENT_DETAILS, // Warp By Event menu
 };
 
-typedef void (*SetValueFunc)(const ValueType *valuePtr);
+typedef void (*ValueEditorSetValueFunc)(const ValueType *valuePtr);
 typedef void (*ValueEditorCancelFunc)();
 
 class ValueEditor
@@ -94,7 +94,7 @@ class ValueEditor
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
 
-    void startDrawing(SetValueFunc setValueFunc, ValueEditorCancelFunc cancelFunc)
+    void startDrawing(ValueEditorSetValueFunc setValueFunc, ValueEditorCancelFunc cancelFunc)
     {
         this->setValueFunc = setValueFunc;
         this->cancelFunc = cancelFunc;
@@ -120,15 +120,15 @@ class ValueEditor
 
    private:
     Window window;
-    float scale;                      // Based on the help text. The editor value scale will be increased based on this.
+    float scale;             // Based on the help text. The editor value scale will be increased based on this.
 
-    const void *minValuePtr;          // Can be various types, so handle as void. Should be the same type as the value variable.
-    const void *maxValuePtr;          // Can be various types, so handle as void. Should be the same type as the value variable.
+    const void *minValuePtr; // Can be various types, so handle as void. Should be the same type as the value variable.
+    const void *maxValuePtr; // Can be various types, so handle as void. Should be the same type as the value variable.
 
-    SetValueFunc setValueFunc;        // Called when the player presses A to set the new value
-    ValueEditorCancelFunc cancelFunc; // Called when the player presses B to cancel adjustimg the value
+    ValueEditorSetValueFunc setValueFunc; // Called when the player presses A to set the new value
+    ValueEditorCancelFunc cancelFunc;     // Called when the player presses B to cancel adjustimg the value
 
-    uint32_t flags;                   // Flags for what should be drawn in the window alongside the value
+    uint32_t flags;                       // Flags for what should be drawn in the window alongside the value
 
     MenuAutoIncrement autoIncrement;
     uint8_t currentIndex; // Current cursor position

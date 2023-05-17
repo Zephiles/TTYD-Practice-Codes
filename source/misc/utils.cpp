@@ -13,6 +13,7 @@
 #include "ttyd/item_data.h"
 #include "ttyd/win_main.h"
 #include "ttyd/win_item.h"
+#include "ttyd/win_party.h"
 #include "ttyd/dispdrv.h"
 #include "misc/utils.h"
 
@@ -185,6 +186,27 @@ void *getFollowerPtr()
     return partyGetPtr(Id);
 }
 
+PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
+{
+    uint32_t ptrRaw;
+    if (getPartner)
+    {
+        ptrRaw = reinterpret_cast<uint32_t>(getPartnerPtr());
+    }
+    else
+    {
+        ptrRaw = reinterpret_cast<uint32_t>(getFollowerPtr());
+    }
+
+    PartyMembers currentPartnerOut = PartyMembers::kNone;
+    if (ptrRaw)
+    {
+        currentPartnerOut = *reinterpret_cast<PartyMembers *>(ptrRaw + 0x31);
+    }
+
+    return currentPartnerOut;
+}
+
 void removePartnerFromOverworld()
 {
     partyKill2(marioGetPartyId());
@@ -335,6 +357,24 @@ void resetPauseMenuImportantItems()
 
     // Restore the submenu
     *subMenu = importantItemsSubMenu;
+}
+
+void resetPauseMenuPartners()
+{
+    // Only run if the pause menu is currently open
+    if ((marioStGetSystemLevel() & 15) != 15)
+    {
+        // The pause menu is not open, so do nothing
+        return;
+    }
+
+    void *pauseMenuPtr = winGetPtr();
+
+    // Clear the partner menu
+    winPartyExit(pauseMenuPtr);
+
+    // Re-init the partner menu
+    winPartyInit(pauseMenuPtr);
 }
 
 void drawOnDebugLayer(DispCallback func, float order)

@@ -98,17 +98,15 @@ void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
 void Stats::drawFollowerOut() const
 {
     // Get the text for the current follower out
-    uint32_t followPtrRaw = reinterpret_cast<uint32_t>(getFollowerPtr());
+    const PartyMembers follower = getCurrentPartnerOrFollowerOut(false);
     const char *currentFollower = "Invalid";
 
-    if (!followPtrRaw)
+    if (follower == PartyMembers::kNone)
     {
         currentFollower = "None";
     }
     else
     {
-        const PartyMembers follower = *reinterpret_cast<PartyMembers *>(followPtrRaw + 0x31);
-
         // Make sure the current follower out is valid
         if ((follower >= PartyMembers::kEgg) && (follower <= PartyMembers::kMsMowzFollower))
         {

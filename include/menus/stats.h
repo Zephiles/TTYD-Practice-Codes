@@ -5,6 +5,7 @@
 #include "classes/valueEditor.h"
 #include "classes/specialMoveToggler.h"
 #include "classes/followerSelector.h"
+#include "classes/yoshiColorSelector.h"
 #include "classes/errorWindow.h"
 #include "misc/utils.h"
 #include "ttyd/dispdrv.h"
@@ -14,6 +15,8 @@
 #define STATS_MARIO_TOTAL_ENTRIES 17
 #define STATS_MARIO_ENTRIES_PER_COLUMN 9
 #define STATS_MARIO_ENTRIES_PER_ROW roundIntUpUnsigned(STATS_MARIO_TOTAL_ENTRIES, STATS_MARIO_ENTRIES_PER_COLUMN)
+
+#define STATS_PARTNERS_DRAWING_YOSHI_STATS(index) (index == 3) // Assuming Yoshi should be the 4th option
 
 enum StatsMarioOptions
 {
@@ -36,6 +39,26 @@ enum StatsMarioOptions
     STATS_MARIO_CURRENT_PIANTAS,
 };
 
+enum StatsPartnersCurrentPartnerOption
+{
+    STATS_PARTNER_SET_CURRENT_HP,
+    STATS_PARTNER_SET_MAX_HP,
+    STATS_PARTNER_SET_RANK,
+    STATS_PARTNER_TOGGLE_ENABLED_BOOL,
+    STATS_PARTNER_BRING_OUT_OR_REMOVE,
+};
+
+enum StatsPartnersCurrentPartnerOptionYoshi
+{
+    STATS_PARTNER_YOSHI_SET_CURRENT_HP,
+    STATS_PARTNER_YOSHI_SET_MAX_HP,
+    STATS_PARTNER_YOSHI_SET_RANK,
+    STATS_PARTNER_YOSHI_TOGGLE_ENABLED_BOOL,
+    STATS_PARTNER_YOSHI_SET_COLOR,
+    STATS_PARTNER_YOSHI_SET_NAME,
+    STATS_PARTNER_YOSHI_BRING_OUT_OR_REMOVE,
+};
+
 enum StatsMenu
 {
     STATS_MENU_MARIO = 0,
@@ -47,6 +70,13 @@ enum StatsFlagMario
 {
     STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID = 0,
     STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES,
+};
+
+enum StatsFlagPartner
+{
+    STATS_FLAG_PARTNER_SELECTED_PARTNER = 0,
+    STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID,
+    STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR,
 };
 
 enum StatsFlagFollower
@@ -63,6 +93,7 @@ class Stats
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
     FollowerSelector *getFollowerSelector() { return &this->followerSelector; }
+    YoshiColorSelector *getYoshiColorSelector() { return &this->yoshiColorSelector; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
 
     float getScale() const { return this->scale; }
@@ -79,12 +110,14 @@ class Stats
 
     void initErrorWindow(bool drawForPartner);
     void drawMarioStats() const;
+    void drawPartnerStats();
     void drawFollowerOut() const;
 
    private:
     ValueEditor valueEditor;
     SpecialMoveToggler specialMoveToggler;
     FollowerSelector followerSelector;
+    YoshiColorSelector yoshiColorSelector;
     ErrorWindow errorWindow;
     float scale;
 
@@ -105,6 +138,11 @@ void statsMenuMarioDraw(CameraId cameraId, void *user);
 
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr);
+
+void statsMenuPartnersInit(Menu *menuPtr);
+void statsMenuPartnersSelectedPartner(Menu *menuPtr);
+void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button);
+void statsMenuPartnersDraw(CameraId cameraId, void *user);
 
 void statsMenuFollowersInit(Menu *menuPtr);
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button);

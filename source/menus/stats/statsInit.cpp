@@ -14,7 +14,7 @@ const MenuOption statsMenuInitOptions[] = {
     statsMenuMarioInit,
 
     "Partners",
-    nullptr,
+    statsMenuPartnersInit,
 
     "Followers",
     statsMenuFollowersInit,
