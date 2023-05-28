@@ -240,6 +240,12 @@ void cancelMenuPartnersChangeYoshiColor()
     gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
 }
 
+void cancelMenuPartnersChangeYoshiName()
+{
+    gStats->getNameEditor()->stopDrawing();
+    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
+}
+
 void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
 {
     // cancelMenuPartnersChangeYoshiColor gets called by the color selector automatically, so no need to call it here
@@ -334,6 +340,22 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     }
                     case StatsPartnersCurrentPartnerOptionYoshi::STATS_PARTNER_YOSHI_SET_NAME:
                     {
+                        // Bring up the window for changing Yoshi's name
+                        menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
+
+                        // Initialize the name editor
+                        char *yoshiNamePtr = pouchGetPtr()->yoshiName;
+                        const Window *rootWindowPtr = gRootWindow;
+                        NameEditor *nameEditorPtr = statsPtr->getNameEditor();
+
+                        nameEditorPtr->init(rootWindowPtr,
+                                            statsPtr->getScale(),
+                                            yoshiNamePtr,
+                                            yoshiNamePtr,
+                                            sizeof(PouchData::yoshiName),
+                                            rootWindowPtr->getAlpha());
+
+                        nameEditorPtr->startDrawing(cancelMenuPartnersChangeYoshiName);
                         handledYoshiOption = true;
                         break;
                     }
@@ -428,6 +450,13 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR))
     {
         statsPtr->getYoshiColorSelector()->controls(button);
+        return;
+    }
+
+    // If the window for changing Yoshi's name is open, then handle the controls for that
+    else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME))
+    {
+        statsPtr->getNameEditor()->controls(button, true);
         return;
     }
 
@@ -607,6 +636,13 @@ void statsMenuPartnersDraw(CameraId cameraId, void *user)
     if (yoshiColorSelectorPtr->shouldDraw())
     {
         yoshiColorSelectorPtr->draw();
+    }
+
+    // Draw the name editor if applicable
+    NameEditor *nameEditorPtr = statsPtr->getNameEditor();
+    if (nameEditorPtr->shouldDraw())
+    {
+        nameEditorPtr->draw();
     }
 
     // Draw the error message if applicable

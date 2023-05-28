@@ -6,6 +6,7 @@
 #include "classes/specialMoveToggler.h"
 #include "classes/followerSelector.h"
 #include "classes/yoshiColorSelector.h"
+#include "classes/nameEditor.h"
 #include "classes/errorWindow.h"
 #include "misc/utils.h"
 #include "ttyd/dispdrv.h"
@@ -77,6 +78,7 @@ enum StatsFlagPartner
     STATS_FLAG_PARTNER_SELECTED_PARTNER = 0,
     STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID,
     STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR,
+    STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME,
 };
 
 enum StatsFlagFollower
@@ -94,6 +96,7 @@ class Stats
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
     FollowerSelector *getFollowerSelector() { return &this->followerSelector; }
     YoshiColorSelector *getYoshiColorSelector() { return &this->yoshiColorSelector; }
+    NameEditor *getNameEditor() { return &this->nameEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
 
     float getScale() const { return this->scale; }
@@ -118,6 +121,7 @@ class Stats
     SpecialMoveToggler specialMoveToggler;
     FollowerSelector followerSelector;
     YoshiColorSelector yoshiColorSelector;
+    NameEditor nameEditor;
     ErrorWindow errorWindow;
     float scale;
 
