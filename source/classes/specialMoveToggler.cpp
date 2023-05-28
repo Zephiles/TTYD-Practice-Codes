@@ -10,9 +10,9 @@
 
 #include <cstdint>
 
-const char *specialMoveTogglerHelpText = "Press A to turn on/off\nPress B to cancel";
+const char *gSpecialMoveTogglerHelpText = "Press A to turn on/off\nPress B to cancel";
 
-const IconId specialMoveIcons[TOTAL_SPECIAL_MOVES] {
+const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_MAGICAL_MAP_SMALL,
     IconId::ICON_DIAMOND_STAR,
     IconId::ICON_EMERALD_STAR,
@@ -23,7 +23,7 @@ const IconId specialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_CRYSTAL_STAR,
 };
 
-const char *specialMoves[TOTAL_SPECIAL_MOVES] = {
+const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
     "Sweet Treat",
     "Earth Tremor",
     "Clock Out",
@@ -52,7 +52,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t a
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(specialMoveTogglerHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gSpecialMoveTogglerHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the icon and item texts
     const float spaceUsedByIcons = SPACE_USED_PER_ICON(scale) * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);
@@ -199,7 +199,7 @@ void SpecialMoveToggler::draw()
 
     float iconPosX = iconPosXBase;
     float iconPosY = iconPosYBase + (3.f * scale); // Move up slightly since the star icons are not quite properly aligned
-    const IconId *icons = specialMoveIcons;
+    const IconId *icons = gSpecialMoveIcons;
 
     // Draw the icons
     for (uint32_t i = 0; i < TOTAL_SPECIAL_MOVES; i++)
@@ -215,7 +215,7 @@ void SpecialMoveToggler::draw()
     float textPosXBase;
     float textPosYBase;
 
-    const char *helpTextPtr = specialMoveTogglerHelpText;
+    const char *helpTextPtr = gSpecialMoveTogglerHelpText;
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
     drawText(helpTextPtr, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
 
@@ -233,7 +233,7 @@ void SpecialMoveToggler::draw()
     float textPosY = textPosYBase;
 
     // Draw the texts for each special move as well as the bools for whether they are enabled or not
-    const char **specialMovesPtr = specialMoves;
+    const char **specialMovesPtr = gSpecialMoves;
     const uint32_t currentIndex = this->currentIndex;
 
     for (uint32_t i = 0; i < TOTAL_SPECIAL_MOVES; i++)

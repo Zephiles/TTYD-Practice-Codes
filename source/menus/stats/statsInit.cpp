@@ -9,7 +9,7 @@
 
 Stats *gStats = nullptr;
 
-const MenuOption statsMenuInitOptions[] = {
+const MenuOption gStatsMenuInitOptions[] = {
     "Mario",
     statsMenuMarioInit,
 
@@ -20,7 +20,7 @@ const MenuOption statsMenuInitOptions[] = {
     statsMenuFollowersInit,
 };
 
-const MenuFunctions statsMenuInitFuncs = {
+const MenuFunctions gStatsMenuInitFuncs = {
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     statsMenuInitExit,
@@ -30,8 +30,8 @@ void statsMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(statsMenuInitOptions, &statsMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gStatsMenuInitOptions) / sizeof(MenuOption);
+    enterNextMenu(gStatsMenuInitOptions, &gStatsMenuInitFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gStats
     Stats *statsPtr = gStats;

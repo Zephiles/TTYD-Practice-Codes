@@ -210,7 +210,7 @@ const char *getCustomMessage(const char *key)
     }
 
     // Call the original function
-    return msgSearch_trampoline(key);
+    return g_msgSearch_trampoline(key);
 }
 
 int32_t pauseMenuPreventUnpause(void *pauseMenuPtr)
@@ -225,7 +225,7 @@ int32_t pauseMenuPreventUnpause(void *pauseMenuPtr)
     }
 
     // Call the original function
-    return winRootMain_trampoline(pauseMenuPtr);
+    return g_winRootMain_trampoline(pauseMenuPtr);
 }
 
 int32_t fixMarioKeyOn()
@@ -240,13 +240,13 @@ int32_t fixMarioKeyOn()
     }
 
     // Call the original function
-    return marioKeyOn_trampoline();
+    return g_marioKeyOn_trampoline();
 }
 
 bool applyRelPatches(OSModuleInfo *module, void *bss)
 {
     // Call the original function immediately, as the rel file should be linked before applying patches
-    const bool ret = OSLink_trampoline(module, bss);
+    const bool ret = g_OSLink_trampoline(module, bss);
 
     // Make sure the linking process succeeded
     if (!ret)
@@ -370,7 +370,7 @@ bool performPreBattleActions()
     }
 
     // Call the original function
-    return battle_init_trampoline();
+    return g_battle_init_trampoline();
 }
 
 void applyGameFixes()

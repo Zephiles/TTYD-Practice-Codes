@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-const char *followersOptions[TOTAL_FOLLOWERS] = {
+const char *gFollowersOptions[TOTAL_FOLLOWERS] = {
     "Goombella",
     "Koops",
     "Flurrie",
@@ -23,8 +23,8 @@ const char *followersOptions[TOTAL_FOLLOWERS] = {
     "Gus",
 };
 
-// Intended to be used alongside followersOptions
-const PartyMembers followersOptionsId[TOTAL_FOLLOWERS] = {
+// Intended to be used alongside gFollowersOptions
+const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kGoombellaFollower,
     PartyMembers::kKoopsFollower,
     PartyMembers::kFlurrieFollower,
@@ -58,7 +58,7 @@ void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alp
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(helpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the width of the window to account for the options if necessary
     float longestWidthLeftColumn;
@@ -145,7 +145,7 @@ void FollowerSelector::controls(MenuButtonInput button)
             if (checkIfInGame())
             {
                 // Spawn the follower
-                spawnPartnerOrFollower(followersOptionsId[currentIndex]);
+                spawnPartnerOrFollower(gFollowersOptionsId[currentIndex]);
             }
             else
             {
@@ -195,7 +195,7 @@ void FollowerSelector::draw() const
     float tempPosY;
 
     const float scale = this->scale;
-    const char *helpTextPtr = helpTextAConfirmBCancel;
+    const char *helpTextPtr = gHelpTextAConfirmBCancel;
 
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
@@ -211,7 +211,7 @@ void FollowerSelector::draw() const
     float posX = tempPosX;
     float posY = posYBase;
     const uint32_t currentIndex = this->currentIndex;
-    const char **followersOptionsPtr = followersOptions;
+    const char **followersOptionsPtr = gFollowersOptions;
 
     // Draw the options
     for (uint32_t i = 0; i < TOTAL_FOLLOWERS; i++, counter++)

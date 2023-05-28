@@ -54,6 +54,6 @@ class YoshiColorSelector
     uint8_t alpha;
 };
 
-extern const char *yoshiColorsStrings[TOTAL_YOSHI_COLORS];
+extern const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS];
 
 #endif

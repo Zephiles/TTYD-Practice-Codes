@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-const PartyMembers partnersIds[] = {
+const PartyMembers gPartnersIds[] = {
     PartyMembers::kGoombella,
     PartyMembers::kKoops,
     PartyMembers::kFlurrie,
@@ -23,7 +23,7 @@ const PartyMembers partnersIds[] = {
     PartyMembers::kMsMowz,
 };
 
-const uint32_t yoshiColors[] = {
+const uint32_t gYoshiColors[] = {
     0x29AD21FF, // Green
     0xE8385AFF, // Red
     0x8E7DDFFF, // Blue
@@ -33,19 +33,19 @@ const uint32_t yoshiColors[] = {
     0xC6E1ECFF, // White
 };
 
-const char *partnerStatsInitialStrings[] = {
+const char *gPartnerStatsInitialStrings[] = {
     "HP",
     "Max HP",
     "Rank",
     "Toggle",
 };
 
-const char *partnerYoshiStatsStrings[] = {
+const char *gPartnerYoshiStatsStrings[] = {
     "Color",
     "Name",
 };
 
-const MenuOption statsMenuPartnersOptions[] = {
+const MenuOption gStatsMenuPartnersOptions[] = {
     "Goombella",
     statsMenuPartnersSelectedPartner,
 
@@ -68,7 +68,7 @@ const MenuOption statsMenuPartnersOptions[] = {
     statsMenuPartnersSelectedPartner,
 };
 
-const MenuFunctions statsMenuPartnersFuncs = {
+const MenuFunctions gStatsMenuPartnersFuncs = {
     statsMenuPartnersControls,
     statsMenuPartnersDraw,
     nullptr, // Exit function not needed
@@ -78,8 +78,8 @@ void statsMenuPartnersInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuPartnersOptions) / sizeof(statsMenuPartnersOptions[0]);
-    enterNextMenu(statsMenuPartnersOptions, &statsMenuPartnersFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gStatsMenuPartnersOptions) / sizeof(gStatsMenuPartnersOptions[0]);
+    enterNextMenu(gStatsMenuPartnersOptions, &gStatsMenuPartnersFuncs, totalOptions);
 }
 
 void statsMenuPartnersSelectedPartner(Menu *menuPtr)
@@ -132,7 +132,7 @@ PouchPartyData *getCurrentPartnerData()
     verifyMenuAndCurrentIndexes();
 
     const uint32_t mainCurrentIndex = gMenu->getCurrentIndex();
-    return &pouchGetPtr()->partyData[static_cast<uint32_t>(partnersIds[mainCurrentIndex])];
+    return &pouchGetPtr()->partyData[static_cast<uint32_t>(gPartnersIds[mainCurrentIndex])];
 }
 
 void cancelMenuPartnersChangeValue()
@@ -264,7 +264,7 @@ void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
 
     Stats *statsPtr = gStats;
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-    const PartyMembers currentPartnerInMenu = partnersIds[currentIndex];
+    const PartyMembers currentPartnerInMenu = gPartnersIds[currentIndex];
 
     if (currentPartnerOut == currentPartnerInMenu)
     {
@@ -512,7 +512,7 @@ void Stats::drawPartnerStats()
     uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
     uint32_t currentIndex = this->currentIndex;
 
-    const char **partnerStatsInitialStringsPtr = partnerStatsInitialStrings;
+    const char **partnerStatsInitialStringsPtr = gPartnerStatsInitialStrings;
     uint32_t counter = 0;
     uint32_t color;
 
@@ -527,7 +527,7 @@ void Stats::drawPartnerStats()
     const bool drawingYoshiStats = STATS_PARTNERS_DRAWING_YOSHI_STATS(menuCurrentIndex);
     if (drawingYoshiStats)
     {
-        const char **partnerYoshiStatsStringsPtr = partnerYoshiStatsStrings;
+        const char **partnerYoshiStatsStringsPtr = gPartnerYoshiStatsStrings;
         for (uint32_t i = 0; i < 2; i++, counter++)
         {
             color = getTextColor(anyFlagIsSet, currentIndex == counter, 0xFF);
@@ -538,7 +538,7 @@ void Stats::drawPartnerStats()
 
     // Draw the text for either bringing out the current partner or removing them from the overworld
     const PartyMembers currentPartnerOut = getCurrentPartnerOrFollowerOut(true);
-    const PartyMembers currentPartnerInMenu = partnersIds[menuCurrentIndex];
+    const PartyMembers currentPartnerInMenu = gPartnersIds[menuCurrentIndex];
     const char *optionText;
 
     if (currentPartnerOut == currentPartnerInMenu)
@@ -604,8 +604,8 @@ void Stats::drawPartnerStats()
             yoshiColorIndex = 0;
         }
 
-        const char *yoshiColorText = yoshiColorsStrings[yoshiColorIndex];
-        const uint32_t yoshiColor = yoshiColors[yoshiColorIndex];
+        const char *yoshiColorText = gYoshiColorsStrings[yoshiColorIndex];
+        const uint32_t yoshiColor = gYoshiColors[yoshiColorIndex];
 
         drawText(yoshiColorText, posX, posY, scale, yoshiColor);
         posY -= lineDecrement;

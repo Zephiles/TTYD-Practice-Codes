@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption statsMenuFollowersOptions[] = {
+const MenuOption gStatsMenuFollowersOptions[] = {
     "Bring Follower Out",
     selectedOptionMenuFollowersBringFollowerOut,
 
@@ -20,7 +20,7 @@ const MenuOption statsMenuFollowersOptions[] = {
     selectedOptionMenuFollowersRemoveFollower,
 };
 
-const MenuFunctions statsMenuFollowersFuncs = {
+const MenuFunctions gStatsMenuFollowersFuncs = {
     statsMenuFollowersControls,
     statsMenuFollowersDraw,
     nullptr, // Exit function not needed
@@ -75,8 +75,8 @@ void statsMenuFollowersInit(Menu *menuPtr)
     // Reset currentIndex
     gStats->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuFollowersOptions) / sizeof(MenuOption);
-    enterNextMenu(statsMenuFollowersOptions, &statsMenuFollowersFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gStatsMenuFollowersOptions) / sizeof(MenuOption);
+    enterNextMenu(gStatsMenuFollowersOptions, &gStatsMenuFollowersFuncs, totalOptions);
 }
 
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
@@ -111,12 +111,12 @@ void Stats::drawFollowerOut() const
         if ((follower >= PartyMembers::kEgg) && (follower <= PartyMembers::kMsMowzFollower))
         {
             // Get the text for the current follower
-            const PartyMembers *followersOptionsIdPtr = followersOptionsId;
+            const PartyMembers *followersOptionsIdPtr = gFollowersOptionsId;
             for (uint32_t i = 0; i < TOTAL_FOLLOWERS; i++)
             {
                 if (followersOptionsIdPtr[i] == follower)
                 {
-                    currentFollower = followersOptions[i];
+                    currentFollower = gFollowersOptions[i];
                     break;
                 }
             }

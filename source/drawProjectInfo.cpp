@@ -89,7 +89,7 @@ void displayTitleScreenInfo(SeqWork *seqWork)
     }
 
     // Call the original function
-    return titleMain_trampoline(seqWork);
+    return g_titleMain_trampoline(seqWork);
 }
 
 void displayFileSelectScreenInfo(SeqWork *seqWork)
@@ -101,5 +101,5 @@ void displayFileSelectScreenInfo(SeqWork *seqWork)
     }
 
     // Call the original function
-    return seq_loadMain_trampoline(seqWork);
+    return g_seq_loadMain_trampoline(seqWork);
 }

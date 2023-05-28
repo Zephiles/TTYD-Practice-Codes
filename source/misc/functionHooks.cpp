@@ -4,11 +4,11 @@
 
 #include <cstdint>
 
-void (*marioStMain_trampoline)();
-void (*titleMain_trampoline)(SeqWork *seqWork);
-void (*seq_loadMain_trampoline)(SeqWork *seqWork);
-const char *(*msgSearch_trampoline)(const char *key);
-int32_t (*winRootMain_trampoline)(void *pauseMenuPtr);
-int32_t (*marioKeyOn_trampoline)();
-bool (*OSLink_trampoline)(OSModuleInfo *module, void *bss);
-bool (*battle_init_trampoline)();
+void (*g_marioStMain_trampoline)();
+void (*g_titleMain_trampoline)(SeqWork *seqWork);
+void (*g_seq_loadMain_trampoline)(SeqWork *seqWork);
+const char *(*g_msgSearch_trampoline)(const char *key);
+int32_t (*g_winRootMain_trampoline)(void *pauseMenuPtr);
+int32_t (*g_marioKeyOn_trampoline)();
+bool (*g_OSLink_trampoline)(OSModuleInfo *module, void *bss);
+bool (*g_battle_init_trampoline)();

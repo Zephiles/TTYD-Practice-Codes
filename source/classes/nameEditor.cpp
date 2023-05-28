@@ -11,11 +11,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *nameEditorHelpText =
+const char *gNameEditorHelpText =
     "Press Start to set the new text\nPress A to select a character\nPress B to undo/cancel\nPress Y to move backward one "
     "character\nPress X to move forward one character\nPress Z to cancel immediately";
 
-const char *nameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
+const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
 
 void NameEditor::init(const Window *parentWindow, float scale, const char *initialText, char *namePtr, uint32_t nameSize)
 {
@@ -76,7 +76,7 @@ void NameEditor::init(const Window *parentWindow,
 #endif
     }
 
-    const uint32_t totalOptons = strlen(nameEditorCharacterOptions);
+    const uint32_t totalOptons = strlen(gNameEditorCharacterOptions);
     this->totalOptions = static_cast<uint8_t>(totalOptons);
 
     const uint32_t charsPerRow = roundIntUpUnsigned(totalOptons, NAME_EDITOR_CHARS_TOTAL_ROWS);
@@ -85,7 +85,7 @@ void NameEditor::init(const Window *parentWindow,
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(nameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gNameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
 
     // Adjust the width to be the same as the parent window
     windowPtr->setWidth(parentWindow->getWidth());
@@ -183,7 +183,7 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
         case MenuButtonInput::A:
         {
             // Append the selected character to the buffer
-            buf[currentStringIndex] = nameEditorCharacterOptions[currentIndex];
+            buf[currentStringIndex] = gNameEditorCharacterOptions[currentIndex];
 
             // If not at the end of the buffer, increment the index
             if (currentStringIndex < maxIndex)
@@ -341,7 +341,7 @@ void NameEditor::draw()
 
     // Draw the help text
     const float scale = this->scale;
-    const char *helpTextPtr = nameEditorHelpText;
+    const char *helpTextPtr = gNameEditorHelpText;
 
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
@@ -353,7 +353,7 @@ void NameEditor::draw()
 
     float posX = posXBase;
     float posY = charactersPosYBase;
-    const char *options = nameEditorCharacterOptions;
+    const char *options = gNameEditorCharacterOptions;
     uint32_t currentIndex = this->currentIndex;
 
     // Make sure the current index is valid

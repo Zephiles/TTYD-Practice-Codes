@@ -53,7 +53,7 @@ class FollowerSelector
     uint8_t alpha;
 };
 
-extern const char *followersOptions[TOTAL_FOLLOWERS];
-extern const PartyMembers followersOptionsId[TOTAL_FOLLOWERS]; // Intended to be used alongside followersOptions
+extern const char *gFollowersOptions[TOTAL_FOLLOWERS];
+extern const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS]; // Intended to be used alongside gFollowersOptions
 
 #endif

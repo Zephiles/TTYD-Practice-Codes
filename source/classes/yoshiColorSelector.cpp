@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-const char *yoshiColorsStrings[TOTAL_YOSHI_COLORS] = {
+const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS] = {
     "Green",
     "Red",
     "Blue",
@@ -35,7 +35,7 @@ void YoshiColorSelector::init(const Window *parentWindow, float scale, uint8_t a
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
-    windowPtr->setWidthHeightFromTextAndInit(helpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the options
     const float padding = windowPtr->getPadding() * scale;
@@ -177,7 +177,7 @@ void YoshiColorSelector::draw()
     float tempPosY;
 
     const float scale = this->scale;
-    const char *helpTextPtr = helpTextAConfirmBCancel;
+    const char *helpTextPtr = gHelpTextAConfirmBCancel;
 
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
@@ -190,7 +190,7 @@ void YoshiColorSelector::draw()
 
     float posX = tempPosX;
     float posY = posYBase;
-    const char **colorStrings = yoshiColorsStrings;
+    const char **colorStrings = gYoshiColorsStrings;
     uint32_t currentIndex = this->currentIndex;
 
     // Make sure the current index is valid

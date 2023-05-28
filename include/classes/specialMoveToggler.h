@@ -50,6 +50,6 @@ class SpecialMoveToggler
     uint8_t alpha;
 };
 
-extern const IconId specialMoveIcons[TOTAL_SPECIAL_MOVES];
+extern const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES];
 
 #endif

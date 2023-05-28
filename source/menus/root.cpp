@@ -14,7 +14,7 @@
 Window *gRootWindow = nullptr;
 Root *gRoot = nullptr;
 
-const MenuOption rootMenuOptions[] = {
+const MenuOption gRootMenuOptions[] = {
     "Inventory",
     inventoryMenuInit,
 
@@ -40,7 +40,7 @@ const MenuOption rootMenuOptions[] = {
     nullptr,
 };
 
-const MenuFunctions rootMenuFuncs = {
+const MenuFunctions gRootMenuFuncs = {
     controlsBasicMenuLayout,
     rootMenuDraw,
     rootMenuExit,
@@ -55,8 +55,8 @@ void rootMenuInit()
     winOpenDisable();
 
     // Need to enter the root menu before initializing gRoot
-    constexpr uint32_t totalOptions = sizeof(rootMenuOptions) / sizeof(MenuOption);
-    enterNextMenu(rootMenuOptions, &rootMenuFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gRootMenuOptions) / sizeof(MenuOption);
+    enterNextMenu(gRootMenuOptions, &gRootMenuFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gRoot
     Root *rootPtr = gRoot;

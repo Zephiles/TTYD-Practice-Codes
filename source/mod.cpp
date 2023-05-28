@@ -2,4 +2,4 @@
 
 Mod *gMod = nullptr;
 
-const char *helpTextAConfirmBCancel = "Press A to confirm\nPress B to cancel";
+const char *gHelpTextAConfirmBCancel = "Press A to confirm\nPress B to cancel";

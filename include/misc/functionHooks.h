@@ -7,14 +7,14 @@
 #include <cstdint>
 
 // Function hooks
-extern void (*marioStMain_trampoline)();
-extern void (*titleMain_trampoline)(SeqWork *seqWork);
-extern void (*seq_loadMain_trampoline)(SeqWork *seqWork);
-extern const char *(*msgSearch_trampoline)(const char *key);
-extern int32_t (*winRootMain_trampoline)(void *pauseMenuPtr);
-extern int32_t (*marioKeyOn_trampoline)();
-extern bool (*OSLink_trampoline)(OSModuleInfo *module, void *bss);
-extern bool (*battle_init_trampoline)();
+extern void (*g_marioStMain_trampoline)();
+extern void (*g_titleMain_trampoline)(SeqWork *seqWork);
+extern void (*g_seq_loadMain_trampoline)(SeqWork *seqWork);
+extern const char *(*g_msgSearch_trampoline)(const char *key);
+extern int32_t (*g_winRootMain_trampoline)(void *pauseMenuPtr);
+extern int32_t (*g_marioKeyOn_trampoline)();
+extern bool (*g_OSLink_trampoline)(OSModuleInfo *module, void *bss);
+extern bool (*g_battle_init_trampoline)();
 
 // Functions used for hooks
 void runOncePerFrame();

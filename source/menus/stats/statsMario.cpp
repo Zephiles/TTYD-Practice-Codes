@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-const IconId statsMenuMarioTextIcons[] = {
+const IconId gStatsMenuMarioTextIcons[] = {
     IconId::ICON_BATTLE_DROP_COIN,                      // Coins
     IconId::ICON_PAUSE_MENU_HEART,                      // HP
     IconId::ICON_PAUSE_MENU_FLOWER,                     // FP
@@ -36,7 +36,7 @@ const IconId statsMenuMarioTextIcons[] = {
     IconId::ICON_PIANTA,                                // Current Piantas
 };
 
-const MenuOption statsMenuMarioOptions[] = {
+const MenuOption gStatsMenuMarioOptions[] = {
     "Coins",
     selectedOptionMenuMarioChangeValue,
 
@@ -89,7 +89,7 @@ const MenuOption statsMenuMarioOptions[] = {
     selectedOptionMenuMarioChangeValue,
 };
 
-const MenuFunctions statsMenuMarioFuncs = {
+const MenuFunctions gStatsMenuMarioFuncs = {
     statsMenuMarioControls,
     statsMenuMarioDraw,
     nullptr, // Exit function not needed
@@ -102,8 +102,8 @@ void statsMenuMarioInit(Menu *menuPtr)
     // Reset currentIndex
     gStats->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(statsMenuMarioOptions) / sizeof(MenuOption);
-    enterNextMenu(statsMenuMarioOptions, &statsMenuMarioFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gStatsMenuMarioOptions) / sizeof(MenuOption);
+    enterNextMenu(gStatsMenuMarioOptions, &gStatsMenuMarioFuncs, totalOptions);
 }
 
 void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
@@ -591,7 +591,7 @@ void Stats::drawMarioStats() const
     float iconPosY = iconPosYBase;
 
     const uint32_t currentIndex = this->currentIndex;
-    const IconId *icons = statsMenuMarioTextIcons;
+    const IconId *icons = gStatsMenuMarioTextIcons;
     uint32_t counter = 0;
 
     // To avoid a lot of unnecessary extra GX calls, draw the icons first
@@ -635,7 +635,7 @@ void Stats::drawMarioStats() const
         if (i == StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
             const float specialMovesPosXIncrement = 22.f * scale;
-            const IconId *specialMoveIconsPtr = specialMoveIcons;
+            const IconId *specialMoveIconsPtr = gSpecialMoveIcons;
             const uint32_t starPowersObtained = pouchPtr->starPowersObtained;
 
             constexpr float specialMovesScale = 0.37f;
@@ -665,7 +665,7 @@ void Stats::drawMarioStats() const
     float textPosYBase;
     getTextPosXYByIcon(iconPosXBase, iconPosYBase, scale, &textPosXBase, &textPosYBase);
 
-    const MenuOption *options = statsMenuMarioOptions;
+    const MenuOption *options = gStatsMenuMarioOptions;
     float textPosX = textPosXBase;
     float textPosY = textPosYBase;
 

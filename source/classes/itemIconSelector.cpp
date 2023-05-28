@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-const char *itemIconSelectorTextOptions = "Press A to confirm\nPress B to cancel";
+const char *gItemIconSelectorTextOptions = "Press A to confirm\nPress B to cancel";
 
 void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, float scale)
 {
@@ -33,7 +33,7 @@ void ItemIconSelector::init(const Window *parentWindow,
     this->currentIndex = 0;
 
     // Get the height that is being used by the text
-    const char *text = itemIconSelectorTextOptions;
+    const char *text = gItemIconSelectorTextOptions;
     float textHeight;
     getTextWidthHeight(text, scale, nullptr, &textHeight);
 
@@ -155,7 +155,7 @@ void ItemIconSelector::draw()
     drawTextInit(false);
 
     // Draw the text
-    const char *text = itemIconSelectorTextOptions;
+    const char *text = gItemIconSelectorTextOptions;
     const float scale = this->scale;
 
     float tempPosX;

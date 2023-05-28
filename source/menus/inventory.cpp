@@ -19,7 +19,7 @@
 Inventory *gInventory = nullptr;
 
 // Main menu
-const MenuOption inventoryMenuMainOptions[] = {
+const MenuOption gInventoryMenuMainOptions[] = {
     "Add By Id",
     selectedOptionAddById,
 
@@ -39,14 +39,14 @@ const MenuOption inventoryMenuMainOptions[] = {
     selectedOptionDelete,
 };
 
-const MenuFunctions inventoryMenuMainFuncs = {
+const MenuFunctions gInventoryMenuMainFuncs = {
     inventoryMenuMainControls,
     inventoryMenuMainDraw,
     inventoryMenuMainExit,
 };
 
-const char *inventoryIsEmptyText = "The inventory is currently empty.";
-const char *inventoryIsFullText = "The inventory is currently full.";
+const char *gInventoryIsEmptyText = "The inventory is currently empty.";
+const char *gInventoryIsFullText = "The inventory is currently full.";
 
 void cancelAddItemFromId()
 {
@@ -90,7 +90,7 @@ void selectedOptionAddById(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(inventoryIsFullText);
+        inventoryPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -164,7 +164,7 @@ void selectedOptionAddByIcon(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(inventoryIsFullText);
+        inventoryPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -224,14 +224,14 @@ void selectedOptionDuplicate(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(inventoryIsEmptyText);
+        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
     // If the inventory is full, then show an error message
     if (inventoryPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(inventoryIsFullText);
+        inventoryPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -282,7 +282,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(inventoryIsEmptyText);
+        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -373,7 +373,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(inventoryIsEmptyText);
+        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -476,7 +476,7 @@ void selectedOptionDelete(Menu *menuPtr)
     Inventory *inventoryPtr = gInventory;
     if (inventoryPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(inventoryIsEmptyText);
+        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -1095,8 +1095,8 @@ void inventoryMenuMainInit(Menu *menuPtr)
 
     inventoryPtr->setInventoryType(inventoryType);
 
-    constexpr uint32_t totalOptions = sizeof(inventoryMenuMainOptions) / sizeof(MenuOption);
-    enterNextMenu(inventoryMenuMainOptions, &inventoryMenuMainFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gInventoryMenuMainOptions) / sizeof(MenuOption);
+    enterNextMenu(gInventoryMenuMainOptions, &gInventoryMenuMainFuncs, totalOptions);
 }
 
 void inventoryMenuMainExit()

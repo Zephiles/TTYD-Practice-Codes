@@ -40,26 +40,26 @@ void init()
 
     // Handle function hooks
     // For code that runs once per frame
-    marioStMain_trampoline = hookFunction(marioStMain, runOncePerFrame);
+    g_marioStMain_trampoline = hookFunction(marioStMain, runOncePerFrame);
 
     // For stuff that is displayed on the title screen and file select screen
-    titleMain_trampoline = hookFunction(titleMain, displayTitleScreenInfo);
-    seq_loadMain_trampoline = hookFunction(seq_loadMain, displayFileSelectScreenInfo);
+    g_titleMain_trampoline = hookFunction(titleMain, displayTitleScreenInfo);
+    g_seq_loadMain_trampoline = hookFunction(seq_loadMain, displayFileSelectScreenInfo);
 
     // For custom textbox messages
-    msgSearch_trampoline = hookFunction(msgSearch, getCustomMessage);
+    g_msgSearch_trampoline = hookFunction(msgSearch, getCustomMessage);
 
     // For preventing leaving the pause menu if L + Start is pressed
-    winRootMain_trampoline = hookFunction(winRootMain, pauseMenuPreventUnpause);
+    g_winRootMain_trampoline = hookFunction(winRootMain, pauseMenuPreventUnpause);
 
     // For preventing marioKeyOn from setting the key value to a negative value
-    marioKeyOn_trampoline = hookFunction(marioKeyOn, fixMarioKeyOn);
+    g_marioKeyOn_trampoline = hookFunction(marioKeyOn, fixMarioKeyOn);
 
     // For fixing various issues within rel files
-    OSLink_trampoline = hookFunction(OSLink, applyRelPatches);
+    g_OSLink_trampoline = hookFunction(OSLink, applyRelPatches);
 
     // For performing various actions immediately before a battle starts
-    battle_init_trampoline = hookFunction(battle_init, performPreBattleActions);
+    g_battle_init_trampoline = hookFunction(battle_init, performPreBattleActions);
 
     // Initialize text stuff early
     fontmgrTexSetup();
@@ -78,5 +78,5 @@ void runOncePerFrame()
     handleMenu();
 
     // Call the original function
-    return marioStMain_trampoline();
+    return g_marioStMain_trampoline();
 }

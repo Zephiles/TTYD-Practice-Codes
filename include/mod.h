@@ -64,6 +64,6 @@ class Mod
 
 extern Mod *gMod;
 
-extern const char *helpTextAConfirmBCancel;
+extern const char *gHelpTextAConfirmBCancel;
 
 #endif
