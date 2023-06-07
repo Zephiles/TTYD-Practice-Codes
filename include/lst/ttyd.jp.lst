@@ -1660,7 +1660,7 @@
 // 800F35E4:BattleChangeParty
 // 800F3760:BattlePartyAnimeLoad
 800F37A0:BattleGetPartnerPtr
-// 800F37D4:BattleGetPartyPtr
+800F37D4:BattleGetPartyPtr
 800F3854:BattleGetMarioPtr
 // 800F38C0:BattleGetSystemPtr
 // 800F3920:BattleGetUnitPartsPtr

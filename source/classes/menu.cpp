@@ -85,15 +85,33 @@ void Menu::runExitFunc() const
     func();
 }
 
+void Menu::setCurrentPage(uint32_t page)
+{
+    // Make sure there are options on the desired page
+    const uint32_t totalOptionsPerPage = this->totalOptionsPerPage;
+    if ((page * totalOptionsPerPage) >= this->totalOptions)
+    {
+        return;
+    }
+
+    this->currentPage = static_cast<uint8_t>(page);
+
+    // Set the current index to the top of the current page
+    this->currentIndex = static_cast<uint8_t>(page * totalOptionsPerPage);
+}
+
 void Menu::setCurrentIndex(uint32_t index)
 {
-    // Make sure the index does not exceed the maximum number of options
+    // Make sure the desired index does not exceed the maximum number of options
     if (index >= this->totalOptions)
     {
         return;
     }
 
     this->currentIndex = static_cast<uint8_t>(index);
+
+    // Set the current page to where the desired index is
+    this->currentPage = static_cast<uint8_t>(index / this->totalOptionsPerPage);
 }
 
 void Menu::basicLayoutDraw(float scale) const

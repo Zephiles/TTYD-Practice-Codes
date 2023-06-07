@@ -5,6 +5,7 @@
 #include "menus/root.h"
 #include "menus/inventory.h"
 #include "menus/stats.h"
+#include "menus/battles.h"
 #include "misc/utils.h"
 #include "ttyd/dispdrv.h"
 #include "ttyd/win_main.h"
@@ -31,7 +32,7 @@ const MenuOption gRootMenuOptions[] = {
     nullptr,
 
     "Battles",
-    nullptr,
+    battlesMenuSelectActorInit,
 
     "Displays",
     nullptr,

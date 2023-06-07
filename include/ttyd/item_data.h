@@ -1,7 +1,7 @@
 #ifndef TTYD_ITEM_DATA_H
 #define TTYD_ITEM_DATA_H
 
-#include "ttyd/battle_unit.h"
+#include "ttyd/battle_database_common.h"
 #include "ttyd/icondrv.h"
 
 #include <cstdint>
@@ -367,7 +367,7 @@ struct ItemData
     uint8_t unk_0x1f;
     IconId iconId;
     uint16_t unk_0x22;
-    AttackParams *attackParams;
+    BattleWeapon *weapon_params;
 } __attribute__((__packed__));
 
 static_assert(sizeof(ItemData) == 0x28);

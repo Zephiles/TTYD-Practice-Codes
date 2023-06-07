@@ -134,8 +134,14 @@ class Menu
 
     uint32_t getTotalOptions() const { return this->totalOptions; }
 
+    uint32_t getCurrentPage() const { return this->currentPage; }
+    void setCurrentPage(uint32_t page);
+
     uint32_t getCurrentIndex() const { return this->currentIndex; }
     void setCurrentIndex(uint32_t index);
+
+    uint8_t *getCurrentPagePtr() { return &this->currentPage; }
+    uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
     // Generic functions for handling the current menu
     void basicLayoutDraw(float scale) const; // Calls basicLayoutDraw with offsetX and offsetY set to 0.f

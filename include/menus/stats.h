@@ -90,7 +90,7 @@ class Stats
 {
    public:
     Stats(float scale) { this->scale = scale; }
-    ~Stats() {};
+    ~Stats() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
