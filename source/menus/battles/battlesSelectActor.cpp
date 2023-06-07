@@ -56,7 +56,7 @@ uint32_t getBattleActorsHighestIndex()
     uint32_t counter = 0;
     for (uint32_t i = 1; i <= maxIndex; i++) // Start at one to skip the System actor
     {
-        if (getActorPointer(i))
+        if (getActorBattlePtr(i))
         {
             counter++;
         }
@@ -190,7 +190,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
             // Make sure the current slot isn't empty
             const uint32_t currentActorIndex = menuPtr->getCurrentIndex() + 1; // Add one to skip the System actor
 
-            BattleWorkUnit *currentActorPtr = getActorPointer(currentActorIndex);
+            BattleWorkUnit *currentActorPtr = getActorBattlePtr(currentActorIndex);
             if (currentActorPtr)
             {
                 // Go to the battles stats menu
@@ -254,7 +254,7 @@ void Battles::drawBattlesActors() const
         }
 
         // Get the current actor text
-        BattleWorkUnit *currentActorPtr = getActorPointer(i + 1); // Add one to skip the System actor
+        BattleWorkUnit *currentActorPtr = getActorBattlePtr(i + 1); // Add one to skip the System actor
         const char *currentActorString;
         bool slotIsEmpty = false;
 
@@ -330,7 +330,7 @@ BattleWork *getBattleWorkPtr()
     return _battleWorkPointer;
 }
 
-BattleWorkUnit *getMarioBattlePointer()
+BattleWorkUnit *getMarioBattlePtr()
 {
     BattleWork *battleWorkPtr = getBattleWorkPtr();
     if (!battleWorkPtr)
@@ -341,7 +341,7 @@ BattleWorkUnit *getMarioBattlePointer()
     return BattleGetMarioPtr(battleWorkPtr);
 }
 
-BattleWorkUnit *getPartnerBattlePointer()
+BattleWorkUnit *getPartnerBattlePtr()
 {
     BattleWork *battleWorkPtr = getBattleWorkPtr();
     if (!battleWorkPtr)
@@ -352,7 +352,7 @@ BattleWorkUnit *getPartnerBattlePointer()
     return BattleGetPartyPtr(battleWorkPtr);
 }
 
-BattleWorkUnit *getActorPointer(uint32_t slot)
+BattleWorkUnit *getActorBattlePtr(uint32_t slot)
 {
     BattleWork *battleWorkPtr = getBattleWorkPtr();
     if (!battleWorkPtr)

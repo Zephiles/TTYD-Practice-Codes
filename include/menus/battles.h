@@ -49,7 +49,7 @@ inline uint32_t getbattlesMenuSelectActorMaxIndex()
 {
     constexpr uint32_t maxActors = sizeof(BattleWork::battle_units) / sizeof(BattleWork::battle_units[0]);
 
-    // Subtract one to skip the System actor, and subtract another one due to needing to add one to getActorPointer in the
+    // Subtract one to skip the System actor, and subtract another one due to needing to add one to getActorBattlePtr in the
     // drawing function to get the proper pointer
     return maxActors - 2;
 }
@@ -64,8 +64,8 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button);
 void battlesMenuStatsDraw(CameraId cameraId, void *user);
 
 BattleWork *getBattleWorkPtr();
-BattleWorkUnit *getMarioBattlePointer();
-BattleWorkUnit *getPartnerBattlePointer();
-BattleWorkUnit *getActorPointer(uint32_t slot);
+BattleWorkUnit *getMarioBattlePtr();
+BattleWorkUnit *getPartnerBattlePtr();
+BattleWorkUnit *getActorBattlePtr(uint32_t slot);
 
 #endif
