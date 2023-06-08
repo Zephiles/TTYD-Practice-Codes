@@ -672,9 +672,9 @@ void Stats::drawMarioStats() const
     const float valuePosXBase = textPosX + (253.f * scale);
     const float valuePosXIncrement = 417.f * scale;
 
-    char *displayBufferPtr = gDisplayBuffer;
     float valuePosX = valuePosXBase;
     float maxWidth = 48.f;
+    char buf[32];
 
     int32_t value;
     counter = 0;
@@ -704,8 +704,8 @@ void Stats::drawMarioStats() const
             // Get the value for the current option
             value = getMarioStat(pouchPtr, i);
 
-            snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "%" PRId32, value);
-            drawTextMain(displayBufferPtr, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), true);
+            snprintf(buf, sizeof(buf), "%" PRId32, value);
+            drawTextMain(buf, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), true);
         }
 
         textPosY -= lineDecrement;

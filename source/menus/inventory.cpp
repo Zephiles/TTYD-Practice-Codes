@@ -598,18 +598,18 @@ void Inventory::drawCurrentInventory()
 
     // Draw the text for how many items/badges the player currently has out of the max
     // Draw the counts as ints, to prevent long text if they somehow become negative
-    char *displayBufferPtr = gDisplayBuffer;
-    snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "%" PRId32 "/%" PRId32, currentItemCount, totalItems);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%" PRId32 "/%" PRId32, currentItemCount, totalItems);
 
     const Window *inventoryWindow = &this->inventoryWindow;
     const float scale = this->scale;
 
     float itemCountPosX;
     float itemCountPosY;
-    inventoryWindow->getTextPosXY(displayBufferPtr, WindowAlignment::TOP_CENTER, scale, &itemCountPosX, &itemCountPosY);
+    inventoryWindow->getTextPosXY(buf, WindowAlignment::TOP_CENTER, scale, &itemCountPosX, &itemCountPosY);
 
     uint32_t textColor = getColorWhite(0xFF);
-    drawText(displayBufferPtr, itemCountPosX, itemCountPosY, scale, textColor);
+    drawText(buf, itemCountPosX, itemCountPosY, scale, textColor);
 
     // Start drawing the items/badges with their icons
     const float padding = inventoryWindow->getPadding() * scale;

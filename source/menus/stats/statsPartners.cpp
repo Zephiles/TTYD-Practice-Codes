@@ -484,24 +484,24 @@ void Stats::drawPartnerStats()
     };
 
     // Get the width that is being used by the main text options
+    const char *longestText = "Goombella";
     const float scale = this->scale;
     float textWidth;
-    getTextWidthHeight("Goombella", scale, &textWidth, nullptr);
+    getTextWidthHeight(longestText, scale, &textWidth, nullptr);
 
     // Set the text to be a bit to the right of the main text
     float tempPosX;
     float tempPosY;
     const Window *rootWindowPtr = gRootWindow;
-    rootWindowPtr->getTextPosXY("Goombella", WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+    rootWindowPtr->getTextPosXY(longestText, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posXBase and posYBase as a separate variables to avoid repeatedly loading them from the stack when using them
-    const float textIncrement = (40.f * scale);
-    const float posXBase = tempPosX + textWidth + textIncrement;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    const float posXBase = tempPosX + textWidth + lineDecrement;
     const float posYBase = tempPosY;
 
     float posX = posXBase;
     float posY = posYBase;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     // Make sure the menu current index and the current index are valid
     verifyMenuAndCurrentIndexes();
@@ -573,7 +573,7 @@ void Stats::drawPartnerStats()
 
     // Set the values text to be a bit to the right of the previous text
     getTextWidthHeight("Bring Out", scale, &textWidth, nullptr);
-    posX = posXBase + textWidth + textIncrement;
+    posX = posXBase + textWidth + lineDecrement;
     posY = posYBase;
     counter = 0;
 

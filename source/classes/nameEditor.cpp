@@ -427,12 +427,12 @@ void NameEditor::draw()
     posX = currentStringPosX;
     posY -= lineDecrement;
 
-    char *displayBufferPtr = gDisplayBuffer;
-    snprintf(displayBufferPtr,
-             DISPLAY_BUFFER_SIZE,
+    char buf[32];
+    snprintf(buf,
+             sizeof(buf),
              "%" PRId32 "/%" PRId32,
              static_cast<int32_t>(currentStringLen),
              static_cast<int32_t>(this->nameSize - 1));
 
-    drawText(displayBufferPtr, posX, posY, scale, getColorWhite(0xFF));
+    drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }

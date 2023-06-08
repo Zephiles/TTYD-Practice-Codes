@@ -1,9 +1,9 @@
 #include "menuUtils.h"
 #include "drawText.h"
+#include "classes/window.h"
 #include "menus/root.h"
 #include "menus/battles.h"
 #include "ttyd/battle.h"
-#include "ttyd/windowdrv.h"
 #include "ttyd/mariost.h"
 #include "ttyd/battle_unit.h"
 
@@ -145,16 +145,8 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
         return;
     }
 
-    Battles *battlesPtr = gBattles;
-
-    // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(BattlesSelectActorFlag::BATTLES_FLAG_SELECT_ACTOR_CURRENTLY_SELECTING_ID))
-    {
-        battlesPtr->getValueEditor()->controls(button);
-        return;
-    }
-
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    Battles *battlesPtr = gBattles;
     const bool autoIncrement = handleMenuAutoIncrement(battlesPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
@@ -188,13 +180,13 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::A:
         {
             // Make sure the current slot isn't empty
-            const uint32_t currentActorIndex = menuPtr->getCurrentIndex() + 1; // Add one to skip the System actor
+            const uint32_t actorIndex = menuPtr->getCurrentIndex() + 1; // Add one to skip the System actor
 
-            BattleWorkUnit *currentActorPtr = getActorBattlePtr(currentActorIndex);
-            if (currentActorPtr)
+            BattleWorkUnit *actorPtr = getActorBattlePtr(actorIndex);
+            if (actorPtr)
             {
                 // Go to the battles stats menu
-                battlesPtr->setCurrentActorIndex(currentActorIndex);
+                battlesPtr->setCurrentActorIndex(actorIndex);
                 battlesMenuStatsInit();
                 break;
             }
@@ -254,26 +246,26 @@ void Battles::drawBattlesActors() const
         }
 
         // Get the current actor text
-        BattleWorkUnit *currentActorPtr = getActorBattlePtr(i + 1); // Add one to skip the System actor
-        const char *currentActorString;
+        BattleWorkUnit *actorPtr = getActorBattlePtr(i + 1); // Add one to skip the System actor
+        const char *actorString;
         bool slotIsEmpty = false;
 
-        if (!currentActorPtr)
+        if (!actorPtr)
         {
-            currentActorString = emptySlotText;
+            actorString = emptySlotText;
             slotIsEmpty = true;
         }
         else
         {
             // Failsafe: Make sure current_kind is valid
-            const BattleUnitType type = currentActorPtr->current_kind;
+            const BattleUnitType type = actorPtr->current_kind;
             if (battleUnitTypeIsValid(type))
             {
-                currentActorString = battleActorsPtr[static_cast<int32_t>(type) - 1];
+                actorString = battleActorsPtr[static_cast<int32_t>(type) - 1];
             }
             else
             {
-                currentActorString = "Invalid Actor Id";
+                actorString = "Invalid Actor Id";
             }
         }
 
@@ -293,7 +285,7 @@ void Battles::drawBattlesActors() const
         }
 
         // Draw the current actor text
-        drawText(currentActorString, posX, posY, scale, color);
+        drawText(actorString, posX, posY, scale, color);
         posY -= lineDecrement;
     }
 }
@@ -304,18 +296,29 @@ void battlesMenuSelectActorDraw(CameraId cameraId, void *user)
     (void)user;
 
     // Draw the main window
-    Window *rootWindowPtr = gRootWindow;
-    rootWindowPtr->draw();
+    gRootWindow->draw();
 
     // Draw each actor
-    Battles *battlesPtr = gBattles;
-    battlesPtr->drawBattlesActors();
+    gBattles->drawBattlesActors();
+}
 
-    // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
-    if (valueEditorPtr->shouldDraw())
+void battlesMenuReturnToSelectActorMenu()
+{
+    // Close all menus until the Battles menu is reached
+    Battles *battlesPtr = gBattles;
+    Menu *menuPtr = gMenu;
+    Menu *battlesMenu = battlesPtr->getBattlesMenu();
+
+    while (menuPtr != battlesMenu)
     {
-        valueEditorPtr->draw();
+        enterPrevMenu();
+        menuPtr = gMenu;
+
+        // Failsafe: Make sure gMenu doesn't end up being nullptr
+        if (!menuPtr)
+        {
+            return;
+        }
     }
 }
 
