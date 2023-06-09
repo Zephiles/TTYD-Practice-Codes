@@ -297,11 +297,77 @@ void ValueEditor::init(const void *valuePtr,
 
     switch (type)
     {
-        case VariableType::s8:
-        case VariableType::s16:
         case VariableType::s32:
         {
-            this->initHandleS32(newValuePtr, newMinValuePtr, newMaxValuePtr, maxDigits, minAndMaxSet, handleAsHex);
+            if (minAndMaxSet)
+            {
+                const int32_t maxValue = newMaxValuePtr->s32;
+                this->maxValue.s32 = maxValue;
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+
+                const int32_t minValue = newMinValuePtr->s32;
+                this->minValue.s32 = minValue;
+                const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+
+                if (digitsMaxValue > digitsMinValue)
+                {
+                    maxDigits = digitsMaxValue;
+                }
+                else
+                {
+                    maxDigits = digitsMinValue;
+                }
+
+                // Failsafe: Make sure maxDigits is not 0
+                if (maxDigits == 0)
+                {
+                    maxDigits = 1;
+                }
+            }
+            else
+            {
+                // maxDigits should already be set
+            }
+
+            this->maxDigits = static_cast<uint8_t>(maxDigits);
+
+            uint32_t currentIndex = maxDigits;
+            if (handleAsHex)
+            {
+                // Add 2 to account for 0x
+                currentIndex += 2;
+            }
+            this->currentIndex = static_cast<uint8_t>(currentIndex);
+
+            const char *tempFormat;
+            if (handleAsHex)
+            {
+                tempFormat = "0x%%0%" PRIu32 PRIX32;
+            }
+            else
+            {
+                tempFormat = "%%0%" PRIu32 PRId32;
+            }
+
+            // Put + or - in front of the value
+            int32_t value = newValuePtr->s32;
+            char *editorValuePtr = this->editorValue;
+
+            if (value >= 0)
+            {
+                editorValuePtr[0] = '+';
+            }
+            else
+            {
+                editorValuePtr[0] = '-';
+                value = -value;
+            }
+
+            editorValuePtr++;
+            editorValueSize--;
+
+            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+            snprintf(editorValuePtr, editorValueSize, format, value);
             break;
         }
         case VariableType::s64:
@@ -379,11 +445,62 @@ void ValueEditor::init(const void *valuePtr,
             snprintf(editorValuePtr, editorValueSize, format, value);
             break;
         }
-        case VariableType::u8:
-        case VariableType::u16:
         case VariableType::u32:
         {
-            this->initHandleU32(newValuePtr, newMinValuePtr, newMaxValuePtr, maxDigits, minAndMaxSet, handleAsHex);
+            if (minAndMaxSet)
+            {
+                const uint32_t maxValue = newMaxValuePtr->u32;
+                this->maxValue.u32 = maxValue;
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+
+                const int32_t minValue = newMinValuePtr->u32;
+                this->minValue.u32 = minValue;
+                const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+
+                if (digitsMaxValue > digitsMinValue)
+                {
+                    maxDigits = digitsMaxValue;
+                }
+                else
+                {
+                    maxDigits = digitsMinValue;
+                }
+
+                // Failsafe: Make sure maxDigits is not 0
+                if (maxDigits == 0)
+                {
+                    maxDigits = 1;
+                }
+            }
+            else
+            {
+                // maxDigits should already be set
+            }
+
+            this->maxDigits = static_cast<uint8_t>(maxDigits);
+
+            // Subtract 1 since neither + nor - are not present
+            uint32_t currentIndex = maxDigits - 1;
+
+            if (handleAsHex)
+            {
+                // Add 2 to account for 0x
+                currentIndex += 2;
+            }
+            this->currentIndex = static_cast<uint8_t>(currentIndex);
+
+            const char *tempFormat;
+            if (handleAsHex)
+            {
+                tempFormat = "0x%%0%" PRIu32 PRIX32;
+            }
+            else
+            {
+                tempFormat = "%%0%" PRIu32 PRIu32;
+            }
+
+            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+            snprintf(this->editorValue, sizeof(this->editorValue), format, newValuePtr->u32);
             break;
         }
         case VariableType::u64:
@@ -425,8 +542,7 @@ void ValueEditor::init(const void *valuePtr,
             this->maxDigits = static_cast<uint8_t>(maxDigits);
 
             // Subtract 1 since neither + nor - are not present
-            uint32_t currentIndex = maxDigits;
-            currentIndex--;
+            uint32_t currentIndex = maxDigits - 1;
 
             if (handleAsHex)
             {
@@ -754,152 +870,6 @@ void ValueEditor::init(const void *valuePtr,
 
     // Place the window inside of the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
-}
-
-void ValueEditor::initHandleS32(const ValueType *valuePtr,
-                                const ValueType *minValuePtr,
-                                const ValueType *maxValuePtr,
-                                uint32_t maxDigitsDefault,
-                                bool minAndMaxSet,
-                                bool handleAsHex)
-{
-    uint32_t maxDigits;
-    if (minAndMaxSet)
-    {
-        const int32_t maxValue = maxValuePtr->s32;
-        this->maxValue.s32 = maxValue;
-        const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-        const int32_t minValue = minValuePtr->s32;
-        this->minValue.s32 = minValue;
-        const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-        if (digitsMaxValue > digitsMinValue)
-        {
-            maxDigits = digitsMaxValue;
-        }
-        else
-        {
-            maxDigits = digitsMinValue;
-        }
-
-        // Failsafe: Make sure maxDigits is not 0
-        if (maxDigits == 0)
-        {
-            maxDigits = 1;
-        }
-    }
-    else
-    {
-        maxDigits = maxDigitsDefault;
-    }
-
-    this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-    uint32_t currentIndex = maxDigits;
-    if (handleAsHex)
-    {
-        // Add 2 to account for 0x
-        currentIndex += 2;
-    }
-    this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-    const char *tempFormat;
-    if (handleAsHex)
-    {
-        tempFormat = "0x%%0%" PRIu32 PRIX32;
-    }
-    else
-    {
-        tempFormat = "%%0%" PRIu32 PRId32;
-    }
-
-    // Put + or - in front of the value
-    int32_t value = valuePtr->s32;
-    char *editorValuePtr = this->editorValue;
-
-    if (value >= 0)
-    {
-        editorValuePtr[0] = '+';
-    }
-    else
-    {
-        editorValuePtr[0] = '-';
-        value = -value;
-    }
-
-    editorValuePtr++;
-    uint32_t editorValueSize = sizeof(this->editorValue) - 1;
-
-    char *format = this->format;
-    snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-    snprintf(editorValuePtr, editorValueSize, format, value);
-}
-
-void ValueEditor::initHandleU32(const ValueType *valuePtr,
-                                const ValueType *minValuePtr,
-                                const ValueType *maxValuePtr,
-                                uint32_t maxDigitsDefault,
-                                bool minAndMaxSet,
-                                bool handleAsHex)
-{
-    uint32_t maxDigits;
-    if (minAndMaxSet)
-    {
-        const uint32_t maxValue = maxValuePtr->u32;
-        this->maxValue.u32 = maxValue;
-        const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-        const int32_t minValue = minValuePtr->u32;
-        this->minValue.u32 = minValue;
-        const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-        if (digitsMaxValue > digitsMinValue)
-        {
-            maxDigits = digitsMaxValue;
-        }
-        else
-        {
-            maxDigits = digitsMinValue;
-        }
-
-        // Failsafe: Make sure maxDigits is not 0
-        if (maxDigits == 0)
-        {
-            maxDigits = 1;
-        }
-    }
-    else
-    {
-        maxDigits = maxDigitsDefault;
-    }
-
-    this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-    // Subtract 1 since neither + nor - are not present
-    uint32_t currentIndex = maxDigits;
-    currentIndex--;
-
-    if (handleAsHex)
-    {
-        // Add 2 to account for 0x
-        currentIndex += 2;
-    }
-    this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-    const char *tempFormat;
-    if (handleAsHex)
-    {
-        tempFormat = "0x%%0%" PRIu32 PRIX32;
-    }
-    else
-    {
-        tempFormat = "%%0%" PRIu32 PRIu32;
-    }
-
-    char *format = this->format;
-    snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-    snprintf(this->editorValue, sizeof(this->editorValue), format, valuePtr->u32);
 }
 
 bool ValueEditor::getValueFromString(ValueType *valuePtr) const

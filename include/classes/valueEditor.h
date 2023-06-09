@@ -69,20 +69,6 @@ class ValueEditor
               uint8_t alpha,
               float scale);
 
-    void initHandleS32(const ValueType *valuePtr,
-                       const ValueType *minValuePtr,
-                       const ValueType *maxValuePtr,
-                       uint32_t maxDigitsDefault,
-                       bool minAndMaxSet,
-                       bool handleAsHex);
-
-    void initHandleU32(const ValueType *valuePtr,
-                       const ValueType *minValuePtr,
-                       const ValueType *maxValuePtr,
-                       uint32_t maxDigitsDefault,
-                       bool minAndMaxSet,
-                       bool handleAsHex);
-
     // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
     bool flagIsSet(uint32_t flag) const
     {
