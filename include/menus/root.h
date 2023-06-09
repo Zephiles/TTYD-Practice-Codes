@@ -5,7 +5,6 @@
 #include "classes/window.h"
 #include "classes/errorWindow.h"
 #include "ttyd/dispdrv.h"
-#include "classes/valueEditor.h"
 
 extern Window *gRootWindow;
 
@@ -32,13 +31,11 @@ class Root
         errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
     }
 
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
     float getScale() const { return this->scale; }
     Menu *getRootMenu() { return this->rootMenu; }
 
    private:
-    ValueEditor valueEditor;
     ErrorWindow errorWindow;
     float scale;
     Menu *rootMenu; // Backup of gMenu when the root menu was initially opened

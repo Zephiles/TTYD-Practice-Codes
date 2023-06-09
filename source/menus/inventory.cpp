@@ -67,7 +67,7 @@ void addItemFromId(const ValueType *valuePtr)
     }
 
     // Set the new item
-    const ItemId item = static_cast<ItemId>(valuePtr->s16);
+    const ItemId item = static_cast<ItemId>(valuePtr->s32);
     inventoryPtr->getInventoryItemPtr()[totalItems] = item;
 
     // The battle menu will not properly update when an upgrade is given, so manually update it
@@ -107,8 +107,8 @@ void selectedOptionAddById(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    const ItemId *minValuePtr = inventoryPtr->getMinValuePtr();
-    const ItemId *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const int32_t *minValuePtr = inventoryPtr->getMinValuePtr();
+    const int32_t *maxValuePtr = inventoryPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(minValuePtr,
@@ -175,12 +175,10 @@ void selectedOptionAddByIcon(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
     ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
 
-    itemIconSelectorPtr->init(rootWindowPtr,
-                              *inventoryPtr->getMinValuePtr(),
-                              *inventoryPtr->getMaxValuePtr(),
-                              rootWindowPtr->getAlpha(),
-                              inventoryPtr->getScale());
+    const ItemId startingItem = static_cast<ItemId>(*inventoryPtr->getMinValuePtr());
+    const ItemId endingItem = static_cast<ItemId>(*inventoryPtr->getMaxValuePtr());
 
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryPtr->getScale());
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
@@ -262,7 +260,7 @@ void changeItemFromId(const ValueType *valuePtr)
     }
 
     // Set the new item
-    const ItemId item = static_cast<ItemId>(valuePtr->s16);
+    const ItemId item = static_cast<ItemId>(valuePtr->s32);
     inventoryPtr->getInventoryItemPtr()[index] = item;
 
     // The battle menu will not properly update when an upgrade is changed, so manually update it
@@ -304,11 +302,11 @@ void selectedOptionChangeById(Menu *menuPtr)
     }
 
     // Set the cursor of the item icon selector to the item that is being changed
-    ItemId item = inventoryPtr->getInventoryItemPtr()[index];
+    int32_t item = static_cast<int32_t>(inventoryPtr->getInventoryItemPtr()[index]);
 
     // Make sure the item is valid
-    const ItemId *minValuePtr = inventoryPtr->getMinValuePtr();
-    if (!itemIsValid(item))
+    const int32_t *minValuePtr = inventoryPtr->getMinValuePtr();
+    if (!itemIsValid(static_cast<ItemId>(item)))
     {
         item = *minValuePtr;
     }
@@ -326,7 +324,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    const ItemId *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const int32_t *maxValuePtr = inventoryPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(&item,
@@ -401,11 +399,10 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
     ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
 
-    itemIconSelectorPtr->init(rootWindowPtr,
-                              *inventoryPtr->getMinValuePtr(),
-                              *inventoryPtr->getMaxValuePtr(),
-                              rootWindowPtr->getAlpha(),
-                              inventoryPtr->getScale());
+    const ItemId startingItem = static_cast<ItemId>(*inventoryPtr->getMinValuePtr());
+    const ItemId endingItem = static_cast<ItemId>(*inventoryPtr->getMaxValuePtr());
+
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryPtr->getScale());
 
     // Set the cursor of the item icon selector to the item that is being changed
     ItemId item = inventoryPtr->getInventoryItemPtr()[index];
@@ -413,7 +410,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     // Make sure the item is valid
     if (!itemIsValid(item))
     {
-        item = *inventoryPtr->getMinValuePtr();
+        item = startingItem;
     }
 
     itemIconSelectorPtr->setCurrentIndexFromItem(item);

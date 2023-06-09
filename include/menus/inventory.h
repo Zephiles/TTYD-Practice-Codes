@@ -45,8 +45,8 @@ class Inventory
     ~Inventory() {}
 
     void setinventoryItemPtr(ItemId *ptr) { this->inventoryItemPtr = ptr; }
-    void setMinValue(ItemId value) { this->minValue = value; }
-    void setMaxValue(ItemId value) { this->maxValue = value; }
+    void setMinValue(ItemId value) { this->minValue = static_cast<int32_t>(value); }
+    void setMaxValue(ItemId value) { this->maxValue = static_cast<int32_t>(value); }
     void setInventoryType(uint32_t type) { this->inventoryType = static_cast<uint8_t>(type); }
     void setInventorySize(uint32_t size) { this->inventorySize = static_cast<uint8_t>(size); }
     void setCurrentPage(uint32_t page) { this->currentPage = static_cast<uint8_t>(page); }
@@ -58,8 +58,8 @@ class Inventory
     float getScale() const { return this->scale; }
 
     ItemId *getInventoryItemPtr() { return this->inventoryItemPtr; }
-    ItemId *getMinValuePtr() { return &this->minValue; }
-    ItemId *getMaxValuePtr() { return &this->maxValue; }
+    int32_t *getMinValuePtr() { return &this->minValue; }
+    int32_t *getMaxValuePtr() { return &this->maxValue; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
     uint32_t getInventoryType() const { return this->inventoryType; }
@@ -99,8 +99,8 @@ class Inventory
     float scale;
 
     ItemId *inventoryItemPtr; // Pointer to the inventory that is currently being worked with
-    ItemId minValue;
-    ItemId maxValue;
+    int32_t minValue;
+    int32_t maxValue;
 
     MenuAutoIncrement autoIncrement;
     uint8_t inventoryType; // Specifier for the inventory that is currently being worked with

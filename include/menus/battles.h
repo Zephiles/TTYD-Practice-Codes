@@ -43,6 +43,9 @@ class Battles
     float scale;
     Menu *battlesMenu; // Backup of gMenu when the Battles menu was initially opened
 
+    int32_t minValue;
+    int32_t maxValue;
+
     MenuAutoIncrement autoIncrement;
     uint8_t currentActorIndex; // Index for the selected actor
 

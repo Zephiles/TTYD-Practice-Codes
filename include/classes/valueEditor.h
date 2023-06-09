@@ -46,7 +46,9 @@ class ValueEditor
     ValueEditor() {}
     ~ValueEditor() {}
 
-    // Sets the alpha to 0xFF
+    // Sets the alpha to 0xFF. The value is required to be stored using a type that is either 4 or 8 bytes. In this case, you'd
+    // still use the original type for the type variable, as that's used to figure out the min/max of the value as well as how
+    // many digits the value should have.
     void init(const void *valuePtr, // Initial value
               const void *minValuePtr,
               const void *maxValuePtr,
@@ -55,6 +57,9 @@ class ValueEditor
               VariableType type,
               float scale);
 
+    // The value is required to be stored using a type that is either 4 or 8 bytes. In this case, you'd still use the original
+    // type for the type variable, as that's used to figure out the min/max of the value as well as how many digits the value
+    // should have
     void init(const void *valuePtr, // Initial value
               const void *minValuePtr,
               const void *maxValuePtr,
@@ -63,6 +68,20 @@ class ValueEditor
               VariableType type,
               uint8_t alpha,
               float scale);
+
+    void initHandleS32(const ValueType *valuePtr,
+                       const ValueType *minValuePtr,
+                       const ValueType *maxValuePtr,
+                       uint32_t maxDigitsDefault,
+                       bool minAndMaxSet,
+                       bool handleAsHex);
+
+    void initHandleU32(const ValueType *valuePtr,
+                       const ValueType *minValuePtr,
+                       const ValueType *maxValuePtr,
+                       uint32_t maxDigitsDefault,
+                       bool minAndMaxSet,
+                       bool handleAsHex);
 
     // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
     bool flagIsSet(uint32_t flag) const
@@ -120,10 +139,10 @@ class ValueEditor
 
    private:
     Window window;
-    float scale;             // Based on the help text. The editor value scale will be increased based on this.
+    float scale; // Based on the help text. The editor value scale will be increased based on this.
 
-    const void *minValuePtr; // Can be various types, so handle as void. Should be the same type as the value variable.
-    const void *maxValuePtr; // Can be various types, so handle as void. Should be the same type as the value variable.
+    ValueType minValue;
+    ValueType maxValue;
 
     ValueEditorSetValueFunc setValueFunc; // Called when the player presses A to set the new value
     ValueEditorCancelFunc cancelFunc;     // Called when the player presses B to cancel adjustimg the value
@@ -135,7 +154,7 @@ class ValueEditor
     uint8_t maxDigits;
     uint8_t alpha;
 
-    VariableType type;    // Which type of variable is being modified
+    VariableType type;    // Type of variable being modified
     bool enabled;         // Whether this window is enabled/drawn or not
     char format[16];      // Format string for the value, to be used with snprintf and sscanf
     char editorValue[32]; // Current value in string format. This is what is being modified while the editor is displayed.

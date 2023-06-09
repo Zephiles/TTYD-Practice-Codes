@@ -8,8 +8,9 @@
 #include "ttyd/fontmgr.h"
 
 #include <cstdint>
-#include <cstring>
+#include <cfloat>
 #include <cmath>
+#include <cstring>
 #include <cstdio>
 #include <cinttypes>
 
@@ -33,8 +34,6 @@ void ValueEditor::init(const void *valuePtr,
                        uint8_t alpha,
                        float scale)
 {
-    this->minValuePtr = minValuePtr;
-    this->maxValuePtr = maxValuePtr;
     this->flags = flags;
     this->alpha = alpha;
     this->scale = scale;
@@ -44,22 +43,192 @@ void ValueEditor::init(const void *valuePtr,
     this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
 
-    // If the value is not being handled as signed, then change the type to unsigned
+    // Set the min and max based on the type, and get the default max digits for the number
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
+    const bool handleAsHex = this->flagIsSet(ValueEditorFlag::HANDLE_AS_HEX);
+
+    uint32_t maxDigits = 1;
+    switch (type)
+    {
+        case VariableType::s8:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.s32 = INT8_MIN;
+            }
+            else
+            {
+                this->minValue.s32 = 0;
+            }
+
+            this->maxValue.s32 = INT8_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 2; // 7F
+            }
+            else
+            {
+                maxDigits = 3; // 127
+            }
+            break;
+        }
+        case VariableType::s16:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.s32 = INT16_MIN;
+            }
+            else
+            {
+                this->minValue.s32 = 0;
+            }
+
+            this->maxValue.s32 = INT16_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 4; // 7FFF
+            }
+            else
+            {
+                maxDigits = 5; // 32767
+            }
+            break;
+        }
+        case VariableType::s32:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.s32 = INT32_MIN;
+            }
+            else
+            {
+                this->minValue.s32 = 0;
+            }
+
+            this->maxValue.s32 = INT32_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 8; // 7FFFFFFF
+            }
+            else
+            {
+                maxDigits = 10; // 2147483647
+            }
+            break;
+        }
+        case VariableType::s64:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.s64 = INT64_MIN;
+            }
+            else
+            {
+                this->minValue.s64 = 0;
+            }
+
+            this->maxValue.s64 = INT64_MAX;
+            // maxDigits set later
+            break;
+        }
+        case VariableType::u8:
+        {
+            this->minValue.u32 = 0;
+            this->maxValue.u32 = UINT8_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 2; // FF
+            }
+            else
+            {
+                maxDigits = 3; // 255
+            }
+            break;
+        }
+        case VariableType::u16:
+        {
+            this->minValue.u32 = 0;
+            this->maxValue.u32 = UINT16_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 4; // FFFF
+            }
+            else
+            {
+                maxDigits = 5; // 65535
+            }
+            break;
+        }
+        case VariableType::u32:
+        {
+            this->minValue.u32 = 0;
+            this->maxValue.u32 = UINT32_MAX;
+
+            if (handleAsHex)
+            {
+                maxDigits = 8; // FFFFFFFF
+            }
+            else
+            {
+                maxDigits = 10; // 4294967295
+            }
+            break;
+        }
+        case VariableType::u64:
+        {
+            this->minValue.u64 = 0;
+            this->maxValue.u64 = UINT64_MAX;
+            // maxDigits set later
+            break;
+        }
+        case VariableType::f32:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.f32 = FLT_MIN;
+            }
+            else
+            {
+                this->minValue.f32 = 0.f;
+            }
+
+            this->maxValue.f32 = FLT_MAX;
+            // maxDigits set later
+            break;
+        }
+        case VariableType::f64:
+        {
+            if (valueIsSigned)
+            {
+                this->minValue.f64 = DBL_MIN;
+            }
+            else
+            {
+                this->maxValue.f64 = 0.0;
+            }
+
+            this->maxValue.f64 = DBL_MAX;
+            // maxDigits set later
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // If the value is not being handled as signed, then change the type to unsigned
     if (!valueIsSigned)
     {
         switch (type)
         {
             case VariableType::s8:
-            {
-                type = VariableType::u8;
-                break;
-            }
             case VariableType::s16:
-            {
-                type = VariableType::u16;
-                break;
-            }
             case VariableType::s32:
             {
                 type = VariableType::u32;
@@ -77,8 +246,28 @@ void ValueEditor::init(const void *valuePtr,
         }
     }
 
+    // Change smaller types to 4 bytes if necessary
+    switch (type)
+    {
+        case VariableType::s8:
+        case VariableType::s16:
+        {
+            type = VariableType::s32;
+            break;
+        }
+        case VariableType::u8:
+        case VariableType::u16:
+        {
+            type = VariableType::u32;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
     // If the value is a float/double and is being handled as hex, then handle them as u32/u64 respectively
-    const bool handleAsHex = this->flagIsSet(ValueEditorFlag::HANDLE_AS_HEX);
     if (handleAsHex)
     {
         if (type == VariableType::f32)
@@ -109,242 +298,23 @@ void ValueEditor::init(const void *valuePtr,
     switch (type)
     {
         case VariableType::s8:
-        {
-            int32_t value = newValuePtr->s8;
-
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                int32_t maxValue = newMaxValuePtr->s8;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                int32_t minValue = newMinValuePtr->s8;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 2; // 7F
-            }
-            else
-            {
-                maxDigits = 3; // 127
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            uint32_t currentIndex = maxDigits;
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX8;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRId8;
-            }
-
-            // Put + or - in front of the value
-            if (value >= 0)
-            {
-                editorValuePtr[0] = '+';
-            }
-            else
-            {
-                editorValuePtr[0] = '-';
-                value = -value;
-            }
-
-            editorValuePtr++;
-            editorValueSize--;
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<int8_t>(value));
-            break;
-        }
         case VariableType::s16:
-        {
-            int32_t value = newValuePtr->s16;
-
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                int32_t maxValue = newMaxValuePtr->s16;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                int32_t minValue = newMinValuePtr->s16;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 4; // 7FFF
-            }
-            else
-            {
-                maxDigits = 5; // 32767
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            uint32_t currentIndex = maxDigits;
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX16;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRId16;
-            }
-
-            // Put + or - in front of the value
-            if (value >= 0)
-            {
-                editorValuePtr[0] = '+';
-            }
-            else
-            {
-                editorValuePtr[0] = '-';
-                value = -value;
-            }
-
-            editorValuePtr++;
-            editorValueSize--;
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<int16_t>(value));
-            break;
-        }
         case VariableType::s32:
         {
-            int32_t value = newValuePtr->s32;
-
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                int32_t maxValue = newMaxValuePtr->s32;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                int32_t minValue = newMinValuePtr->s32;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 8; // 7FFFFFFF
-            }
-            else
-            {
-                maxDigits = 10; // 2147483647
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            uint32_t currentIndex = maxDigits;
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX32;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRId32;
-            }
-
-            // Put + or - in front of the value
-            if (value >= 0)
-            {
-                editorValuePtr[0] = '+';
-            }
-            else
-            {
-                editorValuePtr[0] = '-';
-                value = -value;
-            }
-
-            editorValuePtr++;
-            editorValueSize--;
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValuePtr, editorValueSize, format, value);
+            this->initHandleS32(newValuePtr, newMinValuePtr, newMaxValuePtr, maxDigits, minAndMaxSet, handleAsHex);
             break;
         }
         case VariableType::s64:
         {
-            int64_t value = newValuePtr->s64;
-
-            uint32_t maxDigits;
             if (minAndMaxSet)
             {
-                int64_t maxValue = newMaxValuePtr->s64;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+                const int64_t maxValue = newMaxValuePtr->s64;
+                this->maxValue.s64 = maxValue;
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
 
-                int64_t minValue = newMinValuePtr->s64;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+                const int64_t minValue = newMinValuePtr->s64;
+                this->minValue.s64 = minValue;
+                const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
 
                 if (digitsMaxValue > digitsMinValue)
                 {
@@ -391,6 +361,7 @@ void ValueEditor::init(const void *valuePtr,
             }
 
             // Put + or - in front of the value
+            int64_t value = newValuePtr->s64;
             if (value >= 0)
             {
                 editorValuePtr[0] = '+';
@@ -409,201 +380,23 @@ void ValueEditor::init(const void *valuePtr,
             break;
         }
         case VariableType::u8:
-        {
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                uint32_t maxValue = newMaxValuePtr->u8;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                uint32_t minValue = newMinValuePtr->u8;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 2; // 7F
-            }
-            else
-            {
-                maxDigits = 3; // 127
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            // Subtract 1 since neither + nor - are not present
-            uint32_t currentIndex = maxDigits;
-            currentIndex--;
-
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX8;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRIu8;
-            }
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValue, sizeof(this->editorValue), format, newValuePtr->u8);
-            break;
-        }
         case VariableType::u16:
-        {
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                uint32_t maxValue = newMaxValuePtr->u16;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                uint32_t minValue = newMinValuePtr->u16;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 4; // 7FFF
-            }
-            else
-            {
-                maxDigits = 5; // 32767
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            // Subtract 1 since neither + nor - are not present
-            uint32_t currentIndex = maxDigits;
-            currentIndex--;
-
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX16;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRIu16;
-            }
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValue, sizeof(this->editorValue), format, newValuePtr->u16);
-            break;
-        }
         case VariableType::u32:
         {
-            uint32_t maxDigits;
-            if (minAndMaxSet)
-            {
-                uint32_t maxValue = newMaxValuePtr->u32;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-
-                uint32_t minValue = newMinValuePtr->u32;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-
-                if (digitsMaxValue > digitsMinValue)
-                {
-                    maxDigits = digitsMaxValue;
-                }
-                else
-                {
-                    maxDigits = digitsMinValue;
-                }
-
-                // Failsafe: Make sure maxDigits is not 0
-                if (maxDigits == 0)
-                {
-                    maxDigits = 1;
-                }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 8; // 7FFFFFFF
-            }
-            else
-            {
-                maxDigits = 10; // 2147483647
-            }
-
-            this->maxDigits = static_cast<uint8_t>(maxDigits);
-
-            // Subtract 1 since neither + nor - are not present
-            uint32_t currentIndex = maxDigits;
-            currentIndex--;
-
-            if (handleAsHex)
-            {
-                // Add 2 to account for 0x
-                currentIndex += 2;
-            }
-            this->currentIndex = static_cast<uint8_t>(currentIndex);
-
-            const char *tempFormat;
-            if (handleAsHex)
-            {
-                tempFormat = "0x%%0%" PRIu32 PRIX32;
-            }
-            else
-            {
-                tempFormat = "%%0%" PRIu32 PRIu32;
-            }
-
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValue, sizeof(this->editorValue), format, newValuePtr->u32);
+            this->initHandleU32(newValuePtr, newMinValuePtr, newMaxValuePtr, maxDigits, minAndMaxSet, handleAsHex);
             break;
         }
         case VariableType::u64:
         {
-            uint32_t maxDigits;
             if (minAndMaxSet)
             {
-                uint64_t maxValue = newMaxValuePtr->u64;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+                const uint64_t maxValue = newMaxValuePtr->u64;
+                this->maxValue.u64 = maxValue;
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
 
-                uint64_t minValue = newMinValuePtr->u64;
-                uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+                const uint64_t minValue = newMinValuePtr->u64;
+                this->minValue.u64 = minValue;
+                const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
 
                 if (digitsMaxValue > digitsMinValue)
                 {
@@ -653,23 +446,22 @@ void ValueEditor::init(const void *valuePtr,
             }
 
             snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(editorValue, sizeof(this->editorValue), format, newValuePtr->u64);
+            snprintf(editorValuePtr, editorValueSize, format, newValuePtr->u64);
             break;
         }
         case VariableType::f32:
         {
-            float value = newValuePtr->f32;
-
-            uint32_t maxDigits;
             if (minAndMaxSet)
             {
-                float maxValue = newMaxValuePtr->f32;
+                const float maxValue = newMaxValuePtr->f32;
+                this->maxValue.f32 = maxValue;
                 // uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
-                uint32_t digitsMaxValue = getMaxDigits(maxValue);
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue);
 
-                float minValue = newMinValuePtr->f32;
+                const float minValue = newMinValuePtr->f32;
+                this->minValue.f32 = minValue;
                 // uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
-                uint32_t digitsMinValue = getMaxDigits(minValue);
+                const uint32_t digitsMinValue = getMaxDigits(minValue);
 
                 if (digitsMaxValue > digitsMinValue)
                 {
@@ -733,6 +525,7 @@ void ValueEditor::init(const void *valuePtr,
             this->currentIndex = static_cast<uint8_t>(currentIndex);
 
             // If the value is signed, then put + or - in front of the value
+            float value = newValuePtr->f32;
             if (valueIsSigned)
             {
                 if (!std::signbit(value)) // Check if positive; works for checking against +0.0 and -0.0
@@ -766,17 +559,7 @@ void ValueEditor::init(const void *valuePtr,
             // Make sure an error didn't occur
             if (len <= 0)
             {
-                float defaultValue;
-                if (minAndMaxSet)
-                {
-                    defaultValue = newMinValuePtr->f32;
-                }
-                else
-                {
-                    defaultValue = 0.f;
-                }
-
-                floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, defaultValue);
+                floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, minValue.f32);
             }
             /*
                 }
@@ -785,16 +568,15 @@ void ValueEditor::init(const void *valuePtr,
         }
         case VariableType::f64:
         {
-            double value = newValuePtr->f64;
-
-            uint32_t maxDigits;
             if (minAndMaxSet)
             {
-                double maxValue = newMaxValuePtr->f64;
-                uint32_t digitsMaxValue = getMaxDigits(maxValue);
+                const double maxValue = newMaxValuePtr->f64;
+                this->maxValue.f64 = maxValue;
+                const uint32_t digitsMaxValue = getMaxDigits(maxValue);
 
-                double minValue = newMinValuePtr->f64;
-                uint32_t digitsMinValue = getMaxDigits(minValue);
+                const double minValue = newMinValuePtr->f64;
+                this->maxValue.f64 = minValue;
+                const uint32_t digitsMinValue = getMaxDigits(minValue);
 
                 if (digitsMaxValue > digitsMinValue)
                 {
@@ -840,6 +622,7 @@ void ValueEditor::init(const void *valuePtr,
             this->currentIndex = static_cast<uint8_t>(currentIndex);
 
             // If the value is signed, then put + or - in front of the value
+            double value = newValuePtr->f64;
             if (valueIsSigned)
             {
                 if (!std::signbit(value)) // Check if positive; works for checking against +0.0 and -0.0
@@ -861,17 +644,7 @@ void ValueEditor::init(const void *valuePtr,
             // Make sure an error didn't occur
             if (len <= 0)
             {
-                double defaultValue;
-                if (minAndMaxSet)
-                {
-                    defaultValue = newMinValuePtr->f64;
-                }
-                else
-                {
-                    defaultValue = 0.0;
-                }
-
-                doubleToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, defaultValue);
+                doubleToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, minValue.f64);
             }
             break;
         }
@@ -983,6 +756,152 @@ void ValueEditor::init(const void *valuePtr,
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
 }
 
+void ValueEditor::initHandleS32(const ValueType *valuePtr,
+                                const ValueType *minValuePtr,
+                                const ValueType *maxValuePtr,
+                                uint32_t maxDigitsDefault,
+                                bool minAndMaxSet,
+                                bool handleAsHex)
+{
+    uint32_t maxDigits;
+    if (minAndMaxSet)
+    {
+        const int32_t maxValue = maxValuePtr->s32;
+        this->maxValue.s32 = maxValue;
+        const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+
+        const int32_t minValue = minValuePtr->s32;
+        this->minValue.s32 = minValue;
+        const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+
+        if (digitsMaxValue > digitsMinValue)
+        {
+            maxDigits = digitsMaxValue;
+        }
+        else
+        {
+            maxDigits = digitsMinValue;
+        }
+
+        // Failsafe: Make sure maxDigits is not 0
+        if (maxDigits == 0)
+        {
+            maxDigits = 1;
+        }
+    }
+    else
+    {
+        maxDigits = maxDigitsDefault;
+    }
+
+    this->maxDigits = static_cast<uint8_t>(maxDigits);
+
+    uint32_t currentIndex = maxDigits;
+    if (handleAsHex)
+    {
+        // Add 2 to account for 0x
+        currentIndex += 2;
+    }
+    this->currentIndex = static_cast<uint8_t>(currentIndex);
+
+    const char *tempFormat;
+    if (handleAsHex)
+    {
+        tempFormat = "0x%%0%" PRIu32 PRIX32;
+    }
+    else
+    {
+        tempFormat = "%%0%" PRIu32 PRId32;
+    }
+
+    // Put + or - in front of the value
+    int32_t value = valuePtr->s32;
+    char *editorValuePtr = this->editorValue;
+
+    if (value >= 0)
+    {
+        editorValuePtr[0] = '+';
+    }
+    else
+    {
+        editorValuePtr[0] = '-';
+        value = -value;
+    }
+
+    editorValuePtr++;
+    uint32_t editorValueSize = sizeof(this->editorValue) - 1;
+
+    char *format = this->format;
+    snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+    snprintf(editorValuePtr, editorValueSize, format, value);
+}
+
+void ValueEditor::initHandleU32(const ValueType *valuePtr,
+                                const ValueType *minValuePtr,
+                                const ValueType *maxValuePtr,
+                                uint32_t maxDigitsDefault,
+                                bool minAndMaxSet,
+                                bool handleAsHex)
+{
+    uint32_t maxDigits;
+    if (minAndMaxSet)
+    {
+        const uint32_t maxValue = maxValuePtr->u32;
+        this->maxValue.u32 = maxValue;
+        const uint32_t digitsMaxValue = getMaxDigits(maxValue, handleAsHex);
+
+        const int32_t minValue = minValuePtr->u32;
+        this->minValue.u32 = minValue;
+        const uint32_t digitsMinValue = getMaxDigits(minValue, handleAsHex);
+
+        if (digitsMaxValue > digitsMinValue)
+        {
+            maxDigits = digitsMaxValue;
+        }
+        else
+        {
+            maxDigits = digitsMinValue;
+        }
+
+        // Failsafe: Make sure maxDigits is not 0
+        if (maxDigits == 0)
+        {
+            maxDigits = 1;
+        }
+    }
+    else
+    {
+        maxDigits = maxDigitsDefault;
+    }
+
+    this->maxDigits = static_cast<uint8_t>(maxDigits);
+
+    // Subtract 1 since neither + nor - are not present
+    uint32_t currentIndex = maxDigits;
+    currentIndex--;
+
+    if (handleAsHex)
+    {
+        // Add 2 to account for 0x
+        currentIndex += 2;
+    }
+    this->currentIndex = static_cast<uint8_t>(currentIndex);
+
+    const char *tempFormat;
+    if (handleAsHex)
+    {
+        tempFormat = "0x%%0%" PRIu32 PRIX32;
+    }
+    else
+    {
+        tempFormat = "%%0%" PRIu32 PRIu32;
+    }
+
+    char *format = this->format;
+    snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+    snprintf(this->editorValue, sizeof(this->editorValue), format, valuePtr->u32);
+}
+
 bool ValueEditor::getValueFromString(ValueType *valuePtr) const
 {
     // If the string starts with + or -, then skip them
@@ -1040,18 +959,6 @@ bool ValueEditor::getValueFromString(ValueType *valuePtr) const
     {
         switch (type)
         {
-            case VariableType::s8:
-            {
-                const int32_t value = valuePtr->s8;
-                valuePtr->s8 = static_cast<int8_t>(-value);
-                break;
-            }
-            case VariableType::s16:
-            {
-                const int32_t value = valuePtr->s16;
-                valuePtr->s16 = static_cast<int16_t>(-value);
-                break;
-            }
             case VariableType::s32:
             {
                 const int32_t value = valuePtr->s32;
@@ -1089,17 +996,6 @@ bool ValueEditor::getValueFromString(ValueType *valuePtr) const
 
 bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive, uint32_t specialCase)
 {
-    // Both a min and a max need to be set to use either of them
-    // Handle the min and max as ValueType
-    const ValueType *minValuePtr = reinterpret_cast<const ValueType *>(this->minValuePtr);
-    const ValueType *maxValuePtr = reinterpret_cast<const ValueType *>(this->maxValuePtr);
-
-    const bool minAndMaxSet = minValuePtr && maxValuePtr;
-    if (!minAndMaxSet)
-    {
-        return false;
-    }
-
     // Handle special cases
     switch (specialCase)
     {
@@ -1122,60 +1018,6 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
     // Make sure the value does not exceed the min or max
     switch (this->type)
     {
-        case VariableType::s8:
-        {
-            int32_t currentValue = valuePtr->s8;
-
-            // If the value was originally negative, then convert it to negative
-            if (!valueIsPositive)
-            {
-                currentValue = -currentValue;
-            }
-
-            const int32_t minValue = minValuePtr->s8;
-            const int32_t maxValue = maxValuePtr->s8;
-
-            if (currentValue < minValue)
-            {
-                // Loop around to the max
-                this->setValueToMax();
-                return true;
-            }
-            else if (currentValue > maxValue)
-            {
-                // Loop around to the min
-                this->setValueToMin();
-                return true;
-            }
-            break;
-        }
-        case VariableType::s16:
-        {
-            int32_t currentValue = valuePtr->s16;
-
-            // If the value was originally negative, then convert it to negative
-            if (!valueIsPositive)
-            {
-                currentValue = -currentValue;
-            }
-
-            const int32_t minValue = minValuePtr->s16;
-            const int32_t maxValue = maxValuePtr->s16;
-
-            if (currentValue < minValue)
-            {
-                // Loop around to the max
-                this->setValueToMax();
-                return true;
-            }
-            else if (currentValue > maxValue)
-            {
-                // Loop around to the min
-                this->setValueToMin();
-                return true;
-            }
-            break;
-        }
         case VariableType::s32:
         {
             int32_t currentValue = valuePtr->s32;
@@ -1186,8 +1028,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
                 currentValue = -currentValue;
             }
 
-            const int32_t minValue = minValuePtr->s32;
-            const int32_t maxValue = maxValuePtr->s32;
+            const int32_t minValue = this->minValue.s32;
+            const int32_t maxValue = this->maxValue.s32;
 
             if (currentValue < minValue)
             {
@@ -1213,48 +1055,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
                 currentValue = -currentValue;
             }
 
-            const int64_t minValue = minValuePtr->s64;
-            const int64_t maxValue = maxValuePtr->s64;
-
-            if (currentValue < minValue)
-            {
-                // Loop around to the max
-                this->setValueToMax();
-                return true;
-            }
-            else if (currentValue > maxValue)
-            {
-                // Loop around to the min
-                this->setValueToMin();
-                return true;
-            }
-            break;
-        }
-        case VariableType::u8:
-        {
-            const uint32_t currentValue = valuePtr->u8;
-            const uint32_t minValue = minValuePtr->u8;
-            const uint32_t maxValue = maxValuePtr->u8;
-
-            if (currentValue < minValue)
-            {
-                // Loop around to the max
-                this->setValueToMax();
-                return true;
-            }
-            else if (currentValue > maxValue)
-            {
-                // Loop around to the min
-                this->setValueToMin();
-                return true;
-            }
-            break;
-        }
-        case VariableType::u16:
-        {
-            const uint32_t currentValue = valuePtr->u16;
-            const uint32_t minValue = minValuePtr->u16;
-            const uint32_t maxValue = maxValuePtr->u16;
+            const int64_t minValue = this->minValue.s64;
+            const int64_t maxValue = this->maxValue.s64;
 
             if (currentValue < minValue)
             {
@@ -1273,8 +1075,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
         case VariableType::u32:
         {
             const uint32_t currentValue = valuePtr->u32;
-            const uint32_t minValue = minValuePtr->u32;
-            const uint32_t maxValue = maxValuePtr->u32;
+            const uint32_t minValue = this->minValue.u32;
+            const uint32_t maxValue = this->maxValue.u32;
 
             if (currentValue < minValue)
             {
@@ -1293,8 +1095,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
         case VariableType::u64:
         {
             const uint32_t currentValue = valuePtr->u64;
-            const uint32_t minValue = minValuePtr->u64;
-            const uint32_t maxValue = maxValuePtr->u64;
+            const uint32_t minValue = this->minValue.u64;
+            const uint32_t maxValue = this->maxValue.u64;
 
             if (currentValue < minValue)
             {
@@ -1320,8 +1122,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
                 currentValue = -currentValue;
             }
 
-            const float minValue = minValuePtr->f32;
-            const float maxValue = maxValuePtr->f32;
+            const float minValue = this->minValue.f32;
+            const float maxValue = this->maxValue.f32;
 
             if (currentValue < minValue)
             {
@@ -1347,8 +1149,8 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
                 currentValue = -currentValue;
             }
 
-            const double minValue = minValuePtr->f64;
-            const double maxValue = maxValuePtr->f64;
+            const double minValue = this->minValue.f64;
+            const double maxValue = this->maxValue.f64;
 
             if (currentValue < minValue)
             {
@@ -1448,98 +1250,6 @@ void ValueEditor::adjustValue(bool increment)
 
     switch (this->type)
     {
-        case VariableType::s8:
-        {
-            // Adjust the current digit
-            const int32_t currentValue = value.s8;
-            int32_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
-
-            // Make sure the value is in the proper format
-            newValue = static_cast<int8_t>(newValue);
-
-            // Make sure the value does not exceed the min or max
-            // The value is already converted to negative, so just pass in true
-            value.s8 = static_cast<int8_t>(newValue);
-            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
-            {
-                return;
-            }
-
-            // If the value is now positive, then make sure valueIsPositive is set to true
-            bool valueIsPositive;
-            if (newValue >= 0)
-            {
-                valueIsPositive = true;
-            }
-            else // The value is negative, so convert it to positive and set valueIsPositive to false
-            {
-                newValue = -newValue;
-                valueIsPositive = false;
-            }
-
-            // Put + or - in front of the value
-            if (valueIsPositive)
-            {
-                editorValuePtr[0] = '+';
-            }
-            else
-            {
-                editorValuePtr[0] = '-';
-            }
-
-            editorValuePtr++;
-            editorValueSize--;
-
-            // Set the new value
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<int8_t>(newValue));
-            break;
-        }
-        case VariableType::s16:
-        {
-            // Adjust the current digit
-            const int32_t currentValue = value.s16;
-            int32_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
-
-            // Make sure the value is in the proper format
-            newValue = static_cast<int16_t>(newValue);
-
-            // Make sure the value does not exceed the min or max
-            // The value is already converted to negative, so just pass in true
-            value.s16 = static_cast<int16_t>(newValue);
-            if (this->handleCheckMinMax(&value, true, MinMaxSpecialCases::SPECIAL_CASE_NONE))
-            {
-                return;
-            }
-
-            // If the value is now positive, then make sure valueIsPositive is set to true
-            bool valueIsPositive;
-            if (newValue >= 0)
-            {
-                valueIsPositive = true;
-            }
-            else // The value is negative, so convert it to positive and set valueIsPositive to false
-            {
-                newValue = -newValue;
-                valueIsPositive = false;
-            }
-
-            // Put + or - in front of the value
-            if (valueIsPositive)
-            {
-                editorValuePtr[0] = '+';
-            }
-            else
-            {
-                editorValuePtr[0] = '-';
-            }
-
-            editorValuePtr++;
-            editorValueSize--;
-
-            // Set the new value
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<int16_t>(newValue));
-            break;
-        }
         case VariableType::s32:
         {
             // Adjust the current digit
@@ -1626,80 +1336,6 @@ void ValueEditor::adjustValue(bool increment)
             snprintf(editorValuePtr, editorValueSize, format, newValue);
             break;
         }
-        case VariableType::u8:
-        {
-            // Adjust the current digit
-            const uint32_t currentValue = value.u8;
-            uint32_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
-
-            // Make sure the value is in the proper format
-            newValue = static_cast<uint8_t>(newValue);
-
-            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
-
-            // If the new value was incremented and is now lower than the original value, then the new value would be negative
-            // if it was being handled as a signed value, so set it to the min
-            if (increment && (newValue < currentValue))
-            {
-                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
-            }
-
-            // If the new value was decremented and is now higher than the original value, then the new value would be negative
-            // if it was being handled as a signed value, so set it to the max
-            else if (!increment && (newValue > currentValue))
-            {
-                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
-            }
-
-            // Make sure the value does not exceed the min or max
-            // The value can only be positive, so just pass in true
-            value.u8 = static_cast<uint8_t>(newValue);
-            if (this->handleCheckMinMax(&value, true, specialCase))
-            {
-                return;
-            }
-
-            // Set the new value
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<uint8_t>(newValue));
-            break;
-        }
-        case VariableType::u16:
-        {
-            // Adjust the current digit
-            const uint32_t currentValue = value.u16;
-            uint32_t newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, handleAsHex, increment);
-
-            // Make sure the value is in the proper format
-            newValue = static_cast<uint16_t>(newValue);
-
-            uint32_t specialCase = MinMaxSpecialCases::SPECIAL_CASE_NONE;
-
-            // If the new value was incremented and is now lower than the original value, then the new value would be negative
-            // if it was being handled as a signed value, so set it to the min
-            if (increment && (newValue < currentValue))
-            {
-                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MIN;
-            }
-
-            // If the new value was decremented and is now higher than the original value, then the new value would be negative
-            // if it was being handled as a signed value, so set it to the max
-            else if (!increment && (newValue > currentValue))
-            {
-                specialCase = MinMaxSpecialCases::SPECIAL_CASE_SET_TO_MAX;
-            }
-
-            // Make sure the value does not exceed the min or max
-            // The value can only be positive, so just pass in true
-            value.u16 = static_cast<uint16_t>(newValue);
-            if (this->handleCheckMinMax(&value, true, specialCase))
-            {
-                return;
-            }
-
-            // Set the new value
-            snprintf(editorValuePtr, editorValueSize, format, static_cast<uint16_t>(newValue));
-            break;
-        }
         case VariableType::u32:
         {
             // Adjust the current digit
@@ -1770,10 +1406,6 @@ void ValueEditor::adjustValue(bool increment)
         }
         case VariableType::f32:
         {
-            // Both a min and a max need to be set to use either of them
-            const ValueType *minValuePtr = reinterpret_cast<const ValueType *>(this->minValuePtr);
-            const bool minAndMaxSet = minValuePtr && this->maxValuePtr;
-
             // Make sure the current value is one that can be edited easily
             float currentValue = value.f32;
             switch (std::fpclassify(currentValue))
@@ -1785,14 +1417,7 @@ void ValueEditor::adjustValue(bool increment)
                 }
                 default:
                 {
-                    if (minAndMaxSet)
-                    {
-                        currentValue = minValuePtr->f32;
-                    }
-                    else
-                    {
-                        currentValue = 0.f;
-                    }
+                    currentValue = this->minValue.f32;
                 }
             }
 
@@ -1808,14 +1433,7 @@ void ValueEditor::adjustValue(bool increment)
                 }
                 default:
                 {
-                    if (minAndMaxSet)
-                    {
-                        newValue = minValuePtr->f32;
-                    }
-                    else
-                    {
-                        newValue = 0.f;
-                    }
+                    currentValue = this->minValue.f32;
                 }
             }
 
@@ -1930,10 +1548,6 @@ void ValueEditor::adjustValue(bool increment)
         }
         case VariableType::f64:
         {
-            // Both a min and a max need to be set to use either of them
-            const ValueType *minValuePtr = reinterpret_cast<const ValueType *>(this->minValuePtr);
-            const bool minAndMaxSet = minValuePtr && this->maxValuePtr;
-
             // Make sure the current value is one that can be edited easily
             double currentValue = value.f64;
             switch (std::fpclassify(currentValue))
@@ -1945,14 +1559,7 @@ void ValueEditor::adjustValue(bool increment)
                 }
                 default:
                 {
-                    if (minAndMaxSet)
-                    {
-                        currentValue = minValuePtr->f64;
-                    }
-                    else
-                    {
-                        currentValue = 0.0;
-                    }
+                    currentValue = this->minValue.f64;
                 }
             }
 
@@ -1968,14 +1575,7 @@ void ValueEditor::adjustValue(bool increment)
                 }
                 default:
                 {
-                    if (minAndMaxSet)
-                    {
-                        newValue = minValuePtr->f64;
-                    }
-                    else
-                    {
-                        newValue = 0.0;
-                    }
+                    currentValue = this->minValue.f64;
                 }
             }
 
@@ -2027,13 +1627,6 @@ void ValueEditor::adjustValue(bool increment)
 
 void ValueEditor::setValueToMin()
 {
-    // If no min value is set, then do nothing
-    const ValueType *minValuePtr = reinterpret_cast<const ValueType *>(this->minValuePtr);
-    if (!minValuePtr)
-    {
-        return;
-    }
-
     const char *format = this->format;
     char *editorValue = this->editorValue;
     uint32_t editorValueSize = sizeof(this->editorValue);
@@ -2041,51 +1634,9 @@ void ValueEditor::setValueToMin()
 
     switch (this->type)
     {
-        case VariableType::s8:
-        {
-            int8_t minValue = minValuePtr->s8;
-
-            // Put + or - in front of the value
-            if (minValue >= 0)
-            {
-                editorValue[0] = '+';
-            }
-            else
-            {
-                editorValue[0] = '-';
-                minValue = -minValue;
-            }
-
-            editorValue++;
-            editorValueSize--;
-
-            snprintf(editorValue, editorValueSize, format, minValue);
-            break;
-        }
-        case VariableType::s16:
-        {
-            int16_t minValue = minValuePtr->s16;
-
-            // Put + or - in front of the value
-            if (minValue >= 0)
-            {
-                editorValue[0] = '+';
-            }
-            else
-            {
-                editorValue[0] = '-';
-                minValue = -minValue;
-            }
-
-            editorValue++;
-            editorValueSize--;
-
-            snprintf(editorValue, editorValueSize, format, minValue);
-            break;
-        }
         case VariableType::s32:
         {
-            int32_t minValue = minValuePtr->s32;
+            int32_t minValue = this->minValue.s32;
 
             // Put + or - in front of the value
             if (minValue >= 0)
@@ -2106,7 +1657,7 @@ void ValueEditor::setValueToMin()
         }
         case VariableType::s64:
         {
-            int64_t minValue = minValuePtr->s64;
+            int64_t minValue = this->minValue.s64;
 
             // Put + or - in front of the value
             if (minValue >= 0)
@@ -2125,33 +1676,21 @@ void ValueEditor::setValueToMin()
             snprintf(editorValue, editorValueSize, format, minValue);
             break;
         }
-        case VariableType::u8:
-        {
-            const uint8_t minValue = minValuePtr->u8;
-            snprintf(editorValue, sizeof(this->editorValue), format, minValue);
-            break;
-        }
-        case VariableType::u16:
-        {
-            const uint16_t minValue = minValuePtr->u16;
-            snprintf(editorValue, sizeof(this->editorValue), format, minValue);
-            break;
-        }
         case VariableType::u32:
         {
-            const uint32_t minValue = minValuePtr->u32;
+            const uint32_t minValue = this->minValue.u32;
             snprintf(editorValue, sizeof(this->editorValue), format, minValue);
             break;
         }
         case VariableType::u64:
         {
-            const uint64_t minValue = minValuePtr->u64;
+            const uint64_t minValue = this->minValue.u64;
             snprintf(editorValue, sizeof(this->editorValue), format, minValue);
             break;
         }
         case VariableType::f32:
         {
-            float minValue = minValuePtr->f32;
+            float minValue = this->minValue.f32;
 
             // If the value is signed, then put + or - in front of the value
             if (valueIsSigned)
@@ -2175,7 +1714,7 @@ void ValueEditor::setValueToMin()
         }
         case VariableType::f64:
         {
-            double minValue = minValuePtr->f64;
+            double minValue = this->minValue.f64;
 
             // If the value is signed, then put + or - in front of the value
             if (valueIsSigned)
@@ -2206,13 +1745,6 @@ void ValueEditor::setValueToMin()
 
 void ValueEditor::setValueToMax()
 {
-    // If no max value is set, then do nothing
-    const ValueType *maxValuePtr = reinterpret_cast<const ValueType *>(this->maxValuePtr);
-    if (!maxValuePtr)
-    {
-        return;
-    }
-
     const char *format = this->format;
     char *editorValue = this->editorValue;
     uint32_t editorValueSize = sizeof(this->editorValue);
@@ -2220,51 +1752,9 @@ void ValueEditor::setValueToMax()
 
     switch (this->type)
     {
-        case VariableType::s8:
-        {
-            int8_t maxValue = maxValuePtr->s8;
-
-            // Put + or - in front of the value
-            if (maxValue >= 0)
-            {
-                editorValue[0] = '+';
-            }
-            else
-            {
-                editorValue[0] = '-';
-                maxValue = -maxValue;
-            }
-
-            editorValue++;
-            editorValueSize--;
-
-            snprintf(editorValue, editorValueSize, format, maxValue);
-            break;
-        }
-        case VariableType::s16:
-        {
-            int16_t maxValue = maxValuePtr->s16;
-
-            // Put + or - in front of the value
-            if (maxValue >= 0)
-            {
-                editorValue[0] = '+';
-            }
-            else
-            {
-                editorValue[0] = '-';
-                maxValue = -maxValue;
-            }
-
-            editorValue++;
-            editorValueSize--;
-
-            snprintf(editorValue, editorValueSize, format, maxValue);
-            break;
-        }
         case VariableType::s32:
         {
-            int32_t maxValue = maxValuePtr->s32;
+            int32_t maxValue = this->maxValue.s32;
 
             // Put + or - in front of the value
             if (maxValue >= 0)
@@ -2285,7 +1775,7 @@ void ValueEditor::setValueToMax()
         }
         case VariableType::s64:
         {
-            int64_t maxValue = maxValuePtr->s64;
+            int64_t maxValue = this->maxValue.s64;
 
             // Put + or - in front of the value
             if (maxValue >= 0)
@@ -2304,33 +1794,21 @@ void ValueEditor::setValueToMax()
             snprintf(editorValue, editorValueSize, format, maxValue);
             break;
         }
-        case VariableType::u8:
-        {
-            const uint8_t maxValue = maxValuePtr->u8;
-            snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
-            break;
-        }
-        case VariableType::u16:
-        {
-            const uint16_t maxValue = maxValuePtr->u16;
-            snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
-            break;
-        }
         case VariableType::u32:
         {
-            const uint32_t maxValue = maxValuePtr->u32;
+            const uint32_t maxValue = this->maxValue.u32;
             snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
             break;
         }
         case VariableType::u64:
         {
-            const uint64_t maxValue = maxValuePtr->u64;
+            const uint64_t maxValue = this->maxValue.u64;
             snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
             break;
         }
         case VariableType::f32:
         {
-            float maxValue = maxValuePtr->f32;
+            float maxValue = this->maxValue.f32;
 
             // If the value is signed, then put + or - in front of the value
             if (valueIsSigned)
@@ -2354,7 +1832,7 @@ void ValueEditor::setValueToMax()
         }
         case VariableType::f64:
         {
-            double maxValue = maxValuePtr->f64;
+            double maxValue = this->maxValue.f64;
 
             // If the value is signed, then put + or - in front of the value
             if (valueIsSigned)
@@ -2644,7 +2122,7 @@ void ValueEditor::draw()
         if (this->getValueFromString(&value))
         {
             // Several items need to have their icon scales adjusted
-            const ItemId item = static_cast<ItemId>(value.s16);
+            const ItemId item = static_cast<ItemId>(value.s32);
             const float iconScale = adjustItemIconScale(item, scale);
 
             // Draw the current item with its icon and text
