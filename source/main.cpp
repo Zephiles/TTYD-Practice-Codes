@@ -15,6 +15,7 @@
 #include "ttyd/win_root.h"
 #include "ttyd/mario.h"
 #include "ttyd/seq_battle.h"
+#include "ttyd/battle_pad.h"
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
 
@@ -60,6 +61,9 @@ void init()
 
     // For performing various actions immediately before a battle starts
     g_battle_init_trampoline = hookFunction(battle_init, performPreBattleActions);
+
+    // For handling various checks during a battle
+    g_BattlePadManager_trampoline = hookFunction(BattlePadManager, performBattleChecks);
 
     // Initialize text stuff early
     fontmgrTexSetup();

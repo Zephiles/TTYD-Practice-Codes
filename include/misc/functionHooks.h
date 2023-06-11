@@ -15,6 +15,7 @@ extern int32_t (*g_winRootMain_trampoline)(void *pauseMenuPtr);
 extern int32_t (*g_marioKeyOn_trampoline)();
 extern bool (*g_OSLink_trampoline)(OSModuleInfo *module, void *bss);
 extern bool (*g_battle_init_trampoline)();
+extern void (*g_BattlePadManager_trampoline)();
 
 // Functions used for hooks
 void runOncePerFrame();
@@ -25,5 +26,6 @@ int32_t pauseMenuPreventUnpause(void *pauseMenuPtr);
 int32_t fixMarioKeyOn();
 bool applyRelPatches(OSModuleInfo *module, void *bss);
 bool performPreBattleActions();
+void performBattleChecks();
 
 #endif

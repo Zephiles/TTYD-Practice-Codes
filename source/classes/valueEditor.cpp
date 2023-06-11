@@ -131,7 +131,15 @@ void ValueEditor::init(const void *valuePtr,
             }
 
             this->maxValue.s64 = INT64_MAX;
-            // maxDigits set later
+
+            if (handleAsHex)
+            {
+                maxDigits = 16; // 7FFFFFFFFFFFFFFF
+            }
+            else
+            {
+                maxDigits = 19; // 9223372036854775807
+            }
             break;
         }
         case VariableType::u8:
@@ -183,7 +191,15 @@ void ValueEditor::init(const void *valuePtr,
         {
             this->minValue.u64 = 0;
             this->maxValue.u64 = UINT64_MAX;
-            // maxDigits set later
+
+            if (handleAsHex)
+            {
+                maxDigits = 16; // FFFFFFFFFFFFFFFF
+            }
+            else
+            {
+                maxDigits = 20; // 18446744073709551615
+            }
             break;
         }
         case VariableType::f32:
@@ -198,7 +214,15 @@ void ValueEditor::init(const void *valuePtr,
             }
 
             this->maxValue.f32 = FLT_MAX;
-            // maxDigits set later
+
+            // Subtract 1 to get the max digit
+            maxDigits = MAX_DOUBLE_LENGTH - 1;
+
+            if (valueIsSigned)
+            {
+                // Subtract 1 to account for the + or -
+                maxDigits--;
+            }
             break;
         }
         case VariableType::f64:
@@ -213,7 +237,15 @@ void ValueEditor::init(const void *valuePtr,
             }
 
             this->maxValue.f64 = DBL_MAX;
-            // maxDigits set later
+
+            // Subtract 1 to get the max digit
+            maxDigits = MAX_DOUBLE_LENGTH - 1;
+
+            if (valueIsSigned)
+            {
+                // Subtract 1 to account for the + or -
+                maxDigits--;
+            }
             break;
         }
         default:
@@ -324,10 +356,6 @@ void ValueEditor::init(const void *valuePtr,
                     maxDigits = 1;
                 }
             }
-            else
-            {
-                // maxDigits should already be set
-            }
 
             this->maxDigits = static_cast<uint8_t>(maxDigits);
 
@@ -397,14 +425,6 @@ void ValueEditor::init(const void *valuePtr,
                     maxDigits = 1;
                 }
             }
-            else if (handleAsHex)
-            {
-                maxDigits = 16; // 7FFFFFFFFFFFFFFF
-            }
-            else
-            {
-                maxDigits = 19; // 9223372036854775807
-            }
 
             this->maxDigits = static_cast<uint8_t>(maxDigits);
 
@@ -472,10 +492,6 @@ void ValueEditor::init(const void *valuePtr,
                     maxDigits = 1;
                 }
             }
-            else
-            {
-                // maxDigits should already be set
-            }
 
             this->maxDigits = static_cast<uint8_t>(maxDigits);
 
@@ -529,14 +545,6 @@ void ValueEditor::init(const void *valuePtr,
                 {
                     maxDigits = 1;
                 }
-            }
-            else if (handleAsHex)
-            {
-                maxDigits = 16; // 7FFFFFFFFFFFFFFF
-            }
-            else
-            {
-                maxDigits = 19; // 9223372036854775807
             }
 
             this->maxDigits = static_cast<uint8_t>(maxDigits);
@@ -594,23 +602,6 @@ void ValueEditor::init(const void *valuePtr,
                     maxDigits = 1;
                 }
             }
-            /*
-                else if (handleAsHex)
-                {
-                    maxDigits = 8; // 7FFFFFFF
-                }
-            */
-            else
-            {
-                // Subtract 1 to get the max digit
-                maxDigits = MAX_DOUBLE_LENGTH - 1;
-
-                if (valueIsSigned)
-                {
-                    // Subtract 1 to account for the + or -
-                    maxDigits--;
-                }
-            }
 
             this->maxDigits = static_cast<uint8_t>(maxDigits);
 
@@ -623,20 +614,8 @@ void ValueEditor::init(const void *valuePtr,
                 currentIndex++;
             }
 
-            /*
-                if (handleAsHex)
-                {
-                    // Add 2 to account for 0x
-                    currentIndex += 2;
-                }
-                else
-                {
-            */
             // Add 1 to account for the decimal point
             currentIndex++;
-            /*
-                }
-            */
 
             this->currentIndex = static_cast<uint8_t>(currentIndex);
 
@@ -658,18 +637,6 @@ void ValueEditor::init(const void *valuePtr,
                 editorValueSize--;
             }
 
-            /*
-                if (handleAsHex)
-                {
-                    const char *tempFormat = "0x%%0%" PRIu32 PRIX32;
-                    snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-
-                    newValuePtr->f32 = value;
-                    snprintf(editorValuePtr, editorValueSize, format, newValuePtr->u32);
-                }
-                else
-                {
-            */
             int32_t len = floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, value);
 
             // Make sure an error didn't occur
@@ -677,9 +644,6 @@ void ValueEditor::init(const void *valuePtr,
             {
                 floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, minValue.f32);
             }
-            /*
-                }
-            */
             break;
         }
         case VariableType::f64:
@@ -707,17 +671,6 @@ void ValueEditor::init(const void *valuePtr,
                 if (maxDigits == 0)
                 {
                     maxDigits = 1;
-                }
-            }
-            else
-            {
-                // Subtract 1 to get the max digit
-                maxDigits = MAX_DOUBLE_LENGTH - 1;
-
-                if (valueIsSigned)
-                {
-                    // Subtract 1 to account for the + or -
-                    maxDigits--;
                 }
             }
 
@@ -1145,6 +1098,44 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
     return false;
 }
 
+uint32_t battlesChangeHeldItemSkipValues(uint32_t value, bool increment)
+{
+    // Skip Trade Off
+    if (value == static_cast<uint32_t>(ItemId::ITEM_TRADE_OFF))
+    {
+        if (increment)
+        {
+            value++;
+        }
+        else
+        {
+            value--;
+        }
+
+        return value;
+    }
+
+    // Skip everything after Cake and before Power Jump
+    constexpr uint32_t cakeValue = static_cast<uint32_t>(ItemId::ITEM_CAKE);
+    constexpr uint32_t powerJumpValue = static_cast<uint32_t>(ItemId::ITEM_POWER_JUMP);
+
+    if ((value > cakeValue) && (value < powerJumpValue))
+    {
+        if (increment)
+        {
+            value = powerJumpValue;
+        }
+        else
+        {
+            value = cakeValue;
+        }
+
+        return value;
+    }
+
+    return value;
+}
+
 void ValueEditor::adjustValue(bool increment)
 {
     // Make sure the current index is valid
@@ -1334,6 +1325,12 @@ void ValueEditor::adjustValue(bool increment)
             if (this->handleCheckMinMax(&value, true, specialCase))
             {
                 return;
+            }
+
+            // If changing the held item for battle actors, then check for values to skip
+            if (this->flagIsSet(ValueEditorFlag::BATTLES_CHANGE_HELD_ITEM))
+            {
+                newValue = battlesChangeHeldItemSkipValues(newValue, increment);
             }
 
             // Set the new value

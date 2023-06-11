@@ -2,6 +2,7 @@
 #include "gamePatches.h"
 #include "assembly.h"
 #include "patch.h"
+#include "menuUtils.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -371,6 +372,24 @@ bool performPreBattleActions()
 
     // Call the original function
     return g_battle_init_trampoline();
+}
+
+void performBattleChecks()
+{
+    // A function call will be added here at a later date to handle the Auto Action Commands cheat
+
+    // Prevent all buttons from being pressed when the menu is open, except for R and X
+    if (gMenu)
+    {
+        if (!checkButtonsEveryFrame(PadInput::PAD_R | PadInput::PAD_X))
+        {
+            // The menu is open and neither R nor X are being pressed, so prevent the original function from running
+            return;
+        }
+    }
+
+    // Call the original function
+    return g_BattlePadManager_trampoline();
 }
 
 void applyGameFixes()

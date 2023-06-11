@@ -22,8 +22,11 @@ enum ValueEditorFlag
     DRAW_BUTTON_Y_SET_MAX,
     DRAW_BUTTON_Z_SET_MIN,
 
+    // Flags for other misc things
+    BATTLES_CHANGE_HELD_ITEM, // Battles Stats menu
+
     // Only one of the following can be used at any given time
-    DRAW_ITEM_ICON_AND_TEXT,    // Inventory menu/Spawn Item cheat
+    DRAW_ITEM_ICON_AND_TEXT,    // Inventory menu, Battles Stats menu, Spawn Item cheat
     DRAW_STAGE_AND_EVENT,       // Change Sequence menu
     DRAW_MAP_STRING,            // Warp By Index menu
     DRAW_WARP_BY_EVENT_DETAILS, // Warp By Event menu
@@ -109,10 +112,7 @@ class ValueEditor
     // Retrieves whatever value is currently in editorValue
     bool getValueFromString(ValueType *valuePtr) const;
 
-    // Must use const void instead of ValueType for valuePtr, as the value is stored in a fixed size (int32_t, uint32_t,
-    // etc.)
     bool handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive, uint32_t specialCase);
-
     void adjustValue(bool increment);
     void setValueToMin();
     void setValueToMax();
@@ -133,7 +133,8 @@ class ValueEditor
     ValueEditorSetValueFunc setValueFunc; // Called when the player presses A to set the new value
     ValueEditorCancelFunc cancelFunc;     // Called when the player presses B to cancel adjustimg the value
 
-    uint32_t flags;                       // Flags for what should be drawn in the window alongside the value
+    // Flags for what should be drawn in the window alongside the value, as well as for other misc things
+    uint32_t flags;
 
     MenuAutoIncrement autoIncrement;
     uint8_t currentIndex; // Current cursor position

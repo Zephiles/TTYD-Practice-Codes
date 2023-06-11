@@ -242,7 +242,7 @@ enum class BattleUnitType : int32_t
     kUnitBombSquadBomb,
     kUnitSystem,
     kUnitPrologueGoombella,
-    UNIT_MARIO,
+    kUnitMario,
     kUnitShellShield,
     kUnitGoombella,
     kUnitKoops,

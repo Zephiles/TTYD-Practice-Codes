@@ -30,6 +30,11 @@ bool checkButtonCombo(uint32_t combo)
     return keyGetButtonTrg(PadId::CONTROLLER_ONE) & combo;
 }
 
+bool checkButtonsEveryFrame(uint32_t buttons)
+{
+    return keyGetButton(PadId::CONTROLLER_ONE) & buttons;
+}
+
 bool checkButtonComboEveryFrame(uint32_t combo)
 {
     return (keyGetButton(PadId::CONTROLLER_ONE) & combo) == combo;

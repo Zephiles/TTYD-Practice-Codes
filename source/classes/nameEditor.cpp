@@ -381,9 +381,10 @@ void NameEditor::draw()
         {
             // Draw the window for the cursor
             const float windowCursorAdjustment = 1.5f * scale;
+            const float windowCursorWidthHeight = lineDecrement - windowCursorAdjustment;
+
             const float windowPosX = posX - (7.f * scale);
             const float windowPosY = posY + windowCursorAdjustment;
-            const float windowCursorWidthHeight = lineDecrement - windowCursorAdjustment;
 
             windowDispGX_Waku_col(0,
                                   reinterpret_cast<const uint8_t *>(&windowCursorColor),

@@ -108,12 +108,12 @@ void rootMenuDraw(CameraId cameraId, void *user)
     }
 }
 
-void rootMenuExitBattleMenu()
+void rootMenuExitBattlesMenu()
 {
     // Close all menus until the root menu is reached
     Root *rootPtr = gRoot;
     Menu *menuPtr = gMenu;
-    Menu *rootMenu = rootPtr->getRootMenu();
+    const Menu *rootMenu = rootPtr->getRootMenu();
 
     while (menuPtr != rootMenu)
     {

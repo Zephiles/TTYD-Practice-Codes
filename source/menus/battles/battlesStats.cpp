@@ -1,3 +1,4 @@
+#include "mod.h"
 #include "menuUtils.h"
 #include "drawText.h"
 #include "drawIcon.h"
@@ -22,25 +23,25 @@ const char *gBattlesActorStatsInitialStrings[] = {
 
 const MenuOption gBattlesMenuStatsOptions[] = {
     "Change HP",
-    nullptr,
+    selectedOptionBattlesChangeValue,
 
     "Change Max HP",
-    nullptr,
+    selectedOptionBattlesChangeValue,
 
     "Change FP",
-    nullptr,
+    selectedOptionBattlesChangeValue,
 
     "Change Max FP",
-    nullptr,
+    selectedOptionBattlesChangeValue,
 
     "Change Held Item",
-    nullptr,
+    selectedOptionBattlesChangeValue,
 
     "Clear Held Item",
     selectedOptionBattlesClearHeldItem,
 
     "Change Statuses",
-    nullptr,
+    battlesMenuStatusesInit,
 };
 
 const MenuFunctions gBattlesMenuStatsFuncs = {
@@ -60,7 +61,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
     {
-        rootMenuExitBattleMenu();
+        rootMenuExitBattlesMenu();
         return;
     }
 
@@ -83,18 +84,205 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     controlsBasicMenuLayout(menuPtr, button);
 }
 
+void cancelMenuBattlesStatsChangeValue()
+{
+    gBattles->getValueEditor()->stopDrawing();
+    gMenu->clearFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
+}
+
+void menuBattlesStatsChangeValue(const ValueType *valuePtr)
+{
+    // Make sure the current index is valid
+    Menu *menuPtr = gMenu;
+    const uint32_t index = menuPtr->getCurrentIndex();
+
+    if (index > StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM)
+    {
+        // Failsafe: Reset the current index to 0
+        menuPtr->setCurrentIndex(0);
+        return;
+    }
+
+    const int32_t value = valuePtr->s32;
+    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattles->getCurrentActorIndex());
+
+    // Set the new value
+    switch (index)
+    {
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CURRENT_HP:
+        {
+            actorPtr->current_hp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_MAX_HP:
+        {
+            actorPtr->max_hp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CURRENT_FP:
+        {
+            actorPtr->current_fp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_MAX_FP:
+        {
+            actorPtr->max_fp = static_cast<int16_t>(value);
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM:
+        {
+            actorPtr->held_item = value;
+
+            // If the new item is a badge, then unequip all current badges and equip the new badge
+            if (value < static_cast<int32_t>(ItemId::ITEM_POWER_JUMP))
+            {
+                break;
+            }
+
+            // Do not modify for Mario nor the partners
+            const BattleUnitType type = actorPtr->current_kind;
+            if ((type >= BattleUnitType::kUnitMario) && (type <= BattleUnitType::kUnitMsMowz))
+            {
+                break;
+            }
+
+            // Clear all of the currently equipped badges
+            clearMemory(&actorPtr->badges_equipped, sizeof(actorPtr->badges_equipped));
+
+            // Equip the new badge
+            _EquipItem(actorPtr, 1, static_cast<ItemId>(value));
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // Close the value editor
+    cancelMenuBattlesStatsChangeValue();
+}
+
+void selectedOptionBattlesChangeValue(Menu *menuPtr)
+{
+    // Make sure the current index is valid
+    const uint32_t index = menuPtr->getCurrentIndex();
+
+    if (index > StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM)
+    {
+        // Failsafe: Reset the current index to 0
+        menuPtr->setCurrentIndex(0);
+        return;
+    }
+
+    // Bring up the window for selecting an id
+    menuPtr->setFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
+
+    Battles *battlesPtr = gBattles;
+    const BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+
+    // Get the current, min, and max values
+    int32_t currentValue = 0;
+    int32_t minValue = 0;
+    int32_t maxValue = 999;
+
+    switch (index)
+    {
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CURRENT_HP:
+        {
+            currentValue = actorPtr->current_hp;
+            maxValue = actorPtr->max_hp;
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_MAX_HP:
+        {
+            currentValue = actorPtr->max_hp;
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CURRENT_FP:
+        {
+            currentValue = actorPtr->current_fp;
+            maxValue = actorPtr->max_fp;
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_MAX_FP:
+        {
+            currentValue = actorPtr->max_fp;
+            break;
+        }
+        case StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM:
+        {
+            const int32_t currentHeldItem = actorPtr->held_item;
+            constexpr int32_t thunderBoltValue = static_cast<int32_t>(ItemId::ITEM_THUNDER_BOLT);
+
+            if (itemIsValid(static_cast<ItemId>(currentHeldItem)))
+            {
+                currentValue = currentHeldItem;
+            }
+            else
+            {
+                currentValue = thunderBoltValue;
+            }
+
+            minValue = thunderBoltValue;
+            maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // Initialize the value editor
+    ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
+    VariableType type = VariableType::s16;
+
+    uint32_t flags = 0;
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+
+    if (index == StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM)
+    {
+        type = VariableType::s32;
+        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::BATTLES_CHANGE_HELD_ITEM);
+        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+    }
+
+    const Window *rootWindowPtr = gRootWindow;
+
+    valueEditorPtr->init(&currentValue,
+                         &minValue,
+                         &maxValue,
+                         rootWindowPtr,
+                         flags,
+                         type,
+                         rootWindowPtr->getAlpha(),
+                         battlesPtr->getScale());
+
+    valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, cancelMenuBattlesStatsChangeValue);
+}
+
 void selectedOptionBattlesClearHeldItem(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    getActorBattlePtr(gBattles->getCurrentActorIndex())->held_item = static_cast<int32_t>(ItemId::ITEM_NONE);
+    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattles->getCurrentActorIndex());
+    actorPtr->held_item = static_cast<int32_t>(ItemId::ITEM_NONE);
+
+    // If the actor is neither Mario nor any partners, then clear all equipped badges
+    const BattleUnitType type = actorPtr->current_kind;
+    if ((type >= BattleUnitType::kUnitMario) && (type <= BattleUnitType::kUnitMsMowz))
+    {
+        return;
+    }
+
+    clearMemory(&actorPtr->badges_equipped, sizeof(actorPtr->badges_equipped));
 }
 
-void Battles::drawBattleActorStats() const
+void Battles::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 {
-    // Get the pointer to the selected actor
-    const BattleWorkUnit *actorPtr = getActorBattlePtr(this->currentActorIndex);
-
     // Failsafe: Make sure current_kind is valid for the selected actor
     const BattleUnitType type = actorPtr->current_kind;
     if (!battleUnitTypeIsValid(type))
@@ -193,14 +381,16 @@ void battlesMenuStatsDraw(CameraId cameraId, void *user)
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
     Battles *battlesPtr = gBattles;
-    if (!getActorBattlePtr(battlesPtr->getCurrentActorIndex()))
+    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+
+    if (!actorPtr)
     {
         battlesMenuReturnToSelectActorMenu();
         return;
     }
 
     // Draw the stats for the selected actor
-    battlesPtr->drawBattleActorStats();
+    battlesPtr->drawBattleActorStats(actorPtr);
 
     // Draw the value editor if applicable
     ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();

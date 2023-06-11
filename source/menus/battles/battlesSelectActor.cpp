@@ -26,12 +26,15 @@ void battlesMenuSelectActorInit(Menu *menuPtr)
     // Do not enter the Battles menu if not actually in a battle
     if (!getBattleWorkPtr())
     {
-        rootMenuExitBattleMenu();
+        rootMenuExitBattlesMenu();
         return;
     }
 
     // The amount of options depends on the amount of actors currently in a battle, so that must be handled manually
-    enterNextMenu(nullptr, &gBattlesMenuSelectActorFuncs, getbattlesMenuSelectActorMaxIndex(), BATTLES_TOTAL_ACTORS_PER_PAGE);
+    enterNextMenu(nullptr,
+                  &gBattlesMenuSelectActorFuncs,
+                  getbattlesMenuSelectActorMaxIndex(),
+                  BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
     // Failsafe: Make sure memory isn't already allocated for gBattles
     Battles *battlesPtr = gBattles;
@@ -84,7 +87,7 @@ void battlesMenuSelectActorDPadControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         {
             // Check to see if at the bottom of the current page
-            const uint32_t firstIndexNextPage = (currentPage + 1) * BATTLES_TOTAL_ACTORS_PER_PAGE;
+            const uint32_t firstIndexNextPage = (currentPage + 1) * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
             if (currentIndex == firstIndexNextPage - 1)
             {
                 // Prevent going to the next page if there are no more free spaces
@@ -101,21 +104,21 @@ void battlesMenuSelectActorDPadControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_UP:
         {
             // Check to see if at the top of the current page
-            if (currentIndex == (currentPage * BATTLES_TOTAL_ACTORS_PER_PAGE))
+            if (currentIndex == (currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE))
             {
                 // Only run if on the first page
                 if (currentPage == 0)
                 {
                     // Go to the last page that has slots in use
-                    while (highestIndex > static_cast<int32_t>((currentPage + 1) * BATTLES_TOTAL_ACTORS_PER_PAGE))
+                    while (highestIndex > static_cast<int32_t>((currentPage + 1) * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE))
                     {
                         currentPage++;
-                        currentIndex += BATTLES_TOTAL_ACTORS_PER_PAGE;
-                        highestIndex -= BATTLES_TOTAL_ACTORS_PER_PAGE;
+                        currentIndex += BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
+                        highestIndex -= BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
                     }
 
                     // setCurrentIndex sets the current page to where the new index is
-                    menuPtr->setCurrentIndex(currentIndex + BATTLES_TOTAL_ACTORS_PER_PAGE - 1);
+                    menuPtr->setCurrentIndex(currentIndex + BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE - 1);
                     return;
                 }
             }
@@ -131,7 +134,7 @@ void battlesMenuSelectActorDPadControls(Menu *menuPtr, MenuButtonInput button)
                          menuPtr->getCurrentIndexPtr(),
                          menuPtr->getCurrentPagePtr(),
                          getbattlesMenuSelectActorMaxIndex(),
-                         BATTLES_TOTAL_ACTORS_PER_PAGE,
+                         BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE,
                          1,
                          false);
 }
@@ -141,7 +144,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
     {
-        rootMenuExitBattleMenu();
+        rootMenuExitBattlesMenu();
         return;
     }
 
@@ -231,13 +234,13 @@ void Battles::drawBattlesActors() const
     float posX = rootWindowPtr->getTextPosX(emptySlotText, WindowAlignment::TOP_LEFT, scale);
     float posY = tempPosY;
 
-    uint32_t indexStart = currentPage * BATTLES_TOTAL_ACTORS_PER_PAGE;
+    uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
     const uint32_t maxIndex = getbattlesMenuSelectActorMaxIndex();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const char **battleActorsPtr = gBattleActors;
 
-    for (uint32_t i = indexStart; i < (indexStart + BATTLES_TOTAL_ACTORS_PER_PAGE); i++)
+    for (uint32_t i = indexStart; i < (indexStart + BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE); i++)
     {
         if (i >= maxIndex)
         {
@@ -307,7 +310,7 @@ void battlesMenuReturnToSelectActorMenu()
     // Close all menus until the Battles menu is reached
     Battles *battlesPtr = gBattles;
     Menu *menuPtr = gMenu;
-    Menu *battlesMenu = battlesPtr->getBattlesMenu();
+    const Menu *battlesMenu = battlesPtr->getBattlesMenu();
 
     while (menuPtr != battlesMenu)
     {

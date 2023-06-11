@@ -131,8 +131,8 @@ PouchPartyData *getCurrentPartnerData()
     // Make sure both of the current indexes are valid
     verifyMenuAndCurrentIndexes();
 
-    const uint32_t mainCurrentIndex = gMenu->getCurrentIndex();
-    return &pouchGetPtr()->partyData[static_cast<uint32_t>(gPartnersIds[mainCurrentIndex])];
+    const uint32_t currentIndex = gMenu->getCurrentIndex();
+    return &pouchGetPtr()->partyData[static_cast<uint32_t>(gPartnersIds[currentIndex])];
 }
 
 void cancelMenuPartnersChangeValue()
@@ -204,7 +204,7 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
     cancelMenuPartnersChangeValue();
 }
 
-void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue)
+void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue, int32_t minValue, int32_t maxValue)
 {
     // Bring up the window for selecting an id
     menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID);
@@ -218,16 +218,14 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    const int32_t *minValuePtr = statsPtr->getMinValuePtr();
-    const int32_t *maxValuePtr = statsPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(&currentValue,
-                         minValuePtr,
-                         maxValuePtr,
+                         &minValue,
+                         &maxValue,
                          rootWindowPtr,
                          flags,
-                         VariableType::s32,
+                         VariableType::s16,
                          rootWindowPtr->getAlpha(),
                          statsPtr->getScale());
 
@@ -380,23 +378,18 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                 {
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_CURRENT_HP:
                     {
-                        statsPtr->setMinValue(0);
-                        statsPtr->setMaxValue(partnerData->maxHp); // Make sure the current HP does not exceed the max HP
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->currentHp);
+                        const int32_t maxHp = partnerData->maxHp; // Make sure the current HP does not exceed the max HP
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->currentHp, 0, maxHp);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_MAX_HP:
                     {
-                        statsPtr->setMinValue(0);
-                        statsPtr->setMaxValue(999);
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->maxHp);
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->maxHp, 0, 999);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_RANK:
                     {
-                        statsPtr->setMinValue(0);
-                        statsPtr->setMaxValue(2);
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->attackLevel);
+                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->attackLevel, 0, 2);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_TOGGLE_ENABLED_BOOL:
@@ -497,7 +490,8 @@ void Stats::drawPartnerStats()
 
     // Retrieve posXBase and posYBase as a separate variables to avoid repeatedly loading them from the stack when using them
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const float posXBase = tempPosX + textWidth + lineDecrement;
+    const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
+    const float posXBase = tempPosX + textWidth + textIncrement;
     const float posYBase = tempPosY;
 
     float posX = posXBase;
@@ -573,7 +567,7 @@ void Stats::drawPartnerStats()
 
     // Set the values text to be a bit to the right of the previous text
     getTextWidthHeight("Bring Out", scale, &textWidth, nullptr);
-    posX = posXBase + textWidth + lineDecrement;
+    posX = posXBase + textWidth + textIncrement;
     posY = posYBase;
     counter = 0;
 

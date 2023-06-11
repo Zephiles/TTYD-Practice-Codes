@@ -21,6 +21,7 @@ enum PointerVerificationType
 #define roundDown(size, alignment) (((size) / (alignment)) * (alignment))
 
 bool checkButtonCombo(uint32_t combo);
+bool checkButtonsEveryFrame(uint32_t buttons);
 bool checkButtonComboEveryFrame(uint32_t combo);
 void *clearMemory(void *ptr, uint32_t size);
 bool checkForSpecificSeq(SeqIndex wantedSeq);

@@ -100,15 +100,10 @@ class Stats
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
 
     float getScale() const { return this->scale; }
-    int32_t *getMinValuePtr() { return &this->minValue; }
-    int32_t *getMaxValuePtr() { return &this->maxValue; }
-
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
+
     uint32_t getCurrentIndex() const { return this->currentIndex; }
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
-
-    void setMinValue(int32_t value) { this->minValue = value; }
-    void setMaxValue(int32_t value) { this->maxValue = value; }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
     void initErrorWindow(bool drawForPartner);
@@ -124,9 +119,6 @@ class Stats
     NameEditor nameEditor;
     ErrorWindow errorWindow;
     float scale;
-
-    int32_t minValue;
-    int32_t maxValue;
 
     MenuAutoIncrement autoIncrement;
     uint8_t currentIndex;   // Current cursor position

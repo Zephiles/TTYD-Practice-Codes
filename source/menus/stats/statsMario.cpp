@@ -190,7 +190,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
+int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
 {
     uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
     switch (index)
@@ -258,60 +258,6 @@ int32_t getMarioStat(PouchData *pouchPtr, uint32_t index)
         case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
         {
             return *reinterpret_cast<int32_t *>(piantaParlorPtrRaw + 0x8);
-        }
-        default:
-        {
-            return 0;
-        }
-    }
-}
-
-int32_t getMarioStatMaxValue(PouchData *pouchPtr, uint32_t index)
-{
-    switch (index)
-    {
-        case StatsMarioOptions::STATS_MARIO_COINS:
-        case StatsMarioOptions::STATS_MARIO_MAX_HP:
-        case StatsMarioOptions::STATS_MARIO_MAX_FP:
-        case StatsMarioOptions::STATS_MARIO_STAR_PIECES:
-        case StatsMarioOptions::STATS_MARIO_SHINE_SPRITES:
-        {
-            return 999;
-        }
-        case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
-        {
-            return pouchPtr->maxHp;
-        }
-        case StatsMarioOptions::STATS_MARIO_CURRENT_FP:
-        {
-            return pouchPtr->maxFp;
-        }
-        case StatsMarioOptions::STATS_MARIO_BP:
-        case StatsMarioOptions::STATS_MARIO_LEVEL:
-        case StatsMarioOptions::STATS_MARIO_STAR_POINTS:
-        {
-            return 99;
-        }
-        case StatsMarioOptions::STATS_MARIO_RANK:
-        {
-            return 3;
-        }
-        case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
-        {
-            return pouchPtr->maxSp;
-        }
-        case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
-        {
-            return 800;
-        }
-        case StatsMarioOptions::STATS_MARIO_SHOP_POINTS:
-        {
-            return 300;
-        }
-        case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
-        case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
-        {
-            return 99999;
         }
         default:
         {
@@ -505,8 +451,9 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     // Bring up the window for selecting an id
     menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 
-    // Get the current value
-    PouchData *pouchPtr = pouchGetPtr();
+    // Get the current, min, and max values
+    // Also get the variable type
+    const PouchData *pouchPtr = pouchGetPtr();
     int32_t currentValue = getMarioStat(pouchPtr, index);
 
     // Make sure the value isn't negative
@@ -515,18 +462,61 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
         currentValue = 0;
     }
 
-    // Get the max value
-    int32_t maxValue = getMarioStatMaxValue(pouchPtr, index);
+    int32_t minValue = 0;
+    int32_t maxValue = 999;
+    VariableType type = VariableType::s16;
 
-    // Make sure the value isn't negative
-    if (maxValue < 0)
+    switch (index)
     {
-        maxValue = 0;
+        case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
+        {
+            maxValue = pouchPtr->maxHp;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_FP:
+        {
+            maxValue = pouchPtr->maxFp;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_BP:
+        case StatsMarioOptions::STATS_MARIO_LEVEL:
+        case StatsMarioOptions::STATS_MARIO_STAR_POINTS:
+        {
+            maxValue = 99;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_RANK:
+        {
+            maxValue = 3;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_CURRENT_STAR_POWER:
+        {
+            maxValue = pouchPtr->maxSp;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_MAX_STAR_POWER:
+        {
+            maxValue = 800;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_SHOP_POINTS:
+        {
+            maxValue = 300;
+            break;
+        }
+        case StatsMarioOptions::STATS_MARIO_PIANTAS_STORED:
+        case StatsMarioOptions::STATS_MARIO_CURRENT_PIANTAS:
+        {
+            maxValue = 99999;
+            type = VariableType::s32;
+            break;
+        }
+        default:
+        {
+            break;
+        }
     }
-
-    // Set the min and max values
-    statsPtr->setMinValue(0);
-    statsPtr->setMaxValue(maxValue);
 
     // Initialize the value editor
     ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
@@ -536,16 +526,14 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    const int32_t *minValuePtr = statsPtr->getMinValuePtr();
-    const int32_t *maxValuePtr = statsPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(&currentValue,
-                         minValuePtr,
-                         maxValuePtr,
+                         &minValue,
+                         &maxValue,
                          rootWindowPtr,
                          flags,
-                         VariableType::s32,
+                         type,
                          rootWindowPtr->getAlpha(),
                          statsPtr->getScale());
 

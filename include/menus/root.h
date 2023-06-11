@@ -33,7 +33,7 @@ class Root
 
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
     float getScale() const { return this->scale; }
-    Menu *getRootMenu() { return this->rootMenu; }
+    const Menu *getRootMenu() const { return this->rootMenu; }
 
    private:
     ErrorWindow errorWindow;
@@ -49,6 +49,6 @@ void rootMenuDraw(CameraId cameraId, void *user); // Called to handle drawing th
 
 // Called when either trying to enter the battle menu when not in a battle, or while in the Battles menu when a battle has just
 // ended
-void rootMenuExitBattleMenu();
+void rootMenuExitBattlesMenu();
 
 #endif

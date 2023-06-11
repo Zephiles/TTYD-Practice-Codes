@@ -9,11 +9,57 @@
 
 #include <cstdint>
 
-#define BATTLES_TOTAL_ACTORS_PER_PAGE 18
+#define BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE 18
+#define BATTLES_STATUSES_MAX_STATUSES_PER_PAGE 12
+
+enum StatsBattlesStatsOptions
+{
+    BATTLES_STATS_ACTOR_CURRENT_HP = 0,
+    BATTLES_STATS_ACTOR_MAX_HP,
+    BATTLES_STATS_ACTOR_CURRENT_FP,
+    BATTLES_STATS_ACTOR_MAX_FP,
+    BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM,
+};
+
+enum StatsBattlesStatusesOptions
+{
+    BATTLES_STATUSES_SLEEP_TURNS_LEFT = 0,
+    BATTLES_STATUSES_IMMOBILIZED_TURNS_LEFT,
+    BATTLES_STATUSES_DIZZY_TURNS_LEFT,
+    BATTLES_STATUSES_POISON_TURNS_LEFT,
+    BATTLES_STATUSES_POISON_DAMAGE_AMOUNT,
+    BATTLES_STATUSES_CONFUSED_TURNS_LEFT,
+    BATTLES_STATUSES_ELECTRIFIED_TURNS_LEFT,
+    BATTLES_STATUSES_DODGY_TURNS_LEFT,
+    BATTLES_STATUSES_BURN_TURNS_LEFT,
+    BATTLES_STATUSES_FROZEN_TURNS_LEFT,
+    BATTLES_STATUSES_BIG_SHRINK_TURNS_LEFT,
+    BATTLES_STATUSES_BIG_SHRINK_POWER_AMOUNT,
+    BATTLES_STATUSES_ATTACK_UP_DOWN_TURNS_LEFT,
+    BATTLES_STATUSES_ATTACK_UP_DOWN_POWER_AMOUNT,
+    BATTLES_STATUSES_DEFENSE_UP_DOWN_TURNS_LEFT,
+    BATTLES_STATUSES_DEFENSE_UP_DOWN_POWER_AMOUNT,
+    BATTLES_STATUSES_CHARGED_TURNS_LEFT,
+    BATTLES_STATUSES_ALLERGIC_TURNS_LEFT,
+    BATTLES_STATUSES_INVISIBLE_TURNS_LEFT,
+    BATTLES_STATUSES_PAYBACK_TURNS_LEFT,
+    BATTLES_STATUSES_FAST_TURNS_LEFT,
+    BATTLES_STATUSES_SLOW_TURNS_LEFT,
+    BATTLES_STATUSES_HP_REGEN_TURNS_LEFT,
+    BATTLES_STATUSES_HP_REGEN_AMOUNT,
+    BATTLES_STATUSES_FP_REGEN_TURNS_LEFT,
+    BATTLES_STATUSES_FP_REGEN_AMOUNT,
+    BATTLES_STATUSES_DEFEATED_FLAG,
+};
 
 enum BattlesStatsFlag
 {
     BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID = 0,
+};
+
+enum BattlesStatusesFlag
+{
+    BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID = 0,
 };
 
 class Battles
@@ -30,27 +76,22 @@ class Battles
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     float getScale() const { return this->scale; }
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
-    Menu *getBattlesMenu() { return this->battlesMenu; }
+    const Menu *getBattlesMenu() const { return this->battlesMenu; }
 
     uint32_t getCurrentActorIndex() const { return this->currentActorIndex; }
     void setCurrentActorIndex(uint32_t index) { this->currentActorIndex = static_cast<uint8_t>(index); }
 
     void drawBattlesActors() const;
-    void drawBattleActorStats() const;
+    void drawBattleActorStats(BattleWorkUnit *actorPtr) const;
+    void drawBattleActorStatuses(BattleWorkUnit *actorPtr) const;
 
    private:
     ValueEditor valueEditor;
     float scale;
     Menu *battlesMenu; // Backup of gMenu when the Battles menu was initially opened
 
-    int32_t minValue;
-    int32_t maxValue;
-
     MenuAutoIncrement autoIncrement;
     uint8_t currentActorIndex; // Index for the selected actor
-
-    uint8_t currentPage;
-    uint8_t currentIndex; // Current cursor position
 };
 
 extern Battles *gBattles;
@@ -77,7 +118,12 @@ void battlesMenuStatsInit();
 void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button);
 void battlesMenuStatsDraw(CameraId cameraId, void *user);
 
+void selectedOptionBattlesChangeValue(Menu *menuPtr);
 void selectedOptionBattlesClearHeldItem(Menu *menuPtr);
+
+void battlesMenuStatusesInit(Menu *menuPtr);
+void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button);
+void battlesMenuStatusesDraw(CameraId cameraId, void *user);
 
 BattleWork *getBattleWorkPtr();
 BattleWorkUnit *getMarioBattlePtr();

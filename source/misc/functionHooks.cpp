@@ -12,3 +12,4 @@ int32_t (*g_winRootMain_trampoline)(void *pauseMenuPtr);
 int32_t (*g_marioKeyOn_trampoline)();
 bool (*g_OSLink_trampoline)(OSModuleInfo *module, void *bss);
 bool (*g_battle_init_trampoline)();
+void (*g_BattlePadManager_trampoline)();
