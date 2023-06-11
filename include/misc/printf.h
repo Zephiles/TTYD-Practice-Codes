@@ -9,11 +9,13 @@ struct WriteFormatterFnData
 {
     char *buffer;
     std::size_t maxLength;
-    std::size_t bytesWritten;
+    std::size_t charsWritten;
 } __attribute__((__packed__));
 
 static_assert(sizeof(WriteFormatterFnData) == 0xC);
 
+// The return type seems to differ depending on which function is used, and currently the function does not need to be called
+// directly, so just set it to void pointer for now
 typedef void *(*WriteFormatterFn)(WriteFormatterFnData *data, const char *string, std::size_t length);
 
 extern "C"
