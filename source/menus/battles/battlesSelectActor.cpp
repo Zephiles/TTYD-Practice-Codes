@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-Battles *gBattles;
+BattlesMenu *gBattlesMenu;
 
 const MenuFunctions gBattlesMenuSelectActorFuncs = {
     battlesMenuSelectActorControls,
@@ -36,20 +36,20 @@ void battlesMenuSelectActorInit(Menu *menuPtr)
                   getbattlesMenuSelectActorMaxIndex(),
                   BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
-    // Failsafe: Make sure memory isn't already allocated for gBattles
-    Battles *battlesPtr = gBattles;
-    if (battlesPtr)
+    // Failsafe: Make sure memory isn't already allocated for gBattlesMenu
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    if (battlesMenuPtr)
     {
-        delete battlesPtr;
+        delete battlesMenuPtr;
     }
 
-    gBattles = new Battles(gRoot->getScale());
+    gBattlesMenu = new BattlesMenu(gRootMenu->getScale());
 }
 
 void battlesMenuSelectActorExit()
 {
-    delete gBattles;
-    gBattles = nullptr;
+    delete gBattlesMenu;
+    gBattlesMenu = nullptr;
 }
 
 uint32_t getBattleActorsHighestIndex()
@@ -149,8 +149,8 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    Battles *battlesPtr = gBattles;
-    const bool autoIncrement = handleMenuAutoIncrement(battlesPtr->getAutoIncrementPtr());
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    const bool autoIncrement = handleMenuAutoIncrement(battlesMenuPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -189,7 +189,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
             if (actorPtr)
             {
                 // Go to the battles stats menu
-                battlesPtr->setCurrentActorIndex(actorIndex);
+                battlesMenuPtr->setCurrentActorIndex(actorIndex);
                 battlesMenuStatsInit();
                 break;
             }
@@ -207,7 +207,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void Battles::drawBattlesActors() const
+void BattlesMenu::drawBattlesActors() const
 {
     // Initialize text drawing
     drawTextInit(0xFF, false);
@@ -302,15 +302,15 @@ void battlesMenuSelectActorDraw(CameraId cameraId, void *user)
     gRootWindow->draw();
 
     // Draw each actor
-    gBattles->drawBattlesActors();
+    gBattlesMenu->drawBattlesActors();
 }
 
 void battlesMenuReturnToSelectActorMenu()
 {
     // Close all menus until the Battles menu is reached
-    Battles *battlesPtr = gBattles;
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
     Menu *menuPtr = gMenu;
-    const Menu *battlesMenu = battlesPtr->getBattlesMenu();
+    const Menu *battlesMenu = battlesMenuPtr->getBattlesMenu();
 
     while (menuPtr != battlesMenu)
     {

@@ -178,7 +178,7 @@ void drawBasicMenuLayout(CameraId cameraId, void *user)
     gRootWindow->draw();
 
     // Draw the main text
-    gMenu->basicLayoutDraw(gRoot->getScale());
+    gMenu->basicLayoutDraw(gRootMenu->getScale());
 }
 
 void handleMenu()

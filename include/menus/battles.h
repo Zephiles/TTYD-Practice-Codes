@@ -62,16 +62,16 @@ enum BattlesStatusesFlag
     BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID = 0,
 };
 
-class Battles
+class BattlesMenu
 {
    public:
-    Battles(float scale)
+    BattlesMenu(float scale)
     {
         this->scale = scale;
         this->battlesMenu = gMenu;
     }
 
-    ~Battles() {}
+    ~BattlesMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     float getScale() const { return this->scale; }
@@ -94,7 +94,7 @@ class Battles
     uint8_t currentActorIndex; // Index for the selected actor
 };
 
-extern Battles *gBattles;
+extern BattlesMenu *gBattlesMenu;
 extern const char *gBattleActors[TOTAL_BATTLE_UNIT_TYPES];
 
 inline uint32_t getbattlesMenuSelectActorMaxIndex()

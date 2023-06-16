@@ -88,7 +88,7 @@ void statsMenuPartnersSelectedPartner(Menu *menuPtr)
     menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER);
 
     // Reset currentIndex
-    gStats->setCurrentIndex(0);
+    gStatsMenu->setCurrentIndex(0);
 }
 
 uint32_t menuPartnersGetTotalPartnerOptions(uint32_t currentIndex)
@@ -115,14 +115,14 @@ void verifyMenuAndCurrentIndexes()
     }
 
     // Make sure the current index is valid
-    Stats *statsPtr = gStats;
-    const uint32_t currentIndex = statsPtr->getCurrentIndex();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    const uint32_t currentIndex = statsMenuPtr->getCurrentIndex();
     const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
 
     if (currentIndex >= totalOptions)
     {
         // Reset the current index to 0
-        statsPtr->setCurrentIndex(0);
+        statsMenuPtr->setCurrentIndex(0);
     }
 }
 
@@ -137,7 +137,7 @@ PouchPartyData *getCurrentPartnerData()
 
 void cancelMenuPartnersChangeValue()
 {
-    gStats->getValueEditor()->stopDrawing();
+    gStatsMenu->getValueEditor()->stopDrawing();
     gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID);
 }
 
@@ -145,7 +145,7 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
     PouchPartyData *partnerData = getCurrentPartnerData();
-    const uint32_t currentIndex = gStats->getCurrentIndex();
+    const uint32_t currentIndex = gStatsMenu->getCurrentIndex();
 
     // Set the new value
     switch (currentIndex)
@@ -210,8 +210,8 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue,
     menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID);
 
     // Initialize the value editor
-    Stats *statsPtr = gStats;
-    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -227,20 +227,20 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue,
                          flags,
                          VariableType::s16,
                          rootWindowPtr->getAlpha(),
-                         statsPtr->getScale());
+                         statsMenuPtr->getScale());
 
     valueEditorPtr->startDrawing(menuPartnersChangeValue, cancelMenuPartnersChangeValue);
 }
 
 void cancelMenuPartnersChangeYoshiColor()
 {
-    gStats->getYoshiColorSelector()->stopDrawing();
+    gStatsMenu->getYoshiColorSelector()->stopDrawing();
     gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
 }
 
 void cancelMenuPartnersChangeYoshiName()
 {
-    gStats->getNameEditor()->stopDrawing();
+    gStatsMenu->getNameEditor()->stopDrawing();
     gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
 }
 
@@ -260,7 +260,7 @@ void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
 {
     const PartyMembers currentPartnerOut = getCurrentPartnerOrFollowerOut(true);
 
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
     const PartyMembers currentPartnerInMenu = gPartnersIds[currentIndex];
 
@@ -280,7 +280,7 @@ void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
         else
         {
             // Initialize the error window
-            statsPtr->initErrorWindow(true);
+            statsMenuPtr->initErrorWindow(true);
         }
     }
 }
@@ -292,8 +292,8 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
 
     const uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
 
-    Stats *statsPtr = gStats;
-    const uint32_t currentIndex = statsPtr->getCurrentIndex();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    const uint32_t currentIndex = statsMenuPtr->getCurrentIndex();
 
     switch (button)
     {
@@ -301,7 +301,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
         case MenuButtonInput::DPAD_UP:
         {
             const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
-            menuControlsVertical(button, statsPtr->getCurrentIndexPtr(), nullptr, totalOptions, totalOptions, 1, true);
+            menuControlsVertical(button, statsMenuPtr->getCurrentIndexPtr(), nullptr, totalOptions, totalOptions, 1, true);
             break;
         }
         case MenuButtonInput::A:
@@ -319,8 +319,8 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
 
                         // Initialize the color selector
                         const Window *rootWindowPtr = gRootWindow;
-                        YoshiColorSelector *yoshiColorSelectorPtr = statsPtr->getYoshiColorSelector();
-                        yoshiColorSelectorPtr->init(rootWindowPtr, statsPtr->getScale(), rootWindowPtr->getAlpha());
+                        YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
+                        yoshiColorSelectorPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
 
                         // Get the current index for the color selector
                         uint32_t yoshiColorIndex = pouchGetPartyColor(PartyMembers::kYoshi);
@@ -344,10 +344,10 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                         // Initialize the name editor
                         char *yoshiNamePtr = pouchGetPtr()->yoshiName;
                         const Window *rootWindowPtr = gRootWindow;
-                        NameEditor *nameEditorPtr = statsPtr->getNameEditor();
+                        NameEditor *nameEditorPtr = statsMenuPtr->getNameEditor();
 
                         nameEditorPtr->init(rootWindowPtr,
-                                            statsPtr->getScale(),
+                                            statsMenuPtr->getScale(),
                                             yoshiNamePtr,
                                             yoshiNamePtr,
                                             sizeof(PouchData::yoshiName),
@@ -430,26 +430,26 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
 
 void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
 {
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID))
     {
-        statsPtr->getValueEditor()->controls(button);
+        statsMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
     // If the window for selecting a Yoshi color is open, then handle the controls for that
     else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR))
     {
-        statsPtr->getYoshiColorSelector()->controls(button);
+        statsMenuPtr->getYoshiColorSelector()->controls(button);
         return;
     }
 
     // If the window for changing Yoshi's name is open, then handle the controls for that
     else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME))
     {
-        statsPtr->getNameEditor()->controls(button, true);
+        statsMenuPtr->getNameEditor()->controls(button, true);
         return;
     }
 
@@ -464,7 +464,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     controlsBasicMenuLayout(menuPtr, button);
 }
 
-void Stats::drawPartnerStats()
+void StatsMenu::drawPartnerStats()
 {
     auto getTextColor = [](bool anyFlagIsSet, bool currentOption, uint8_t alpha)
     {
@@ -615,32 +615,32 @@ void statsMenuPartnersDraw(CameraId cameraId, void *user)
     drawBasicMenuLayout(cameraId, user);
 
     // Draw the partner's stats that the cursor is currently over
-    Stats *statsPtr = gStats;
-    statsPtr->drawPartnerStats();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    statsMenuPtr->drawPartnerStats();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the color selector if applicable
-    YoshiColorSelector *yoshiColorSelectorPtr = statsPtr->getYoshiColorSelector();
+    YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
     if (yoshiColorSelectorPtr->shouldDraw())
     {
         yoshiColorSelectorPtr->draw();
     }
 
     // Draw the name editor if applicable
-    NameEditor *nameEditorPtr = statsPtr->getNameEditor();
+    NameEditor *nameEditorPtr = statsMenuPtr->getNameEditor();
     if (nameEditorPtr->shouldDraw())
     {
         nameEditorPtr->draw();
     }
 
     // Draw the error message if applicable
-    ErrorWindow *errorWindowPtr = statsPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindow();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

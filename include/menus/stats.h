@@ -60,13 +60,6 @@ enum StatsPartnersCurrentPartnerOptionYoshi
     STATS_PARTNER_YOSHI_BRING_OUT_OR_REMOVE,
 };
 
-enum StatsMenu
-{
-    STATS_MENU_MARIO = 0,
-    STATS_MENU_PARTNERS,
-    STATS_MENU_FOLLOWERS,
-};
-
 enum StatsFlagMario
 {
     STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID = 0,
@@ -86,11 +79,11 @@ enum StatsFlagFollower
     STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER = 0,
 };
 
-class Stats
+class StatsMenu
 {
    public:
-    Stats(float scale) { this->scale = scale; }
-    ~Stats() {}
+    StatsMenu(float scale) { this->scale = scale; }
+    ~StatsMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
@@ -126,7 +119,7 @@ class Stats
     char errorMessage[128]; // Needed since the error message is created via snprintf
 };
 
-extern Stats *gStats;
+extern StatsMenu *gStatsMenu;
 
 void statsMenuMarioInit(Menu *menuPtr);
 void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button);

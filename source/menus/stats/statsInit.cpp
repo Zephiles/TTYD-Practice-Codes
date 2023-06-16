@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-Stats *gStats = nullptr;
+StatsMenu *gStatsMenu = nullptr;
 
 const MenuOption gStatsMenuInitOptions[] = {
     "Mario",
@@ -33,23 +33,23 @@ void statsMenuInit(Menu *menuPtr)
     constexpr uint32_t totalOptions = sizeof(gStatsMenuInitOptions) / sizeof(MenuOption);
     enterNextMenu(gStatsMenuInitOptions, &gStatsMenuInitFuncs, totalOptions);
 
-    // Failsafe: Make sure memory isn't already allocated for gStats
-    Stats *statsPtr = gStats;
-    if (statsPtr)
+    // Failsafe: Make sure memory isn't already allocated for gStatsMenu
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    if (statsMenuPtr)
     {
-        delete statsPtr;
+        delete statsMenuPtr;
     }
 
-    gStats = new Stats(gRoot->getScale());
+    gStatsMenu = new StatsMenu(gRootMenu->getScale());
 }
 
 void statsMenuInitExit()
 {
-    delete gStats;
-    gStats = nullptr;
+    delete gStatsMenu;
+    gStatsMenu = nullptr;
 }
 
-void Stats::initErrorWindow(bool drawForPartner)
+void StatsMenu::initErrorWindow(bool drawForPartner)
 {
     // Get the text for either a partner or a follower
     const char *partnerOrFollowerText;

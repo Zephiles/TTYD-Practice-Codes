@@ -38,11 +38,11 @@ enum InventoryFlag
     INVENTORY_FLAG_CURRENTLY_SELECTING_ICON,
 };
 
-class Inventory
+class InventoryMenu
 {
    public:
-    Inventory(float scale);
-    ~Inventory() {}
+    InventoryMenu(float scale);
+    ~InventoryMenu() {}
 
     void setinventoryItemPtr(ItemId *ptr) { this->inventoryItemPtr = ptr; }
     void setMinValue(ItemId value) { this->minValue = static_cast<int32_t>(value); }
@@ -109,7 +109,7 @@ class Inventory
     uint8_t currentIndex;  // Current cursor position
 };
 
-extern Inventory *gInventory;
+extern InventoryMenu *gInventoryMenu;
 
 void inventoryMenuMainInit(Menu *menuPtr); // Called when initially entering the main part of the inventory menu
 void inventoryMenuMainExit();              // Called when exiting the main part of the inventory menu

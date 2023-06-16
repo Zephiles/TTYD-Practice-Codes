@@ -100,7 +100,7 @@ void statsMenuMarioInit(Menu *menuPtr)
     (void)menuPtr;
 
     // Reset currentIndex
-    gStats->setCurrentIndex(0);
+    gStatsMenu->setCurrentIndex(0);
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuMarioOptions) / sizeof(MenuOption);
     enterNextMenu(gStatsMenuMarioOptions, &gStatsMenuMarioFuncs, totalOptions);
@@ -119,24 +119,24 @@ void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr
 
 void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
 {
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID))
     {
-        statsPtr->getValueEditor()->controls(button);
+        statsMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
     // If the window for toggling a special move is open, then handle the controls for that
     else if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES))
     {
-        statsPtr->getSpecialMoveToggler()->controls(button);
+        statsMenuPtr->getSpecialMoveToggler()->controls(button);
         return;
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(statsPtr->getAutoIncrementPtr());
+    const bool autoIncrement = handleMenuAutoIncrement(statsMenuPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -149,7 +149,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                statsMenuMarioDPadControls(buttonHeld, statsPtr->getCurrentIndexPtr());
+                statsMenuMarioDPadControls(buttonHeld, statsMenuPtr->getCurrentIndexPtr());
                 break;
             }
             default:
@@ -167,13 +167,13 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            statsMenuMarioDPadControls(button, statsPtr->getCurrentIndexPtr());
+            statsMenuMarioDPadControls(button, statsMenuPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:
         {
-            // Currently using currentIndex from gStats, so need to update the current index in menuPtr
-            menuPtr->setCurrentIndex(statsPtr->getCurrentIndex());
+            // Currently using currentIndex from gStatsMenu, so need to update the current index in menuPtr
+            menuPtr->setCurrentIndex(statsMenuPtr->getCurrentIndex());
 
             menuPtr->runSelectedOptionFunc();
             break;
@@ -268,20 +268,20 @@ int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
 
 void cancelMenuMarioChangeValue()
 {
-    gStats->getValueEditor()->stopDrawing();
+    gStatsMenu->getValueEditor()->stopDrawing();
     gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 }
 
 void menuMarioChangeValue(const ValueType *valuePtr)
 {
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
 
     // Make sure the current index is valid
-    const uint32_t index = statsPtr->getCurrentIndex();
+    const uint32_t index = statsMenuPtr->getCurrentIndex();
     if (index >= STATS_MARIO_TOTAL_ENTRIES)
     {
         // Failsafe: Reset the current index to 0
-        statsPtr->setCurrentIndex(0);
+        statsMenuPtr->setCurrentIndex(0);
         return;
     }
 
@@ -437,14 +437,14 @@ void menuMarioChangeValue(const ValueType *valuePtr)
 
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 {
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
 
     // Make sure the current index is valid
-    const uint32_t index = statsPtr->getCurrentIndex();
+    const uint32_t index = statsMenuPtr->getCurrentIndex();
     if (index >= STATS_MARIO_TOTAL_ENTRIES)
     {
         // Failsafe: Reset the current index to 0
-        statsPtr->setCurrentIndex(0);
+        statsMenuPtr->setCurrentIndex(0);
         return;
     }
 
@@ -519,7 +519,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -535,14 +535,14 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
                          flags,
                          type,
                          rootWindowPtr->getAlpha(),
-                         statsPtr->getScale());
+                         statsMenuPtr->getScale());
 
     valueEditorPtr->startDrawing(menuMarioChangeValue, cancelMenuMarioChangeValue);
 }
 
 void cancelMenuMarioToggleSpecialMoves()
 {
-    gStats->getSpecialMoveToggler()->stopDrawing();
+    gStatsMenu->getSpecialMoveToggler()->stopDrawing();
     gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
 }
 
@@ -552,15 +552,15 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
     menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
 
     // Initialize the special move toggler
-    Stats *statsPtr = gStats;
-    SpecialMoveToggler *specialMoveTogglerPtr = statsPtr->getSpecialMoveToggler();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler();
 
     const Window *rootWindowPtr = gRootWindow;
-    specialMoveTogglerPtr->init(rootWindowPtr, statsPtr->getScale(), rootWindowPtr->getAlpha());
+    specialMoveTogglerPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
     specialMoveTogglerPtr->startDrawing(cancelMenuMarioToggleSpecialMoves);
 }
 
-void Stats::drawMarioStats() const
+void StatsMenu::drawMarioStats() const
 {
     // Draw the main text and icons
     const Window *rootWindowPtr = gRootWindow;
@@ -709,18 +709,18 @@ void statsMenuMarioDraw(CameraId cameraId, void *user)
     gRootWindow->draw();
 
     // Draw Mario's stats
-    Stats *statsPtr = gStats;
-    statsPtr->drawMarioStats();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    statsMenuPtr->drawMarioStats();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = statsPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the special move toggler if applicable
-    SpecialMoveToggler *specialMoveTogglerPtr = statsPtr->getSpecialMoveToggler();
+    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler();
     if (specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->draw();

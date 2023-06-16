@@ -8,17 +8,17 @@
 
 extern Window *gRootWindow;
 
-class Root
+class RootMenu
 {
    public:
-    Root(const char *battlesErrorMessage, float scale)
+    RootMenu(const char *battlesErrorMessage, float scale)
     {
         this->rootMenu = gMenu;
         this->scale = scale;
         this->initErrorWindow(battlesErrorMessage);
     }
 
-    ~Root() {}
+    ~RootMenu() {}
 
     void initErrorWindow(const char *battlesErrorMessage)
     {
@@ -41,7 +41,7 @@ class Root
     Menu *rootMenu; // Backup of gMenu when the root menu was initially opened
 };
 
-extern Root *gRoot;
+extern RootMenu *gRootMenu;
 
 void rootMenuInit();                              // Called when initially entering the root menu
 void rootMenuExit();                              // Called when exiting the root menu

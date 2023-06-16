@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-Inventory *gInventory = nullptr;
+InventoryMenu *gInventoryMenu = nullptr;
 
 // Main menu
 const MenuOption gInventoryMenuMainOptions[] = {
@@ -50,17 +50,17 @@ const char *gInventoryIsFullText = "The inventory is currently full.";
 
 void cancelAddItemFromId()
 {
-    gInventory->getValueEditor()->stopDrawing();
+    gInventoryMenu->getValueEditor()->stopDrawing();
     gMenu->clearFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
 }
 
 void addItemFromId(const ValueType *valuePtr)
 {
-    Inventory *inventoryPtr = gInventory;
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
     // Make sure the inventory isn't full
-    uint32_t totalItems = inventoryPtr->getTotalItemsInInventory();
-    if (totalItems >= inventoryPtr->getInventorySize())
+    uint32_t totalItems = inventoryMenuPtr->getTotalItemsInInventory();
+    if (totalItems >= inventoryMenuPtr->getInventorySize())
     {
         cancelAddItemFromId();
         return;
@@ -68,7 +68,7 @@ void addItemFromId(const ValueType *valuePtr)
 
     // Set the new item
     const ItemId item = static_cast<ItemId>(valuePtr->s32);
-    inventoryPtr->getInventoryItemPtr()[totalItems] = item;
+    inventoryMenuPtr->getInventoryItemPtr()[totalItems] = item;
 
     // The battle menu will not properly update when an upgrade is given, so manually update it
     recheckBattleUpgrades(item);
@@ -78,7 +78,7 @@ void addItemFromId(const ValueType *valuePtr)
     resetPauseMenuImportantItems();
 
     // If the inventory is now full, then stop adding items
-    if (inventoryPtr->inventoryIsFull())
+    if (inventoryMenuPtr->inventoryIsFull())
     {
         cancelAddItemFromId();
     }
@@ -87,10 +87,10 @@ void addItemFromId(const ValueType *valuePtr)
 void selectedOptionAddById(Menu *menuPtr)
 {
     // If the inventory is full, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsFull())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -98,7 +98,7 @@ void selectedOptionAddById(Menu *menuPtr)
     menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
 
     uint32_t flags = 0;
     // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
@@ -107,8 +107,8 @@ void selectedOptionAddById(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    const int32_t *minValuePtr = inventoryPtr->getMinValuePtr();
-    const int32_t *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const int32_t *minValuePtr = inventoryMenuPtr->getMinValuePtr();
+    const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(minValuePtr,
@@ -118,31 +118,31 @@ void selectedOptionAddById(Menu *menuPtr)
                          flags,
                          VariableType::s16,
                          rootWindowPtr->getAlpha(),
-                         inventoryPtr->getScale());
+                         inventoryMenuPtr->getScale());
 
     valueEditorPtr->startDrawing(addItemFromId, cancelAddItemFromId);
 }
 
 void cancelAddItemFromIcon()
 {
-    gInventory->getItemIconSelector()->stopDrawing();
+    gInventoryMenu->getItemIconSelector()->stopDrawing();
     gMenu->clearFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
 }
 
 void addItemFromIcon(ItemId item)
 {
-    Inventory *inventoryPtr = gInventory;
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
     // Make sure the inventory isn't full
-    uint32_t totalItems = inventoryPtr->getTotalItemsInInventory();
-    if (totalItems >= inventoryPtr->getInventorySize())
+    uint32_t totalItems = inventoryMenuPtr->getTotalItemsInInventory();
+    if (totalItems >= inventoryMenuPtr->getInventorySize())
     {
         cancelAddItemFromIcon();
         return;
     }
 
     // Add the new item
-    inventoryPtr->getInventoryItemPtr()[totalItems] = item;
+    inventoryMenuPtr->getInventoryItemPtr()[totalItems] = item;
 
     // The battle menu will not properly update when an upgrade is given, so manually update it
     recheckBattleUpgrades(item);
@@ -152,7 +152,7 @@ void addItemFromIcon(ItemId item)
     resetPauseMenuImportantItems();
 
     // If the inventory is now full, then stop adding items
-    if (inventoryPtr->inventoryIsFull())
+    if (inventoryMenuPtr->inventoryIsFull())
     {
         cancelAddItemFromIcon();
     }
@@ -161,10 +161,10 @@ void addItemFromIcon(ItemId item)
 void selectedOptionAddByIcon(Menu *menuPtr)
 {
     // If the inventory is full, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsFull())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -173,16 +173,16 @@ void selectedOptionAddByIcon(Menu *menuPtr)
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
-    ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector();
 
-    const ItemId startingItem = static_cast<ItemId>(*inventoryPtr->getMinValuePtr());
-    const ItemId endingItem = static_cast<ItemId>(*inventoryPtr->getMaxValuePtr());
+    const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
+    const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
 
-    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryPtr->getScale());
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryMenuPtr->getScale());
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
-void Inventory::duplicateItem(Menu *menuPtr)
+void InventoryMenu::duplicateItem(Menu *menuPtr)
 {
     // Make sure the current index is valid
     const uint32_t index = this->currentIndex;
@@ -219,17 +219,17 @@ void Inventory::duplicateItem(Menu *menuPtr)
 void selectedOptionDuplicate(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsEmpty())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
     // If the inventory is full, then show an error message
-    if (inventoryPtr->inventoryIsFull())
+    if (inventoryMenuPtr->inventoryIsFull())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
 
@@ -239,21 +239,21 @@ void selectedOptionDuplicate(Menu *menuPtr)
         menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
 
         // Reset the current index to the top of the current page
-        inventoryPtr->setCurrentIndex(inventoryPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
+        inventoryMenuPtr->setCurrentIndex(inventoryMenuPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
         return;
     }
 
     // Duplicate the selected item/badge
-    inventoryPtr->duplicateItem(menuPtr);
+    inventoryMenuPtr->duplicateItem(menuPtr);
 }
 
 void changeItemFromId(const ValueType *valuePtr)
 {
-    Inventory *inventoryPtr = gInventory;
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
     // Make sure the current index is valid
-    const uint32_t index = inventoryPtr->getCurrentIndex();
-    if (index >= inventoryPtr->getInventorySize())
+    const uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    if (index >= inventoryMenuPtr->getInventorySize())
     {
         cancelAddItemFromId();
         return;
@@ -261,7 +261,7 @@ void changeItemFromId(const ValueType *valuePtr)
 
     // Set the new item
     const ItemId item = static_cast<ItemId>(valuePtr->s32);
-    inventoryPtr->getInventoryItemPtr()[index] = item;
+    inventoryMenuPtr->getInventoryItemPtr()[index] = item;
 
     // The battle menu will not properly update when an upgrade is changed, so manually update it
     recheckBattleUpgrades(item);
@@ -277,10 +277,10 @@ void changeItemFromId(const ValueType *valuePtr)
 void selectedOptionChangeById(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsEmpty())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -290,22 +290,22 @@ void selectedOptionChangeById(Menu *menuPtr)
         menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
 
         // Reset the current index to the top of the current page
-        inventoryPtr->setCurrentIndex(inventoryPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
+        inventoryMenuPtr->setCurrentIndex(inventoryMenuPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
         return;
     }
 
     // Make sure the current index is valid
-    uint32_t index = inventoryPtr->getCurrentIndex();
-    if (index >= inventoryPtr->getInventorySize())
+    uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    if (index >= inventoryMenuPtr->getInventorySize())
     {
         return;
     }
 
     // Set the cursor of the item icon selector to the item that is being changed
-    int32_t item = static_cast<int32_t>(inventoryPtr->getInventoryItemPtr()[index]);
+    int32_t item = static_cast<int32_t>(inventoryMenuPtr->getInventoryItemPtr()[index]);
 
     // Make sure the item is valid
-    const int32_t *minValuePtr = inventoryPtr->getMinValuePtr();
+    const int32_t *minValuePtr = inventoryMenuPtr->getMinValuePtr();
     if (!itemIsValid(static_cast<ItemId>(item)))
     {
         item = *minValuePtr;
@@ -315,7 +315,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
 
     uint32_t flags = 0;
     // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
@@ -324,7 +324,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    const int32_t *maxValuePtr = inventoryPtr->getMaxValuePtr();
+    const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(&item,
@@ -334,25 +334,25 @@ void selectedOptionChangeById(Menu *menuPtr)
                          flags,
                          VariableType::s16,
                          rootWindowPtr->getAlpha(),
-                         inventoryPtr->getScale());
+                         inventoryMenuPtr->getScale());
 
     valueEditorPtr->startDrawing(changeItemFromId, cancelAddItemFromId);
 }
 
 void changeItemFromIcon(ItemId item)
 {
-    Inventory *inventoryPtr = gInventory;
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
     // Make sure the current index is valid
-    const uint32_t index = inventoryPtr->getCurrentIndex();
-    if (index >= inventoryPtr->getInventorySize())
+    const uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    if (index >= inventoryMenuPtr->getInventorySize())
     {
         cancelAddItemFromIcon();
         return;
     }
 
     // Set the new item
-    inventoryPtr->getInventoryItemPtr()[index] = item;
+    inventoryMenuPtr->getInventoryItemPtr()[index] = item;
 
     // The battle menu will not properly update when an upgrade is changed, so manually update it
     recheckBattleUpgrades(item);
@@ -368,10 +368,10 @@ void changeItemFromIcon(ItemId item)
 void selectedOptionChangeByIcon(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsEmpty())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -381,13 +381,13 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
         menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
 
         // Reset the current index to the top of the current page
-        inventoryPtr->setCurrentIndex(inventoryPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
+        inventoryMenuPtr->setCurrentIndex(inventoryMenuPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
         return;
     }
 
     // Make sure the current index is valid
-    uint32_t index = inventoryPtr->getCurrentIndex();
-    if (index >= inventoryPtr->getInventorySize())
+    uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    if (index >= inventoryMenuPtr->getInventorySize())
     {
         return;
     }
@@ -397,15 +397,15 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
-    ItemIconSelector *itemIconSelectorPtr = inventoryPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector();
 
-    const ItemId startingItem = static_cast<ItemId>(*inventoryPtr->getMinValuePtr());
-    const ItemId endingItem = static_cast<ItemId>(*inventoryPtr->getMaxValuePtr());
+    const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
+    const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
 
-    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryPtr->getScale());
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryMenuPtr->getScale());
 
     // Set the cursor of the item icon selector to the item that is being changed
-    ItemId item = inventoryPtr->getInventoryItemPtr()[index];
+    ItemId item = inventoryMenuPtr->getInventoryItemPtr()[index];
 
     // Make sure the item is valid
     if (!itemIsValid(item))
@@ -417,7 +417,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     itemIconSelectorPtr->startDrawing(changeItemFromIcon, cancelAddItemFromIcon);
 }
 
-void Inventory::deleteItem(Menu *menuPtr)
+void InventoryMenu::deleteItem(Menu *menuPtr)
 {
     // Make sure the current index is valid
     uint32_t index = this->currentIndex;
@@ -470,10 +470,10 @@ void Inventory::deleteItem(Menu *menuPtr)
 void selectedOptionDelete(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr->inventoryIsEmpty())
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr->inventoryIsEmpty())
     {
-        inventoryPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
 
@@ -483,19 +483,19 @@ void selectedOptionDelete(Menu *menuPtr)
         menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
 
         // Reset the current index to the top of the current page
-        inventoryPtr->setCurrentIndex(inventoryPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
+        inventoryMenuPtr->setCurrentIndex(inventoryMenuPtr->getCurrentPage() * INVENTORY_ITEMS_PER_PAGE);
         return;
     }
 
     // Remove the selected item/badge
-    inventoryPtr->deleteItem(menuPtr);
+    inventoryMenuPtr->deleteItem(menuPtr);
 }
 
 void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If a file is loaded while this menu is open, then the inventory will change, so make sure no issues occur because of this
-    Inventory *inventoryPtr = gInventory;
-    inventoryPtr->verifyInventoryIndexAndPage(menuPtr);
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    inventoryMenuPtr->verifyInventoryIndexAndPage(menuPtr);
 
     // If no flags are set, then use the default controls
     if (!menuPtr->anyFlagIsSet())
@@ -508,17 +508,17 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     // This should include all flags except for selecting an item/icon
     if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON))
     {
-        inventoryPtr->getItemIconSelector()->controls(button);
+        inventoryMenuPtr->getItemIconSelector()->controls(button);
         return;
     }
     else if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID))
     {
-        inventoryPtr->getValueEditor()->controls(button);
+        inventoryMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(inventoryPtr->getAutoIncrementPtr());
+    const bool autoIncrement = handleMenuAutoIncrement(inventoryMenuPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -531,7 +531,7 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                inventoryPtr->inventoryMenuItemControls(buttonHeld);
+                inventoryMenuPtr->inventoryMenuItemControls(buttonHeld);
                 break;
             }
             default:
@@ -549,17 +549,17 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            inventoryPtr->inventoryMenuItemControls(button);
+            inventoryMenuPtr->inventoryMenuItemControls(button);
             break;
         }
         case MenuButtonInput::R:
         {
-            inventoryPtr->inventoryMenuMoveDownOnePage();
+            inventoryMenuPtr->inventoryMenuMoveDownOnePage();
             break;
         }
         case MenuButtonInput::L:
         {
-            inventoryPtr->inventoryMenuMoveUpOnePage();
+            inventoryMenuPtr->inventoryMenuMoveUpOnePage();
             break;
         }
         case MenuButtonInput::A:
@@ -579,7 +579,7 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void Inventory::drawCurrentInventory()
+void InventoryMenu::drawCurrentInventory()
 {
     /*
     // Draw the inventory window for debugging purposes
@@ -815,35 +815,35 @@ void inventoryMenuMainDraw(CameraId cameraId, void *user)
     drawBasicMenuLayout(cameraId, user);
 
     // If a file is loaded while this menu is open, then the inventory will change, so make sure no issues occur because of this
-    Inventory *inventoryPtr = gInventory;
-    inventoryPtr->verifyInventoryIndexAndPage(gMenu);
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    inventoryMenuPtr->verifyInventoryIndexAndPage(gMenu);
 
     // Draw the current inventory
-    inventoryPtr->drawCurrentInventory();
+    inventoryMenuPtr->drawCurrentInventory();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = inventoryPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the item icon selector if applicable
-    ItemIconSelector *itemIconSelector = inventoryPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelector = inventoryMenuPtr->getItemIconSelector();
     if (itemIconSelector->shouldDraw())
     {
         itemIconSelector->draw();
     }
 
     // Draw an error message if applicable
-    ErrorWindow *errorWindowPtr = inventoryPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = inventoryMenuPtr->getErrorWindow();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();
     }
 }
 
-void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
+void InventoryMenu::verifyInventoryIndexAndPage(Menu *menuPtr)
 {
     // Verify that the current page is correct
     uint32_t totalItems = this->getTotalItemsInInventory();
@@ -882,7 +882,7 @@ void Inventory::verifyInventoryIndexAndPage(Menu *menuPtr)
     }
 }
 
-bool Inventory::checkIfItemsOnNextPage(uint32_t currentItemCount) const
+bool InventoryMenu::checkIfItemsOnNextPage(uint32_t currentItemCount) const
 {
     if (currentItemCount == 0)
     {
@@ -892,7 +892,7 @@ bool Inventory::checkIfItemsOnNextPage(uint32_t currentItemCount) const
     return (static_cast<uint32_t>((this->currentPage + 1) * INVENTORY_ITEMS_PER_PAGE)) <= (currentItemCount - 1);
 }
 
-void Inventory::inventoryMenuMoveUpOnePage()
+void InventoryMenu::inventoryMenuMoveUpOnePage()
 {
     // If currently on the first page, then do nothing
     uint32_t currentPage = this->currentPage;
@@ -909,7 +909,7 @@ void Inventory::inventoryMenuMoveUpOnePage()
     this->setCurrentIndex(currentPage * INVENTORY_ITEMS_PER_PAGE);
 }
 
-void Inventory::inventoryMenuMoveDownOnePage()
+void InventoryMenu::inventoryMenuMoveDownOnePage()
 {
     // If there are no items on the next page, then do nothing
     if (!this->checkIfItemsOnNextPage(this->getTotalItemsInInventory()))
@@ -925,7 +925,7 @@ void Inventory::inventoryMenuMoveDownOnePage()
     this->setCurrentIndex(currentPage * INVENTORY_ITEMS_PER_PAGE);
 }
 
-void Inventory::inventoryMenuItemControls(MenuButtonInput button)
+void InventoryMenu::inventoryMenuItemControls(MenuButtonInput button)
 {
     uint32_t totalOptions = this->getTotalItemsInInventory();
     uint8_t *currentIndexPtr = &this->currentIndex;
@@ -969,7 +969,7 @@ void Inventory::inventoryMenuItemControls(MenuButtonInput button)
     }
 }
 
-Inventory::Inventory(float scale)
+InventoryMenu::InventoryMenu(float scale)
 {
     this->scale = scale;
 
@@ -994,7 +994,7 @@ Inventory::Inventory(float scale)
     inventoryWindowPtr->setWidth(inventoryWindowPtr->getWidth() - mainTextWidth - widthAdjustment);
 }
 
-void Inventory::initErrorWindow(const char *text)
+void InventoryMenu::initErrorWindow(const char *text)
 {
     ErrorWindow *errorWindowPtr = &this->errorWindow;
     errorWindowPtr->setText(text);
@@ -1002,7 +1002,7 @@ void Inventory::initErrorWindow(const char *text)
     errorWindowPtr->placeInWindow(gRootWindow, WindowAlignment::MIDDLE_CENTER);
 }
 
-uint32_t Inventory::getTotalItemsInInventory() const
+uint32_t InventoryMenu::getTotalItemsInInventory() const
 {
     const uint32_t totalItems = this->inventorySize;
     const ItemId *inventoryItemPtr = this->inventoryItemPtr;
@@ -1020,22 +1020,22 @@ uint32_t Inventory::getTotalItemsInInventory() const
     return currentItemCount;
 }
 
-bool Inventory::inventoryIsFull() const
+bool InventoryMenu::inventoryIsFull() const
 {
     return this->getTotalItemsInInventory() == this->inventorySize;
 }
 
 void inventoryMenuMainInit(Menu *menuPtr)
 {
-    // Failsafe: Make sure memory isn't already allocated for gInventory
-    Inventory *inventoryPtr = gInventory;
-    if (inventoryPtr)
+    // Failsafe: Make sure memory isn't already allocated for gInventoryMenu
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (inventoryMenuPtr)
     {
-        delete inventoryPtr;
+        delete inventoryMenuPtr;
     }
 
-    inventoryPtr = new Inventory(gRoot->getScale());
-    gInventory = inventoryPtr;
+    inventoryMenuPtr = new InventoryMenu(gRootMenu->getScale());
+    gInventoryMenu = inventoryMenuPtr;
 
     PouchData *pouchPtr = pouchGetPtr();
     uint32_t inventoryType;
@@ -1044,42 +1044,42 @@ void inventoryMenuMainInit(Menu *menuPtr)
     {
         case InventoryType::STANDARD:
         {
-            inventoryPtr->setinventoryItemPtr(pouchPtr->items);
-            inventoryPtr->setInventorySize(sizeof(pouchPtr->items) / sizeof(pouchPtr->items[0]));
+            inventoryMenuPtr->setinventoryItemPtr(pouchPtr->items);
+            inventoryMenuPtr->setInventorySize(sizeof(pouchPtr->items) / sizeof(pouchPtr->items[0]));
             inventoryType = InventoryType::STANDARD;
 
-            inventoryPtr->setMinValue(ItemId::ITEM_GOLD_BAR);
-            inventoryPtr->setMaxValue(ItemId::ITEM_FRESH_JUICE);
+            inventoryMenuPtr->setMinValue(ItemId::ITEM_GOLD_BAR);
+            inventoryMenuPtr->setMaxValue(ItemId::ITEM_FRESH_JUICE);
             break;
         }
         case InventoryType::IMPORTANT:
         {
-            inventoryPtr->setinventoryItemPtr(pouchPtr->keyItems);
-            inventoryPtr->setInventorySize(sizeof(pouchPtr->keyItems) / sizeof(pouchPtr->keyItems[0]));
+            inventoryMenuPtr->setinventoryItemPtr(pouchPtr->keyItems);
+            inventoryMenuPtr->setInventorySize(sizeof(pouchPtr->keyItems) / sizeof(pouchPtr->keyItems[0]));
             inventoryType = InventoryType::IMPORTANT;
 
-            inventoryPtr->setMinValue(ItemId::ITEM_STRANGE_SACK);
-            inventoryPtr->setMaxValue(ItemId::ITEM_CRYSTAL_STAR);
+            inventoryMenuPtr->setMinValue(ItemId::ITEM_STRANGE_SACK);
+            inventoryMenuPtr->setMaxValue(ItemId::ITEM_CRYSTAL_STAR);
             break;
         }
         case InventoryType::BADGES:
         {
-            inventoryPtr->setinventoryItemPtr(pouchPtr->badges);
-            inventoryPtr->setInventorySize(sizeof(pouchPtr->badges) / sizeof(pouchPtr->badges[0]));
+            inventoryMenuPtr->setinventoryItemPtr(pouchPtr->badges);
+            inventoryMenuPtr->setInventorySize(sizeof(pouchPtr->badges) / sizeof(pouchPtr->badges[0]));
             inventoryType = InventoryType::BADGES;
 
-            inventoryPtr->setMinValue(ItemId::ITEM_POWER_JUMP);
-            inventoryPtr->setMaxValue(ItemId::ITEM_SUPER_CHARGE_P);
+            inventoryMenuPtr->setMinValue(ItemId::ITEM_POWER_JUMP);
+            inventoryMenuPtr->setMaxValue(ItemId::ITEM_SUPER_CHARGE_P);
             break;
         }
         case InventoryType::STORED:
         {
-            inventoryPtr->setinventoryItemPtr(pouchPtr->storedItems);
-            inventoryPtr->setInventorySize(sizeof(pouchPtr->storedItems) / sizeof(pouchPtr->storedItems[0]));
+            inventoryMenuPtr->setinventoryItemPtr(pouchPtr->storedItems);
+            inventoryMenuPtr->setInventorySize(sizeof(pouchPtr->storedItems) / sizeof(pouchPtr->storedItems[0]));
             inventoryType = InventoryType::STORED;
 
-            inventoryPtr->setMinValue(ItemId::ITEM_GOLD_BAR);
-            inventoryPtr->setMaxValue(ItemId::ITEM_FRESH_JUICE);
+            inventoryMenuPtr->setMinValue(ItemId::ITEM_GOLD_BAR);
+            inventoryMenuPtr->setMaxValue(ItemId::ITEM_FRESH_JUICE);
             break;
         }
         default:
@@ -1090,7 +1090,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
         }
     }
 
-    inventoryPtr->setInventoryType(inventoryType);
+    inventoryMenuPtr->setInventoryType(inventoryType);
 
     constexpr uint32_t totalOptions = sizeof(gInventoryMenuMainOptions) / sizeof(MenuOption);
     enterNextMenu(gInventoryMenuMainOptions, &gInventoryMenuMainFuncs, totalOptions);
@@ -1098,8 +1098,8 @@ void inventoryMenuMainInit(Menu *menuPtr)
 
 void inventoryMenuMainExit()
 {
-    delete gInventory;
-    gInventory = nullptr;
+    delete gInventoryMenu;
+    gInventoryMenu = nullptr;
 }
 
 // Menu for determining which inventory to work with

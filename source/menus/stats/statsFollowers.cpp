@@ -31,22 +31,22 @@ void errorMenuFollowersBringOutFollower()
     // cancelMenuFollowersBringOutFollower gets called by the follower selector automatically, so no need to call it here
 
     // Initialize the error window
-    gStats->initErrorWindow(false);
+    gStatsMenu->initErrorWindow(false);
 }
 
 void cancelMenuFollowersBringOutFollower()
 {
-    gStats->getFollowerSelector()->stopDrawing();
+    gStatsMenu->getFollowerSelector()->stopDrawing();
     gMenu->clearFlag(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER);
 }
 
 void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
 {
     // If a follower cannot be spawned right now, then show an error message
-    Stats *statsPtr = gStats;
+    StatsMenu *statsMenuPtr = gStatsMenu;
     if (!checkIfInGame())
     {
-        statsPtr->initErrorWindow(false);
+        statsMenuPtr->initErrorWindow(false);
         return;
     }
 
@@ -55,9 +55,9 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
 
     // Initialize the follower selector
     const Window *rootWindowPtr = gRootWindow;
-    FollowerSelector *followerSelectorPtr = statsPtr->getFollowerSelector();
+    FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelector();
 
-    followerSelectorPtr->init(rootWindowPtr, statsPtr->getScale(), rootWindowPtr->getAlpha());
+    followerSelectorPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
     followerSelectorPtr->startDrawing(cancelMenuFollowersBringOutFollower, errorMenuFollowersBringOutFollower);
 }
 
@@ -73,7 +73,7 @@ void statsMenuFollowersInit(Menu *menuPtr)
     (void)menuPtr;
 
     // Reset currentIndex
-    gStats->setCurrentIndex(0);
+    gStatsMenu->setCurrentIndex(0);
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuFollowersOptions) / sizeof(MenuOption);
     enterNextMenu(gStatsMenuFollowersOptions, &gStatsMenuFollowersFuncs, totalOptions);
@@ -84,7 +84,7 @@ void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
     // If the follower selector is open, then handle the controls for that
     if (menuPtr->flagIsSet(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER))
     {
-        gStats->getFollowerSelector()->controls(button);
+        gStatsMenu->getFollowerSelector()->controls(button);
         return;
     }
     else
@@ -95,7 +95,7 @@ void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void Stats::drawFollowerOut() const
+void StatsMenu::drawFollowerOut() const
 {
     // Get the text for the current follower out
     const PartyMembers follower = getCurrentPartnerOrFollowerOut(false);
@@ -146,18 +146,18 @@ void statsMenuFollowersDraw(CameraId cameraId, void *user)
     drawBasicMenuLayout(cameraId, user);
 
     // Draw the current follower out
-    Stats *statsPtr = gStats;
-    statsPtr->drawFollowerOut();
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    statsMenuPtr->drawFollowerOut();
 
     // Draw the follower selector if applicable
-    FollowerSelector *followerSelector = statsPtr->getFollowerSelector();
+    FollowerSelector *followerSelector = statsMenuPtr->getFollowerSelector();
     if (followerSelector->shouldDraw())
     {
         followerSelector->draw();
     }
 
     // Draw the error message if applicable
-    ErrorWindow *errorWindowPtr = statsPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindow();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

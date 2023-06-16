@@ -66,8 +66,8 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
-    Battles *battlesPtr = gBattles;
-    if (!getActorBattlePtr(battlesPtr->getCurrentActorIndex()))
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    if (!getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex()))
     {
         battlesMenuReturnToSelectActorMenu();
         return;
@@ -76,7 +76,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID))
     {
-        battlesPtr->getValueEditor()->controls(button);
+        battlesMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
@@ -86,7 +86,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
 
 void cancelMenuBattlesStatsChangeValue()
 {
-    gBattles->getValueEditor()->stopDrawing();
+    gBattlesMenu->getValueEditor()->stopDrawing();
     gMenu->clearFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
 }
 
@@ -104,7 +104,7 @@ void menuBattlesStatsChangeValue(const ValueType *valuePtr)
     }
 
     const int32_t value = valuePtr->s32;
-    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattles->getCurrentActorIndex());
+    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattlesMenu->getCurrentActorIndex());
 
     // Set the new value
     switch (index)
@@ -178,8 +178,8 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
     // Bring up the window for selecting an id
     menuPtr->setFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
 
-    Battles *battlesPtr = gBattles;
-    const BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    const BattleWorkUnit *actorPtr = getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex());
 
     // Get the current, min, and max values
     int32_t currentValue = 0;
@@ -235,7 +235,7 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
     VariableType type = VariableType::s16;
 
     uint32_t flags = 0;
@@ -259,7 +259,7 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
                          flags,
                          type,
                          rootWindowPtr->getAlpha(),
-                         battlesPtr->getScale());
+                         battlesMenuPtr->getScale());
 
     valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, cancelMenuBattlesStatsChangeValue);
 }
@@ -268,7 +268,7 @@ void selectedOptionBattlesClearHeldItem(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattles->getCurrentActorIndex());
+    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattlesMenu->getCurrentActorIndex());
     actorPtr->held_item = static_cast<int32_t>(ItemId::ITEM_NONE);
 
     // If the actor is neither Mario nor any partners, then clear all equipped badges
@@ -281,7 +281,7 @@ void selectedOptionBattlesClearHeldItem(Menu *menuPtr)
     clearMemory(&actorPtr->badges_equipped, sizeof(actorPtr->badges_equipped));
 }
 
-void Battles::drawBattleActorStats(BattleWorkUnit *actorPtr) const
+void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 {
     // Failsafe: Make sure current_kind is valid for the selected actor
     const BattleUnitType type = actorPtr->current_kind;
@@ -380,8 +380,8 @@ void battlesMenuStatsDraw(CameraId cameraId, void *user)
     drawBasicMenuLayout(cameraId, user);
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
-    Battles *battlesPtr = gBattles;
-    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex());
 
     if (!actorPtr)
     {
@@ -390,10 +390,10 @@ void battlesMenuStatsDraw(CameraId cameraId, void *user)
     }
 
     // Draw the stats for the selected actor
-    battlesPtr->drawBattleActorStats(actorPtr);
+    battlesMenuPtr->drawBattleActorStats(actorPtr);
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

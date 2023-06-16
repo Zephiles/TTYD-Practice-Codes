@@ -95,14 +95,14 @@ int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)
 
 void cancelMenuBattlesStatusesChangeValue()
 {
-    gBattles->getValueEditor()->stopDrawing();
+    gBattlesMenu->getValueEditor()->stopDrawing();
     gMenu->clearFlag(BattlesStatusesFlag::BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID);
 }
 
 void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
-    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattles->getCurrentActorIndex());
+    BattleWorkUnit *actorPtr = getActorBattlePtr(gBattlesMenu->getCurrentActorIndex());
     const uint32_t currentIndex = gMenu->getCurrentIndex();
 
     // Set the new value
@@ -133,8 +133,8 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
-    Battles *battlesPtr = gBattles;
-    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex());
 
     if (!actorPtr)
     {
@@ -145,7 +145,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(BattlesStatusesFlag::BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID))
     {
-        battlesPtr->getValueEditor()->controls(button);
+        battlesMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
@@ -161,7 +161,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(battlesPtr->getAutoIncrementPtr());
+    const bool autoIncrement = handleMenuAutoIncrement(battlesMenuPtr->getAutoIncrementPtr());
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -233,7 +233,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                 }
 
                 // Initialize the value editor
-                ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
+                ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
 
                 uint32_t flags = 0;
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -254,7 +254,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                                      flags,
                                      VariableType::s8,
                                      rootWindowPtr->getAlpha(),
-                                     battlesPtr->getScale());
+                                     battlesMenuPtr->getScale());
 
                 valueEditorPtr->startDrawing(menuBattlesStatusesChangeValue, cancelMenuBattlesStatusesChangeValue);
             }
@@ -272,7 +272,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void Battles::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
+void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
 {
     // To avoid a lot of unnecessary extra GX calls, draw the icons first
     // Get the starting position for the icons
@@ -408,8 +408,8 @@ void battlesMenuStatusesDraw(CameraId cameraId, void *user)
     gRootWindow->draw();
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
-    Battles *battlesPtr = gBattles;
-    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesPtr->getCurrentActorIndex());
+    BattlesMenu *battlesMenuPtr = gBattlesMenu;
+    BattleWorkUnit *actorPtr = getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex());
 
     if (!actorPtr)
     {
@@ -418,10 +418,10 @@ void battlesMenuStatusesDraw(CameraId cameraId, void *user)
     }
 
     // Draw the actor's statuses
-    battlesPtr->drawBattleActorStatuses(actorPtr);
+    battlesMenuPtr->drawBattleActorStatuses(actorPtr);
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = battlesPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
