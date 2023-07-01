@@ -2,11 +2,13 @@
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "menuUtils.h"
-#include "menus/root.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
 
 #include <cstdint>
+#include <cstdio>
+#include <cinttypes>
 
 void Menu::runControlsFunc(MenuButtonInput button)
 {
@@ -123,7 +125,7 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
 {
     // Make sure the options are set
     const MenuOption *optionsPtr = this->options;
-    if (!options)
+    if (!optionsPtr)
     {
         return;
     }
@@ -131,10 +133,23 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
     // Initialize text drawing
     drawTextInit(false);
 
+    // Draw the page number at the top-right of the main window if there is more than one page
     const Window *rootWindowPtr = gRootWindow;
-
     float tempPosX;
     float tempPosY;
+
+    if (this->totalOptions > this->totalOptionsPerPage)
+    {
+        char buf[16];
+
+        // Draw the page as an int, to prevent long text if it somehow becomes negative
+        snprintf(buf, sizeof(buf), "Page %" PRId32, this->currentPage + 1);
+
+        rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
+        drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    }
+
+    // Draw the main text
     rootWindowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them

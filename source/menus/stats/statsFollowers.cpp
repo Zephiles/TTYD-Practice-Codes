@@ -2,11 +2,11 @@
 #include "drawText.h"
 #include "classes/window.h"
 #include "classes/followerSelector.h"
-#include "menus/stats.h"
-#include "menus/root.h"
+#include "menus/statsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/party.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -129,9 +129,9 @@ void StatsMenu::drawFollowerOut() const
     // Draw the text for the current follower out
     float posX;
     float tempPosY;
-
     const float scale = this->scale;
-    gRootWindow->getTextPosXY(displayBufferPtr, WindowAlignment::TOP_LEFT, scale, &posX, &tempPosY);
+
+    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &tempPosY);
 
     // Move the Y position so that it is one line below the main text
     const int32_t totalOptions = static_cast<int32_t>(gMenu->getTotalOptions());

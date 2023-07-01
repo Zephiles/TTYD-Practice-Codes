@@ -3,12 +3,12 @@
 #include "drawText.h"
 #include "drawIcon.h"
 #include "classes/window.h"
-#include "menus/battles.h"
-#include "menus/root.h"
+#include "menus/battlesMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/item_data.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -69,7 +69,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
     if (!getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex()))
     {
-        battlesMenuReturnToSelectActorMenu();
+        battlesMenuReturnToInitMenu();
         return;
     }
 
@@ -291,16 +291,14 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     }
 
     // Get the width that is being used by the main text options
-    const char *longestText = "Change Held Item";
     const float scale = this->scale;
     float textWidth;
-    getTextWidthHeight(longestText, scale, &textWidth, nullptr);
+    getTextWidthHeight("Change Held Item", scale, &textWidth, nullptr);
 
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
-    const Window *rootWindowPtr = gRootWindow;
-    rootWindowPtr->getTextPosXY(longestText, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Draw the selected actor text two lines under the options
     constexpr uint32_t totalOptions = sizeof(gBattlesMenuStatsOptions) / sizeof(MenuOption);
@@ -385,7 +383,7 @@ void battlesMenuStatsDraw(CameraId cameraId, void *user)
 
     if (!actorPtr)
     {
-        battlesMenuReturnToSelectActorMenu();
+        battlesMenuReturnToInitMenu();
         return;
     }
 

@@ -7,8 +7,8 @@
 
 #include <cstdint>
 
-#define HEAP_ALIGNMENT (32)
-#define HEADER_SIZE (roundUp(sizeof(ChunkInfo), HEAP_ALIGNMENT))
+#define HEAP_ALIGNMENT 32
+#define HEADER_SIZE roundUp(sizeof(ChunkInfo), HEAP_ALIGNMENT)
 #define MIN_CHUNK_SIZE (HEADER_SIZE + HEAP_ALIGNMENT)
 
 void *allocFromHeapTail(uint32_t heap, uint32_t size);

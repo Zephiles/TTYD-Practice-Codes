@@ -3,7 +3,7 @@
 #include "classes/window.h"
 #include "misc/functionHooks.h"
 #include "misc/utils.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 #include "ttyd/seqdrv.h"
 #include "ttyd/seq_title.h"
 

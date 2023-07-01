@@ -175,12 +175,10 @@ void YoshiColorSelector::draw()
     // Draw the help text
     float tempPosX;
     float tempPosY;
-
     const float scale = this->scale;
-    const char *helpTextPtr = gHelpTextAConfirmBCancel;
 
-    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
-    drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+    drawText(gHelpTextAConfirmBCancel, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Get the position for the options
     windowPtr->getTextPosXY("Orange", WindowAlignment::BOTTOM_CENTER, scale, &tempPosX, &tempPosY);

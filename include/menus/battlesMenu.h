@@ -1,9 +1,9 @@
-#ifndef MENUS_BATTLES_H
-#define MENUS_BATTLES_H
+#ifndef MENUS_BATTLES_MENU_H
+#define MENUS_BATTLES_MENU_H
 
 #include "menuUtils.h"
 #include "classes/valueEditor.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/battle.h"
 
@@ -97,7 +97,7 @@ class BattlesMenu
 extern BattlesMenu *gBattlesMenu;
 extern const char *gBattleActors[TOTAL_BATTLE_UNIT_TYPES];
 
-inline uint32_t getbattlesMenuSelectActorMaxIndex()
+inline uint32_t getbattlesMenuInitMaxIndex()
 {
     constexpr uint32_t maxActors = sizeof(BattleWork::battle_units) / sizeof(BattleWork::battle_units[0]);
 
@@ -106,13 +106,13 @@ inline uint32_t getbattlesMenuSelectActorMaxIndex()
     return maxActors - 2;
 }
 
-void battlesMenuSelectActorInit(Menu *menuPtr);
-void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button);
-void battlesMenuSelectActorDraw(CameraId cameraId, void *user);
-void battlesMenuSelectActorExit();
+void battlesMenuInit(Menu *menuPtr);
+void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button);
+void battlesMenuInitDraw(CameraId cameraId, void *user);
+void battlesMenuInitExit();
 
 // Called when inside part of the Battles menu in which an actor was selected, but the actor is no longer in the battle
-void battlesMenuReturnToSelectActorMenu();
+void battlesMenuReturnToInitMenu();
 
 void battlesMenuStatsInit();
 void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button);

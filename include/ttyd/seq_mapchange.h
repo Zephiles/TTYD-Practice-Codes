@@ -53,9 +53,9 @@ enum RelId : uint32_t
 
 extern "C"
 {
-    extern char NextBero[];
-    extern char NextMap[];
-    extern char NextArea[];
+    extern char _next_bero[32];
+    extern char _next_map[32];
+    extern char NextArea[32];
 
     // _relUnLoad
     // _load

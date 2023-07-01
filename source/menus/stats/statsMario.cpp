@@ -3,13 +3,13 @@
 #include "drawIcon.h"
 #include "drawText.h"
 #include "classes/window.h"
-#include "menus/stats.h"
-#include "menus/root.h"
+#include "menus/statsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/evt_yuugijou.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -421,7 +421,7 @@ void menuMarioChangeValue(const ValueType *valuePtr)
             // Only set the flag for clearing the cache if not in a battle
             if (!checkForSpecificSeq(SeqIndex::kBattle))
             {
-                gMod->clearMarioStatsCache();
+                gMod.clearMarioStatsCache();
             }
             break;
         }
@@ -563,12 +563,10 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 void StatsMenu::drawMarioStats() const
 {
     // Draw the main text and icons
-    const Window *rootWindowPtr = gRootWindow;
-    const float scale = this->scale;
-
     float iconPosXBase;
     float iconPosYBase;
-    rootWindowPtr->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &iconPosXBase, &iconPosYBase);
+    const float scale = this->scale;
+    gRootWindow->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &iconPosXBase, &iconPosYBase);
 
     PouchData *pouchPtr = pouchGetPtr();
     const float iconPosXIncrement = 317.f * scale;
@@ -706,7 +704,7 @@ void statsMenuMarioDraw(CameraId cameraId, void *user)
     (void)user;
 
     // Draw the main window
-    gRootWindow->draw();
+    drawMainWindow();
 
     // Draw Mario's stats
     StatsMenu *statsMenuPtr = gStatsMenu;

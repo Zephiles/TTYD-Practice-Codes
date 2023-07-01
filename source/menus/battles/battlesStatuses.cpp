@@ -3,12 +3,12 @@
 #include "drawIcon.h"
 #include "drawText.h"
 #include "classes/window.h"
-#include "menus/battles.h"
-#include "menus/root.h"
+#include "menus/battlesMenu.h"
+#include "menus/rootMenu.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/windowdrv.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -112,7 +112,7 @@ void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
     cancelMenuBattlesStatusesChangeValue();
 }
 
-void battlesMenuStatusesDPadControls(Menu *menuPtr, MenuButtonInput button, uint32_t totalOptions)
+void battlesMenuStatusesDPadControls(MenuButtonInput button, Menu *menuPtr, uint32_t totalOptions)
 {
     menuControlsVertical(button,
                          menuPtr->getCurrentIndexPtr(),
@@ -138,7 +138,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
 
     if (!actorPtr)
     {
-        battlesMenuReturnToSelectActorMenu();
+        battlesMenuReturnToInitMenu();
         return;
     }
 
@@ -172,7 +172,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                battlesMenuStatusesDPadControls(menuPtr, buttonHeld, totalOptions);
+                battlesMenuStatusesDPadControls(buttonHeld, menuPtr, totalOptions);
                 break;
             }
             default:
@@ -190,7 +190,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            battlesMenuStatusesDPadControls(menuPtr, button, totalOptions);
+            battlesMenuStatusesDPadControls(button, menuPtr, totalOptions);
             break;
         }
         case MenuButtonInput::A:
@@ -405,7 +405,7 @@ void battlesMenuStatusesDraw(CameraId cameraId, void *user)
     (void)user;
 
     // Draw the main window
-    gRootWindow->draw();
+    drawMainWindow();
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
@@ -413,7 +413,7 @@ void battlesMenuStatusesDraw(CameraId cameraId, void *user)
 
     if (!actorPtr)
     {
-        battlesMenuReturnToSelectActorMenu();
+        battlesMenuReturnToInitMenu();
         return;
     }
 

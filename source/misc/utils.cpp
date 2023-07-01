@@ -1,10 +1,13 @@
 #include "mod.h"
 #include "gc/pad.h"
+#include "gc/DEMOPad.h"
 #include "gc/OSModule.h"
 #include "gc/OSCache.h"
 #include "ttyd/system.h"
+#include "ttyd/swdrv.h"
 #include "ttyd/mariost.h"
 #include "ttyd/seqdrv.h"
+#include "ttyd/npcdrv.h"
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/party.h"
 #include "ttyd/mario_party.h"
@@ -40,6 +43,33 @@ bool checkButtonComboEveryFrame(uint32_t combo)
     return (keyGetButton(PadId::CONTROLLER_ONE) & combo) == combo;
 }
 
+bool checkButtonComboDemo(uint32_t combo)
+{
+    const DEMOPadStatus *demoPadPtr = &DemoPad[static_cast<uint32_t>(PadId::CONTROLLER_ONE)];
+
+    if ((demoPadPtr->buttons & combo) != combo)
+    {
+        return false;
+    }
+
+    return demoPadPtr->buttonsDown & combo;
+}
+
+void setSequencePosition(uint32_t value)
+{
+    swByteSet(0, value);
+}
+
+bool compareStringToNextMap(const char *str)
+{
+    return strcmp(str, _next_map) == 0;
+}
+
+void setSeqMapChange(const char *map, const char *bero)
+{
+    seqSetSeq(SeqIndex::kMapChange, map, bero);
+}
+
 void *clearMemory(void *ptr, uint32_t size)
 {
     return memset(ptr, 0, size);
@@ -47,39 +77,50 @@ void *clearMemory(void *ptr, uint32_t size)
 
 bool checkForSpecificSeq(SeqIndex wantedSeq)
 {
-    SeqIndex nextSeq = seqGetNextSeq();
-    if (nextSeq != wantedSeq)
+    if (seqGetNextSeq() != wantedSeq)
     {
         return false;
     }
 
-    SeqIndex currentSeq = seqGetSeq();
-    return currentSeq == wantedSeq;
+    return seqGetSeq() == wantedSeq;
 }
 
 bool checkIfInGame()
 {
-    SeqIndex nextSeq = seqGetNextSeq();
-    SeqIndex game = SeqIndex::kGame;
-
-    if (nextSeq != game)
+    constexpr SeqIndex gameSeq = SeqIndex::kGame;
+    if (seqGetNextSeq() != gameSeq)
     {
         return false;
     }
 
-    SeqIndex currentSeq = seqGetSeq();
-    if (currentSeq != game)
+    if (seqGetSeq() != gameSeq)
     {
         return false;
     }
 
-    OSModuleInfo *relPtr = globalWorkPtr->relocationBase;
+    const OSModuleInfo *relPtr = globalWorkPtr->relocationBase;
     if (!relPtr)
     {
         return false;
     }
 
     return relPtr->id != RelId::DMO;
+}
+
+NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData)
+{
+    uint32_t index;
+    if (!getBattleData)
+    {
+        index = 0;
+    }
+    else
+    {
+        index = 1;
+    }
+
+    NpcWork *npcWorkPointer = &npcWork[index];
+    return &npcWorkPointer->entries[slot];
 }
 
 uint32_t secondsToFrames(uint32_t seconds)
@@ -89,7 +130,7 @@ uint32_t secondsToFrames(uint32_t seconds)
 
 bool systemLevelIsZero()
 {
-    return (_mariostSystemLevel == 0) && (marioStGetSystemLevel() == 0);
+    return (marioStGetSystemLevel() == 0) && (_mariostSystemLevel == 0);
 }
 
 void setSystemLevel(int32_t level)
@@ -100,7 +141,7 @@ void setSystemLevel(int32_t level)
         return;
     }
 
-    Mod *modPtr = gMod;
+    Mod *modPtr = &gMod;
     const bool systemLevelIsSet = modPtr->checkIfSystemLevelIsSet();
 
     if (level == 0) // Being reset
@@ -147,9 +188,14 @@ void setSystemLevel(int32_t level)
     marioStSystemLevel(level);
 }
 
-float __attribute__((noinline)) intToFloat(int32_t value)
+__attribute__((noinline)) float intToFloat(int32_t value)
 {
     return static_cast<float>(value);
+}
+
+__attribute__((noinline)) int32_t floatToInt(float value)
+{
+    return static_cast<int32_t>(value);
 }
 
 void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues)
@@ -162,7 +208,7 @@ void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues)
 
 uint32_t ptrIsValid(void *ptr)
 {
-    uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
+    const uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
 
     // Cached memory
     if ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000))
@@ -179,34 +225,36 @@ uint32_t ptrIsValid(void *ptr)
     return PointerVerificationType::PTR_INVALID;
 }
 
-void *getPartnerPtr()
+PartyEntry *getPartnerPtr()
 {
-    PartySlotId Id = marioGetPartyId();
-    return partyGetPtr(Id);
+    return partyGetPtr(marioGetPartyId());
 }
 
-void *getFollowerPtr()
+PartyEntry *getFollowerPtr()
 {
-    PartySlotId Id = marioGetExtraPartyId();
-    return partyGetPtr(Id);
+    return partyGetPtr(marioGetExtraPartyId());
 }
 
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
 {
-    uint32_t ptrRaw;
+    PartyEntry *partyPtr;
     if (getPartner)
     {
-        ptrRaw = reinterpret_cast<uint32_t>(getPartnerPtr());
+        partyPtr = getPartnerPtr();
     }
     else
     {
-        ptrRaw = reinterpret_cast<uint32_t>(getFollowerPtr());
+        partyPtr = getFollowerPtr();
     }
 
-    PartyMembers currentPartnerOut = PartyMembers::kNone;
-    if (ptrRaw)
+    PartyMembers currentPartnerOut;
+    if (partyPtr)
     {
-        currentPartnerOut = *reinterpret_cast<PartyMembers *>(ptrRaw + 0x31);
+        currentPartnerOut = partyPtr->currentMemberId;
+    }
+    else
+    {
+        currentPartnerOut = PartyMembers::kNone;
     }
 
     return currentPartnerOut;
@@ -268,18 +316,18 @@ void spawnPartnerOrFollower(PartyMembers id)
 
 void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
 {
-    Player *player = marioGetPtr();
+    const Player *playerPtr = marioGetPtr();
     PartyMembers previousOut;
 
     if (shouldSpawnPartner)
     {
         // Get the previous partner out
-        previousOut = player->prevPartnerId;
+        previousOut = playerPtr->prevPartnerId;
     }
     else
     {
         // Get the previous follower out
-        previousOut = player->prevFollowerId;
+        previousOut = playerPtr->prevFollowerId;
     }
 
     // Check if a partner/follower was previously out

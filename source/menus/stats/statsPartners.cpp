@@ -2,12 +2,12 @@
 #include "menuUtils.h"
 #include "drawText.h"
 #include "classes/yoshiColorSelector.h"
-#include "menus/stats.h"
-#include "menus/root.h"
+#include "menus/statsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/party.h"
 #include "ttyd/mario_pouch.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -190,7 +190,7 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
             // Only set the flag for clearing the cache if not in a battle
             if (!checkForSpecificSeq(SeqIndex::kBattle))
             {
-                gMod->clearPartnerStatsCache();
+                gMod.clearPartnerStatsCache();
             }
             break;
         }
@@ -477,16 +477,14 @@ void StatsMenu::drawPartnerStats()
     };
 
     // Get the width that is being used by the main text options
-    const char *longestText = "Goombella";
     const float scale = this->scale;
     float textWidth;
-    getTextWidthHeight(longestText, scale, &textWidth, nullptr);
+    getTextWidthHeight("Goombella", scale, &textWidth, nullptr);
 
     // Set the text to be a bit to the right of the main text
     float tempPosX;
     float tempPosY;
-    const Window *rootWindowPtr = gRootWindow;
-    rootWindowPtr->getTextPosXY(longestText, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posXBase and posYBase as a separate variables to avoid repeatedly loading them from the stack when using them
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;

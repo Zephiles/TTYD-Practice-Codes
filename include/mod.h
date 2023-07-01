@@ -35,35 +35,44 @@ union ValueType
     double f64;
 };
 
-// Used to clear the cache for Mario/partner stats before a battle starts
-struct ClearStatsCacheForBattles
-{
-    bool clearMarioStats;
-    bool clearPartnerStats;
-} __attribute__((__packed__));
-
 class Mod
 {
    public:
+    Mod() {}
+    ~Mod() {}
+
+    bool menuIsHidden() const { return this->menuHidden; }
+    void hideMenu() { this->menuHidden = true; }
+    void showMenu() { this->menuHidden = false; }
+
+    bool changingCheatButtonCombo() const { return this->changingButtonCombos; }
+    void startChangingButtonCombos() { this->changingButtonCombos = true; }
+    void stopChangingButtonCombos() { this->changingButtonCombos = false; }
+
     bool checkIfSystemLevelIsSet() const { return this->systemLevelIsSet; }
     void setSystemLevel() { this->systemLevelIsSet = true; }
     void clearSystemLevel() { this->systemLevelIsSet = false; }
 
-    bool shouldClearMarioStatsCache() const { return this->clearStatsCacheForBattles.clearMarioStats; }
-    void clearMarioStatsCache() { this->clearStatsCacheForBattles.clearMarioStats = true; }
-    void resetMarioStatsCacheBool() { this->clearStatsCacheForBattles.clearMarioStats = false; }
+    bool shouldClearMarioStatsCache() const { return this->clearMarioStats; }
+    void clearMarioStatsCache() { this->clearMarioStats = true; }
+    void resetMarioStatsCacheBool() { this->clearMarioStats = false; }
 
-    bool shouldClearPartnerStatsCache() const { return this->clearStatsCacheForBattles.clearPartnerStats; }
-    void clearPartnerStatsCache() { this->clearStatsCacheForBattles.clearPartnerStats = true; }
-    void resetPartnerStatsCacheBool() { this->clearStatsCacheForBattles.clearPartnerStats = false; }
+    bool shouldClearPartnerStatsCache() const { return this->clearPartnerStats; }
+    void clearPartnerStatsCache() { this->clearPartnerStats = true; }
+    void resetPartnerStatsCacheBool() { this->clearPartnerStats = false; }
 
    private:
+    bool menuHidden;
+    bool changingButtonCombos;
     bool systemLevelIsSet;
-    ClearStatsCacheForBattles clearStatsCacheForBattles;
+
+    // Used to clear the cache for Mario/partner stats before a battle starts
+    bool clearMarioStats;
+    bool clearPartnerStats;
 };
 
-extern Mod *gMod;
-
+extern Mod gMod;
+extern const char *gHelpTextButtonCombo;
 extern const char *gHelpTextAConfirmBCancel;
 
 #endif

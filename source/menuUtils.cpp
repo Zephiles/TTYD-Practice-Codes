@@ -1,7 +1,8 @@
 #include "menuUtils.h"
+#include "cheats.h"
 #include "classes/menu.h"
 #include "gc/pad.h"
-#include "menus/root.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/system.h"
 #include "ttyd/win_main.h"
@@ -10,25 +11,26 @@
 
 Menu *gMenu = nullptr;
 
-void enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions)
+Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions)
 {
-    enterNextMenu(options, funcs, totalOptions, totalOptions);
+    return enterNextMenu(options, funcs, totalOptions, totalOptions);
 }
 
-void enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
+Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
 {
     Menu *nextMenu = new Menu(options, funcs, totalOptions, totalOptionsPerPage);
     nextMenu->setPrevMenu(gMenu);
     gMenu = nextMenu;
+    return nextMenu;
 }
 
-void enterPrevMenu()
+Menu *enterPrevMenu()
 {
     // Make sure there is at least one menu
     Menu *menuPtr = gMenu;
     if (!menuPtr)
     {
-        return;
+        return menuPtr;
     }
 
     menuPtr->runExitFunc();
@@ -36,13 +38,15 @@ void enterPrevMenu()
     delete menuPtr;
 
     gMenu = prevMenu;
+    return prevMenu;
 }
 
 void closeAllMenus()
 {
-    while (gMenu)
+    Menu *menuPtr = gMenu;
+    while (menuPtr)
     {
-        enterPrevMenu();
+        menuPtr = enterPrevMenu();
     }
 }
 
@@ -169,13 +173,23 @@ void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
+void drawMainWindow()
+{
+    if (gMod.menuIsHidden())
+    {
+        return;
+    }
+
+    gRootWindow->draw();
+}
+
 void drawBasicMenuLayout(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
 
     // Draw the main window
-    gRootWindow->draw();
+    drawMainWindow();
 
     // Draw the main text
     gMenu->basicLayoutDraw(gRootMenu->getScale());
@@ -183,10 +197,18 @@ void drawBasicMenuLayout(CameraId cameraId, void *user)
 
 void handleMenu()
 {
-    constexpr uint32_t openMenuButtonCombo = PadInput::PAD_L | PadInput::PAD_START;
+    // Check if the menu should be opened/closed
+    // Prevent checking it if currently in the process of spawning an item
+    // Prevent checking it if the memory editor is open
+
+    // TODO: Add check for memory editor
+    if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
+    {
+        return;
+    }
 
     // Check if the menu is being manually opened/closed via the button combo
-    if (checkButtonCombo(openMenuButtonCombo))
+    if (checkButtonCombo(OPEN_CLOSE_MENU_BUTTON_COMBO) && !gMod.changingCheatButtonCombo())
     {
         if (!gMenu)
         {
@@ -235,9 +257,9 @@ void menuControlsVertical(MenuButtonInput button,
 
     uint32_t currentIndex = *currentIndexPtr;
 
-    const uint32_t totalRowsPerPage = roundIntUpUnsigned(totalOptionsPerPage, totalOptionsPerRow);
-    const uint32_t totalColumns = roundIntUpUnsigned(totalOptionsPerPage, totalRowsPerPage);
-    const uint32_t columnSplitAmount = roundIntUpUnsigned(totalOptionsPerPage, totalColumns);
+    const uint32_t totalRowsPerPage = intCeil(totalOptionsPerPage, totalOptionsPerRow);
+    const uint32_t totalColumns = intCeil(totalOptionsPerPage, totalRowsPerPage);
+    const uint32_t columnSplitAmount = intCeil(totalOptionsPerPage, totalColumns);
 
     const uint32_t lastValidOption = totalOptions - 1;
     const uint32_t firstOptionOnPage = totalOptionsPerPage * currentPage;
@@ -446,7 +468,7 @@ void menuControlsVertical(MenuButtonInput button,
                 if (currentPage == 0)
                 {
                     // Go to the last option of the current column on the last page
-                    const uint32_t lastPage = roundIntUpUnsigned(totalOptions, totalOptionsPerPage) - 1;
+                    const uint32_t lastPage = intCeil(totalOptions, totalOptionsPerPage) - 1;
                     const uint32_t lastPageLastColumnLastOption = (totalOptionsPerPage * (lastPage + 1)) - 1;
 
                     uint32_t decrementAmount = columnSplitAmount * (totalColumns - 1);
@@ -519,9 +541,9 @@ void menuControlsHorizontal(MenuButtonInput button,
     const uint32_t firstOptionOnPage = totalOptionsPerPage * currentPage;
     const uint32_t currentColumn = currentIndex % totalOptionsPerRow;
     const uint32_t lastColumn = totalOptionsPerRow - 1;
-    const uint32_t lastPage = roundIntUpUnsigned(totalOptions, totalOptionsPerPage) - 1;
+    const uint32_t lastPage = intCeil(totalOptions, totalOptionsPerPage) - 1;
 
-    const uint32_t totalRows = roundIntUpUnsigned(totalOptions, totalOptionsPerRow);
+    const uint32_t totalRows = intCeil(totalOptions, totalOptionsPerRow);
     const uint32_t totalFreeSpaces = ((totalRows * totalOptionsPerRow) - 1) - (totalOptions - 1);
 
     uint32_t totalColumns = totalOptionsPerRow;

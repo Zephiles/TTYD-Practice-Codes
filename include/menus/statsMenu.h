@@ -1,5 +1,5 @@
-#ifndef MENUS_STATS_H
-#define MENUS_STATS_H
+#ifndef MENUS_STATS_MENU_H
+#define MENUS_STATS_MENU_H
 
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
@@ -9,13 +9,13 @@
 #include "classes/nameEditor.h"
 #include "classes/errorWindow.h"
 #include "misc/utils.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
 #define STATS_MARIO_TOTAL_ENTRIES 17
 #define STATS_MARIO_ENTRIES_PER_COLUMN 9
-#define STATS_MARIO_ENTRIES_PER_ROW roundIntUpUnsigned(STATS_MARIO_TOTAL_ENTRIES, STATS_MARIO_ENTRIES_PER_COLUMN)
+#define STATS_MARIO_ENTRIES_PER_ROW intCeil(STATS_MARIO_TOTAL_ENTRIES, STATS_MARIO_ENTRIES_PER_COLUMN)
 
 #define STATS_PARTNERS_DRAWING_YOSHI_STATS(index) (index == 3) // Assuming Yoshi should be the 4th option
 

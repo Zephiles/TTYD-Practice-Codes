@@ -2,9 +2,12 @@
 #define TTYD_MARIO_H
 
 #include "gc/types.h"
+#include "ttyd/mario_motion.h"
 #include "ttyd/party.h"
 
 #include <cstdint>
+
+enum class PartyMembers : uint8_t;
 
 // The Player struct was defined using the US version, but has been adjusted to work with the JP version as well
 // The Player struct is also 100% identical between US and EU
@@ -22,8 +25,8 @@ struct Player
     uint16_t unk_28;
     uint16_t pad_2a;
     uint16_t unk_2c;
-    uint16_t currentMotionId;
-    uint16_t prevMotionId;
+    MarioMotion currentMotionId;
+    MarioMotion prevMotionId;
     uint16_t pad_32;
     uint32_t wMapTime;
     uint8_t unk_38;
@@ -70,9 +73,11 @@ struct Player
     float unk_184;
     float unk_188;
     float wPlayerEffectiveSpeed;
+
 #ifndef TTYD_JP
     float unk_190;
 #endif
+
     float wControlStickSensitivity;
     float wControlStickAngle;
     float unk_19c;
@@ -121,11 +126,13 @@ struct Player
     uint8_t unk_259;
     uint16_t unk_25a;
     uint32_t unk_25c;
+
 #ifdef TTYD_JP
     uint8_t gap_260[68];
 #else
     uint8_t gap_260[88];
 #endif
+
     float wMultiVal1;
     float wYoshiHoverHeight;
     float wCamVal1;

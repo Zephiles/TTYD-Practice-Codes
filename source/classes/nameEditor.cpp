@@ -79,7 +79,7 @@ void NameEditor::init(const Window *parentWindow,
     const uint32_t totalOptons = strlen(gNameEditorCharacterOptions);
     this->totalOptions = static_cast<uint8_t>(totalOptons);
 
-    const uint32_t charsPerRow = roundIntUpUnsigned(totalOptons, NAME_EDITOR_CHARS_TOTAL_ROWS);
+    const uint32_t charsPerRow = intCeil(totalOptons, NAME_EDITOR_CHARS_TOTAL_ROWS);
     this->charsPerRow = static_cast<uint8_t>(charsPerRow);
 
     // Set up the window

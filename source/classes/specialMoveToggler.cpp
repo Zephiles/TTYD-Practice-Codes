@@ -156,7 +156,7 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
             // Only set the flag for clearing the cache if not in a battle
             if (!checkForSpecificSeq(SeqIndex::kBattle))
             {
-                gMod->clearMarioStatsCache();
+                gMod.clearMarioStatsCache();
             }
             break;
         }
@@ -214,10 +214,8 @@ void SpecialMoveToggler::draw()
     // Draw the help text
     float textPosXBase;
     float textPosYBase;
-
-    const char *helpTextPtr = gSpecialMoveTogglerHelpText;
-    windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
-    drawText(helpTextPtr, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
+    windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
+    drawText(gSpecialMoveTogglerHelpText, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
 
     // Get the starting position for the special move texts
     getTextPosXYByIcon(iconPosXBase, iconPosYBase, scale, &textPosXBase, &textPosYBase);

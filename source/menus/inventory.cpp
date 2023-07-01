@@ -3,12 +3,12 @@
 #include "drawText.h"
 #include "classes/menu.h"
 #include "classes/window.h"
-#include "menus/inventory.h"
-#include "menus/root.h"
+#include "menus/inventoryMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/item_data.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 #include "ttyd/fontmgr.h"
 
 #include <cstdint>
@@ -853,7 +853,7 @@ void InventoryMenu::verifyInventoryIndexAndPage(Menu *menuPtr)
         totalItems = 1;
     }
 
-    const uint32_t totalPages = roundIntUpUnsigned(totalItems, INVENTORY_ITEMS_PER_PAGE);
+    const uint32_t totalPages = intCeil(totalItems, INVENTORY_ITEMS_PER_PAGE);
     bool foundIssue = false;
 
     if (this->currentPage >= totalPages)
@@ -1103,7 +1103,7 @@ void inventoryMenuMainExit()
 }
 
 // Menu for determining which inventory to work with
-const MenuOption inventoryMenuInitOptions[] = {
+const MenuOption gInventoryMenuInitOptions[] = {
     "Standard Items",
     inventoryMenuMainInit,
 
@@ -1117,7 +1117,7 @@ const MenuOption inventoryMenuInitOptions[] = {
     inventoryMenuMainInit,
 };
 
-const MenuFunctions inventoryMenuInitFuncs = {
+const MenuFunctions gInventoryMenuInitFuncs = {
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     nullptr, // Exit function not needed
@@ -1127,6 +1127,6 @@ void inventoryMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(inventoryMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(inventoryMenuInitOptions, &inventoryMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gInventoryMenuInitOptions) / sizeof(MenuOption);
+    enterNextMenu(gInventoryMenuInitOptions, &gInventoryMenuInitFuncs, totalOptions);
 }

@@ -3,6 +3,7 @@
 
 #include "gc/OSModule.h"
 #include "ttyd/seqdrv.h"
+#include "ttyd/npcdrv.h"
 #include "ttyd/party.h"
 #include "ttyd/item_data.h"
 #include "ttyd/dispdrv.h"
@@ -16,24 +17,30 @@ enum PointerVerificationType
     PTR_UNCACHED,
 };
 
-#define roundIntUpUnsigned(value, alignment) ((((value) + (alignment)-1)) / (alignment))
-#define roundUp(size, alignment) (((size) + (alignment)-1) & ~((alignment)-1))
+#define intCeil(value, alignment) (((value) + ((alignment)-1)) / (alignment))
+#define roundUp(size, alignment) (((size) + ((alignment)-1)) & ~((alignment)-1))
 #define roundDown(size, alignment) (((size) / (alignment)) * (alignment))
 
 bool checkButtonCombo(uint32_t combo);
 bool checkButtonsEveryFrame(uint32_t buttons);
 bool checkButtonComboEveryFrame(uint32_t combo);
+bool checkButtonComboDemo(uint32_t combo);
+bool compareStringToNextMap(const char *str);
+void setSequencePosition(uint32_t value);
+void setSeqMapChange(const char *map, const char *bero);
 void *clearMemory(void *ptr, uint32_t size);
 bool checkForSpecificSeq(SeqIndex wantedSeq);
 bool checkIfInGame();
+NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData);
 uint32_t secondsToFrames(uint32_t seconds);
 bool systemLevelIsZero();
 void setSystemLevel(int32_t level);
 float intToFloat(int32_t value);
+int32_t floatToInt(float value);
 void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues);
 uint32_t ptrIsValid(void *ptr);
-void *getPartnerPtr();
-void *getFollowerPtr();
+PartyEntry *getPartnerPtr();
+PartyEntry *getFollowerPtr();
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner);
 void removePartnerFromOverworld();
 void removeFollowerFromOverworld();

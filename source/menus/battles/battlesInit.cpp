@@ -1,8 +1,8 @@
 #include "menuUtils.h"
 #include "drawText.h"
 #include "classes/window.h"
-#include "menus/root.h"
-#include "menus/battles.h"
+#include "menus/rootMenu.h"
+#include "menus/battlesMenu.h"
 #include "ttyd/battle.h"
 #include "ttyd/mariost.h"
 #include "ttyd/battle_unit.h"
@@ -11,15 +11,15 @@
 #include <cstdio>
 #include <cinttypes>
 
-BattlesMenu *gBattlesMenu;
+BattlesMenu *gBattlesMenu = nullptr;
 
-const MenuFunctions gBattlesMenuSelectActorFuncs = {
-    battlesMenuSelectActorControls,
-    battlesMenuSelectActorDraw,
-    battlesMenuSelectActorExit,
+const MenuFunctions gBattlesMenuInitFuncs = {
+    battlesMenuInitControls,
+    battlesMenuInitDraw,
+    battlesMenuInitExit,
 };
 
-void battlesMenuSelectActorInit(Menu *menuPtr)
+void battlesMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -31,10 +31,7 @@ void battlesMenuSelectActorInit(Menu *menuPtr)
     }
 
     // The amount of options depends on the amount of actors currently in a battle, so that must be handled manually
-    enterNextMenu(nullptr,
-                  &gBattlesMenuSelectActorFuncs,
-                  getbattlesMenuSelectActorMaxIndex(),
-                  BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
+    enterNextMenu(nullptr, &gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
     // Failsafe: Make sure memory isn't already allocated for gBattlesMenu
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
@@ -46,7 +43,7 @@ void battlesMenuSelectActorInit(Menu *menuPtr)
     gBattlesMenu = new BattlesMenu(gRootMenu->getScale());
 }
 
-void battlesMenuSelectActorExit()
+void battlesMenuInitExit()
 {
     delete gBattlesMenu;
     gBattlesMenu = nullptr;
@@ -54,7 +51,7 @@ void battlesMenuSelectActorExit()
 
 uint32_t getBattleActorsHighestIndex()
 {
-    const uint32_t maxIndex = getbattlesMenuSelectActorMaxIndex();
+    const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
 
     uint32_t counter = 0;
     for (uint32_t i = 1; i <= maxIndex; i++) // Start at one to skip the System actor
@@ -68,7 +65,7 @@ uint32_t getBattleActorsHighestIndex()
     return counter;
 }
 
-void battlesMenuSelectActorDPadControls(Menu *menuPtr, MenuButtonInput button)
+void battlesMenuInitDPadControls(Menu *menuPtr, MenuButtonInput button)
 {
     int32_t highestIndex = static_cast<int32_t>(getBattleActorsHighestIndex());
 
@@ -133,13 +130,13 @@ void battlesMenuSelectActorDPadControls(Menu *menuPtr, MenuButtonInput button)
     menuControlsVertical(button,
                          menuPtr->getCurrentIndexPtr(),
                          menuPtr->getCurrentPagePtr(),
-                         getbattlesMenuSelectActorMaxIndex(),
+                         getbattlesMenuInitMaxIndex(),
                          BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE,
                          1,
                          false);
 }
 
-void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
+void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button)
 {
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
@@ -161,7 +158,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                battlesMenuSelectActorDPadControls(menuPtr, buttonHeld);
+                battlesMenuInitDPadControls(menuPtr, buttonHeld);
                 break;
             }
             default:
@@ -177,7 +174,7 @@ void battlesMenuSelectActorControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            battlesMenuSelectActorDPadControls(menuPtr, button);
+            battlesMenuInitDPadControls(menuPtr, button);
             break;
         }
         case MenuButtonInput::A:
@@ -230,12 +227,11 @@ void BattlesMenu::drawBattlesActors() const
 
     // Draw the actor texts
     // Get the position of the actor texts
-    const char *emptySlotText = "Empty Slot"; // Arbitrary text is needed, so use this since it's needed later
-    float posX = rootWindowPtr->getTextPosX(emptySlotText, WindowAlignment::TOP_LEFT, scale);
+    float posX = rootWindowPtr->getTextPosX(nullptr, WindowAlignment::TOP_LEFT, scale);
     float posY = tempPosY;
 
     uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
-    const uint32_t maxIndex = getbattlesMenuSelectActorMaxIndex();
+    const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const char **battleActorsPtr = gBattleActors;
@@ -255,7 +251,7 @@ void BattlesMenu::drawBattlesActors() const
 
         if (!actorPtr)
         {
-            actorString = emptySlotText;
+            actorString = "Empty Slot";
             slotIsEmpty = true;
         }
         else
@@ -293,19 +289,19 @@ void BattlesMenu::drawBattlesActors() const
     }
 }
 
-void battlesMenuSelectActorDraw(CameraId cameraId, void *user)
+void battlesMenuInitDraw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
 
     // Draw the main window
-    gRootWindow->draw();
+    drawMainWindow();
 
     // Draw each actor
     gBattlesMenu->drawBattlesActors();
 }
 
-void battlesMenuReturnToSelectActorMenu()
+void battlesMenuReturnToInitMenu()
 {
     // Close all menus until the Battles menu is reached
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
@@ -314,8 +310,7 @@ void battlesMenuReturnToSelectActorMenu()
 
     while (menuPtr != battlesMenu)
     {
-        enterPrevMenu();
-        menuPtr = gMenu;
+        menuPtr = enterPrevMenu();
 
         // Failsafe: Make sure gMenu doesn't end up being nullptr
         if (!menuPtr)

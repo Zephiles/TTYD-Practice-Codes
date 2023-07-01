@@ -2,20 +2,25 @@
 #define MENUUTILS_H
 
 #include "classes/menu.h"
+#include "gc/pad.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
+
+#define OPEN_CLOSE_MENU_BUTTON_COMBO (PadInput::PAD_L | PadInput::PAD_START)
 
 extern Menu *gMenu;
 
 // Calls enterNextMenu with totalOptionsPerPage set to totalOptions
-void enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions);
+Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions);
 
-void enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage);
-void enterPrevMenu();
+Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage);
+Menu *enterPrevMenu();
 
 // Closes all menus, calls each of their exit functions, and sets gMenu to nullptr
 void closeAllMenus();
 
+// Handles auto-incrementing in menus via D-Pad inputs
 bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement);
 
 // Converts the standard button inputs into the simplified inputs
@@ -23,6 +28,9 @@ MenuButtonInput getMenuButtonInput(bool singleFrame);
 
 // Handles basic controls for the current menu
 void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button);
+
+// Handles drawing the main window for the menu, as it can sometimes be hidden via a flag
+void drawMainWindow();
 
 // Draws the main window and options for the current menu
 void drawBasicMenuLayout(CameraId cameraId, void *user);

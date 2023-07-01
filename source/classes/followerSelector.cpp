@@ -82,7 +82,7 @@ void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alp
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
 }
 
-void dpadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+void followerSelectorDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
 {
     menuControlsVertical(button,
                          currentIndexPtr,
@@ -109,7 +109,7 @@ void FollowerSelector::controls(MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                dpadControls(buttonHeld, &this->currentIndex);
+                followerSelectorDPadControls(buttonHeld, &this->currentIndex);
                 break;
             }
             default:
@@ -127,7 +127,7 @@ void FollowerSelector::controls(MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            dpadControls(button, &this->currentIndex);
+            followerSelectorDPadControls(button, &this->currentIndex);
             break;
         }
         case MenuButtonInput::A:

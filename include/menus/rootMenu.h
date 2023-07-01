@@ -1,10 +1,10 @@
-#ifndef MENUS_ROOT_H
-#define MENUS_ROOT_H
+#ifndef MENUS_ROOT_MENU_H
+#define MENUS_ROOT_MENU_H
 
 #include "menuUtils.h"
 #include "classes/window.h"
 #include "classes/errorWindow.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 extern Window *gRootWindow;
 

@@ -1,4 +1,4 @@
-#include "menus/battles.h"
+#include "menus/battlesMenu.h"
 #include "ttyd/battle_unit.h"
 
 #include <cstdint>
@@ -221,7 +221,7 @@ const char *gBattleActors[TOTAL_BATTLE_UNIT_TYPES] = {
     "Unused - Flavio",
     "Unused - Tree",
     "Unused - Switch",
-    "Unused - TestNPC",
+    "Unused - Test NPC",
     "Bomb Squad - Bomb",
     "System",
     "Goombella - Prologue - Lord Crump Fight",

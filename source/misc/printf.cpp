@@ -14,9 +14,9 @@ extern "C"
         data.maxLength = maxLength;
         data.charsWritten = 0;
 
-        int32_t ret = __pformatter(__StringWrite, &data, format, args);
+        const int32_t ret = __pformatter(__StringWrite, &data, format, args);
 
-        // __pformatter does not apply a null terminator if charsWritten reaches maxLength, so it must be applied manually
+        // __pformatter does not write a null terminator, so it must be written manually
         if (buffer)
         {
             int32_t maxIndex = maxLength - 1;
@@ -35,7 +35,7 @@ extern "C"
         va_list args;
         va_start(args, format);
 
-        int32_t ret = vsnprintf(buffer, maxLength, format, args);
+        const int32_t ret = vsnprintf(buffer, maxLength, format, args);
 
         va_end(args);
         return ret;

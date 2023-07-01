@@ -62,7 +62,7 @@ class ValueEditor
 
     // The value is required to be stored using a type that is either 4 or 8 bytes. In this case, you'd still use the original
     // type for the type variable, as that's used to figure out the min/max of the value as well as how many digits the value
-    // should have
+    // should have.
     void init(const void *valuePtr, // Initial value
               const void *minValuePtr,
               const void *maxValuePtr,

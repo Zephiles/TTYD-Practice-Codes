@@ -1,5 +1,5 @@
-#ifndef MENUS_INVENTORY_H
-#define MENUS_INVENTORY_H
+#ifndef MENUS_INVENTORY_MENU_H
+#define MENUS_INVENTORY_MENU_H
 
 #include "classes/menu.h"
 #include "classes/errorWindow.h"
@@ -7,7 +7,7 @@
 #include "classes/valueEditor.h"
 #include "classes/window.h"
 #include "ttyd/item_data.h"
-#include "ttyd/dispdrv.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstring>

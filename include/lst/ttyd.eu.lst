@@ -76,8 +76,8 @@
 // 800088F0:seq_mapChangeExit
 // 80008918:seq_mapChangeInit
 // data
-8042AEC8:NextBero
-8042AEE8:NextMap
+8042AEC8:_next_bero
+8042AEE8:_next_map
 8042AF08:NextArea
 
 // seq_title.o

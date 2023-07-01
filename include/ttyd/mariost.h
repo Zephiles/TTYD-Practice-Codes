@@ -53,7 +53,7 @@ struct GlobalWork
     uint16_t fbWidth;
     uint16_t efbHeight;
     int32_t mGSW0;
-    uint32_t mGSFW[0x100];
+    uint32_t mGSWF[0x100];
     uint8_t mGSW[0x800];
     uint32_t mLSWF[0x10];
     uint8_t mLSW[0x400];

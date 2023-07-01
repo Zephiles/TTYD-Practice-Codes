@@ -3,6 +3,7 @@
 #include "assembly.h"
 #include "patch.h"
 #include "menuUtils.h"
+#include "cheats.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -13,6 +14,7 @@
 #include "ttyd/fontmgr.h"
 #include "ttyd/mario.h"
 #include "ttyd/seq_title.h"
+#include "ttyd/npcdrv.h"
 #include "misc/utils.h"
 #include "misc/functionHooks.h"
 
@@ -55,7 +57,7 @@ uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr)
     return 2;
 }
 
-void *cFixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
+PartyEntry *cFixEvtMapBlendSetFlagPartnerCrash(PartyEntry *partnerPtr)
 {
     // Bring out a partner if no partner is currently out
     if (partnerPtr)
@@ -67,7 +69,7 @@ void *cFixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr)
     return getPartnerPtr();
 }
 
-void *cFixEvtMapBlendSetFlagFollowerCrash(void *followerPtr)
+PartyEntry *cFixEvtMapBlendSetFlagFollowerCrash(PartyEntry *followerPtr)
 {
     // Bring out a follower if no follower is currently out
     if (followerPtr)
@@ -231,13 +233,13 @@ int32_t pauseMenuPreventUnpause(void *pauseMenuPtr)
 
 int32_t fixMarioKeyOn()
 {
-    Player *player = marioGetPtr();
-    const int32_t key = player->wKey;
+    Player *playerPtr = marioGetPtr();
+    const int32_t key = playerPtr->wKey;
 
     // Make sure the value is greater than 0
     if (key < 1)
     {
-        player->wKey = 1;
+        playerPtr->wKey = 1;
     }
 
     // Call the original function
@@ -352,7 +354,7 @@ bool performPreBattleActions()
     recheckJumpAndHammerLevels();
 
     PouchData *pouchPtr = pouchGetPtr();
-    Mod *modPtr = gMod;
+    Mod *modPtr = &gMod;
 
     // Clear the cache for Mario's stats if they were changed manually
     if (modPtr->shouldClearMarioStatsCache())
@@ -376,9 +378,11 @@ bool performPreBattleActions()
 
 void performBattleChecks()
 {
-    // A function call will be added here at a later date to handle the Auto Action Commands cheat
+    // Handle the Auto Action Commands cheat
+    handleAutoActionCommands();
 
     // Prevent all buttons from being pressed when the menu is open, except for R and X
+    // TODO: Add check for memory editor being open
     if (gMenu)
     {
         if (!checkButtonsEveryFrame(PadInput::PAD_R | PadInput::PAD_X))
@@ -390,6 +394,25 @@ void performBattleChecks()
 
     // Call the original function
     return g_BattlePadManager_trampoline();
+}
+
+NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk)
+{
+    // Call the original function immediately
+    NpcEntry *ret = g_fbatHitCheck_trampoline(flags, unk);
+
+    // Check for enemy encounters
+    // TODO: Add check for enemy encounters
+
+    // Check if battles should be disabled
+    if (disableBattles())
+    {
+        return nullptr;
+    }
+    else
+    {
+        return ret;
+    }
 }
 
 void applyGameFixes()
@@ -464,14 +487,14 @@ void applyVariousGamePatches()
 
     // The debug mode is reset whenever the title screen is reached, so adjust it to always enable debug mode instead
 #ifdef TTYD_US
-    uint32_t debugModeInitialzeAddress = 0x80009B2C;
+    uint32_t debugModeInitializeAddress = 0x80009B2C;
 #elif defined TTYD_JP
-    uint32_t debugModeInitialzeAddress = 0x8000999C;
+    uint32_t debugModeInitializeAddress = 0x8000999C;
 #elif defined TTYD_EU
-    uint32_t debugModeInitialzeAddress = 0x80009CF0;
+    uint32_t debugModeInitializeAddress = 0x80009CF0;
 #endif
 
-    applyAssemblyPatch(debugModeInitialzeAddress, 0x3800FFFF); // li r0,-1
+    applyAssemblyPatch(debugModeInitializeAddress, 0x3800FFFF); // li r0,-1
 
     // Always show the build date on the title screen
 #ifdef TTYD_US
@@ -589,4 +612,79 @@ void applyVariousGamePatches()
     writeStandardBranches(FontDrawMessageMtxHandleCommandAddress,
                           asmFontDrawMessageMtxHandleCommandStart,
                           asmFontDrawMessageMtxHandleCommandBranchBack);
+}
+
+void applyCheatAndDisplayInjects()
+{
+    // Allow running from all battles
+#ifdef TTYD_US
+    uint32_t allowRunningFromBattlesAddress = 0x80123CA4;
+#elif defined TTYD_JP
+    uint32_t allowRunningFromBattlesAddress = 0x8011E7DC;
+#elif defined TTYD_EU
+    uint32_t allowRunningFromBattlesAddress = 0x80124BE4;
+#endif
+
+    writeStandardBranches(allowRunningFromBattlesAddress,
+                          asmAllowRunningFromBattlesStart,
+                          asmAllowRunningFromBattlesBranchBack);
+
+    // Force NPC Item Drop
+#ifdef TTYD_US
+    uint32_t forceNpcItemDropAddress = 0x8004EC10;
+#elif defined TTYD_JP
+    uint32_t forceNpcItemDropAddress = 0x8004DFB0;
+#elif defined TTYD_EU
+    uint32_t forceNpcItemDropAddress = 0x8004ECDC;
+#endif
+
+    writeBranchBL(forceNpcItemDropAddress, asmForceNpcItemDrop);
+
+#ifdef TTYD_US
+    uint32_t replaceJumpAnimAddress = 0x800411D0;
+#elif defined TTYD_JP
+    uint32_t replaceJumpAnimAddress = 0x80040B34;
+#elif defined TTYD_EU
+    uint32_t replaceJumpAnimAddress = 0x800412B8;
+#endif
+
+    writeBranchBL(replaceJumpAnimAddress, asmReplaceJumpFallAnim);
+
+    // Fall Through Most Objects
+#ifdef TTYD_US
+    uint32_t fallThroughMostObjectsStandAddress = 0x8008E9DC;
+    uint32_t fallThroughMostObjectsTubeAddress = 0x8008E1E8;
+    uint32_t fallThroughMostObjectsBowserAddress = 0x8021A30C;
+#elif defined TTYD_JP
+    uint32_t fallThroughMostObjectsStandAddress = 0x8008D428;
+    uint32_t fallThroughMostObjectsTubeAddress = 0x8008CC4C;
+    uint32_t fallThroughMostObjectsBowserAddress = 0x80215668;
+#elif defined TTYD_EU
+    uint32_t fallThroughMostObjectsStandAddress = 0x8008FD38;
+    uint32_t fallThroughMostObjectsTubeAddress = 0x8008F544;
+    uint32_t fallThroughMostObjectsBowserAddress = 0x8021DD9C;
+#endif
+
+    writeBranchBL(fallThroughMostObjectsStandAddress, asmFallThroughMostObjectsStandard);
+    writeBranchBL(fallThroughMostObjectsTubeAddress, asmFallThroughMostObjectsStandard);
+    writeBranchBL(fallThroughMostObjectsBowserAddress, asmFallThroughMostObjectsBowser);
+
+    // Auto Mash Through Text
+#ifdef TTYD_US
+    uint32_t autoMashThroughTextAddress1 = 0x80080FCC;
+    uint32_t autoMashThroughTextAddress2 = 0x80080FF0;
+    uint32_t autoMashThroughTextAddress3 = 0x80084268;
+#elif defined TTYD_JP
+    uint32_t autoMashThroughTextAddress1 = 0x8008047C;
+    uint32_t autoMashThroughTextAddress2 = 0x800804A0;
+    uint32_t autoMashThroughTextAddress3 = 0x80083390;
+#elif defined TTYD_EU
+    uint32_t autoMashThroughTextAddress1 = 0x80082288;
+    uint32_t autoMashThroughTextAddress2 = 0x800822AC;
+    uint32_t autoMashThroughTextAddress3 = 0x800855BC;
+#endif
+
+    writeBranchBL(autoMashThroughTextAddress1, autoMashText);
+    writeBranchBL(autoMashThroughTextAddress2, autoMashText);
+    writeBranchBL(autoMashThroughTextAddress3, autoMashText);
 }

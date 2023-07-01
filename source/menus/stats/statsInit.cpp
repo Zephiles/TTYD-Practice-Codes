@@ -1,7 +1,7 @@
 #include "menuUtils.h"
 #include "drawText.h"
-#include "menus/root.h"
-#include "menus/stats.h"
+#include "menus/rootMenu.h"
+#include "menus/statsMenu.h"
 
 #include <cstdint>
 #include <cstdio>

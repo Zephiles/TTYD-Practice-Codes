@@ -2,7 +2,7 @@
 #include "drawText.h"
 #include "menuUtils.h"
 #include "classes/itemIconSelector.h"
-#include "menus/inventory.h"
+#include "menus/inventoryMenu.h"
 #include "misc/utils.h"
 #include "ttyd/item_data.h"
 #include "ttyd/windowdrv.h"
@@ -46,7 +46,7 @@ void ItemIconSelector::init(const Window *parentWindow,
 
     // Adjust the height of the main window to account for all of the icons
     const int32_t totalIcons = static_cast<int32_t>(endingItem) - static_cast<int32_t>(startingItem) + 1;
-    const int32_t totalIconRows = roundIntUpUnsigned(totalIcons, TOTAL_ICONS_PER_ROW);
+    const int32_t totalIconRows = intCeil(totalIcons, TOTAL_ICONS_PER_ROW);
 
     const float iconsWindowPaddingAdjustment = 12.f * scale;
     const float currentHeight = windowPtr->getHeight() - iconsWindowPaddingAdjustment;
@@ -170,7 +170,7 @@ void ItemIconSelector::draw()
     const int32_t endingIndex = static_cast<int32_t>(this->endingItem);
 
     // Get the amount of space used by the icons based on the number of rows that there are
-    const int32_t totalIconRows = roundIntUpUnsigned(endingIndex - index + 1, TOTAL_ICONS_PER_ROW);
+    const int32_t totalIconRows = intCeil(endingIndex - index + 1, TOTAL_ICONS_PER_ROW);
     const float posXYIncrement = SPACE_USED_PER_ICON(scale);
     const float spaceUsedByIcons = intToFloat(totalIconRows - 1) * posXYIncrement;
 

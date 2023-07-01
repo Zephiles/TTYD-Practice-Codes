@@ -127,7 +127,7 @@ class Menu
             return false;
         }
 
-        uint32_t currentFlags = this->flags ^= (1UL << flag);
+        const uint32_t currentFlags = this->flags ^= (1UL << flag);
         this->flags = currentFlags;
         return (currentFlags >> flag) & 1U;
     }

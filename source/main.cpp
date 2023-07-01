@@ -1,12 +1,14 @@
 #include "mod.h"
 #include "gamePatches.h"
 #include "cxx.h"
+#include "cheats.h"
 #include "drawText.h"
 #include "patch.h"
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "gc/OSModule.h"
-#include "menus/root.h"
+#include "gc/DEMOPad.h"
+#include "menus/rootMenu.h"
 #include "misc/functionHooks.h"
 #include "ttyd/mariost.h"
 #include "ttyd/seq_title.h"
@@ -16,6 +18,10 @@
 #include "ttyd/mario.h"
 #include "ttyd/seq_battle.h"
 #include "ttyd/battle_pad.h"
+#include "ttyd/mario_pouch.h"
+#include "ttyd/npcdrv.h"
+#include "ttyd/sound.h"
+#include "ttyd/pmario_sound.h"
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
 
@@ -29,9 +35,10 @@ void init()
     // Apply various game patches
     applyVariousGamePatches();
 
-    Mod *modPtr = new (true) Mod;
-    gMod = modPtr;
+    // Apply assembly injects for cheats and displays
+    applyCheatAndDisplayInjects();
 
+    gCheats = new (true) Cheats;
     gDisplayBuffer = new (true) char[DISPLAY_BUFFER_SIZE];
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
@@ -65,6 +72,32 @@ void init()
     // For handling various checks during a battle
     g_BattlePadManager_trampoline = hookFunction(BattlePadManager, performBattleChecks);
 
+    // For handling the Infinite Item Usage cheat
+    g_pouchRemoveItemIndex_trampoline = hookFunction(pouchRemoveItemIndex, infiniteItemUsage);
+
+    // For handling the Frame Advance cheat
+    g_DEMOPadRead_trampoline = hookFunction(DEMOPadRead, frameAdvance);
+
+    // For preventing most of the code in viPostCallback from running when advancing frames via the Frame Advance cheat, as
+    // allowing the code to run wull break various things
+    g_viPostCallback_trampoline = hookFunction(viPostCallback, preventViPostCallBackOnFramePause);
+
+    // For handling certain checks when making contact with enemies
+    g_fbatHitCheck_trampoline = hookFunction(fbatHitCheck, fbatHitCheck_Work);
+
+    // For preventing being able to reload the current room and starting a battle at the same time, as this will cause the game
+    // to softlock
+    g_seqSetSeq_trampoline = hookFunction(seqSetSeq, disableBattlesOnReload);
+
+    // For handling the Disable Certain Sounds cheat, specifically for disabling the pause menu/Z menu sounds
+    g_SoundEfxPlayEx_trampoline = hookFunction(SoundEfxPlayEx, disableMenuSounds);
+
+    // For handling the Disable Certain Sounds cheat, specifically for disabling background music
+    g_psndBGMOn_f_d_trampoline = hookFunction(psndBGMOn_f_d, disableBgm);
+
+    // For handling the Disable Certain Sounds cheat, specifically for disabling environment sounds
+    g_psndENVOn_f_d_trampoline = hookFunction(psndENVOn_f_d, disableEnvSounds);
+
     // Initialize text stuff early
     fontmgrTexSetup();
     applyAssemblyPatch(fontmgrTexSetup, 0x4E800020); // blr
@@ -80,6 +113,9 @@ void runOncePerFrame()
 {
     // Handle the menu
     handleMenu();
+
+    // Run cheat functions
+    runCheatFuncsEveryFrame();
 
     // Call the original function
     return g_marioStMain_trampoline();

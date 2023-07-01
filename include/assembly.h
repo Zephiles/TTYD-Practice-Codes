@@ -1,6 +1,8 @@
 #ifndef ASSEMBLY_H
 #define ASSEMBLY_H
 
+#include "ttyd/party.h"
+
 #include <cstdint>
 
 extern "C"
@@ -27,11 +29,21 @@ extern "C"
     void asmFontDrawMessageMtxHandleCommandStart();
     void asmFontDrawMessageMtxHandleCommandBranchBack();
 
+    void asmAllowRunningFromBattlesStart();
+    void asmAllowRunningFromBattlesBranchBack();
+
+    void asmForceNpcItemDrop();
+
+    void asmFallThroughMostObjectsStandard();
+    void asmFallThroughMostObjectsBowser();
+
+    void asmReplaceJumpFallAnim();
+
     // Functions accessed by assembly overwrites
     uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr);
 
-    void *cFixEvtMapBlendSetFlagPartnerCrash(void *partnerPtr);
-    void *cFixEvtMapBlendSetFlagFollowerCrash(void *followerPtr);
+    PartyEntry *cFixEvtMapBlendSetFlagPartnerCrash(PartyEntry *partnerPtr);
+    PartyEntry *cFixEvtMapBlendSetFlagFollowerCrash(PartyEntry *followerPtr);
 
 #ifdef TTYD_JP
     int32_t crashScreenDecrementYPos();
@@ -42,6 +54,17 @@ extern "C"
     bool displayMegaBadgesInBattleMenu(bool checkJumpBadge, uint32_t bitfield);
 
     bool cFontDrawMessageMtxHandleCommand(const char *command, const char *commandValueString);
+
+    uint32_t allowRunningFromBattles(void *ptr);
+
+    int32_t forceNpcItemDrop(void *ptr);
+
+    void *fallThroughMostObjects(void *ptr);
+
+    const char *replaceJumpFallAnim(char *jumpFallString);
+
+    // Misc assembly functions
+    void asmSetTime(int64_t time);
 }
 
 #endif

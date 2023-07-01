@@ -3,6 +3,8 @@
 
 #include "gc/OSModule.h"
 #include "ttyd/seqdrv.h"
+#include "ttyd/item_data.h"
+#include "ttyd/npcdrv.h"
 
 #include <cstdint>
 
@@ -16,16 +18,22 @@ extern int32_t (*g_marioKeyOn_trampoline)();
 extern bool (*g_OSLink_trampoline)(OSModuleInfo *module, void *bss);
 extern bool (*g_battle_init_trampoline)();
 extern void (*g_BattlePadManager_trampoline)();
+extern bool (*g_pouchRemoveItemIndex_trampoline)(ItemId item, uint32_t index);
+extern void (*g_DEMOPadRead_trampoline)();
+extern void (*g_viPostCallback_trampoline)(uint32_t retraceCount);
+extern NpcEntry *(*g_fbatHitCheck_trampoline)(uint32_t flags, void *unk);
+extern void (*g_seqSetSeq_trampoline)(SeqIndex seq, const char *map, const char *bero);
+
+extern int32_t (*g_SoundEfxPlayEx_trampoline)(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
+
+extern bool (
+    *g_psndBGMOn_f_d_trampoline)(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
+
+extern bool (*g_psndENVOn_f_d_trampoline)(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
 
 // Functions used for hooks
 void runOncePerFrame();
 void displayTitleScreenInfo(SeqWork *seqWork);
 void displayFileSelectScreenInfo(SeqWork *seqWork);
-const char *getCustomMessage(const char *key);
-int32_t pauseMenuPreventUnpause(void *pauseMenuPtr);
-int32_t fixMarioKeyOn();
-bool applyRelPatches(OSModuleInfo *module, void *bss);
-bool performPreBattleActions();
-void performBattleChecks();
 
 #endif
