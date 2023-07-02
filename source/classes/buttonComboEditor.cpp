@@ -271,6 +271,7 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
 
     int32_t textLength = 0;
     const char *buttonText;
+    bool firstStringWritten = false;
 
     for (uint32_t i = 0; i < TOTAL_MENU_INPUT_BUTTONS; i++)
     {
@@ -350,8 +351,10 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
             }
         }
 
-        if (i == 0)
+        if (!firstStringWritten)
         {
+            firstStringWritten = true;
+
             // Set the initial button pressed
             textLength = snprintf(stringOut, stringSize, "%s", buttonText);
         }

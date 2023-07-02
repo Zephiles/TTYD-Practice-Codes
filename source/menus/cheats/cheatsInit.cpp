@@ -278,6 +278,7 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index)
         }
         default:
         {
+            // Return an arbitrary invalid flag
             return static_cast<uint32_t>(-1);
         }
     }
