@@ -82,7 +82,7 @@ bool Cheats::checkCheatButtonComboDemo(uint32_t cheatWithCombo) const
     return checkButtonComboDemo(this->buttonCombos[cheatWithCombo]);
 }
 
-uint32_t Cheats::getButtonCombo(uint32_t cheatWithCombo)
+uint32_t Cheats::getCheatButtonCombo(uint32_t cheatWithCombo)
 {
     // Make sure cheatWithCombo is valid
     if (cheatWithCombo >= TOTAL_CHEATS_BUTTON_COMBOS)
@@ -93,7 +93,7 @@ uint32_t Cheats::getButtonCombo(uint32_t cheatWithCombo)
     return this->buttonCombos[cheatWithCombo];
 }
 
-void Cheats::setButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo)
+void Cheats::setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo)
 {
     // Make sure cheatWithCombo is valid
     if (cheatWithCombo >= TOTAL_CHEATS_BUTTON_COMBOS)
@@ -292,30 +292,37 @@ Cheats::Cheats()
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP);
 
     // Set default cheat button combos
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_WALK_THROUGH_WALLS, PadInput::PAD_Z);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FALL_THROUGH_FLOORS, PadInput::PAD_Y | PadInput::PAD_Z);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_WALK_THROUGH_WALLS, PadInput::PAD_Z);
 
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_COORDINATES,
-                         PadInput::PAD_L | PadInput::PAD_DPAD_LEFT);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FALL_THROUGH_FLOORS,
+                              PadInput::PAD_Y | PadInput::PAD_Z);
 
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LOAD_COORDINATES, PadInput::PAD_L | PadInput::PAD_DPAD_UP);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPAWN_ITEM, PadInput::PAD_L | PadInput::PAD_DPAD_DOWN);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_ANYWHERE, PadInput::PAD_Y | PadInput::PAD_B);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TEXT_STORAGE, PadInput::PAD_L | PadInput::PAD_X);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE, PadInput::PAD_L | PadInput::PAD_R);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPEED_UP_MARIO, PadInput::PAD_L | PadInput::PAD_Y);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_DISABLE_BATTLES, PadInput::PAD_Y);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS, PadInput::PAD_R);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE, PadInput::PAD_Y);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM, PadInput::PAD_L | PadInput::PAD_B);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LEVITATE, PadInput::PAD_L | PadInput::PAD_A);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_MASH_TEXT, PadInput::PAD_Y);
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME, PadInput::PAD_Y);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_COORDINATES,
+                              PadInput::PAD_L | PadInput::PAD_DPAD_LEFT);
 
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME,
-                         PadInput::PAD_L | PadInput::PAD_A | PadInput::PAD_Z);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LOAD_COORDINATES,
+                              PadInput::PAD_L | PadInput::PAD_DPAD_UP);
 
-    this->setButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, PadInput::PAD_Y | PadInput::PAD_Z);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPAWN_ITEM, PadInput::PAD_L | PadInput::PAD_DPAD_DOWN);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_ANYWHERE, PadInput::PAD_Y | PadInput::PAD_B);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TEXT_STORAGE, PadInput::PAD_L | PadInput::PAD_X);
+
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE,
+                              PadInput::PAD_L | PadInput::PAD_R);
+
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPEED_UP_MARIO, PadInput::PAD_L | PadInput::PAD_Y);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_DISABLE_BATTLES, PadInput::PAD_Y);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS, PadInput::PAD_R);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE, PadInput::PAD_Y);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM, PadInput::PAD_L | PadInput::PAD_B);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LEVITATE, PadInput::PAD_L | PadInput::PAD_A);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_MASH_TEXT, PadInput::PAD_Y);
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME, PadInput::PAD_Y);
+
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME,
+                              PadInput::PAD_L | PadInput::PAD_A | PadInput::PAD_Z);
+
+    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, PadInput::PAD_Y | PadInput::PAD_Z);
 }
 
 uint32_t allowRunningFromBattles(void *ptr)

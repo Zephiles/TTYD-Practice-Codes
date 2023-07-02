@@ -187,7 +187,7 @@ void CheatsMenu::drawGenericCheatInfo() const
         const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(selectedCheat);
         char buf[128];
 
-        buttonsToString(cheatsPtr->getButtonCombo(cheatButtonComboFlag), buf, sizeof(buf));
+        buttonsToString(cheatsPtr->getCheatButtonCombo(cheatButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     }
 }
@@ -210,7 +210,7 @@ void cheatsMenuGenericCancelSetNewButtonCombo()
 void cheatsMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
 {
     const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(gCheatsMenu->getSelectedCheat());
-    gCheats->setButtonCombo(cheatButtonComboFlag, buttonCombo);
+    gCheats->setCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
 
     // Close the button combo editor
     cheatsMenuGenericCancelSetNewButtonCombo();
