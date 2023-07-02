@@ -136,8 +136,14 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
         else
         {
             // Decrement the timer
-            const uint32_t timer = this->timer - 1;
-            this->setTimer(timer);
+            // Do not decrement if it is somehow already at 0
+            uint32_t timer = this->timer;
+            if (timer > 0)
+            {
+                timer--;
+                this->setTimer(timer);
+            }
+
             return timer == 0;
         }
     }
@@ -228,12 +234,15 @@ void ButtonComboEditor::draw() const
     posY -= lineDecrement;
 
     // Draw the currently held buttons
-    // Do not draw if L + Start are held, as those are reserved for opening/closing the menu
+    // Draw the default value if L + Start are held, as those are reserved for opening/closing the menu
+    uint32_t heldButtons = 0;
     if (!checkButtonComboEveryFrame(OPEN_CLOSE_MENU_BUTTON_COMBO))
     {
-        buttonsToString(keyGetButton(PadId::CONTROLLER_ONE), buf, bufSize);
-        drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+        heldButtons = keyGetButton(PadId::CONTROLLER_ONE);
     }
+
+    buttonsToString(heldButtons, buf, bufSize);
+    drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
 void getButtonsPressed(MenuButtonInput *buttonsOut, uint32_t buttons)
