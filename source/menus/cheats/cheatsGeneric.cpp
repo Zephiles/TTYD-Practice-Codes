@@ -16,11 +16,6 @@ const MenuOption gCheatsMenuGenericOptions[] = {
     cheatsMenuGenericChangeButtonCombo,
 };
 
-const MenuOption gCheatsMenuGenericOptionsNoButtonCombo[] = {
-    "Turn On/Off",
-    cheatsMenuGenericToggleFlag,
-};
-
 const MenuFunctions gCheatsMenuInitFuncs = {
     cheatsMenuGenericControls,
     cheatsMenuGenericDraw,
@@ -32,21 +27,15 @@ void enterCheatsMenuGeneric(Menu *menuPtr, bool hasButtonCombo)
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
-    const MenuOption *optionsPtr;
-    uint32_t totalOptions;
-
-    if (hasButtonCombo)
+    uint32_t totalOptions = sizeof(gCheatsMenuGenericOptions) / sizeof(MenuOption);
+    if (!hasButtonCombo)
     {
-        optionsPtr = gCheatsMenuGenericOptions;
-        totalOptions = sizeof(gCheatsMenuGenericOptions) / sizeof(MenuOption);
-    }
-    else
-    {
-        optionsPtr = gCheatsMenuGenericOptionsNoButtonCombo;
-        totalOptions = sizeof(gCheatsMenuGenericOptionsNoButtonCombo) / sizeof(MenuOption);
+        // Subtract one to exclude the button combo from the options
+        // This assumes that the button combo is the last option in gCheatsMenuGenericOptions
+        totalOptions--;
     }
 
-    menuPtr = enterNextMenu(optionsPtr, &gCheatsMenuInitFuncs, totalOptions);
+    menuPtr = enterNextMenu(gCheatsMenuGenericOptions, &gCheatsMenuInitFuncs, totalOptions);
 
     if (hasButtonCombo)
     {
