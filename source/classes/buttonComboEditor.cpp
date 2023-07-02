@@ -262,8 +262,9 @@ void getButtonsPressed(MenuButtonInput *buttonsOut, uint32_t buttons)
 
 void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
 {
-    // Clear the first byte in stringOut, as it will not be modified if no buttons are pressed
-    stringOut[0] = '\0';
+    // stringOut will not be modified if no buttons are pressed, so set the default string to None
+    // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
+    snprintf(stringOut, stringSize, "None");
 
     // Get the text for each button
     MenuButtonInput buttonsArray[TOTAL_MENU_INPUT_BUTTONS];
