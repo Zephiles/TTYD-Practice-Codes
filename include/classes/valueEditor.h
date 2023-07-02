@@ -13,6 +13,9 @@
 #define MAX_DOUBLE_LENGTH_STRING "21" // Excludes the + or -, the decimal point, and the decimal digits
 #define MAX_DOUBLE_DIGITS_STRING "6"
 
+typedef void (*ValueEditorSetValueFunc)(const ValueType *valuePtr);
+typedef void (*ValueEditorCancelFunc)();
+
 enum ValueEditorFlag
 {
     VALUE_IS_SIGNED = 0,
@@ -31,9 +34,6 @@ enum ValueEditorFlag
     DRAW_MAP_STRING,            // Warp By Index menu
     DRAW_WARP_BY_EVENT_DETAILS, // Warp By Event menu
 };
-
-typedef void (*ValueEditorSetValueFunc)(const ValueType *valuePtr);
-typedef void (*ValueEditorCancelFunc)();
 
 class ValueEditor
 {

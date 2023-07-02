@@ -360,6 +360,7 @@ class Cheats
     bool checkCheatButtonCombo(uint32_t cheatWithCombo) const;
     bool checkCheatButtonComboEveryFrame(uint32_t cheatWithCombo) const;
     bool checkCheatButtonComboDemo(uint32_t cheatWithCombo) const;
+    uint32_t getButtonCombo(uint32_t cheatWithCombo);
     void setButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
 
     bool enabledFlagIsSet(uint32_t flag) const;

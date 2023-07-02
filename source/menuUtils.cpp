@@ -101,7 +101,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
 
     uint32_t counter = 1;
 
-    for (uint32_t i = 0; i < 13; i++)
+    for (uint32_t i = 0; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
     {
         if (i == 7)
         {
@@ -113,8 +113,6 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
         {
             return static_cast<MenuButtonInput>(counter);
         }
-
-        counter++;
     }
 
     // Return 0 if no input was found

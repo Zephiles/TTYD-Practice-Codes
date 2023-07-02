@@ -82,6 +82,17 @@ bool Cheats::checkCheatButtonComboDemo(uint32_t cheatWithCombo) const
     return checkButtonComboDemo(this->buttonCombos[cheatWithCombo]);
 }
 
+uint32_t Cheats::getButtonCombo(uint32_t cheatWithCombo)
+{
+    // Make sure cheatWithCombo is valid
+    if (cheatWithCombo >= TOTAL_CHEATS_BUTTON_COMBOS)
+    {
+        return 0;
+    }
+
+    return this->buttonCombos[cheatWithCombo];
+}
+
 void Cheats::setButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo)
 {
     // Make sure cheatWithCombo is valid

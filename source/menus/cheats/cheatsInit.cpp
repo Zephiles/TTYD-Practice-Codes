@@ -124,7 +124,7 @@ void cheatsMenuInitExit()
     gCheatsMenu = nullptr;
 }
 
-uint32_t convertIndexToCheatEnabledFlag(uint32_t index)
+uint32_t indexToCheatEnabledFlag(uint32_t index)
 {
     switch (index)
     {
@@ -207,6 +207,77 @@ uint32_t convertIndexToCheatEnabledFlag(uint32_t index)
         default:
         {
             // Return an arbitrary invalid flag
+            return static_cast<uint32_t>(-1);
+        }
+    }
+}
+
+uint32_t indexToCheatButtonComboFlag(uint32_t index)
+{
+    switch (index)
+    {
+        case CheatsMenuOptions::CHEATS_MENU_WALK_THROUGH_WALLS:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_WALK_THROUGH_WALLS;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_FALL_THROUGH_FLOORS:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FALL_THROUGH_FLOORS;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SAVE_COORDINATES:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_COORDINATES;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_LOAD_COORDINATES:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LOAD_COORDINATES;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SPAWN_ITEM:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPAWN_ITEM;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SAVE_ANYWHERE:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_ANYWHERE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_TEXT_STORAGE:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TEXT_STORAGE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SPEED_UP_MARIO:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPEED_UP_MARIO;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_DISABLE_BATTLES:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_DISABLE_BATTLES;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_AUTO_ACTION_COMMANDS:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_INFINITE_ITEM_USAGE:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_RELOAD_ROOM:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_LEVITATE:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LEVITATE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_AUTO_MASH_TEXT:
+        {
+            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_MASH_TEXT;
+        }
+        default:
+        {
             return static_cast<uint32_t>(-1);
         }
     }

@@ -2,6 +2,7 @@
 #define MENUS_CHEATS_MENU_H
 
 #include "classes/valueEditor.h"
+#include "classes/buttonComboEditor.h"
 #include "classes/menu.h"
 #include "ttyd/camdrv.h"
 
@@ -44,6 +45,7 @@ enum CheatsMenuOptions
 enum CheatsMenuGenericFlags
 {
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
+    CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO,
 };
 
 enum class ResolveFadeReturnValue : int32_t
@@ -98,7 +100,9 @@ class CheatsMenu
     ~CheatsMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
+    ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
     float getScale() const { return this->scale; }
+
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 
     void setSelectedCheat(uint32_t selectedCheat) { this->selectedCheat = static_cast<uint8_t>(selectedCheat); }
@@ -108,6 +112,7 @@ class CheatsMenu
 
    private:
     ValueEditor valueEditor;
+    ButtonComboEditor buttonComboEditor;
     float scale;
 
     MenuAutoIncrement autoIncrement;
@@ -128,7 +133,8 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
 
-uint32_t convertIndexToCheatEnabledFlag(uint32_t index);
+uint32_t indexToCheatEnabledFlag(uint32_t index);
+uint32_t indexToCheatButtonComboFlag(uint32_t index);
 
 ResolveFadeReturnValue resolveFade(uint32_t index);
 

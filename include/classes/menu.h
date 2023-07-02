@@ -6,7 +6,7 @@
 #include <cstdint>
 
 // Button inputs converted to simple values
-enum class MenuButtonInput
+enum class MenuButtonInput : uint8_t
 {
     BUTTON_NONE = 0,
     DPAD_LEFT,
@@ -22,6 +22,8 @@ enum class MenuButtonInput
     Y,
     START,
 };
+
+#define TOTAL_MENU_INPUT_BUTTONS (static_cast<uint32_t>(MenuButtonInput::START) + 1)
 
 // Used to figure out when values should be auto-incremented when a D-Pad direction is held
 struct MenuAutoIncrement
