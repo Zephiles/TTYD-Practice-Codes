@@ -57,6 +57,9 @@ const char *gBattlesStatusesOptions[] = {
 };
 
 const MenuFunctions gBattlesMenuStatusesFuncs = {
+    nullptr, // All of the options will use the same function, and the drawing code will not use the default function, so avoid
+             // an array of MenuOption to save memory
+
     battlesMenuStatusesControls,
     battlesMenuStatusesDraw,
     nullptr, // Exit function not needed
@@ -66,10 +69,8 @@ void battlesMenuStatusesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    // All of the options will use the same function, and the drawing code will not use the default function, so avoid an array
-    // of MenuOption to save memory
     constexpr uint32_t totalOptions = sizeof(gBattlesStatusesOptions) / sizeof(gBattlesStatusesOptions[0]);
-    enterNextMenu(nullptr, &gBattlesMenuStatusesFuncs, totalOptions, BATTLES_STATUSES_MAX_STATUSES_PER_PAGE);
+    enterNextMenu(&gBattlesMenuStatusesFuncs, totalOptions, BATTLES_STATUSES_MAX_STATUSES_PER_PAGE);
 }
 
 int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)

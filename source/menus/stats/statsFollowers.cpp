@@ -21,6 +21,7 @@ const MenuOption gStatsMenuFollowersOptions[] = {
 };
 
 const MenuFunctions gStatsMenuFollowersFuncs = {
+    gStatsMenuFollowersOptions,
     statsMenuFollowersControls,
     statsMenuFollowersDraw,
     nullptr, // Exit function not needed
@@ -76,7 +77,7 @@ void statsMenuFollowersInit(Menu *menuPtr)
     gStatsMenu->setCurrentIndex(0);
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuFollowersOptions) / sizeof(MenuOption);
-    enterNextMenu(gStatsMenuFollowersOptions, &gStatsMenuFollowersFuncs, totalOptions);
+    enterNextMenu(&gStatsMenuFollowersFuncs, totalOptions);
 }
 
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)

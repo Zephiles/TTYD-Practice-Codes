@@ -11,14 +11,14 @@
 
 Menu *gMenu = nullptr;
 
-Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions)
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions)
 {
-    return enterNextMenu(options, funcs, totalOptions, totalOptions);
+    return enterNextMenu(funcs, totalOptions, totalOptions);
 }
 
-Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
 {
-    Menu *nextMenu = new Menu(options, funcs, totalOptions, totalOptionsPerPage);
+    Menu *nextMenu = new Menu(funcs, totalOptions, totalOptionsPerPage);
     nextMenu->setPrevMenu(gMenu);
     gMenu = nextMenu;
     return nextMenu;

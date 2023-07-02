@@ -43,6 +43,7 @@ const MenuOption gRootMenuOptions[] = {
 };
 
 const MenuFunctions gRootMenuFuncs = {
+    gRootMenuOptions,
     controlsBasicMenuLayout,
     rootMenuDraw,
     rootMenuExit,
@@ -61,7 +62,7 @@ void rootMenuInit()
 
     // Need to enter the root menu before initializing gRootMenu
     constexpr uint32_t totalOptions = sizeof(gRootMenuOptions) / sizeof(MenuOption);
-    enterNextMenu(gRootMenuOptions, &gRootMenuFuncs, totalOptions);
+    enterNextMenu(&gRootMenuFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gRootMenu
     RootMenu *rootMenuPtr = gRootMenu;

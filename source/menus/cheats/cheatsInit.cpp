@@ -94,6 +94,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
 };
 
 const MenuFunctions gCheatsMenuInitFuncs = {
+    gCheatsMenuInitOptions,
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     cheatsMenuInitExit,
@@ -114,7 +115,7 @@ void cheatsMenuInit(Menu *menuPtr)
     gCheatsMenu = cheatsMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(gCheatsMenuInitOptions, &gCheatsMenuInitFuncs, totalOptions, MAX_CHEATS_PER_PAGE);
+    enterNextMenu(&gCheatsMenuInitFuncs, totalOptions, MAX_CHEATS_PER_PAGE);
 }
 
 void cheatsMenuInitExit()

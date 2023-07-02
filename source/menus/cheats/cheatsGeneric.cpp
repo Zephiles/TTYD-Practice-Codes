@@ -17,6 +17,7 @@ const MenuOption gCheatsMenuGenericOptions[] = {
 };
 
 const MenuFunctions gCheatsMenuInitFuncs = {
+    gCheatsMenuGenericOptions,
     cheatsMenuGenericControls,
     cheatsMenuGenericDraw,
     nullptr, // Exit function not needed
@@ -35,7 +36,7 @@ void enterCheatsMenuGeneric(Menu *menuPtr, bool hasButtonCombo)
         totalOptions--;
     }
 
-    menuPtr = enterNextMenu(gCheatsMenuGenericOptions, &gCheatsMenuInitFuncs, totalOptions);
+    menuPtr = enterNextMenu(&gCheatsMenuInitFuncs, totalOptions);
 
     if (hasButtonCombo)
     {

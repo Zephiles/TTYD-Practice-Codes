@@ -47,6 +47,10 @@ struct MenuOption
 
 struct MenuFunctions
 {
+    // Pointer to all of the options within the current menu
+    // The amount of options is handled via totalOptions when the menu is intitialized
+    const MenuOption *options;
+
     // Function to be called to handle what button inputs do inside the current menu
     MenuControlsFunc controls;
 
@@ -60,9 +64,8 @@ struct MenuFunctions
 class Menu
 {
    public:
-    Menu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
+    Menu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
     {
-        this->options = options;
         this->funcs = funcs;
         this->totalOptions = static_cast<uint8_t>(totalOptions);
         this->totalOptionsPerPage = static_cast<uint8_t>(totalOptionsPerPage);
@@ -150,7 +153,6 @@ class Menu
 
    private:
     Menu *prev;                 // Previous menu
-    const MenuOption *options;  // All options within the current menu
     const MenuFunctions *funcs; // Functions for handling the current menu
     uint32_t flags;             // Arbitrary flags within the current menu
     uint8_t totalOptions;

@@ -12,13 +12,13 @@
 
 void Menu::runControlsFunc(MenuButtonInput button)
 {
-    const MenuFunctions *menuFuncs = this->funcs;
-    if (!menuFuncs)
+    const MenuFunctions *menuFuncsPtr = this->funcs;
+    if (!menuFuncsPtr)
     {
         return;
     }
 
-    const MenuControlsFunc func = menuFuncs->controls;
+    const MenuControlsFunc func = menuFuncsPtr->controls;
     if (!func)
     {
         return;
@@ -38,13 +38,19 @@ void Menu::runSelectedOptionFunc()
         return;
     }
 
-    const MenuFunctions *menuFuncs = this->funcs;
-    if (!menuFuncs)
+    const MenuFunctions *menuFuncsPtr = this->funcs;
+    if (!menuFuncsPtr)
     {
         return;
     }
 
-    const MenuSelectedOptionFunc func = this->options[index].selectedFunc;
+    const MenuOption *optionsPtr = menuFuncsPtr->options;
+    if (!optionsPtr)
+    {
+        return;
+    }
+
+    const MenuSelectedOptionFunc func = optionsPtr[index].selectedFunc;
     if (!func)
     {
         return;
@@ -55,13 +61,13 @@ void Menu::runSelectedOptionFunc()
 
 void Menu::runDrawFunc() const
 {
-    const MenuFunctions *menuFuncs = this->funcs;
-    if (!menuFuncs)
+    const MenuFunctions *menuFuncsPtr = this->funcs;
+    if (!menuFuncsPtr)
     {
         return;
     }
 
-    const DispCallback func = menuFuncs->draw;
+    const DispCallback func = menuFuncsPtr->draw;
     if (!func)
     {
         return;
@@ -72,13 +78,13 @@ void Menu::runDrawFunc() const
 
 void Menu::runExitFunc() const
 {
-    const MenuFunctions *menuFuncs = this->funcs;
-    if (!menuFuncs)
+    const MenuFunctions *menuFuncsPtr = this->funcs;
+    if (!menuFuncsPtr)
     {
         return;
     }
 
-    const MenuExitFunc func = menuFuncs->exit;
+    const MenuExitFunc func = menuFuncsPtr->exit;
     if (!func)
     {
         return;
@@ -124,7 +130,13 @@ void Menu::basicLayoutDraw(float scale) const
 void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
 {
     // Make sure the options are set
-    const MenuOption *optionsPtr = this->options;
+    const MenuFunctions *menuFuncsPtr = this->funcs;
+    if (!menuFuncsPtr)
+    {
+        return;
+    }
+
+    const MenuOption *optionsPtr = menuFuncsPtr->options;
     if (!optionsPtr)
     {
         return;

@@ -45,6 +45,7 @@ const MenuOption gBattlesMenuStatsOptions[] = {
 };
 
 const MenuFunctions gBattlesMenuStatsFuncs = {
+    gBattlesMenuStatsOptions,
     battlesMenuStatsControls,
     battlesMenuStatsDraw,
     nullptr, // Exit function not needed
@@ -53,7 +54,7 @@ const MenuFunctions gBattlesMenuStatsFuncs = {
 void battlesMenuStatsInit()
 {
     constexpr uint32_t totalOptions = sizeof(gBattlesMenuStatsOptions) / sizeof(MenuOption);
-    enterNextMenu(gBattlesMenuStatsOptions, &gBattlesMenuStatsFuncs, totalOptions);
+    enterNextMenu(&gBattlesMenuStatsFuncs, totalOptions);
 }
 
 void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)

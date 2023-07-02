@@ -14,6 +14,7 @@
 BattlesMenu *gBattlesMenu = nullptr;
 
 const MenuFunctions gBattlesMenuInitFuncs = {
+    nullptr, // The amount of options depends on the amount of actors currently in a battle, so that must be handled manually
     battlesMenuInitControls,
     battlesMenuInitDraw,
     battlesMenuInitExit,
@@ -30,8 +31,7 @@ void battlesMenuInit(Menu *menuPtr)
         return;
     }
 
-    // The amount of options depends on the amount of actors currently in a battle, so that must be handled manually
-    enterNextMenu(nullptr, &gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
+    enterNextMenu(&gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
     // Failsafe: Make sure memory isn't already allocated for gBattlesMenu
     BattlesMenu *battlesMenuPtr = gBattlesMenu;

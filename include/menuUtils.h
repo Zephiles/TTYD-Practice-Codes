@@ -12,9 +12,9 @@
 extern Menu *gMenu;
 
 // Calls enterNextMenu with totalOptionsPerPage set to totalOptions
-Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions);
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions);
 
-Menu *enterNextMenu(const MenuOption *options, const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage);
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage);
 Menu *enterPrevMenu();
 
 // Closes all menus, calls each of their exit functions, and sets gMenu to nullptr

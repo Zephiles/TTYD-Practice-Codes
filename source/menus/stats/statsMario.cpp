@@ -90,6 +90,7 @@ const MenuOption gStatsMenuMarioOptions[] = {
 };
 
 const MenuFunctions gStatsMenuMarioFuncs = {
+    gStatsMenuMarioOptions,
     statsMenuMarioControls,
     statsMenuMarioDraw,
     nullptr, // Exit function not needed
@@ -103,7 +104,7 @@ void statsMenuMarioInit(Menu *menuPtr)
     gStatsMenu->setCurrentIndex(0);
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuMarioOptions) / sizeof(MenuOption);
-    enterNextMenu(gStatsMenuMarioOptions, &gStatsMenuMarioFuncs, totalOptions);
+    enterNextMenu(&gStatsMenuMarioFuncs, totalOptions);
 }
 
 void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)

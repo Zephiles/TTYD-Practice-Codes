@@ -40,6 +40,7 @@ const MenuOption gInventoryMenuMainOptions[] = {
 };
 
 const MenuFunctions gInventoryMenuMainFuncs = {
+    gInventoryMenuMainOptions,
     inventoryMenuMainControls,
     inventoryMenuMainDraw,
     inventoryMenuMainExit,
@@ -1093,7 +1094,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
     inventoryMenuPtr->setInventoryType(inventoryType);
 
     constexpr uint32_t totalOptions = sizeof(gInventoryMenuMainOptions) / sizeof(MenuOption);
-    enterNextMenu(gInventoryMenuMainOptions, &gInventoryMenuMainFuncs, totalOptions);
+    enterNextMenu(&gInventoryMenuMainFuncs, totalOptions);
 }
 
 void inventoryMenuMainExit()
@@ -1118,6 +1119,7 @@ const MenuOption gInventoryMenuInitOptions[] = {
 };
 
 const MenuFunctions gInventoryMenuInitFuncs = {
+    gInventoryMenuInitOptions,
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     nullptr, // Exit function not needed
@@ -1128,5 +1130,5 @@ void inventoryMenuInit(Menu *menuPtr)
     (void)menuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gInventoryMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(gInventoryMenuInitOptions, &gInventoryMenuInitFuncs, totalOptions);
+    enterNextMenu(&gInventoryMenuInitFuncs, totalOptions);
 }

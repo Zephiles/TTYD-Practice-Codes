@@ -69,6 +69,7 @@ const MenuOption gStatsMenuPartnersOptions[] = {
 };
 
 const MenuFunctions gStatsMenuPartnersFuncs = {
+    gStatsMenuPartnersOptions,
     statsMenuPartnersControls,
     statsMenuPartnersDraw,
     nullptr, // Exit function not needed
@@ -79,7 +80,7 @@ void statsMenuPartnersInit(Menu *menuPtr)
     (void)menuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuPartnersOptions) / sizeof(gStatsMenuPartnersOptions[0]);
-    enterNextMenu(gStatsMenuPartnersOptions, &gStatsMenuPartnersFuncs, totalOptions);
+    enterNextMenu(&gStatsMenuPartnersFuncs, totalOptions);
 }
 
 void statsMenuPartnersSelectedPartner(Menu *menuPtr)

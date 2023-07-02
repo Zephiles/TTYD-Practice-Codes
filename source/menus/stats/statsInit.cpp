@@ -21,6 +21,7 @@ const MenuOption gStatsMenuInitOptions[] = {
 };
 
 const MenuFunctions gStatsMenuInitFuncs = {
+    gStatsMenuInitOptions,
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     statsMenuInitExit,
@@ -31,7 +32,7 @@ void statsMenuInit(Menu *menuPtr)
     (void)menuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gStatsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(gStatsMenuInitOptions, &gStatsMenuInitFuncs, totalOptions);
+    enterNextMenu(&gStatsMenuInitFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gStatsMenu
     StatsMenu *statsMenuPtr = gStatsMenu;
