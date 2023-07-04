@@ -27,7 +27,6 @@ void ButtonComboEditor::init(const Window *parentWindow, float scale, uint8_t al
     this->setComboFunc = nullptr;
     this->cancelFunc = nullptr;
     this->buttonsPrevFrame = 0;
-    this->buttonsCurrentFrame = 0;
     this->timer = 0;
     this->bButtonCounter = 0;
     this->enabled = false;
@@ -95,12 +94,11 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
     }
     else if (buttonsHeld)
     {
-        const uint32_t buttonsCurrentFrame = this->buttonsCurrentFrame;
-        if (this->buttonsPrevFrame != buttonsCurrentFrame)
+        if (this->buttonsPrevFrame != buttonsHeld)
         {
             // Either new button(s) were pressed or some button(s) were released, so copy the current buttons to the previous
             // buttons
-            this->setButtonsPrevFrame(buttonsCurrentFrame);
+            this->setButtonsPrevFrame(buttonsHeld);
 
             // Reset the timer
             this->setTimer(sysMsec2Frame(3000));
@@ -130,9 +128,8 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
 
 void ButtonComboEditor::controls(MenuButtonInput button)
 {
-    // Get the buttons pressed this frame
+    // Get the buttons held this frame
     const uint32_t buttonsHeld = keyGetButton(PadId::CONTROLLER_ONE);
-    this->setButtonsCurrentFrame(buttonsHeld);
 
     // Close this window if the B button has been pressed 3 times in succession
     if (this->checkIfBPressedThreeTimes(buttonsHeld, button))
