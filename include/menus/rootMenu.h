@@ -23,7 +23,7 @@ class RootMenu
     void initErrorWindow(const char *battlesErrorMessage)
     {
         const Window *rootWindowPtr = gRootWindow;
-        ErrorWindow *errorWindowPtr = this->getErrorWindow();
+        ErrorWindow *errorWindowPtr = &this->errorWindow;
 
         errorWindowPtr->setScale(this->scale);
         errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());

@@ -122,11 +122,6 @@ void Menu::setCurrentIndex(uint32_t index)
     this->currentPage = static_cast<uint8_t>(index / this->totalOptionsPerPage);
 }
 
-void Menu::basicLayoutDraw(float scale) const
-{
-    this->basicLayoutDraw(scale, 0.f, 0.f);
-}
-
 void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
 {
     // Make sure the options are set

@@ -33,7 +33,11 @@ void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button);
 void drawMainWindow();
 
 // Draws the main window and options for the current menu
+// Calls drawBasicMenuLayout with offsetX and offsetY set to 0.f
 void drawBasicMenuLayout(CameraId cameraId, void *user);
+
+// Draws the main window and options for the current menu
+void drawBasicMenuLayout(CameraId cameraId, void *user, float offsetX, float offsetY);
 
 // Handles various menu things each frame
 void handleMenu();

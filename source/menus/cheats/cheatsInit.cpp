@@ -81,7 +81,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     nullptr,
 
     "Resolve Fades",
-    nullptr,
+    cheatsMenuResolveFadesInit,
 
     "Lock Flags",
     nullptr,

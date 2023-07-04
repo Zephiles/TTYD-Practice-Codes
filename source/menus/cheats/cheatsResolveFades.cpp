@@ -1,8 +1,162 @@
+#include "menuUtils.h"
 #include "drawText.h"
+#include "classes/window.h"
 #include "menus/cheatsMenu.h"
+#include "menus/rootMenu.h"
 #include "ttyd/fadedrv.h"
 
 #include <cstdint>
+#include <cstdio>
+#include <cinttypes>
+
+const MenuOption gCheatsMenuResolveFadeOptions[] = {
+    "Slot 1:",
+    cheatsMenuResolveFadeHandleResolve,
+
+    "Slot 2:",
+    cheatsMenuResolveFadeHandleResolve,
+
+    "Slot 3:",
+    cheatsMenuResolveFadeHandleResolve,
+
+    "Slot 4:",
+    cheatsMenuResolveFadeHandleResolve,
+
+    "Slot 5:",
+    cheatsMenuResolveFadeHandleResolve,
+};
+
+const MenuFunctions gCheatsMenuResolveFadeInitFuncs = {
+    gCheatsMenuResolveFadeOptions,
+    controlsBasicMenuLayout,
+    cheatsMenuResolveFadesDraw,
+    nullptr, // Exit function not needed
+};
+
+void cheatsMenuResolveFadesInit(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    constexpr uint32_t totalOptions = sizeof(gCheatsMenuResolveFadeOptions) / sizeof(MenuOption);
+    enterNextMenu(&gCheatsMenuResolveFadeInitFuncs, totalOptions);
+}
+
+void CheatsMenu::drawResolveFadesInfo(float offsetY) const
+{
+    // Get the text position for the top-left of the window
+    float tempPosX;
+    float tempPosY;
+    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+
+    // Draw the help text
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    const float scale = this->scale;
+    const float posXBase = tempPosX;
+    const float posYBase = tempPosY;
+    drawText("Select a fade to resolve, if applicable.", posXBase, posYBase, scale, getColorWhite(0xFF));
+
+    // Get the width that is being used by the main text options
+    float textWidth;
+    getTextWidthHeight("Slot 4:", scale, &textWidth, nullptr);
+
+    // Set the text to be a bit to the right of the main text
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    const float textIncrement = 15.f * scale;
+    const float posX = posXBase + textWidth + textIncrement;
+    float posY = posYBase - offsetY;
+
+    char buf[16];
+    const FadeWork *tempFadeWorkPtr = fadeWorkPtr;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr uint32_t totalEntries = sizeof(FadeWork::entry) / sizeof(FadeEntry);
+
+    for (uint32_t i = 0; i < totalEntries; i++)
+    {
+        // Check if the current fade is active
+        const FadeEntry *entry = &tempFadeWorkPtr->entry[i];
+
+        if (entry->flags & 1U)
+        {
+            // Fade is active
+            snprintf(buf, sizeof(buf), "%" PRId32, static_cast<int32_t>(entry->fadeType));
+            drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+        }
+        else
+        {
+            // Fade is not active
+            drawText("None", posX, posY, scale, getColorGrayedOut(0xFF));
+        }
+
+        posY -= lineDecrement;
+    }
+}
+
+void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
+{
+    // Draw the main window and text
+    // Help text will be drawn at the top-left of the window, so draw the main text two lines under it
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * cheatsMenuPtr->getScale();
+    const float offsetY = lineDecrement * 2.f;
+
+    drawBasicMenuLayout(cameraId, user, 0.f, offsetY);
+
+    // Draw the info for the fades
+    cheatsMenuPtr->drawResolveFadesInfo(offsetY);
+
+    // Draw the error window if applicable
+    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+    if (errorWindowPtr->shouldDraw())
+    {
+        errorWindowPtr->draw();
+    }
+}
+
+void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr)
+{
+    const char *errorMessage;
+
+    switch (resolveFade(menuPtr->getCurrentIndex()))
+    {
+        case ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX:
+        {
+            // Index is somehow invalid, so reset it
+            menuPtr->setCurrentIndex(0);
+            return;
+        }
+        case ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_NOT_ACTIVE:
+        {
+            errorMessage = "The selected fade is not active.";
+            break;
+        }
+        case ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_DONT_RESOLVE:
+        {
+            errorMessage = "The selected fade does not need to be resolved.";
+            break;
+        }
+        case ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_SUCCESS:
+        {
+            errorMessage = "The selected fade was successfully resolved.";
+            break;
+        }
+        default:
+        {
+            return;
+        }
+    }
+
+    // Initialize the error window
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+    const Window *rootWindowPtr = gRootWindow;
+
+    errorWindowPtr->setScale(cheatsMenuPtr->getScale());
+    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
+    errorWindowPtr->setText(errorMessage);
+
+    errorWindowPtr->setTimer(3000);
+    errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
+}
 
 ResolveFadeReturnValue resolveFade(uint32_t index)
 {
@@ -17,6 +171,7 @@ ResolveFadeReturnValue resolveFade(uint32_t index)
     FadeEntry *entry = &fadeWorkPtr->entry[index];
     if (!(entry->flags & 1U))
     {
+        // Fade is not active
         return ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_NOT_ACTIVE;
     }
 

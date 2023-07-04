@@ -72,12 +72,13 @@ void StatsMenu::initErrorWindow(bool drawForPartner)
              partnerOrFollowerText);
 
     // Initialize the error window
-    const Window *rootWindowPtr = gRootWindow;
     ErrorWindow *errorWindowPtr = &this->errorWindow;
+    const Window *rootWindowPtr = gRootWindow;
 
-    errorWindowPtr->setTimer(3000);
     errorWindowPtr->setScale(this->scale);
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
     errorWindowPtr->setText(errorMessagePtr);
+
+    errorWindowPtr->setTimer(3000);
     errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
 }

@@ -487,7 +487,7 @@ void StatsMenu::drawPartnerStats()
     float tempPosY;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
-    // Retrieve posXBase and posYBase as a separate variables to avoid repeatedly loading them from the stack when using them
+    // Retrieve posXBase and posYBase as separate variables to avoid repeatedly loading them from the stack when using them
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
     const float posXBase = tempPosX + textWidth + textIncrement;

@@ -312,7 +312,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     drawText(displayBufferPtr, tempPosX, selectedActorTextPosY, scale, textColor);
 
     // Set the text to be a bit to the right of the main text
-    // Retrieve posXBase and posYBase as a separate variables to avoid repeatedly loading them from the stack when using them
+    // Retrieve posXBase and posYBase as separate variables to avoid repeatedly loading them from the stack when using them
     const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
     const float posXBase = tempPosX + textWidth + textIncrement;
     const float posYBase = tempPosY;

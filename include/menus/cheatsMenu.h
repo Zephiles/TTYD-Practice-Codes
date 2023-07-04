@@ -3,7 +3,9 @@
 
 #include "classes/valueEditor.h"
 #include "classes/buttonComboEditor.h"
+#include "classes/errorWindow.h"
 #include "classes/menu.h"
+#include "menus/rootMenu.h"
 #include "ttyd/camdrv.h"
 
 #include <cstdint>
@@ -48,9 +50,9 @@ enum CheatsMenuGenericFlags
     CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO,
 };
 
-enum class ResolveFadeReturnValue : int32_t
+enum class ResolveFadeReturnValue
 {
-    RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX = -1,
+    RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX = 0,
     RESOLVE_FADE_RETURN_TYPE_NOT_ACTIVE,
     RESOLVE_FADE_RETURN_TYPE_DONT_RESOLVE,
     RESOLVE_FADE_RETURN_TYPE_SUCCESS,
@@ -101,6 +103,7 @@ class CheatsMenu
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
+    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
     float getScale() const { return this->scale; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
@@ -109,10 +112,12 @@ class CheatsMenu
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
 
     void drawGenericCheatInfo() const;
+    void drawResolveFadesInfo(float offsetY) const;
 
    private:
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;
+    ErrorWindow errorWindow;
     float scale;
 
     MenuAutoIncrement autoIncrement;
@@ -132,6 +137,10 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
+
+void cheatsMenuResolveFadesInit(Menu *menuPtr);
+void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user);
+void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr);
 
 uint32_t indexToCheatEnabledFlag(uint32_t index);
 uint32_t indexToCheatButtonComboFlag(uint32_t index);
