@@ -26,12 +26,11 @@ void ButtonComboEditor::init(const Window *parentWindow, float scale, uint8_t al
     this->alpha = alpha;
     this->setComboFunc = nullptr;
     this->cancelFunc = nullptr;
+    this->buttonsPrevFrame = 0;
+    this->buttonsCurrentFrame = 0;
     this->timer = 0;
     this->bButtonCounter = 0;
     this->enabled = false;
-
-    clearMemory(this->buttonsHeldPrev, sizeof(this->buttonsHeldPrev));
-    clearMemory(this->buttonsHeldCurrent, sizeof(this->buttonsHeldCurrent));
 
     // Set up the window
     // Initialize it based on the help text
@@ -96,41 +95,15 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
     }
     else if (buttonsHeld)
     {
-        uint32_t i = 0;
-        bool foundDifference = false;
-        MenuButtonInput *buttonsHeldPrevPtr = this->buttonsHeldPrev;
-        const MenuButtonInput *buttonsHeldCurrentPtr = this->buttonsHeldCurrent;
-
-        for (; i < TOTAL_MENU_INPUT_BUTTONS; i++)
+        const uint32_t buttonsCurrentFrame = this->buttonsCurrentFrame;
+        if (this->buttonsPrevFrame != buttonsCurrentFrame)
         {
-            const MenuButtonInput currentButton = buttonsHeldCurrentPtr[i];
+            // Either new button(s) were pressed or some button(s) were released, so copy the current buttons to the previous
+            // buttons
+            this->setButtonsPrevFrame(buttonsCurrentFrame);
 
-            if (currentButton == MenuButtonInput::BUTTON_NONE)
-            {
-                // Reached the end of the inputs, so exit
-                break;
-            }
-
-            if (buttonsHeldPrevPtr[i] != currentButton)
-            {
-                foundDifference = true;
-                break;
-            }
-        }
-
-        if (buttonsHeldPrevPtr[i] != MenuButtonInput::BUTTON_NONE)
-        {
-            // Button(s) were released
-            foundDifference = true;
-        }
-
-        if (foundDifference)
-        {
-            // New button(s) were pressed, so reset the timer
+            // Reset the timer
             this->setTimer(sysMsec2Frame(3000));
-
-            // Copy the values from the current buttons held to the previous buttons held
-            memcpy(buttonsHeldPrevPtr, buttonsHeldCurrentPtr, TOTAL_MENU_INPUT_BUTTONS);
             return false;
         }
         else
@@ -157,7 +130,9 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
 
 void ButtonComboEditor::controls(MenuButtonInput button)
 {
+    // Get the buttons pressed this frame
     const uint32_t buttonsHeld = keyGetButton(PadId::CONTROLLER_ONE);
+    this->setButtonsCurrentFrame(buttonsHeld);
 
     // Close this window if the B button has been pressed 3 times in succession
     if (this->checkIfBPressedThreeTimes(buttonsHeld, button))
@@ -170,9 +145,6 @@ void ButtonComboEditor::controls(MenuButtonInput button)
 
         return;
     }
-
-    // Get the buttons pressed this frame
-    getButtonsPressed(this->buttonsHeldCurrent, buttonsHeld);
 
     // Decrement the timer and check if it's at 0
     if (this->decrementTimerAndCheckIfZero(buttonsHeld))
@@ -245,15 +217,22 @@ void ButtonComboEditor::draw() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void getButtonsPressed(MenuButtonInput *buttonsOut, uint32_t buttons)
+void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
 {
-    // Make sure buttonsOut is cleared out before getting the buttons
-    clearMemory(buttonsOut, TOTAL_MENU_INPUT_BUTTONS);
+    if (!buttons)
+    {
+        // No buttons are pressed, so set the default string to None
+        // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
+        snprintf(stringOut, stringSize, "None");
+        return;
+    }
 
-    uint32_t counter = 1;
-    uint32_t index = 0;
+    // Get the text for each button
+    const char *buttonText;
+    int32_t textLength = 0;
+    bool firstStringWritten = false;
 
-    for (uint32_t i = 0; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
+    for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
     {
         if (i == 7)
         {
@@ -261,39 +240,13 @@ void getButtonsPressed(MenuButtonInput *buttonsOut, uint32_t buttons)
             i++;
         }
 
-        if ((buttons >> i) & 1U)
+        if (!((buttons >> i) & 1U))
         {
-            buttonsOut[index] = static_cast<MenuButtonInput>(counter);
-            index++;
-        }
-    }
-}
-
-void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
-{
-    // stringOut will not be modified if no buttons are pressed, so set the default string to None
-    // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-    snprintf(stringOut, stringSize, "None");
-
-    // Get the text for each button
-    MenuButtonInput buttonsArray[TOTAL_MENU_INPUT_BUTTONS];
-    getButtonsPressed(buttonsArray, buttons);
-
-    int32_t textLength = 0;
-    const char *buttonText;
-    bool firstStringWritten = false;
-
-    for (uint32_t i = 0; i < TOTAL_MENU_INPUT_BUTTONS; i++)
-    {
-        const MenuButtonInput currentButton = buttonsArray[i];
-
-        if (currentButton == MenuButtonInput::BUTTON_NONE)
-        {
-            // Reached the end of the inputs, so exit
-            break;
+            // The current button is not held
+            continue;
         }
 
-        switch (currentButton)
+        switch (static_cast<MenuButtonInput>(counter))
         {
             case MenuButtonInput::DPAD_LEFT:
             {
@@ -357,6 +310,7 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
             }
             default:
             {
+                // Unknown button
                 continue;
             }
         }

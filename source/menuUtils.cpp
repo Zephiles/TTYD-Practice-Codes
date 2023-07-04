@@ -99,9 +99,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
         buttonInput = keyGetButton(PadId::CONTROLLER_ONE);
     }
 
-    uint32_t counter = 1;
-
-    for (uint32_t i = 0; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
+    for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
     {
         if (i == 7)
         {

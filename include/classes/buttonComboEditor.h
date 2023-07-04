@@ -30,6 +30,8 @@ class ButtonComboEditor
         this->enabled = true;
     }
 
+    void setButtonsPrevFrame(uint32_t buttons) { this->buttonsPrevFrame = static_cast<uint16_t>(buttons); }
+    void setButtonsCurrentFrame(uint32_t buttons) { this->buttonsCurrentFrame = static_cast<uint16_t>(buttons); }
     void setTimer(uint32_t timer) { this->timer = static_cast<uint8_t>(timer); }
     void setBButtonCounter(uint32_t count) { this->bButtonCounter = static_cast<uint8_t>(count); }
 
@@ -49,16 +51,15 @@ class ButtonComboEditor
     // Called when the player presses B three times consecutively to cancel setting a button combo
     ButtonComboEditorCancelFunc cancelFunc;
 
-    MenuButtonInput buttonsHeldPrev[TOTAL_MENU_INPUT_BUTTONS];    // All of the buttons held on the previous frame
-    MenuButtonInput buttonsHeldCurrent[TOTAL_MENU_INPUT_BUTTONS]; // All of the buttons held on the current frame
+    uint16_t buttonsPrevFrame;    // The buttons held on the previous frame
+    uint16_t buttonsCurrentFrame; // The buttons held on the current frame
+    uint8_t bButtonCounter;       // Keeps track of consecutive B presses for canceling setting a button combo
+    uint8_t timer;                // For keeping track of the 3 seconds for setting a button combo
 
-    uint8_t timer;          // For keeping track of the 3 seconds for setting a button combo
-    uint8_t bButtonCounter; // Keeps track of consecutive B presses for canceling setting a button combo
-    bool enabled;           // Whether this window is enabled/drawn or not
+    bool enabled;                 // Whether this window is enabled/drawn or not
     uint8_t alpha;
 };
 
-void getButtonsPressed(MenuButtonInput *buttonsOut, uint32_t buttons);
 void buttonsToString(uint32_t buttonsHeld, char *stringOut, uint32_t stringSize);
 
 #endif
