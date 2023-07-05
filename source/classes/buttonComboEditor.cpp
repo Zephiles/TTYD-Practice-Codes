@@ -8,7 +8,6 @@
 #include "ttyd/system.h"
 
 #include <cstdint>
-#include <cstring>
 #include <cstdio>
 #include <cinttypes>
 

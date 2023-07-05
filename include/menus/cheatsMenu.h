@@ -11,6 +11,7 @@
 #include <cstdint>
 
 #define MAX_CHEATS_PER_PAGE 18
+#define CHEATS_TOTAL_AREAS 22
 
 enum CheatsMenuOptions
 {
@@ -113,6 +114,7 @@ class CheatsMenu
 
     void drawGenericCheatInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
+    void drawLockFlagsInfo() const;
 
    private:
     ValueEditor valueEditor;
@@ -126,9 +128,13 @@ class CheatsMenu
 
 extern CheatsMenu *gCheatsMenu;
 extern const MenuOption gCheatsMenuInitOptions[];
+extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
 
 void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
+
+uint32_t indexToCheatEnabledFlag(uint32_t index);
+uint32_t indexToCheatButtonComboFlag(uint32_t index);
 
 void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr);
@@ -140,12 +146,15 @@ void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
 
 void cheatsMenuResolveFadesInit(Menu *menuPtr);
 void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user);
+
 void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr);
-
-uint32_t indexToCheatEnabledFlag(uint32_t index);
-uint32_t indexToCheatButtonComboFlag(uint32_t index);
-
 ResolveFadeReturnValue resolveFade(uint32_t index);
+
+void cheatsMenuLockFlagsInit(Menu *menuPtr);
+void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user);
+
+void cheatsMenuLockFlagsLockSeletedFlags(Menu *menuPtr);
+void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr);
 
 void *getLockFlagsRegionPtr(uint32_t region);
 uint32_t getLockFlagsRegionSize(uint32_t region);

@@ -97,7 +97,7 @@ void preventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeA
     {
         // Prevent the first option from being selected, so that the game does not crash when reading the diary
         // Only needs to run when not on the train
-        if (strcmp(NextArea, "rsh") != 0)
+        if (strcmp(_next_area, "rsh") != 0)
         {
             if (selectedOption == DiaryTextboxOption::ThirdOption)
             {
@@ -186,7 +186,7 @@ int32_t crashScreenDecrementYPos()
 
 const char *getCustomMessage(const char *key)
 {
-    const char *nextAreaPtr = NextArea;
+    const char *nextAreaPtr = _next_area;
 
     if (strcmp(key, "stg6_rsh_diary_01") == 0)
     {

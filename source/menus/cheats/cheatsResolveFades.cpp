@@ -66,14 +66,14 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     float posY = posYBase - offsetY;
 
     char buf[16];
-    const FadeWork *tempFadeWorkPtr = fadeWorkPtr;
+    const FadeWork *workPtr = fadeWorkPtr;
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     constexpr uint32_t totalEntries = sizeof(FadeWork::entry) / sizeof(FadeEntry);
 
     for (uint32_t i = 0; i < totalEntries; i++)
     {
         // Check if the current fade is active
-        const FadeEntry *entry = &tempFadeWorkPtr->entry[i];
+        const FadeEntry *entry = &workPtr->entry[i];
 
         if (entry->flags & 1U)
         {

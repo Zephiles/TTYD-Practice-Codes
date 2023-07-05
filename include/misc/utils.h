@@ -26,6 +26,7 @@ bool checkButtonsEveryFrame(uint32_t buttons);
 bool checkButtonComboEveryFrame(uint32_t combo);
 bool checkButtonComboDemo(uint32_t combo);
 bool compareStringToNextMap(const char *str);
+uint32_t getSequencePosition();
 void setSequencePosition(uint32_t value);
 void setSeqMapChange(const char *map, const char *bero);
 void *clearMemory(void *ptr, uint32_t size);

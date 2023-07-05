@@ -84,7 +84,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuResolveFadesInit,
 
     "Lock Flags",
-    nullptr,
+    cheatsMenuLockFlagsInit,
 
     "Manage Flags",
     nullptr,
@@ -98,6 +98,31 @@ const MenuFunctions gCheatsMenuInitFuncs = {
     controlsBasicMenuLayout,
     drawBasicMenuLayout,
     cheatsMenuInitExit,
+};
+
+const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2] = {
+    "gor", "Rogueport",
+    "tik", "Rogueport Sewers",
+    "hei", "Petal Meadows",
+    "nok", "Petalburg",
+    "gon", "Hooktail Castle",
+    "win", "Boggly Woods",
+    "mri", "The Great Tree",
+    "tou", "Glitzville",
+    "usu", "Twilight Town",
+    "gra", "Twilight Trail",
+    "jin", "Creepy Steeple",
+    "muj", "Keelhaul Key",
+    "dou", "Pirate's Grotto",
+    "hom", "Riverside Station (Outside area with the train)",
+    "rsh", "Excess Express",
+    "eki", "Riverside Station",
+    "pik", "Poshley Heights",
+    "bom", "Fahr Outpost",
+    "moo", "Moon",
+    "aji", "X-Naut Fortress",
+    "las", "Palace of Shadow",
+    "jon", "Pit of 100 Trials",
 };
 
 void cheatsMenuInit(Menu *menuPtr)

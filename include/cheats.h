@@ -316,9 +316,10 @@ class LockFlagsCheat
     ~LockFlagsCheat() {}
 
     uint32_t getSequencePosition() const { return this->sequencePosition; }
+    void setSequencePosition(uint32_t sequence) { this->sequencePosition = static_cast<uint16_t>(sequence); }
 
-    const char *getLswAreaLocked() const { return &this->lswAreaLocked[0]; }
-    const char *getLswfAreaLocked() const { return &this->lswfAreaLocked[0]; }
+    char *getLswAreaLocked() { return &this->lswAreaLocked[0]; }
+    char *getLswfAreaLocked() { return &this->lswfAreaLocked[0]; }
 
     uint8_t *getPrevMemoryPtr(uint32_t region)
     {
@@ -329,6 +330,47 @@ class LockFlagsCheat
         }
 
         return this->prevMemory[region];
+    }
+
+    uint8_t *allocMemoryForPrevMemory(uint32_t region, uint32_t size)
+    {
+        // Make sure the region is valid
+        if (region >= TOTAL_LOCK_FLAGS_OPTIONS)
+        {
+            return nullptr;
+        }
+
+        uint8_t **prevMemory = &this->prevMemory[region];
+        uint8_t *prevMemoryPtr = *prevMemory;
+
+        if (!prevMemoryPtr)
+        {
+            prevMemoryPtr = new uint8_t[size];
+            *prevMemory = prevMemoryPtr;
+        }
+
+        return prevMemoryPtr;
+    }
+
+    uint8_t *freePrevMemory(uint32_t region)
+    {
+        // Make sure the region is valid
+        if (region >= TOTAL_LOCK_FLAGS_OPTIONS)
+        {
+            return nullptr;
+        }
+
+        uint8_t **prevMemory = &this->prevMemory[region];
+        uint8_t *prevMemoryPtr = *prevMemory;
+
+        if (prevMemoryPtr)
+        {
+            delete prevMemoryPtr;
+            prevMemoryPtr = nullptr;
+            *prevMemory = prevMemoryPtr;
+        }
+
+        return prevMemoryPtr;
     }
 
    private:

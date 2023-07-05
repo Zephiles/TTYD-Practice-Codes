@@ -55,7 +55,7 @@ extern "C"
 {
     extern char _next_bero[32];
     extern char _next_map[32];
-    extern char NextArea[32];
+    extern char _next_area[32];
 
     // _relUnLoad
     // _load

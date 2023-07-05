@@ -1489,57 +1489,46 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
         }
 
         // Restore the memory
-        if ((i == LockFlagsOptions::LOCK_FLAGS_GW) || i == LockFlagsOptions::LOCK_FLAGS_GF)
+        // Do other stuff depending on the index
+        switch (i)
         {
-            // Restore the GWs or GFs
-            void *sourceMemory;
-            uint32_t sourceSize;
-            getLockFlagsRegionPtrAndSize(i, &sourceMemory, &sourceSize);
-            memcpy(sourceMemory, prevMemory, sourceSize);
-        }
-        else
-        {
-            // Do other stuff depending on the index
-            switch (i)
+            case LockFlagsOptions::LOCK_FLAGS_GSW:
             {
-                case LockFlagsOptions::LOCK_FLAGS_GSW:
-                {
-                    // Restore the sequence position
-                    setSequencePosition(lockFlagsPtr->getSequencePosition());
-                    break;
-                }
-                case LockFlagsOptions::LOCK_FLAGS_LSW:
-                case LockFlagsOptions::LOCK_FLAGS_LSWF:
-                {
-                    // Only restore if currently in the original area where the flag was set
-                    const char *area;
-                    if (i == LockFlagsOptions::LOCK_FLAGS_LSW)
-                    {
-                        area = lockFlagsPtr->getLswAreaLocked();
-                    }
-                    else
-                    {
-                        area = lockFlagsPtr->getLswfAreaLocked();
-                    }
-
-                    if (strcmp(area, NextArea) != 0)
-                    {
-                        continue;
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
+                // Restore the sequence position
+                setSequencePosition(lockFlagsPtr->getSequencePosition());
+                break;
             }
+            case LockFlagsOptions::LOCK_FLAGS_LSW:
+            case LockFlagsOptions::LOCK_FLAGS_LSWF:
+            {
+                // Only restore if currently in the original area where the flag was set
+                const char *area;
+                if (i == LockFlagsOptions::LOCK_FLAGS_LSW)
+                {
+                    area = lockFlagsPtr->getLswAreaLocked();
+                }
+                else
+                {
+                    area = lockFlagsPtr->getLswfAreaLocked();
+                }
 
-            // Restore the standard flags
-            void *sourceMemory;
-            uint32_t sourceSize;
-            getLockFlagsRegionPtrAndSize(i, &sourceMemory, &sourceSize);
-            memcpy(sourceMemory, prevMemory, sourceSize);
+                if (strcmp(area, _next_area) != 0)
+                {
+                    continue;
+                }
+                break;
+            }
+            default:
+            {
+                break;
+            }
         }
+
+        // Restore the standard flags
+        void *sourceMemory;
+        uint32_t sourceSize;
+        getLockFlagsRegionPtrAndSize(i, &sourceMemory, &sourceSize);
+        memcpy(sourceMemory, prevMemory, sourceSize);
     }
 }
 

@@ -55,6 +55,11 @@ bool checkButtonComboDemo(uint32_t combo)
     return demoPadPtr->buttonsDown & combo;
 }
 
+uint32_t getSequencePosition()
+{
+    return swByteGet(0);
+}
+
 void setSequencePosition(uint32_t value)
 {
     swByteSet(0, value);

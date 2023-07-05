@@ -78,7 +78,7 @@
 // data
 80418388:_next_bero
 804183A8:_next_map
-804183C8:NextArea
+804183C8:_next_area
 
 // seq_title.o
 // text
