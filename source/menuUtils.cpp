@@ -171,6 +171,7 @@ void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
 
 void drawMainWindow()
 {
+    // Some drawing functions call this by itself rather than drawBasicMenuLayout, so must call menuIsHidden here as well
     if (gMod.menuIsHidden())
     {
         return;
@@ -188,6 +189,11 @@ void drawBasicMenuLayout(CameraId cameraId, void *user, float offsetX, float off
 {
     (void)cameraId;
     (void)user;
+
+    if (gMod.menuIsHidden())
+    {
+        return;
+    }
 
     // Draw the main window
     drawMainWindow();
