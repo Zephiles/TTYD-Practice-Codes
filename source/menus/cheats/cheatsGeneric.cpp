@@ -69,7 +69,7 @@ void cheatsMenuGenericDPadControls(MenuButtonInput button, Menu *menuPtr)
                          menuPtr->getCurrentIndexPtr(),
                          menuPtr->getCurrentPagePtr(),
                          totalOptions,
-                         MAX_CHEATS_PER_PAGE,
+                         totalOptions,
                          1,
                          false);
 }
@@ -197,7 +197,7 @@ void cheatsMenuGenericToggleFlag(Menu *menuPtr)
     (void)menuPtr;
 
     const uint32_t cheatEnabledFlag = indexToCheatEnabledFlag(gCheatsMenu->getSelectedCheat());
-    gCheats->toggleEnabledFlag(cheatEnabledFlag);
+    cheatsMenuToggleEnableFlag(cheatEnabledFlag);
 }
 
 void cheatsMenuGenericCancelSetNewButtonCombo()
@@ -210,7 +210,7 @@ void cheatsMenuGenericCancelSetNewButtonCombo()
 void cheatsMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
 {
     const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(gCheatsMenu->getSelectedCheat());
-    gCheats->setCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
+    cheatsMenuSetCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
 
     // Close the button combo editor
     cheatsMenuGenericCancelSetNewButtonCombo();

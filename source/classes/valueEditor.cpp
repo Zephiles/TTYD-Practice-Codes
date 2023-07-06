@@ -5,7 +5,6 @@
 #include "classes/valueEditor.h"
 #include "classes/window.h"
 #include "misc/utils.h"
-#include "ttyd/fontmgr.h"
 
 #include <cstdint>
 #include <cfloat>
@@ -2075,12 +2074,12 @@ void ValueEditor::draw()
     drawText(helpText, posX, posY, scale, getColorWhite(0xFF));
 
     // Draw various things based on flags that are set
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-
     // Set posY to be two lines under the help text
-    uint16_t lineCount;
-    FontGetMessageWidthLine(this->helpText, &lineCount);
-    posY -= (intToFloat(lineCount + 3) * lineDecrement);
+    float height;
+    getTextWidthHeight(helpText, scale, nullptr, &height);
+
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    posY -= (height + (lineDecrement * 2.f));
 
     ValueType value;
     if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))

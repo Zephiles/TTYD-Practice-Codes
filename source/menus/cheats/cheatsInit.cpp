@@ -75,7 +75,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuGenericNoButtonComboInit,
 
     "Disable Certain Sounds",
-    nullptr,
+    cheatsMenuDisableCertainSoundsInit,
 
     "Force NPC Item Drop",
     nullptr,
@@ -147,6 +147,16 @@ void cheatsMenuInitExit()
 {
     delete gCheatsMenu;
     gCheatsMenu = nullptr;
+}
+
+bool cheatsMenuToggleEnableFlag(uint32_t cheatEnabledFlag)
+{
+    return gCheats->toggleEnabledFlag(cheatEnabledFlag);
+}
+
+void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
+{
+    gCheats->setCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
 }
 
 uint32_t indexToCheatEnabledFlag(uint32_t index)

@@ -113,6 +113,7 @@ class CheatsMenu
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
 
     void drawGenericCheatInfo() const;
+    void drawDisableCertainSoundsInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
 
@@ -133,9 +134,13 @@ extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
 void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
 
+// cheatsInit
+bool cheatsMenuToggleEnableFlag(uint32_t cheatEnabledFlag);
+void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 uint32_t indexToCheatEnabledFlag(uint32_t index);
 uint32_t indexToCheatButtonComboFlag(uint32_t index);
 
+// cheatsGeneric
 void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericControls(Menu *menuPtr, MenuButtonInput button);
@@ -144,12 +149,22 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
 
+// cheatsDisableCertainSounds
+void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);
+void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user);
+
+void cheatsMenuTogglePauseMenuZMenuSounds(Menu *menuPtr);
+void cheatsMenuToggleBackgroundMusic(Menu *menuPtr);
+void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr);
+
+// cheatsResolveFades
 void cheatsMenuResolveFadesInit(Menu *menuPtr);
 void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user);
 
 void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr);
 ResolveFadeReturnValue resolveFade(uint32_t index);
 
+// cheatsLockFlags
 void cheatsMenuLockFlagsInit(Menu *menuPtr);
 void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user);
 
@@ -160,6 +175,7 @@ void *getLockFlagsRegionPtr(uint32_t region);
 uint32_t getLockFlagsRegionSize(uint32_t region);
 void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size);
 
+// cheatsClearAreaFlags
 void clearAreaFlags(ClearAreaFlagsIndex index);
 
 #endif
