@@ -135,7 +135,7 @@ void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
 
 // cheatsInit
-bool cheatsMenuToggleEnableFlag(uint32_t cheatEnabledFlag);
+bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag);
 void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 uint32_t indexToCheatEnabledFlag(uint32_t index);
 uint32_t indexToCheatButtonComboFlag(uint32_t index);

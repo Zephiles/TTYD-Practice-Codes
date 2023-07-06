@@ -149,7 +149,7 @@ void cheatsMenuInitExit()
     gCheatsMenu = nullptr;
 }
 
-bool cheatsMenuToggleEnableFlag(uint32_t cheatEnabledFlag)
+bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag)
 {
     return gCheats->toggleEnabledFlag(cheatEnabledFlag);
 }

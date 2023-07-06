@@ -86,14 +86,14 @@ void cheatsMenuTogglePauseMenuZMenuSounds(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    cheatsMenuToggleEnableFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU);
+    cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU);
 }
 
 void cheatsMenuToggleBackgroundMusic(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    if (cheatsMenuToggleEnableFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC))
+    if (cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC))
     {
         // Turn off the current background music
         psndBGMOff(0x200);
@@ -105,7 +105,7 @@ void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    if (cheatsMenuToggleEnableFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS))
+    if (cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS))
     {
         // Turn off the current environment sounds
         psndENVOff(0x200);

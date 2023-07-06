@@ -197,7 +197,7 @@ void cheatsMenuGenericToggleFlag(Menu *menuPtr)
     (void)menuPtr;
 
     const uint32_t cheatEnabledFlag = indexToCheatEnabledFlag(gCheatsMenu->getSelectedCheat());
-    cheatsMenuToggleEnableFlag(cheatEnabledFlag);
+    cheatsMenuToggleEnabledFlag(cheatEnabledFlag);
 }
 
 void cheatsMenuGenericCancelSetNewButtonCombo()
