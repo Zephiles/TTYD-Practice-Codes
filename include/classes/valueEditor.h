@@ -26,7 +26,8 @@ enum ValueEditorFlag
     DRAW_BUTTON_Z_SET_MIN,
 
     // Flags for other misc things
-    BATTLES_CHANGE_HELD_ITEM, // Battles Stats menu
+    BATTLES_CHANGE_HELD_ITEM,   // Battles Stats menu
+    CHEATS_CHANGE_DROPPED_ITEM, // Force NPC Item Drop cheat
 
     // Only one of the following can be used at any given time
     DRAW_ITEM_ICON_AND_TEXT,    // Inventory menu, Battles Stats menu, Spawn Item cheat

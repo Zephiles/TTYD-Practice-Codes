@@ -148,11 +148,11 @@ class SaveAnywhereCheat
     int32_t threadId;
 };
 
-class NpcForceItemDropCheat
+class ForceNpcItemDropCheat
 {
    public:
-    NpcForceItemDropCheat() { this->item = ItemId::ITEM_SLEEPY_SHEEP; }
-    ~NpcForceItemDropCheat() {}
+    ForceNpcItemDropCheat() { this->item = ItemId::ITEM_SLEEPY_SHEEP; }
+    ~ForceNpcItemDropCheat() {}
 
     ItemId getItemDrop() const { return this->item; }
     void setItemDrop(ItemId item) { this->item = item; }
@@ -431,7 +431,7 @@ class Cheats
 
     SaveLoadCoordinatesCheats *getSaveLoadCoordinatesCheatsPtr() { return &this->saveLoadCoordinates; }
     SaveAnywhereCheat *getSaveAnywhereCheatPtr() { return &this->saveAnywhere; }
-    NpcForceItemDropCheat *getNpcForceItemDropCheatPtr() { return &this->npcForceItemDrop; }
+    ForceNpcItemDropCheat *getForceNpcItemDropCheatPtr() { return &this->forceNpcItemDrop; }
     GenerateLagSpikeCheat *getGenerateLagSpikeCheatPtr() { return &this->generateLagSpike; }
     SpeedUpMarioCheat *getSpeedUpMarioCheatPtr() { return &this->speedUpMario; }
     ReloadRoomCheat *getReloadRoomCheatPtr() { return &this->reloadRoom; }
@@ -450,7 +450,7 @@ class Cheats
     FrameAdvanceCheat frameAdvance;
     SpawnItemCheat spawnItem;
     LockFlagsCheat lockFlags;
-    NpcForceItemDropCheat npcForceItemDrop;
+    ForceNpcItemDropCheat forceNpcItemDrop;
     GenerateLagSpikeCheat generateLagSpike;
     SpeedUpMarioCheat speedUpMario;
     ReloadRoomCheat reloadRoom;

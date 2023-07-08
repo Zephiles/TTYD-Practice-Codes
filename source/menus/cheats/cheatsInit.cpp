@@ -82,7 +82,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuDisableCertainSoundsInit,
 
     "Force NPC Item Drop",
-    nullptr,
+    cheatsMenuForceNpcItemDropInit,
 
     "Resolve Fades",
     cheatsMenuResolveFadesInit,

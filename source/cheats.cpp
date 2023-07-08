@@ -342,7 +342,7 @@ int32_t forceNpcItemDrop(void *ptr)
 
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP))
     {
-        return static_cast<int32_t>(cheatsPtr->getNpcForceItemDropCheatPtr()->getItemDrop());
+        return static_cast<int32_t>(cheatsPtr->getForceNpcItemDropCheatPtr()->getItemDrop());
     }
 
     return *reinterpret_cast<int32_t *>(reinterpret_cast<uint32_t>(ptr) + 0x23C);

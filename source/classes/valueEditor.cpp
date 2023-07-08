@@ -1097,6 +1097,27 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
     return false;
 }
 
+uint32_t cheatsChangeDroppedItemSkipValues(uint32_t value, bool increment)
+{
+    // Skip everything after Fresh Juice and before Power Jump
+    constexpr uint32_t freshJuiceValue = static_cast<uint32_t>(ItemId::ITEM_FRESH_JUICE);
+    constexpr uint32_t powerJumpValue = static_cast<uint32_t>(ItemId::ITEM_POWER_JUMP);
+
+    if ((value > freshJuiceValue) && (value < powerJumpValue))
+    {
+        if (increment)
+        {
+            value = powerJumpValue;
+        }
+        else
+        {
+            value = freshJuiceValue;
+        }
+    }
+
+    return value;
+}
+
 uint32_t battlesChangeHeldItemSkipValues(uint32_t value, bool increment)
 {
     // Skip Trade Off
@@ -1330,6 +1351,12 @@ void ValueEditor::adjustValue(bool increment)
             if (this->flagIsSet(ValueEditorFlag::BATTLES_CHANGE_HELD_ITEM))
             {
                 newValue = battlesChangeHeldItemSkipValues(newValue, increment);
+            }
+
+            // If changing the dropped item from enemies, then check for values to skip
+            else if (this->flagIsSet(ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM))
+            {
+                newValue = cheatsChangeDroppedItemSkipValues(newValue, increment);
             }
 
             // Set the new value

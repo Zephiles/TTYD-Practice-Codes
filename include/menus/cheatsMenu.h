@@ -65,6 +65,11 @@ enum CheatsMenuGenerateLagSpike
     CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID = 0,
 };
 
+enum CheatsMenuForceNpcItemDrop
+{
+    CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID = 0,
+};
+
 enum class ResolveFadeReturnValue
 {
     RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX = 0,
@@ -130,6 +135,7 @@ class CheatsMenu
     void drawFrameAdvanceInfo() const;
     void drawGenerateLagSpikeInfo() const;
     void drawDisableCertainSoundsInfo() const;
+    void drawForceNpcItemDropInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
 
@@ -193,6 +199,14 @@ void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user);
 void cheatsMenuTogglePauseMenuZMenuSounds(Menu *menuPtr);
 void cheatsMenuToggleBackgroundMusic(Menu *menuPtr);
 void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr);
+
+// cheatsForceNpcItemDrop
+void cheatsMenuForceNpcItemDropInit(Menu *menuPtr);
+void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user);
+
+void cheatsMenuForceNpcItemDropToggleFlag(Menu *menuPtr);
+void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr);
 
 // cheatsResolveFades
 void cheatsMenuResolveFadesInit(Menu *menuPtr);
