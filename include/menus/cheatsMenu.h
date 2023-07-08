@@ -13,6 +13,9 @@
 #define MAX_CHEATS_PER_PAGE 18
 #define CHEATS_TOTAL_AREAS 22
 
+// Reserve the last flag for changing button combos
+#define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 31
+
 enum CheatsMenuOptions
 {
     CHEATS_MENU_CHANGE_SEQUENCE = 0,
@@ -45,10 +48,16 @@ enum CheatsMenuOptions
     CHEATS_MENU_CLEAR_AREA_FLAGS,
 };
 
+enum CheatsMenuFrameAdvanceOptions
+{
+    CHEATS_MENU_FRAME_ADVANCE_TURN_ON_OFF = 0,
+    CHEATS_MENU_FRAME_ADVANCE_CHANGE_FRAME_ADVANCE_COMBO,
+    CHEATS_MENU_FRAME_ADVANCE_CHANGE_PAUSE_RESUME_COMBO,
+};
+
 enum CheatsMenuGenericFlags
 {
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
-    CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO,
 };
 
 enum class ResolveFadeReturnValue
@@ -113,6 +122,7 @@ class CheatsMenu
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
 
     void drawGenericCheatInfo() const;
+    void drawFrameAdvanceInfo() const;
     void drawDisableCertainSoundsInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
@@ -130,6 +140,7 @@ class CheatsMenu
 extern CheatsMenu *gCheatsMenu;
 extern const MenuOption gCheatsMenuInitOptions[];
 extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
+extern const char *gCheatsMenuTextTurnOnOff;
 
 void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
@@ -137,6 +148,9 @@ void cheatsMenuInitExit();
 // cheatsInit
 bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag);
 void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
+void cheatsMenuCancelSetNewButtonCombo();
+void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
+void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc);
 uint32_t indexToCheatEnabledFlag(uint32_t index);
 uint32_t indexToCheatButtonComboFlag(uint32_t index);
 
@@ -148,6 +162,14 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
+
+// cheatsFrameAdvance
+void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
+void cheatsMenuFrameAdvanceControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user);
+
+void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr);
+void cheatsMenuFrameAdvanceChangeButtonCombo(Menu *menuPtr);
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);

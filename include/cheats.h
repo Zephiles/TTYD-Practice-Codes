@@ -268,6 +268,7 @@ class FrameAdvancePrevInputs
 
    private:
     // These are ordered this way to allow memcpying from both current pads to both previous pads at once
+    // The code assumes that padPrevFrame is first
     PadStatus padPrevFrame[4];            // One for each controller port
     DEMOPadStatus demoPadPrevFrame[4];    // One for each controller port
     PadStatus padCurrentFrame[4];         // One for each controller port
@@ -305,6 +306,15 @@ class FrameAdvanceCheat
         }
 
         return prevInputsPtr;
+    }
+
+    void clearAllInputs()
+    {
+        FrameAdvancePrevInputs *prevInputs = this->prevInputs;
+        if (prevInputs)
+        {
+            clearMemory(prevInputs->getPadPrevFramePtr(), sizeof(FrameAdvancePrevInputs));
+        }
     }
 
    private:

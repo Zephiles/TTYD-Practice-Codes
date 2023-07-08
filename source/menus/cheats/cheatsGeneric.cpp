@@ -10,7 +10,7 @@
 #include <cstdint>
 
 const MenuOption gCheatsMenuGenericOptions[] = {
-    "Turn On/Off",
+    gCheatsMenuTextTurnOnOff,
     cheatsMenuGenericToggleFlag,
 
     "Change Button Combo",
@@ -79,7 +79,7 @@ void cheatsMenuGenericControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuGenericFlags::CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO))
+    if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
     {
         cheatsMenuPtr->getButtonComboEditor()->controls(button);
         return;
@@ -200,34 +200,13 @@ void cheatsMenuGenericToggleFlag(Menu *menuPtr)
     cheatsMenuToggleEnabledFlag(cheatEnabledFlag);
 }
 
-void cheatsMenuGenericCancelSetNewButtonCombo()
-{
-    gCheatsMenu->getButtonComboEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuGenericFlags::CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO);
-    gMod.stopChangingButtonCombos();
-}
-
 void cheatsMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
 {
     const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(gCheatsMenu->getSelectedCheat());
-    cheatsMenuSetCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
-
-    // Close the button combo editor
-    cheatsMenuGenericCancelSetNewButtonCombo();
+    cheatsMenuSetNewButtonCombo(cheatButtonComboFlag, buttonCombo);
 }
 
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr)
 {
-    gMod.startChangingButtonCombos();
-
-    // Bring up the window for changing button combos
-    menuPtr->setFlag(CheatsMenuGenericFlags::CHEATS_GENERIC_FLAG_CHANGING_BUTTON_COMBO);
-
-    // Initialize the button combo editor
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
-
-    const Window *rootWindowPtr = gRootWindow;
-    buttonComboEditorPtr->init(rootWindowPtr, cheatsMenuPtr->getScale(), rootWindowPtr->getAlpha());
-    buttonComboEditorPtr->startDrawing(cheatsMenuGenericSetNewButtonCombo, cheatsMenuGenericCancelSetNewButtonCombo);
+    cheatsMenuChangeButtonCombo(menuPtr, cheatsMenuGenericSetNewButtonCombo);
 }

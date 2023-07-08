@@ -1,6 +1,9 @@
 #include "menuUtils.h"
 #include "cxx.h"
 #include "cheats.h"
+#include "mod.h"
+#include "classes/buttonComboEditor.h"
+#include "classes/window.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
 
@@ -61,7 +64,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuGenericHasButtonComboInit,
 
     "Frame Advance (Experimental)",
-    nullptr,
+    cheatsMenuFrameAdvanceInit,
 
     "Generate Lag Spike",
     nullptr,
@@ -126,6 +129,8 @@ const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2] = {
     "jon", "Pit of 100 Trials",
 };
 
+const char *gCheatsMenuTextTurnOnOff = "Turn On/Off";
+
 void cheatsMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
@@ -158,6 +163,37 @@ bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag)
 void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
 {
     gCheats->setCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
+}
+
+void cheatsMenuCancelSetNewButtonCombo()
+{
+    gCheatsMenu->getButtonComboEditor()->stopDrawing();
+    gMenu->clearFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
+    gMod.stopChangingButtonCombos();
+}
+
+void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
+{
+    cheatsMenuSetCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
+
+    // Close the button combo editor
+    cheatsMenuCancelSetNewButtonCombo();
+}
+
+void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc)
+{
+    gMod.startChangingButtonCombos();
+
+    // Bring up the window for changing button combos
+    menuPtr->setFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
+
+    // Initialize the button combo editor
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
+
+    const Window *rootWindowPtr = gRootWindow;
+    buttonComboEditorPtr->init(rootWindowPtr, cheatsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    buttonComboEditorPtr->startDrawing(setComboFunc, cheatsMenuCancelSetNewButtonCombo);
 }
 
 uint32_t indexToCheatEnabledFlag(uint32_t index)

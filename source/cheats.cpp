@@ -1142,13 +1142,19 @@ void frameAdvance()
 
 void preventViPostCallBackOnFramePause(uint32_t retraceCount)
 {
-    // If the game is paused, then don't run
-    if (gCheats->miscFlagIsSet(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED))
+    Cheats *cheatsPtr = gCheats;
+    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FRAME_ADVANCE))
+    {
+        // Call the original function
+        return g_viPostCallback_trampoline(retraceCount);
+    }
+
+    // If the game is paused, then don't call the original function
+    if (cheatsPtr->miscFlagIsSet(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED))
     {
         // Call psndMainInt to prevent the audio from looping
         // viPostCallback normally does this immediately before returning
-        psndMainInt();
-        return;
+        return psndMainInt();
     }
 
     // Call the original function
