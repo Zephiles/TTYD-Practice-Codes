@@ -1,4 +1,5 @@
 #include "menuUtils.h"
+#include "cxx.h"
 #include "drawText.h"
 #include "classes/window.h"
 #include "menus/rootMenu.h"

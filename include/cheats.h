@@ -2,6 +2,7 @@
 #define CHEATS_H
 
 #include "mod.h"
+#include "cxx.h"
 #include "classes/valueEditor.h"
 #include "menus/cheatsMenu.h"
 #include "gc/pad.h"

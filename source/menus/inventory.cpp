@@ -1,6 +1,7 @@
 #include "menuUtils.h"
 #include "drawIcon.h"
 #include "drawText.h"
+#include "cxx.h"
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "menus/inventoryMenu.h"

@@ -1,4 +1,5 @@
 #include "menuUtils.h"
+#include "cxx.h"
 #include "cheats.h"
 #include "classes/menu.h"
 #include "gc/pad.h"
