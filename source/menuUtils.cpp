@@ -9,6 +9,7 @@
 #include "ttyd/win_main.h"
 
 #include <cstdint>
+#include <cmath>
 
 Menu *gMenu = nullptr;
 
@@ -764,4 +765,14 @@ void menuControlsHorizontal(MenuButtonInput button,
     {
         *currentPagePtr = static_cast<uint8_t>(currentPage);
     }
+}
+
+__attribute__((noinline)) int32_t classifyFloat(float value)
+{
+    return std::fpclassify(value);
+}
+
+__attribute__((noinline)) int32_t classifyDouble(double value)
+{
+    return std::fpclassify(value);
 }

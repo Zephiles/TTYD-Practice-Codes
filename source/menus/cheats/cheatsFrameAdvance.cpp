@@ -1,6 +1,7 @@
 #include "menuUtils.h"
 #include "drawText.h"
 #include "cheats.h"
+#include "classes/window.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"

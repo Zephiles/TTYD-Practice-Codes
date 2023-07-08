@@ -28,7 +28,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuGenericHasButtonComboInit,
 
     "Modify Mario's Coordinates",
-    nullptr,
+    cheatsMenuModifyMariosCoordinatesInit,
 
     "Spawn Item",
     cheatsMenuGenericHasButtonComboInit,

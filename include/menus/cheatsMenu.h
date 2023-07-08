@@ -60,6 +60,11 @@ enum CheatsMenuGenericFlags
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
 };
 
+enum CheatsMenuModifyMariosCoordinates
+{
+    CHEATS_MODIFY_MARIOS_COORDINATES_FLAG_CURRENTLY_MODIFYING_COORDINATE = 0,
+};
+
 enum CheatsMenuGenerateLagSpike
 {
     CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID = 0,
@@ -132,6 +137,7 @@ class CheatsMenu
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
 
     void drawGenericCheatInfo() const;
+    void drawModifyMariosCoordinatesInfo() const;
     void drawFrameAdvanceInfo() const;
     void drawGenerateLagSpikeInfo() const;
     void drawDisableCertainSoundsInfo() const;
@@ -174,6 +180,14 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
+
+// cheatsModifyMariosCoordinates
+void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);
+void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user);
+
+void cheatsMenuModifyMariosCoordinatesToggleFlag(Menu *menuPtr);
+void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr);
 
 // cheatsFrameAdvance
 void cheatsMenuFrameAdvanceInit(Menu *menuPtr);

@@ -7,7 +7,6 @@
 #include "misc/utils.h"
 
 #include <cstdint>
-#include <cfloat>
 #include <cmath>
 #include <cstring>
 #include <cstdio>
@@ -42,11 +41,24 @@ void ValueEditor::init(const void *valuePtr,
     this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
 
+    // If the value is a float/double and is being handled as hex, then handle them as u32/u64 respectively
+    const bool handleAsHex = this->flagIsSet(ValueEditorFlag::HANDLE_AS_HEX);
+    if (handleAsHex)
+    {
+        if (type == VariableType::f32)
+        {
+            type = VariableType::u32;
+        }
+        else if (type == VariableType::f64)
+        {
+            type = VariableType::u64;
+        }
+    }
+
     // Set the min and max based on the type, and get the default max digits for the number
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
-    const bool handleAsHex = this->flagIsSet(ValueEditorFlag::HANDLE_AS_HEX);
-
     uint32_t maxDigits = 1;
+
     switch (type)
     {
         case VariableType::s8:
@@ -205,14 +217,14 @@ void ValueEditor::init(const void *valuePtr,
         {
             if (valueIsSigned)
             {
-                this->minValue.f32 = FLT_MIN;
+                this->minValue.f32 = MIN_FLOAT_VALUE;
             }
             else
             {
                 this->minValue.f32 = 0.f;
             }
 
-            this->maxValue.f32 = FLT_MAX;
+            this->maxValue.f32 = MAX_FLOAT_VAlUE;
 
             // Subtract 1 to get the max digit
             maxDigits = MAX_DOUBLE_LENGTH - 1;
@@ -228,14 +240,14 @@ void ValueEditor::init(const void *valuePtr,
         {
             if (valueIsSigned)
             {
-                this->minValue.f64 = DBL_MIN;
+                this->minValue.f64 = MIN_DOUBLE_VALUE;
             }
             else
             {
                 this->maxValue.f64 = 0.0;
             }
 
-            this->maxValue.f64 = DBL_MAX;
+            this->maxValue.f64 = MAX_DOUBLE_VAlUE;
 
             // Subtract 1 to get the max digit
             maxDigits = MAX_DOUBLE_LENGTH - 1;
@@ -295,19 +307,6 @@ void ValueEditor::init(const void *valuePtr,
         default:
         {
             break;
-        }
-    }
-
-    // If the value is a float/double and is being handled as hex, then handle them as u32/u64 respectively
-    if (handleAsHex)
-    {
-        if (type == VariableType::f32)
-        {
-            type = VariableType::u32;
-        }
-        else if (type == VariableType::f64)
-        {
-            type = VariableType::u64;
         }
     }
 
@@ -1401,7 +1400,7 @@ void ValueEditor::adjustValue(bool increment)
         {
             // Make sure the current value is one that can be edited easily
             float currentValue = value.f32;
-            switch (std::fpclassify(currentValue))
+            switch (classifyFloat(currentValue))
             {
                 case FP_ZERO:
                 case FP_NORMAL:
@@ -1417,7 +1416,7 @@ void ValueEditor::adjustValue(bool increment)
             float newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, valueIsSigned, increment);
 
             // Make sure the new value is one that can be edited easily
-            switch (std::fpclassify(newValue))
+            switch (classifyFloat(newValue))
             {
                 case FP_ZERO:
                 case FP_NORMAL:
@@ -1543,7 +1542,7 @@ void ValueEditor::adjustValue(bool increment)
         {
             // Make sure the current value is one that can be edited easily
             double currentValue = value.f64;
-            switch (std::fpclassify(currentValue))
+            switch (classifyDouble(currentValue))
             {
                 case FP_ZERO:
                 case FP_NORMAL:
@@ -1559,7 +1558,7 @@ void ValueEditor::adjustValue(bool increment)
             double newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, valueIsSigned, increment);
 
             // Make sure the new value is one that can be edited easily
-            switch (std::fpclassify(newValue))
+            switch (classifyDouble(newValue))
             {
                 case FP_ZERO:
                 case FP_NORMAL:
@@ -2745,7 +2744,7 @@ void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool hand
 int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, float value)
 {
     // Make sure the number is one that can be edited easily
-    switch (std::fpclassify(value))
+    switch (classifyFloat(value))
     {
         case FP_ZERO:
         case FP_NORMAL:
@@ -2774,7 +2773,7 @@ int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t 
 int32_t doubleToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, double value)
 {
     // Make sure the number is one that can be edited easily
-    switch (std::fpclassify(value))
+    switch (classifyDouble(value))
     {
         case FP_ZERO:
         case FP_NORMAL:

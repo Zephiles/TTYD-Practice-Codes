@@ -13,6 +13,12 @@
 #define MAX_DOUBLE_LENGTH_STRING "21" // Excludes the + or -, the decimal point, and the decimal digits
 #define MAX_DOUBLE_DIGITS_STRING "6"
 
+// Based on MAX_DOUBLE_LENGTH including decimal digits
+#define MIN_FLOAT_VALUE -9999999999999.f
+#define MAX_FLOAT_VAlUE 9999999999999.f
+#define MIN_DOUBLE_VALUE -9999999999999.0
+#define MAX_DOUBLE_VAlUE 9999999999999.0
+
 typedef void (*ValueEditorSetValueFunc)(const ValueType *valuePtr);
 typedef void (*ValueEditorCancelFunc)();
 

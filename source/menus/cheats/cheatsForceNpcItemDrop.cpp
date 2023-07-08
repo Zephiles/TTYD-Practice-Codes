@@ -3,6 +3,7 @@
 #include "drawIcon.h"
 #include "cheats.h"
 #include "mod.h"
+#include "classes/window.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
