@@ -1,3 +1,4 @@
+#include "gc/types.h"
 #include "gc/OSAlloc.h"
 #include "gc/OSModule.h"
 #include "misc/heap.h"
@@ -5,7 +6,7 @@
 
 #include <cstdint>
 
-void *allocFromHeapTail(uint32_t heap, uint32_t size)
+void *allocFromHeapTail(OSHeapHandle heapHandle, uint32_t size)
 {
     // Make sure HeapArray is set
     HeapInfo *heapArrayPtr = HeapArray;
@@ -21,13 +22,13 @@ void *allocFromHeapTail(uint32_t heap, uint32_t size)
     }
 
     // Make sure the heap is valid
-    if (heap >= static_cast<uint32_t>(NumHeaps))
+    if (heapHandle >= NumHeaps)
     {
         return nullptr;
     }
 
     // Make sure the current heap has some free space
-    heapArrayPtr = &heapArrayPtr[heap];
+    heapArrayPtr = &heapArrayPtr[heapHandle];
     if (heapArrayPtr->capacity == 0)
     {
         return nullptr;
@@ -141,7 +142,7 @@ void *allocFromHeapTail(uint32_t heap, uint32_t size)
 
 // Origial code made by PistonMiner:
 // https://gist.github.com/PistonMiner/3cf955e887bc87f149f5349807a77f8b
-void shrinkAllocation(int32_t heap_id, OSModuleInfo *rel, int32_t new_size)
+void shrinkAllocation(OSHeapHandle heapHandle, OSModuleInfo *rel, int32_t new_size)
 {
     // Round to HEAP_ALIGNMENT
     new_size = roundUp(new_size, HEAP_ALIGNMENT);
@@ -165,11 +166,11 @@ void shrinkAllocation(int32_t heap_id, OSModuleInfo *rel, int32_t new_size)
 
     // Insert free space into heap
     // You can just pass the id in if you don't want to derive it
-    HeapInfo *heap_info = &HeapArray[heap_id];
+    HeapInfo *heap_info = &HeapArray[heapHandle];
     heap_info->firstFree = DLInsert(heap_info->firstFree, second_chunk);
 }
 
-void makeRelFixed(int32_t heap_id, OSModuleInfo *rel)
+void makeRelFixed(OSHeapHandle heapHandle, OSModuleInfo *rel)
 {
     // Remove imports for the current rel and the dol to avoid invalid
     // memory accesses during unlink.
@@ -207,5 +208,5 @@ void makeRelFixed(int32_t heap_id, OSModuleInfo *rel)
     int32_t fixed_size = rel->fixSize - reinterpret_cast<uint32_t>(rel);
 
     // Free up unused space
-    shrinkAllocation(heap_id, rel, fixed_size);
+    shrinkAllocation(heapHandle, rel, fixed_size);
 }
