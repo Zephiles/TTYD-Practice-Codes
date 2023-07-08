@@ -1220,7 +1220,7 @@ void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
     // Make sure the desired duration does not exceed 10 seconds
     GenerateLagSpikeCheat *generateLagSpikeCheatPtr = cheatsPtr->getGenerateLagSpikeCheatPtr();
     uint32_t duration = generateLagSpikeCheatPtr->getDuration();
-    if (duration > 10000)
+    if (duration > LAG_SPIKE_MAX_DURATION)
     {
         // Reset the duration
         duration = LAG_SPIKE_DEFAULT_DURATION;

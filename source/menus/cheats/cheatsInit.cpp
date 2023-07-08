@@ -67,7 +67,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuFrameAdvanceInit,
 
     "Generate Lag Spike",
-    nullptr,
+    cheatsMenuGenerateLagSpikeInit,
 
     "Lock Mario's HP To Its Max",
     cheatsMenuGenericNoButtonComboInit,

@@ -2,6 +2,7 @@
 #include "drawText.h"
 #include "cheats.h"
 #include "menus/cheatsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
 
@@ -27,7 +28,8 @@ const MenuFunctions gCheatsMenuFrameAdvanceFuncs = {
 
 void cheatsMenuFrameAdvanceInit(Menu *menuPtr)
 {
-    (void)menuPtr;
+    // Backup the selected cheat
+    gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuFrameAdvanceOptions) / sizeof(MenuOption);
     enterNextMenu(&gCheatsMenuFrameAdvanceFuncs, totalOptions);
@@ -62,7 +64,7 @@ void CheatsMenu::drawFrameAdvanceInfo() const
     float posY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
 
     // Draw the current cheat with its flag
-    drawText(gCheatsMenuFrameAdvanceOptions[0].name, posX, posY, scale, getColorWhite(0xFF));
+    drawText(gCheatsMenuInitOptions[this->selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
 
     Cheats *cheatsPtr = gCheats;

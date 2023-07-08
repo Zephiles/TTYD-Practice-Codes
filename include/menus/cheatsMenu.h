@@ -60,6 +60,11 @@ enum CheatsMenuGenericFlags
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
 };
 
+enum CheatsMenuGenerateLagSpike
+{
+    CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID = 0,
+};
+
 enum class ResolveFadeReturnValue
 {
     RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX = 0,
@@ -123,6 +128,7 @@ class CheatsMenu
 
     void drawGenericCheatInfo() const;
     void drawFrameAdvanceInfo() const;
+    void drawGenerateLagSpikeInfo() const;
     void drawDisableCertainSoundsInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
@@ -170,6 +176,15 @@ void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user);
 
 void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr);
 void cheatsMenuFrameAdvanceChangeButtonCombo(Menu *menuPtr);
+
+// cheatsGenerateLagSpike
+void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
+void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user);
+
+void cheatsMenuGenerateLagSpikeToggleFlag(Menu *menuPtr);
+void cheatsMenuGenerateLagSpikeChangeButtonCombo(Menu *menuPtr);
+void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr);
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);

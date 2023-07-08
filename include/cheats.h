@@ -162,6 +162,7 @@ class NpcForceItemDropCheat
 };
 
 #define LAG_SPIKE_DEFAULT_DURATION 468
+#define LAG_SPIKE_MAX_DURATION 10000
 class GenerateLagSpikeCheat
 {
    public:
