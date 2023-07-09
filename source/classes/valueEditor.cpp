@@ -2073,7 +2073,7 @@ void ValueEditor::draw()
     getTextWidthHeight(helpText, scale, nullptr, &height);
 
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    posY -= (height + (lineDecrement * 2.f));
+    posY -= (height + (lineDecrement * 2.45f));
 
     ValueType value;
     if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
