@@ -13,7 +13,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <cinttypes>
-#include <cmath>
 
 const MenuOption gCheatsMenuModifyMariosCoordinatesOptions[] = {
     "Modify X Coordinate",
@@ -188,36 +187,25 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
 
     if (!gCheats->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX))
     {
-        modifyAsHex = false;
-
+        // Make sure that the current value can be worked with, and that it will not go offscreen
         const float currentValue = coordinatesPtr[currentIndex];
-        switch (classifyFloat(currentValue))
+        if (floatCanBeWorkedWith(currentValue) && (currentValue >= MIN_FLOAT_VALUE) && (currentValue <= MAX_FLOAT_VAlUE))
         {
-            case FP_ZERO:
-            case FP_NORMAL:
-            {
-                // Make sure the value will not go offscreen
-                if ((currentValue >= MIN_FLOAT_VALUE) && (currentValue <= MAX_FLOAT_VAlUE))
-                {
-                    // Value will not go offscreen
-                    break;
-                }
+            // Value will not go offscreen
+            modifyAsHex = false;
+        }
+        else
+        {
+            // Initialize the error window
+            ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
 
-                [[fallthrough]];
-            }
-            default:
-            {
-                // Initialize the error window
-                ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+            errorWindowPtr->setScale(cheatsMenuPtr->getScale());
+            errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
+            errorWindowPtr->setText("This value must be modified as hex.");
 
-                errorWindowPtr->setScale(cheatsMenuPtr->getScale());
-                errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
-                errorWindowPtr->setText("This value must be modified as hex.");
-
-                errorWindowPtr->setTimer(3000);
-                errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
-                return;
-            }
+            errorWindowPtr->setTimer(3000);
+            errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
+            return;
         }
     }
 

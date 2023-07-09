@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <cmath>
 
 bool checkButtonCombo(uint32_t combo)
 {
@@ -449,4 +450,16 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size)
 {
     DCFlushRange(ptr, size);
     ICInvalidateRange(ptr, size);
+}
+
+bool floatCanBeWorkedWith(float value)
+{
+    const int32_t ret = std::fpclassify(value);
+    return (ret == FP_ZERO) || (ret == FP_NORMAL);
+}
+
+bool doubleCanBeWorkedWith(double value)
+{
+    const int32_t ret = std::fpclassify(value);
+    return (ret == FP_ZERO) || (ret == FP_NORMAL);
 }

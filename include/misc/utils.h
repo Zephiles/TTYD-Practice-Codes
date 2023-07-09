@@ -56,6 +56,10 @@ void drawOnDebugLayer(DispCallback func, float order);
 void drawOn2DLayer(DispCallback func, float order);
 void clear_DC_IC_Cache(void *ptr, uint32_t size);
 
+// Functions for calling fpclassify on floats/doubles and checking if they are either FP_ZERO or FP_NORMAL
+bool floatCanBeWorkedWith(float value);
+bool doubleCanBeWorkedWith(double value);
+
 template<typename Ptr>
 uint32_t getOffset(Ptr ptr, uint32_t alignment)
 {

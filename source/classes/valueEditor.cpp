@@ -1400,33 +1400,17 @@ void ValueEditor::adjustValue(bool increment)
         {
             // Make sure the current value is one that can be edited easily
             float currentValue = value.f32;
-            switch (classifyFloat(currentValue))
+            if (!floatCanBeWorkedWith(currentValue))
             {
-                case FP_ZERO:
-                case FP_NORMAL:
-                {
-                    break;
-                }
-                default:
-                {
-                    currentValue = this->minValue.f32;
-                }
+                currentValue = this->minValue.f32;
             }
 
             float newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, valueIsSigned, increment);
 
             // Make sure the new value is one that can be edited easily
-            switch (classifyFloat(newValue))
+            if (!floatCanBeWorkedWith(newValue))
             {
-                case FP_ZERO:
-                case FP_NORMAL:
-                {
-                    break;
-                }
-                default:
-                {
-                    currentValue = this->minValue.f32;
-                }
+                newValue = this->minValue.f32;
             }
 
             // Make sure the value does not exceed the min or max
@@ -1542,33 +1526,17 @@ void ValueEditor::adjustValue(bool increment)
         {
             // Make sure the current value is one that can be edited easily
             double currentValue = value.f64;
-            switch (classifyDouble(currentValue))
+            if (!doubleCanBeWorkedWith(currentValue))
             {
-                case FP_ZERO:
-                case FP_NORMAL:
-                {
-                    break;
-                }
-                default:
-                {
-                    currentValue = this->minValue.f64;
-                }
+                currentValue = this->minValue.f64;
             }
 
             double newValue = handleAdjustValue(currentValue, currentIndex, totalDigits, valueIsSigned, increment);
 
             // Make sure the new value is one that can be edited easily
-            switch (classifyDouble(newValue))
+            if (!doubleCanBeWorkedWith(newValue))
             {
-                case FP_ZERO:
-                case FP_NORMAL:
-                {
-                    break;
-                }
-                default:
-                {
-                    currentValue = this->minValue.f64;
-                }
+                newValue = this->minValue.f64;
             }
 
             // Make sure the value does not exceed the min or max
@@ -2744,17 +2712,9 @@ void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool hand
 int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, float value)
 {
     // Make sure the number is one that can be edited easily
-    switch (classifyFloat(value))
+    if (!floatCanBeWorkedWith(value))
     {
-        case FP_ZERO:
-        case FP_NORMAL:
-        {
-            break;
-        }
-        default:
-        {
-            return -1;
-        }
+        return -1;
     }
 
     // Make sure the length is valid
@@ -2773,17 +2733,9 @@ int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t 
 int32_t doubleToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, double value)
 {
     // Make sure the number is one that can be edited easily
-    switch (classifyDouble(value))
+    if (!doubleCanBeWorkedWith(value))
     {
-        case FP_ZERO:
-        case FP_NORMAL:
-        {
-            break;
-        }
-        default:
-        {
-            return -1;
-        }
+        return -1;
     }
 
     // Make sure the length is valid

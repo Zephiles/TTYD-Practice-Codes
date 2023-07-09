@@ -62,8 +62,4 @@ void menuControlsHorizontal(MenuButtonInput button,
                             uint32_t totalOptionsPerRow,
                             bool allowUpwardsSnap);
 
-// Non-inlined functions for calling fpclassify on floats/doubles
-int32_t classifyFloat(float value);
-int32_t classifyDouble(double value);
-
 #endif
