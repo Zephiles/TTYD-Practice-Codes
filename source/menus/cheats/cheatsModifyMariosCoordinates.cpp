@@ -230,8 +230,6 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     if (modifyAsHex)
     {
