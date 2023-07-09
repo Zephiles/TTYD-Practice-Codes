@@ -811,8 +811,7 @@ void ValueEditor::init(const void *valuePtr,
 
     // If the width of the value text will be larger than the current width, then reset the width to the width of the value text
     const float valueStringLength = intToFloat(static_cast<int32_t>(strlen(editorValue)));
-    const float digitLength = 18.8888888f;
-    const float valueStringWidth = (valueStringLength * digitLength) * valueScale;
+    const float valueStringWidth = (valueStringLength * EDITOR_DIGIT_LENGTH) * valueScale;
 
     if (valueStringWidth > windowPtr->getWidth())
     {
@@ -2095,7 +2094,7 @@ void ValueEditor::draw()
     const int32_t stringLength = static_cast<int32_t>(strlen(editorValue));
     const float stringLengthFloat = intToFloat(stringLength);
 
-    const float digitLength = 18.8888888f;
+    const float digitLength = EDITOR_DIGIT_LENGTH;
     const float valueScale = scale + 0.3f;
     const float valueStringWidth = (stringLengthFloat * digitLength) * valueScale;
 

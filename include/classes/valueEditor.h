@@ -7,6 +7,8 @@
 
 #include <cstdint>
 
+#define EDITOR_DIGIT_LENGTH 18.8888888f
+
 #define MAX_DOUBLE_LENGTH 21 // Excludes the + or -, the decimal point, and the decimal digits
 #define MAX_DOUBLE_DIGITS 6
 
