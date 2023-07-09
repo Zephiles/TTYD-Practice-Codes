@@ -84,7 +84,7 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
     const char *string;
     uint32_t color;
 
-    getOnOffTextAndColor(cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX),
+    getYesNoTextAndColor(cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX),
                          &string,
                          &color,
                          0xFF);
