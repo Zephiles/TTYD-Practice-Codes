@@ -1585,6 +1585,7 @@ const char *DisplaysLines[] =
     "Hit Check Visualization",
     "Yoshi Skip",
     "Palace Skip",
+    "Palace Skip (Minimal)",
     "Jabbi Hive Skip",
     "Bridge Skip",
     "Blimp Ticket Skip",
@@ -1962,7 +1963,7 @@ uint8_t DisplaysOrder[] =
 struct MenuVars MenuVar;
 struct Menus Menu[40];
 struct Cheats Cheat[29];
-bool Displays[21];
+bool Displays[22];
 char DisplayBuffer[256];
 struct MemoryWatchStruct MemoryWatch[60];
 struct MemoryEditorStruct MemoryEditor;
@@ -1984,6 +1985,7 @@ struct ClearCacheForBattlesStruct ClearCacheForBattles;
 struct LockFlagsStruct LockFlags;
 struct TrickDisplay YoshiSkip;
 struct TrickDisplay PalaceSkip;
+struct TrickDisplay MinimalPalaceSkip;
 struct JabbiHiveSkipStruct JabbiHiveSkip;
 struct BridgeSkipStruct BridgeSkip;
 struct BlimpTicketSkipStruct BlimpTicketSkip;
