@@ -35,9 +35,9 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
     windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the yes/no text
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const float padding = windowPtr->getPadding() * scale;
-    windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 3.f) + (padding / 2.f));
+    const float yesNoScale = scale + 0.1f;
+    const float padding = windowPtr->getPadding() * yesNoScale;
+    windowPtr->setHeight(windowPtr->getHeight() + ((LINE_HEIGHT_FLOAT * yesNoScale) * 2.f) + padding);
 
     // Place the window inside of the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
@@ -154,23 +154,27 @@ void ConfirmationWindow::draw() const
     drawText(this->helpText, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Draw Yes and No
+    const float yesNoScale = scale + 0.1f;
     const char **yesNoStringsPtr = gConfirmationWindowYesNoStrings;
-    windowPtr->getTextPosXY(yesNoStringsPtr[0], WindowAlignment::BOTTOM_CENTER, scale, &tempPosX, &tempPosY);
+
+    // getTextPosY only uses one scale, while two are required here, so have to calculate posY manually
+    float yesNoHeight;
+    const char *currentString = yesNoStringsPtr[0];
+    getTextWidthHeight(currentString, yesNoScale, nullptr, &yesNoHeight);
+
+    const float posX = windowPtr->getTextPosX(currentString, WindowAlignment::BOTTOM_CENTER, yesNoScale);
+
+    float posY = windowPtr->getPosY() - windowPtr->getHeight() + yesNoHeight + (windowPtr->getPadding() * scale) +
+                 LINE_HEIGHT_ADJUSTMENT_4(scale);
 
     const uint32_t currentIndex = this->currentIndex;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * yesNoScale;
 
-    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    const float posX = tempPosX;
-    float posY = tempPosY;
-
-    for (uint32_t i = ConfirmationWindowOptions::Yes; i <= ConfirmationWindowOptions::No; i++)
+    // Starting Y coordinate is for No, so draw No first
+    for (int32_t i = ConfirmationWindowOptions::No; i >= ConfirmationWindowOptions::Yes; i--)
     {
-        // Starting Y coordinate is for No, so draw No first
-        const uint32_t yesNoIndex = ConfirmationWindowOptions::No - i;
-        const uint32_t color = getCurrentOptionColor(currentIndex == yesNoIndex, 0xFF);
-
-        drawText(yesNoStringsPtr[yesNoIndex], posX, posY, scale, color);
+        const uint32_t color = getCurrentOptionColor(currentIndex == static_cast<uint32_t>(i), 0xFF);
+        drawText(yesNoStringsPtr[i], posX, posY, yesNoScale, color);
         posY += lineDecrement;
     }
 }
