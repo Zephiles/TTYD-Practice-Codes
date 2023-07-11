@@ -230,15 +230,13 @@ void cheatsMenuClearAreaFlagsStartSelectingArea(Menu *menuPtr)
 
 void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
 {
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-
     if (selectedYes)
     {
         gCheats->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_AREA_FLAGS_SHOULD_BE_CLEARED);
     }
 
     // Close the confirmation window
-    cheatsMenuPtr->getConfirmationWindow()->stopDrawing();
+    gCheatsMenu->getConfirmationWindow()->stopDrawing();
     gMenu->clearFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO);
 }
 
