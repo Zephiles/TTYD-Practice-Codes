@@ -94,7 +94,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     nullptr,
 
     "Clear Area Flags",
-    nullptr,
+    cheatsMenuClearAreaFlagsInit,
 };
 
 const MenuFunctions gCheatsMenuInitFuncs = {

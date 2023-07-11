@@ -4,7 +4,6 @@
 #include "mod.h"
 #include "cxx.h"
 #include "classes/valueEditor.h"
-#include "menus/cheatsMenu.h"
 #include "gc/pad.h"
 #include "gc/DEMOPad.h"
 #include "misc/utils.h"
@@ -400,11 +399,11 @@ class ClearAreaFlagsCheat
     ClearAreaFlagsCheat() {}
     ~ClearAreaFlagsCheat() {}
 
-    ClearAreaFlagsIndex getIndex() const { return this->index; }
-    void setIndex(ClearAreaFlagsIndex index) { this->index = index; }
+    uint32_t getSelectedArea() const { return this->selectedArea; }
+    void setSelectedArea(uint32_t area) { this->selectedArea = static_cast<uint8_t>(area); }
 
    private:
-    ClearAreaFlagsIndex index;
+    uint8_t selectedArea;
 };
 
 class Cheats

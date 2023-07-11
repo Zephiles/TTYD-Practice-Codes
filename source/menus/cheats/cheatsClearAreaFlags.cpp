@@ -1,7 +1,265 @@
+#include "menuUtils.h"
+#include "drawText.h"
+#include "cheats.h"
+#include "classes/window.h"
 #include "menus/cheatsMenu.h"
+#include "misc/utils.h"
+#include "ttyd/camdrv.h"
 #include "ttyd/swdrv.h"
 
 #include <cstdint>
+#include <cstdio>
+#include <cinttypes>
+
+const MenuOption gCheatsMenuClearAreaFlagsOptions[] = {
+    "Select Area",
+    cheatsMenuClearAreaFlagsStartSelectingArea,
+
+    "Clear Flags",
+    cheatsMenuClearAreaFlagsSelectedClearFlags,
+};
+
+const MenuFunctions gCheatsMenuClearAreaFlagsFuncs = {
+    gCheatsMenuClearAreaFlagsOptions,
+    cheatsMenuClearAreaFlagsControls,
+    cheatsMenuClearAreaFlagsDraw,
+    nullptr, // Exit function not needed
+};
+
+void cheatsMenuClearAreaFlagsInit(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    // Make sure the current index is valid
+    gCheatsMenu->setCurrentIndex(0);
+
+    constexpr uint32_t totalOptions = sizeof(gCheatsMenuClearAreaFlagsOptions) / sizeof(MenuOption);
+    enterNextMenu(&gCheatsMenuClearAreaFlagsFuncs, totalOptions);
+}
+
+void cheatsMenuClearAreaFlagsSelectAreaDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+{
+    constexpr uint32_t totalRows = intCeil(CHEATS_TOTAL_AREAS, CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW);
+    constexpr uint32_t totalOptionsPerPage = totalRows * CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW;
+
+    menuControlsVertical(button,
+                         currentIndexPtr,
+                         nullptr,
+                         CHEATS_TOTAL_AREAS,
+                         totalOptionsPerPage,
+                         CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW,
+                         false);
+}
+
+void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
+{
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+
+    // If the confirmation window is open, then handle the controls for that
+    if (menuPtr->flagIsSet(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO))
+    {
+        cheatsMenuPtr->getConfirmationWindow()->controls(button);
+        return;
+    }
+
+    // If not selecting an area, then use the default controls
+    if (!menuPtr->flagIsSet(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA))
+    {
+        controlsBasicMenuLayout(menuPtr, button);
+        return;
+    }
+
+    // Make sure the current index is valid
+    const uint32_t currentIndex = cheatsMenuPtr->getCurrentIndex();
+    if (currentIndex >= CHEATS_TOTAL_AREAS)
+    {
+        // Failsafe: Reset the current index to 0
+        cheatsMenuPtr->setCurrentIndex(0);
+        return;
+    }
+
+    // Handle the controls for selecting an area
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    const bool shouldAutoIncrement = handleMenuAutoIncrement(cheatsMenuPtr->getAutoIncrementPtr());
+
+    // Handle held button inputs if auto-incrementing should be done
+    if (shouldAutoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_LEFT:
+            case MenuButtonInput::DPAD_RIGHT:
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                cheatsMenuClearAreaFlagsSelectAreaDPadControls(buttonHeld, cheatsMenuPtr->getCurrentIndexPtr());
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Handle the button inputs pressed this frame
+    switch (button)
+    {
+        case MenuButtonInput::DPAD_LEFT:
+        case MenuButtonInput::DPAD_RIGHT:
+        case MenuButtonInput::DPAD_DOWN:
+        case MenuButtonInput::DPAD_UP:
+        {
+            cheatsMenuClearAreaFlagsSelectAreaDPadControls(button, cheatsMenuPtr->getCurrentIndexPtr());
+            break;
+        }
+        case MenuButtonInput::A:
+        {
+            Cheats *cheatsPtr = gCheats;
+            cheatsPtr->clearMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_AREA_FLAGS_SHOULD_BE_CLEARED);
+            cheatsPtr->getClearAreaFlagsCheat()->setSelectedArea(currentIndex);
+
+            menuPtr->clearFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA);
+            break;
+        }
+        case MenuButtonInput::B:
+        {
+            menuPtr->clearFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void CheatsMenu::drawClearAreaFlagsInfo() const
+{
+    // Set the the current area string
+    char buf[32];
+    constexpr uint32_t bufSize = sizeof(buf);
+
+    const auto areaNames = gCheatsAreaNames;
+    const uint32_t selectedArea = gCheats->getClearAreaFlagsCheat()->getSelectedArea();
+
+    const char **currentArea = areaNames[selectedArea];
+    snprintf(buf, bufSize, "Current Area: %s", currentArea[0]);
+
+    // Get the text position for the top-left of the window
+    float tempPosX;
+    float tempPosY;
+    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+
+    // Position the text two lines under the main text
+    const Menu *menuPtr = gMenu;
+    const uint32_t totalOptions = menuPtr->getTotalOptions();
+    const float scale = this->scale;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+
+    const float posXBase = tempPosX;
+    float posY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
+
+    // Draw the current area
+    drawText(buf, posXBase, posY, scale, getColorWhite(0xFF));
+    posY -= (lineDecrement * 2.f);
+
+    // Get the width of one of the areas and set the width increment for the areas
+    float width;
+    getTextWidthHeight(areaNames[0][0], scale, &width, nullptr);
+    const float incrementWidth = width + (40.f * scale);
+
+    // Draw each area to choose from
+    constexpr uint32_t totalRows = intCeil(CHEATS_TOTAL_AREAS, CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW);
+    const uint32_t currentIndex = this->currentIndex;
+
+    float posX = posXBase;
+    const float posYBase = posY;
+
+    const bool currentlySelectingArea =
+        menuPtr->flagIsSet(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA);
+
+    for (uint32_t i = 0, j = 0; i < CHEATS_TOTAL_AREAS; i++, j++)
+    {
+        if (j >= totalRows)
+        {
+            j = 0;
+
+            // Move to the next column
+            posX += incrementWidth;
+            posY = posYBase;
+        }
+
+        const bool colorCheck = currentlySelectingArea && (currentIndex == i);
+        const uint32_t color = getCurrentOptionColor(colorCheck, 0xFF);
+
+        drawText(areaNames[i][0], posX, posY, scale, color);
+        posY -= lineDecrement;
+    }
+
+    // If currently selecting an area, then draw the description for the current option
+    if (currentlySelectingArea)
+    {
+        posY = posYBase - (lineDecrement * intToFloat(totalRows + 1));
+        drawText(areaNames[currentIndex][1], posXBase, posY, scale, getColorWhite(0xFF));
+    }
+}
+
+void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user)
+{
+    // Draw the main window and text
+    drawBasicMenuLayout(cameraId, user);
+
+    // Draw the info for the areas
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    cheatsMenuPtr->drawClearAreaFlagsInfo();
+
+    // Draw the confirmation window if applicable
+    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow();
+    if (confirmationWindowPtr->shouldDraw())
+    {
+        confirmationWindowPtr->draw();
+    }
+}
+
+void cheatsMenuClearAreaFlagsStartSelectingArea(Menu *menuPtr)
+{
+    menuPtr->setFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA);
+}
+
+void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
+{
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+
+    if (selectedYes)
+    {
+        gCheats->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_AREA_FLAGS_SHOULD_BE_CLEARED);
+    }
+
+    // Close the confirmation window
+    cheatsMenuPtr->getConfirmationWindow()->stopDrawing();
+    gMenu->clearFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO);
+}
+
+void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
+{
+    // Bring up the confirmation window
+    menuPtr->setFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO);
+
+    // Initialize the confirmation window
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow();
+
+    const char *helpText =
+        "This will clear all of the GSWF's for\nthe selected area when the area is\nreloaded.\n\nAre you sure you want to do "
+        "this?";
+
+    const Window *rootWindowPtr = gRootWindow;
+
+    confirmationWindowPtr->init(rootWindowPtr, helpText, cheatsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    confirmationWindowPtr->startDrawing(cheatsMenuClearAreaFlagsClearFlags);
+}
 
 void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 {
@@ -11,7 +269,7 @@ void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
     }
 }
 
-void clearAreaFlags(ClearAreaFlagsIndex index)
+void clearAreaFlags(uint32_t index)
 {
     switch (index)
     {

@@ -106,7 +106,7 @@ void CheatsMenu::drawLockFlagsInfo() const
         else
         {
             // Check to see if the current area is one that can have its flags locked
-            auto areaNames = gCheatsAreaNames;
+            const auto areaNames = gCheatsAreaNames;
             bool foundString = false;
 
             for (uint32_t i = 0; i < CHEATS_TOTAL_AREAS; i++)

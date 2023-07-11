@@ -3,6 +3,7 @@
 
 #include "classes/valueEditor.h"
 #include "classes/buttonComboEditor.h"
+#include "classes/confirmationWindow.h"
 #include "classes/errorWindow.h"
 #include "classes/menu.h"
 #include "menus/rootMenu.h"
@@ -11,7 +12,8 @@
 #include <cstdint>
 
 #define MAX_CHEATS_PER_PAGE 18
-#define CHEATS_TOTAL_AREAS 22
+#define CHEATS_TOTAL_AREAS 22                   // Lock Flags and Clear Area Flags
+#define CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW 4 // Clear Area Flags
 
 // Reserve the last flag for changing button combos
 #define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 31
@@ -75,6 +77,12 @@ enum CheatsMenuForceNpcItemDrop
     CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID = 0,
 };
 
+enum CheatsMenuClearAreaFlags
+{
+    CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA = 0,
+    CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO,
+};
+
 enum class ResolveFadeReturnValue
 {
     RESOLVE_FADE_RETURN_TYPE_INVALID_INDEX = 0,
@@ -94,7 +102,7 @@ enum LockFlagsOptions
     LOCK_FLAGS_MAX_VALUE, // Don't use this directly other than for defines
 };
 
-enum class ClearAreaFlagsIndex : uint8_t
+enum ClearAreaFlagsIndex
 {
     CLEAR_AREA_FLAGS_GOR = 0,
     CLEAR_AREA_FLAGS_TIK,
@@ -128,6 +136,7 @@ class CheatsMenu
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
+    ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
     float getScale() const { return this->scale; }
 
@@ -135,6 +144,10 @@ class CheatsMenu
 
     void setSelectedCheat(uint32_t selectedCheat) { this->selectedCheat = static_cast<uint8_t>(selectedCheat); }
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
+
+    uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
+    uint32_t getCurrentIndex() const { return this->currentIndex; }
+    void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
     void drawGenericCheatInfo() const;
     void drawModifyMariosCoordinatesInfo() const;
@@ -144,15 +157,18 @@ class CheatsMenu
     void drawForceNpcItemDropInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
+    void drawClearAreaFlagsInfo() const;
 
    private:
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;
+    ConfirmationWindow confirmationWindow;
     ErrorWindow errorWindow;
     float scale;
 
     MenuAutoIncrement autoIncrement;
     uint8_t selectedCheat;
+    uint8_t currentIndex; // Clear Area Flags
 };
 
 extern CheatsMenu *gCheatsMenu;
@@ -241,6 +257,13 @@ uint32_t getLockFlagsRegionSize(uint32_t region);
 void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size);
 
 // cheatsClearAreaFlags
-void clearAreaFlags(ClearAreaFlagsIndex index);
+void cheatsMenuClearAreaFlagsInit(Menu *menuPtr);
+void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user);
+
+void cheatsMenuClearAreaFlagsStartSelectingArea(Menu *menuPtr);
+void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr);
+
+void clearAreaFlags(uint32_t index);
 
 #endif

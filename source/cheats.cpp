@@ -1566,7 +1566,7 @@ void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
         if (!checkForSpecificSeq(SeqIndex::kGame))
         {
             // Clear the currently-selected flags
-            clearAreaFlags(cheatsPtr->getClearAreaFlagsCheat()->getIndex());
+            clearAreaFlags(cheatsPtr->getClearAreaFlagsCheat()->getSelectedArea());
         }
         else
         {
