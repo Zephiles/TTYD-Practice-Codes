@@ -63,7 +63,7 @@ void CheatsMenu::drawSequenceInfo() const
     char buf[32];
     constexpr uint32_t bufSize = sizeof(buf);
 
-    const uint32_t sequencePosition = getSequencePosition();
+    const uint32_t sequencePosition = getSequencePosition() & 0xFFFF; // Trim to avoid possible long values
     snprintf(buf, bufSize, "Current Value: %" PRIu32, sequencePosition);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 
@@ -135,7 +135,13 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
     menuPtr->setFlag(CheatsMenuChangeSequence::CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID);
 
     // Initialize the value editor
-    const uint32_t currentValue = getSequencePosition();
+    uint32_t currentValue = getSequencePosition();
+
+    // Make sure currentValue is valid
+    if (currentValue >= CHEATS_TOTAL_EVENT_NAMES)
+    {
+        currentValue = 0;
+    }
 
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();

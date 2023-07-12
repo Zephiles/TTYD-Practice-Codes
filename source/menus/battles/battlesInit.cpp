@@ -208,27 +208,41 @@ void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button)
 void BattlesMenu::drawBattlesActors() const
 {
     // Initialize text drawing
-    drawTextInit(0xFF, false);
+    drawTextInit(false);
 
-    // Draw the page number at the top-right of the main window
-    char buf[16];
+    // Draw the page number at the top-right of the main window if there is more than one page
+    int32_t highestIndex = static_cast<int32_t>(getBattleActorsHighestIndex());
 
-    // Draw the page as an int, to prevent long text if it somehow becomes negative
+    // Failsafe: Make sure highestIndex is valid
+    if (highestIndex < 0)
+    {
+        highestIndex = 0;
+    }
+
     const Menu *menuPtr = gMenu;
     const uint32_t currentPage = menuPtr->getCurrentPage();
-    snprintf(buf, sizeof(buf), "Page %" PRId32, currentPage + 1);
-
-    float tempPosX;
-    float tempPosY;
-    const float scale = this->getScale();
     const Window *rootWindowPtr = gRootWindow;
 
-    rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
-    drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    const float scale = this->getScale();
+    float tempPosX;
+    float tempPosY;
+
+    if (highestIndex > BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE)
+    {
+        // Draw the page as an int, to prevent long text if it somehow becomes negative
+        char buf[16];
+        snprintf(buf, sizeof(buf), "Page %" PRId32, currentPage + 1);
+
+        rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
+        drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    }
 
     // Draw the actor texts
     // Get the position of the actor texts
-    float posX = rootWindowPtr->getTextPosX(nullptr, WindowAlignment::TOP_LEFT, scale);
+    rootWindowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    float posX = tempPosX;
     float posY = tempPosY;
 
     uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
