@@ -12,8 +12,11 @@
 #include <cstdint>
 
 #define MAX_CHEATS_PER_PAGE 18
+
 #define CHEATS_TOTAL_AREAS 22                   // Lock Flags and Clear Area Flags
 #define CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW 4 // Clear Area Flags
+
+#define CHEATS_TOTAL_EVENT_NAMES 406
 
 // Reserve the last flag for changing button combos
 #define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 31
@@ -60,6 +63,11 @@ enum CheatsMenuFrameAdvanceOptions
 enum CheatsMenuGenericFlags
 {
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
+};
+
+enum CheatsMenuChangeSequence
+{
+    CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID = 0,
 };
 
 enum CheatsMenuModifyMariosCoordinates
@@ -150,6 +158,7 @@ class CheatsMenu
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
     void drawGenericCheatInfo() const;
+    void drawSequenceInfo() const;
     void drawModifyMariosCoordinatesInfo() const;
     void drawFrameAdvanceInfo() const;
     void drawGenerateLagSpikeInfo() const;
@@ -176,6 +185,10 @@ extern const MenuOption gCheatsMenuInitOptions[];
 extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
 extern const char *gCheatsMenuTextTurnOnOff;
 
+#ifdef TTYD_JP
+extern const char *gCheatsEventNames[CHEATS_TOTAL_EVENT_NAMES];
+#endif
+
 void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
 
@@ -196,6 +209,13 @@ void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
+
+// cheatsChangeSequence
+void cheatsMenuChangeSequenceInit(Menu *menuPtr);
+void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user);
+
+void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr);
 
 // cheatsModifyMariosCoordinates
 void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);

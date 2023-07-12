@@ -782,31 +782,33 @@ void ValueEditor::init(const void *valuePtr,
 
     // Increase the height to account for the value
     const float valueScale = scale + 0.3f;
-    const float padding = windowPtr->getPadding() * scale;
-    windowPtr->setHeight(windowPtr->getHeight() + ((LINE_HEIGHT_FLOAT * valueScale) / 2.f) + padding);
+    const float padding = windowPtr->getPadding();
+    const float paddingScaled = padding * scale;
+    windowPtr->setHeight(windowPtr->getHeight() + ((LINE_HEIGHT_FLOAT * valueScale) / 2.f) + paddingScaled);
 
     // Increase the height of the window based on flags that are set
+    const float valuePaddingScaled = padding * valueScale;
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
     {
         // Account for the icon and item text
-        windowPtr->setHeight(windowPtr->getHeight() + SPACE_USED_PER_ICON(scale) + padding);
+        windowPtr->setHeight(windowPtr->getHeight() + SPACE_USED_PER_ICON(scale) + paddingScaled);
     }
     else if (this->flagIsSet(ValueEditorFlag::DRAW_STAGE_AND_EVENT))
     {
         // Account for the stage and event texts
-        windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 3.f) + padding);
+        windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 2.f) + valuePaddingScaled);
     }
     else if (this->flagIsSet(ValueEditorFlag::DRAW_MAP_STRING))
     {
         // Account for the map text
-        windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 2.f) + padding);
+        windowPtr->setHeight(windowPtr->getHeight() + lineDecrement + valuePaddingScaled);
     }
     else if (this->flagIsSet(ValueEditorFlag::DRAW_WARP_BY_EVENT_DETAILS))
     {
         // Account for all of the extra lines of text
-        windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 7.f) + padding);
+        windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 6.f) + valuePaddingScaled);
     }
 
     // If the width of the value text will be larger than the current width, then reset the width to the width of the value text
@@ -815,7 +817,7 @@ void ValueEditor::init(const void *valuePtr,
 
     if (valueStringWidth > windowPtr->getWidth())
     {
-        windowPtr->setWidth(valueStringWidth + padding);
+        windowPtr->setWidth(valueStringWidth + paddingScaled);
     }
 
     // Place the window inside of the parent window
@@ -2072,7 +2074,7 @@ void ValueEditor::draw()
     getTextWidthHeight(helpText, scale, nullptr, &height);
 
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    posY -= (height + (lineDecrement * 2.45f));
+    posY -= (height + lineDecrement);
 
     ValueType value;
     if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
@@ -2086,7 +2088,40 @@ void ValueEditor::draw()
 
             // Draw the current item with its icon and text
             posX = windowPtr->getIconPosX(WindowAlignment::BOTTOM_LEFT, scale);
+            posY -= (lineDecrement * 1.45f);
             drawItemIconWithText(posX, posY, iconScale, scale, 0.f, item, getColorWhite(0xFF));
+        }
+    }
+    else if (this->flagIsSet(ValueEditorFlag::DRAW_STAGE_AND_EVENT))
+    {
+        // Get the current value
+        if (this->getValueFromString(&value))
+        {
+            // Draw the stage and event names for the current sequence position
+            const uint32_t sequencePosition = value.u32;
+            const char *names[2];
+
+#ifdef TTYD_JP
+            char stageNameBuffer[8];
+            if (getSequenceStageAndEvent(stageNameBuffer, sizeof(stageNameBuffer), sequencePosition, names))
+#else
+            if (getSequenceStageAndEvent(sequencePosition, names))
+#endif
+            {
+                const char *stageEventText = "Stage\nEvent";
+                drawText(stageEventText, posX, posY, scale, getColorWhite(0xFF));
+
+                // Get the text position a bit to the right of the Stage and Event text
+                float width;
+                getTextWidthHeight(stageEventText, scale, &width, nullptr);
+
+                posX += width + (40.f * scale);
+                for (uint32_t i = 0; i < 2; i++)
+                {
+                    drawText(names[i], posX, posY, scale, getColorWhite(0xFF));
+                    posY -= lineDecrement;
+                }
+            }
         }
     }
 

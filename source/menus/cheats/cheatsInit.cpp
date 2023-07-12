@@ -13,7 +13,7 @@ CheatsMenu *gCheatsMenu = nullptr;
 
 const MenuOption gCheatsMenuInitOptions[] = {
     "Change Sequence",
-    nullptr,
+    cheatsMenuChangeSequenceInit,
 
     "Walk Through Most Objects",
     cheatsMenuGenericHasButtonComboInit,

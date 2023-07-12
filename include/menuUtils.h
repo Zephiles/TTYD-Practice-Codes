@@ -62,4 +62,13 @@ void menuControlsHorizontal(MenuButtonInput button,
                             uint32_t totalOptionsPerRow,
                             bool allowUpwardsSnap);
 
+#ifdef TTYD_JP
+bool getSequenceStageAndEvent(char *stageNameBuffer,
+                              uint32_t stageNameSize,
+                              uint32_t sequencePosition,
+                              const char *namesOut[2]);
+#else
+bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *namesOut[2]);
+#endif
+
 #endif
