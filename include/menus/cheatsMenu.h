@@ -85,6 +85,11 @@ enum CheatsMenuForceNpcItemDrop
     CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID = 0,
 };
 
+enum CheatsMenuManageFlags
+{
+    CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID = 0,
+};
+
 enum CheatsMenuClearAreaFlags
 {
     CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA = 0,
@@ -108,6 +113,16 @@ enum LockFlagsOptions
     LOCK_FLAGS_LSW,
     LOCK_FLAGS_LSWF,
     LOCK_FLAGS_MAX_VALUE, // Don't use this directly other than for defines
+};
+
+enum ManageFlagsOptions
+{
+    MANAGE_FLAGS_GSW = 0,
+    MANAGE_FLAGS_GSWF,
+    MANAGE_FLAGS_GW,
+    MANAGE_FLAGS_GF,
+    MANAGE_FLAGS_LSW,
+    MANAGE_FLAGS_LSWF,
 };
 
 enum ClearAreaFlagsIndex
@@ -150,8 +165,14 @@ class CheatsMenu
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 
-    void setSelectedCheat(uint32_t selectedCheat) { this->selectedCheat = static_cast<uint8_t>(selectedCheat); }
+    uint32_t getFlagVariableValue() const { return this->flagVariableValue; }
+    void setFlagVariableValue(uint32_t value) { this->flagVariableValue = value; }
+
+    uint32_t getFlagVariableToSet() const { return this->flagVariableToSet; }
+    void setFlagVariableToSet(uint32_t flagVariable) { this->flagVariableToSet = static_cast<uint16_t>(flagVariable); }
+
     uint32_t getSelectedCheat() const { return this->selectedCheat; }
+    void setSelectedCheat(uint32_t selectedCheat) { this->selectedCheat = static_cast<uint8_t>(selectedCheat); }
 
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
     uint32_t getCurrentIndex() const { return this->currentIndex; }
@@ -166,6 +187,7 @@ class CheatsMenu
     void drawForceNpcItemDropInfo() const;
     void drawResolveFadesInfo(float offsetY) const;
     void drawLockFlagsInfo() const;
+    void drawManageFlagsInfo() const;
     void drawClearAreaFlagsInfo() const;
 
    private:
@@ -176,8 +198,12 @@ class CheatsMenu
     float scale;
 
     MenuAutoIncrement autoIncrement;
+
+    uint32_t flagVariableValue; // Manage Flags
+    uint16_t flagVariableToSet; // Manage Flags
+
     uint8_t selectedCheat;
-    uint8_t currentIndex; // Clear Area Flags
+    uint8_t currentIndex; // Manage Flags, Clear Area Flags
 };
 
 extern CheatsMenu *gCheatsMenu;
@@ -275,6 +301,22 @@ void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr);
 void *getLockFlagsRegionPtr(uint32_t region);
 uint32_t getLockFlagsRegionSize(uint32_t region);
 void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size);
+
+// cheatsManageFlags
+void cheatsMenuManageFlagsInit(Menu *menuPtr);
+void cheatsMenuManageFlagsDraw(CameraId cameraId, void *user);
+
+void cheatsMenuManageFlagsVariablesInit(Menu *menuPtr);
+void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput button);
+
+void cheatsMenuManageFlagsFlagsInit(Menu *menuPtr);
+void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button);
+
+uint32_t getGW(uint32_t gw);
+void setGW(uint32_t gw, uint32_t value);
+bool getGF(uint32_t gf);
+void toggleGF(uint32_t gf);
+uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag);
 
 // cheatsClearAreaFlags
 void cheatsMenuClearAreaFlagsInit(Menu *menuPtr);
