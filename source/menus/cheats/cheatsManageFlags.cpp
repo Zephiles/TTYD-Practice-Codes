@@ -427,6 +427,7 @@ void CheatsMenu::drawManageFlagsInfo() const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
+    const float scale = this->scale;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Determine if working with variables or flags
@@ -506,8 +507,6 @@ void CheatsMenu::drawManageFlagsInfo() const
     const Menu *menuPtr = gMenu;
     const uint32_t totalOptions = menuPtr->getTotalOptions();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-
-    const float scale = this->scale;
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them

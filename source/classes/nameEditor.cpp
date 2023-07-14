@@ -315,6 +315,7 @@ void NameEditor::draw()
 
     float tempPosX;
     float tempPosY;
+    const float scale = this->scale;
     windowPtr->getTextPosXY(currentCharString, WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
 
     const float currentStringIndexFloat = intToFloat(static_cast<int32_t>(this->currentStringIndex));
@@ -340,9 +341,7 @@ void NameEditor::draw()
     drawTextInit(false);
 
     // Draw the help text
-    const float scale = this->scale;
     const char *helpTextPtr = gNameEditorHelpText;
-
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 

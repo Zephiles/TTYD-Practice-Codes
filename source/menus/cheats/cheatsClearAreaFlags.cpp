@@ -149,6 +149,7 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
 
     // Get the text position for the top-left of the window two lines under the main text
     const Menu *menuPtr = gMenu;
+    const float scale = this->scale;
     const uint32_t totalOptions = menuPtr->getTotalOptions();
 
     float tempPosX;

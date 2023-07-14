@@ -162,7 +162,7 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     float posX = tempPosX + offsetX;
     float posY = tempPosY - offsetY;
-    const float posYDecrement = LINE_HEIGHT_FLOAT * scale;
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     uint32_t color;
 
     const uint32_t totalOptions = this->totalOptions;
@@ -182,7 +182,7 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
         const char *currentLine = optionsPtr[i].name;
 
         drawText(currentLine, posX, posY, scale, color);
-        posY -= posYDecrement;
+        posY -= lineDecrement;
     }
 }
 

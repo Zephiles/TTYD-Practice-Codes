@@ -223,7 +223,7 @@ void BattlesMenu::drawBattlesActors() const
     const uint32_t currentPage = menuPtr->getCurrentPage();
     const Window *rootWindowPtr = gRootWindow;
 
-    const float scale = this->getScale();
+    const float scale = this->scale;
     float tempPosX;
     float tempPosY;
 

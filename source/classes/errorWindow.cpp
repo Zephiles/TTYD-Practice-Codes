@@ -56,11 +56,10 @@ void ErrorWindow::draw()
     drawTextInit(false);
 
     // Draw the text
-    const float scale = this->scale;
-
     float posX;
     float posY;
-    windowPtr->getTextPosXY(this->text, WindowAlignment::TOP_LEFT, scale, &posX, &posY);
+    const float scale = this->scale;
+    windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &posY);
 
     drawText(this->text, posX, posY, scale, getColorWhite(0xFF));
 }

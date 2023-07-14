@@ -46,11 +46,11 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
+    const float scale = this->scale;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Draw the help text
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    const float scale = this->scale;
     const float posXBase = tempPosX;
     const float posYBase = tempPosY;
     drawText("Select a fade to resolve, if applicable.", posXBase, posYBase, scale, getColorWhite(0xFF));

@@ -96,10 +96,10 @@ void rootMenuDraw(CameraId cameraId, void *user)
     // Draw the main window and text
     drawBasicMenuLayout(cameraId, user);
 
+    // Draw the version number at the top-right of the main window
     RootMenu *rootMenuPtr = gRootMenu;
     const float scale = rootMenuPtr->getScale();
 
-    // Draw the version number at the top-right of the main window
     float posX;
     float posY;
 
