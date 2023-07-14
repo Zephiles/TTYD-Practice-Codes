@@ -1,6 +1,7 @@
 #include "drawText.h"
 #include "drawIcon.h"
 #include "classes/window.h"
+#include "misc/utils.h"
 #include "ttyd/windowdrv.h"
 
 #include <cstdint>
@@ -99,6 +100,36 @@ void Window::getTextPosXY(const char *text, WindowAlignment alignment, float sca
     if (posYOut)
     {
         *posYOut = this->getTextPosY(text, alignment, scale);
+    }
+}
+
+void Window::getTextPosXYUnderMainText(const char *text,
+                                       WindowAlignment alignment,
+                                       uint32_t mainTextTotalOptions,
+                                       uint32_t linesUnderMainText,
+                                       float scale,
+                                       float *posXOut,
+                                       float *posYOut) const
+{
+    float tempPosX;
+    float tempPosY;
+    this->getTextPosXY(text, alignment, scale, &tempPosX, &tempPosY);
+
+    if (posXOut)
+    {
+        *posXOut = tempPosX;
+    }
+
+    if (posYOut)
+    {
+        // Adjust linesUnderMainText to be zero-indexed
+        if (linesUnderMainText > 0)
+        {
+            linesUnderMainText--;
+        }
+
+        const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+        *posYOut = tempPosY - (intToFloat(mainTextTotalOptions + linesUnderMainText) * lineDecrement);
     }
 }
 

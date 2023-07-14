@@ -6,7 +6,6 @@
 #include "classes/valueEditor.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
-#include "misc/utils.h"
 #include "ttyd/mario.h"
 #include "ttyd/camdrv.h"
 
@@ -59,25 +58,24 @@ void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput bu
 
 void CheatsMenu::drawModifyMariosCoordinatesInfo() const
 {
-    // Get the text position for the top-left of the window
-    float tempPosX;
-    float tempPosY;
-    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
-
     // Get the text position a bit to the right of the last option
     float width;
     const float scale = this->scale;
     getTextWidthHeight("Modify As Hex", scale, &width, nullptr);
 
+    // Get the text position for the top-left of the window two lines under the main text
+    float tempPosX;
+    float tempPosY;
     const uint32_t totalOptions = gMenu->getTotalOptions();
+    gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    const float posX = tempPosX;
+    float posY = tempPosY;
+
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-
-    // Set up the base text position to be two lines under the main text
-    const float posXBase = tempPosX;
-    float posYBase = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
-
-    const float hexTextPosX = posXBase + width + (20.f * scale);
-    const float hexTextPosY = posYBase + (lineDecrement * 2.f);
+    const float hexTextPosX = posX + width + (20.f * scale);
+    const float hexTextPosY = posY + (lineDecrement * 2.f);
 
     // Draw the flag for whether the coordinates are being modified as hex or not
     Cheats *cheatsPtr = gCheats;
@@ -121,8 +119,8 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
 
         // Get the actual text to draw
         snprintf(mainBuf, sizeof(mainBuf), "%c = %s, 0x%08" PRIX32, coordinateLetter, coordinateText, value.u32);
-        drawText(mainBuf, posXBase, posYBase, scale, getColorWhite(0xFF));
-        posYBase -= lineDecrement;
+        drawText(mainBuf, posX, posY, scale, getColorWhite(0xFF));
+        posY -= lineDecrement;
     }
 }
 

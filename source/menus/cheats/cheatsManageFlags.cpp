@@ -84,14 +84,6 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
 
     switch (button)
     {
-        case MenuButtonInput::DPAD_DOWN:
-        case MenuButtonInput::DPAD_UP:
-        case MenuButtonInput::B:
-        {
-            // Use the default controls
-            controlsBasicMenuLayout(menuPtr, button);
-            break;
-        }
         case MenuButtonInput::A:
         {
             const uint32_t currentIndex = menuPtr->getCurrentIndex();
@@ -196,6 +188,8 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
         }
         default:
         {
+            // Use the default controls
+            controlsBasicMenuLayout(menuPtr, button);
             break;
         }
     }
@@ -239,14 +233,6 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
 
     switch (button)
     {
-        case MenuButtonInput::DPAD_DOWN:
-        case MenuButtonInput::DPAD_UP:
-        case MenuButtonInput::B:
-        {
-            // Use the default controls
-            controlsBasicMenuLayout(menuPtr, button);
-            break;
-        }
         case MenuButtonInput::A:
         {
             const uint32_t currentIndex = menuPtr->getCurrentIndex();
@@ -390,6 +376,8 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
         }
         default:
         {
+            // Use the default controls
+            controlsBasicMenuLayout(menuPtr, button);
             break;
         }
     }

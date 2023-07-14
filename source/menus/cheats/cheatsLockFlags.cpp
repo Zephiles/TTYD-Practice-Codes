@@ -90,7 +90,7 @@ void CheatsMenu::drawLockFlagsInfo() const
     }
 
     // Get the position two lines under the main text
-    const int32_t totalOptions = static_cast<int32_t>(gMenu->getTotalOptions());
+    const uint32_t totalOptions = gMenu->getTotalOptions();
     posX = posXBase;
     posY = posYBase - (lineDecrement * intToFloat(totalOptions + 1));
 

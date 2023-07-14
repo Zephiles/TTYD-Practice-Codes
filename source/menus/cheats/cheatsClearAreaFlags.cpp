@@ -147,22 +147,22 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
     const char **currentArea = areaNames[selectedArea];
     snprintf(buf, bufSize, "Current Area: %s", currentArea[0]);
 
-    // Get the text position for the top-left of the window
-    float tempPosX;
-    float tempPosY;
-    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
-
-    // Position the text two lines under the main text
+    // Get the text position for the top-left of the window two lines under the main text
     const Menu *menuPtr = gMenu;
     const uint32_t totalOptions = menuPtr->getTotalOptions();
-    const float scale = this->scale;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
+    float tempPosX;
+    float tempPosY;
+    gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     const float posXBase = tempPosX;
-    float posY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
+    float posY = tempPosY;
 
     // Draw the current area
     drawText(buf, posXBase, posY, scale, getColorWhite(0xFF));
+
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (lineDecrement * 2.f);
 
     // Get the width of one of the areas and set the width increment for the areas

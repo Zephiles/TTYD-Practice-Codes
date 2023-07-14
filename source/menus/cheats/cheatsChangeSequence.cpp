@@ -46,18 +46,17 @@ void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button)
 
 void CheatsMenu::drawSequenceInfo() const
 {
-    // Get the text position for the top-left of the window
-    float tempPosX;
-    float tempPosY;
-    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
-
-    // Position the text two lines under the main text
+    // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
     const float scale = this->scale;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
+    float tempPosX;
+    float tempPosY;
+    gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     float posX = tempPosX;
-    float posY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
+    float posY = tempPosY;
 
     // Draw the text for showing what the current sequence position is
     char buf[32];
@@ -80,6 +79,7 @@ void CheatsMenu::drawSequenceInfo() const
         return;
     }
 
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float posYBase = posY - (lineDecrement * 2.f);
     posY = posYBase;
 

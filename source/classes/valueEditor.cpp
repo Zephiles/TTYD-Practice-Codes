@@ -2077,10 +2077,9 @@ void ValueEditor::draw()
     posY -= (height + lineDecrement);
 
     ValueType value;
-    if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
+    if (this->getValueFromString(&value))
     {
-        // Get the current item id
-        if (this->getValueFromString(&value))
+        if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
         {
             // Several items need to have their icon scales adjusted
             const ItemId item = static_cast<ItemId>(value.s32);
@@ -2091,11 +2090,7 @@ void ValueEditor::draw()
             posY -= (lineDecrement * 1.45f);
             drawItemIconWithText(posX, posY, iconScale, scale, 0.f, item, getColorWhite(0xFF));
         }
-    }
-    else if (this->flagIsSet(ValueEditorFlag::DRAW_STAGE_AND_EVENT))
-    {
-        // Get the current value
-        if (this->getValueFromString(&value))
+        else if (this->flagIsSet(ValueEditorFlag::DRAW_STAGE_AND_EVENT))
         {
             // Draw the stage and event names for the current sequence position
             const uint32_t sequencePosition = value.u32;

@@ -60,6 +60,16 @@ class Window
     // If either posXOut or posYOut are not needed, then they can be set to nullptr
     void getTextPosXY(const char *text, WindowAlignment alignment, float scale, float *posXOut, float *posYOut) const;
 
+    // This function is intended to get the desired line position under the main text in any given window, in which
+    // linesUnderMainText is not zero-indexed. If either posXOut or posYOut are not needed, then they can be set to nullptr.
+    void getTextPosXYUnderMainText(const char *text,
+                                   WindowAlignment alignment,
+                                   uint32_t mainTextTotalOptions,
+                                   uint32_t linesUnderMainText,
+                                   float scale,
+                                   float *posXOut,
+                                   float *posYOut) const;
+
     float getIconPosX(IconId icon, WindowAlignment alignment, float scale) const;
     float getIconPosX(WindowAlignment alignment, float iconWidth, float scale) const;
 

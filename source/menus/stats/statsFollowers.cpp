@@ -4,7 +4,6 @@
 #include "classes/followerSelector.h"
 #include "menus/statsMenu.h"
 #include "menus/rootMenu.h"
-#include "misc/utils.h"
 #include "ttyd/party.h"
 #include "ttyd/camdrv.h"
 
@@ -127,18 +126,14 @@ void StatsMenu::drawFollowerOut() const
     char *displayBufferPtr = gDisplayBuffer;
     snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "Current Follower Out\n%s", currentFollower);
 
-    // Draw the text for the current follower out
-    float posX;
-    float tempPosY;
+    // Draw the text for the current follower out two lines under the main text
+    const uint32_t totalOptions = gMenu->getTotalOptions();
     const float scale = this->scale;
 
-    gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &tempPosY);
-
-    // Move the Y position so that it is one line below the main text
-    const int32_t totalOptions = static_cast<int32_t>(gMenu->getTotalOptions());
-    const float posY = tempPosY - ((LINE_HEIGHT_FLOAT * intToFloat(totalOptions + 1)) * scale);
-
-    drawText(displayBufferPtr, posX, posY, scale, getColorWhite(0xFF));
+    float tempPosX;
+    float tempPosY;
+    gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
+    drawText(displayBufferPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 }
 
 void statsMenuFollowersDraw(CameraId cameraId, void *user)
