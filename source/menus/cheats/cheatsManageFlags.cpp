@@ -248,7 +248,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
                 constexpr uint32_t minValue = 0;
-                bool hasMinMax = true;
+                bool hasMinAndMax = true;
                 uint32_t maxValue = 0;
 
                 switch (selectedOption)
@@ -278,7 +278,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                         }
                         else
                         {
-                            hasMinMax = false;
+                            hasMinAndMax = false;
                             flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
                         }
                         break;
@@ -301,13 +301,19 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                     }
                 }
 
+                if (hasMinAndMax)
+                {
+                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                }
+
                 cheatsMenuInitValueEditor(menuPtr,
                                           currentValue,
                                           minValue,
                                           maxValue,
                                           flags,
                                           VariableType::u32,
-                                          hasMinMax,
+                                          hasMinAndMax,
                                           cheatsMenuManageFlagsSetValue);
             }
             else

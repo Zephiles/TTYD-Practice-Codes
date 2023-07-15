@@ -2,7 +2,6 @@
 #include "gamePatches.h"
 #include "cxx.h"
 #include "cheats.h"
-#include "drawText.h"
 #include "patch.h"
 #include "classes/menu.h"
 #include "classes/window.h"
