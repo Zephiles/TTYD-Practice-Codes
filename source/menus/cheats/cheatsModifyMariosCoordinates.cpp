@@ -44,9 +44,8 @@ void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr)
 
 void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput button)
 {
-    // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(
-            CheatsMenuModifyMariosCoordinates::CHEATS_MODIFY_MARIOS_COORDINATES_FLAG_CURRENTLY_MODIFYING_COORDINATE))
+    // If the value editor is open, then handle the controls for that
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         gCheatsMenu->getValueEditor()->controls(button);
         return;
@@ -155,12 +154,6 @@ void cheatsMenuModifyMariosCoordinatesToggleFlag(Menu *menuPtr)
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX);
 }
 
-void cheatsMenuCancelModifyMariosCoordinatesSetNewCoordinate()
-{
-    gCheatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuModifyMariosCoordinates::CHEATS_MODIFY_MARIOS_COORDINATES_FLAG_CURRENTLY_MODIFYING_COORDINATE);
-}
-
 void cheatsMenuModifyMariosCoordinatesSetNewCoordinate(const ValueType *valuePtr)
 {
     Player *playerPtr = marioGetPtr();
@@ -169,7 +162,7 @@ void cheatsMenuModifyMariosCoordinatesSetNewCoordinate(const ValueType *valuePtr
     coordinatesPtr[gMenu->getCurrentIndex()] = valuePtr->f32;
 
     // Close the value editor
-    cheatsMenuCancelModifyMariosCoordinatesSetNewCoordinate();
+    cheatsMenuValueEditorCancelSetValue();
 }
 
 void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
@@ -207,9 +200,6 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
         }
     }
 
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(CheatsMenuModifyMariosCoordinates::CHEATS_MODIFY_MARIOS_COORDINATES_FLAG_CURRENTLY_MODIFYING_COORDINATE);
-
     // Initialize the value editor
     ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
 
@@ -222,15 +212,16 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
         flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
     }
 
-    valueEditorPtr->init(&coordinatesPtr[currentIndex],
-                         nullptr,
-                         nullptr,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::f32,
-                         rootWindowPtr->getAlpha(),
-                         cheatsMenuPtr->getScale());
+    // Dirty trick to pass in the float as a u32
+    ValueType value;
+    value.f32 = coordinatesPtr[currentIndex];
 
-    valueEditorPtr->startDrawing(cheatsMenuModifyMariosCoordinatesSetNewCoordinate,
-                                 cheatsMenuCancelModifyMariosCoordinatesSetNewCoordinate);
+    cheatsMenuInitValueEditor(menuPtr,
+                              value.u32,
+                              0,
+                              0,
+                              flags,
+                              VariableType::f32,
+                              false,
+                              cheatsMenuModifyMariosCoordinatesSetNewCoordinate);
 }

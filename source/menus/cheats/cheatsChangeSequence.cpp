@@ -34,7 +34,7 @@ void cheatsMenuChangeSequenceInit(Menu *menuPtr)
 void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuChangeSequence::CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         gCheatsMenu->getValueEditor()->controls(button);
         return;
@@ -115,25 +115,16 @@ void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuCancelChangeSequenceChangeSequence()
-{
-    gCheatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuChangeSequence::CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID);
-}
-
 void cheatsMenuChangeSequenceChangeSequence(const ValueType *valuePtr)
 {
     setSequencePosition(valuePtr->u32);
 
     // Close the value editor
-    cheatsMenuCancelChangeSequenceChangeSequence();
+    cheatsMenuValueEditorCancelSetValue();
 }
 
 void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(CheatsMenuChangeSequence::CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID);
-
     // Initialize the value editor
     uint32_t currentValue = getSequencePosition();
 
@@ -143,8 +134,7 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
         currentValue = 0;
     }
 
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditor();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -152,19 +142,15 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_STAGE_AND_EVENT);
 
-    const uint32_t minValue = 0;
-    const uint32_t maxValue = CHEATS_TOTAL_EVENT_NAMES - 1;
+    constexpr uint32_t minValue = 0;
+    constexpr uint32_t maxValue = CHEATS_TOTAL_EVENT_NAMES - 1;
 
-    const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::u16,
-                         rootWindowPtr->getAlpha(),
-                         cheatsMenuPtr->getScale());
-
-    valueEditorPtr->startDrawing(cheatsMenuChangeSequenceChangeSequence, cheatsMenuCancelChangeSequenceChangeSequence);
+    cheatsMenuInitValueEditor(menuPtr,
+                              currentValue,
+                              minValue,
+                              maxValue,
+                              flags,
+                              VariableType::u16,
+                              true,
+                              cheatsMenuChangeSequenceChangeSequence);
 }

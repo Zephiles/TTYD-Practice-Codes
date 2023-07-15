@@ -18,8 +18,11 @@
 
 #define CHEATS_TOTAL_EVENT_NAMES 406
 
-// Reserve the last flag for changing button combos
-#define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 31
+// Reserve the semi-last flag for changing button combos
+#define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 30
+
+// Reserve the last flag for the value editor
+#define CHEATS_MENU_USING_VALUE_EDITOR_FLAG 31
 
 enum CheatsMenuOptions
 {
@@ -63,31 +66,6 @@ enum CheatsMenuFrameAdvanceOptions
 enum CheatsMenuGenericFlags
 {
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
-};
-
-enum CheatsMenuChangeSequence
-{
-    CHEATS_CHANGE_SEQUENCE_FLAG_CURRENTLY_SELECTING_ID = 0,
-};
-
-enum CheatsMenuModifyMariosCoordinates
-{
-    CHEATS_MODIFY_MARIOS_COORDINATES_FLAG_CURRENTLY_MODIFYING_COORDINATE = 0,
-};
-
-enum CheatsMenuGenerateLagSpike
-{
-    CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID = 0,
-};
-
-enum CheatsMenuForceNpcItemDrop
-{
-    CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID = 0,
-};
-
-enum CheatsMenuManageFlags
-{
-    CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID = 0,
 };
 
 enum CheatsMenuClearAreaFlags
@@ -220,10 +198,22 @@ void cheatsMenuInitExit();
 
 // cheatsInit
 bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag);
+
 void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
-void cheatsMenuCancelSetNewButtonCombo();
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc);
+
+void cheatsMenuValueEditorCancelSetValue();
+
+void cheatsMenuInitValueEditor(Menu *menuPtr,
+                               uint32_t currentValue,
+                               uint32_t minValue,
+                               uint32_t maxValue,
+                               uint32_t flags,
+                               VariableType type,
+                               bool hasMinAndMax,
+                               ValueEditorSetValueFunc setValueFunc);
+
 uint32_t indexToCheatEnabledFlag(uint32_t index);
 uint32_t indexToCheatButtonComboFlag(uint32_t index);
 

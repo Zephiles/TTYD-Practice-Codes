@@ -50,7 +50,7 @@ void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuGenerateLagSpike::CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         cheatsMenuPtr->getValueEditor()->controls(button);
         return;
@@ -155,48 +155,34 @@ void cheatsMenuGenerateLagSpikeChangeButtonCombo(Menu *menuPtr)
     cheatsMenuChangeButtonCombo(menuPtr, cheatsMenuGenerateLagSpikeSetNewButtonCombo);
 }
 
-void cheatsMenuCancelGenerateLagSpikeSetNewDuration()
-{
-    gCheatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuGenerateLagSpike::CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID);
-}
-
 void cheatsMenuGenerateLagSpikeSetNewDuration(const ValueType *valuePtr)
 {
     gCheats->getGenerateLagSpikeCheatPtr()->setDuration(valuePtr->u32);
 
     // Close the value editor
-    cheatsMenuCancelGenerateLagSpikeSetNewDuration();
+    cheatsMenuValueEditorCancelSetValue();
 }
 
 void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(CheatsMenuGenerateLagSpike::CHEATS_GENERATE_LAG_SPIKE_FLAG_CURRENTLY_SELECTING_ID);
-
     // Initialize the value editor
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    constexpr uint32_t minValue = 1;
+    constexpr uint32_t maxValue = LAG_SPIKE_MAX_DURATION;
+    const uint32_t currentValue = gCheats->getGenerateLagSpikeCheatPtr()->getDuration();
+
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditor();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    const uint32_t minValue = 1;
-    const uint32_t maxValue = LAG_SPIKE_MAX_DURATION;
-    const uint32_t currentValue = gCheats->getGenerateLagSpikeCheatPtr()->getDuration();
-
-    const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::u16,
-                         rootWindowPtr->getAlpha(),
-                         cheatsMenuPtr->getScale());
-
-    valueEditorPtr->startDrawing(cheatsMenuGenerateLagSpikeSetNewDuration, cheatsMenuCancelGenerateLagSpikeSetNewDuration);
+    cheatsMenuInitValueEditor(menuPtr,
+                              currentValue,
+                              minValue,
+                              maxValue,
+                              flags,
+                              VariableType::u16,
+                              true,
+                              cheatsMenuGenerateLagSpikeSetNewDuration);
 }

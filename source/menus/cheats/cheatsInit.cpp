@@ -4,6 +4,7 @@
 #include "mod.h"
 #include "classes/buttonComboEditor.h"
 #include "classes/window.h"
+#include "classes/valueEditor.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
 
@@ -194,6 +195,55 @@ void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc se
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, cheatsMenuPtr->getScale(), rootWindowPtr->getAlpha());
     buttonComboEditorPtr->startDrawing(setComboFunc, cheatsMenuCancelSetNewButtonCombo);
+}
+
+void cheatsMenuValueEditorCancelSetValue()
+{
+    gCheatsMenu->getValueEditor()->stopDrawing();
+    gMenu->clearFlag(CHEATS_MENU_USING_VALUE_EDITOR_FLAG);
+}
+
+void cheatsMenuInitValueEditor(Menu *menuPtr,
+                               uint32_t currentValue,
+                               uint32_t minValue,
+                               uint32_t maxValue,
+                               uint32_t flags,
+                               VariableType type,
+                               bool hasMinAndMax,
+                               ValueEditorSetValueFunc setValueFunc)
+{
+    // Bring up the window for selecting an id
+    menuPtr->setFlag(CHEATS_MENU_USING_VALUE_EDITOR_FLAG);
+
+    // Initialize the value editor
+    uint32_t *minValuePtr;
+    uint32_t *maxValuePtr;
+
+    if (hasMinAndMax)
+    {
+        minValuePtr = &minValue;
+        maxValuePtr = &maxValue;
+    }
+    else
+    {
+        minValuePtr = nullptr;
+        maxValuePtr = nullptr;
+    }
+
+    const Window *rootWindowPtr = gRootWindow;
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+
+    valueEditorPtr->init(&currentValue,
+                         minValuePtr,
+                         maxValuePtr,
+                         rootWindowPtr,
+                         flags,
+                         type,
+                         rootWindowPtr->getAlpha(),
+                         cheatsMenuPtr->getScale());
+
+    valueEditorPtr->startDrawing(setValueFunc, cheatsMenuValueEditorCancelSetValue);
 }
 
 uint32_t indexToCheatEnabledFlag(uint32_t index)

@@ -22,12 +22,6 @@ const char *gCheatsMenuManageFlagsGlobalFlagsOptions[] = {
     "Toggle Value", // The code assumes that Toggle Value will be the last option
 };
 
-void cheatsMenuManageFlagsCancelSetValue()
-{
-    gCheatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuManageFlags::CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID);
-}
-
 void cheatsMenuManageFlagsSetValue(const ValueType *valuePtr)
 {
     CheatsMenu *cheatsPtr = gCheatsMenu;
@@ -43,7 +37,7 @@ void cheatsMenuManageFlagsSetValue(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    cheatsMenuManageFlagsCancelSetValue();
+    cheatsMenuValueEditorCancelSetValue();
 }
 
 // Menu for working with flags
@@ -76,7 +70,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuManageFlags::CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         cheatsMenuPtr->getValueEditor()->controls(button);
         return;
@@ -93,18 +87,9 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
 
             if (currentIndex != setNewValueIndex)
             {
-                // Bring up the window for selecting an id
-                menuPtr->setFlag(CheatsMenuManageFlags::CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID);
-
                 // Initialize the value editor
-                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
-
-                uint32_t flags = 0;
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-
                 uint32_t maxValue;
+
                 switch (selectedOption)
                 {
                     case ManageFlagsOptions::MANAGE_FLAGS_GSWF:
@@ -130,20 +115,23 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
                 }
 
                 const uint32_t currentValue = flagVariableToSet;
-                uint32_t minValue = 0;
+                constexpr uint32_t minValue = 0;
 
-                const Window *rootWindowPtr = gRootWindow;
+                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
 
-                valueEditorPtr->init(&currentValue,
-                                     &minValue,
-                                     &maxValue,
-                                     rootWindowPtr,
-                                     flags,
-                                     VariableType::u32,
-                                     rootWindowPtr->getAlpha(),
-                                     cheatsMenuPtr->getScale());
+                uint32_t flags = 0;
+                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-                valueEditorPtr->startDrawing(cheatsMenuManageFlagsSetValue, cheatsMenuManageFlagsCancelSetValue);
+                cheatsMenuInitValueEditor(menuPtr,
+                                          currentValue,
+                                          minValue,
+                                          maxValue,
+                                          flags,
+                                          VariableType::u32,
+                                          true,
+                                          cheatsMenuManageFlagsSetValue);
             }
             else
             {
@@ -225,7 +213,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuManageFlags::CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         cheatsMenuPtr->getValueEditor()->controls(button);
         return;
@@ -242,9 +230,6 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
 
             if (currentIndex != setNewValueIndex)
             {
-                // Bring up the window for selecting an id
-                menuPtr->setFlag(CheatsMenuManageFlags::CHEATS_MANAGE_FLAGS_FLAG_CURRENTLY_SELECTING_ID);
-
                 // Initialize the value editor
                 uint32_t currentValue;
 
@@ -262,8 +247,9 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                 uint32_t flags = 0;
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
+                constexpr uint32_t minValue = 0;
                 bool hasMinMax = true;
-                uint32_t maxValue;
+                uint32_t maxValue = 0;
 
                 switch (selectedOption)
                 {
@@ -311,40 +297,18 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                     }
                     default:
                     {
-                        maxValue = 0;
                         break;
                     }
                 }
 
-                uint32_t minValue = 0;
-                const Window *rootWindowPtr = gRootWindow;
-
-                uint32_t *minValuePtr;
-                uint32_t *maxValuePtr;
-                if (hasMinMax)
-                {
-                    minValuePtr = &minValue;
-                    maxValuePtr = &maxValue;
-
-                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-                }
-                else
-                {
-                    minValuePtr = nullptr;
-                    maxValuePtr = nullptr;
-                }
-
-                valueEditorPtr->init(&currentValue,
-                                     minValuePtr,
-                                     maxValuePtr,
-                                     rootWindowPtr,
-                                     flags,
-                                     VariableType::u32,
-                                     rootWindowPtr->getAlpha(),
-                                     cheatsMenuPtr->getScale());
-
-                valueEditorPtr->startDrawing(cheatsMenuManageFlagsSetValue, cheatsMenuManageFlagsCancelSetValue);
+                cheatsMenuInitValueEditor(menuPtr,
+                                          currentValue,
+                                          minValue,
+                                          maxValue,
+                                          flags,
+                                          VariableType::u32,
+                                          hasMinMax,
+                                          cheatsMenuManageFlagsSetValue);
             }
             else
             {

@@ -38,7 +38,7 @@ void cheatsMenuForceNpcItemDropInit(Menu *menuPtr)
 void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuForceNpcItemDrop::CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID))
+    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
         gCheatsMenu->getValueEditor()->controls(button);
         return;
@@ -118,28 +118,22 @@ void cheatsMenuForceNpcItemDropToggleFlag(Menu *menuPtr)
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP);
 }
 
-void cheatsMenuCancelForceNpcItemDropSetNewItem()
-{
-    gCheatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuForceNpcItemDrop::CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID);
-}
-
 void cheatsMenuForceNpcItemDropSetNewItem(const ValueType *valuePtr)
 {
     gCheats->getForceNpcItemDropCheatPtr()->setItemDrop(static_cast<ItemId>(valuePtr->s32));
 
     // Close the value editor
-    cheatsMenuCancelForceNpcItemDropSetNewItem();
+    cheatsMenuValueEditorCancelSetValue();
 }
 
 void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(CheatsMenuForceNpcItemDrop::CHEATS_FORCE_NPC_ITEM_DROP_FLAG_CURRENTLY_SELECTING_ID);
-
     // Initialize the value editor
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    constexpr uint32_t minValue = static_cast<int32_t>(ItemId::ITEM_GOLD_BAR);
+    constexpr uint32_t maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
+    const uint32_t currentValue = static_cast<uint32_t>(gCheats->getForceNpcItemDropCheatPtr()->getItemDrop());
+
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditor();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -148,20 +142,12 @@ void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    const int32_t minValue = static_cast<int32_t>(ItemId::ITEM_GOLD_BAR);
-    const int32_t maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
-    const int32_t currentValue = static_cast<int32_t>(gCheats->getForceNpcItemDropCheatPtr()->getItemDrop());
-
-    const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::s16,
-                         rootWindowPtr->getAlpha(),
-                         cheatsMenuPtr->getScale());
-
-    valueEditorPtr->startDrawing(cheatsMenuForceNpcItemDropSetNewItem, cheatsMenuCancelForceNpcItemDropSetNewItem);
+    cheatsMenuInitValueEditor(menuPtr,
+                              currentValue,
+                              minValue,
+                              maxValue,
+                              flags,
+                              VariableType::s16,
+                              true,
+                              cheatsMenuForceNpcItemDropSetNewItem);
 }
