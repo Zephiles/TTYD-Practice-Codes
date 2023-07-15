@@ -123,8 +123,8 @@ void StatsMenu::drawFollowerOut() const
         }
     }
 
-    char *displayBufferPtr = gDisplayBuffer;
-    snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "Current Follower Out\n%s", currentFollower);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "Current Follower Out\n%s", currentFollower);
 
     // Draw the text for the current follower out two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -133,7 +133,7 @@ void StatsMenu::drawFollowerOut() const
     float tempPosX;
     float tempPosY;
     gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
-    drawText(displayBufferPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 }
 
 void statsMenuFollowersDraw(CameraId cameraId, void *user)

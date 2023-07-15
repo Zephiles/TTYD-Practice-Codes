@@ -18,9 +18,6 @@
 #define COLOR_GREEN 0x1BBE2300
 #define COLOR_RED 0xFF141400
 
-#define DISPLAY_BUFFER_SIZE 256
-extern char *gDisplayBuffer;
-
 inline uint32_t getColorWhite(uint8_t alpha)
 {
     return COLOR_WHITE | alpha;

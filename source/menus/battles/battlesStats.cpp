@@ -306,10 +306,12 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float selectedActorTextPosY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
 
-    char *displayBufferPtr = gDisplayBuffer;
+    char buf[96];
+    constexpr uint32_t bufSize = sizeof(buf);
     const uint32_t textColor = getColorWhite(0xFF);
-    snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "Selected Actor\n%s", gBattleActors[static_cast<int32_t>(type) - 1]);
-    drawText(displayBufferPtr, tempPosX, selectedActorTextPosY, scale, textColor);
+
+    snprintf(buf, bufSize, "Selected Actor\n%s", gBattleActors[static_cast<int32_t>(type) - 1]);
+    drawText(buf, tempPosX, selectedActorTextPosY, scale, textColor);
 
     // Set the text to be a bit to the right of the main text
     const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
@@ -344,8 +346,8 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     // Draw each stat
     for (uint32_t i = 0; i < totalStats; i++)
     {
-        snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "%" PRId32, actorStats[i]);
-        drawText(displayBufferPtr, posX, posY, scale, textColor);
+        snprintf(buf, bufSize, "%" PRId32, actorStats[i]);
+        drawText(buf, posX, posY, scale, textColor);
         posY -= lineDecrement;
     }
 

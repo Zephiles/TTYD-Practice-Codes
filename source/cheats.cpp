@@ -1348,8 +1348,8 @@ void spawnSelectedItem(const ValueType *valuePtr)
     const uint32_t itemCounter = spawnItemCheatPtr->getItemCounter() + 1; // Start the string count at 1
     spawnItemCheatPtr->setItemCounter(itemCounter);
 
-    char *displayBufferPtr = gDisplayBuffer;
-    snprintf(displayBufferPtr, DISPLAY_BUFFER_SIZE, "C_Item_%" PRIu32, itemCounter);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "C_Item_%" PRIu32, itemCounter);
 
     Player *playerPtr = marioGetPtr();
     float coordinateXAdjustment = 30.f; // Mario is facing right
@@ -1360,7 +1360,7 @@ void spawnSelectedItem(const ValueType *valuePtr)
         coordinateXAdjustment = -coordinateXAdjustment;
     }
 
-    itemEntry(displayBufferPtr,
+    itemEntry(buf,
               item,
               16,
               -1,

@@ -39,7 +39,6 @@ void init()
     applyCheatAndDisplayInjects();
 
     gCheats = new (true) Cheats;
-    gDisplayBuffer = new (true) char[DISPLAY_BUFFER_SIZE];
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
     Window *windowPtr = new (true) Window;

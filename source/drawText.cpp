@@ -8,8 +8,6 @@
 #include <cstdint>
 #include <cstring>
 
-char *gDisplayBuffer = nullptr;
-
 void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut)
 {
     if (text)
