@@ -502,7 +502,7 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     // If no flags are set, then use the default controls
     if (!menuPtr->anyFlagIsSet())
     {
-        controlsBasicMenuLayout(menuPtr, button);
+        basicMenuLayoutControls(menuPtr, button);
         return;
     }
 
@@ -814,7 +814,7 @@ void InventoryMenu::drawCurrentInventory()
 void inventoryMenuMainDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // If a file is loaded while this menu is open, then the inventory will change, so make sure no issues occur because of this
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -1121,8 +1121,8 @@ const MenuOption gInventoryMenuInitOptions[] = {
 
 const MenuFunctions gInventoryMenuInitFuncs = {
     gInventoryMenuInitOptions,
-    controlsBasicMenuLayout,
-    drawBasicMenuLayout,
+    basicMenuLayoutControls,
+    basicMenuLayoutDraw,
     nullptr, // Exit function not needed
 };
 

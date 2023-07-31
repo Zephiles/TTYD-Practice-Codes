@@ -483,7 +483,7 @@ struct BattleWorkUnit
     int16_t max_fp;
     int16_t base_max_fp; // No badges
     int16_t current_fp;
-    float unk_scale;
+    float sizeMultiplier;
 
     int8_t sleep_turns;
     int8_t unk_119; // Something to do with waking up from sleep?

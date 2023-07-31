@@ -1705,8 +1705,8 @@
 // 800FA5B0:BattleActionCommandManager
 // 800FA62C:BattleActionCommandManagerInit
 // data
-802EE018:GuardFrames
-802EE020:SuperguardFrames
+802EE018:_guardFrames
+802EE020:_superguardFrames
 
 // battle_disp.o
 // 80100258:_btlStockExpDisp

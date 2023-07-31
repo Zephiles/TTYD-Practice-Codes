@@ -85,7 +85,7 @@ void displayTitleScreenInfo(SeqWork *seqWork)
     const int32_t state = seqTitleWorkPtr2->field_0x8;
     if ((state >= 2) && (state < 12))
     {
-        drawOn2DLayer(drawTitleScreenInfo, -1.f);
+        drawOn2DLayer(drawTitleScreenInfo, DRAW_ORDER_PROJECT_INFO);
     }
 
     // Call the original function
@@ -97,7 +97,7 @@ void displayFileSelectScreenInfo(SeqWork *seqWork)
     // Check to see if the curtain is down or not
     if (seqWork->state == 2)
     {
-        drawOn2DLayer(drawFileSelectScreenInfo, -1.f);
+        drawOn2DLayer(drawFileSelectScreenInfo, DRAW_ORDER_PROJECT_INFO);
     }
 
     // Call the original function

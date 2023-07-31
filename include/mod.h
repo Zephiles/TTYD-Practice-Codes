@@ -5,6 +5,13 @@
 
 #define VERSION_STRING "v4.0-dev"
 
+#define DRAW_ORDER_PROJECT_INFO -1.f
+#define DRAW_ORDER_DISPLAYS 0.f
+#define DRAW_ORDER_DISPLAY_GUARD_SUPERGUARD_TIMINGS 1.f
+#define DRAW_ORDER_CHEAT_SPAWN_ITEM 2.f
+#define DRAW_ORDER_DISPLAY_ERRORS 10.f
+#define DRAW_ORDER_MENU 100.f
+
 enum class VariableType : uint8_t
 {
     s8 = 0,
@@ -45,9 +52,9 @@ class Mod
     void hideMenu() { this->menuHidden = true; }
     void showMenu() { this->menuHidden = false; }
 
-    bool changingCheatButtonCombo() const { return this->changingButtonCombos; }
-    void startChangingButtonCombos() { this->changingButtonCombos = true; }
-    void stopChangingButtonCombos() { this->changingButtonCombos = false; }
+    bool changingButtonCombo() const { return this->changingButtonCombos; }
+    void startChangingButtonCombo() { this->changingButtonCombos = true; }
+    void stopChangingButtonCombo() { this->changingButtonCombos = false; }
 
     bool checkIfSystemLevelIsSet() const { return this->systemLevelIsSet; }
     void setSystemLevel() { this->systemLevelIsSet = true; }
@@ -74,5 +81,6 @@ class Mod
 extern Mod gMod;
 extern const char *gHelpTextButtonCombo;
 extern const char *gHelpTextAConfirmBCancel;
+extern const char *gTimeStringFormat;
 
 #endif

@@ -8,6 +8,15 @@
 #include <cstdint>
 #include <cstring>
 
+float getTextMultilineIncrement(const char *text, float scale, uint32_t additionalLines)
+{
+    uint16_t numLines;
+    FontGetMessageWidthLine(text, &numLines);
+
+    const float lineCount = intToFloat(numLines + additionalLines);
+    return lineCount * (LINE_HEIGHT_FLOAT * scale);
+}
+
 void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut)
 {
     if (text)

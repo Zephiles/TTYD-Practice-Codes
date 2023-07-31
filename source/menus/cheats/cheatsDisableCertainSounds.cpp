@@ -22,7 +22,7 @@ const MenuOption gCheatsMenuDisableCertainSoundsOptions[] = {
 
 const MenuFunctions gCheatsDisableCertainSoundsFuncs = {
     gCheatsMenuDisableCertainSoundsOptions,
-    controlsBasicMenuLayout,
+    basicMenuLayoutControls,
     cheatsMenuDisableCertainSoundsDraw,
     nullptr, // Exit function not needed
 };
@@ -76,7 +76,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
 void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the sounds
     gCheatsMenu->drawDisableCertainSoundsInfo();

@@ -2,7 +2,6 @@
 #include "menuUtils.h"
 #include "classes/confirmationWindow.h"
 #include "classes/window.h"
-#include "classes/menu.h"
 
 #include <cstdint>
 

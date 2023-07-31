@@ -658,7 +658,7 @@ inline bool iconIsValid(IconId icon)
 extern "C"
 {
     // iconNumberDispGx3D
-    void iconNumberDispGx(mtx34 mtx, int32_t number, bool isTextSmall, uint8_t color[4]);
+    void iconNumberDispGx(mtx34 mtx, int32_t number, bool isTextSmall, const uint8_t color[4]);
     // iconSetAlpha
     // iconSetScale
     // iconFlagOff
@@ -668,7 +668,7 @@ extern "C"
     // iconGX
     void iconGetWidthHight(uint16_t *widthOut, uint16_t *heightOut, IconId icon);
     // iconGetTexObj
-    void iconDispGxCol(mtx34 mtx, uint16_t flags, IconId icon, uint8_t color[4]);
+    void iconDispGxCol(mtx34 mtx, uint16_t flags, IconId icon, const uint8_t color[4]);
     // iconDispGx2
     void iconDispGx(Vec3 *pos, uint16_t flags, IconId icon, float scale);
     void iconDispGxAlpha(Vec3 *pos, uint16_t flags, IconId icon, uint8_t alpha, float scale);

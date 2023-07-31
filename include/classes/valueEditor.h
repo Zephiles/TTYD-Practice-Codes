@@ -28,10 +28,12 @@ enum ValueEditorFlag
 {
     VALUE_IS_SIGNED = 0,
     HANDLE_AS_HEX,
+    WINDOW_POSITION_TOP,
     // DRAW_DPAD_UP_DOWN,
     DRAW_DPAD_LEFT_RIGHT,
     DRAW_BUTTON_Y_SET_MAX,
     DRAW_BUTTON_Z_SET_MIN,
+    DRAW_BUTTON_X_HIDE,
 
     // Flags for other misc things
     BATTLES_CHANGE_HELD_ITEM,   // Battles Stats menu
@@ -154,7 +156,7 @@ class ValueEditor
     bool enabled;         // Whether this window is enabled/drawn or not
     char format[16];      // Format string for the value, to be used with snprintf and sscanf
     char editorValue[32]; // Current value in string format. This is what is being modified while the editor is displayed.
-    char helpText[192];   // Text that shows what buttons can be pressed to handle certain things in the window
+    char helpText[224];   // Text that shows what buttons can be pressed to handle certain things in the window
 };
 
 uint32_t getMaxDigits(uint32_t value, bool handleAsHex);

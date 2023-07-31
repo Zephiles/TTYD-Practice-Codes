@@ -5,6 +5,10 @@
 #include "ttyd/seqdrv.h"
 #include "ttyd/item_data.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/battle_unit.h"
+#include "ttyd/battle_database_common.h"
+#include "ttyd/camdrv.h"
+#include "ttyd/hitdrv.h"
 
 #include <cstdint>
 
@@ -23,6 +27,14 @@ extern void (*g_DEMOPadRead_trampoline)();
 extern void (*g_viPostCallback_trampoline)(uint32_t retraceCount);
 extern NpcEntry *(*g_fbatHitCheck_trampoline)(uint32_t flags, void *unk);
 extern void (*g_seqSetSeq_trampoline)(SeqIndex seq, const char *map, const char *bero);
+extern void (*g_statusWinDisp_trampoline)();
+extern int32_t (*g_BattleActionCommandCheckDefence_trampoline)(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
+extern void (*g_scissor_disp_control_trampoline)(CameraId cameraId, void *user);
+extern uint32_t (*g_scissor_timer_main_trampoline)();
+extern void (*g_winMarioDisp_trampoline)(CameraId cameraId, void *winWorkPtr, int32_t index);
+extern HitEntry *(*g_hitCheckVecFilter_trampoline)(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
+extern NpcEntry *(*g_npcNameToPtr_trampoline)(const char *name);
+extern void (*g_animPoseMain_trampoline)(int32_t poseId);
 
 extern int32_t (*g_SoundEfxPlayEx_trampoline)(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
 

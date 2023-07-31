@@ -187,7 +187,6 @@ class CheatsMenu
 extern CheatsMenu *gCheatsMenu;
 extern const MenuOption gCheatsMenuInitOptions[];
 extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
-extern const char *gCheatsMenuTextTurnOnOff;
 
 #ifdef TTYD_JP
 extern const char *gCheatsEventNames[CHEATS_TOTAL_EVENT_NAMES];

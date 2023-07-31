@@ -5,6 +5,7 @@
 #include "menuUtils.h"
 #include "assembly.h"
 #include "drawText.h"
+#include "displays.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
 #include "gc/pad.h"
@@ -358,7 +359,7 @@ void *fallThroughMostObjects(void *ptr)
     }
 
     // Don't fall if currently changing button combos
-    if (gMod.changingCheatButtonCombo())
+    if (gMod.changingButtonCombo())
     {
         return ptr;
     }
@@ -400,7 +401,7 @@ void handleAutoActionCommands()
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_AUTO_ACTION_COMMANDS))
     {
         // Check to see if currently changing button combos
-        if (!gMod.changingCheatButtonCombo())
+        if (!gMod.changingButtonCombo())
         {
             if (cheatsPtr->checkCheatButtonComboEveryFrame(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS) ||
                 checkIfBadgeEquipped(ItemId::ITEM_DEBUG_BADGE))
@@ -434,7 +435,7 @@ void handleAutoActionCommands()
 void walkThroughMostObjects(Cheats *cheatsPtr, Mod *modPtr)
 {
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_WALK_THROUGH_WALLS) &&
-        !modPtr->changingCheatButtonCombo() &&
+        !modPtr->changingButtonCombo() &&
         cheatsPtr->checkCheatButtonComboEveryFrame(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_WALK_THROUGH_WALLS))
     {
         cheatsPtr->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_RESET_MARIO_PROPERTIES);
@@ -620,7 +621,7 @@ void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
             return;
         }
 
-        if (modPtr->changingCheatButtonCombo())
+        if (modPtr->changingButtonCombo())
         {
             return;
         }
@@ -708,8 +709,7 @@ void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
     const float new_unk_184 = playerPtr->unk_184;
     const float new_unk_188 = playerPtr->unk_188;
 
-    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO) ||
-        modPtr->changingCheatButtonCombo())
+    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO) || modPtr->changingButtonCombo())
     {
         // Check if the values should be restored
         if (speedUpMarioPtr->getChangedState() > SpeedUpMarioChangedState::SPEED_UP_MARIO_CHANGED_STATE_NO_CHANGES)
@@ -758,14 +758,17 @@ void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
 
 bool disableBattles()
 {
-    // TODO: Add check for Enemy Encounter Notifier display
-
-    if (checkButtonComboEveryFrame(OPEN_CLOSE_MENU_BUTTON_COMBO))
+    if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER))
+    {
+        // Non-cutscene battles should always be disabled when the Enemy Encounter Notifier display is on
+        return true;
+    }
+    else if (checkButtonComboEveryFrame(OPEN_CLOSE_MENU_BUTTON_COMBO))
     {
         // Prevent entering a non-cutscene battle if opening the menu
         return true;
     }
-    else if (!gMod.changingCheatButtonCombo())
+    else if (!gMod.changingButtonCombo())
     {
         Cheats *cheatsPtr = gCheats;
 
@@ -795,7 +798,7 @@ bool infiniteItemUsage(ItemId item, uint32_t index)
         return g_pouchRemoveItemIndex_trampoline(item, index);
     }
 
-    if (gMod.changingCheatButtonCombo())
+    if (gMod.changingButtonCombo())
     {
         // Call the original function
         return g_pouchRemoveItemIndex_trampoline(item, index);
@@ -884,13 +887,13 @@ void reloadRoomMain()
 
 void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
 {
-    if (!modPtr->changingCheatButtonCombo() &&
+    if (!modPtr->changingButtonCombo() &&
         cheatsPtr->checkCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM))
     {
         // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, or if the memory
         // editor is open
 
-        // TODO: Add check for memory editor
+        // TODO: Add check for memory editor being open
         if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM) && !gMenu &&
             !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr())
         {
@@ -991,10 +994,16 @@ uint32_t autoMashText(PadId controllerId)
     }
 
     // Don't auto mash if the Palace Skip display is currently on
-    // TODO: Add check for Palace Skip display
+    const Displays *displaysPtr = gDisplays;
+    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP) ||
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL))
+    {
+        // Return the intended value
+        return keyGetButtonTrg(controllerId);
+    }
 
     // Don't auto mash if currently changing button combos
-    if (gMod.changingCheatButtonCombo())
+    if (gMod.changingButtonCombo())
     {
         // Return the intended value
         return keyGetButtonTrg(controllerId);
@@ -1036,7 +1045,7 @@ void frameAdvance()
     }
 
     // If currently changing button combos, then don't run
-    if (gMod.changingCheatButtonCombo())
+    if (gMod.changingButtonCombo())
     {
         // Call the original function
         return g_DEMOPadRead_trampoline();
@@ -1321,10 +1330,9 @@ void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
         return;
     }
 
-    NpcEntry *npcPtr = getNpcEntryData(5, false); // NPC 6
-
     // Allow the Ember to be refought
-    npcPtr->wJumpFlags &= 0xFFFFFF00; // Clear byte 0x1D7 in npcPtr
+    NpcEntry *npcPtr = &npcWork[0].entries[5]; // NPC 6
+    npcPtr->wJumpFlags &= 0xFFFFFF00;          // Clear byte 0x1D7 in npcPtr
 }
 
 void cancelSpawnSelectedItem()
@@ -1399,7 +1407,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
 
     // TODO: Add check for memory editor being open
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPAWN_ITEM) && !gMenu &&
-        !modPtr->changingCheatButtonCombo())
+        !modPtr->changingButtonCombo())
     {
         // Make sure a file is currently loaded
         if (!checkIfInGame())
@@ -1447,7 +1455,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
                 valueEditorPtr->startDrawing(spawnSelectedItem, cancelSpawnSelectedItem);
 
                 // Draw the value editor, but don't check for inputs on the frame that it was opened
-                drawOnDebugLayer(drawSpawnItemValueEditor, 10.f);
+                drawOnDebugLayer(drawSpawnItemValueEditor, DRAW_ORDER_CHEAT_SPAWN_ITEM);
             }
         }
         else
@@ -1462,7 +1470,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
             valueEditorPtr = spawnItemCheatPtr->getValueEditorPtr();
             if (valueEditorPtr)
             {
-                drawOnDebugLayer(drawSpawnItemValueEditor, 10.f);
+                drawOnDebugLayer(drawSpawnItemValueEditor, DRAW_ORDER_CHEAT_SPAWN_ITEM);
             }
         }
     }
@@ -1604,8 +1612,9 @@ void runCheatFuncsEveryFrame()
     Cheats *cheatsPtr = gCheats;
     Mod *modPtr = &gMod;
 
+    // Run each cheat function that is button-based
     // Only run button-based codes if currently not changing button combos
-    if (!modPtr->changingCheatButtonCombo())
+    if (!modPtr->changingButtonCombo())
     {
         constexpr uint32_t loopCount = sizeof(gCheatsWithButtonCombos) / sizeof(CheatsArrayFunc);
         const CheatsArrayFunc *cheatsWithButtonCombosPtr = gCheatsWithButtonCombos;

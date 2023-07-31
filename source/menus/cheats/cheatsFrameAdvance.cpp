@@ -9,7 +9,7 @@
 #include <cstdint>
 
 const MenuOption gCheatsMenuFrameAdvanceOptions[] = {
-    gCheatsMenuTextTurnOnOff,
+    "Turn On/Off",
     cheatsMenuFrameAdvanceToggleFlag,
 
     "Change Frame Advance Button Combo",
@@ -45,7 +45,7 @@ void cheatsMenuFrameAdvanceControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawFrameAdvanceInfo() const
@@ -108,7 +108,7 @@ void CheatsMenu::drawFrameAdvanceInfo() const
 void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Frame Advance cheat
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

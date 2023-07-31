@@ -12,7 +12,7 @@
 #include <cinttypes>
 
 const MenuOption gCheatsMenuGenerateLagSpikeOptions[] = {
-    gCheatsMenuTextTurnOnOff,
+    "Turn On/Off",
     cheatsMenuGenerateLagSpikeToggleFlag,
 
     "Change Button Combo",
@@ -57,7 +57,7 @@ void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawGenerateLagSpikeInfo() const
@@ -117,7 +117,7 @@ void CheatsMenu::drawGenerateLagSpikeInfo() const
 void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Generate Lag Spike cheat
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

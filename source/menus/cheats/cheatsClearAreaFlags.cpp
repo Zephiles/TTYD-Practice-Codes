@@ -65,7 +65,7 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
     // If not selecting an area, then use the default controls
     if (!menuPtr->flagIsSet(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA))
     {
-        controlsBasicMenuLayout(menuPtr, button);
+        basicMenuLayoutControls(menuPtr, button);
         return;
     }
 
@@ -210,7 +210,7 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
 void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the areas
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

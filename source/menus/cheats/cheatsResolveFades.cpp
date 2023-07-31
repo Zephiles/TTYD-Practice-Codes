@@ -28,7 +28,7 @@ const MenuOption gCheatsMenuResolveFadeOptions[] = {
 
 const MenuFunctions gCheatsMenuResolveFadeInitFuncs = {
     gCheatsMenuResolveFadeOptions,
-    controlsBasicMenuLayout,
+    basicMenuLayoutControls,
     cheatsMenuResolveFadesDraw,
     nullptr, // Exit function not needed
 };
@@ -99,7 +99,7 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
     const float lineDecrement = LINE_HEIGHT_FLOAT * cheatsMenuPtr->getScale();
     const float offsetY = lineDecrement * 2.f;
 
-    drawBasicMenuLayout(cameraId, user, 0.f, offsetY);
+    basicMenuLayoutDraw(cameraId, user, 0.f, offsetY);
 
     // Draw the info for the fades
     cheatsMenuPtr->drawResolveFadesInfo(offsetY);

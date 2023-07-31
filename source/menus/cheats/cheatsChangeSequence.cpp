@@ -41,7 +41,7 @@ void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawSequenceInfo() const
@@ -101,7 +101,7 @@ void CheatsMenu::drawSequenceInfo() const
 void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the sequence position
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

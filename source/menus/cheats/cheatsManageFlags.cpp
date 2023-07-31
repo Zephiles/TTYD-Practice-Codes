@@ -177,7 +177,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
         default:
         {
             // Use the default controls
-            controlsBasicMenuLayout(menuPtr, button);
+            basicMenuLayoutControls(menuPtr, button);
             break;
         }
     }
@@ -347,7 +347,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
         default:
         {
             // Use the default controls
-            controlsBasicMenuLayout(menuPtr, button);
+            basicMenuLayoutControls(menuPtr, button);
             break;
         }
     }
@@ -376,8 +376,8 @@ const MenuOption gCheatsMenuManageFlagsInitOptions[] = {
 
 const MenuFunctions gCheatsMenuManageFlagsInitFuncs = {
     gCheatsMenuManageFlagsInitOptions,
-    controlsBasicMenuLayout,
-    drawBasicMenuLayout,
+    basicMenuLayoutControls,
+    basicMenuLayoutDraw,
     nullptr, // Exit function not needed
 };
 

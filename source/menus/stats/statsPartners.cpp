@@ -462,7 +462,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // No flags are set, so use default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void StatsMenu::drawPartnerStats()
@@ -611,7 +611,7 @@ void StatsMenu::drawPartnerStats()
 void statsMenuPartnersDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the partner's stats that the cursor is currently over
     StatsMenu *statsMenuPtr = gStatsMenu;

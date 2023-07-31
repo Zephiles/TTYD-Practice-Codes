@@ -1,0 +1,197 @@
+#ifndef MENUS_DISPLAYS_MENU_H
+#define MENUS_DISPLAYS_MENU_H
+
+#include "classes/valueEditor.h"
+#include "classes/buttonComboEditor.h"
+#include "classes/positionEditor.h"
+#include "classes/confirmationWindow.h"
+#include "classes/menu.h"
+#include "ttyd/camdrv.h"
+
+#include <cstdint>
+
+#define MAX_DISPLAYS_PER_PAGE 18
+
+enum DisplaysMenuOptions
+{
+    DISPLAYS_MENU_ONSCREEN_TIMER = 0,
+    DISPLAYS_MENU_FRAME_COUNTER,
+    DISPLAYS_MENU_MARIO_COORDINATES,
+    DISPLAYS_MENU_MARIO_SPEED_X_Z,
+    DISPLAYS_MENU_JUMP_STORAGE,
+    DISPLAYS_MENU_BUTTON_INPUTS,
+    DISPLAYS_MENU_STICK_ANGLE,
+    DISPLAYS_MENU_STAR_POWER_VALUE,
+    DISPLAYS_MENU_DPAD_OPTIONS,
+    DISPLAYS_MENU_GUARD_SUPERGUARD_TIMINGS,
+    DISPLAYS_MENU_ART_ATTACK_HITBOXES,
+    DISPLAYS_MENU_MEMORY_USAGE,
+    DISPLAYS_MENU_EFFS_ACTIVE,
+    DISPLAYS_MENU_EVTS_ACTIVE,
+    DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
+    DISPLAYS_MENU_YOSHI_SKIP,
+    DISPLAYS_MENU_PALACE_SKIP,
+    DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
+    DISPLAYS_MENU_JABBI_HIVE_SKIP,
+    DISPLAYS_MENU_BRIDGE_SKIP,
+    DISPLAYS_MENU_BLIMP_TICKET_SKIP,
+};
+
+enum DisplaysMenuHitCheckVisualizationOptions
+{
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_TURN_ON_OFF = 0,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_HITS,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_MISSES,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_HITS_COLOR,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_MISSES_COLOR,
+};
+
+enum DisplaysMenuSpecialFlags
+{
+    DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG = 29,
+    DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y,
+    DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE,
+};
+
+enum DisplaysMenuInitFlags
+{
+    DISPLAYS_MENU_INIT_FLAG_CURRENTLY_SELECTING_YES_NO = 0,
+};
+
+enum DisplaysMenuHitCheckVisualizationFlags
+{
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_YES_NO = 0,
+    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_COLOR,
+};
+
+enum DisplaysMenuGenericFlags
+{
+    DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO = 0,
+};
+
+enum DisplaysMenuGenericSelectionFlags
+{
+    DISPLAYS_GENERIC_OPTION_FLAG_HAS_BUTTON_COMBO = 0,
+    DISPLAYS_GENERIC_OPTION_FLAG_NO_BUTTON_COMBO,
+    DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION,
+};
+
+// Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
+inline bool displaysMenuGenericSelectionFlagIsSet(uint32_t flags, uint32_t flag)
+{
+    // Make sure the flag is valid
+    constexpr uint32_t maxFlags = sizeof(flags) * 8;
+    if (flag >= maxFlags)
+    {
+        return false;
+    }
+
+    return (flags >> flag) & 1U;
+}
+
+inline uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t flag)
+{
+    // Make sure the flag is valid
+    constexpr uint32_t maxFlags = sizeof(flags) * 8;
+    if (flag >= maxFlags)
+    {
+        return flags;
+    }
+
+    return flags |= (1UL << flag);
+}
+
+class DisplaysMenu
+{
+   public:
+    DisplaysMenu(float scale) { this->scale = scale; }
+    ~DisplaysMenu() {}
+
+    ValueEditor *getValueEditor() { return &this->valueEditor; }
+    ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
+    PositionEditor *getPositionEditor() { return &this->positionEditor; }
+    ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
+    float getScale() const { return this->scale; }
+
+    uint32_t getSelectedDisplay() const { return this->selectedDisplay; }
+    void setSelectedDisplay(uint32_t selectedDisplay) { this->selectedDisplay = static_cast<uint8_t>(selectedDisplay); }
+
+    void drawGenericDisplayInfo() const;
+    void drawOnScreenTimerInfo() const;
+    void drawMemoryUsageInfo() const;
+    void drawHitCheckVisualizationInfo() const;
+    void drawDisplayManualPositionData() const;
+
+   private:
+    ValueEditor valueEditor;
+    ButtonComboEditor buttonComboEditor;
+    PositionEditor positionEditor;
+    ConfirmationWindow confirmationWindow;
+    float scale;
+
+    uint8_t selectedDisplay;
+};
+
+extern DisplaysMenu *gDisplaysMenu;
+extern const MenuOption gDisplaysMenuInitOptions[];
+
+// displaysInit
+void displaysMenuInit(Menu *menuPtr);
+void displaysMenuInitExit();
+
+bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag);
+void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
+void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
+void displaysMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc);
+
+uint32_t indexToDisplayEnabledFlag(uint32_t index);
+uint32_t indexToDisplayManuallyPositionFlag(uint32_t index);
+uint32_t indexToDisplayButtonComboFlag(uint32_t index);
+
+// displaysGeneric
+void displaysMenuGenericNoButtonComboInit(Menu *menuPtr);
+void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
+void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
+void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
+void displaysMenuGenericControls(Menu *menuPtr, MenuButtonInput button);
+void displaysMenuGenericDraw(CameraId cameraId, void *user);
+
+void displaysMenuGenericToggleFlag(Menu *menuPtr);
+void displaysMenuGenericChangeButtonCombo(Menu *menuPtr);
+
+// displaysOnScreenTimer
+// The Frame Founter display is also handled by these
+void displaysMenuOnScreenTimerInit(Menu *menuPtr);
+void displaysMenuOnScreenTimerControls(Menu *menuPtr, MenuButtonInput button);
+void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user);
+
+void displaysMenuOnScreenTimerToggleFlag(Menu *menuPtr);
+void displaysMenuOnScreeTimerChangeButtonCombo(Menu *menuPtr);
+
+// displaysMemoryUsage
+void displaysMenuMemoryUsageInit(Menu *menuPtr);
+void displaysMenuMemoryUsageControls(Menu *menuPtr, MenuButtonInput button);
+void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user);
+
+void displaysMenuMemoryUsageToggleFlag(Menu *menuPtr);
+
+// displaysHitCheckVisualization
+void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
+void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput button);
+void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user);
+
+void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr);
+void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr);
+void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr);
+
+// displaysAdjustManualPosition
+void displaysAdjustManualPositionInit(Menu *menuPtr);
+void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput button);
+void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user);
+
+void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr);
+void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr);
+void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr);
+
+#endif

@@ -39,6 +39,8 @@ extern "C"
 
     void asmReplaceJumpFallAnim();
 
+    void asmDisableDPadOptionsDisplay();
+
     // Functions accessed by assembly overwrites
     uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr);
 
@@ -62,6 +64,8 @@ extern "C"
     void *fallThroughMostObjects(void *ptr);
 
     const char *replaceJumpFallAnim(char *jumpFallString);
+
+    bool disableDPadOptionsDisplay(uint32_t unkVar);
 
     // Misc assembly functions
     void asmSetTime(int64_t time);

@@ -85,7 +85,7 @@ enum CheatsMiscFlag
 };
 
 #define TOTAL_CHEATS_MISC_FLAGS CheatsMiscFlag::CHEATS_MISC_FLAG_MAX_VALUE
-#define CHEATS_MISC_FLAGS_ARRAY_SIZE intCeil(CheatsMiscFlag::CHEATS_MISC_FLAG_MAX_VALUE, sizeof(uint32_t) * 8)
+#define CHEATS_MISC_FLAGS_ARRAY_SIZE intCeil(TOTAL_CHEATS_MISC_FLAGS, sizeof(uint32_t) * 8)
 
 enum CheatsWithButtonCombo
 {

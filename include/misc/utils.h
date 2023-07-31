@@ -1,9 +1,8 @@
 #ifndef MISC_MISC_H
 #define MISC_MISC_H
 
-#include "gc/OSModule.h"
+#include "gc/types.h"
 #include "ttyd/seqdrv.h"
-#include "ttyd/npcdrv.h"
 #include "ttyd/party.h"
 #include "ttyd/item_data.h"
 #include "ttyd/dispdrv.h"
@@ -32,8 +31,6 @@ void setSeqMapChange(const char *map, const char *bero);
 void *clearMemory(void *ptr, uint32_t size);
 bool checkForSpecificSeq(SeqIndex wantedSeq);
 bool checkIfInGame();
-NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData);
-uint32_t secondsToFrames(uint32_t seconds);
 bool systemLevelIsZero();
 void setSystemLevel(int32_t level);
 float intToFloat(int32_t value);
@@ -54,6 +51,9 @@ void resetPauseMenuImportantItems();
 void resetPauseMenuPartners();
 void drawOnDebugLayer(DispCallback func, float order);
 void drawOn2DLayer(DispCallback func, float order);
+void getTimeString(char *stringOut, uint32_t stringSize, OSTime time);
+bool getStickAngle(int32_t stickXYOut[2], double *stickAngleOut);
+void getStickAngleString(char *stringOut, uint32_t stringSize);
 void clear_DC_IC_Cache(void *ptr, uint32_t size);
 
 // Functions for calling fpclassify on floats/doubles and checking if they are either FP_ZERO or FP_NORMAL

@@ -41,7 +41,7 @@ const MenuOption gCheatsMenuLockFlagsOptions[] = {
 
 const MenuFunctions gCheatsMenuLockFlagsInitFuncs = {
     gCheatsMenuLockFlagsOptions,
-    controlsBasicMenuLayout,
+    basicMenuLayoutControls,
     cheatsMenuLockFlagsDraw,
     nullptr, // Exit function not needed
 };
@@ -166,7 +166,7 @@ void CheatsMenu::drawLockFlagsInfo() const
 void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the flags
     gCheatsMenu->drawLockFlagsInfo();

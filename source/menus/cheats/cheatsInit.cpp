@@ -100,8 +100,8 @@ const MenuOption gCheatsMenuInitOptions[] = {
 
 const MenuFunctions gCheatsMenuInitFuncs = {
     gCheatsMenuInitOptions,
-    controlsBasicMenuLayout,
-    drawBasicMenuLayout,
+    basicMenuLayoutControls,
+    basicMenuLayoutDraw,
     cheatsMenuInitExit,
 };
 
@@ -129,8 +129,6 @@ const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2] = {
     "las", "Palace of Shadow",
     "jon", "Pit of 100 Trials",
 };
-
-const char *gCheatsMenuTextTurnOnOff = "Turn On/Off";
 
 void cheatsMenuInit(Menu *menuPtr)
 {
@@ -170,7 +168,7 @@ void cheatsMenuCancelSetNewButtonCombo()
 {
     gCheatsMenu->getButtonComboEditor()->stopDrawing();
     gMenu->clearFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
-    gMod.stopChangingButtonCombos();
+    gMod.stopChangingButtonCombo();
 }
 
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
@@ -183,7 +181,7 @@ void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonC
 
 void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc)
 {
-    gMod.startChangingButtonCombos();
+    gMod.startChangingButtonCombo();
 
     // Bring up the window for changing button combos
     menuPtr->setFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);

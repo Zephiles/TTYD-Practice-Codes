@@ -8,6 +8,7 @@
 #include "menus/cheatsMenu.h"
 #include "menus/statsMenu.h"
 #include "menus/battlesMenu.h"
+#include "menus/displaysMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
 #include "ttyd/win_main.h"
@@ -37,7 +38,7 @@ const MenuOption gRootMenuOptions[] = {
     battlesMenuInit,
 
     "Displays",
-    nullptr,
+    displaysMenuInit,
 
     "Warps",
     nullptr,
@@ -45,7 +46,7 @@ const MenuOption gRootMenuOptions[] = {
 
 const MenuFunctions gRootMenuFuncs = {
     gRootMenuOptions,
-    controlsBasicMenuLayout,
+    basicMenuLayoutControls,
     rootMenuDraw,
     rootMenuExit,
 };
@@ -94,7 +95,7 @@ void rootMenuExit()
 void rootMenuDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the version number at the top-right of the main window
     RootMenu *rootMenuPtr = gRootMenu;

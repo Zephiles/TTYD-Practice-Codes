@@ -4,6 +4,7 @@
 #include "menuUtils.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
+#include "gc/pad.h"
 #include "misc/utils.h"
 
 #include <cstdint>
@@ -773,6 +774,11 @@ void ValueEditor::init(const void *valuePtr,
         }
     }
 
+    if (this->flagIsSet(ValueEditorFlag::DRAW_BUTTON_X_HIDE))
+    {
+        len += snprintf(&helpText[len], helpTextSize - len, "Hold X to hide this window\n");
+    }
+
     snprintf(&helpText[len], helpTextSize - len, "Press A to confirm\nPress B to cancel");
 
     // Set up the window
@@ -821,7 +827,17 @@ void ValueEditor::init(const void *valuePtr,
     }
 
     // Place the window inside of the parent window
-    windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
+    WindowAlignment alignment;
+    if (this->flagIsSet(ValueEditorFlag::WINDOW_POSITION_TOP))
+    {
+        alignment = WindowAlignment::TOP_CENTER;
+    }
+    else
+    {
+        alignment = WindowAlignment::MIDDLE_CENTER;
+    }
+
+    windowPtr->placeInWindow(parentWindow, alignment, scale);
 }
 
 bool ValueEditor::getValueFromString(ValueType *valuePtr) const
@@ -2048,6 +2064,12 @@ void ValueEditor::controls(MenuButtonInput button)
 
 void ValueEditor::draw()
 {
+    // If the flag for X is set and X is held, then do not draw anything
+    if (this->flagIsSet(ValueEditorFlag::DRAW_BUTTON_X_HIDE) && checkButtonComboEveryFrame(PadInput::PAD_X))
+    {
+        return;
+    }
+
     // Draw the window
     const Window *windowPtr = &this->window;
     windowPtr->draw();

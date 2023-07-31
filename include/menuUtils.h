@@ -27,17 +27,17 @@ bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement);
 MenuButtonInput getMenuButtonInput(bool singleFrame);
 
 // Handles basic controls for the current menu
-void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button);
+void basicMenuLayoutControls(Menu *menuPtr, MenuButtonInput button);
 
 // Handles drawing the main window for the menu, as it can sometimes be hidden via a flag
 void drawMainWindow();
 
 // Draws the main window and options for the current menu
-// Calls drawBasicMenuLayout with offsetX and offsetY set to 0.f
-void drawBasicMenuLayout(CameraId cameraId, void *user);
+// Calls basicMenuLayoutDraw with offsetX and offsetY set to 0.f
+void basicMenuLayoutDraw(CameraId cameraId, void *user);
 
 // Draws the main window and options for the current menu
-void drawBasicMenuLayout(CameraId cameraId, void *user, float offsetX, float offsetY);
+void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float offsetY);
 
 // Handles various menu things each frame
 void handleMenu();

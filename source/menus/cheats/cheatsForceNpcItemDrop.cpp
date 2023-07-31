@@ -12,7 +12,7 @@
 #include <cstdint>
 
 const MenuOption gCheatsMenuForceNpcItemDropOptions[] = {
-    gCheatsMenuTextTurnOnOff,
+    "Turn On/Off",
     cheatsMenuForceNpcItemDropToggleFlag,
 
     "Change Item By Id",
@@ -45,7 +45,7 @@ void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawForceNpcItemDropInfo() const
@@ -97,7 +97,7 @@ void CheatsMenu::drawForceNpcItemDropInfo() const
 void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Force NPC Item Drop cheat
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

@@ -2,13 +2,16 @@
 #include "gamePatches.h"
 #include "cxx.h"
 #include "cheats.h"
+#include "displays.h"
 #include "patch.h"
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "gc/OSModule.h"
 #include "gc/DEMOPad.h"
+#include "gc/OSAlloc.h"
 #include "menus/rootMenu.h"
 #include "misc/functionHooks.h"
+#include "misc/utils.h"
 #include "ttyd/mariost.h"
 #include "ttyd/seq_title.h"
 #include "ttyd/seq_load.h"
@@ -19,10 +22,17 @@
 #include "ttyd/battle_pad.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/statuswindow.h"
+#include "ttyd/battle_ac.h"
+#include "ttyd/sac_scissor.h"
+#include "ttyd/win_mario.h"
+#include "ttyd/hitdrv.h"
+#include "ttyd/animdrv.h"
 #include "ttyd/sound.h"
 #include "ttyd/pmario_sound.h"
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
+#include "ttyd/memory.h"
 
 #include <cstdint>
 
@@ -38,6 +48,7 @@ void init()
     applyCheatAndDisplayInjects();
 
     gCheats = new (true) Cheats;
+    gDisplays = new (true) Displays;
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
     Window *windowPtr = new (true) Window;
@@ -87,6 +98,30 @@ void init()
     // to softlock
     g_seqSetSeq_trampoline = hookFunction(seqSetSeq, disableBattlesOnReload);
 
+    // For handling the Star Power Value display
+    g_statusWinDisp_trampoline = hookFunction(statusWinDisp, drawStarPowerValue);
+
+    // For handling the Guard/Superguard Timings display
+    g_BattleActionCommandCheckDefence_trampoline = hookFunction(BattleActionCommandCheckDefence, initGuardSuperguardTimings);
+
+    // For handling the Art Attack Hitboxes display
+    g_scissor_disp_control_trampoline = hookFunction(scissor_disp_control, drawArtAttackHitboxes);
+
+    // For handling pausing the Art Attack timer when using the Art Attack Hitboxes display
+    g_scissor_timer_main_trampoline = hookFunction(scissor_timer_main, pauseArtAttackTimer);
+
+    // For drawing the current sequence position in the pause menu
+    g_winMarioDisp_trampoline = hookFunction(winMarioDisp, drawSequenceInPauseMenu);
+
+    // For handling the Hit Check Visualization display
+    g_hitCheckVecFilter_trampoline = hookFunction(hitCheckVecFilter, checkForVecHits);
+
+    // For handling checking for errors in npcNameToPtr
+    g_npcNameToPtr_trampoline = hookFunction(npcNameToPtr, checkForNpcNameToPtrError);
+
+    // For handling checking for errors in animPoseMain
+    g_animPoseMain_trampoline = hookFunction(animPoseMain, preventAnimPoseMainCrash);
+
     // For handling the Disable Certain Sounds cheat, specifically for disabling the pause menu/Z menu sounds
     g_SoundEfxPlayEx_trampoline = hookFunction(SoundEfxPlayEx, disableMenuSounds);
 
@@ -107,13 +142,87 @@ void init()
 
 void exit() {}
 
+void checkHeaps()
+{
+    // Reset heapCorruptioBufferIndex and clear both heap buffers before doing anything
+    MemoryUsageDisplay *memoryUsageDisplayPtr = gDisplays->getMemoryUsageDisplayPtr();
+    memoryUsageDisplayPtr->setHeapCorruptionBufferIndex(0);
+    memoryUsageDisplayPtr->freeHeapCorruptionBuffer();
+    memoryUsageDisplayPtr->clearMemoryUsageBuffer();
+
+    // Check the standard heaps
+    const HeapInfo *heapArrayPtr = HeapArray;
+    uint32_t memoryUsageCounter = 0;
+    const void *addressWithError;
+
+    for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++)
+    {
+        const HeapInfo *heapPtr = &heapArrayPtr[i];
+
+        // Check the used entries
+        const ChunkInfo *tempChunk = heapPtr->firstUsed;
+        addressWithError = checkIndividualStandardHeap(tempChunk);
+
+        memoryUsageDisplayPtr
+            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, true);
+
+        // Check the free entries
+        tempChunk = heapPtr->firstFree;
+        addressWithError = checkIndividualStandardHeap(tempChunk);
+
+        memoryUsageDisplayPtr
+            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, false);
+    }
+
+    // Check the smart heap
+    const SmartWork *tempSmartWorkPtr = smartWorkPtr;
+
+    // Check the used entries
+    const SmartAllocationData *tempChunk = tempSmartWorkPtr->pFirstUsed;
+    addressWithError = checkIndividualSmartHeap(tempChunk);
+    memoryUsageDisplayPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter++, true);
+
+    // Check the free entries
+    // Don't incrememt MemoryUsageCounter since free entries are not drawn
+    tempChunk = tempSmartWorkPtr->pFirstFree;
+    addressWithError = checkIndividualSmartHeap(tempChunk);
+    memoryUsageDisplayPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, false);
+
+    // Check the map heap
+    const MapAllocEntry *mapHeapPtr = mapalloc_base_ptr;
+    addressWithError = checkIndividualMapHeap(mapHeapPtr);
+
+#ifdef TTYD_JP
+    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter);
+#else
+    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, false);
+
+    // Check the battle map heap
+    mapHeapPtr = R_battlemapalloc_base_ptr;
+    addressWithError = checkIndividualMapHeap(mapHeapPtr);
+    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, true);
+#endif
+
+    // Draw any errors that occured
+    if (memoryUsageDisplayPtr->shouldDrawHeapCorruptionBuffer())
+    {
+        drawOnDebugLayer(drawHeapCorruptionErrors, DRAW_ORDER_DISPLAY_ERRORS);
+    }
+}
+
 void runOncePerFrame()
 {
+    // Check the heaps for errors and set up their memory usages
+    checkHeaps();
+
     // Handle the menu
     handleMenu();
 
     // Run cheat functions
     runCheatFuncsEveryFrame();
+
+    // Run display functions
+    runDisplayFuncsEveryFrame();
 
     // Call the original function
     return g_marioStMain_trampoline();

@@ -90,7 +90,7 @@ void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
     else
     {
         // Use the default controls
-        controlsBasicMenuLayout(menuPtr, button);
+        basicMenuLayoutControls(menuPtr, button);
         return;
     }
 }
@@ -139,7 +139,7 @@ void StatsMenu::drawFollowerOut() const
 void statsMenuFollowersDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the current follower out
     StatsMenu *statsMenuPtr = gStatsMenu;

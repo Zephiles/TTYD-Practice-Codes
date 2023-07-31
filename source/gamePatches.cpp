@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "menuUtils.h"
 #include "cheats.h"
+#include "displays.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -402,7 +403,7 @@ NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk)
     NpcEntry *ret = g_fbatHitCheck_trampoline(flags, unk);
 
     // Check for enemy encounters
-    // TODO: Add check for enemy encounters
+    checkForEnemyEncounters(ret);
 
     // Check if battles should be disabled
     if (disableBattles())
@@ -420,11 +421,11 @@ void applyGameFixes()
     // Fix a memory leak from occuring when starting a new file. The leak is that memory for the inventory is re-allocated
     // without checking if it's already allocated.
 #ifdef TTYD_US
-    uint32_t pouchInitMemoryLeakAddress = 0x800D59DC;
+    constexpr uint32_t pouchInitMemoryLeakAddress = 0x800D59DC;
 #elif defined TTYD_JP
-    uint32_t pouchInitMemoryLeakAddress = 0x800D17A8;
+    constexpr uint32_t pouchInitMemoryLeakAddress = 0x800D17A8;
 #elif defined TTYD_EU
-    uint32_t pouchInitMemoryLeakAddress = 0x800D67E4;
+    constexpr uint32_t pouchInitMemoryLeakAddress = 0x800D67E4;
 #endif
 
     writeBranchBL(pouchInitMemoryLeakAddress, cFixPouchInitMemoryLeak);
@@ -432,11 +433,11 @@ void applyGameFixes()
     // Fix the game not properly allocating enough memory for text in textboxes. The vanilla code does not allocate memory for
     // the null terminator.
 #ifdef TTYD_US
-    uint32_t msgWindowMrAddress = 0x800816F4;
+    constexpr uint32_t msgWindowMrAddress = 0x800816F4;
 #elif defined TTYD_JP
-    uint32_t msgWindowMrAddress = 0x80080B6C;
+    constexpr uint32_t msgWindowMrAddress = 0x80080B6C;
 #elif defined TTYD_EU
-    uint32_t msgWindowMrAddress = 0x800829B0;
+    constexpr uint32_t msgWindowMrAddress = 0x800829B0;
 #endif
 
     applyAssemblyPatch(msgWindowMrAddress, 0x38830001); // addi r4,r3,1
@@ -444,14 +445,14 @@ void applyGameFixes()
     // Fix a crash that can occur when defeating Blooper with an attack that causes both the body and the left tentacle to be
     // defeated at roughly the same time
 #ifdef TTYD_US
-    uint32_t blooperCrash1Address = 0x8010F810;
-    uint32_t blooperCrash2Address = 0x8010F87C;
+    constexpr uint32_t blooperCrash1Address = 0x8010F810;
+    constexpr uint32_t blooperCrash2Address = 0x8010F87C;
 #elif defined TTYD_JP
-    uint32_t blooperCrash1Address = 0x8010A724;
-    uint32_t blooperCrash2Address = 0x8010A790;
+    constexpr uint32_t blooperCrash1Address = 0x8010A724;
+    constexpr uint32_t blooperCrash2Address = 0x8010A790;
 #elif defined TTYD_EU
-    uint32_t blooperCrash1Address = 0x801106E8;
-    uint32_t blooperCrash2Address = 0x80110754;
+    constexpr uint32_t blooperCrash1Address = 0x801106E8;
+    constexpr uint32_t blooperCrash2Address = 0x80110754;
 #endif
 
     writeBranchBL(blooperCrash1Address, asmFixBlooperCrash1);
@@ -460,14 +461,14 @@ void applyGameFixes()
     // Fix crashes that can occur when evt_map_blend_set_flag is trying to apply effects to partners/followers when one is not
     // out
 #ifdef TTYD_US
-    uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x800389C4;
-    uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038A0C;
+    constexpr uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x800389C4;
+    constexpr uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038A0C;
 #elif defined TTYD_JP
-    uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x80038328;
-    uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038370;
+    constexpr uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x80038328;
+    constexpr uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038370;
 #elif defined TTYD_EU
-    uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x80038AAC;
-    uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038AF4;
+    constexpr uint32_t evtMapBlendSetFlagPartnerCrashAddress = 0x80038AAC;
+    constexpr uint32_t evtMapBlendSetFlagFollowerCrashAddress = 0x80038AF4;
 #endif
 
     writeStandardBranches(evtMapBlendSetFlagPartnerCrashAddress,
@@ -487,33 +488,33 @@ void applyVariousGamePatches()
 
     // The debug mode is reset whenever the title screen is reached, so adjust it to always enable debug mode instead
 #ifdef TTYD_US
-    uint32_t debugModeInitializeAddress = 0x80009B2C;
+    constexpr uint32_t debugModeInitializeAddress = 0x80009B2C;
 #elif defined TTYD_JP
-    uint32_t debugModeInitializeAddress = 0x8000999C;
+    constexpr uint32_t debugModeInitializeAddress = 0x8000999C;
 #elif defined TTYD_EU
-    uint32_t debugModeInitializeAddress = 0x80009CF0;
+    constexpr uint32_t debugModeInitializeAddress = 0x80009CF0;
 #endif
 
     applyAssemblyPatch(debugModeInitializeAddress, 0x3800FFFF); // li r0,-1
 
     // Always show the build date on the title screen
 #ifdef TTYD_US
-    uint32_t debugModeShowBuildDateAddress = 0x80008FE8;
+    constexpr uint32_t debugModeShowBuildDateAddress = 0x80008FE8;
 #elif defined TTYD_JP
-    uint32_t debugModeShowBuildDateAddress = 0x80008EB8;
+    constexpr uint32_t debugModeShowBuildDateAddress = 0x80008EB8;
 #elif defined TTYD_EU
-    uint32_t debugModeShowBuildDateAddress = 0x800091B4;
+    constexpr uint32_t debugModeShowBuildDateAddress = 0x800091B4;
 #endif
 
     applyAssemblyPatch(debugModeShowBuildDateAddress, 0x60000000); // nop
 
     // Adjust the size of the text on the crash screen
 #ifdef TTYD_US
-    float *crasheScreenTextSizeAddress = reinterpret_cast<float *>(0x80428BC0);
+    constexpr uint32_t crasheScreenTextSizeAddress = 0x80428BC0;
 #elif defined TTYD_JP
-    float *crasheScreenTextSizeAddress = reinterpret_cast<float *>(0x80422618);
+    constexpr uint32_t crasheScreenTextSizeAddress = 0x80422618;
 #elif defined TTYD_EU
-    float *crasheScreenTextSizeAddress = reinterpret_cast<float *>(0x804356C8);
+    constexpr uint32_t crasheScreenTextSizeAddress = 0x804356C8;
 #endif
 
     // Use applyAssemblyPatch to apply the change and clear the cache, all in a single function call
@@ -528,13 +529,13 @@ void applyVariousGamePatches()
 
     // Make the crash screen scroll and loop back around once it has gone offscreen
 #ifdef TTYD_US
-    uint32_t crashScreenPPCHaltBranchAddress = 0x8025E4A4;
-    uint32_t crashScreenEndBranchAddress = 0x8025E4A8;
+    constexpr uint32_t crashScreenPPCHaltBranchAddress = 0x8025E4A4;
+    constexpr uint32_t crashScreenEndBranchAddress = 0x8025E4A8;
 #elif defined TTYD_JP
-    uint32_t crashScreenPosYValueAddress = 0x802582F8;
+    constexpr uint32_t crashScreenPosYValueAddress = 0x802582F8;
 #elif defined TTYD_EU
-    uint32_t crashScreenPPCHaltBranchAddress = 0x8026207C;
-    uint32_t crashScreenEndBranchAddress = 0x80262080;
+    constexpr uint32_t crashScreenPPCHaltBranchAddress = 0x8026207C;
+    constexpr uint32_t crashScreenEndBranchAddress = 0x80262080;
 #endif
 
 #ifdef TTYD_JP
@@ -548,22 +549,22 @@ void applyVariousGamePatches()
     // upgrades could potentially be obtained in maps other than where they are intended to be obtained, which will cause a
     // crash since the data for their cutscenes will not be available.
 #ifdef TTYD_US
-    uint32_t preventUpgradeItemCutscenesAddress = 0x800ABD04;
+    constexpr uint32_t preventUpgradeItemCutscenesAddress = 0x800ABD04;
 #elif defined TTYD_JP
-    uint32_t preventUpgradeItemCutscenesAddress = 0x800AA048;
+    constexpr uint32_t preventUpgradeItemCutscenesAddress = 0x800AA048;
 #elif defined TTYD_EU
-    uint32_t preventUpgradeItemCutscenesAddress = 0x800AD0D4;
+    constexpr uint32_t preventUpgradeItemCutscenesAddress = 0x800AD0D4;
 #endif
 
     applyAssemblyPatch(preventUpgradeItemCutscenesAddress, 0x60000000); // nop
 
     // Prevent the game from crashing if the player tries to read the diary while not on the Excess Express
 #ifdef TTYD_US
-    uint32_t PreventDiaryTextboxSelectionAddress = 0x800D214C;
+    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800D214C;
 #elif defined TTYD_JP
-    uint32_t PreventDiaryTextboxSelectionAddress = 0x800CE01C;
+    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800CE01C;
 #elif defined TTYD_EU
-    uint32_t PreventDiaryTextboxSelectionAddress = 0x800D2F44;
+    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800D2F44;
 #endif
 
     writeBranchBL(PreventDiaryTextboxSelectionAddress, asmPreventDiaryTextboxSelection);
@@ -571,14 +572,14 @@ void applyVariousGamePatches()
     // Always show the Mega Jump and Mega Hammer options in the battle menu if those badges are equipped, as normally they are
     // only present if the player has the Ultra Boots or Ultra Hammer respectively
 #ifdef TTYD_US
-    uint32_t BattleMenuJumpAddress = 0x80122BA4;
-    uint32_t BattleMenuHammerAddress = 0x80122BB8;
+    constexpr uint32_t BattleMenuJumpAddress = 0x80122BA4;
+    constexpr uint32_t BattleMenuHammerAddress = 0x80122BB8;
 #elif defined TTYD_JP
-    uint32_t BattleMenuJumpAddress = 0x8011D6DC;
-    uint32_t BattleMenuHammerAddress = 0x8011D6F0;
+    constexpr uint32_t BattleMenuJumpAddress = 0x8011D6DC;
+    constexpr uint32_t BattleMenuHammerAddress = 0x8011D6F0;
 #elif defined TTYD_EU
-    uint32_t BattleMenuJumpAddress = 0x80123AE4;
-    uint32_t BattleMenuHammerAddress = 0x80123AF8;
+    constexpr uint32_t BattleMenuJumpAddress = 0x80123AE4;
+    constexpr uint32_t BattleMenuHammerAddress = 0x80123AF8;
 #endif
 
     writeBranchBL(BattleMenuJumpAddress, asmDisplayMegaJumpBadgeInBattleMenu);
@@ -587,14 +588,14 @@ void applyVariousGamePatches()
     // Always show the partner menu, even if the sequence is below 7 and the player has no partners
     // Always show the badge menu, even if the sequence is below 20 and the player has no badges
 #ifdef TTYD_US
-    uint32_t PauseMenuPartnerMenuAddress = 0x801649A0;
-    uint32_t PauseMenuBadgeMenuAddress = 0x80164A44;
+    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x801649A0;
+    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x80164A44;
 #elif defined TTYD_JP
-    uint32_t PauseMenuPartnerMenuAddress = 0x8015EFBC;
-    uint32_t PauseMenuBadgeMenuAddress = 0x8015F060;
+    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x8015EFBC;
+    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x8015F060;
 #elif defined TTYD_EU
-    uint32_t PauseMenuPartnerMenuAddress = 0x80166490;
-    uint32_t PauseMenuBadgeMenuAddress = 0x80166534;
+    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x80166490;
+    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x80166534;
 #endif
 
     applyAssemblyPatch(PauseMenuPartnerMenuAddress, 0x60000000); // nop
@@ -602,11 +603,11 @@ void applyVariousGamePatches()
 
     // Allow FontDrawMessageMtx to handle more custom commands like FontDrawMessage can
 #ifdef TTYD_US
-    uint32_t FontDrawMessageMtxHandleCommandAddress = 0x800759E0;
+    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x800759E0;
 #elif defined TTYD_JP
-    uint32_t FontDrawMessageMtxHandleCommandAddress = 0x8007471C;
+    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x8007471C;
 #elif defined TTYD_EU
-    uint32_t FontDrawMessageMtxHandleCommandAddress = 0x80076C9C;
+    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x80076C9C;
 #endif
 
     writeStandardBranches(FontDrawMessageMtxHandleCommandAddress,
@@ -618,11 +619,11 @@ void applyCheatAndDisplayInjects()
 {
     // Allow running from all battles
 #ifdef TTYD_US
-    uint32_t allowRunningFromBattlesAddress = 0x80123CA4;
+    constexpr uint32_t allowRunningFromBattlesAddress = 0x80123CA4;
 #elif defined TTYD_JP
-    uint32_t allowRunningFromBattlesAddress = 0x8011E7DC;
+    constexpr uint32_t allowRunningFromBattlesAddress = 0x8011E7DC;
 #elif defined TTYD_EU
-    uint32_t allowRunningFromBattlesAddress = 0x80124BE4;
+    constexpr uint32_t allowRunningFromBattlesAddress = 0x80124BE4;
 #endif
 
     writeStandardBranches(allowRunningFromBattlesAddress,
@@ -631,38 +632,38 @@ void applyCheatAndDisplayInjects()
 
     // Force NPC Item Drop
 #ifdef TTYD_US
-    uint32_t forceNpcItemDropAddress = 0x8004EC10;
+    constexpr uint32_t forceNpcItemDropAddress = 0x8004EC10;
 #elif defined TTYD_JP
-    uint32_t forceNpcItemDropAddress = 0x8004DFB0;
+    constexpr uint32_t forceNpcItemDropAddress = 0x8004DFB0;
 #elif defined TTYD_EU
-    uint32_t forceNpcItemDropAddress = 0x8004ECDC;
+    constexpr uint32_t forceNpcItemDropAddress = 0x8004ECDC;
 #endif
 
     writeBranchBL(forceNpcItemDropAddress, asmForceNpcItemDrop);
 
 #ifdef TTYD_US
-    uint32_t replaceJumpAnimAddress = 0x800411D0;
+    constexpr uint32_t replaceJumpAnimAddress = 0x800411D0;
 #elif defined TTYD_JP
-    uint32_t replaceJumpAnimAddress = 0x80040B34;
+    constexpr uint32_t replaceJumpAnimAddress = 0x80040B34;
 #elif defined TTYD_EU
-    uint32_t replaceJumpAnimAddress = 0x800412B8;
+    constexpr uint32_t replaceJumpAnimAddress = 0x800412B8;
 #endif
 
     writeBranchBL(replaceJumpAnimAddress, asmReplaceJumpFallAnim);
 
     // Fall Through Most Objects
 #ifdef TTYD_US
-    uint32_t fallThroughMostObjectsStandAddress = 0x8008E9DC;
-    uint32_t fallThroughMostObjectsTubeAddress = 0x8008E1E8;
-    uint32_t fallThroughMostObjectsBowserAddress = 0x8021A30C;
+    constexpr uint32_t fallThroughMostObjectsStandAddress = 0x8008E9DC;
+    constexpr uint32_t fallThroughMostObjectsTubeAddress = 0x8008E1E8;
+    constexpr uint32_t fallThroughMostObjectsBowserAddress = 0x8021A30C;
 #elif defined TTYD_JP
-    uint32_t fallThroughMostObjectsStandAddress = 0x8008D428;
-    uint32_t fallThroughMostObjectsTubeAddress = 0x8008CC4C;
-    uint32_t fallThroughMostObjectsBowserAddress = 0x80215668;
+    constexpr uint32_t fallThroughMostObjectsStandAddress = 0x8008D428;
+    constexpr uint32_t fallThroughMostObjectsTubeAddress = 0x8008CC4C;
+    constexpr uint32_t fallThroughMostObjectsBowserAddress = 0x80215668;
 #elif defined TTYD_EU
-    uint32_t fallThroughMostObjectsStandAddress = 0x8008FD38;
-    uint32_t fallThroughMostObjectsTubeAddress = 0x8008F544;
-    uint32_t fallThroughMostObjectsBowserAddress = 0x8021DD9C;
+    constexpr uint32_t fallThroughMostObjectsStandAddress = 0x8008FD38;
+    constexpr uint32_t fallThroughMostObjectsTubeAddress = 0x8008F544;
+    constexpr uint32_t fallThroughMostObjectsBowserAddress = 0x8021DD9C;
 #endif
 
     writeBranchBL(fallThroughMostObjectsStandAddress, asmFallThroughMostObjectsStandard);
@@ -671,20 +672,31 @@ void applyCheatAndDisplayInjects()
 
     // Auto Mash Through Text
 #ifdef TTYD_US
-    uint32_t autoMashThroughTextAddress1 = 0x80080FCC;
-    uint32_t autoMashThroughTextAddress2 = 0x80080FF0;
-    uint32_t autoMashThroughTextAddress3 = 0x80084268;
+    constexpr uint32_t autoMashThroughTextAddress1 = 0x80080FCC;
+    constexpr uint32_t autoMashThroughTextAddress2 = 0x80080FF0;
+    constexpr uint32_t autoMashThroughTextAddress3 = 0x80084268;
 #elif defined TTYD_JP
-    uint32_t autoMashThroughTextAddress1 = 0x8008047C;
-    uint32_t autoMashThroughTextAddress2 = 0x800804A0;
-    uint32_t autoMashThroughTextAddress3 = 0x80083390;
+    constexpr uint32_t autoMashThroughTextAddress1 = 0x8008047C;
+    constexpr uint32_t autoMashThroughTextAddress2 = 0x800804A0;
+    constexpr uint32_t autoMashThroughTextAddress3 = 0x80083390;
 #elif defined TTYD_EU
-    uint32_t autoMashThroughTextAddress1 = 0x80082288;
-    uint32_t autoMashThroughTextAddress2 = 0x800822AC;
-    uint32_t autoMashThroughTextAddress3 = 0x800855BC;
+    constexpr uint32_t autoMashThroughTextAddress1 = 0x80082288;
+    constexpr uint32_t autoMashThroughTextAddress2 = 0x800822AC;
+    constexpr uint32_t autoMashThroughTextAddress3 = 0x800855BC;
 #endif
 
     writeBranchBL(autoMashThroughTextAddress1, autoMashText);
     writeBranchBL(autoMashThroughTextAddress2, autoMashText);
     writeBranchBL(autoMashThroughTextAddress3, autoMashText);
+
+    // D-Pad Options GUI
+#ifdef TTYD_US
+    constexpr uint32_t disableDPadOptionsAddress = 0x8013D148;
+#elif defined TTYD_JP
+    constexpr uint32_t disableDPadOptionsAddress = 0x80137C1C;
+#elif defined TTYD_EU
+    constexpr uint32_t disableDPadOptionsAddress = 0x8013EC30;
+#endif
+
+    writeBranchBL(disableDPadOptionsAddress, asmDisableDPadOptionsDisplay);
 }

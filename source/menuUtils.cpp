@@ -122,7 +122,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
     return MenuButtonInput::BUTTON_NONE;
 }
 
-void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
+void basicMenuLayoutControls(Menu *menuPtr, MenuButtonInput button)
 {
     static MenuAutoIncrement autoIncrement = {0, 0};
 
@@ -176,29 +176,18 @@ void controlsBasicMenuLayout(Menu *menuPtr, MenuButtonInput button)
 
 void drawMainWindow()
 {
-    // Some drawing functions call this by itself rather than drawBasicMenuLayout, so must call menuIsHidden here as well
-    if (gMod.menuIsHidden())
-    {
-        return;
-    }
-
     gRootWindow->draw();
 }
 
-void drawBasicMenuLayout(CameraId cameraId, void *user)
+void basicMenuLayoutDraw(CameraId cameraId, void *user)
 {
-    drawBasicMenuLayout(cameraId, user, 0.f, 0.f);
+    basicMenuLayoutDraw(cameraId, user, 0.f, 0.f);
 }
 
-void drawBasicMenuLayout(CameraId cameraId, void *user, float offsetX, float offsetY)
+void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float offsetY)
 {
     (void)cameraId;
     (void)user;
-
-    if (gMod.menuIsHidden())
-    {
-        return;
-    }
 
     // Draw the main window
     drawMainWindow();
@@ -213,14 +202,14 @@ void handleMenu()
     // Prevent checking it if currently in the process of spawning an item
     // Prevent checking it if the memory editor is open
 
-    // TODO: Add check for memory editor
+    // TODO: Add check for memory editor being open
     if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
     {
         return;
     }
 
     // Check if the menu is being manually opened/closed via the button combo
-    if (checkButtonCombo(OPEN_CLOSE_MENU_BUTTON_COMBO) && !gMod.changingCheatButtonCombo())
+    if (checkButtonCombo(OPEN_CLOSE_MENU_BUTTON_COMBO) && !gMod.changingButtonCombo())
     {
         if (!gMenu)
         {

@@ -52,7 +52,7 @@ void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput bu
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawModifyMariosCoordinatesInfo() const
@@ -126,7 +126,7 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
 void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Modify Mario's Coordinates cheat
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

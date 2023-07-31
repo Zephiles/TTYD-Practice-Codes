@@ -2,12 +2,13 @@
 #include "gc/pad.h"
 #include "gc/DEMOPad.h"
 #include "gc/OSModule.h"
+#include "gc/types.h"
+#include "gc/os.h"
 #include "gc/OSCache.h"
 #include "ttyd/system.h"
 #include "ttyd/swdrv.h"
 #include "ttyd/mariost.h"
 #include "ttyd/seqdrv.h"
-#include "ttyd/npcdrv.h"
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/party.h"
 #include "ttyd/mario_party.h"
@@ -22,6 +23,8 @@
 
 #include <cstdint>
 #include <cstring>
+#include <cstdio>
+#include <cinttypes>
 #include <cmath>
 
 bool checkButtonCombo(uint32_t combo)
@@ -111,27 +114,6 @@ bool checkIfInGame()
     }
 
     return relPtr->id != RelId::DMO;
-}
-
-NpcEntry *getNpcEntryData(uint32_t slot, bool getBattleData)
-{
-    uint32_t index;
-    if (!getBattleData)
-    {
-        index = 0;
-    }
-    else
-    {
-        index = 1;
-    }
-
-    NpcWork *npcWorkPointer = &npcWork[index];
-    return &npcWorkPointer->entries[slot];
-}
-
-uint32_t secondsToFrames(uint32_t seconds)
-{
-    return sysMsec2Frame(seconds * 1000);
 }
 
 bool systemLevelIsZero()
@@ -444,6 +426,115 @@ void drawOnDebugLayer(DispCallback func, float order)
 void drawOn2DLayer(DispCallback func, float order)
 {
     dispEntry(CameraId::k2d, 2, order, func, nullptr);
+}
+
+void getTimeString(char *stringOut, uint32_t stringSize, OSTime time)
+{
+    const uint32_t busClock = OSBusClock;
+    const uint32_t timeBase = busClock / 4;
+    const uint32_t currentFps = static_cast<uint32_t>(globalWorkPtr->framerate);
+
+    OSTime currentTime = time / (timeBase / currentFps);
+
+    // Check if the value is negative
+    char format[32];
+    char *formatPtr = format;
+
+    if (currentTime < 0)
+    {
+        // Convert the number to positive
+        currentTime = -currentTime;
+
+        // Initialize the format string to have the minus sign for negative
+        formatPtr[0] = '-';
+
+        // Increment formatPtr to not overwrite the minus sign
+        formatPtr++;
+    }
+
+    // Set up the rest of the format string
+    strcpy(formatPtr, gTimeStringFormat);
+
+    // Handle the value as unsigned
+    const uint64_t currentTimeUnsigned = static_cast<uint64_t>(currentTime);
+    const uint32_t totalSeconds = currentTimeUnsigned / currentFps;
+    const uint32_t totalMinutes = totalSeconds / 60;
+
+    const uint32_t hours = totalMinutes / 60;
+    const uint32_t minutes = totalMinutes % 60;
+    const uint32_t seconds = totalSeconds % 60;
+
+    // Cast currentTimeUnsigned to avoid using __umoddi3 for modding
+    const uint32_t frames = static_cast<uint32_t>(currentTimeUnsigned) % currentFps;
+
+    // Create the string
+    snprintf(stringOut, stringSize, format, hours, minutes, seconds, frames);
+}
+
+bool getStickAngle(int32_t stickXYAnglesOut[2], double *stickAngleOut)
+{
+    int32_t stickXInt = static_cast<int32_t>(keyGetStickX(PadId::CONTROLLER_ONE));
+    int32_t stickYInt = static_cast<int32_t>(keyGetStickY(PadId::CONTROLLER_ONE));
+
+    // Check if the stick is at the neutral position
+    if ((stickXInt == 0) && (stickYInt == 0))
+    {
+        // The stick is currently at the neutral position
+        if (stickXYAnglesOut)
+        {
+            stickXYAnglesOut[0] = stickXInt;
+            stickXYAnglesOut[1] = stickYInt;
+        }
+        return false;
+    }
+
+    if (stickXInt > 127)
+    {
+        stickXInt -= 256;
+    }
+
+    if (stickYInt > 127)
+    {
+        stickYInt -= 256;
+    }
+
+    // Store the individual stick values if desired
+    if (stickXYAnglesOut)
+    {
+        stickXYAnglesOut[0] = stickXInt;
+        stickXYAnglesOut[1] = stickYInt;
+    }
+
+    const double stickX = static_cast<double>(stickXInt);
+    const double stickY = static_cast<double>(stickYInt);
+    constexpr double PI = 3.14159265358979323846;
+
+    double stickAngle = atan2(stickX, stickY) * (180.0 / PI);
+    if (stickAngle < 0.0)
+    {
+        stickAngle += 360.0;
+    }
+
+    *stickAngleOut = stickAngle;
+    return true;
+}
+
+void getStickAngleString(char *stringOut, uint32_t stringSize)
+{
+    int32_t stickXYAngles[2];
+    double stickAngle;
+
+    // Check if the stick is at the neutral position
+    if (!getStickAngle(stickXYAngles, &stickAngle))
+    {
+        // The stick is currently at the neutral position
+        // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
+        snprintf(stringOut, stringSize, "Neutral");
+        return;
+    }
+
+    // Create the string
+    snprintf(stringOut, stringSize, "%.2f  %" PRId32 "  %" PRId32, stickAngle, stickXYAngles[0], stickXYAngles[1]);
 }
 
 void clear_DC_IC_Cache(void *ptr, uint32_t size)

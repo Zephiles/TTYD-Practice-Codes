@@ -82,7 +82,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // Use the default controls
-    controlsBasicMenuLayout(menuPtr, button);
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void cancelMenuBattlesStatsChangeValue()
@@ -377,7 +377,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 void battlesMenuStatsDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    drawBasicMenuLayout(cameraId, user);
+    basicMenuLayoutDraw(cameraId, user);
 
     // If the pointer to the selected actor is invalid, then assume that the actor is no longer in the battle
     BattlesMenu *battlesMenuPtr = gBattlesMenu;

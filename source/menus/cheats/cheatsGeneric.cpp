@@ -10,7 +10,7 @@
 #include <cstdint>
 
 const MenuOption gCheatsMenuGenericOptions[] = {
-    gCheatsMenuTextTurnOnOff,
+    "Turn On/Off",
     cheatsMenuGenericToggleFlag,
 
     "Change Button Combo",
@@ -55,82 +55,23 @@ void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr)
     enterCheatsMenuGeneric(menuPtr, true);
 }
 
-void cheatsMenuGenericDPadControls(MenuButtonInput button, Menu *menuPtr)
-{
-    const uint32_t totalOptions = menuPtr->getTotalOptions();
-
-    // If there's only one option, then don't bother handling inputs
-    if (totalOptions <= 1)
-    {
-        return;
-    }
-
-    menuControlsVertical(button,
-                         menuPtr->getCurrentIndexPtr(),
-                         menuPtr->getCurrentPagePtr(),
-                         totalOptions,
-                         totalOptions,
-                         1,
-                         false);
-}
-
 void cheatsMenuGenericControls(Menu *menuPtr, MenuButtonInput button)
 {
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-
     // If the button combo editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
     {
-        cheatsMenuPtr->getButtonComboEditor()->controls(button);
+        gCheatsMenu->getButtonComboEditor()->controls(button);
         return;
     }
 
-    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = handleMenuAutoIncrement(cheatsMenuPtr->getAutoIncrementPtr());
-
-    // Handle held button inputs if auto-incrementing should be done
-    if (autoIncrement)
-    {
-        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
-        switch (buttonHeld)
-        {
-            case MenuButtonInput::DPAD_DOWN:
-            case MenuButtonInput::DPAD_UP:
-            {
-                cheatsMenuGenericDPadControls(buttonHeld, menuPtr);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-    }
-
-    switch (button)
-    {
-        case MenuButtonInput::DPAD_DOWN:
-        case MenuButtonInput::DPAD_UP:
-        {
-            cheatsMenuGenericDPadControls(button, menuPtr);
-            break;
-        }
-        default:
-        {
-            // Use the default controls
-            controlsBasicMenuLayout(menuPtr, button);
-            break;
-        }
-    }
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void cheatsMenuGenericDraw(CameraId cameraId, void *user)
 {
-    (void)cameraId;
-    (void)user;
-
-    // Draw the main window
-    drawBasicMenuLayout(cameraId, user);
+    // Draw the main window and text
+    basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the current cheat
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

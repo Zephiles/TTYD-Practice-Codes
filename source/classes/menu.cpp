@@ -1,4 +1,5 @@
 #include "drawText.h"
+#include "mod.h"
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "menuUtils.h"
@@ -73,7 +74,7 @@ void Menu::runDrawFunc() const
         return;
     }
 
-    drawOnDebugLayer(func, 0.f);
+    drawOnDebugLayer(func, DRAW_ORDER_MENU);
 }
 
 void Menu::runExitFunc() const
