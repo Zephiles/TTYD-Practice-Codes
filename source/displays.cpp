@@ -542,9 +542,8 @@ float Displays::getErrorTextOrder()
 {
     const float order = this->defaultOrderErrors;
 
-    // Subtract one for each set of error text to keep the order consistent, as otherwise their positioning would be somewhat
-    // random
-    this->defaultOrderErrors = order - 1.f;
+    // Add one for each set of error text to keep the order consistent, as otherwise their positioning would be somewhat random
+    this->defaultOrderErrors = order + 1.f;
     return order;
 }
 
@@ -1770,6 +1769,12 @@ void drawMemoryUsage(CameraId cameraId, void *user)
 
 void handleMemoryUsage(Displays *displaysPtr)
 {
+    // Draw any heap errors that occured
+    if (displaysPtr->getMemoryUsageDisplayPtr()->shouldDrawHeapCorruptionBuffer())
+    {
+        drawOnDebugLayer(drawHeapCorruptionErrors, displaysPtr->getErrorTextOrder());
+    }
+
     // Check if at least one of the memory usage displays should be handled
     constexpr uint32_t firstHeap = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
     for (uint32_t i = 0; i < DISPLAYS_TOTAL_HEAPS; i++)

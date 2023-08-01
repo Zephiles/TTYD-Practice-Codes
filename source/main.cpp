@@ -204,12 +204,6 @@ void checkHeaps()
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
     memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, true);
 #endif
-
-    // Draw any errors that occured
-    if (memoryUsageDisplayPtr->shouldDrawHeapCorruptionBuffer())
-    {
-        drawOnDebugLayer(drawHeapCorruptionErrors, displaysPtr->getErrorTextOrder());
-    }
 }
 
 void runOncePerFrame()

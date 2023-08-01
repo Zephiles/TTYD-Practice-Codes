@@ -810,7 +810,6 @@ int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *
 const void *checkIndividualStandardHeap(const ChunkInfo *start);
 const void *checkIndividualSmartHeap(const SmartAllocationData *start);
 const void *checkIndividualMapHeap(const MapAllocEntry *start);
-void drawHeapCorruptionErrors(CameraId cameraId, void *user);
 NpcEntry *checkForNpcNameToPtrError(const char *name);
 void preventAnimPoseMainCrash(int32_t poseId);
 void drawStarPowerValue();
