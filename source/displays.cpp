@@ -34,7 +34,6 @@
 #include "ttyd/npcdrv.h"
 #include "ttyd/itemdrv.h"
 #include "ttyd/item_data.h"
-#include "ttyd/fontmgr.h"
 #include "ttyd/mario_motion.h"
 #include "ttyd/statuswindow.h"
 #include "ttyd/icondrv.h"
@@ -529,7 +528,7 @@ DisplayManuallyPosition *Displays::getDisplayManuallyPositionPtr(uint32_t manual
     return &this->manuallyPosition[manuallyPositionFlag];
 }
 
-float Displays::getErrorTextPosY()
+float Displays::getErrorTextPosYDecrement()
 {
     const float posY = this->defaultPosYErrors;
 
@@ -537,6 +536,16 @@ float Displays::getErrorTextPosY()
     this->defaultPosYErrors = posY - (LINE_HEIGHT_FLOAT * DISPLAYS_DEFAULT_SCALE);
 
     return posY;
+}
+
+float Displays::getErrorTextOrder()
+{
+    const float order = this->defaultOrderErrors;
+
+    // Subtract one for each set of error text to keep the order consistent, as otherwise their positioning would be somewhat
+    // random
+    this->defaultOrderErrors = order - 1.f;
+    return order;
 }
 
 Displays::Displays()
@@ -749,12 +758,13 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
-    // Initialize the default Y positions
+    // Initialize the default Y positions and error text draw order
     this->defaultPosYBottomLeft = DISPLAYS_DEFAULT_POS_Y_BOTTOM;
     this->defaultPosYBottomRight = DISPLAYS_DEFAULT_POS_Y_BOTTOM;
     this->defaultPosYTopLeft = DISPLAYS_DEFAULT_POS_Y_TOP;
     this->defaultPosYTopRight = DISPLAYS_DEFAULT_POS_Y_TOP;
     this->defaultPosYErrors = DISPLAYS_DEFAULT_POS_Y_TOP_ERROR_TEXT;
+    this->defaultOrderErrors = DRAW_ORDER_DISPLAY_ERRORS;
 }
 
 const void *checkIndividualStandardHeap(const ChunkInfo *start)
@@ -1642,8 +1652,13 @@ void drawHeapCorruptionErrors(CameraId cameraId, void *user)
     // Initialize text drawing
     drawTextInit(true);
 
+    // Decrement the default Pos Y value to account for how many lines are in the heap corruption buffer
+    constexpr float scale = DISPLAYS_DEFAULT_SCALE_ERRORS;
+    const float posY = displaysPtr->getErrorTextPosY();
+    displaysPtr->decrementDefaultPosErrorText(getTextMultilineIncrement(text, scale, 0));
+
     // Draw the text
-    drawText(text, DISPLAYS_DEFAULT_POS_X_LEFT, displaysPtr->getErrorTextPosY(), DISPLAYS_DEFAULT_SCALE, getColorWhite(0xFF));
+    drawText(text, DISPLAYS_DEFAULT_POS_X_LEFT, posY, scale, getColorWhite(0xFF));
 }
 
 void drawMemoryUsage(CameraId cameraId, void *user)
@@ -1660,8 +1675,8 @@ void drawMemoryUsage(CameraId cameraId, void *user)
 
     // Draw the text for the main heaps
     Displays *displaysPtr = gDisplays;
-    MemoryUsageDisplay *memoryUsageDisplayPtr = displaysPtr->getMemoryUsageDisplayPtr();
-    const auto memoryUsageBuffer = memoryUsageDisplayPtr->getMemoryUsageBufferPtr();
+    MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
+    const auto memoryUsageBuffer = memoryUsagePtr->getMemoryUsageBufferPtr();
     uint32_t memoryUsageCounter = 0;
     bool drawnText = false;
 
@@ -2362,9 +2377,9 @@ void drawHitCheckVisualization(CameraId cameraId, void *user)
     GXSetLineWidth(9, GXTexOffset::GX_TO_ZERO);
 
     // Figure out how many entries we get
-    HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = gDisplays->getHitCheckVisualizationDisplayPtr();
-    uint32_t entryCount = hitCheckVisualizationDisplayPtr->getEntryCount();
-    hitCheckVisualizationDisplayPtr->setEntryCount(0);
+    HitCheckVisualizationDisplay *hitCheckVisualizationPtr = gDisplays->getHitCheckVisualizationDisplayPtr();
+    uint32_t entryCount = hitCheckVisualizationPtr->getEntryCount();
+    hitCheckVisualizationPtr->setEntryCount(0);
 
     if (entryCount > HIT_CHECK_BUFFER_CAPACITY)
     {
@@ -2372,9 +2387,9 @@ void drawHitCheckVisualization(CameraId cameraId, void *user)
     }
 
     // Ready to draw
-    uint8_t *hitsColor = hitCheckVisualizationDisplayPtr->getHitsColorPtr();
-    uint8_t *missesColor = hitCheckVisualizationDisplayPtr->getMissesColorPtr();
-    const HitCheckResult *bufferPtr = hitCheckVisualizationDisplayPtr->getBufferPtr();
+    uint8_t *hitsColor = hitCheckVisualizationPtr->getHitsColorPtr();
+    uint8_t *missesColor = hitCheckVisualizationPtr->getMissesColorPtr();
+    const HitCheckResult *bufferPtr = hitCheckVisualizationPtr->getBufferPtr();
 
     for (uint32_t i = 0; i < entryCount; i++)
     {
@@ -2405,7 +2420,7 @@ void drawHitCheckVisualization(CameraId cameraId, void *user)
     }
 
     // All work is done, so free the memoru used by the buffer
-    hitCheckVisualizationDisplayPtr->freeBuffer();
+    hitCheckVisualizationPtr->freeBuffer();
 }
 
 // Credits to PistonMiner for writing the original code for this function
@@ -2453,8 +2468,8 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     }
 
     // If there are no more entry slots available, then exit
-    HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
-    const uint32_t entry = hitCheckVisualizationDisplayPtr->getEntryCount();
+    HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+    const uint32_t entry = hitCheckVisualizationPtr->getEntryCount();
 
     if (entry >= HIT_CHECK_BUFFER_CAPACITY)
     {
@@ -2462,7 +2477,7 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     }
 
     // Current entry can be used, so update the entry count
-    hitCheckVisualizationDisplayPtr->setEntryCount(entry + 1);
+    hitCheckVisualizationPtr->setEntryCount(entry + 1);
 
     // Get the data for the current entry
     bool hit;
@@ -2483,7 +2498,7 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
         hit = false;
     }
 
-    HitCheckResult *currentEntry = hitCheckVisualizationDisplayPtr->getBufferSlotPtr(entry);
+    HitCheckResult *currentEntry = hitCheckVisualizationPtr->getBufferSlotPtr(entry);
     currentEntry->copyPosToStartPos(startPos);
     currentEntry->copyPosToEndPos(endPos);
     currentEntry->setHit(hit);
@@ -2499,14 +2514,14 @@ void handleHitCheckVisualization(Displays *displaysPtr)
     }
 
     // Make sure there is at least one hit/miss to draw
-    const HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
-    if (hitCheckVisualizationDisplayPtr->getEntryCount() == 0)
+    const HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+    if (hitCheckVisualizationPtr->getEntryCount() == 0)
     {
         return;
     }
 
     // Make sure the buffer for the entries is set
-    if (!hitCheckVisualizationDisplayPtr->getBufferPtr())
+    if (!hitCheckVisualizationPtr->getBufferPtr())
     {
         return;
     }
@@ -3172,7 +3187,7 @@ void handleBridgeSkip(Displays *displaysPtr)
     }
 
     const uint32_t flags = marioGetPtr()->flags2;
-    BridgeSkipDisplay *bridgeSkipDisplayPtr = displaysPtr->getBridgeSkipDisplayPtr();
+    BridgeSkipDisplay *bridgeSkipPtr = displaysPtr->getBridgeSkipDisplayPtr();
 
     const bool unkNoLongerOnGround = flags & 0x10000000;
     const bool unkNotAbleToJump = flags & 0x10000;
@@ -3182,7 +3197,7 @@ void handleBridgeSkip(Displays *displaysPtr)
         if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_PRESSED_EARLY))
         {
             // Reset the timer upon landing and while not pressing A
-            bridgeSkipDisplayPtr->resetTimer();
+            bridgeSkipPtr->resetTimer();
 
             // Check if A was pressed too early
             if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_PAUSED) &&
@@ -3254,14 +3269,14 @@ void handleBridgeSkip(Displays *displaysPtr)
     if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP))
     {
         // Hold the button combo to increment the reset counter
-        uint32_t counter = bridgeSkipDisplayPtr->getCounter();
-        bridgeSkipDisplayPtr->setCounter(++counter);
+        uint32_t counter = bridgeSkipPtr->getCounter();
+        bridgeSkipPtr->setCounter(++counter);
 
         if (counter > sysMsec2Frame(2000))
         {
             // Reset the timer when the button combo is held for 2 seconds
-            bridgeSkipDisplayPtr->resetTimer();
-            bridgeSkipDisplayPtr->resetCounter();
+            bridgeSkipPtr->resetTimer();
+            bridgeSkipPtr->resetCounter();
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_PRESSED_EARLY);
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_PRESSED_EARLY_SHOULD_DISABLE);
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_PAUSED);
@@ -3270,7 +3285,7 @@ void handleBridgeSkip(Displays *displaysPtr)
     }
     else
     {
-        bridgeSkipDisplayPtr->resetCounter();
+        bridgeSkipPtr->resetCounter();
     }
 }
 
@@ -3434,7 +3449,11 @@ void drawNpcNameToPtrError(CameraId cameraId, void *user)
     snprintf(buf, sizeof(buf), "npcNameToPtr error occured x%" PRIu32, counter);
 
     // Draw the text
-    drawText(buf, DISPLAYS_DEFAULT_POS_X_LEFT, displaysPtr->getErrorTextPosY(), DISPLAYS_DEFAULT_SCALE, getColorWhite(0xFF));
+    drawText(buf,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
 }
 
 NpcEntry *checkForNpcNameToPtrError(const char *name)
@@ -3457,15 +3476,13 @@ NpcEntry *checkForNpcNameToPtrError(const char *name)
 
 void handleNpcNameToPtrError(Displays *displaysPtr)
 {
-    (void)displaysPtr;
-
     NpcNameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
     uint32_t timer = npcNameToPtrErrorPtr->getTimer();
 
     if (timer > 0)
     {
         npcNameToPtrErrorPtr->setTimer(--timer);
-        drawOnDebugLayer(drawNpcNameToPtrError, DRAW_ORDER_DISPLAY_ERRORS);
+        drawOnDebugLayer(drawNpcNameToPtrError, displaysPtr->getErrorTextOrder());
     }
 }
 
@@ -3493,7 +3510,11 @@ void drawAnimPoseMainError(CameraId cameraId, void *user)
     snprintf(buf, sizeof(buf), "animPoseMain error occured x%" PRIu32, counter);
 
     // Draw the text
-    drawText(buf, DISPLAYS_DEFAULT_POS_X_LEFT, displaysPtr->getErrorTextPosY(), DISPLAYS_DEFAULT_SCALE, getColorWhite(0xFF));
+    drawText(buf,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
 }
 
 void preventAnimPoseMainCrash(int32_t poseId)
@@ -3514,15 +3535,13 @@ void preventAnimPoseMainCrash(int32_t poseId)
 
 void handleAnimPoseMainError(Displays *displaysPtr)
 {
-    (void)displaysPtr;
-
     AnimPoseMainErrorDisplay *animPoseMainErrorPtr = gDisplays->getAnimPoseMainErrorDisplayPtr();
     uint32_t timer = animPoseMainErrorPtr->getTimer();
 
     if (timer > 0)
     {
         animPoseMainErrorPtr->setTimer(--timer);
-        drawOnDebugLayer(drawAnimPoseMainError, DRAW_ORDER_DISPLAY_ERRORS);
+        drawOnDebugLayer(drawAnimPoseMainError, displaysPtr->getErrorTextOrder());
     }
 }
 
@@ -3896,9 +3915,10 @@ void runDisplayFuncsEveryFrame()
         return;
     }
 
-    // Reset defaultPosYErrors, as errors could happen any time outside of this function
+    // Reset defaultPosYErrors and defaultOrderErrors, as errors could happen any time outside of this function
     Displays *displaysPtr = gDisplays;
     displaysPtr->setDefaultPosErrors(DISPLAYS_DEFAULT_POS_Y_TOP_ERROR_TEXT);
+    displaysPtr->setDefaultErrorTextOrder(DRAW_ORDER_DISPLAY_ERRORS);
 
     // Clear all draw flags before running any display functions
     displaysPtr->clearAllShouldDrawFlags();

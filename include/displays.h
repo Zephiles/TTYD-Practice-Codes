@@ -24,6 +24,7 @@
 #define DISPLAYS_DEFAULT_POS_Y_BOTTOM -160.f
 
 #define DISPLAYS_DEFAULT_SCALE 0.65f
+#define DISPLAYS_DEFAULT_SCALE_ERRORS (DISPLAYS_DEFAULT_SCALE - 0.05f)
 #define GET_DISPLAYS_DEFAULT_SCALED_LINE_DECREMENT (LINE_HEIGHT_FLOAT * DISPLAYS_DEFAULT_SCALE)
 
 class Displays;
@@ -735,7 +736,10 @@ class Displays
 
     bool displayShouldBeHandled(uint32_t enabledFlag) const;
     DisplayManuallyPosition *getDisplayManuallyPositionPtr(uint32_t manuallyPositionFlag);
-    float getErrorTextPosY();
+
+    float getErrorTextPosY() const { return this->defaultPosYErrors; }
+    float getErrorTextPosYDecrement();
+    float getErrorTextOrder();
 
     float getDefaultPosBottomLeft() const { return this->defaultPosYBottomLeft; }
     float getDefaultPosBottomRight() const { return this->defaultPosYBottomRight; }
@@ -747,8 +751,10 @@ class Displays
     void setDefaultPosTopLeft(float pos) { this->defaultPosYTopLeft = pos; }
     void setDefaultPosTopRight(float pos) { this->defaultPosYTopRight = pos; }
     void setDefaultPosErrors(float pos) { this->defaultPosYErrors = pos; }
+    void setDefaultErrorTextOrder(float order) { this->defaultOrderErrors = order; }
 
     void incrementDefaultPosTopLeft(float value) { this->defaultPosYTopLeft += value; }
+    void decrementDefaultPosErrorText(float value) { this->defaultPosYErrors -= value; }
 
     OnScreenTimerDisplay *getOnScreenTimerDisplayPtr() { return &this->onScreenTimer; }
     FrameCounterDisplay *getFrameCounterDisplayPtr() { return &this->frameCounter; }
@@ -778,6 +784,7 @@ class Displays
     float defaultPosYTopRight;
     float defaultPosYBottomRight;
     float defaultPosYErrors;
+    float defaultOrderErrors;
 
     OnScreenTimerDisplay onScreenTimer;
     FrameCounterDisplay frameCounter;

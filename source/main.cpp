@@ -145,7 +145,9 @@ void exit() {}
 void checkHeaps()
 {
     // Reset heapCorruptioBufferIndex and clear both heap buffers before doing anything
-    MemoryUsageDisplay *memoryUsageDisplayPtr = gDisplays->getMemoryUsageDisplayPtr();
+    Displays *displaysPtr = gDisplays;
+    MemoryUsageDisplay *memoryUsageDisplayPtr = displaysPtr->getMemoryUsageDisplayPtr();
+
     memoryUsageDisplayPtr->setHeapCorruptionBufferIndex(0);
     memoryUsageDisplayPtr->freeHeapCorruptionBuffer();
     memoryUsageDisplayPtr->clearMemoryUsageBuffer();
@@ -206,7 +208,7 @@ void checkHeaps()
     // Draw any errors that occured
     if (memoryUsageDisplayPtr->shouldDrawHeapCorruptionBuffer())
     {
-        drawOnDebugLayer(drawHeapCorruptionErrors, DRAW_ORDER_DISPLAY_ERRORS);
+        drawOnDebugLayer(drawHeapCorruptionErrors, displaysPtr->getErrorTextOrder());
     }
 }
 
