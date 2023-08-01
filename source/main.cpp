@@ -144,12 +144,9 @@ void exit() {}
 
 void checkHeaps()
 {
-    // Reset heapCorruptioBufferIndex and clear both heap buffers before doing anything
-    Displays *displaysPtr = gDisplays;
-    MemoryUsageDisplay *memoryUsageDisplayPtr = displaysPtr->getMemoryUsageDisplayPtr();
-
+    // Reset heapCorruptioBufferIndex and clear the memory usage buffer before doing anything
+    MemoryUsageDisplay *memoryUsageDisplayPtr = gDisplays->getMemoryUsageDisplayPtr();
     memoryUsageDisplayPtr->setHeapCorruptionBufferIndex(0);
-    memoryUsageDisplayPtr->freeHeapCorruptionBuffer();
     memoryUsageDisplayPtr->clearMemoryUsageBuffer();
 
     // Check the standard heaps

@@ -1640,16 +1640,12 @@ void drawHeapCorruptionErrors(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
-    // Make sure the text is set
-    Displays *displaysPtr = gDisplays;
-    const char *text = displaysPtr->getMemoryUsageDisplayPtr()->getHeapCorruptionBufferPtr();
-    if (!text)
-    {
-        return;
-    }
-
     // Initialize text drawing
     drawTextInit(true);
+
+    Displays *displaysPtr = gDisplays;
+    MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
+    const char *text = memoryUsagePtr->getHeapCorruptionBufferPtr();
 
     // Decrement the default Pos Y value to account for how many lines are in the heap corruption buffer
     constexpr float scale = DISPLAYS_DEFAULT_SCALE_ERRORS;
@@ -1658,6 +1654,9 @@ void drawHeapCorruptionErrors(CameraId cameraId, void *user)
 
     // Draw the text
     drawText(text, DISPLAYS_DEFAULT_POS_X_LEFT, posY, scale, getColorWhite(0xFF));
+
+    // Done, so free the memory used by the heap corruption buffer
+    memoryUsagePtr->freeHeapCorruptionBuffer();
 }
 
 void drawMemoryUsage(CameraId cameraId, void *user)
