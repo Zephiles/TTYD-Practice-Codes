@@ -258,15 +258,15 @@ void removeFollowerFromOverworld()
     partyKill2(marioGetExtraPartyId());
 }
 
-void spawnPartnerOrFollower(PartyMembers id)
+PartySlotId spawnPartnerOrFollower(PartyMembers id)
 {
     // Make sure the partner/follower is valid
     if ((id <= PartyMembers::kNone) || (id > PartyMembers::kMsMowzFollower))
     {
-        return;
+        return PartySlotId::kNone;
     }
 
-    PartySlotId partySlotId;
+    PartySlotId slotId;
 
     // If spawning a partner, make sure they are enabled when marioPartyEntry is called
     if ((id >= PartyMembers::kGoombella) && (id <= PartyMembers::kMsMowz))
@@ -278,7 +278,7 @@ void spawnPartnerOrFollower(PartyMembers id)
         partyJoin(id);
 
         // Spawn the partner
-        partySlotId = marioPartyEntry(id);
+        slotId = marioPartyEntry(id);
 
         // If the selected partner was not in the partner menu, then remove them
         if (!partnerInPauseMenu)
@@ -289,20 +289,22 @@ void spawnPartnerOrFollower(PartyMembers id)
     else
     {
         // Spawn the follower
-        partySlotId = marioPartyEntry(id);
+        slotId = marioPartyEntry(id);
     }
 
     // Make sure the partner/follower spawned properly
-    if (partySlotId <= PartySlotId::kNone)
+    if (slotId <= PartySlotId::kNone)
     {
-        return;
+        return slotId;
     }
 
     // Make sure the partner/follower is moving
-    partyRun(partyGetPtr(partySlotId));
+    partyRun(partyGetPtr(slotId));
+
+    return slotId;
 }
 
-void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
+PartySlotId spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
 {
     const Player *playerPtr = marioGetPtr();
     PartyMembers previousOut;
@@ -322,17 +324,17 @@ void spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
     if (previousOut != PartyMembers::kNone)
     {
         // A partner/follower was previously out, so bring them back out
-        spawnPartnerOrFollower(previousOut);
+        return spawnPartnerOrFollower(previousOut);
     }
     else if (shouldSpawnPartner)
     {
         // No partner was previously out, so bring out Goombella
-        spawnPartnerOrFollower(PartyMembers::kGoombella);
+        return spawnPartnerOrFollower(PartyMembers::kGoombella);
     }
     else
     {
         // No follower was previously out, so bring out Frankly
-        spawnPartnerOrFollower(PartyMembers::kFrankly);
+        return spawnPartnerOrFollower(PartyMembers::kFrankly);
     }
 }
 

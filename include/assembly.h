@@ -44,8 +44,7 @@ extern "C"
     // Functions accessed by assembly overwrites
     uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr);
 
-    PartyEntry *cFixEvtMapBlendSetFlagPartnerCrash(PartyEntry *partnerPtr);
-    PartyEntry *cFixEvtMapBlendSetFlagFollowerCrash(PartyEntry *followerPtr);
+    PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner);
 
 #ifdef TTYD_JP
     int32_t crashScreenDecrementYPos();

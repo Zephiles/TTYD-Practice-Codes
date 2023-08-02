@@ -3,7 +3,8 @@
 
 asmFixEvtMapBlendSetFlagFollowerCrashStart:
 # r3 already contains followerPtr
-bl cFixEvtMapBlendSetFlagFollowerCrash
+li %r4,0 # False
+bl cFixEvtMapSetFlagCrash
 
 # Restore the overwritten instruction
 cmpwi %r31,1

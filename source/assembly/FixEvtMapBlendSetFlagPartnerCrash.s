@@ -3,7 +3,8 @@
 
 asmFixEvtMapBlendSetFlagPartnerCrashStart:
 # r3 already contains partnerPtr
-bl cFixEvtMapBlendSetFlagPartnerCrash
+li %r4,1 # True
+bl cFixEvtMapSetFlagCrash
 
 # Restore the overwritten instruction
 cmpwi %r31,1

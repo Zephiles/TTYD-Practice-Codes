@@ -10,6 +10,7 @@
 #include "gc/OSCache.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
+#include "ttyd/party.h"
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/seqdrv.h"
 #include "ttyd/fontmgr.h"
@@ -58,28 +59,15 @@ uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr)
     return 2;
 }
 
-PartyEntry *cFixEvtMapBlendSetFlagPartnerCrash(PartyEntry *partnerPtr)
+PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner)
 {
-    // Bring out a partner if no partner is currently out
-    if (partnerPtr)
+    // Bring out a partner/follower if no partner/follower is currently out
+    if (partyPtr)
     {
-        return partnerPtr;
+        return partyPtr;
     }
 
-    spawnFailsafePartnerOrFollower(true);
-    return getPartnerPtr();
-}
-
-PartyEntry *cFixEvtMapBlendSetFlagFollowerCrash(PartyEntry *followerPtr)
-{
-    // Bring out a follower if no follower is currently out
-    if (followerPtr)
-    {
-        return followerPtr;
-    }
-
-    spawnFailsafePartnerOrFollower(false);
-    return getFollowerPtr();
+    return partyGetPtr(spawnFailsafePartnerOrFollower(shouldSpawnPartner));
 }
 
 void preventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeAddress, int32_t selectedOption)
