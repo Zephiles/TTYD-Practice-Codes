@@ -332,6 +332,7 @@ class MemoryUsageDisplay
         this->freeHeapCorruptionBuffer();
     }
 
+    char *getMemoryUsageBuffer() { return this->memoryUsageBuffer; }
     bool shouldDrawMemoryUsageBuffer() const { return this->memoryUsageBuffer != nullptr; }
 
     char *initMemoryUsageBuffer()
@@ -352,7 +353,6 @@ class MemoryUsageDisplay
         return &buf[MEMORY_USAGE_BUFFER_SINGLE_LINE * slot];
     }
 
-    char *getMemoryUsageBuffer() { return this->memoryUsageBuffer; }
     char *getHeapCorruptionBufferPtr() { return this->heapCorruptionBuffer; }
     bool shouldDrawHeapCorruptionBuffer() const { return this->heapCorruptionBuffer != nullptr; }
 
