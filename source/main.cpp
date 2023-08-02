@@ -144,17 +144,14 @@ void exit() {}
 
 void checkHeaps()
 {
-    // Reset heapCorruptioBufferIndex and clear the memory usage buffer before doing anything
-    MemoryUsageDisplay *memoryUsageDisplayPtr = gDisplays->getMemoryUsageDisplayPtr();
-    memoryUsageDisplayPtr->setHeapCorruptionBufferIndex(0);
-    memoryUsageDisplayPtr->clearMemoryUsageBuffer();
-
     // Check the standard heaps
+    uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
     const HeapInfo *heapArrayPtr = HeapArray;
+    Displays *displaysPtr = gDisplays;
     uint32_t memoryUsageCounter = 0;
     const void *addressWithError;
 
-    for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++)
+    for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag++)
     {
         const HeapInfo *heapPtr = &heapArrayPtr[i];
 
@@ -162,15 +159,15 @@ void checkHeaps()
         const ChunkInfo *tempChunk = heapPtr->firstUsed;
         addressWithError = checkIndividualStandardHeap(tempChunk);
 
-        memoryUsageDisplayPtr
-            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, true);
+        displaysPtr
+            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, enabledFlag, true);
 
         // Check the free entries
         tempChunk = heapPtr->firstFree;
         addressWithError = checkIndividualStandardHeap(tempChunk);
 
-        memoryUsageDisplayPtr
-            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, false);
+        displaysPtr
+            ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, enabledFlag, false);
     }
 
     // Check the smart heap
@@ -179,27 +176,27 @@ void checkHeaps()
     // Check the used entries
     const SmartAllocationData *tempChunk = tempSmartWorkPtr->pFirstUsed;
     addressWithError = checkIndividualSmartHeap(tempChunk);
-    memoryUsageDisplayPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter++, true);
+    displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter++, enabledFlag, true);
 
     // Check the free entries
     // Don't incrememt MemoryUsageCounter since free entries are not drawn
     tempChunk = tempSmartWorkPtr->pFirstFree;
     addressWithError = checkIndividualSmartHeap(tempChunk);
-    memoryUsageDisplayPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, false);
+    displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, enabledFlag++, false);
 
     // Check the map heap
     const MapAllocEntry *mapHeapPtr = mapalloc_base_ptr;
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
 
 #ifdef TTYD_JP
-    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter);
+    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag++);
 #else
-    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, false);
+    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag++, false);
 
     // Check the battle map heap
     mapHeapPtr = R_battlemapalloc_base_ptr;
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
-    memoryUsageDisplayPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, true);
+    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, enabledFlag, true);
 #endif
 }
 

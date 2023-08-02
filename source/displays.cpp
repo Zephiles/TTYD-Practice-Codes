@@ -844,12 +844,13 @@ const void *checkIndividualMapHeap(const MapAllocEntry *start)
     return nullptr;
 }
 
-void MemoryUsageDisplay::handleStandardHeapChunkResults(const void *addressWithError,
-                                                        const ChunkInfo *chunk,
-                                                        const HeapInfo *heap,
-                                                        int32_t heapIndex,
-                                                        uint32_t memoryUsageBufferIndex,
-                                                        bool isUsedPortion)
+void Displays::handleStandardHeapChunkResults(const void *addressWithError,
+                                              const ChunkInfo *chunk,
+                                              const HeapInfo *heap,
+                                              int32_t heapIndex,
+                                              uint32_t memoryUsageBufferIndex,
+                                              uint32_t enabledFlag,
+                                              bool isUsedPortion)
 {
     // Get the used or free text
     const char *usedOrFreeString;
@@ -863,15 +864,17 @@ void MemoryUsageDisplay::handleStandardHeapChunkResults(const void *addressWithE
         usedOrFreeString = "free";
     }
 
+    MemoryUsageDisplay *memoryUsagePtr = &this->memoryUsage;
+
     if (addressWithError)
     {
         // Error occured, so add error text to the corruption buffer
         // Make sure heapCorruptioBufferIndex is valid
-        if (this->verifyHeapCorruptionBufferIndex())
+        if (memoryUsagePtr->verifyHeapCorruptionBufferIndex())
         {
-            int32_t index = this->heapCorruptioBufferIndex;
+            int32_t index = memoryUsagePtr->getHeapCorruptionBufferIndex();
 
-            index += snprintf(&this->initHeapCorruptionBufferPtr()[index],
+            index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
                               MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
                               "Main Heap %" PRId32 " (%s) corrupt at 0x%08" PRIX32 "\n",
                               heapIndex,
@@ -879,10 +882,10 @@ void MemoryUsageDisplay::handleStandardHeapChunkResults(const void *addressWithE
                               reinterpret_cast<uint32_t>(addressWithError));
 
             // Update the index
-            this->setHeapCorruptionBufferIndex(index);
+            memoryUsagePtr->setHeapCorruptionBufferIndex(index);
         }
     }
-    else
+    else if (this->enabledFlagIsSet(enabledFlag))
     {
         // Add info about the memory usage to the memory usage buffer
         int32_t usage = 0;
@@ -894,9 +897,9 @@ void MemoryUsageDisplay::handleStandardHeapChunkResults(const void *addressWithE
             chunks++;
         }
 
-        snprintf(&this->memoryUsageBuffer[memoryUsageBufferIndex][0],
+        snprintf(memoryUsagePtr->initMemoryUsageBufferEntry(memoryUsageBufferIndex),
                  MEMORY_USAGE_BUFFER_SINGLE_LINE,
-                 "Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks\n",
+                 "Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks",
                  heapIndex,
                  usedOrFreeString,
                  intToFloat(usage) / 1024.f,
@@ -905,15 +908,18 @@ void MemoryUsageDisplay::handleStandardHeapChunkResults(const void *addressWithE
     }
 }
 
-void MemoryUsageDisplay::handleSmartHeapChunkResults(const void *addressWithError,
-                                                     const SmartAllocationData *chunk,
-                                                     uint32_t memoryUsageBufferIndex,
-                                                     bool isUsedPortion)
+void Displays::handleSmartHeapChunkResults(const void *addressWithError,
+                                           const SmartAllocationData *chunk,
+                                           uint32_t memoryUsageBufferIndex,
+                                           uint32_t enabledFlag,
+                                           bool isUsedPortion)
 {
+    MemoryUsageDisplay *memoryUsagePtr = &this->memoryUsage;
+
     if (addressWithError)
     {
         // Make sure heapCorruptionBufferIndex is valid
-        if (this->verifyHeapCorruptionBufferIndex())
+        if (memoryUsagePtr->verifyHeapCorruptionBufferIndex())
         {
             // Get the used or free text
             const char *usedOrFreeString;
@@ -927,19 +933,19 @@ void MemoryUsageDisplay::handleSmartHeapChunkResults(const void *addressWithErro
                 usedOrFreeString = "free";
             }
 
-            int32_t index = this->heapCorruptioBufferIndex;
+            int32_t index = memoryUsagePtr->getHeapCorruptionBufferIndex();
 
-            index += snprintf(&this->initHeapCorruptionBufferPtr()[index],
+            index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
                               MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
                               "Smart Heap (%s) corrupt at 0x%08" PRIX32 "\n",
                               usedOrFreeString,
                               reinterpret_cast<uint32_t>(addressWithError));
 
             // Update the index
-            this->setHeapCorruptionBufferIndex(index);
+            memoryUsagePtr->setHeapCorruptionBufferIndex(index);
         }
     }
-    else if (isUsedPortion) // Don't draw the free portion
+    else if (isUsedPortion && this->enabledFlagIsSet(enabledFlag)) // Don't draw the free portion
     {
         // Add info about the memory usage to the memory usage buffer
         int32_t usage = 0;
@@ -955,7 +961,7 @@ void MemoryUsageDisplay::handleSmartHeapChunkResults(const void *addressWithErro
         const uint32_t heapStartRaw = reinterpret_cast<uint32_t>(heapStart.pHeapSmart);
         const int32_t totalSize = heapEndRaw - heapStartRaw - 0x20;
 
-        snprintf(&this->memoryUsageBuffer[memoryUsageBufferIndex][0],
+        snprintf(memoryUsagePtr->initMemoryUsageBufferEntry(memoryUsageBufferIndex),
                  MEMORY_USAGE_BUFFER_SINGLE_LINE,
                  "Smart Heap (used): %.2f/%.2fkb, %" PRId32 " cks",
                  intToFloat(usage) / 1024.f,
@@ -965,20 +971,24 @@ void MemoryUsageDisplay::handleSmartHeapChunkResults(const void *addressWithErro
 }
 
 #ifdef TTYD_JP
-void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
-                                                   const MapAllocEntry *chunk,
-                                                   uint32_t memoryUsageBufferIndex)
+void Displays::handleMapHeapChunkResults(const void *addressWithError,
+                                         const MapAllocEntry *chunk,
+                                         uint32_t memoryUsageBufferIndex,
+                                         uint32_t enabledFlag)
 #else
-void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
-                                                   const MapAllocEntry *chunk,
-                                                   uint32_t memoryUsageBufferIndex,
-                                                   bool battleHeap)
+void Displays::handleMapHeapChunkResults(const void *addressWithError,
+                                         const MapAllocEntry *chunk,
+                                         uint32_t memoryUsageBufferIndex,
+                                         uint32_t enabledFlag,
+                                         bool battleHeap)
 #endif
 {
+    MemoryUsageDisplay *memoryUsagePtr = &this->memoryUsage;
+
     if (addressWithError)
     {
         // Make sure the heapCorruptioBufferIndex is valid
-        if (this->verifyHeapCorruptionBufferIndex())
+        if (memoryUsagePtr->verifyHeapCorruptionBufferIndex())
         {
             // Get the used or free text
             const char *usedOrFreeString;
@@ -1004,9 +1014,9 @@ void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
 
             const char *format = "%sMap Heap (%s) corrupt at 0x%08" PRIX32 "\n";
 #endif
-            int32_t index = this->heapCorruptioBufferIndex;
+            int32_t index = memoryUsagePtr->getHeapCorruptionBufferIndex();
 
-            index += snprintf(&this->initHeapCorruptionBufferPtr()[index],
+            index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
                               MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
                               format,
 #ifndef TTYD_JP
@@ -1016,10 +1026,10 @@ void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
                               reinterpret_cast<uint32_t>(addressWithError));
 
             // Update the index
-            this->setHeapCorruptionBufferIndex(index);
+            memoryUsagePtr->setHeapCorruptionBufferIndex(index);
         }
     }
-    else
+    else if (this->enabledFlagIsSet(enabledFlag))
     {
         // Add info about the memory usage to the memory usage buffer
         int32_t usage = 0;
@@ -1039,10 +1049,10 @@ void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
 
 #ifdef TTYD_JP
         heapSize = mapalloc_size;
-        const char *format = "Map Heap (used): %.2f/%.2fkb, %" PRId32 " cks\n";
+        const char *format = "Map Heap (used): %.2f/%.2fkb, %" PRId32 " cks";
 #else
         const char *currentHeap = nullptr;
-        const char *format = "%sMap Heap (used): %.2f/%.2fkb, %" PRId32 " cks\n";
+        const char *format = "%sMap Heap (used): %.2f/%.2fkb, %" PRId32 " cks";
 
         if (!battleHeap)
         {
@@ -1054,8 +1064,7 @@ void MemoryUsageDisplay::handleMapHeapChunkResults(const void *addressWithError,
             heapSize = R_battlemapalloc_size;
         }
 #endif
-
-        snprintf(&this->memoryUsageBuffer[memoryUsageBufferIndex][0],
+        snprintf(memoryUsagePtr->initMemoryUsageBufferEntry(memoryUsageBufferIndex),
                  MEMORY_USAGE_BUFFER_SINGLE_LINE,
                  format,
 #ifndef TTYD_JP
@@ -1655,7 +1664,8 @@ void drawHeapCorruptionErrors(CameraId cameraId, void *user)
     // Draw the text
     drawText(text, DISPLAYS_DEFAULT_POS_X_LEFT, posY, scale, getColorWhite(0xFF));
 
-    // Done, so free the memory used by the heap corruption buffer
+    // Done, so reset heapCorruptioBufferIndex and free the memory used by the heap corruption buffer
+    memoryUsagePtr->setHeapCorruptionBufferIndex(0);
     memoryUsagePtr->freeHeapCorruptionBuffer();
 }
 
@@ -1663,25 +1673,6 @@ void drawMemoryUsage(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
-
-    // Get the position and scale for the text
-    DisplayManuallyPosition data;
-
-    const bool customPos = getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT,
-                                                 DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE,
-                                                 &data);
-
-    // Draw the text for the main heaps
-    Displays *displaysPtr = gDisplays;
-    MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
-    const auto memoryUsageBuffer = memoryUsagePtr->getMemoryUsageBufferPtr();
-    uint32_t memoryUsageCounter = 0;
-    bool drawnText = false;
-
-    const float posX = data.getPosX();
-    float posY = data.getPosY();
-    const float scale = data.getScale();
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     auto decrementPosY = [](bool customPos, float lineDecrement, DisplayManuallyPosition *data, float *posYOut)
     {
@@ -1699,41 +1690,63 @@ void drawMemoryUsage(CameraId cameraId, void *user)
         }
     };
 
-    for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, memoryUsageCounter += 2)
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+
+    const bool customPos = getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT,
+                                                 DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE,
+                                                 &data);
+
+    // Draw the text for the main heaps
+    Displays *displaysPtr = gDisplays;
+    MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
+    const char *text = memoryUsagePtr->getMemoryUsageBuffer();
+    bool drawnText = false;
+
+    const float posX = data.getPosX();
+    float posY = data.getPosY();
+    const float scale = data.getScale();
+    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+
+    // Make sure the memory usage buffer has been initialized
+    if (text)
     {
-        // Only draw if the current option is enabled
-        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i))
+        for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, text += (MEMORY_USAGE_BUFFER_SINGLE_LINE * 2))
         {
-            drawnText = true;
-            const auto text = &memoryUsageBuffer[memoryUsageCounter];
-
-            // Draw the used and free text
-            if (text[0][0])
+            // Only draw if the current option is enabled
+            if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i))
             {
-                drawText(text[0], posX, posY, scale, getColorWhite(0xFF));
-                decrementPosY(customPos, lineDecrement, &data, &posY);
-            }
+                drawnText = true;
 
-            if (text[1][0])
-            {
-                drawText(text[1], posX, posY, scale, getColorWhite(0xFF));
-                decrementPosY(customPos, lineDecrement, &data, &posY);
+                // Draw the used and free text
+                const char *string = text;
+                if (string[0])
+                {
+                    drawText(text, posX, posY, scale, getColorWhite(0xFF));
+                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                }
+
+                string = &text[MEMORY_USAGE_BUFFER_SINGLE_LINE];
+                if (string[0])
+                {
+                    drawText(string, posX, posY, scale, getColorWhite(0xFF));
+                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                }
             }
         }
-    }
 
-    // Draw the text for the smart heap and map heap(s)
-    for (uint32_t i = 0; i < DISPLAYS_TOTAL_EXTRA_HEAPS; i++, memoryUsageCounter++)
-    {
-        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
+        // Draw the text for the smart heap and map heap(s)
+        for (uint32_t i = 0; i < DISPLAYS_TOTAL_EXTRA_HEAPS; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
         {
-            drawnText = true;
-            const auto text = &memoryUsageBuffer[memoryUsageCounter];
-
-            if (text[0][0])
+            if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
             {
-                drawText(text[0], posX, posY, scale, getColorWhite(0xFF));
-                decrementPosY(customPos, lineDecrement, &data, &posY);
+                drawnText = true;
+
+                if (text[0])
+                {
+                    drawText(text, posX, posY, scale, getColorWhite(0xFF));
+                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                }
             }
         }
     }
@@ -1743,20 +1756,14 @@ void drawMemoryUsage(CameraId cameraId, void *user)
         menuCurrentlyAdjustingPosOrScale(DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE))
     {
         // Use the used portion of main heap 0 if the string for it is set
-        const auto text = &memoryUsageBuffer[0];
-        const char *string;
-
-        if (text[0][0])
+        const char *text = memoryUsagePtr->getMemoryUsageBuffer();
+        if (!text || !text[0])
         {
-            string = text[0];
-        }
-        else
-        {
-            // String is not set, so use a hardcoded string
-            string = "Main Heap 0 (used): 0.00/0.00kb, 0 cks";
+            // Either the memory usage buffer has not been inialized, or the string is not set, so use a hardcoded string
+            text = "Main Heap 0 (used): 0.00/0.00kb, 0 cks";
         }
 
-        drawText(string, posX, posY, scale, getColorWhite(0xFF));
+        drawText(text, posX, posY, scale, getColorWhite(0xFF));
     }
 
     if (!customPos)
@@ -1764,25 +1771,31 @@ void drawMemoryUsage(CameraId cameraId, void *user)
         // Increment the default Pos Y value to fix positioning for other displays
         displaysPtr->incrementDefaultPosTopLeft(lineDecrement);
     }
+
+    // Done, so free the memory used by the memory usage buffer
+    memoryUsagePtr->freeMemoryUsageBuffer();
 }
 
 void handleMemoryUsage(Displays *displaysPtr)
 {
+    const MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
+
     // Draw any heap errors that occured
-    if (displaysPtr->getMemoryUsageDisplayPtr()->shouldDrawHeapCorruptionBuffer())
+    if (memoryUsagePtr->shouldDrawHeapCorruptionBuffer())
     {
         drawOnDebugLayer(drawHeapCorruptionErrors, displaysPtr->getErrorTextOrder());
     }
 
-    // Check if at least one of the memory usage displays should be handled
-    constexpr uint32_t firstHeap = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
-    for (uint32_t i = 0; i < DISPLAYS_TOTAL_HEAPS; i++)
+    // Draw the memory usage of the heaps if any of the enabled flags for them are set
+    if (memoryUsagePtr->shouldDrawMemoryUsageBuffer())
     {
-        if (displaysPtr->displayShouldBeHandled(firstHeap + i))
-        {
-            displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_MEMORY_USAGE);
-            break;
-        }
+        displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_MEMORY_USAGE);
+    }
+
+    // Check if this display is in the process of being manually positioned or scaled
+    else if (menuCurrentlyAdjustingPosOrScale(DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE))
+    {
+        displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_MEMORY_USAGE);
     }
 }
 
@@ -2309,14 +2322,12 @@ void handleGuardSuperguardTimings(Displays *displaysPtr)
     {
         drawGuardSuperguardTimningsDisplay();
     }
-    else
+
+    // Check if this display is in the process of being manually positioned or scaled
+    else if (menuCurrentlyAdjustingPosOrScale(
+                 DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_GUARD_SUPERGUARD_TIMINGS))
     {
-        // Check if this display is in the process of being manually positioned or scaled
-        if (menuCurrentlyAdjustingPosOrScale(
-                DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_GUARD_SUPERGUARD_TIMINGS))
-        {
-            drawGuardSuperguardTimningsDisplay();
-        }
+        drawGuardSuperguardTimningsDisplay();
     }
 }
 
@@ -2423,7 +2434,7 @@ void drawHitCheckVisualization(CameraId cameraId, void *user)
         GXPosition3f32(endPos->x, endPos->y, endPos->z);
     }
 
-    // All work is done, so free the memoru used by the buffer
+    // All work is done, so free the memory used by the buffer
     hitCheckVisualizationPtr->freeBuffer();
 }
 

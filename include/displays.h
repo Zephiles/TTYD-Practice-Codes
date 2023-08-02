@@ -306,36 +306,14 @@ class MemoryUsageDisplay
    public:
     MemoryUsageDisplay() {}
 
-    ~MemoryUsageDisplay()
+    void freeMemoryUsageBuffer()
     {
-        char *buf = this->heapCorruptionBuffer;
+        char *buf = this->memoryUsageBuffer;
         if (buf)
         {
             delete[] buf;
+            this->memoryUsageBuffer = nullptr;
         }
-    }
-
-    void setHeapCorruptionBufferIndex(int32_t index) { this->heapCorruptioBufferIndex = static_cast<int16_t>(index); }
-
-    bool verifyHeapCorruptionBufferIndex() const
-    {
-        const int32_t index = this->heapCorruptioBufferIndex;
-        return (index >= 0) && (index < MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE);
-    }
-
-    char *getHeapCorruptionBufferPtr() { return this->heapCorruptionBuffer; }
-    bool shouldDrawHeapCorruptionBuffer() const { return this->heapCorruptionBuffer != nullptr; }
-
-    char *initHeapCorruptionBufferPtr()
-    {
-        char *buf = this->heapCorruptionBuffer;
-        if (!buf)
-        {
-            buf = new char[MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE];
-            this->heapCorruptionBuffer = buf;
-        }
-
-        return buf;
     }
 
     void freeHeapCorruptionBuffer()
@@ -348,34 +326,67 @@ class MemoryUsageDisplay
         }
     }
 
-    auto getMemoryUsageBufferPtr() { return &this->memoryUsageBuffer[0]; }
-    void clearMemoryUsageBuffer() { clearMemory(this->memoryUsageBuffer, sizeof(this->memoryUsageBuffer)); }
+    ~MemoryUsageDisplay()
+    {
+        this->freeMemoryUsageBuffer();
+        this->freeHeapCorruptionBuffer();
+    }
 
-    void handleStandardHeapChunkResults(const void *addressWithError,
-                                        const ChunkInfo *chunk,
-                                        const HeapInfo *heap,
-                                        int32_t heapIndex,
-                                        uint32_t memoryUsageBufferIndex,
-                                        bool isUsedPortion);
+    bool shouldDrawMemoryUsageBuffer() const { return this->memoryUsageBuffer != nullptr; }
 
-    void handleSmartHeapChunkResults(const void *addressWithError,
-                                     const SmartAllocationData *chunk,
-                                     uint32_t memoryUsageBufferIndex,
-                                     bool isUsedPortion);
+    char *initMemoryUsageBuffer()
+    {
+        char *buf = this->memoryUsageBuffer;
+        if (!buf)
+        {
+            buf = new char[MEMORY_USAGE_BUFFER_SINGLE_LINE * MEMORY_USAGE_TOTAL_MEMORY_USAGE_ENTRIES];
+            this->memoryUsageBuffer = buf;
+        }
 
-#ifdef TTYD_JP
-    void handleMapHeapChunkResults(const void *addressWithError, const MapAllocEntry *chunk, uint32_t memoryUsageBufferIndex);
-#else
-    void handleMapHeapChunkResults(const void *addressWithError,
-                                   const MapAllocEntry *chunk,
-                                   uint32_t memoryUsageBufferIndex,
-                                   bool battleHeap);
-#endif
+        return buf;
+    }
+
+    char *initMemoryUsageBufferEntry(uint32_t slot)
+    {
+        char *buf = this->initMemoryUsageBuffer();
+        return &buf[MEMORY_USAGE_BUFFER_SINGLE_LINE * slot];
+    }
+
+    char *getMemoryUsageBuffer() { return this->memoryUsageBuffer; }
+    char *getHeapCorruptionBufferPtr() { return this->heapCorruptionBuffer; }
+    bool shouldDrawHeapCorruptionBuffer() const { return this->heapCorruptionBuffer != nullptr; }
+
+    char *initHeapCorruptionBuffer()
+    {
+        char *buf = this->heapCorruptionBuffer;
+        if (!buf)
+        {
+            buf = new char[MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE];
+            this->heapCorruptionBuffer = buf;
+        }
+
+        return buf;
+    }
+
+    char *initHeapCorruptionBufferEntry(uint32_t index)
+    {
+        char *buf = this->initHeapCorruptionBuffer();
+        return &buf[index];
+    }
+
+    int32_t getHeapCorruptionBufferIndex() const { return this->heapCorruptioBufferIndex; }
+    void setHeapCorruptionBufferIndex(int32_t index) { this->heapCorruptioBufferIndex = static_cast<int16_t>(index); }
+
+    bool verifyHeapCorruptionBufferIndex() const
+    {
+        const int32_t index = this->heapCorruptioBufferIndex;
+        return (index >= 0) && (index < MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE);
+    }
 
    private:
-    int16_t heapCorruptioBufferIndex;
+    char *memoryUsageBuffer;
     char *heapCorruptionBuffer;
-    char memoryUsageBuffer[MEMORY_USAGE_TOTAL_MEMORY_USAGE_ENTRIES][MEMORY_USAGE_BUFFER_SINGLE_LINE];
+    int16_t heapCorruptioBufferIndex;
 };
 
 class EnemyEncounterNotifierDisplay
@@ -438,7 +449,7 @@ class HitCheckVisualizationDisplay
         }
     }
 
-    ~HitCheckVisualizationDisplay() { freeBuffer(); }
+    ~HitCheckVisualizationDisplay() { this->freeBuffer(); }
 
     HitCheckResult *initBufferPtr()
     {
@@ -734,6 +745,33 @@ class Displays
     bool anyShouldDrawFlagIsSet() const;
     void clearAllShouldDrawFlags();
 
+    void handleStandardHeapChunkResults(const void *addressWithError,
+                                        const ChunkInfo *chunk,
+                                        const HeapInfo *heap,
+                                        int32_t heapIndex,
+                                        uint32_t memoryUsageBufferIndex,
+                                        uint32_t enabledFlag,
+                                        bool isUsedPortion);
+
+    void handleSmartHeapChunkResults(const void *addressWithError,
+                                     const SmartAllocationData *chunk,
+                                     uint32_t memoryUsageBufferIndex,
+                                     uint32_t enabledFlag,
+                                     bool isUsedPortion);
+
+#ifdef TTYD_JP
+    void handleMapHeapChunkResults(const void *addressWithError,
+                                   const MapAllocEntry *chunk,
+                                   uint32_t memoryUsageBufferIndex,
+                                   uint32_t enabledFlag);
+#else
+    void handleMapHeapChunkResults(const void *addressWithError,
+                                   const MapAllocEntry *chunk,
+                                   uint32_t memoryUsageBufferIndex,
+                                   uint32_t enabledFlag,
+                                   bool battleHeap);
+#endif
+
     bool displayShouldBeHandled(uint32_t enabledFlag) const;
     DisplayManuallyPosition *getDisplayManuallyPositionPtr(uint32_t manuallyPositionFlag);
 
@@ -789,9 +827,10 @@ class Displays
     OnScreenTimerDisplay onScreenTimer;
     FrameCounterDisplay frameCounter;
     HitCheckVisualizationDisplay hitCheckVisualization;
+    JumpStorageDisplay jumpStorage;
+    MemoryUsageDisplay memoryUsage;
     GuardSuperguardTimingDisplay guardSuperguardTiming;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
-    JumpStorageDisplay jumpStorage;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
     JabbiHiveSkipDisplay jabbiHiveSkip;
@@ -799,7 +838,6 @@ class Displays
     BlimpTicketSkipDisplay blimpTicketSkip;
     NpcNameToPtrErrorDisplay npcNameToPtrError;
     AnimPoseMainErrorDisplay animPoseMainError;
-    MemoryUsageDisplay memoryUsage;
 };
 
 extern Displays *gDisplays;
