@@ -3169,6 +3169,22 @@ void drawBridgeSkip(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, getColorWhite(0xFF));
 }
 
+#ifdef TTYD_EU
+void *jumpOnWater(void *ptr)
+{
+    // Allow jumping on water if the Bridge Skip display is enabled
+    if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP))
+    {
+        return nullptr;
+    }
+    else
+    {
+        // Return the original value
+        return ptr;
+    }
+}
+#endif
+
 void handleBridgeSkip(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP))

@@ -687,4 +687,10 @@ void applyCheatAndDisplayInjects()
 #endif
 
     writeBranchBL(disableDPadOptionsAddress, asmDisableDPadOptionsDisplay);
+
+#ifdef TTYD_EU
+    // Allow jumping on water when the Bridge Skip display is enabled
+    constexpr uint32_t jumpOnWaterAddress = 0x80093CF0;
+    writeStandardBranches(jumpOnWaterAddress, asmJumpOnWaterStart, asmJumpOnWaterBranchBack);
+#endif
 }

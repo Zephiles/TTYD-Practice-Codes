@@ -41,6 +41,11 @@ extern "C"
 
     void asmDisableDPadOptionsDisplay();
 
+#ifdef TTYD_EU
+    void asmJumpOnWaterStart();
+    void asmJumpOnWaterBranchBack();
+#endif
+
     // Functions accessed by assembly overwrites
     uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr);
 
@@ -65,6 +70,10 @@ extern "C"
     const char *replaceJumpFallAnim(char *jumpFallString);
 
     bool disableDPadOptionsDisplay(uint32_t unkVar);
+
+#ifdef TTYD_EU
+    void *jumpOnWater(void *ptr);
+#endif
 
     // Misc assembly functions
     void asmSetTime(int64_t time);
