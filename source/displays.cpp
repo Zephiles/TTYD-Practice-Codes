@@ -1751,19 +1751,11 @@ void drawMemoryUsage(CameraId cameraId, void *user)
         }
     }
 
-    // If manually changing position/scale and nothing was drawn, then manually draw text
+    // If manually changing position/scale and nothing was drawn, then manually draw a hardcoded string
     if (!drawnText &&
         menuCurrentlyAdjustingPosOrScale(DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE))
     {
-        // Use the used portion of main heap 0 if the string for it is set
-        const char *text = memoryUsagePtr->getMemoryUsageBuffer();
-        if (!text || !text[0])
-        {
-            // Either the memory usage buffer has not been inialized, or the string is not set, so use a hardcoded string
-            text = "Main Heap 0 (used): 0.00/0.00kb, 0 cks";
-        }
-
-        drawText(text, posX, posY, scale, getColorWhite(0xFF));
+        drawText("Main Heap 0 (used): 0.00/0.00kb, 0 cks", posX, posY, scale, getColorWhite(0xFF));
     }
 
     if (!customPos)
