@@ -792,6 +792,7 @@ class Displays
     void setDefaultErrorTextOrder(float order) { this->defaultOrderErrors = order; }
 
     void incrementDefaultPosTopLeft(float value) { this->defaultPosYTopLeft += value; }
+    void decrementDefaultPosTopLeft(float value) { this->defaultPosYTopLeft -= value; }
     void decrementDefaultPosErrorText(float value) { this->defaultPosYErrors -= value; }
 
     OnScreenTimerDisplay *getOnScreenTimerDisplayPtr() { return &this->onScreenTimer; }

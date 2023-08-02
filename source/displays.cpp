@@ -1674,19 +1674,13 @@ void drawMemoryUsage(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
-    auto decrementPosY = [](bool customPos, float lineDecrement, DisplayManuallyPosition *data, float *posYOut)
+    auto decrementPosY = [](bool customPos, Displays *displaysPtr, float *posYOut, float lineDecrement)
     {
-        if (customPos)
-        {
-            *posYOut -= lineDecrement;
-        }
-        else
-        {
-            getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT,
-                                  DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE,
-                                  data);
+        *posYOut -= lineDecrement;
 
-            *posYOut = data->getPosY();
+        if (!customPos)
+        {
+            displaysPtr->decrementDefaultPosTopLeft(lineDecrement);
         }
     };
 
@@ -1723,14 +1717,14 @@ void drawMemoryUsage(CameraId cameraId, void *user)
                 if (string[0])
                 {
                     drawText(text, posX, posY, scale, getColorWhite(0xFF));
-                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                    decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
                 }
 
                 string = &text[MEMORY_USAGE_BUFFER_SINGLE_LINE];
                 if (string[0])
                 {
                     drawText(string, posX, posY, scale, getColorWhite(0xFF));
-                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                    decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
                 }
             }
         }
@@ -1745,7 +1739,7 @@ void drawMemoryUsage(CameraId cameraId, void *user)
                 if (text[0])
                 {
                     drawText(text, posX, posY, scale, getColorWhite(0xFF));
-                    decrementPosY(customPos, lineDecrement, &data, &posY);
+                    decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
                 }
             }
         }
