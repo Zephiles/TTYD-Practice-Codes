@@ -248,7 +248,7 @@ void BattlesMenu::drawBattlesActors() const
     uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
     const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    const float lineDecrement = MENU_LINE_HEIGHT * scale;
     const char **battleActorsPtr = gBattleActors;
 
     for (uint32_t i = indexStart; i < (indexStart + BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE); i++)

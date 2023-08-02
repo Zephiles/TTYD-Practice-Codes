@@ -5,6 +5,8 @@
 
 #include <cstdint>
 
+#define MENU_LINE_HEIGHT (20.f / 0.6f)
+
 // Button inputs converted to simple values
 enum class MenuButtonInput : uint8_t
 {
