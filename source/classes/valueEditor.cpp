@@ -18,10 +18,9 @@ void ValueEditor::init(const void *valuePtr,
                        const void *maxValuePtr,
                        const Window *parentWindow,
                        uint32_t flags,
-                       VariableType type,
-                       float scale)
+                       VariableType type)
 {
-    this->init(valuePtr, minValuePtr, maxValuePtr, parentWindow, flags, type, 0xFF, scale);
+    this->init(valuePtr, minValuePtr, maxValuePtr, parentWindow, flags, type, 0xFF);
 }
 
 void ValueEditor::init(const void *valuePtr,
@@ -30,12 +29,10 @@ void ValueEditor::init(const void *valuePtr,
                        const Window *parentWindow,
                        uint32_t flags,
                        VariableType type,
-                       uint8_t alpha,
-                       float scale)
+                       uint8_t alpha)
 {
     this->flags = flags;
     this->alpha = alpha;
-    this->scale = scale;
     this->setValueFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -784,17 +781,18 @@ void ValueEditor::init(const void *valuePtr,
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | this->alpha, 20.f, 20.f);
 
     // Increase the height to account for the value
-    const float valueScale = scale + 0.3f;
+    constexpr float valueScale = scale + 0.3f;
     const float padding = windowPtr->getPadding();
     const float paddingScaled = padding * scale;
     windowPtr->setHeight(windowPtr->getHeight() + ((LINE_HEIGHT_FLOAT * valueScale) / 2.f) + paddingScaled);
 
     // Increase the height of the window based on flags that are set
     const float valuePaddingScaled = padding * valueScale;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     if (this->flagIsSet(ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT))
     {
@@ -2079,7 +2077,7 @@ void ValueEditor::draw()
 
     // Draw the help text
     const char *helpText = this->helpText;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -2095,7 +2093,7 @@ void ValueEditor::draw()
     float height;
     getTextWidthHeight(helpText, scale, nullptr, &height);
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (height + lineDecrement);
 
     ValueType value;
@@ -2146,8 +2144,8 @@ void ValueEditor::draw()
     const int32_t stringLength = static_cast<int32_t>(strlen(editorValue));
     const float stringLengthFloat = intToFloat(stringLength);
 
-    const float digitLength = EDITOR_DIGIT_LENGTH;
-    const float valueScale = scale + 0.3f;
+    constexpr float digitLength = EDITOR_DIGIT_LENGTH;
+    constexpr float valueScale = scale + 0.3f;
     const float valueStringWidth = (stringLengthFloat * digitLength) * valueScale;
 
     posX = windowPtr->getPosX() + ((windowPtr->getWidth() - valueStringWidth) / 2.f);
@@ -2161,7 +2159,7 @@ void ValueEditor::draw()
 
     // Draw the value
     const uint32_t currentIndex = this->currentIndex;
-    const float posXIncrement = digitLength * valueScale;
+    constexpr float posXIncrement = digitLength * valueScale;
     uint32_t color;
 
     // Place the current character into a temporary buffer
@@ -2588,7 +2586,7 @@ float handleAdjustValue(float value,
 
 float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
-    const float base = 10.f;
+    constexpr float base = 10.f;
     float adjustmentValue = 0.000001f; // Based on MAX_DOUBLE_DIGITS
     const uint32_t loopCount = totalDigits - 1;
 
@@ -2620,7 +2618,7 @@ float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits
 
 double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
-    const double base = 10.0;
+    constexpr double base = 10.0;
     double adjustmentValue = 0.000001; // Based on MAX_DOUBLE_DIGITS
     const uint32_t loopCount = totalDigits - 1;
 

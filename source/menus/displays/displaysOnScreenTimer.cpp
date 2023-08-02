@@ -56,7 +56,7 @@ void DisplaysMenu::drawOnScreenTimerInfo() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -70,7 +70,7 @@ void DisplaysMenu::drawOnScreenTimerInfo() const
     const uint32_t selectedDisplay = this->selectedDisplay;
     drawText(gDisplaysMenuInitOptions[selectedDisplay].name, posX, posY, scale, getColorWhite(0xFF));
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
     const uint32_t displayEnabledFlag = indexToDisplayEnabledFlag(selectedDisplay);

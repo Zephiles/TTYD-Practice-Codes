@@ -34,14 +34,13 @@ const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
     "Supernova",
 };
 
-void SpecialMoveToggler::init(const Window *parentWindow, float scale)
+void SpecialMoveToggler::init(const Window *parentWindow)
 {
-    this->init(parentWindow, scale, 0xFF);
+    this->init(parentWindow, 0xFF);
 }
 
-void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t alpha)
+void SpecialMoveToggler::init(const Window *parentWindow, uint8_t alpha)
 {
-    this->scale = scale;
     this->alpha = alpha;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -52,6 +51,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, float scale, uint8_t a
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gSpecialMoveTogglerHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the icon and item texts
@@ -188,12 +188,12 @@ void SpecialMoveToggler::draw()
     float iconPosXBase;
     float iconPosYBase;
 
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     windowPtr->getIconPosXY(WindowAlignment::BOTTOM_LEFT, scale, &iconPosXBase, &iconPosYBase);
 
     // Move the starting position so that it is below the help text
-    const float lineDecrement = SPACE_USED_PER_ICON(scale);
-    const float spaceUsedByIcons = lineDecrement * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);
+    constexpr float lineDecrement = SPACE_USED_PER_ICON(scale);
+    constexpr float spaceUsedByIcons = lineDecrement * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);
 
     iconPosYBase += spaceUsedByIcons;
 

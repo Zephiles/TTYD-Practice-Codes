@@ -46,7 +46,7 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Draw the help text
@@ -61,13 +61,13 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
 
     // Set the text to be a bit to the right of the main text
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    const float textIncrement = 15.f * scale;
+    constexpr float textIncrement = 15.f * scale;
     const float posX = posXBase + textWidth + textIncrement;
     float posY = posYBase - offsetY;
 
     char buf[16];
     const FadeWork *workPtr = fadeWorkPtr;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     constexpr uint32_t totalEntries = sizeof(FadeWork::entry) / sizeof(FadeEntry);
 
     for (uint32_t i = 0; i < totalEntries; i++)
@@ -96,8 +96,8 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
     // Draw the main window and text
     // Help text will be drawn at the top-left of the window, so draw the main text two lines under it
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * cheatsMenuPtr->getScale();
-    const float offsetY = lineDecrement * 2.f;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * MENU_SCALE;
+    constexpr float offsetY = lineDecrement * 2.f;
 
     basicMenuLayoutDraw(cameraId, user, 0.f, offsetY);
 
@@ -150,7 +150,6 @@ void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr)
     ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
     const Window *rootWindowPtr = gRootWindow;
 
-    errorWindowPtr->setScale(cheatsMenuPtr->getScale());
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
     errorWindowPtr->setText(errorMessage);
 

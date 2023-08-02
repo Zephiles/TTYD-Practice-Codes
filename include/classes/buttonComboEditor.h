@@ -16,9 +16,9 @@ class ButtonComboEditor
     ~ButtonComboEditor() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, float scale);
+    void init(const Window *parentWindow);
 
-    void init(const Window *parentWindow, float scale, uint8_t alpha);
+    void init(const Window *parentWindow, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -42,7 +42,6 @@ class ButtonComboEditor
 
    private:
     Window window;
-    float scale;
 
     // Called when the player has held any arbitrary buttons for 3 seconds
     ButtonComboEditorSetComboFunc setComboFunc;
@@ -54,7 +53,7 @@ class ButtonComboEditor
     uint8_t bButtonCounter;    // Keeps track of consecutive B presses for canceling setting a button combo
     uint8_t timer;             // For keeping track of the 3 seconds for setting a button combo
 
-    bool enabled;              // Whether this window is enabled/drawn or not
+    bool enabled; // Whether this window is enabled/drawn or not
     uint8_t alpha;
 };
 

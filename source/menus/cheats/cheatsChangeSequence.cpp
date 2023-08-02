@@ -48,7 +48,7 @@ void CheatsMenu::drawSequenceInfo() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -79,7 +79,7 @@ void CheatsMenu::drawSequenceInfo() const
         return;
     }
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float posYBase = posY - (lineDecrement * 2.f);
     posY = posYBase;
 

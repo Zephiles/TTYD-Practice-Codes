@@ -57,7 +57,7 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
     FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelector();
 
-    followerSelectorPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    followerSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     followerSelectorPtr->startDrawing(cancelMenuFollowersBringOutFollower, errorMenuFollowersBringOutFollower);
 }
 
@@ -128,7 +128,7 @@ void StatsMenu::drawFollowerOut() const
 
     // Draw the text for the current follower out two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;

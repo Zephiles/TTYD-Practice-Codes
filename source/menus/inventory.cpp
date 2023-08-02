@@ -113,14 +113,8 @@ void selectedOptionAddById(Menu *menuPtr)
     const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr->init(minValuePtr,
-                         minValuePtr,
-                         maxValuePtr,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::s16,
-                         rootWindowPtr->getAlpha(),
-                         inventoryMenuPtr->getScale());
+    valueEditorPtr
+        ->init(minValuePtr, minValuePtr, maxValuePtr, rootWindowPtr, flags, VariableType::s16, rootWindowPtr->getAlpha());
 
     valueEditorPtr->startDrawing(addItemFromId, cancelAddItemFromId);
 }
@@ -180,7 +174,7 @@ void selectedOptionAddByIcon(Menu *menuPtr)
     const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
     const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
 
-    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryMenuPtr->getScale());
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha());
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
@@ -329,15 +323,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr->init(&item,
-                         minValuePtr,
-                         maxValuePtr,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::s16,
-                         rootWindowPtr->getAlpha(),
-                         inventoryMenuPtr->getScale());
-
+    valueEditorPtr->init(&item, minValuePtr, maxValuePtr, rootWindowPtr, flags, VariableType::s16, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(changeItemFromId, cancelAddItemFromId);
 }
 
@@ -404,7 +390,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
     const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
 
-    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha(), inventoryMenuPtr->getScale());
+    itemIconSelectorPtr->init(rootWindowPtr, startingItem, endingItem, rootWindowPtr->getAlpha());
 
     // Set the cursor of the item icon selector to the item that is being changed
     ItemId item = inventoryMenuPtr->getInventoryItemPtr()[index];
@@ -601,7 +587,7 @@ void InventoryMenu::drawCurrentInventory()
     snprintf(buf, sizeof(buf), "%" PRId32 "/%" PRId32, currentItemCount, totalItems);
 
     const Window *inventoryWindow = &this->inventoryWindow;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float itemCountPosX;
     float itemCountPosY;
@@ -620,9 +606,9 @@ void InventoryMenu::drawCurrentInventory()
     const float itemPosYBase = tempItemPosYBase - (LINE_HEIGHT_FLOAT * scale) + LINE_HEIGHT_ADJUSTMENT_5(scale) - padding;
 
     constexpr float textWidth = 140.f;
-    const float widthAdjustment = INVENTORY_WIDTH_ADJUSTMENT(scale);
-    const float itemPosXIncrement = textWidth + (ICON_SIZE_FLOAT * scale) + widthAdjustment;
-    const float itemLineDecrement = SPACE_USED_PER_ICON(scale);
+    constexpr float widthAdjustment = INVENTORY_WIDTH_ADJUSTMENT(scale);
+    constexpr float itemPosXIncrement = textWidth + (ICON_SIZE_FLOAT * scale) + widthAdjustment;
+    constexpr float itemLineDecrement = SPACE_USED_PER_ICON(scale);
 
     float textPosXBase;
     float textPosYBase;
@@ -793,7 +779,7 @@ void InventoryMenu::drawCurrentInventory()
     if (inventoryType != InventoryType::STANDARD)
     {
         const float iconLRPosX = inventoryWindow->getIconPosX(WindowAlignment::TOP_RIGHT, scale);
-        const float iconLRScale = scale - 0.1f;
+        constexpr float iconLRScale = scale - 0.1f;
 
         // Draw the L button if currently not on the first page
         if (currentPage > 0)
@@ -971,14 +957,11 @@ void InventoryMenu::inventoryMenuItemControls(MenuButtonInput button)
     }
 }
 
-InventoryMenu::InventoryMenu(float scale)
+InventoryMenu::InventoryMenu()
 {
-    this->scale = scale;
-
     const Window *rootWindowPtr = gRootWindow;
     ErrorWindow *errorWindowPtr = &this->errorWindow;
 
-    errorWindowPtr->setScale(scale);
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
 
     // Place the inventory window inside of the root window
@@ -987,11 +970,12 @@ InventoryMenu::InventoryMenu(float scale)
 
     // Get the width that is being used by the main text options
     float textWidth;
+    constexpr float scale = MENU_SCALE;
     getTextWidthHeight("Change By Icon", scale, &textWidth, nullptr);
     const float mainTextWidth = textWidth + (inventoryWindowPtr->getPadding() * scale);
 
     // Adjust the window to exclude the space used by the main text options, plus a bit extra
-    const float widthAdjustment = INVENTORY_WIDTH_ADJUSTMENT(scale);
+    constexpr float widthAdjustment = INVENTORY_WIDTH_ADJUSTMENT(scale);
     inventoryWindowPtr->setPosX(inventoryWindowPtr->getPosX() + mainTextWidth + widthAdjustment);
     inventoryWindowPtr->setWidth(inventoryWindowPtr->getWidth() - mainTextWidth - widthAdjustment);
 }
@@ -1036,7 +1020,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
         delete inventoryMenuPtr;
     }
 
-    inventoryMenuPtr = new InventoryMenu(gRootMenu->getScale());
+    inventoryMenuPtr = new InventoryMenu();
     gInventoryMenu = inventoryMenuPtr;
 
     PouchData *pouchPtr = pouchGetPtr();

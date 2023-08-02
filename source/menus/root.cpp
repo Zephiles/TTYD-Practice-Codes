@@ -74,7 +74,7 @@ void rootMenuInit()
     }
 
     const char *battlesErrorMessage = "You must be in a battle\nto use the Battles menu.";
-    gRootMenu = new RootMenu(battlesErrorMessage, 0.6);
+    gRootMenu = new RootMenu(battlesErrorMessage);
 }
 
 void rootMenuExit()
@@ -99,7 +99,7 @@ void rootMenuDraw(CameraId cameraId, void *user)
 
     // Draw the version number at the top-right of the main window
     RootMenu *rootMenuPtr = gRootMenu;
-    const float scale = rootMenuPtr->getScale();
+    constexpr float scale = MENU_SCALE;
 
     float posX;
     float posY;

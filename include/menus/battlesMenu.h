@@ -65,16 +65,11 @@ enum BattlesStatusesFlag
 class BattlesMenu
 {
    public:
-    BattlesMenu(float scale)
-    {
-        this->scale = scale;
-        this->battlesMenu = gMenu;
-    }
+    BattlesMenu() { this->battlesMenu = gMenu; }
 
     ~BattlesMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
-    float getScale() const { return this->scale; }
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
     const Menu *getBattlesMenu() const { return this->battlesMenu; }
 
@@ -87,7 +82,6 @@ class BattlesMenu
 
    private:
     ValueEditor valueEditor;
-    float scale;
     Menu *battlesMenu; // Backup of gMenu when the Battles menu was initially opened
 
     MenuAutoIncrement autoIncrement;

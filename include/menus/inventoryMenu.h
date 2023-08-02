@@ -41,7 +41,7 @@ enum InventoryFlag
 class InventoryMenu
 {
    public:
-    InventoryMenu(float scale);
+    InventoryMenu();
     ~InventoryMenu() {}
 
     void setinventoryItemPtr(ItemId *ptr) { this->inventoryItemPtr = ptr; }
@@ -55,7 +55,6 @@ class InventoryMenu
     ItemIconSelector *getItemIconSelector() { return &this->itemIconSelector; }
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
-    float getScale() const { return this->scale; }
 
     ItemId *getInventoryItemPtr() { return this->inventoryItemPtr; }
     int32_t *getMinValuePtr() { return &this->minValue; }
@@ -96,7 +95,6 @@ class InventoryMenu
     ItemIconSelector itemIconSelector;
     ValueEditor valueEditor;
     ErrorWindow errorWindow;
-    float scale;
 
     ItemId *inventoryItemPtr; // Pointer to the inventory that is currently being worked with
     int32_t minValue;
@@ -106,7 +104,7 @@ class InventoryMenu
     uint8_t inventoryType; // Specifier for the inventory that is currently being worked with
     uint8_t inventorySize; // Size of the inventory that is currently being worked with
     uint8_t currentPage;
-    uint8_t currentIndex;  // Current cursor position
+    uint8_t currentIndex; // Current cursor position
 };
 
 extern InventoryMenu *gInventoryMenu;

@@ -89,7 +89,7 @@ void CheatsMenu::drawGenericCheatInfo() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     const uint32_t totalOptions = menuPtr->getTotalOptions();
 
     float tempPosX;
@@ -104,7 +104,7 @@ void CheatsMenu::drawGenericCheatInfo() const
     const uint32_t selectedCheat = this->selectedCheat;
     drawText(gCheatsMenuInitOptions[selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
     // Draw the on/off text for the current cheat

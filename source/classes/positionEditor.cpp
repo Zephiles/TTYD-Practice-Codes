@@ -12,14 +12,13 @@ const char *gPositionEditorHelpText =
     "Press/Hold the D-Pad directions\nto adjust the position\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to "
     "cancel";
 
-void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, float scale)
+void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource)
 {
-    this->init(parentWindow, posXSource, posYSource, scale, 0xFF);
+    this->init(parentWindow, posXSource, posYSource, 0xFF);
 }
 
-void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, float scale, uint8_t alpha)
+void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, uint8_t alpha)
 {
-    this->scale = scale;
     this->alpha = alpha;
     this->cancelFunc = nullptr;
     this->posX = *posXSource;
@@ -31,6 +30,7 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gPositionEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
 
     // Place the window inside of the parent window
@@ -180,7 +180,7 @@ void PositionEditor::draw() const
     // Draw the help text
     float posX;
     float posY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &posY);
     drawText(gPositionEditorHelpText, posX, posY, scale, getColorWhite(0xFF));

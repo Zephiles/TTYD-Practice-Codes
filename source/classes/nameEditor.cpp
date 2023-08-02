@@ -17,19 +17,13 @@ const char *gNameEditorHelpText =
 
 const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
 
-void NameEditor::init(const Window *parentWindow, float scale, const char *initialText, char *namePtr, uint32_t nameSize)
+void NameEditor::init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize)
 {
-    this->init(parentWindow, scale, initialText, namePtr, nameSize, 0xFF);
+    this->init(parentWindow, initialText, namePtr, nameSize, 0xFF);
 }
 
-void NameEditor::init(const Window *parentWindow,
-                      float scale,
-                      const char *initialText,
-                      char *namePtr,
-                      uint32_t nameSize,
-                      uint8_t alpha)
+void NameEditor::init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t alpha)
 {
-    this->scale = scale;
     this->namePtr = namePtr;
     this->alpha = alpha;
     this->cancelFunc = nullptr;
@@ -85,14 +79,15 @@ void NameEditor::init(const Window *parentWindow,
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gNameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
 
     // Adjust the width to be the same as the parent window
     windowPtr->setWidth(parentWindow->getWidth());
 
     // Increase the height of the window to account for the current text, the character count, and the letter options
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float padding = windowPtr->getPadding() * scale;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
 
     float height = windowPtr->getHeight();
     height += lineDecrement * 2.f;                                // Current text + character count
@@ -315,19 +310,19 @@ void NameEditor::draw()
 
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     windowPtr->getTextPosXY(currentCharString, WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
 
     const float currentStringIndexFloat = intToFloat(static_cast<int32_t>(this->currentStringIndex));
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float charactersPosYBase = tempPosY + (lineDecrement * (NAME_EDITOR_CHARS_TOTAL_ROWS_FLOAT - 1.f));
 
     const float currentStringPosX = tempPosX;
     const float currentStringPosY = charactersPosYBase + (lineDecrement * 2.f) + (windowPtr->getPadding() * scale);
 
     const uint32_t windowCursorColor = getColorBlue(0xFF);
-    const float charPosXIncrement = (LINE_HEIGHT_FLOAT - 7.f) * scale;
-    const float posXadjustment6 = 6.f * scale;
+    constexpr float charPosXIncrement = (LINE_HEIGHT_FLOAT - 7.f) * scale;
+    constexpr float posXadjustment6 = 6.f * scale;
 
     windowDispGX_Waku_col(0,
                           reinterpret_cast<const uint8_t *>(&windowCursorColor),
@@ -379,8 +374,8 @@ void NameEditor::draw()
         if (i == currentIndex)
         {
             // Draw the window for the cursor
-            const float windowCursorAdjustment = 1.5f * scale;
-            const float windowCursorWidthHeight = lineDecrement - windowCursorAdjustment;
+            constexpr float windowCursorAdjustment = 1.5f * scale;
+            constexpr float windowCursorWidthHeight = lineDecrement - windowCursorAdjustment;
 
             const float windowPosX = posX - (7.f * scale);
             const float windowPosY = posY + windowCursorAdjustment;

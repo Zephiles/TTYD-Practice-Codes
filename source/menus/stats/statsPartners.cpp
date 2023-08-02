@@ -221,14 +221,8 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue,
 
     const Window *rootWindowPtr = gRootWindow;
 
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::s16,
-                         rootWindowPtr->getAlpha(),
-                         statsMenuPtr->getScale());
+    valueEditorPtr
+        ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::s16, rootWindowPtr->getAlpha());
 
     valueEditorPtr->startDrawing(menuPartnersChangeValue, cancelMenuPartnersChangeValue);
 }
@@ -321,7 +315,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                         // Initialize the color selector
                         const Window *rootWindowPtr = gRootWindow;
                         YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
-                        yoshiColorSelectorPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+                        yoshiColorSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
 
                         // Get the current index for the color selector
                         uint32_t yoshiColorIndex = pouchGetPartyColor(PartyMembers::kYoshi);
@@ -348,7 +342,6 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                         NameEditor *nameEditorPtr = statsMenuPtr->getNameEditor();
 
                         nameEditorPtr->init(rootWindowPtr,
-                                            statsMenuPtr->getScale(),
                                             yoshiNamePtr,
                                             yoshiNamePtr,
                                             sizeof(PouchData::yoshiName),
@@ -478,7 +471,7 @@ void StatsMenu::drawPartnerStats()
     };
 
     // Get the width that is being used by the main text options
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     float textWidth;
     getTextWidthHeight("Goombella", scale, &textWidth, nullptr);
 
@@ -488,8 +481,8 @@ void StatsMenu::drawPartnerStats()
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posXBase and posYBase as separate variables to avoid repeatedly loading them from the stack when using them
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
     const float posXBase = tempPosX + textWidth + textIncrement;
     const float posYBase = tempPosY;
 

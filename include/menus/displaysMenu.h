@@ -105,14 +105,13 @@ inline uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t fla
 class DisplaysMenu
 {
    public:
-    DisplaysMenu(float scale) { this->scale = scale; }
+    DisplaysMenu() {}
     ~DisplaysMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
     PositionEditor *getPositionEditor() { return &this->positionEditor; }
     ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
-    float getScale() const { return this->scale; }
 
     uint32_t getSelectedDisplay() const { return this->selectedDisplay; }
     void setSelectedDisplay(uint32_t selectedDisplay) { this->selectedDisplay = static_cast<uint8_t>(selectedDisplay); }
@@ -128,7 +127,6 @@ class DisplaysMenu
     ButtonComboEditor buttonComboEditor;
     PositionEditor positionEditor;
     ConfirmationWindow confirmationWindow;
-    float scale;
 
     uint8_t selectedDisplay;
 };

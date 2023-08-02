@@ -23,9 +23,9 @@ class FollowerSelector
     ~FollowerSelector() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, float scale);
+    void init(const Window *parentWindow);
 
-    void init(const Window *parentWindow, float scale, uint8_t alpha);
+    void init(const Window *parentWindow, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -42,7 +42,6 @@ class FollowerSelector
 
    private:
     Window window;
-    float scale;
 
     FollowerSelectorCancelFunc cancelFunc; // Called when the player presses B to cancel selecting a follower
     FollowerSelectorErrorFunc errorFunc;   // Called when the player tries to bring out a follower while not being able to

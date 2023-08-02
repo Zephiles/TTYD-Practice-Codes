@@ -39,14 +39,13 @@ const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kGus,
 };
 
-void FollowerSelector::init(const Window *parentWindow, float scale)
+void FollowerSelector::init(const Window *parentWindow)
 {
-    this->init(parentWindow, scale, 0xFF);
+    this->init(parentWindow, 0xFF);
 }
 
-void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alpha)
+void FollowerSelector::init(const Window *parentWindow, uint8_t alpha)
 {
-    this->scale = scale;
     this->alpha = alpha;
     this->cancelFunc = nullptr;
     this->errorFunc = nullptr;
@@ -58,6 +57,7 @@ void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alp
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gHelpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the width of the window to account for the options if necessary
@@ -75,7 +75,7 @@ void FollowerSelector::init(const Window *parentWindow, float scale, uint8_t alp
     }
 
     // Increase the height of the window to account for the options
-    const float height = (LINE_HEIGHT_FLOAT * scale) * TOTAL_FOLLOWERS_PER_COLUMN_FLOAT;
+    constexpr float height = (LINE_HEIGHT_FLOAT * scale) * TOTAL_FOLLOWERS_PER_COLUMN_FLOAT;
     windowPtr->setHeight(windowPtr->getHeight() + height + padding - (padding / 2.f));
 
     // Place the window inside of the parent window
@@ -194,7 +194,7 @@ void FollowerSelector::draw() const
     float tempPosX;
     float tempPosY;
 
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     const char *helpTextPtr = gHelpTextAConfirmBCancel;
 
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
@@ -204,7 +204,7 @@ void FollowerSelector::draw() const
     const char *rightColumnLongestText = "Ms. Mowz"; // Use here since any arbitrary string is needed, and this is needed later
     windowPtr->getTextPosXY(rightColumnLongestText, WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float posYBase = tempPosY + (lineDecrement * (TOTAL_FOLLOWERS_PER_COLUMN_FLOAT - 1.f));
 
     uint32_t counter = 0;

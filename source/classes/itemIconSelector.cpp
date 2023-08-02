@@ -11,18 +11,13 @@
 
 const char *gItemIconSelectorTextOptions = "Press A to confirm\nPress B to cancel";
 
-void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, float scale)
+void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem)
 {
-    this->init(parentWindow, startingItem, endingItem, 0xFF, scale);
+    this->init(parentWindow, startingItem, endingItem, 0xFF);
 }
 
-void ItemIconSelector::init(const Window *parentWindow,
-                            ItemId startingItem,
-                            ItemId endingItem,
-                            uint8_t windowAlpha,
-                            float scale)
+void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, uint8_t windowAlpha)
 {
-    this->scale = scale;
     this->startingItem = startingItem;
     this->endingItem = endingItem;
     this->selectedItemFunc = nullptr;
@@ -34,6 +29,8 @@ void ItemIconSelector::init(const Window *parentWindow,
 
     // Get the height that is being used by the text
     const char *text = gItemIconSelectorTextOptions;
+    constexpr float scale = MENU_SCALE;
+
     float textHeight;
     getTextWidthHeight(text, scale, nullptr, &textHeight);
 
@@ -48,7 +45,7 @@ void ItemIconSelector::init(const Window *parentWindow,
     const int32_t totalIcons = static_cast<int32_t>(endingItem) - static_cast<int32_t>(startingItem) + 1;
     const int32_t totalIconRows = intCeil(totalIcons, TOTAL_ICONS_PER_ROW);
 
-    const float iconsWindowPaddingAdjustment = 12.f * scale;
+    constexpr float iconsWindowPaddingAdjustment = 12.f * scale;
     const float currentHeight = windowPtr->getHeight() - iconsWindowPaddingAdjustment;
     const float spaceUsedByIcons = intToFloat(totalIconRows) * SPACE_USED_PER_ICON(scale);
     const float padding = (windowPtr->getPadding() * 3.f) * scale;
@@ -156,7 +153,7 @@ void ItemIconSelector::draw()
 
     // Draw the text
     const char *text = gItemIconSelectorTextOptions;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -171,7 +168,7 @@ void ItemIconSelector::draw()
 
     // Get the amount of space used by the icons based on the number of rows that there are
     const int32_t totalIconRows = intCeil(endingIndex - index + 1, TOTAL_ICONS_PER_ROW);
-    const float posXYIncrement = SPACE_USED_PER_ICON(scale);
+    constexpr float posXYIncrement = SPACE_USED_PER_ICON(scale);
     const float spaceUsedByIcons = intToFloat(totalIconRows - 1) * posXYIncrement;
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them

@@ -97,7 +97,7 @@ void displaysMenuInit(Menu *menuPtr)
         delete displaysMenuPtr;
     }
 
-    displaysMenuPtr = new DisplaysMenu(gRootMenu->getScale());
+    displaysMenuPtr = new DisplaysMenu();
     gDisplaysMenu = displaysMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gDisplaysMenuInitOptions) / sizeof(MenuOption);
@@ -156,7 +156,7 @@ void displaysMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc 
     ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditor();
 
     const Window *rootWindowPtr = gRootWindow;
-    buttonComboEditorPtr->init(rootWindowPtr, displaysMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     buttonComboEditorPtr->startDrawing(setComboFunc, displaysMenuCancelSetNewButtonCombo);
 }
 

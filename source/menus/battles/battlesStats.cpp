@@ -252,16 +252,7 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
     }
 
     const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         type,
-                         rootWindowPtr->getAlpha(),
-                         battlesMenuPtr->getScale());
-
+    valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, cancelMenuBattlesStatsChangeValue);
 }
 
@@ -292,7 +283,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     }
 
     // Get the width that is being used by the main text options
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     float textWidth;
     getTextWidthHeight("Change Held Item", scale, &textWidth, nullptr);
 
@@ -303,7 +294,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 
     // Draw the selected actor text two lines under the options
     constexpr uint32_t totalOptions = sizeof(gBattlesMenuStatsOptions) / sizeof(MenuOption);
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float selectedActorTextPosY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
 
     char buf[96];
@@ -314,7 +305,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     drawText(buf, tempPosX, selectedActorTextPosY, scale, textColor);
 
     // Set the text to be a bit to the right of the main text
-    const float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
+    constexpr float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
     const float posXBase = tempPosX + textWidth + textIncrement;
     const float posYBase = tempPosY;
 
@@ -359,7 +350,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     const ItemId heldItem = static_cast<ItemId>(actorPtr->held_item);
     if (itemIsValid(heldItem))
     {
-        const float iconSizeAdjustment = ICON_SIZE_FLOAT * scale;
+        constexpr float iconSizeAdjustment = ICON_SIZE_FLOAT * scale;
         posX += (iconSizeAdjustment / 2.f) - (scale * 2.f);
         posY -= lineDecrement + iconSizeAdjustment + (3.f * scale);
 

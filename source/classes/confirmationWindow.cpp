@@ -10,14 +10,13 @@ const char *gConfirmationWindowYesNoStrings[] = {
     "No",
 };
 
-void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, float scale)
+void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
 {
-    this->init(parentWindow, helpText, scale, 0xFF);
+    this->init(parentWindow, helpText, 0xFF);
 }
 
-void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, float scale, uint8_t alpha)
+void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, uint8_t alpha)
 {
-    this->scale = scale;
     this->helpText = helpText;
     this->alpha = alpha;
     this->selectedOptionFunc = nullptr;
@@ -31,10 +30,11 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the yes/no text
-    const float yesNoScale = scale + 0.1f;
+    constexpr float yesNoScale = scale + 0.1f;
     const float padding = windowPtr->getPadding() * yesNoScale;
     windowPtr->setHeight(windowPtr->getHeight() + ((LINE_HEIGHT_FLOAT * yesNoScale) * 2.f) + padding);
 
@@ -147,13 +147,13 @@ void ConfirmationWindow::draw() const
     // Draw the help text
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
     drawText(this->helpText, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Draw Yes and No
-    const float yesNoScale = scale + 0.1f;
+    constexpr float yesNoScale = scale + 0.1f;
     const char **yesNoStringsPtr = gConfirmationWindowYesNoStrings;
 
     // getTextPosY only uses one scale, while two are required here, so have to calculate posY manually
@@ -167,7 +167,7 @@ void ConfirmationWindow::draw() const
                  LINE_HEIGHT_ADJUSTMENT_4(scale);
 
     const uint32_t currentIndex = this->currentIndex;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * yesNoScale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * yesNoScale;
 
     // Starting Y coordinate is for No, so draw No first
     for (int32_t i = ConfirmationWindowOptions::No; i >= ConfirmationWindowOptions::Yes; i--)

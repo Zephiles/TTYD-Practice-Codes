@@ -70,7 +70,7 @@ void DisplaysMenu::drawDisplayManualPositionData() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -84,7 +84,7 @@ void DisplaysMenu::drawDisplayManualPositionData() const
     const uint32_t selectedDisplay = this->selectedDisplay;
     drawText(gDisplaysMenuInitOptions[selectedDisplay].name, posX, posY, scale, getColorWhite(0xFF));
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
     const uint32_t displayManuallyPositionFlag = indexToDisplayManuallyPositionFlag(selectedDisplay);
@@ -188,7 +188,6 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
     positionEditorPtr->init(rootWindowPtr,
                             manuallyPositionPtr->getPosXPtr(),
                             manuallyPositionPtr->getPosYPtr(),
-                            displaysMenuPtr->getScale(),
                             rootWindowPtr->getAlpha());
 
     positionEditorPtr->startDrawing(displaysMenuAdjustManualPositionCancelChangingPosition);
@@ -248,8 +247,7 @@ void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
                          rootWindowPtr,
                          flags,
                          VariableType::f32,
-                         rootWindowPtr->getAlpha(),
-                         displaysMenuPtr->getScale());
+                         rootWindowPtr->getAlpha());
 
     valueEditorPtr->startDrawing(displaysMenuAdjustManualPositionSetNewScale, displaysMenudjustManualPositionCancelSetNewScale);
 }

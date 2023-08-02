@@ -141,7 +141,7 @@ void cheatsMenuInit(Menu *menuPtr)
         delete cheatsMenuPtr;
     }
 
-    cheatsMenuPtr = new CheatsMenu(gRootMenu->getScale());
+    cheatsMenuPtr = new CheatsMenu();
     gCheatsMenu = cheatsMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuInitOptions) / sizeof(MenuOption);
@@ -191,7 +191,7 @@ void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc se
     ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
 
     const Window *rootWindowPtr = gRootWindow;
-    buttonComboEditorPtr->init(rootWindowPtr, cheatsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     buttonComboEditorPtr->startDrawing(setComboFunc, cheatsMenuCancelSetNewButtonCombo);
 }
 
@@ -232,15 +232,7 @@ void cheatsMenuInitValueEditor(Menu *menuPtr,
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
 
-    valueEditorPtr->init(&currentValue,
-                         minValuePtr,
-                         maxValuePtr,
-                         rootWindowPtr,
-                         flags,
-                         type,
-                         rootWindowPtr->getAlpha(),
-                         cheatsMenuPtr->getScale());
-
+    valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(setValueFunc, cheatsMenuValueEditorCancelSetValue);
 }
 

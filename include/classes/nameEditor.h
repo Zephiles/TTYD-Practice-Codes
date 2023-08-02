@@ -18,14 +18,9 @@ class NameEditor
     ~NameEditor() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, float scale, const char *initialText, char *namePtr, uint32_t nameSize);
+    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize);
 
-    void init(const Window *parentWindow,
-              float scale,
-              const char *initialText,
-              char *namePtr,
-              uint32_t nameSize,
-              uint8_t alpha);
+    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -45,21 +40,20 @@ class NameEditor
 
    private:
     Window window;
-    float scale;
 
     NameEditorCancelFunc cancelFunc; // Called when the player presses B/Z to cancel setting the new string
     MenuAutoIncrement autoIncrement;
 
-    char *namePtr;              // Pointer to where the new string will be stored
-    uint8_t nameSize;           // Maximum size of the new string
+    char *namePtr;    // Pointer to where the new string will be stored
+    uint8_t nameSize; // Maximum size of the new string
 
     uint8_t totalOptions;       // Total amount of characters that can be chosen for the name
     uint8_t charsPerRow;        // Amount of characters per row that can be chosen for the name
     uint8_t currentStringIndex; // Index to be used with the buffer for the current string
     char buffer[32];            // Buffer for where the current string is stored
 
-    bool enabled;               // Whether this window is enabled/drawn or not
-    uint8_t currentIndex;       // Current cursor position
+    bool enabled;         // Whether this window is enabled/drawn or not
+    uint8_t currentIndex; // Current cursor position
     uint8_t alpha;
 };
 

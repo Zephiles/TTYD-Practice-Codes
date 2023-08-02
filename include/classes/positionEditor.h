@@ -15,9 +15,9 @@ class PositionEditor
     ~PositionEditor() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, float *posXSource, float *posYSource, float scale);
+    void init(const Window *parentWindow, float *posXSource, float *posYSource);
 
-    void init(const Window *parentWindow, float *posXSource, float *posYSource, float scale, uint8_t alpha);
+    void init(const Window *parentWindow, float *posXSource, float *posYSource, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -39,7 +39,6 @@ class PositionEditor
 
    private:
     Window window;
-    float scale;
 
     PositionEditorCancelFunc cancelFunc; // Called when the player presses A to confirm or B to cancel
 

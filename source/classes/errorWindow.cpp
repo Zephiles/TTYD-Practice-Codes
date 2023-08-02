@@ -1,6 +1,7 @@
 #include "drawText.h"
-#include "classes/window.h"
 #include "classes/errorWindow.h"
+#include "classes/window.h"
+#include "classes/menu.h"
 #include "gc/pad.h"
 #include "ttyd/system.h"
 
@@ -9,7 +10,7 @@
 void ErrorWindow::setText(const char *text)
 {
     this->text = text;
-    this->window.setWidthHeightFromTextAndInit(text, this->scale, SPECIAL_WINDOW_COLOR | this->alpha, 20.f, 20.f);
+    this->window.setWidthHeightFromTextAndInit(text, MENU_SCALE, SPECIAL_WINDOW_COLOR | this->alpha, 20.f, 20.f);
 }
 
 void ErrorWindow::setTimer(uint32_t milliseconds)
@@ -58,7 +59,7 @@ void ErrorWindow::draw()
     // Draw the text
     float posX;
     float posY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &posY);
 
     drawText(this->text, posX, posY, scale, getColorWhite(0xFF));

@@ -59,7 +59,7 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
 {
     // Get the text position a bit to the right of the last option
     float width;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     getTextWidthHeight("Modify As Hex", scale, &width, nullptr);
 
     // Get the text position for the top-left of the window two lines under the main text
@@ -72,7 +72,7 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
     const float posX = tempPosX;
     float posY = tempPosY;
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float hexTextPosX = posX + width + (20.f * scale);
     const float hexTextPosY = posY + (lineDecrement * 2.f);
 
@@ -190,7 +190,6 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
             // Initialize the error window
             ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
 
-            errorWindowPtr->setScale(cheatsMenuPtr->getScale());
             errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
             errorWindowPtr->setText("This value must be modified as hex.");
 

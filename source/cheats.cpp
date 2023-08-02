@@ -1449,8 +1449,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
                                      rootWindowPtr,
                                      flags,
                                      VariableType::s16,
-                                     rootWindowPtr->getAlpha(),
-                                     0.6f);
+                                     rootWindowPtr->getAlpha());
 
                 valueEditorPtr->startDrawing(spawnSelectedItem, cancelSpawnSelectedItem);
 

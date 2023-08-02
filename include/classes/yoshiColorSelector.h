@@ -19,9 +19,9 @@ class YoshiColorSelector
     ~YoshiColorSelector() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, float scale);
+    void init(const Window *parentWindow);
 
-    void init(const Window *parentWindow, float scale, uint8_t alpha);
+    void init(const Window *parentWindow, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -43,7 +43,6 @@ class YoshiColorSelector
 
    private:
     Window window;
-    float scale;
 
     YoshiColorSelectorSetColorFunc setColorFunc; // Called when the player presses A to select a color
     YoshiColorSelectorCancelFunc cancelFunc;     // Called when the player presses B to cancel selecting a color

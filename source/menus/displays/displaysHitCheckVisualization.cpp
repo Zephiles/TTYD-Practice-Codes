@@ -71,7 +71,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Position the text a bit to the right of the longest text
@@ -82,7 +82,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     float posY = tempPosY;
 
     // Draw the on/off text for the enabled flag
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Displays *displaysPtr = gDisplays;
     const char *string;
     uint32_t color;
@@ -201,7 +201,7 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
 
-    confirmationWindowPtr->init(rootWindowPtr, helpText, displaysMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    confirmationWindowPtr->init(rootWindowPtr, helpText, rootWindowPtr->getAlpha());
     confirmationWindowPtr->startDrawing(displaysMenuHitCheckVisualizationMenuTurnOn);
 }
 
@@ -296,15 +296,7 @@ void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr)
     }
 
     const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentColor,
-                         nullptr,
-                         nullptr,
-                         rootWindowPtr,
-                         flags,
-                         VariableType::u32,
-                         rootWindowPtr->getAlpha(),
-                         displaysMenuPtr->getScale());
+    valueEditorPtr->init(&currentColor, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
 
     valueEditorPtr->startDrawing(displaysMenuHitCheckVisualizationSelectColor,
                                  displaysMenuHitCheckVisualizationCancelSelectColor);

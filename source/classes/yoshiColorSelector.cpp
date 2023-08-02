@@ -16,14 +16,13 @@ const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS] = {
     "White",
 };
 
-void YoshiColorSelector::init(const Window *parentWindow, float scale)
+void YoshiColorSelector::init(const Window *parentWindow)
 {
-    this->init(parentWindow, scale, 0xFF);
+    this->init(parentWindow, 0xFF);
 }
 
-void YoshiColorSelector::init(const Window *parentWindow, float scale, uint8_t alpha)
+void YoshiColorSelector::init(const Window *parentWindow, uint8_t alpha)
 {
-    this->scale = scale;
     this->alpha = alpha;
     this->setColorFunc = nullptr;
     this->cancelFunc = nullptr;
@@ -35,11 +34,12 @@ void YoshiColorSelector::init(const Window *parentWindow, float scale, uint8_t a
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gHelpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the options
     const float padding = windowPtr->getPadding() * scale;
-    const float height = (LINE_HEIGHT_FLOAT * scale) * TOTAL_YOSHI_COLORS_FLOAT;
+    constexpr float height = (LINE_HEIGHT_FLOAT * scale) * TOTAL_YOSHI_COLORS_FLOAT;
     windowPtr->setHeight(windowPtr->getHeight() + height + padding - (padding / 2.f));
 
     // Place the window inside of the parent window
@@ -175,7 +175,7 @@ void YoshiColorSelector::draw()
     // Draw the help text
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
     drawText(gHelpTextAConfirmBCancel, tempPosX, tempPosY, scale, getColorWhite(0xFF));
@@ -183,7 +183,7 @@ void YoshiColorSelector::draw()
     // Get the position for the options
     windowPtr->getTextPosXY("Orange", WindowAlignment::BOTTOM_CENTER, scale, &tempPosX, &tempPosY);
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float posYBase = tempPosY + (lineDecrement * (TOTAL_YOSHI_COLORS_FLOAT - 1.f));
 
     float posX = tempPosX;

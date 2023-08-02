@@ -68,8 +68,7 @@ class ValueEditor
               const void *maxValuePtr,
               const Window *parentWindow,
               uint32_t flags,
-              VariableType type,
-              float scale);
+              VariableType type);
 
     // The value is required to be stored using a type that is either 4 or 8 bytes. In this case, you'd still use the original
     // type for the type variable, as that's used to figure out the min/max of the value as well as how many digits the value
@@ -80,8 +79,7 @@ class ValueEditor
               const Window *parentWindow,
               uint32_t flags,
               VariableType type,
-              uint8_t alpha,
-              float scale);
+              uint8_t alpha);
 
     // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
     bool flagIsSet(uint32_t flag) const
@@ -136,7 +134,6 @@ class ValueEditor
 
    private:
     Window window;
-    float scale; // Based on the help text. The editor value scale will be increased based on this.
 
     ValueType minValue;
     ValueType maxValue;

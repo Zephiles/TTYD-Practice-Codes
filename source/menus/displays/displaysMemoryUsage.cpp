@@ -64,7 +64,7 @@ void DisplaysMenu::drawMemoryUsageInfo() const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Position the text a bit to the right of the longest text
@@ -81,7 +81,7 @@ void DisplaysMenu::drawMemoryUsageInfo() const
     float posY = tempPosY;
 
     // Draw the on/off text for each flag
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const uint32_t totalOptions = DISPLAYS_TOTAL_HEAPS;
     const Displays *displaysPtr = gDisplays;
     const char *string;

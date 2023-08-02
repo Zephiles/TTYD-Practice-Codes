@@ -254,8 +254,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                                      rootWindowPtr,
                                      flags,
                                      VariableType::s8,
-                                     rootWindowPtr->getAlpha(),
-                                     battlesMenuPtr->getScale());
+                                     rootWindowPtr->getAlpha());
 
                 valueEditorPtr->startDrawing(menuBattlesStatusesChangeValue, cancelMenuBattlesStatusesChangeValue);
             }
@@ -280,7 +279,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
     float posXBase;
     float posYBase;
 
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     const Window *rootWindowPtr = gRootWindow;
     rootWindowPtr->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &posXBase, &posYBase);
 
@@ -294,10 +293,10 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
     float posY = posYBase;
 
     // Get the starting position for the values
-    const float lineAdjustment = 10.f * scale;
-    const float lineDecrement = (ICON_SIZE_FLOAT * scale) + lineAdjustment;
+    constexpr float lineAdjustment = 10.f * scale;
+    constexpr float lineDecrement = (ICON_SIZE_FLOAT * scale) + lineAdjustment;
 
-    const float valuesPosXOffset = 525.f * scale;
+    constexpr float valuesPosXOffset = 525.f * scale;
     const float valuesPosX = valuesPosXBase + valuesPosXOffset;
 
     const Menu *menuPtr = gMenu;
@@ -331,7 +330,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
             const float windowPosX = rootWindowPtr->getPosX();
             const float windowPosY = valuesPosYBase + (lineAdjustment * 1.5f) - (counter * lineDecrement);
             const float windowWidth = valuesPosXOffset + textWidth + padding;
-            const float windowHeight = lineDecrement + LINE_HEIGHT_ADJUSTMENT_5(scale);
+            constexpr float windowHeight = lineDecrement + LINE_HEIGHT_ADJUSTMENT_5(scale);
             const uint32_t windowColor = SPECIAL_WINDOW_COLOR | 0xFF;
 
             windowDispGX_Waku_col(0,

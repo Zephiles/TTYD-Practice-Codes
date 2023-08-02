@@ -123,7 +123,7 @@ void Menu::setCurrentIndex(uint32_t index)
     this->currentPage = static_cast<uint8_t>(index / this->totalOptionsPerPage);
 }
 
-void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
+void Menu::basicLayoutDraw(float offsetX, float offsetY) const
 {
     // Make sure the options are set
     const MenuFunctions *menuFuncsPtr = this->funcs;
@@ -143,6 +143,7 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
 
     // Draw the page number at the top-right of the main window if there is more than one page
     const Window *rootWindowPtr = gRootWindow;
+    constexpr float scale = MENU_SCALE;
     float tempPosX;
     float tempPosY;
 
@@ -163,7 +164,7 @@ void Menu::basicLayoutDraw(float scale, float offsetX, float offsetY) const
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     float posX = tempPosX + offsetX;
     float posY = tempPosY - offsetY;
-    const float lineDecrement = MENU_LINE_HEIGHT * scale;
+    constexpr float lineDecrement = MENU_LINE_HEIGHT * scale;
     uint32_t color;
 
     const uint32_t totalOptions = this->totalOptions;

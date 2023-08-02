@@ -52,7 +52,7 @@ void CheatsMenu::drawForceNpcItemDropInfo() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -65,7 +65,7 @@ void CheatsMenu::drawForceNpcItemDropInfo() const
     // Draw the current cheat with its flag
     drawText(gCheatsMenuInitOptions[this->selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
     Cheats *cheatsPtr = gCheats;
@@ -88,7 +88,7 @@ void CheatsMenu::drawForceNpcItemDropInfo() const
     const ItemId item = cheatsPtr->getForceNpcItemDropCheatPtr()->getItemDrop();
     const float iconScale = adjustItemIconScale(item, scale);
 
-    const float iconAdjustment = ICON_SIZE_FLOAT * scale;
+    constexpr float iconAdjustment = ICON_SIZE_FLOAT * scale;
     const float iconPosX = posX + (iconAdjustment / 2.f);
     const float iconPosY = posY - (iconAdjustment + (7.f * scale));
     drawItemIconWithText(iconPosX, iconPosY, iconScale, scale, 0.f, item, getColorWhite(0xFF));

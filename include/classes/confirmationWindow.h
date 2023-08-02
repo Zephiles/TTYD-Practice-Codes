@@ -21,9 +21,9 @@ class ConfirmationWindow
     ~ConfirmationWindow() {}
 
     // Sets the alpha to 0xFF
-    void init(const Window *parentWindow, const char *helpText, float scale);
+    void init(const Window *parentWindow, const char *helpText);
 
-    void init(const Window *parentWindow, const char *helpText, float scale, uint8_t alpha);
+    void init(const Window *parentWindow, const char *helpText, uint8_t alpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -42,7 +42,6 @@ class ConfirmationWindow
 
    private:
     Window window;
-    float scale;
 
     ConfirmationWindowSelectedOptionFunc selectedOptionFunc; // Called when the player selects yes/no or presses B to cancel
     MenuAutoIncrement autoIncrement;

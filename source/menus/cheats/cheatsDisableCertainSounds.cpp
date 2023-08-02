@@ -39,7 +39,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
@@ -51,7 +51,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
 
     // Draw each option with its flag
     const MenuOption *disableCertainSoundsOptionsPtr = gCheatsMenuDisableCertainSoundsOptions;
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Cheats *cheatsPtr = gCheats;
 
     const char *string;

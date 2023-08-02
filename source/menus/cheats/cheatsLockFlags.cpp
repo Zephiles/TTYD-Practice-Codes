@@ -59,7 +59,7 @@ void CheatsMenu::drawLockFlagsInfo() const
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Get the width that is being used by the main text options
@@ -68,7 +68,7 @@ void CheatsMenu::drawLockFlagsInfo() const
 
     // Set the text to be a bit to the right of the main text
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    const float textIncrement = 20.f * scale;
+    constexpr float textIncrement = 20.f * scale;
     const float posXBase = tempPosX;
     const float posYBase = tempPosY;
 
@@ -76,7 +76,7 @@ void CheatsMenu::drawLockFlagsInfo() const
     float posY = posYBase;
 
     // Draw the Yes/No texts for each option
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Cheats *cheatsPtr = gCheats;
     const char *string;
     uint32_t color;

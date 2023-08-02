@@ -14,14 +14,13 @@
 const char *gButtonComboEditorHelpText =
     "Hold the button(s) for 3 seconds to set the\nnew button combo\n\nPress B three times in succession to cancel";
 
-void ButtonComboEditor::init(const Window *parentWindow, float scale)
+void ButtonComboEditor::init(const Window *parentWindow)
 {
-    this->init(parentWindow, scale, 0xFF);
+    this->init(parentWindow, 0xFF);
 }
 
-void ButtonComboEditor::init(const Window *parentWindow, float scale, uint8_t alpha)
+void ButtonComboEditor::init(const Window *parentWindow, uint8_t alpha)
 {
-    this->scale = scale;
     this->alpha = alpha;
     this->setComboFunc = nullptr;
     this->cancelFunc = nullptr;
@@ -33,10 +32,11 @@ void ButtonComboEditor::init(const Window *parentWindow, float scale, uint8_t al
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(gButtonComboEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the rest of the text, which is assumed to use six more lines
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float padding = windowPtr->getPadding() * scale;
     windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 5.f) + (padding / 2.f));
 
@@ -168,7 +168,7 @@ void ButtonComboEditor::draw() const
     // Draw the help text
     float tempPosX;
     float tempPosY;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
@@ -181,7 +181,7 @@ void ButtonComboEditor::draw() const
     float height;
     getTextWidthHeight(mainHelpText, scale, nullptr, &height);
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (height + (lineDecrement * 2.f));
 
     // Draw the amount of time left

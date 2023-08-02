@@ -82,7 +82,7 @@ enum StatsFlagFollower
 class StatsMenu
 {
    public:
-    StatsMenu(float scale) { this->scale = scale; }
+    StatsMenu() {}
     ~StatsMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
@@ -92,7 +92,6 @@ class StatsMenu
     NameEditor *getNameEditor() { return &this->nameEditor; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
 
-    float getScale() const { return this->scale; }
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 
     uint32_t getCurrentIndex() const { return this->currentIndex; }
@@ -111,10 +110,9 @@ class StatsMenu
     YoshiColorSelector yoshiColorSelector;
     NameEditor nameEditor;
     ErrorWindow errorWindow;
-    float scale;
 
     MenuAutoIncrement autoIncrement;
-    uint8_t currentIndex;   // Current cursor position
+    uint8_t currentIndex; // Current cursor position
 
     char errorMessage[128]; // Needed since the error message is created via snprintf
 };

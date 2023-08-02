@@ -42,7 +42,7 @@ void statsMenuInit(Menu *menuPtr)
         delete statsMenuPtr;
     }
 
-    gStatsMenu = new StatsMenu(gRootMenu->getScale());
+    gStatsMenu = new StatsMenu();
 }
 
 void statsMenuInitExit()
@@ -76,7 +76,6 @@ void StatsMenu::initErrorWindow(bool drawForPartner)
     ErrorWindow *errorWindowPtr = &this->errorWindow;
     const Window *rootWindowPtr = gRootWindow;
 
-    errorWindowPtr->setScale(this->scale);
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
     errorWindowPtr->setText(errorMessagePtr);
 

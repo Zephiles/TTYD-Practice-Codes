@@ -132,14 +132,13 @@ enum ClearAreaFlagsIndex
 class CheatsMenu
 {
    public:
-    CheatsMenu(float scale) { this->scale = scale; }
+    CheatsMenu() {}
     ~CheatsMenu() {}
 
     ValueEditor *getValueEditor() { return &this->valueEditor; }
     ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
     ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
-    float getScale() const { return this->scale; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 
@@ -173,7 +172,6 @@ class CheatsMenu
     ButtonComboEditor buttonComboEditor;
     ConfirmationWindow confirmationWindow;
     ErrorWindow errorWindow;
-    float scale;
 
     MenuAutoIncrement autoIncrement;
 

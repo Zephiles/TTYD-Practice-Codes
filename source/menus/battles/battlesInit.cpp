@@ -41,7 +41,7 @@ void battlesMenuInit(Menu *menuPtr)
         delete battlesMenuPtr;
     }
 
-    gBattlesMenu = new BattlesMenu(gRootMenu->getScale());
+    gBattlesMenu = new BattlesMenu;
 }
 
 void battlesMenuInitExit()
@@ -223,7 +223,7 @@ void BattlesMenu::drawBattlesActors() const
     const uint32_t currentPage = menuPtr->getCurrentPage();
     const Window *rootWindowPtr = gRootWindow;
 
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     float tempPosX;
     float tempPosY;
 
@@ -248,7 +248,7 @@ void BattlesMenu::drawBattlesActors() const
     uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
     const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-    const float lineDecrement = MENU_LINE_HEIGHT * scale;
+    constexpr float lineDecrement = MENU_LINE_HEIGHT * scale;
     const char **battleActorsPtr = gBattleActors;
 
     for (uint32_t i = indexStart; i < (indexStart + BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE); i++)

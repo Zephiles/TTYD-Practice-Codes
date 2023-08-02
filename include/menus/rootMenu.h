@@ -11,10 +11,9 @@ extern Window *gRootWindow;
 class RootMenu
 {
    public:
-    RootMenu(const char *battlesErrorMessage, float scale)
+    RootMenu(const char *battlesErrorMessage)
     {
         this->rootMenu = gMenu;
-        this->scale = scale;
         this->initErrorWindow(battlesErrorMessage);
     }
 
@@ -25,19 +24,16 @@ class RootMenu
         const Window *rootWindowPtr = gRootWindow;
         ErrorWindow *errorWindowPtr = &this->errorWindow;
 
-        errorWindowPtr->setScale(this->scale);
         errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
         errorWindowPtr->setText(battlesErrorMessage);
         errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
     }
 
     ErrorWindow *getErrorWindow() { return &this->errorWindow; }
-    float getScale() const { return this->scale; }
     const Menu *getRootMenu() const { return this->rootMenu; }
 
    private:
     ErrorWindow errorWindow;
-    float scale;
     Menu *rootMenu; // Backup of gMenu when the root menu was initially opened
 };
 

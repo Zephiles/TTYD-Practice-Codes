@@ -6,6 +6,7 @@
 #include <cstdint>
 
 #define MENU_LINE_HEIGHT (20.f / 0.6f)
+#define MENU_SCALE 0.6f
 
 // Button inputs converted to simple values
 enum class MenuButtonInput : uint8_t
@@ -151,7 +152,7 @@ class Menu
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
     // Generic functions for handling the current menu
-    void basicLayoutDraw(float scale, float offsetX, float offsetY) const;
+    void basicLayoutDraw(float offsetX, float offsetY) const;
     void basicLayoutControls(MenuButtonInput button);
 
    private:

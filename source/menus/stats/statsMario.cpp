@@ -528,16 +528,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     const Window *rootWindowPtr = gRootWindow;
-
-    valueEditorPtr->init(&currentValue,
-                         &minValue,
-                         &maxValue,
-                         rootWindowPtr,
-                         flags,
-                         type,
-                         rootWindowPtr->getAlpha(),
-                         statsMenuPtr->getScale());
-
+    valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(menuMarioChangeValue, cancelMenuMarioChangeValue);
 }
 
@@ -557,7 +548,7 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
     SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler();
 
     const Window *rootWindowPtr = gRootWindow;
-    specialMoveTogglerPtr->init(rootWindowPtr, statsMenuPtr->getScale(), rootWindowPtr->getAlpha());
+    specialMoveTogglerPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     specialMoveTogglerPtr->startDrawing(cancelMenuMarioToggleSpecialMoves);
 }
 
@@ -566,13 +557,13 @@ void StatsMenu::drawMarioStats() const
     // Draw the main text and icons
     float iconPosXBase;
     float iconPosYBase;
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getIconPosXY(WindowAlignment::TOP_LEFT, scale, &iconPosXBase, &iconPosYBase);
 
     PouchData *pouchPtr = pouchGetPtr();
-    const float iconPosXIncrement = 317.f * scale;
-    const float starPowerAdjustment = 8.f * scale;
-    const float lineDecrement = SPACE_USED_PER_ICON(scale);
+    constexpr float iconPosXIncrement = 317.f * scale;
+    constexpr float starPowerAdjustment = 8.f * scale;
+    constexpr float lineDecrement = SPACE_USED_PER_ICON(scale);
 
     float iconPosX = iconPosXBase;
     float iconPosY = iconPosYBase;
@@ -621,7 +612,7 @@ void StatsMenu::drawMarioStats() const
         // Draw the icons for the special moves
         if (i == StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
-            const float specialMovesPosXIncrement = 22.f * scale;
+            constexpr float specialMovesPosXIncrement = 13.f;
             const IconId *specialMoveIconsPtr = gSpecialMoveIcons;
             const uint32_t starPowersObtained = pouchPtr->starPowersObtained;
 
@@ -657,7 +648,7 @@ void StatsMenu::drawMarioStats() const
     float textPosY = textPosYBase;
 
     const float valuePosXBase = textPosX + (253.f * scale);
-    const float valuePosXIncrement = 417.f * scale;
+    constexpr float valuePosXIncrement = 417.f * scale;
 
     float valuePosX = valuePosXBase;
     float maxWidth = 48.f;

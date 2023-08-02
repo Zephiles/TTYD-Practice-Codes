@@ -193,7 +193,7 @@ void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float off
     drawMainWindow();
 
     // Draw the main text
-    gMenu->basicLayoutDraw(gRootMenu->getScale(), offsetX, offsetY);
+    gMenu->basicLayoutDraw(offsetX, offsetY);
 }
 
 void handleMenu()

@@ -19,9 +19,9 @@ class ItemIconSelector
     ~ItemIconSelector() {}
 
     // Sets windowAlpha to 0xFF
-    void init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, float scale);
+    void init(const Window *parentWindow, ItemId startingItem, ItemId endingItem);
 
-    void init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, uint8_t windowAlpha, float scale);
+    void init(const Window *parentWindow, ItemId startingItem, ItemId endingItem, uint8_t windowAlpha);
 
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
@@ -47,13 +47,12 @@ class ItemIconSelector
 
    private:
     Window window;
-    float scale;
 
     SelectedItemFunc selectedItemFunc; // Called when the player presses A to select an item/badge
     ItemSelectorCancelFunc cancelFunc; // Called when the player presses B to stop selecting items/badges
 
-    ItemId startingItem;               // Starting index
-    ItemId endingItem;                 // Ending index
+    ItemId startingItem; // Starting index
+    ItemId endingItem;   // Ending index
 
     MenuAutoIncrement autoIncrement;
     bool enabled;         // Whether this window is enabled/drawn or not
