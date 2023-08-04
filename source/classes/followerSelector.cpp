@@ -47,8 +47,8 @@ void FollowerSelector::init(const Window *parentWindow)
 void FollowerSelector::init(const Window *parentWindow, uint8_t alpha)
 {
     this->alpha = alpha;
+    this->selectFunc = nullptr;
     this->cancelFunc = nullptr;
-    this->errorFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
     this->autoIncrement.framesBeforeIncrement = 0;
     this->enabled = false;
@@ -141,36 +141,21 @@ void FollowerSelector::controls(MenuButtonInput button)
                 break;
             }
 
-            // Make sure a follower can actually be spawned right now
-            if (checkIfInGame())
+            // Run the function for when a follower is selected
+            const FollowerSelectorSelectFunc selectFunc = this->selectFunc;
+            if (selectFunc)
             {
-                // Spawn the follower
-                spawnPartnerOrFollower(gFollowersOptionsId[currentIndex]);
-            }
-            else
-            {
-                const FollowerSelectorErrorFunc errorFunc = this->errorFunc;
-                if (errorFunc)
-                {
-                    errorFunc();
-                }
-            }
-
-            // Close the follower selector
-            const FollowerSelectorCancelFunc cancelFunc = this->cancelFunc;
-            if (cancelFunc)
-            {
-                cancelFunc();
+                return selectFunc(gFollowersOptionsId[currentIndex]);
             }
             break;
         }
         case MenuButtonInput::B:
         {
-            // Cancel bringing out a follower
+            // Cancel selecting a follower
             const FollowerSelectorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }

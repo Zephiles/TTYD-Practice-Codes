@@ -26,6 +26,7 @@ void NameEditor::init(const Window *parentWindow, const char *initialText, char 
 {
     this->namePtr = namePtr;
     this->alpha = alpha;
+    this->setNameFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
     this->autoIncrement.framesBeforeIncrement = 0;
@@ -171,7 +172,7 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
             const NameEditorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }
@@ -234,7 +235,7 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
                 const NameEditorCancelFunc func = this->cancelFunc;
                 if (func)
                 {
-                    func();
+                    return func();
                 }
             }
             break;
@@ -273,6 +274,13 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
                 break;
             }
 
+            // Run the function for when a new name is being set
+            const NameEditorSetNameFunc setNameFunc = this->setNameFunc;
+            if (setNameFunc && !setNameFunc(buf))
+            {
+                return;
+            }
+
             // Subtract 1 from nameSize to account for the null terminator
             char *namePtr = strncpy(this->namePtr, buf, nameSize - 1);
 
@@ -280,14 +288,7 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
             {
                 namePtr[nameSize - 1] = '\0';
             }
-
-            // Close the name editor
-            const NameEditorCancelFunc func = this->cancelFunc;
-            if (func)
-            {
-                func();
-            }
-            break;
+            return;
         }
         default:
         {

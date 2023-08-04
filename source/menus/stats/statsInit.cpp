@@ -42,7 +42,7 @@ void statsMenuInit(Menu *menuPtr)
         delete statsMenuPtr;
     }
 
-    gStatsMenu = new StatsMenu();
+    gStatsMenu = new StatsMenu;
 }
 
 void statsMenuInitExit()

@@ -10,6 +10,7 @@
 #define TOTAL_SPECIAL_MOVES 8
 #define TOTAL_SPECIAL_MOVES_FLOAT 8.f
 
+typedef bool (*SpecialMoveTogglerToggleFunc)(uint32_t currentIndex); // Return true to toggle the selected special move
 typedef void (*SpecialMoveTogglerCancelFunc)();
 
 class SpecialMoveToggler
@@ -26,8 +27,9 @@ class SpecialMoveToggler
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
 
-    void startDrawing(SpecialMoveTogglerCancelFunc cancelFunc)
+    void startDrawing(SpecialMoveTogglerToggleFunc toggleFunc, SpecialMoveTogglerCancelFunc cancelFunc)
     {
+        this->toggleFunc = toggleFunc;
         this->cancelFunc = cancelFunc;
         this->enabled = true;
     }
@@ -41,6 +43,7 @@ class SpecialMoveToggler
    private:
     Window window;
 
+    SpecialMoveTogglerToggleFunc toggleFunc; // Called when the player presses A to toggle the selected special move
     SpecialMoveTogglerCancelFunc cancelFunc; // Called when the player presses B to toggling special moves
     MenuAutoIncrement autoIncrement;
 

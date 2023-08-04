@@ -538,6 +538,13 @@ void cancelMenuMarioToggleSpecialMoves()
     gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
 }
 
+bool selectMenuMarioToggleSpecialMoves(uint32_t currentIndex)
+{
+    (void)currentIndex;
+
+    return true;
+}
+
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 {
     // Bring up the window for toggling special moves
@@ -549,7 +556,7 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     specialMoveTogglerPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    specialMoveTogglerPtr->startDrawing(cancelMenuMarioToggleSpecialMoves);
+    specialMoveTogglerPtr->startDrawing(selectMenuMarioToggleSpecialMoves, cancelMenuMarioToggleSpecialMoves);
 }
 
 void StatsMenu::drawMarioStats() const

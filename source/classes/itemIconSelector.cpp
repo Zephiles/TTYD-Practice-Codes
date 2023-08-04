@@ -119,7 +119,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
             const SelectedItemFunc func = this->selectedItemFunc;
             if (func)
             {
-                func(item);
+                return func(item);
             }
 
             break;
@@ -130,7 +130,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
             const ItemSelectorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
 
             break;

@@ -97,7 +97,7 @@ void displaysMenuInit(Menu *menuPtr)
         delete displaysMenuPtr;
     }
 
-    displaysMenuPtr = new DisplaysMenu();
+    displaysMenuPtr = new DisplaysMenu;
     gDisplaysMenu = displaysMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gDisplaysMenuInitOptions) / sizeof(MenuOption);

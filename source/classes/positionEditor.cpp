@@ -20,6 +20,7 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
 void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, uint8_t alpha)
 {
     this->alpha = alpha;
+    this->confirmFunc = nullptr;
     this->cancelFunc = nullptr;
     this->posX = *posXSource;
     this->posY = *posYSource;
@@ -135,23 +136,23 @@ void PositionEditor::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
+            // Run the function for when confirming to set the new position
+            const PositionEditorConfirmFunc func = this->confirmFunc;
+            if (func && !func())
+            {
+                return;
+            }
+
             *this->posXSource = this->posX;
             *this->posYSource = this->posY;
-
-            // Close the position editor
-            const PositionEditorCancelFunc func = this->cancelFunc;
-            if (func)
-            {
-                func();
-            }
-            break;
+            return;
         }
         case MenuButtonInput::B:
         {
             const PositionEditorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }

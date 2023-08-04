@@ -9,6 +9,7 @@
 #define NAME_EDITOR_CHARS_TOTAL_ROWS 5
 #define NAME_EDITOR_CHARS_TOTAL_ROWS_FLOAT 5.f
 
+typedef bool (*NameEditorSetNameFunc)(char *newName); // Return true if the new name should be set
 typedef void (*NameEditorCancelFunc)();
 
 class NameEditor
@@ -25,8 +26,9 @@ class NameEditor
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
 
-    void startDrawing(NameEditorCancelFunc cancelFunc)
+    void startDrawing(NameEditorSetNameFunc setNameFunc, NameEditorCancelFunc cancelFunc)
     {
+        this->setNameFunc = setNameFunc;
         this->cancelFunc = cancelFunc;
         this->enabled = true;
     }
@@ -41,7 +43,8 @@ class NameEditor
    private:
     Window window;
 
-    NameEditorCancelFunc cancelFunc; // Called when the player presses B/Z to cancel setting the new string
+    NameEditorSetNameFunc setNameFunc; // Called when the player presses Start to set the new name
+    NameEditorCancelFunc cancelFunc;   // Called when the player presses B/Z to cancel setting the new name
     MenuAutoIncrement autoIncrement;
 
     char *namePtr;    // Pointer to where the new string will be stored

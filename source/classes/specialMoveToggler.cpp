@@ -42,6 +42,7 @@ void SpecialMoveToggler::init(const Window *parentWindow)
 void SpecialMoveToggler::init(const Window *parentWindow, uint8_t alpha)
 {
     this->alpha = alpha;
+    this->toggleFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
     this->autoIncrement.framesBeforeIncrement = 0;
@@ -149,6 +150,13 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
                 break;
             }
 
+            // Run the function for when a special move is being toggled
+            const SpecialMoveTogglerToggleFunc func = this->toggleFunc;
+            if (func && !func(currentIndex))
+            {
+                return;
+            }
+
             // Toggle the bit for the current special move
             pouchGetPtr()->starPowersObtained ^= (1UL << currentIndex);
 
@@ -166,7 +174,7 @@ void SpecialMoveToggler::controls(MenuButtonInput button)
             const SpecialMoveTogglerCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }

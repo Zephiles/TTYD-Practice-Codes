@@ -1020,7 +1020,7 @@ void inventoryMenuMainInit(Menu *menuPtr)
         delete inventoryMenuPtr;
     }
 
-    inventoryMenuPtr = new InventoryMenu();
+    inventoryMenuPtr = new InventoryMenu;
     gInventoryMenu = inventoryMenuPtr;
 
     PouchData *pouchPtr = pouchGetPtr();

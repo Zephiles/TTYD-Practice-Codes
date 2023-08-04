@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+typedef bool (*PositionEditorConfirmFunc)(); // Return true to update posXSource and posYSource
 typedef void (*PositionEditorCancelFunc)();
 
 class PositionEditor
@@ -22,8 +23,9 @@ class PositionEditor
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
 
-    void startDrawing(PositionEditorCancelFunc cancelFunc)
+    void startDrawing(PositionEditorConfirmFunc confirmFunc, PositionEditorCancelFunc cancelFunc)
     {
+        this->confirmFunc = confirmFunc;
         this->cancelFunc = cancelFunc;
         this->enabled = true;
     }
@@ -40,7 +42,8 @@ class PositionEditor
    private:
     Window window;
 
-    PositionEditorCancelFunc cancelFunc; // Called when the player presses A to confirm or B to cancel
+    PositionEditorConfirmFunc confirmFunc; // Called when the player presses A to confirm
+    PositionEditorCancelFunc cancelFunc;   // Called when the player presses B to cancel
 
     float posX;        // Current Pos X value
     float posY;        // Current Pos Y value

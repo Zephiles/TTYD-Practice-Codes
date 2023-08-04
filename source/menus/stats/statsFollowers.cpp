@@ -26,18 +26,28 @@ const MenuFunctions gStatsMenuFollowersFuncs = {
     nullptr, // Exit function not needed
 };
 
-void errorMenuFollowersBringOutFollower()
-{
-    // cancelMenuFollowersBringOutFollower gets called by the follower selector automatically, so no need to call it here
-
-    // Initialize the error window
-    gStatsMenu->initErrorWindow(false);
-}
-
 void cancelMenuFollowersBringOutFollower()
 {
     gStatsMenu->getFollowerSelector()->stopDrawing();
     gMenu->clearFlag(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER);
+}
+
+void selectedMenuFollowersBringOutFollower(PartyMembers selectedFollower)
+{
+    // Make sure a follower can actually be spawned right now
+    if (checkIfInGame())
+    {
+        // Spawn the follower
+        spawnPartnerOrFollower(selectedFollower);
+    }
+    else
+    {
+        // A follower cannot be spawned right now, so initialize the error window
+        gStatsMenu->initErrorWindow(false);
+    }
+
+    // Close the follower selector
+    cancelMenuFollowersBringOutFollower();
 }
 
 void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
@@ -58,7 +68,7 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
     FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelector();
 
     followerSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    followerSelectorPtr->startDrawing(cancelMenuFollowersBringOutFollower, errorMenuFollowersBringOutFollower);
+    followerSelectorPtr->startDrawing(selectedMenuFollowersBringOutFollower, cancelMenuFollowersBringOutFollower);
 }
 
 void selectedOptionMenuFollowersRemoveFollower(Menu *menuPtr)

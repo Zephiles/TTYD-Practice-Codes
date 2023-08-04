@@ -47,7 +47,7 @@ void ConfirmationWindow::callSelectedOptionFunc(bool selectedYes) const
     const ConfirmationWindowSelectedOptionFunc func = this->selectedOptionFunc;
     if (func)
     {
-        func(selectedYes);
+        return func(selectedYes);
     }
 }
 
@@ -120,13 +120,11 @@ void ConfirmationWindow::controls(MenuButtonInput button)
                 selectedYes = false;
             }
 
-            this->callSelectedOptionFunc(selectedYes);
-            break;
+            return this->callSelectedOptionFunc(selectedYes);
         }
         case MenuButtonInput::B:
         {
-            this->callSelectedOptionFunc(false);
-            break;
+            return this->callSelectedOptionFunc(false);
         }
         default:
         {

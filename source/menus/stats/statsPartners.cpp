@@ -227,28 +227,39 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue,
     valueEditorPtr->startDrawing(menuPartnersChangeValue, cancelMenuPartnersChangeValue);
 }
 
-void cancelMenuPartnersChangeYoshiColor()
-{
-    gStatsMenu->getYoshiColorSelector()->stopDrawing();
-    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
-}
-
 void cancelMenuPartnersChangeYoshiName()
 {
     gStatsMenu->getNameEditor()->stopDrawing();
     gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
 }
 
+bool selectMenuPartnersChangeYoshiName(char *newName)
+{
+    (void)newName;
+
+    // Close the name editor
+    cancelMenuPartnersChangeYoshiName();
+
+    return true;
+}
+
+void cancelMenuPartnersChangeYoshiColor()
+{
+    gStatsMenu->getYoshiColorSelector()->stopDrawing();
+    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
+}
+
 void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
 {
-    // cancelMenuPartnersChangeYoshiColor gets called by the color selector automatically, so no need to call it here
-
     // Set the new color
     pouchSetPartyColor(PartyMembers::kYoshi, selectedColorId);
 
     // The Partners menu in the pause menu will not visually update when Yoshi's color is changed, so manually reset the
     // Partners menu
     resetPauseMenuPartners();
+
+    // Close the color selector
+    cancelMenuPartnersChangeYoshiColor();
 }
 
 void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
@@ -347,7 +358,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                                             sizeof(PouchData::yoshiName),
                                             rootWindowPtr->getAlpha());
 
-                        nameEditorPtr->startDrawing(cancelMenuPartnersChangeYoshiName);
+                        nameEditorPtr->startDrawing(selectMenuPartnersChangeYoshiName, cancelMenuPartnersChangeYoshiName);
                         handledYoshiOption = true;
                         break;
                     }

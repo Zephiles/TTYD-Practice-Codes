@@ -165,6 +165,14 @@ void displaysMenuAdjustManualPositionCancelChangingPosition()
     gMod.showMenu();
 }
 
+bool displaysMenuAdjustManualPositionConfirmChangingPosition()
+{
+    // Close the position editor
+    displaysMenuAdjustManualPositionCancelChangingPosition();
+
+    return true;
+}
+
 void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 {
     // Make sure the pointer to the current display's manually position data is properly retrieved before doing anything
@@ -190,7 +198,8 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
                             manuallyPositionPtr->getPosYPtr(),
                             rootWindowPtr->getAlpha());
 
-    positionEditorPtr->startDrawing(displaysMenuAdjustManualPositionCancelChangingPosition);
+    positionEditorPtr->startDrawing(displaysMenuAdjustManualPositionConfirmChangingPosition,
+                                    displaysMenuAdjustManualPositionCancelChangingPosition);
 }
 
 void displaysMenudjustManualPositionCancelSetNewScale()

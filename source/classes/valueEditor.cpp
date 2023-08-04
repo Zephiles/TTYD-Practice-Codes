@@ -2029,7 +2029,7 @@ void ValueEditor::controls(MenuButtonInput button)
             ValueType value;
             if (this->getValueFromString(&value))
             {
-                func(&value);
+                return func(&value);
             }
 
             break;
@@ -2040,7 +2040,7 @@ void ValueEditor::controls(MenuButtonInput button)
             const ValueEditorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }

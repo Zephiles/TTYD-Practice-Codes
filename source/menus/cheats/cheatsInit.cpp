@@ -141,7 +141,7 @@ void cheatsMenuInit(Menu *menuPtr)
         delete cheatsMenuPtr;
     }
 
-    cheatsMenuPtr = new CheatsMenu();
+    cheatsMenuPtr = new CheatsMenu;
     gCheatsMenu = cheatsMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuInitOptions) / sizeof(MenuOption);

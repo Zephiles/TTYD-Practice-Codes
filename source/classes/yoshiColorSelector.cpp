@@ -135,14 +135,7 @@ void YoshiColorSelector::controls(MenuButtonInput button)
             const YoshiColorSelectorSetColorFunc setColorFunc = this->setColorFunc;
             if (setColorFunc)
             {
-                setColorFunc(currentIndex);
-            }
-
-            // Close the color selector
-            const YoshiColorSelectorCancelFunc cancelFunc = this->cancelFunc;
-            if (cancelFunc)
-            {
-                cancelFunc();
+                return setColorFunc(currentIndex);
             }
             break;
         }
@@ -152,7 +145,7 @@ void YoshiColorSelector::controls(MenuButtonInput button)
             const YoshiColorSelectorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                func();
+                return func();
             }
             break;
         }
