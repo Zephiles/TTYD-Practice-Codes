@@ -39,9 +39,8 @@ void SpecialMoveToggler::init(const Window *parentWindow)
     this->init(parentWindow, 0xFF);
 }
 
-void SpecialMoveToggler::init(const Window *parentWindow, uint8_t alpha)
+void SpecialMoveToggler::init(const Window *parentWindow, uint8_t windowAlpha)
 {
-    this->alpha = alpha;
     this->toggleFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -53,7 +52,12 @@ void SpecialMoveToggler::init(const Window *parentWindow, uint8_t alpha)
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gSpecialMoveTogglerHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+
+    windowPtr->setWidthHeightFromTextAndInit(gSpecialMoveTogglerHelpText,
+                                             scale,
+                                             SPECIAL_WINDOW_COLOR | windowAlpha,
+                                             20.f,
+                                             30.f);
 
     // Increase the height of the window to account for the icon and item texts
     const float spaceUsedByIcons = SPACE_USED_PER_ICON(scale) * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);

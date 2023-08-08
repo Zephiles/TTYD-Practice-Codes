@@ -10,7 +10,7 @@
 void ErrorWindow::setText(const char *text)
 {
     this->text = text;
-    this->window.setWidthHeightFromTextAndInit(text, MENU_SCALE, SPECIAL_WINDOW_COLOR | this->alpha, 20.f, 20.f);
+    this->window.setWidthHeightFromTextAndInit(text, MENU_SCALE, SPECIAL_WINDOW_COLOR | this->windowAlpha, 20.f, 20.f);
 }
 
 void ErrorWindow::setTimer(uint32_t milliseconds)

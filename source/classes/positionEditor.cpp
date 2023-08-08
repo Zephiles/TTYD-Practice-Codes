@@ -17,9 +17,8 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
     this->init(parentWindow, posXSource, posYSource, 0xFF);
 }
 
-void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, uint8_t alpha)
+void PositionEditor::init(const Window *parentWindow, float *posXSource, float *posYSource, uint8_t windowAlpha)
 {
-    this->alpha = alpha;
     this->confirmFunc = nullptr;
     this->cancelFunc = nullptr;
     this->posX = *posXSource;
@@ -32,7 +31,7 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gPositionEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gPositionEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Place the window inside of the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::TOP_CENTER, scale);

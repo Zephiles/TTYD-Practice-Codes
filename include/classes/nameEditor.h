@@ -18,10 +18,10 @@ class NameEditor
     NameEditor() {}
     ~NameEditor() {}
 
-    // Sets the alpha to 0xFF
+    // Sets windowAlpha to 0xFF
     void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize);
 
-    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t alpha);
+    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -57,7 +57,6 @@ class NameEditor
 
     bool enabled;         // Whether this window is enabled/drawn or not
     uint8_t currentIndex; // Current cursor position
-    uint8_t alpha;
 };
 
 #endif

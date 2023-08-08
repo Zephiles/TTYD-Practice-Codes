@@ -457,14 +457,14 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
 
 void StatsMenu::drawPartnerStats()
 {
-    auto getTextColor = [](bool anyFlagIsSet, bool currentOption, uint8_t alpha)
+    auto getTextColor = [](bool anyFlagIsSet, bool currentOption)
     {
         if (!anyFlagIsSet)
         {
             return getColorWhite(0xFF);
         }
 
-        return getCurrentOptionColor(currentOption, alpha);
+        return getCurrentOptionColor(currentOption, 0xFF);
     };
 
     // Get the width that is being used by the main text options
@@ -501,7 +501,7 @@ void StatsMenu::drawPartnerStats()
 
     for (uint32_t i = 0; i < 4; i++, counter++)
     {
-        color = getTextColor(anyFlagIsSet, currentIndex == counter, 0xFF);
+        color = getTextColor(anyFlagIsSet, currentIndex == counter);
         drawText(partnerStatsInitialStringsPtr[i], posX, posY, scale, color);
         posY -= lineDecrement;
     }
@@ -513,7 +513,7 @@ void StatsMenu::drawPartnerStats()
         const char **partnerYoshiStatsStringsPtr = gPartnerYoshiStatsStrings;
         for (uint32_t i = 0; i < 2; i++, counter++)
         {
-            color = getTextColor(anyFlagIsSet, currentIndex == counter, 0xFF);
+            color = getTextColor(anyFlagIsSet, currentIndex == counter);
             drawText(partnerYoshiStatsStringsPtr[i], posX, posY, scale, color);
             posY -= lineDecrement;
         }
@@ -533,7 +533,7 @@ void StatsMenu::drawPartnerStats()
         optionText = "Bring Out";
     }
 
-    color = getTextColor(anyFlagIsSet, currentIndex == counter, 0xFF);
+    color = getTextColor(anyFlagIsSet, currentIndex == counter);
     drawText(optionText, posX, posY, scale, color);
 
     // If no partner is currently out, then draw the text stating so

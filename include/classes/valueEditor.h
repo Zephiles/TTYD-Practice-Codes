@@ -60,9 +60,9 @@ class ValueEditor
     ValueEditor() {}
     ~ValueEditor() {}
 
-    // Sets the alpha to 0xFF. The value is required to be stored using a type that is either 4 or 8 bytes. In this case, you'd
-    // still use the original type for the type variable, as that's used to figure out the min/max of the value as well as how
-    // many digits the value should have.
+    // Sets windowAlpha to 0xFF. The value is required to be stored using a type that is either 4 or 8 bytes. In this case,
+    // you'd still use the original type for the type variable, as that's used to figure out the min/max of the value as well as
+    // how many digits the value should have.
     void init(const void *valuePtr, // Initial value
               const void *minValuePtr,
               const void *maxValuePtr,
@@ -79,7 +79,7 @@ class ValueEditor
               const Window *parentWindow,
               uint32_t flags,
               VariableType type,
-              uint8_t alpha);
+              uint8_t windowAlpha);
 
     // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
     bool flagIsSet(uint32_t flag) const
@@ -147,7 +147,6 @@ class ValueEditor
     MenuAutoIncrement autoIncrement;
     uint8_t currentIndex; // Current cursor position
     uint8_t maxDigits;
-    uint8_t alpha;
 
     VariableType type;    // Type of variable being modified
     bool enabled;         // Whether this window is enabled/drawn or not

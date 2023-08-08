@@ -20,10 +20,10 @@ class ConfirmationWindow
     ConfirmationWindow() {}
     ~ConfirmationWindow() {}
 
-    // Sets the alpha to 0xFF
+    // Sets windowAlpha to 0xFF
     void init(const Window *parentWindow, const char *helpText);
 
-    void init(const Window *parentWindow, const char *helpText, uint8_t alpha);
+    void init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -49,7 +49,6 @@ class ConfirmationWindow
 
     bool enabled; // Whether this window is enabled/drawn or not
     uint8_t currentIndex;
-    uint8_t alpha;
 };
 
 #endif

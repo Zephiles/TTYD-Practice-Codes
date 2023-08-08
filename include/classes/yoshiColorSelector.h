@@ -18,10 +18,10 @@ class YoshiColorSelector
     YoshiColorSelector() {}
     ~YoshiColorSelector() {}
 
-    // Sets the alpha to 0xFF
+    // Sets windowAlpha to 0xFF
     void init(const Window *parentWindow);
 
-    void init(const Window *parentWindow, uint8_t alpha);
+    void init(const Window *parentWindow, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -50,7 +50,6 @@ class YoshiColorSelector
 
     bool enabled;         // Whether this window is enabled/drawn or not
     uint8_t currentIndex; // Current cursor position
-    uint8_t alpha;
 };
 
 extern const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS];

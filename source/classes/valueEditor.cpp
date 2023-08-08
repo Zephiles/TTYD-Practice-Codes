@@ -29,10 +29,9 @@ void ValueEditor::init(const void *valuePtr,
                        const Window *parentWindow,
                        uint32_t flags,
                        VariableType type,
-                       uint8_t alpha)
+                       uint8_t windowAlpha)
 {
     this->flags = flags;
-    this->alpha = alpha;
     this->setValueFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -782,7 +781,7 @@ void ValueEditor::init(const void *valuePtr,
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | this->alpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Increase the height to account for the value
     constexpr float valueScale = scale + 0.3f;

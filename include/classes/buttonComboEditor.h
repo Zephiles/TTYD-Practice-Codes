@@ -15,10 +15,10 @@ class ButtonComboEditor
     ButtonComboEditor() {}
     ~ButtonComboEditor() {}
 
-    // Sets the alpha to 0xFF
+    // Sets windowAlpha to 0xFF
     void init(const Window *parentWindow);
 
-    void init(const Window *parentWindow, uint8_t alpha);
+    void init(const Window *parentWindow, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -54,7 +54,6 @@ class ButtonComboEditor
     uint8_t timer;             // For keeping track of the 3 seconds for setting a button combo
 
     bool enabled; // Whether this window is enabled/drawn or not
-    uint8_t alpha;
 };
 
 void buttonsToString(uint32_t buttonsHeld, char *stringOut, uint32_t stringSize);

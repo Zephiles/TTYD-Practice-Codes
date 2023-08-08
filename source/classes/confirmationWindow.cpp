@@ -15,10 +15,9 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
     this->init(parentWindow, helpText, 0xFF);
 }
 
-void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, uint8_t alpha)
+void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha)
 {
     this->helpText = helpText;
-    this->alpha = alpha;
     this->selectedOptionFunc = nullptr;
     this->autoIncrement.framesBeforeIncrement = 0;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -31,7 +30,7 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the yes/no text
     constexpr float yesNoScale = scale + 0.1f;

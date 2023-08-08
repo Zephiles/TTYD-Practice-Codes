@@ -22,10 +22,13 @@ void NameEditor::init(const Window *parentWindow, const char *initialText, char 
     this->init(parentWindow, initialText, namePtr, nameSize, 0xFF);
 }
 
-void NameEditor::init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t alpha)
+void NameEditor::init(const Window *parentWindow,
+                      const char *initialText,
+                      char *namePtr,
+                      uint32_t nameSize,
+                      uint8_t windowAlpha)
 {
     this->namePtr = namePtr;
-    this->alpha = alpha;
     this->setNameFunc = nullptr;
     this->cancelFunc = nullptr;
     this->autoIncrement.waitFramesToBegin = 0;
@@ -81,7 +84,7 @@ void NameEditor::init(const Window *parentWindow, const char *initialText, char 
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gNameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gNameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Adjust the width to be the same as the parent window
     windowPtr->setWidth(parentWindow->getWidth());

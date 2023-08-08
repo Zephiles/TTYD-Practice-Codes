@@ -19,9 +19,8 @@ void ButtonComboEditor::init(const Window *parentWindow)
     this->init(parentWindow, 0xFF);
 }
 
-void ButtonComboEditor::init(const Window *parentWindow, uint8_t alpha)
+void ButtonComboEditor::init(const Window *parentWindow, uint8_t windowAlpha)
 {
-    this->alpha = alpha;
     this->setComboFunc = nullptr;
     this->cancelFunc = nullptr;
     this->buttonsPrevFrame = 0;
@@ -33,7 +32,7 @@ void ButtonComboEditor::init(const Window *parentWindow, uint8_t alpha)
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gButtonComboEditorHelpText, scale, SPECIAL_WINDOW_COLOR | alpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gButtonComboEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the rest of the text, which is assumed to use six more lines
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
