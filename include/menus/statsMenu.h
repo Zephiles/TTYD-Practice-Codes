@@ -71,12 +71,12 @@ class StatsMenu
     StatsMenu() {}
     ~StatsMenu() {}
 
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
-    SpecialMoveToggler *getSpecialMoveToggler() { return &this->specialMoveToggler; }
-    FollowerSelector *getFollowerSelector() { return &this->followerSelector; }
-    YoshiColorSelector *getYoshiColorSelector() { return &this->yoshiColorSelector; }
-    NameEditor *getNameEditor() { return &this->nameEditor; }
-    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
+    ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
+    SpecialMoveToggler *getSpecialMoveTogglerPtr() { return &this->specialMoveToggler; }
+    FollowerSelector *getFollowerSelectorPtr() { return &this->followerSelector; }
+    YoshiColorSelector *getYoshiColorSelectorPtr() { return &this->yoshiColorSelector; }
+    NameEditor *getNameEditorPtr() { return &this->nameEditor; }
+    ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 

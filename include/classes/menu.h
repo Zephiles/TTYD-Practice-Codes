@@ -79,7 +79,7 @@ class Menu
     ~Menu() {}
 
     void setPrevMenu(Menu *prev) { this->prev = prev; }
-    Menu *getPrevMenu() const { return this->prev; }
+    Menu *getPrevMenuPtr() const { return this->prev; }
 
     void runControlsFunc(MenuButtonInput button);
     void runSelectedOptionFunc();

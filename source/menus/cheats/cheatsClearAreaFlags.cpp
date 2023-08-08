@@ -57,7 +57,7 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the confirmation window is open, then handle the controls for that
     ConfirmationWindow *confirmationWindowPtr;
-    if (confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow(), confirmationWindowPtr->shouldDraw())
+    if (confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr(), confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->controls(button);
         return;
@@ -218,7 +218,7 @@ void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawClearAreaFlagsInfo();
 
     // Draw the confirmation window if applicable
-    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow();
+    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr();
     if (confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->draw();
@@ -238,7 +238,7 @@ void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
     }
 
     // Close the confirmation window
-    gCheatsMenu->getConfirmationWindow()->stopDrawing();
+    gCheatsMenu->getConfirmationWindowPtr()->stopDrawing();
 }
 
 void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
@@ -247,7 +247,7 @@ void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
 
     // Initialize the confirmation window
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow();
+    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr();
 
     const char *helpText =
         "This will clear all of the GSWF's for\nthe selected area when the area is\nreloaded.\n\nAre you sure you want to do "

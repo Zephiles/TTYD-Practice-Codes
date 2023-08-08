@@ -317,7 +317,7 @@ void battlesMenuInitDraw(CameraId cameraId, void *user)
 
 void battlesMenuCancelChangeValue()
 {
-    gBattlesMenu->getValueEditor()->stopDrawing();
+    gBattlesMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void battlesMenuReturnToInitMenu()
@@ -325,7 +325,7 @@ void battlesMenuReturnToInitMenu()
     // Close all menus until the Battles menu is reached
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
     Menu *menuPtr = gMenu;
-    const Menu *battlesMenu = battlesMenuPtr->getBattlesMenu();
+    const Menu *battlesMenu = battlesMenuPtr->getBattlesMenuPtr();
 
     while (menuPtr != battlesMenu)
     {

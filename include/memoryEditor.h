@@ -74,7 +74,7 @@ class MemoryEditor
 
     void setCurrentAddress(uint32_t addressRaw) { this->currentAddress = reinterpret_cast<uint8_t *>(addressRaw); }
 
-    ValueEditor *getValueEditor() { return this->valueEditor; }
+    ValueEditor *getValueEditorPtr() { return this->valueEditor; }
 
     void freeValueEditor()
     {

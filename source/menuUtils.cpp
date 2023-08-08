@@ -41,7 +41,7 @@ Menu *enterPrevMenu()
     }
 
     menuPtr->runExitFunc();
-    Menu *prevMenu = menuPtr->getPrevMenu();
+    Menu *prevMenu = menuPtr->getPrevMenuPtr();
     delete menuPtr;
 
     gMenu = prevMenu;

@@ -22,7 +22,7 @@ class MemoryMenu
     MemoryMenu() {}
     ~MemoryMenu() {}
 
-    ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
+    ButtonComboEditor *getButtonComboEditorPtr() { return &this->buttonComboEditor; }
 
     void drawMemoryEditorMenuInfo() const;
 

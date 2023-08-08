@@ -1306,7 +1306,7 @@ void drawMemoryEditor(CameraId cameraId, void *user)
     memoryEditorPtr->draw();
 
     // Draw the valie editor if applicable
-    ValueEditor *valueEditorPtr = memoryEditorPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = memoryEditorPtr->getValueEditorPtr();
     if (valueEditorPtr)
     {
         valueEditorPtr->draw();

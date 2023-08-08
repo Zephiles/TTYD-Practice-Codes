@@ -166,7 +166,7 @@ void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t butto
 
 void cheatsMenuCancelSetNewButtonCombo()
 {
-    gCheatsMenu->getButtonComboEditor()->stopDrawing();
+    gCheatsMenu->getButtonComboEditorPtr()->stopDrawing();
     gMenu->clearFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
     gMod.stopChangingButtonCombo();
 }
@@ -188,7 +188,7 @@ void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc se
 
     // Initialize the button combo editor
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
@@ -197,7 +197,7 @@ void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc se
 
 void cheatsMenuValueEditorCancelSetValue()
 {
-    gCheatsMenu->getValueEditor()->stopDrawing();
+    gCheatsMenu->getValueEditorPtr()->stopDrawing();
     gMenu->clearFlag(CHEATS_MENU_USING_VALUE_EDITOR_FLAG);
 }
 
@@ -230,7 +230,7 @@ void cheatsMenuInitValueEditor(Menu *menuPtr,
 
     const Window *rootWindowPtr = gRootWindow;
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
 
     valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(setValueFunc, cheatsMenuValueEditorCancelSetValue);

@@ -114,7 +114,7 @@ void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonI
 {
     // If the button combo editor is open, then handle the controls for that
     ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditor(), buttonComboEditorPtr->shouldDraw())
+    if (buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;
@@ -145,7 +145,7 @@ void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t
 
 void displaysMenuCancelSetNewButtonCombo()
 {
-    gDisplaysMenu->getButtonComboEditor()->stopDrawing();
+    gDisplaysMenu->getButtonComboEditorPtr()->stopDrawing();
     gMod.stopChangingButtonCombo();
 }
 
@@ -163,7 +163,7 @@ void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 
     // Initialize the button combo editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditorPtr();
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());

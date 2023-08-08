@@ -124,7 +124,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = statsMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = statsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -132,7 +132,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the window for toggling a special move is open, then handle the controls for that
     SpecialMoveToggler *specialMoveTogglerPtr;
-    if (specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler(), specialMoveTogglerPtr->shouldDraw())
+    if (specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr(), specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->controls(button);
         return;
@@ -515,7 +515,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -529,7 +529,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 
 void cancelMenuMarioToggleSpecialMoves()
 {
-    gStatsMenu->getSpecialMoveToggler()->stopDrawing();
+    gStatsMenu->getSpecialMoveTogglerPtr()->stopDrawing();
 }
 
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
@@ -538,7 +538,7 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 
     // Initialize the special move toggler
     StatsMenu *statsMenuPtr = gStatsMenu;
-    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler();
+    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr();
 
     const Window *rootWindowPtr = gRootWindow;
     specialMoveTogglerPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
@@ -696,14 +696,14 @@ void statsMenuMarioDraw(CameraId cameraId, void *user)
     statsMenuPtr->drawMarioStats();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the special move toggler if applicable
-    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler();
+    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr();
     if (specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->draw();

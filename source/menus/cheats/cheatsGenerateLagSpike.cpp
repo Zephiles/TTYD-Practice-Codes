@@ -45,14 +45,14 @@ void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
     // If the button combo editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
     {
-        cheatsMenuPtr->getButtonComboEditor()->controls(button);
+        cheatsMenuPtr->getButtonComboEditorPtr()->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
-        cheatsMenuPtr->getValueEditor()->controls(button);
+        cheatsMenuPtr->getValueEditorPtr()->controls(button);
         return;
     }
 
@@ -124,14 +124,14 @@ void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawGenerateLagSpikeInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();
     }
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
@@ -170,7 +170,7 @@ void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
     constexpr uint32_t maxValue = LAG_SPIKE_MAX_DURATION;
     const uint32_t currentValue = gCheats->getGenerateLagSpikeCheatPtr()->getDuration();
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditor();
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);

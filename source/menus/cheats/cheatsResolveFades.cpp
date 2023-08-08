@@ -105,7 +105,7 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawResolveFadesInfo(offsetY);
 
     // Draw the error window if applicable
-    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();
@@ -147,7 +147,7 @@ void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr)
 
     // Initialize the error window
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindowPtr();
     const Window *rootWindowPtr = gRootWindow;
 
     errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());

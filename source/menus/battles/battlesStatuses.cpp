@@ -139,7 +139,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = battlesMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = battlesMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -226,7 +226,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                 }
 
                 // Initialize the value editor
-                ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
+                ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();
 
                 uint32_t flags = 0;
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -413,7 +413,7 @@ void battlesMenuStatusesDraw(CameraId cameraId, void *user)
     battlesMenuPtr->drawBattleActorStatuses(actorPtr);
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

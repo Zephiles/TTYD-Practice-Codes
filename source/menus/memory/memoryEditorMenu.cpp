@@ -39,7 +39,7 @@ void memoryMenuMemoryEditorMenuControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
     ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = gMemoryMenu->getButtonComboEditor(), buttonComboEditorPtr->shouldDraw())
+    if (buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;
@@ -104,7 +104,7 @@ void memoryMenuMemoryEditorMenuDraw(CameraId cameraId, void *user)
     memoryMenuPtr->drawMemoryEditorMenuInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = memoryMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = memoryMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();
@@ -120,7 +120,7 @@ void memoryMenuMemoryEditorMenuToggleFlag(Menu *menuPtr)
 
 void memoryMenuMemoryEditorMenuCancelSetNewButtonCombo()
 {
-    gMemoryMenu->getButtonComboEditor()->stopDrawing();
+    gMemoryMenu->getButtonComboEditorPtr()->stopDrawing();
     gMod.stopChangingButtonCombo();
 }
 
@@ -139,7 +139,7 @@ void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr)
     gMod.startChangingButtonCombo();
 
     // Initialize the button combo editor
-    ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr();
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());

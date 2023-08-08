@@ -48,9 +48,9 @@ class InventoryMenu
     void setCurrentPage(uint32_t page) { this->currentPage = static_cast<uint8_t>(page); }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
-    ItemIconSelector *getItemIconSelector() { return &this->itemIconSelector; }
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
-    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
+    ItemIconSelector *getItemIconSelectorPtr() { return &this->itemIconSelector; }
+    ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
+    ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     ItemId *getInventoryItemPtr() { return this->inventoryItemPtr; }
     int32_t *getMinValuePtr() { return &this->minValue; }

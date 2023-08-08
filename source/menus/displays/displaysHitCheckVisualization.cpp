@@ -48,7 +48,7 @@ void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput bu
 
     // If the confirmation window is open, then handle the controls for that
     ConfirmationWindow *confirmationWindowPtr;
-    if (confirmationWindowPtr = displaysMenuPtr->getConfirmationWindow(), confirmationWindowPtr->shouldDraw())
+    if (confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr(), confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->controls(button);
         return;
@@ -56,7 +56,7 @@ void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput bu
 
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = displaysMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = displaysMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -140,14 +140,14 @@ void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user)
     displaysMenuPtr->drawHitCheckVisualizationInfo();
 
     // Draw the confirmation window if applicable
-    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindow();
+    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
     if (confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->draw();
     }
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
@@ -167,7 +167,7 @@ void displaysMenuHitCheckVisualizationMenuTurnOn(bool selectedYes)
     }
 
     // Close the confirmation window
-    gDisplaysMenu->getConfirmationWindow()->stopDrawing();
+    gDisplaysMenu->getConfirmationWindowPtr()->stopDrawing();
 }
 
 void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
@@ -188,7 +188,7 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
 
     // Initialize the confirmation window
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindow();
+    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
 
     const char *helpText =
         "The Hit Check Visualization display currently\ncrashes on console, so it should only be used\non emulator for "
@@ -230,7 +230,7 @@ void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
 
 void displaysMenuHitCheckVisualizationCancelSelectColor()
 {
-    gDisplaysMenu->getValueEditor()->stopDrawing();
+    gDisplaysMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void displaysMenuHitCheckVisualizationSelectColor(const ValueType *valuePtr)
@@ -264,7 +264,7 @@ void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr)
 {
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);

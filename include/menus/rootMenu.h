@@ -29,8 +29,8 @@ class RootMenu
         errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
     }
 
-    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
-    const Menu *getRootMenu() const { return this->rootMenu; }
+    ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
+    const Menu *getRootMenuPtr() const { return this->rootMenu; }
 
    private:
     ErrorWindow errorWindow;

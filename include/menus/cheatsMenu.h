@@ -134,10 +134,10 @@ class CheatsMenu
     CheatsMenu() {}
     ~CheatsMenu() {}
 
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
-    ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
-    ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
-    ErrorWindow *getErrorWindow() { return &this->errorWindow; }
+    ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
+    ButtonComboEditor *getButtonComboEditorPtr() { return &this->buttonComboEditor; }
+    ConfirmationWindow *getConfirmationWindowPtr() { return &this->confirmationWindow; }
+    ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
 

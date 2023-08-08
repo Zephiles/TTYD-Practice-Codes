@@ -52,7 +52,7 @@ const char *gInventoryIsFullText = "The inventory is currently full.";
 
 void cancelAddItemFromId()
 {
-    gInventoryMenu->getValueEditor()->stopDrawing();
+    gInventoryMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void addItemFromId(const ValueType *valuePtr)
@@ -98,7 +98,7 @@ void selectedOptionAddById(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
@@ -119,7 +119,7 @@ void selectedOptionAddById(Menu *menuPtr)
 
 void cancelAddItemFromIcon()
 {
-    gInventoryMenu->getItemIconSelector()->stopDrawing();
+    gInventoryMenu->getItemIconSelectorPtr()->stopDrawing();
 }
 
 void addItemFromIcon(ItemId item)
@@ -165,7 +165,7 @@ void selectedOptionAddByIcon(Menu *menuPtr)
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
-    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelectorPtr();
 
     const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
     const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
@@ -304,7 +304,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
@@ -375,7 +375,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
-    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelectorPtr();
 
     const ItemId startingItem = static_cast<ItemId>(*inventoryMenuPtr->getMinValuePtr());
     const ItemId endingItem = static_cast<ItemId>(*inventoryMenuPtr->getMaxValuePtr());
@@ -478,14 +478,14 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     // If a separate window is currently open for selecting an item/badge, then only call the control functions for those
     ItemIconSelector *itemIconSelectorPtr;
 
-    if (itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector(), itemIconSelectorPtr->shouldDraw())
+    if (itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelectorPtr(), itemIconSelectorPtr->shouldDraw())
     {
         itemIconSelectorPtr->controls(button);
         return;
     }
 
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = inventoryMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = inventoryMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -801,21 +801,21 @@ void inventoryMenuMainDraw(CameraId cameraId, void *user)
     inventoryMenuPtr->drawCurrentInventory();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the item icon selector if applicable
-    ItemIconSelector *itemIconSelector = inventoryMenuPtr->getItemIconSelector();
+    ItemIconSelector *itemIconSelector = inventoryMenuPtr->getItemIconSelectorPtr();
     if (itemIconSelector->shouldDraw())
     {
         itemIconSelector->draw();
     }
 
     // Draw an error message if applicable
-    ErrorWindow *errorWindowPtr = inventoryMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = inventoryMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

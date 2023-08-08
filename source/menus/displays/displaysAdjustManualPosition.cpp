@@ -50,7 +50,7 @@ void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput but
 
     // If the position editor is open, then handle the controls for that
     PositionEditor *positionEditorPtr;
-    if (positionEditorPtr = displaysMenuPtr->getPositionEditor(), positionEditorPtr->shouldDraw())
+    if (positionEditorPtr = displaysMenuPtr->getPositionEditorPtr(), positionEditorPtr->shouldDraw())
     {
         positionEditorPtr->controls(button);
         return;
@@ -58,7 +58,7 @@ void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput but
 
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = displaysMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = displaysMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -138,14 +138,14 @@ void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user)
     }
 
     // Draw the position editor if applicable
-    PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditor();
+    PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditorPtr();
     if (positionEditorPtr->shouldDraw())
     {
         positionEditorPtr->draw();
     }
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
@@ -162,7 +162,7 @@ void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr)
 
 void displaysMenuAdjustManualPositionCancelChangingPosition()
 {
-    gDisplaysMenu->getPositionEditor()->stopDrawing();
+    gDisplaysMenu->getPositionEditorPtr()->stopDrawing();
     gMod.showMenu();
 }
 
@@ -189,7 +189,7 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 
     // Initialize the position editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditor();
+    PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditorPtr();
 
     const Window *rootWindowPtr = gRootWindow;
 
@@ -204,7 +204,7 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 
 void displaysMenudjustManualPositionCancelSetNewScale()
 {
-    gDisplaysMenu->getValueEditor()->stopDrawing();
+    gDisplaysMenu->getValueEditorPtr()->stopDrawing();
     gMod.showMenu();
 }
 
@@ -235,7 +235,7 @@ void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
 
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::WINDOW_POSITION_TOP);

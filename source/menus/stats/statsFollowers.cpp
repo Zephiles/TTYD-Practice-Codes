@@ -28,7 +28,7 @@ const MenuFunctions gStatsMenuFollowersFuncs = {
 
 void cancelMenuFollowersBringOutFollower()
 {
-    gStatsMenu->getFollowerSelector()->stopDrawing();
+    gStatsMenu->getFollowerSelectorPtr()->stopDrawing();
 }
 
 void selectedMenuFollowersBringOutFollower(PartyMembers selectedFollower)
@@ -63,7 +63,7 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
 
     // Initialize the follower selector
     const Window *rootWindowPtr = gRootWindow;
-    FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelector();
+    FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelectorPtr();
 
     followerSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     followerSelectorPtr->startDrawing(selectedMenuFollowersBringOutFollower, cancelMenuFollowersBringOutFollower);
@@ -91,7 +91,7 @@ void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the follower selector is open, then handle the controls for that
     FollowerSelector *followerSelectorPtr;
-    if (followerSelectorPtr = gStatsMenu->getFollowerSelector(), followerSelectorPtr->shouldDraw())
+    if (followerSelectorPtr = gStatsMenu->getFollowerSelectorPtr(), followerSelectorPtr->shouldDraw())
     {
         followerSelectorPtr->controls(button);
         return;
@@ -155,14 +155,14 @@ void statsMenuFollowersDraw(CameraId cameraId, void *user)
     statsMenuPtr->drawFollowerOut();
 
     // Draw the follower selector if applicable
-    FollowerSelector *followerSelector = statsMenuPtr->getFollowerSelector();
+    FollowerSelector *followerSelector = statsMenuPtr->getFollowerSelectorPtr();
     if (followerSelector->shouldDraw())
     {
         followerSelector->draw();
     }
 
     // Draw the error message if applicable
-    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

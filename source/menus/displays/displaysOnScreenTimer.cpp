@@ -108,7 +108,7 @@ void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user)
     displaysMenuPtr->drawOnScreenTimerInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

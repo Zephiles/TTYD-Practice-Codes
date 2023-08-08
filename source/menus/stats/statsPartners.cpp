@@ -203,7 +203,7 @@ void selectedOptionMenuPartnersSetValueById(int32_t currentValue, int32_t minVal
 {
     // Initialize the value editor
     StatsMenu *statsMenuPtr = gStatsMenu;
-    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -220,7 +220,7 @@ void selectedOptionMenuPartnersSetValueById(int32_t currentValue, int32_t minVal
 
 void cancelMenuPartnersChangeYoshiName()
 {
-    gStatsMenu->getNameEditor()->stopDrawing();
+    gStatsMenu->getNameEditorPtr()->stopDrawing();
 }
 
 bool selectMenuPartnersChangeYoshiName(char *newName)
@@ -235,7 +235,7 @@ bool selectMenuPartnersChangeYoshiName(char *newName)
 
 void cancelMenuPartnersChangeYoshiColor()
 {
-    gStatsMenu->getYoshiColorSelector()->stopDrawing();
+    gStatsMenu->getYoshiColorSelectorPtr()->stopDrawing();
 }
 
 void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
@@ -311,7 +311,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     {
                         // Initialize the color selector
                         const Window *rootWindowPtr = gRootWindow;
-                        YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
+                        YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelectorPtr();
                         yoshiColorSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
 
                         // Get the current index for the color selector
@@ -333,7 +333,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                         // Initialize the name editor
                         char *yoshiNamePtr = pouchGetPtr()->yoshiName;
                         const Window *rootWindowPtr = gRootWindow;
-                        NameEditor *nameEditorPtr = statsMenuPtr->getNameEditor();
+                        NameEditor *nameEditorPtr = statsMenuPtr->getNameEditorPtr();
 
                         nameEditorPtr->init(rootWindowPtr,
                                             yoshiNamePtr,
@@ -422,7 +422,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = statsMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    if (valueEditorPtr = statsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -430,7 +430,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the window for selecting a Yoshi color is open, then handle the controls for that
     YoshiColorSelector *yoshiColorSelectorPtr;
-    if (yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector(), yoshiColorSelectorPtr->shouldDraw())
+    if (yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelectorPtr(), yoshiColorSelectorPtr->shouldDraw())
     {
         yoshiColorSelectorPtr->controls(button);
         return;
@@ -438,7 +438,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
 
     // If the window for changing Yoshi's name is open, then handle the controls for that
     NameEditor *nameEditorPtr;
-    if (nameEditorPtr = statsMenuPtr->getNameEditor(), nameEditorPtr->shouldDraw())
+    if (nameEditorPtr = statsMenuPtr->getNameEditorPtr(), nameEditorPtr->shouldDraw())
     {
         nameEditorPtr->controls(button, true);
         return;
@@ -608,28 +608,28 @@ void statsMenuPartnersDraw(CameraId cameraId, void *user)
     statsMenuPtr->drawPartnerStats();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the color selector if applicable
-    YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
+    YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelectorPtr();
     if (yoshiColorSelectorPtr->shouldDraw())
     {
         yoshiColorSelectorPtr->draw();
     }
 
     // Draw the name editor if applicable
-    NameEditor *nameEditorPtr = statsMenuPtr->getNameEditor();
+    NameEditor *nameEditorPtr = statsMenuPtr->getNameEditorPtr();
     if (nameEditorPtr->shouldDraw())
     {
         nameEditorPtr->draw();
     }
 
     // Draw the error message if applicable
-    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

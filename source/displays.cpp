@@ -1102,7 +1102,7 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     }
 
     // Check if the player is currently manually positioning the display
-    const PositionEditor *positonEditorPtr = displaysMenuPtr->getPositionEditor();
+    const PositionEditor *positonEditorPtr = displaysMenuPtr->getPositionEditorPtr();
     if (positonEditorPtr->shouldDraw())
     {
         if (dataOut)
@@ -1115,7 +1115,7 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     }
 
     // Check if the player is currently adjusting the scale for the manual positioning
-    const ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
+    const ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         // Try to get the current value from the value editor
@@ -1691,7 +1691,7 @@ void drawMemoryUsage(CameraId cameraId, void *user)
     // Draw the text for the main heaps
     Displays *displaysPtr = gDisplays;
     MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
-    const char *text = memoryUsagePtr->getMemoryUsageBuffer();
+    const char *text = memoryUsagePtr->getMemoryUsageBufferPtr();
     bool drawnText = false;
 
     const float posX = data.getPosX();

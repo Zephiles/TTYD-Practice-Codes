@@ -161,7 +161,7 @@ void displaysMenuGenericDraw(CameraId cameraId, void *user)
     displaysMenuPtr->drawGenericDisplayInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

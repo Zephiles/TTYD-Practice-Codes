@@ -40,7 +40,7 @@ void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button)
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
-        gCheatsMenu->getValueEditor()->controls(button);
+        gCheatsMenu->getValueEditorPtr()->controls(button);
         return;
     }
 
@@ -104,7 +104,7 @@ void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawForceNpcItemDropInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
@@ -133,7 +133,7 @@ void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
     constexpr uint32_t maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
     const uint32_t currentValue = static_cast<uint32_t>(gCheats->getForceNpcItemDropCheatPtr()->getItemDrop());
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditor();
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);

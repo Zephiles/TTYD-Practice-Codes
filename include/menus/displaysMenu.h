@@ -90,10 +90,10 @@ class DisplaysMenu
     DisplaysMenu() {}
     ~DisplaysMenu() {}
 
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
-    ButtonComboEditor *getButtonComboEditor() { return &this->buttonComboEditor; }
-    PositionEditor *getPositionEditor() { return &this->positionEditor; }
-    ConfirmationWindow *getConfirmationWindow() { return &this->confirmationWindow; }
+    ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
+    ButtonComboEditor *getButtonComboEditorPtr() { return &this->buttonComboEditor; }
+    PositionEditor *getPositionEditorPtr() { return &this->positionEditor; }
+    ConfirmationWindow *getConfirmationWindowPtr() { return &this->confirmationWindow; }
 
     uint32_t getSelectedDisplay() const { return this->selectedDisplay; }
     void setSelectedDisplay(uint32_t selectedDisplay) { this->selectedDisplay = static_cast<uint8_t>(selectedDisplay); }

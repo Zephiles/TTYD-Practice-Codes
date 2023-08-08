@@ -59,9 +59,9 @@ class BattlesMenu
 
     ~BattlesMenu() {}
 
-    ValueEditor *getValueEditor() { return &this->valueEditor; }
+    ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
-    const Menu *getBattlesMenu() const { return this->battlesMenu; }
+    const Menu *getBattlesMenuPtr() const { return this->battlesMenu; }
 
     uint32_t getCurrentActorIndex() const { return this->currentActorIndex; }
     void setCurrentActorIndex(uint32_t index) { this->currentActorIndex = static_cast<uint8_t>(index); }

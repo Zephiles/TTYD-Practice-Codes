@@ -47,7 +47,7 @@ void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput bu
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
-        gCheatsMenu->getValueEditor()->controls(button);
+        gCheatsMenu->getValueEditorPtr()->controls(button);
         return;
     }
 
@@ -133,14 +133,14 @@ void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawModifyMariosCoordinatesInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();
     }
 
     // Draw the error window if applicable
-    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();
@@ -188,7 +188,7 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
         else
         {
             // Initialize the error window
-            ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindow();
+            ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindowPtr();
 
             errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
             errorWindowPtr->setText("This value must be modified as hex.");
@@ -200,7 +200,7 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);

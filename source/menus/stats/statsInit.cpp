@@ -53,7 +53,7 @@ void statsMenuInitExit()
 
 void statsMenuCancelChangingValue()
 {
-    gStatsMenu->getValueEditor()->stopDrawing();
+    gStatsMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void StatsMenu::initErrorWindow(bool drawForPartner)

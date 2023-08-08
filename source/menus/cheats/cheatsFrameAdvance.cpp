@@ -40,7 +40,7 @@ void cheatsMenuFrameAdvanceControls(Menu *menuPtr, MenuButtonInput button)
     // If the button combo editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
     {
-        gCheatsMenu->getButtonComboEditor()->controls(button);
+        gCheatsMenu->getButtonComboEditorPtr()->controls(button);
         return;
     }
 
@@ -115,7 +115,7 @@ void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawFrameAdvanceInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditor();
+    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

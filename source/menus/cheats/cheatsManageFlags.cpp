@@ -72,7 +72,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
-        cheatsMenuPtr->getValueEditor()->controls(button);
+        cheatsMenuPtr->getValueEditorPtr()->controls(button);
         return;
     }
 
@@ -117,7 +117,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
                 const uint32_t currentValue = flagVariableToSet;
                 constexpr uint32_t minValue = 0;
 
-                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
 
                 uint32_t flags = 0;
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -215,7 +215,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
     // If the value editor is open, then handle the controls for that
     if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
     {
-        cheatsMenuPtr->getValueEditor()->controls(button);
+        cheatsMenuPtr->getValueEditorPtr()->controls(button);
         return;
     }
 
@@ -242,7 +242,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                     currentValue = getGlobalVariableFlagValue(selectedOption, flagVariableToSet);
                 }
 
-                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
 
                 uint32_t flags = 0;
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
@@ -560,7 +560,7 @@ void cheatsMenuManageFlagsDraw(CameraId cameraId, void *user)
     cheatsMenuPtr->drawManageFlagsInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditor();
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

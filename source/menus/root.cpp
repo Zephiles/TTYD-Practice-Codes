@@ -110,7 +110,7 @@ void rootMenuDraw(CameraId cameraId, void *user)
     drawText(text, posX, posY, scale, getColorWhite(0xFF));
 
     // Draw the error message for trying to enter the Battles menu while not in a battle
-    ErrorWindow *errorWindowPtr = rootMenuPtr->getErrorWindow();
+    ErrorWindow *errorWindowPtr = rootMenuPtr->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();
@@ -122,7 +122,7 @@ void rootMenuExitBattlesMenu()
     // Close all menus until the root menu is reached
     RootMenu *rootMenuPtr = gRootMenu;
     Menu *menuPtr = gMenu;
-    const Menu *rootMenu = rootMenuPtr->getRootMenu();
+    const Menu *rootMenu = rootMenuPtr->getRootMenuPtr();
 
     while (menuPtr != rootMenu)
     {
@@ -136,5 +136,5 @@ void rootMenuExitBattlesMenu()
     }
 
     // Draw the error message for trying to enter the Battles menu while not in a battle
-    rootMenuPtr->getErrorWindow()->setTimer(3000);
+    rootMenuPtr->getErrorWindowPtr()->setTimer(3000);
 }

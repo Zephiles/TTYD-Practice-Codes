@@ -332,7 +332,7 @@ class MemoryUsageDisplay
         this->freeHeapCorruptionBuffer();
     }
 
-    char *getMemoryUsageBuffer() { return this->memoryUsageBuffer; }
+    char *getMemoryUsageBufferPtr() { return this->memoryUsageBuffer; }
     bool shouldDrawMemoryUsageBuffer() const { return this->memoryUsageBuffer != nullptr; }
 
     char *initMemoryUsageBuffer()
