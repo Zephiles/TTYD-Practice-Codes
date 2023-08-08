@@ -2436,7 +2436,7 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
 
     // Do not run if the menu is currently open
     // Run if currently repositioning/scaling displays
-    // Do not run if the memory editor is open
+    // Do not run if the memory editor is currently open
     if ((gMenu && !gMod.menuIsHidden()) || memoryEditorIsOpen())
     {
         // Since the lines are not being drawn, reset the entry count to avoid drawing lines for outdated data
@@ -2505,9 +2505,23 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     return ret;
 }
 
-void handleHitCheckVisualization(Displays *displaysPtr)
+void handleHitCheckVisualization()
 {
+    Displays *displaysPtr = gDisplays;
     if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
+    {
+        return;
+    }
+
+    // Do not run if the menu is currently open
+    // Run if currently repositioning/scaling displays
+    if (gMenu && !gMod.menuIsHidden())
+    {
+        return;
+    }
+
+    // Do not run if the memory editor is currently open
+    if (memoryEditorIsOpen())
     {
         return;
     }
@@ -3898,7 +3912,6 @@ const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
     handleMemoryUsage,
-    handleHitCheckVisualization,
     handleNpcNameToPtrError,
     handleAnimPoseMainError,
 };
@@ -3918,7 +3931,7 @@ const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
 
 void runDisplayFuncsEveryFrame()
 {
-    // Do not do anything if the memory editor is open
+    // Do not do anything if the memory editor is currently open
     if (memoryEditorIsOpen())
     {
         return;

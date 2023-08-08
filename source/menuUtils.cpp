@@ -213,7 +213,7 @@ void handleMenu()
 {
     // Check if the menu should be opened/closed
     // Prevent checking it if currently in the process of spawning an item
-    // Prevent checking it if the memory editor is open
+    // Prevent checking it if the memory editor is currently open
     if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr() || memoryEditorIsOpen())
     {
         return;

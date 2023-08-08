@@ -844,11 +844,12 @@ class Displays
 extern Displays *gDisplays;
 extern const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS];
 
-void checkForEnemyEncounters(void *ptr);
-int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
 const void *checkIndividualStandardHeap(const ChunkInfo *start);
 const void *checkIndividualSmartHeap(const SmartAllocationData *start);
 const void *checkIndividualMapHeap(const MapAllocEntry *start);
+void checkForEnemyEncounters(void *ptr);
+int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
+void handleHitCheckVisualization();
 NpcEntry *checkForNpcNameToPtrError(const char *name);
 void preventAnimPoseMainCrash(int32_t poseId);
 void drawStarPowerValue();

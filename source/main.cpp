@@ -220,5 +220,8 @@ void runOncePerFrame()
     handleMemoryEditor();
 
     // Call the original function
-    return g_marioStMain_trampoline();
+    g_marioStMain_trampoline();
+
+    // The Hit Check Visualization code needs to run after the original function has ran
+    handleHitCheckVisualization();
 }
