@@ -43,16 +43,18 @@ void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
+    ButtonComboEditor *buttonComboEditorPtr;
+    if (buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
     {
-        cheatsMenuPtr->getButtonComboEditorPtr()->controls(button);
+        buttonComboEditorPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
-        cheatsMenuPtr->getValueEditorPtr()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -152,7 +154,9 @@ void cheatsMenuGenerateLagSpikeSetNewButtonCombo(uint32_t buttonCombo)
 
 void cheatsMenuGenerateLagSpikeChangeButtonCombo(Menu *menuPtr)
 {
-    cheatsMenuChangeButtonCombo(menuPtr, cheatsMenuGenerateLagSpikeSetNewButtonCombo);
+    (void)menuPtr;
+
+    cheatsMenuChangeButtonCombo(cheatsMenuGenerateLagSpikeSetNewButtonCombo);
 }
 
 void cheatsMenuGenerateLagSpikeSetNewDuration(const ValueType *valuePtr)
@@ -165,6 +169,8 @@ void cheatsMenuGenerateLagSpikeSetNewDuration(const ValueType *valuePtr)
 
 void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // Initialize the value editor
     constexpr uint32_t minValue = 1;
     constexpr uint32_t maxValue = LAG_SPIKE_MAX_DURATION;
@@ -177,8 +183,7 @@ void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    cheatsMenuInitValueEditor(menuPtr,
-                              currentValue,
+    cheatsMenuInitValueEditor(currentValue,
                               minValue,
                               maxValue,
                               flags,

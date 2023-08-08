@@ -18,7 +18,7 @@ const MenuOption gCheatsMenuChangeSequenceOptions[] = {
 
 const MenuFunctions gCheatsMenuChangeSequenceFuncs = {
     gCheatsMenuChangeSequenceOptions,
-    cheatsMenuChangeSequenceControls,
+    cheatsMenuDefaultControlsWithValueEditor,
     cheatsMenuChangeSequenceDraw,
     nullptr, // Exit function not needed
 };
@@ -29,19 +29,6 @@ void cheatsMenuChangeSequenceInit(Menu *menuPtr)
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuChangeSequenceOptions) / sizeof(MenuOption);
     enterNextMenu(&gCheatsMenuChangeSequenceFuncs, totalOptions);
-}
-
-void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
-    {
-        gCheatsMenu->getValueEditorPtr()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawSequenceInfo() const
@@ -125,6 +112,8 @@ void cheatsMenuChangeSequenceChangeSequence(const ValueType *valuePtr)
 
 void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // Initialize the value editor
     uint32_t currentValue = getSequencePosition();
 
@@ -145,8 +134,7 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
     constexpr uint32_t minValue = 0;
     constexpr uint32_t maxValue = CHEATS_TOTAL_EVENT_NAMES - 1;
 
-    cheatsMenuInitValueEditor(menuPtr,
-                              currentValue,
+    cheatsMenuInitValueEditor(currentValue,
                               minValue,
                               maxValue,
                               flags,

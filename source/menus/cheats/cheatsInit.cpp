@@ -154,6 +154,34 @@ void cheatsMenuInitExit()
     gCheatsMenu = nullptr;
 }
 
+void cheatsMenuDefaultControlsWithValueEditor(Menu *menuPtr, MenuButtonInput button)
+{
+    // If the value editor is open, then handle the controls for that
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = gCheatsMenu->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    {
+        valueEditorPtr->controls(button);
+        return;
+    }
+
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
+}
+
+void cheatsMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button)
+{
+    // If the button combo editor is open, then handle the controls for that
+    ButtonComboEditor *buttonComboEditorPtr;
+    if (buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
+    {
+        buttonComboEditorPtr->controls(button);
+        return;
+    }
+
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
+}
+
 bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag)
 {
     return gCheats->toggleEnabledFlag(cheatEnabledFlag);
@@ -167,7 +195,6 @@ void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t butto
 void cheatsMenuCancelSetNewButtonCombo()
 {
     gCheatsMenu->getButtonComboEditorPtr()->stopDrawing();
-    gMenu->clearFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
     gMod.stopChangingButtonCombo();
 }
 
@@ -179,12 +206,9 @@ void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonC
     cheatsMenuCancelSetNewButtonCombo();
 }
 
-void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc)
+void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 {
     gMod.startChangingButtonCombo();
-
-    // Bring up the window for changing button combos
-    menuPtr->setFlag(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG);
 
     // Initialize the button combo editor
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
@@ -198,11 +222,9 @@ void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc se
 void cheatsMenuValueEditorCancelSetValue()
 {
     gCheatsMenu->getValueEditorPtr()->stopDrawing();
-    gMenu->clearFlag(CHEATS_MENU_USING_VALUE_EDITOR_FLAG);
 }
 
-void cheatsMenuInitValueEditor(Menu *menuPtr,
-                               uint32_t currentValue,
+void cheatsMenuInitValueEditor(uint32_t currentValue,
                                uint32_t minValue,
                                uint32_t maxValue,
                                uint32_t flags,
@@ -210,9 +232,6 @@ void cheatsMenuInitValueEditor(Menu *menuPtr,
                                bool hasMinAndMax,
                                ValueEditorSetValueFunc setValueFunc)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(CHEATS_MENU_USING_VALUE_EDITOR_FLAG);
-
     // Initialize the value editor
     uint32_t *minValuePtr;
     uint32_t *maxValuePtr;

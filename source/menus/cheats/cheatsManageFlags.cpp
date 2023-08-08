@@ -70,9 +70,10 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
-        cheatsMenuPtr->getValueEditorPtr()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -124,8 +125,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-                cheatsMenuInitValueEditor(menuPtr,
-                                          currentValue,
+                cheatsMenuInitValueEditor(currentValue,
                                           minValue,
                                           maxValue,
                                           flags,
@@ -213,9 +213,10 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
     {
-        cheatsMenuPtr->getValueEditorPtr()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -307,8 +308,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
                 }
 
-                cheatsMenuInitValueEditor(menuPtr,
-                                          currentValue,
+                cheatsMenuInitValueEditor(currentValue,
                                           minValue,
                                           maxValue,
                                           flags,

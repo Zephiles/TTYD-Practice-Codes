@@ -18,12 +18,6 @@
 
 #define CHEATS_TOTAL_EVENT_NAMES 406
 
-// Reserve the semi-last flag for changing button combos
-#define CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG 30
-
-// Reserve the last flag for the value editor
-#define CHEATS_MENU_USING_VALUE_EDITOR_FLAG 31
-
 enum CheatsMenuOptions
 {
     CHEATS_MENU_CHANGE_SEQUENCE = 0,
@@ -189,20 +183,22 @@ extern const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2];
 extern const char *gCheatsEventNames[CHEATS_TOTAL_EVENT_NAMES];
 #endif
 
+// cheatsInit
 void cheatsMenuInit(Menu *menuPtr);
 void cheatsMenuInitExit();
 
-// cheatsInit
+void cheatsMenuDefaultControlsWithValueEditor(Menu *menuPtr, MenuButtonInput button);
+void cheatsMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button);
+
 bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag);
 
 void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
-void cheatsMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc);
+void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc);
 
 void cheatsMenuValueEditorCancelSetValue();
 
-void cheatsMenuInitValueEditor(Menu *menuPtr,
-                               uint32_t currentValue,
+void cheatsMenuInitValueEditor(uint32_t currentValue,
                                uint32_t minValue,
                                uint32_t maxValue,
                                uint32_t flags,
@@ -216,7 +212,6 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index);
 // cheatsGeneric
 void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr);
-void cheatsMenuGenericControls(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuGenericDraw(CameraId cameraId, void *user);
 
 void cheatsMenuGenericToggleFlag(Menu *menuPtr);
@@ -224,14 +219,12 @@ void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
 
 // cheatsChangeSequence
 void cheatsMenuChangeSequenceInit(Menu *menuPtr);
-void cheatsMenuChangeSequenceControls(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user);
 
 void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr);
 
 // cheatsModifyMariosCoordinates
 void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);
-void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user);
 
 void cheatsMenuModifyMariosCoordinatesToggleFlag(Menu *menuPtr);
@@ -239,7 +232,6 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr);
 
 // cheatsFrameAdvance
 void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
-void cheatsMenuFrameAdvanceControls(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user);
 
 void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr);
@@ -264,7 +256,6 @@ void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr);
 
 // cheatsForceNpcItemDrop
 void cheatsMenuForceNpcItemDropInit(Menu *menuPtr);
-void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user);
 
 void cheatsMenuForceNpcItemDropToggleFlag(Menu *menuPtr);

@@ -3085,7 +3085,7 @@ void handleJabbiHiveSkip(Displays *displaysPtr)
         uint32_t flagSetTimer = jabbiHiveSkipPtr->getFlagsSetTimer();
         if (flagSetTimer < sysMsec2Frame(450))
         {
-            jabbiHiveSkipPtr->setflagsSetTimer(++flagSetTimer);
+            jabbiHiveSkipPtr->setFlagsSetTimer(++flagSetTimer);
         }
     }
 

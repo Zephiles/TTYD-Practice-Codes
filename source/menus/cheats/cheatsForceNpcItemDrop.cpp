@@ -21,7 +21,7 @@ const MenuOption gCheatsMenuForceNpcItemDropOptions[] = {
 
 const MenuFunctions gCheatsMenuForceNpcItemDropFuncs = {
     gCheatsMenuForceNpcItemDropOptions,
-    cheatsMenuForceNpcItemDropControls,
+    cheatsMenuDefaultControlsWithValueEditor,
     cheatsMenuForceNpcItemDropDraw,
     nullptr, // Exit function not needed
 };
@@ -33,19 +33,6 @@ void cheatsMenuForceNpcItemDropInit(Menu *menuPtr)
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuForceNpcItemDropOptions) / sizeof(MenuOption);
     enterNextMenu(&gCheatsMenuForceNpcItemDropFuncs, totalOptions);
-}
-
-void cheatsMenuForceNpcItemDropControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
-    {
-        gCheatsMenu->getValueEditorPtr()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawForceNpcItemDropInfo() const
@@ -128,6 +115,8 @@ void cheatsMenuForceNpcItemDropSetNewItem(const ValueType *valuePtr)
 
 void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // Initialize the value editor
     constexpr uint32_t minValue = static_cast<int32_t>(ItemId::ITEM_GOLD_BAR);
     constexpr uint32_t maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
@@ -142,8 +131,7 @@ void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    cheatsMenuInitValueEditor(menuPtr,
-                              currentValue,
+    cheatsMenuInitValueEditor(currentValue,
                               minValue,
                               maxValue,
                               flags,

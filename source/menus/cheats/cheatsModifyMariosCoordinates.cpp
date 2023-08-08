@@ -29,7 +29,7 @@ const MenuOption gCheatsMenuModifyMariosCoordinatesOptions[] = {
 
 const MenuFunctions gCheatsMenuModifyMariosCoordinatesFuncs = {
     gCheatsMenuModifyMariosCoordinatesOptions,
-    cheatsMenuModifyMariosCoordinatesControls,
+    cheatsMenuDefaultControlsWithValueEditor,
     cheatsMenuModifyMariosCoordinatesDraw,
     nullptr, // Exit function not needed
 };
@@ -40,19 +40,6 @@ void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr)
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuModifyMariosCoordinatesOptions) / sizeof(MenuOption);
     enterNextMenu(&gCheatsMenuModifyMariosCoordinatesFuncs, totalOptions);
-}
-
-void cheatsMenuModifyMariosCoordinatesControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_USING_VALUE_EDITOR_FLAG))
-    {
-        gCheatsMenu->getValueEditorPtr()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawModifyMariosCoordinatesInfo() const
@@ -215,8 +202,7 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
     ValueType value;
     value.f32 = coordinatesPtr[currentIndex];
 
-    cheatsMenuInitValueEditor(menuPtr,
-                              value.u32,
+    cheatsMenuInitValueEditor(value.u32,
                               0,
                               0,
                               flags,

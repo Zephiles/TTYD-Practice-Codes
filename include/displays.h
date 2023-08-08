@@ -613,7 +613,7 @@ class JabbiHiveSkipDisplay
     void setButtonPressedFirst(uint32_t button) { this->buttonPressedFirst = static_cast<uint16_t>(button); }
 
     uint32_t getFlagsSetTimer() const { return this->flagsSetTimer; }
-    void setflagsSetTimer(uint32_t time) { this->flagsSetTimer = static_cast<uint8_t>(time); }
+    void setFlagsSetTimer(uint32_t time) { this->flagsSetTimer = static_cast<uint8_t>(time); }
 
     bool shouldResetEverything() const { return this->counter >= 3; }
     void incrementCounter() { this->counter++; }

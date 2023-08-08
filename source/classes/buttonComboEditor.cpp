@@ -83,10 +83,10 @@ bool ButtonComboEditor::checkIfBPressedThreeTimes(uint32_t buttonsHeld, MenuButt
 
 bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
 {
-    // L + Start are reserved for opening/closing the menu, so don't allow both to be used at the same time for a button combo
+    // L + Start is reserved for opening/closing the menu, so don't allow both to be used at the same time for a button combo
     if (checkButtonComboEveryFrame(OPEN_CLOSE_MENU_BUTTON_COMBO))
     {
-        // L + Start are currently held, so reset the timer
+        // L + Start is currently held, so reset the timer
         this->setTimer(sysMsec2Frame(3000));
         return false;
     }

@@ -19,7 +19,7 @@ const MenuOption gCheatsMenuGenericOptions[] = {
 
 const MenuFunctions gCheatsMenuInitFuncs = {
     gCheatsMenuGenericOptions,
-    cheatsMenuGenericControls,
+    cheatsMenuDefaultControlsWithButtonComboEditor,
     cheatsMenuGenericDraw,
     nullptr, // Exit function not needed
 };
@@ -53,19 +53,6 @@ void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr)
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr)
 {
     enterCheatsMenuGeneric(menuPtr, true);
-}
-
-void cheatsMenuGenericControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
-    {
-        gCheatsMenu->getButtonComboEditorPtr()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void cheatsMenuGenericDraw(CameraId cameraId, void *user)
@@ -149,5 +136,7 @@ void cheatsMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
 
 void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr)
 {
-    cheatsMenuChangeButtonCombo(menuPtr, cheatsMenuGenericSetNewButtonCombo);
+    (void)menuPtr;
+
+    cheatsMenuChangeButtonCombo(cheatsMenuGenericSetNewButtonCombo);
 }

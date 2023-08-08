@@ -21,7 +21,7 @@ const MenuOption gCheatsMenuFrameAdvanceOptions[] = {
 
 const MenuFunctions gCheatsMenuFrameAdvanceFuncs = {
     gCheatsMenuFrameAdvanceOptions,
-    cheatsMenuFrameAdvanceControls,
+    cheatsMenuDefaultControlsWithButtonComboEditor,
     cheatsMenuFrameAdvanceDraw,
     nullptr, // Exit function not needed
 };
@@ -33,19 +33,6 @@ void cheatsMenuFrameAdvanceInit(Menu *menuPtr)
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuFrameAdvanceOptions) / sizeof(MenuOption);
     enterNextMenu(&gCheatsMenuFrameAdvanceFuncs, totalOptions);
-}
-
-void cheatsMenuFrameAdvanceControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CHEATS_MENU_CHANGING_BUTTON_COMBO_FLAG))
-    {
-        gCheatsMenu->getButtonComboEditorPtr()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void CheatsMenu::drawFrameAdvanceInfo() const
@@ -168,5 +155,7 @@ void cheatsMenuFrameAdvanceSetNewButtonCombo(uint32_t buttonCombo)
 
 void cheatsMenuFrameAdvanceChangeButtonCombo(Menu *menuPtr)
 {
-    cheatsMenuChangeButtonCombo(menuPtr, cheatsMenuFrameAdvanceSetNewButtonCombo);
+    (void)menuPtr;
+
+    cheatsMenuChangeButtonCombo(cheatsMenuFrameAdvanceSetNewButtonCombo);
 }
