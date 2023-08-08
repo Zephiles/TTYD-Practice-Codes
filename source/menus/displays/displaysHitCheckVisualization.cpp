@@ -47,18 +47,18 @@ void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput bu
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
     // If the confirmation window is open, then handle the controls for that
-    if (menuPtr->flagIsSet(
-            DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_YES_NO))
+    ConfirmationWindow *confirmationWindowPtr;
+    if (confirmationWindowPtr = displaysMenuPtr->getConfirmationWindow(), confirmationWindowPtr->shouldDraw())
     {
-        displaysMenuPtr->getConfirmationWindow()->controls(button);
+        confirmationWindowPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(
-            DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_COLOR))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = displaysMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        displaysMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -168,13 +168,12 @@ void displaysMenuHitCheckVisualizationMenuTurnOn(bool selectedYes)
 
     // Close the confirmation window
     gDisplaysMenu->getConfirmationWindow()->stopDrawing();
-
-    gMenu->clearFlag(
-        DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_YES_NO);
 }
 
 void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // If the flag is currently set, then just disable it, reset the entry count, and free the memory used by the buffer
     Displays *displaysPtr = gDisplays;
     if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
@@ -186,10 +185,6 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
         hitCheckVisualizationDisplayPtr->freeBuffer();
         return;
     }
-
-    // Bring up the confirmation window
-    menuPtr->setFlag(
-        DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_YES_NO);
 
     // Initialize the confirmation window
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
@@ -236,9 +231,6 @@ void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
 void displaysMenuHitCheckVisualizationCancelSelectColor()
 {
     gDisplaysMenu->getValueEditor()->stopDrawing();
-
-    gMenu->clearFlag(
-        DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_COLOR);
 }
 
 void displaysMenuHitCheckVisualizationSelectColor(const ValueType *valuePtr)
@@ -270,10 +262,6 @@ void displaysMenuHitCheckVisualizationSelectColor(const ValueType *valuePtr)
 
 void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(
-        DisplaysMenuHitCheckVisualizationFlags::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_COLOR);
-
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
     ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();

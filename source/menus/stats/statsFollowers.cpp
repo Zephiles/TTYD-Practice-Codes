@@ -29,7 +29,6 @@ const MenuFunctions gStatsMenuFollowersFuncs = {
 void cancelMenuFollowersBringOutFollower()
 {
     gStatsMenu->getFollowerSelector()->stopDrawing();
-    gMenu->clearFlag(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER);
 }
 
 void selectedMenuFollowersBringOutFollower(PartyMembers selectedFollower)
@@ -52,6 +51,8 @@ void selectedMenuFollowersBringOutFollower(PartyMembers selectedFollower)
 
 void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // If a follower cannot be spawned right now, then show an error message
     StatsMenu *statsMenuPtr = gStatsMenu;
     if (!checkIfInGame())
@@ -59,9 +60,6 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
         statsMenuPtr->initErrorWindow(false);
         return;
     }
-
-    // Bring up the window for selecting a follower
-    menuPtr->setFlag(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER);
 
     // Initialize the follower selector
     const Window *rootWindowPtr = gRootWindow;
@@ -92,9 +90,10 @@ void statsMenuFollowersInit(Menu *menuPtr)
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the follower selector is open, then handle the controls for that
-    if (menuPtr->flagIsSet(StatsFlagFollower::STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER))
+    FollowerSelector *followerSelectorPtr;
+    if (followerSelectorPtr = gStatsMenu->getFollowerSelector(), followerSelectorPtr->shouldDraw())
     {
-        gStatsMenu->getFollowerSelector()->controls(button);
+        followerSelectorPtr->controls(button);
         return;
     }
     else

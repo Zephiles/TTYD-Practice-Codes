@@ -49,16 +49,18 @@ void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput but
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
     // If the position editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y))
+    PositionEditor *positionEditorPtr;
+    if (positionEditorPtr = displaysMenuPtr->getPositionEditor(), positionEditorPtr->shouldDraw())
     {
-        displaysMenuPtr->getPositionEditor()->controls(button);
+        positionEditorPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = displaysMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        displaysMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -161,7 +163,6 @@ void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr)
 void displaysMenuAdjustManualPositionCancelChangingPosition()
 {
     gDisplaysMenu->getPositionEditor()->stopDrawing();
-    gMenu->clearFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y);
     gMod.showMenu();
 }
 
@@ -175,6 +176,8 @@ bool displaysMenuAdjustManualPositionConfirmChangingPosition()
 
 void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // Make sure the pointer to the current display's manually position data is properly retrieved before doing anything
     DisplayManuallyPosition *manuallyPositionPtr = getSelectedDisplayManuallyPositionPtr();
     if (!manuallyPositionPtr)
@@ -183,9 +186,6 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
     }
 
     gMod.hideMenu();
-
-    // Bring up the window for changing the position
-    menuPtr->setFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y);
 
     // Initialize the position editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
@@ -205,7 +205,6 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 void displaysMenudjustManualPositionCancelSetNewScale()
 {
     gDisplaysMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE);
     gMod.showMenu();
 }
 
@@ -223,6 +222,8 @@ void displaysMenuAdjustManualPositionSetNewScale(const ValueType *valuePtr)
 
 void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // Make sure the pointer to the current display's manually position data is properly retrieved before doing anything
     DisplayManuallyPosition *manuallyPositionPtr = getSelectedDisplayManuallyPositionPtr();
     if (!manuallyPositionPtr)
@@ -231,9 +232,6 @@ void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
     }
 
     gMod.hideMenu();
-
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE);
 
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;

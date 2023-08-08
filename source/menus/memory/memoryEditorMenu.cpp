@@ -38,10 +38,10 @@ void memoryMenuMemoryEditorMenuInit(Menu *menuPtr)
 void memoryMenuMemoryEditorMenuControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(
-            MemoryMenuMemoryEditorMenuFlags::MEMORY_MENU_MEMORY_EDITOR_MENU_FLAG_CURRENTLY_CHANGING_BUTTON_COMBO))
+    ButtonComboEditor *buttonComboEditorPtr;
+    if (buttonComboEditorPtr = gMemoryMenu->getButtonComboEditor(), buttonComboEditorPtr->shouldDraw())
     {
-        gMemoryMenu->getButtonComboEditor()->controls(button);
+        buttonComboEditorPtr->controls(button);
         return;
     }
 
@@ -121,7 +121,6 @@ void memoryMenuMemoryEditorMenuToggleFlag(Menu *menuPtr)
 void memoryMenuMemoryEditorMenuCancelSetNewButtonCombo()
 {
     gMemoryMenu->getButtonComboEditor()->stopDrawing();
-    gMenu->clearFlag(MemoryMenuMemoryEditorMenuFlags::MEMORY_MENU_MEMORY_EDITOR_MENU_FLAG_CURRENTLY_CHANGING_BUTTON_COMBO);
     gMod.stopChangingButtonCombo();
 }
 
@@ -135,10 +134,9 @@ void memoryMenuMemoryEditorMenuSetNewButtonCombo(uint32_t buttonCombo)
 
 void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr)
 {
-    gMod.startChangingButtonCombo();
+    (void)menuPtr;
 
-    // Bring up the window for changing button combos
-    menuPtr->setFlag(MemoryMenuMemoryEditorMenuFlags::MEMORY_MENU_MEMORY_EDITOR_MENU_FLAG_CURRENTLY_CHANGING_BUTTON_COMBO);
+    gMod.startChangingButtonCombo();
 
     // Initialize the button combo editor
     ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditor();

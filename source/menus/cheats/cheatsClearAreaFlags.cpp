@@ -56,9 +56,10 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the confirmation window is open, then handle the controls for that
-    if (menuPtr->flagIsSet(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO))
+    ConfirmationWindow *confirmationWindowPtr;
+    if (confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindow(), confirmationWindowPtr->shouldDraw())
     {
-        cheatsMenuPtr->getConfirmationWindow()->controls(button);
+        confirmationWindowPtr->controls(button);
         return;
     }
 
@@ -238,13 +239,11 @@ void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
 
     // Close the confirmation window
     gCheatsMenu->getConfirmationWindow()->stopDrawing();
-    gMenu->clearFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO);
 }
 
 void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
 {
-    // Bring up the confirmation window
-    menuPtr->setFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_YES_NO);
+    (void)menuPtr;
 
     // Initialize the confirmation window
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;

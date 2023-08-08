@@ -16,11 +16,6 @@ enum MemoryMenuMemoryEditorOptions
     MEMORY_MENU_MEMORY_EDITOR_OPTION_ENABLE_HORIZONTAL_SEPARATORS,
 };
 
-enum MemoryMenuMemoryEditorMenuFlags
-{
-    MEMORY_MENU_MEMORY_EDITOR_MENU_FLAG_CURRENTLY_CHANGING_BUTTON_COMBO = 0,
-};
-
 class MemoryMenu
 {
    public:

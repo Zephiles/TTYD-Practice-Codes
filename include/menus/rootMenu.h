@@ -11,9 +11,9 @@ extern Window *gRootWindow;
 class RootMenu
 {
    public:
-    RootMenu(const char *battlesErrorMessage)
+    RootMenu(Menu *menuPtr, const char *battlesErrorMessage)
     {
-        this->rootMenu = gMenu;
+        this->rootMenu = menuPtr;
         this->initErrorWindow(battlesErrorMessage);
     }
 

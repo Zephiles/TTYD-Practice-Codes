@@ -123,16 +123,18 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = statsMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        statsMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
     // If the window for toggling a special move is open, then handle the controls for that
-    else if (menuPtr->flagIsSet(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES))
+    SpecialMoveToggler *specialMoveTogglerPtr;
+    if (specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveToggler(), specialMoveTogglerPtr->shouldDraw())
     {
-        statsMenuPtr->getSpecialMoveToggler()->controls(button);
+        specialMoveTogglerPtr->controls(button);
         return;
     }
 
@@ -265,12 +267,6 @@ int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
             return 0;
         }
     }
-}
-
-void cancelMenuMarioChangeValue()
-{
-    gStatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 }
 
 void menuMarioChangeValue(const ValueType *valuePtr)
@@ -433,11 +429,13 @@ void menuMarioChangeValue(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    cancelMenuMarioChangeValue();
+    statsMenuCancelChangingValue();
 }
 
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     StatsMenu *statsMenuPtr = gStatsMenu;
 
     // Make sure the current index is valid
@@ -448,9 +446,6 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
         statsMenuPtr->setCurrentIndex(0);
         return;
     }
-
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID);
 
     // Get the current, min, and max values
     // Also get the variable type
@@ -529,19 +524,17 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(menuMarioChangeValue, cancelMenuMarioChangeValue);
+    valueEditorPtr->startDrawing(menuMarioChangeValue, statsMenuCancelChangingValue);
 }
 
 void cancelMenuMarioToggleSpecialMoves()
 {
     gStatsMenu->getSpecialMoveToggler()->stopDrawing();
-    gMenu->clearFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
 }
 
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 {
-    // Bring up the window for toggling special moves
-    menuPtr->setFlag(StatsFlagMario::STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES);
+    (void)menuPtr;
 
     // Initialize the special move toggler
     StatsMenu *statsMenuPtr = gStatsMenu;

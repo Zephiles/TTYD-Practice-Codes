@@ -23,8 +23,6 @@ const MenuFunctions gBattlesMenuInitFuncs = {
 
 void battlesMenuInit(Menu *menuPtr)
 {
-    (void)menuPtr;
-
     // Do not enter the Battles menu if not actually in a battle
     if (!getBattleWorkPtr())
     {
@@ -32,7 +30,8 @@ void battlesMenuInit(Menu *menuPtr)
         return;
     }
 
-    enterNextMenu(&gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
+    // Need to enter the battles menu before initializing gBattlesMenu
+    menuPtr = enterNextMenu(&gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
     // Failsafe: Make sure memory isn't already allocated for gBattlesMenu
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
@@ -41,7 +40,7 @@ void battlesMenuInit(Menu *menuPtr)
         delete battlesMenuPtr;
     }
 
-    gBattlesMenu = new BattlesMenu;
+    gBattlesMenu = new BattlesMenu(menuPtr);
 }
 
 void battlesMenuInitExit()
@@ -314,6 +313,11 @@ void battlesMenuInitDraw(CameraId cameraId, void *user)
 
     // Draw each actor
     gBattlesMenu->drawBattlesActors();
+}
+
+void battlesMenuCancelChangeValue()
+{
+    gBattlesMenu->getValueEditor()->stopDrawing();
 }
 
 void battlesMenuReturnToInitMenu()

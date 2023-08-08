@@ -51,6 +51,11 @@ void statsMenuInitExit()
     gStatsMenu = nullptr;
 }
 
+void statsMenuCancelChangingValue()
+{
+    gStatsMenu->getValueEditor()->stopDrawing();
+}
+
 void StatsMenu::initErrorWindow(bool drawForPartner)
 {
     // Get the text for either a partner or a follower

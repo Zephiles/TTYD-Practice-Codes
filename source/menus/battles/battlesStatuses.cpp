@@ -94,12 +94,6 @@ int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)
     return reinterpret_cast<int8_t *>(reinterpret_cast<uint32_t>(&actorPtr->sleep_turns) + index + counter);
 }
 
-void cancelMenuBattlesStatusesChangeValue()
-{
-    gBattlesMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(BattlesStatusesFlag::BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID);
-}
-
 void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
@@ -110,7 +104,7 @@ void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
     *getActorStatusPtr(actorPtr, currentIndex) = static_cast<int8_t>(value);
 
     // Close the value editor
-    cancelMenuBattlesStatusesChangeValue();
+    battlesMenuCancelChangeValue();
 }
 
 void battlesMenuStatusesDPadControls(MenuButtonInput button, Menu *menuPtr, uint32_t totalOptions)
@@ -144,9 +138,10 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(BattlesStatusesFlag::BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = battlesMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        battlesMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
@@ -210,9 +205,6 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
             }
             else
             {
-                // Bring up the window for selecting an id
-                menuPtr->setFlag(BattlesStatusesFlag::BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID);
-
                 // Get the current, min, and max values
                 int32_t currentValue = *valuePtr;
                 int32_t minValue = 0;
@@ -256,7 +248,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                                      VariableType::s8,
                                      rootWindowPtr->getAlpha());
 
-                valueEditorPtr->startDrawing(menuBattlesStatusesChangeValue, cancelMenuBattlesStatusesChangeValue);
+                valueEditorPtr->startDrawing(menuBattlesStatusesChangeValue, battlesMenuCancelChangeValue);
             }
             break;
         }

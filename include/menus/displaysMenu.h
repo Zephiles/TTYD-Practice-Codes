@@ -47,24 +47,6 @@ enum DisplaysMenuHitCheckVisualizationOptions
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_MISSES_COLOR,
 };
 
-enum DisplaysMenuSpecialFlags
-{
-    DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG = 29,
-    DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y,
-    DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE,
-};
-
-enum DisplaysMenuInitFlags
-{
-    DISPLAYS_MENU_INIT_FLAG_CURRENTLY_SELECTING_YES_NO = 0,
-};
-
-enum DisplaysMenuHitCheckVisualizationFlags
-{
-    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_YES_NO = 0,
-    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_FLAG_CURRENTLY_SELECTING_COLOR,
-};
-
 enum DisplaysMenuGenericFlags
 {
     DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO = 0,
@@ -138,10 +120,11 @@ extern const MenuOption gDisplaysMenuInitOptions[];
 void displaysMenuInit(Menu *menuPtr);
 void displaysMenuInitExit();
 
+void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button);
 bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag);
 void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
 void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
-void displaysMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc);
+void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc);
 
 uint32_t indexToDisplayEnabledFlag(uint32_t index);
 uint32_t indexToDisplayManuallyPositionFlag(uint32_t index);
@@ -152,7 +135,6 @@ void displaysMenuGenericNoButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
-void displaysMenuGenericControls(Menu *menuPtr, MenuButtonInput button);
 void displaysMenuGenericDraw(CameraId cameraId, void *user);
 
 void displaysMenuGenericToggleFlag(Menu *menuPtr);
@@ -161,7 +143,6 @@ void displaysMenuGenericChangeButtonCombo(Menu *menuPtr);
 // displaysOnScreenTimer
 // The Frame Founter display is also handled by these
 void displaysMenuOnScreenTimerInit(Menu *menuPtr);
-void displaysMenuOnScreenTimerControls(Menu *menuPtr, MenuButtonInput button);
 void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user);
 
 void displaysMenuOnScreenTimerToggleFlag(Menu *menuPtr);

@@ -136,12 +136,6 @@ PouchPartyData *getCurrentPartnerData()
     return &pouchGetPtr()->partyData[static_cast<uint32_t>(gPartnersIds[currentIndex])];
 }
 
-void cancelMenuPartnersChangeValue()
-{
-    gStatsMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID);
-}
-
 void menuPartnersChangeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
@@ -202,14 +196,11 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    cancelMenuPartnersChangeValue();
+    statsMenuCancelChangingValue();
 }
 
-void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue, int32_t minValue, int32_t maxValue)
+void selectedOptionMenuPartnersSetValueById(int32_t currentValue, int32_t minValue, int32_t maxValue)
 {
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID);
-
     // Initialize the value editor
     StatsMenu *statsMenuPtr = gStatsMenu;
     ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditor();
@@ -224,13 +215,12 @@ void selectedOptionMenuPartnersSetValueById(Menu *menuPtr, int32_t currentValue,
     valueEditorPtr
         ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::s16, rootWindowPtr->getAlpha());
 
-    valueEditorPtr->startDrawing(menuPartnersChangeValue, cancelMenuPartnersChangeValue);
+    valueEditorPtr->startDrawing(menuPartnersChangeValue, statsMenuCancelChangingValue);
 }
 
 void cancelMenuPartnersChangeYoshiName()
 {
     gStatsMenu->getNameEditor()->stopDrawing();
-    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
 }
 
 bool selectMenuPartnersChangeYoshiName(char *newName)
@@ -246,7 +236,6 @@ bool selectMenuPartnersChangeYoshiName(char *newName)
 void cancelMenuPartnersChangeYoshiColor()
 {
     gStatsMenu->getYoshiColorSelector()->stopDrawing();
-    gMenu->clearFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
 }
 
 void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
@@ -320,9 +309,6 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                 {
                     case StatsPartnersCurrentPartnerOptionYoshi::STATS_PARTNER_YOSHI_SET_COLOR:
                     {
-                        // Bring up the window for selecting a color
-                        menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR);
-
                         // Initialize the color selector
                         const Window *rootWindowPtr = gRootWindow;
                         YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector();
@@ -344,9 +330,6 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     }
                     case StatsPartnersCurrentPartnerOptionYoshi::STATS_PARTNER_YOSHI_SET_NAME:
                     {
-                        // Bring up the window for changing Yoshi's name
-                        menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME);
-
                         // Initialize the name editor
                         char *yoshiNamePtr = pouchGetPtr()->yoshiName;
                         const Window *rootWindowPtr = gRootWindow;
@@ -384,17 +367,17 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_CURRENT_HP:
                     {
                         const int32_t maxHp = partnerData->maxHp; // Make sure the current HP does not exceed the max HP
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->currentHp, 0, maxHp);
+                        selectedOptionMenuPartnersSetValueById(partnerData->currentHp, 0, maxHp);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_MAX_HP:
                     {
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->maxHp, 0, 999);
+                        selectedOptionMenuPartnersSetValueById(partnerData->maxHp, 0, 999);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_RANK:
                     {
-                        selectedOptionMenuPartnersSetValueById(menuPtr, partnerData->attackLevel, 0, 2);
+                        selectedOptionMenuPartnersSetValueById(partnerData->attackLevel, 0, 2);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_TOGGLE_ENABLED_BOOL:
@@ -438,28 +421,31 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = statsMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        statsMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
     // If the window for selecting a Yoshi color is open, then handle the controls for that
-    else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR))
+    YoshiColorSelector *yoshiColorSelectorPtr;
+    if (yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelector(), yoshiColorSelectorPtr->shouldDraw())
     {
-        statsMenuPtr->getYoshiColorSelector()->controls(button);
+        yoshiColorSelectorPtr->controls(button);
         return;
     }
 
     // If the window for changing Yoshi's name is open, then handle the controls for that
-    else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME))
+    NameEditor *nameEditorPtr;
+    if (nameEditorPtr = statsMenuPtr->getNameEditor(), nameEditorPtr->shouldDraw())
     {
-        statsMenuPtr->getNameEditor()->controls(button, true);
+        nameEditorPtr->controls(button, true);
         return;
     }
 
     // If a partner was selected and neither of the previous windows are open, then handle the controls for the current partner
-    else if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER))
+    if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER))
     {
         statsMenuPartnersSelectedPartnerControls(menuPtr, button);
         return;

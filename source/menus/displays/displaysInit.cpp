@@ -110,6 +110,20 @@ void displaysMenuInitExit()
     gDisplaysMenu = nullptr;
 }
 
+void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button)
+{
+    // If the button combo editor is open, then handle the controls for that
+    ButtonComboEditor *buttonComboEditorPtr;
+    if (buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditor(), buttonComboEditorPtr->shouldDraw())
+    {
+        buttonComboEditorPtr->controls(button);
+        return;
+    }
+
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
+}
+
 bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag)
 {
     Displays *displaysPtr = gDisplays;
@@ -132,7 +146,6 @@ void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t
 void displaysMenuCancelSetNewButtonCombo()
 {
     gDisplaysMenu->getButtonComboEditor()->stopDrawing();
-    gMenu->clearFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG);
     gMod.stopChangingButtonCombo();
 }
 
@@ -144,12 +157,9 @@ void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t but
     displaysMenuCancelSetNewButtonCombo();
 }
 
-void displaysMenuChangeButtonCombo(Menu *menuPtr, ButtonComboEditorSetComboFunc setComboFunc)
+void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 {
     gMod.startChangingButtonCombo();
-
-    // Bring up the window for changing button combos
-    menuPtr->setFlag(DisplaysMenuSpecialFlags::DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG);
 
     // Initialize the button combo editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;

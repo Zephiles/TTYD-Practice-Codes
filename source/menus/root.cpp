@@ -65,7 +65,7 @@ void rootMenuInit()
 
     // Need to enter the root menu before initializing gRootMenu
     constexpr uint32_t totalOptions = sizeof(gRootMenuOptions) / sizeof(MenuOption);
-    enterNextMenu(&gRootMenuFuncs, totalOptions);
+    Menu *menuPtr = enterNextMenu(&gRootMenuFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gRootMenu
     RootMenu *rootMenuPtr = gRootMenu;
@@ -75,7 +75,7 @@ void rootMenuInit()
     }
 
     const char *battlesErrorMessage = "You must be in a battle\nto use the Battles menu.";
-    gRootMenu = new RootMenu(battlesErrorMessage);
+    gRootMenu = new RootMenu(menuPtr, battlesErrorMessage);
 }
 
 void rootMenuExit()

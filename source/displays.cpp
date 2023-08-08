@@ -1082,9 +1082,7 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     // Check if the player is currently manually positioning the display or adjusting the scale for the manual positioning
     // Make sure the Displays menu is open
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    const Menu *menuPtr = gMenu;
-
-    if (!displaysMenuPtr || !menuPtr)
+    if (!displaysMenuPtr)
     {
         return false;
     }
@@ -1104,12 +1102,11 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     }
 
     // Check if the player is currently manually positioning the display
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_POS_X_Y) &&
-        displaysMenuPtr->getPositionEditor()->shouldDraw())
+    const PositionEditor *positonEditorPtr = displaysMenuPtr->getPositionEditor();
+    if (positonEditorPtr->shouldDraw())
     {
         if (dataOut)
         {
-            const PositionEditor *positonEditorPtr = displaysMenuPtr->getPositionEditor();
             dataOut->setPosX(positonEditorPtr->getPosX());
             dataOut->setPosY(positonEditorPtr->getPosY());
             dataOut->setScale(manuallyPositionPtr->getScale());
@@ -1119,8 +1116,7 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
 
     // Check if the player is currently adjusting the scale for the manual positioning
     const ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditor();
-
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_ADJUSTING_MANUAL_SCALE) && valueEditorPtr->shouldDraw())
+    if (valueEditorPtr->shouldDraw())
     {
         // Try to get the current value from the value editor
         ValueType value;

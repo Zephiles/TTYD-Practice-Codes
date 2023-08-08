@@ -53,7 +53,6 @@ const char *gInventoryIsFullText = "The inventory is currently full.";
 void cancelAddItemFromId()
 {
     gInventoryMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
 }
 
 void addItemFromId(const ValueType *valuePtr)
@@ -88,6 +87,8 @@ void addItemFromId(const ValueType *valuePtr)
 
 void selectedOptionAddById(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // If the inventory is full, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsFull())
@@ -95,9 +96,6 @@ void selectedOptionAddById(Menu *menuPtr)
         inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
-
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
 
     // Initialize the value editor
     ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
@@ -122,7 +120,6 @@ void selectedOptionAddById(Menu *menuPtr)
 void cancelAddItemFromIcon()
 {
     gInventoryMenu->getItemIconSelector()->stopDrawing();
-    gMenu->clearFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
 }
 
 void addItemFromIcon(ItemId item)
@@ -156,6 +153,8 @@ void addItemFromIcon(ItemId item)
 
 void selectedOptionAddByIcon(Menu *menuPtr)
 {
+    (void)menuPtr;
+
     // If the inventory is full, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsFull())
@@ -163,9 +162,6 @@ void selectedOptionAddByIcon(Menu *menuPtr)
         inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
-
-    // Bring up the window for selecting an icon
-    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
@@ -307,9 +303,6 @@ void selectedOptionChangeById(Menu *menuPtr)
         item = *minValuePtr;
     }
 
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
-
     // Initialize the value editor
     ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditor();
 
@@ -379,9 +372,6 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     {
         return;
     }
-
-    // Bring up the window for selecting an icon
-    menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
 
     // Initialize the item icon selector
     const Window *rootWindowPtr = gRootWindow;
@@ -485,23 +475,26 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     inventoryMenuPtr->verifyInventoryIndexAndPage(menuPtr);
 
+    // If a separate window is currently open for selecting an item/badge, then only call the control functions for those
+    ItemIconSelector *itemIconSelectorPtr;
+
+    if (itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelector(), itemIconSelectorPtr->shouldDraw())
+    {
+        itemIconSelectorPtr->controls(button);
+        return;
+    }
+
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = inventoryMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
+    {
+        valueEditorPtr->controls(button);
+        return;
+    }
+
     // If no flags are set, then use the default controls
     if (!menuPtr->anyFlagIsSet())
     {
         basicMenuLayoutControls(menuPtr, button);
-        return;
-    }
-
-    // If a separate window is currently open for selecting an item/badge, then only call the control functions for those
-    // This should include all flags except for selecting an item/icon
-    if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON))
-    {
-        inventoryMenuPtr->getItemIconSelector()->controls(button);
-        return;
-    }
-    else if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID))
-    {
-        inventoryMenuPtr->getValueEditor()->controls(button);
         return;
     }
 
@@ -623,12 +616,10 @@ void InventoryMenu::drawCurrentInventory()
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
 
     const bool currentlyChangingById = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
-    const bool currentlySelectingId = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ID);
-    const bool changeByIdWindowOpen = !currentlyChangingById && currentlySelectingId;
+    const bool changeByIdWindowOpen = !currentlyChangingById && this->valueEditor.shouldDraw();
 
     const bool currentlyChangingByIcon = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
-    const bool currentlySelectingIcon = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CURRENTLY_SELECTING_ICON);
-    const bool changeByIconWindowOpen = !currentlyChangingByIcon && currentlySelectingIcon;
+    const bool changeByIconWindowOpen = !currentlyChangingByIcon && this->itemIconSelector.shouldDraw();
 
     const ItemId *inventoryItemPtr = this->inventoryItemPtr;
 

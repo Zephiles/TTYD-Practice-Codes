@@ -52,20 +52,10 @@ enum StatsBattlesStatusesOptions
     BATTLES_STATUSES_DEFEATED_FLAG,
 };
 
-enum BattlesStatsFlag
-{
-    BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID = 0,
-};
-
-enum BattlesStatusesFlag
-{
-    BATTLES_FLAG_STATUSES_CURRENTLY_SELECTING_ID = 0,
-};
-
 class BattlesMenu
 {
    public:
-    BattlesMenu() { this->battlesMenu = gMenu; }
+    BattlesMenu(Menu *menuPtr) { this->battlesMenu = menuPtr; }
 
     ~BattlesMenu() {}
 
@@ -104,6 +94,8 @@ void battlesMenuInit(Menu *menuPtr);
 void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button);
 void battlesMenuInitDraw(CameraId cameraId, void *user);
 void battlesMenuInitExit();
+
+void battlesMenuCancelChangeValue();
 
 // Called when inside part of the Battles menu in which an actor was selected, but the actor is no longer in the battle
 void battlesMenuReturnToInitMenu();

@@ -23,7 +23,7 @@ const MenuOption gDisplaysMenuGenericMainOptions[] {
 
 const MenuFunctions gDisplaysMenuGenericMainFuncs = {
     gDisplaysMenuGenericMainOptions,
-    displaysMenuGenericControls,
+    displaysMenuDefaultControlsWithButtonComboEditor,
     displaysMenuGenericDraw,
     nullptr, // Exit function not needed
 };
@@ -39,7 +39,7 @@ const MenuOption gDisplaysMenuGenericHasComboNoPositionOptions[] {
 
 const MenuFunctions gDisplaysMenuGenericHasComboNoPositionFuncs = {
     gDisplaysMenuGenericHasComboNoPositionOptions,
-    displaysMenuGenericControls,
+    displaysMenuDefaultControlsWithButtonComboEditor,
     displaysMenuGenericDraw,
     nullptr, // Exit function not needed
 };
@@ -151,19 +151,6 @@ void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
     enterDisplayssMenuGeneric(menuPtr, flags);
 }
 
-void displaysMenuGenericControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG))
-    {
-        gDisplaysMenu->getButtonComboEditor()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
-}
-
 void displaysMenuGenericDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
@@ -245,5 +232,7 @@ void displaysMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
 
 void displaysMenuGenericChangeButtonCombo(Menu *menuPtr)
 {
-    displaysMenuChangeButtonCombo(menuPtr, displaysMenuGenericSetNewButtonCombo);
+    (void)menuPtr;
+
+    displaysMenuChangeButtonCombo(displaysMenuGenericSetNewButtonCombo);
 }

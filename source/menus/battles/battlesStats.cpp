@@ -75,20 +75,15 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     }
 
     // If the value editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID))
+    ValueEditor *valueEditorPtr;
+    if (valueEditorPtr = battlesMenuPtr->getValueEditor(), valueEditorPtr->shouldDraw())
     {
-        battlesMenuPtr->getValueEditor()->controls(button);
+        valueEditorPtr->controls(button);
         return;
     }
 
     // Use the default controls
     basicMenuLayoutControls(menuPtr, button);
-}
-
-void cancelMenuBattlesStatsChangeValue()
-{
-    gBattlesMenu->getValueEditor()->stopDrawing();
-    gMenu->clearFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
 }
 
 void menuBattlesStatsChangeValue(const ValueType *valuePtr)
@@ -161,7 +156,7 @@ void menuBattlesStatsChangeValue(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    cancelMenuBattlesStatsChangeValue();
+    battlesMenuCancelChangeValue();
 }
 
 void selectedOptionBattlesChangeValue(Menu *menuPtr)
@@ -175,9 +170,6 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
         menuPtr->setCurrentIndex(0);
         return;
     }
-
-    // Bring up the window for selecting an id
-    menuPtr->setFlag(BattlesStatsFlag::BATTLES_FLAG_STATS_CURRENTLY_SELECTING_ID);
 
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
     const BattleWorkUnit *actorPtr = getActorBattlePtr(battlesMenuPtr->getCurrentActorIndex());
@@ -253,7 +245,7 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, cancelMenuBattlesStatsChangeValue);
+    valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, battlesMenuCancelChangeValue);
 }
 
 void selectedOptionBattlesClearHeldItem(Menu *menuPtr)

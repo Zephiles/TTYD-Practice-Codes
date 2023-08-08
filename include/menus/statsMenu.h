@@ -60,23 +60,9 @@ enum StatsPartnersCurrentPartnerOptionYoshi
     STATS_PARTNER_YOSHI_BRING_OUT_OR_REMOVE,
 };
 
-enum StatsFlagMario
-{
-    STATS_FLAG_MARIO_CURRENTLY_SELECTING_ID = 0,
-    STATS_FLAG_MARIO_CURRENTLY_TOGGLING_SPECIAL_MOVES,
-};
-
 enum StatsFlagPartner
 {
     STATS_FLAG_PARTNER_SELECTED_PARTNER = 0,
-    STATS_FLAG_PARTNER_CURRENTLY_SELECTING_ID,
-    STATS_FLAG_PARTNER_CURRENTLY_SELECTING_COLOR,
-    STATS_FLAG_PARTNER_CURRENTLY_ADJUSTING_YOSHI_NAME,
-};
-
-enum StatsFlagFollower
-{
-    STATS_FLAG_FOLLOWER_CURRENTLY_SELECTING_FOLLOWER = 0,
 };
 
 class StatsMenu
@@ -119,6 +105,14 @@ class StatsMenu
 
 extern StatsMenu *gStatsMenu;
 
+// statsInit
+// Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
+void statsMenuInit(Menu *menuPtr);
+
+void statsMenuInitExit(); // Called when exiting the init part of the stats menu
+void statsMenuCancelChangingValue();
+
+// statsMario
 void statsMenuMarioInit(Menu *menuPtr);
 void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button);
 void statsMenuMarioDraw(CameraId cameraId, void *user);
@@ -126,21 +120,18 @@ void statsMenuMarioDraw(CameraId cameraId, void *user);
 void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
 void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr);
 
+// statsPartners
 void statsMenuPartnersInit(Menu *menuPtr);
 void statsMenuPartnersSelectedPartner(Menu *menuPtr);
 void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button);
 void statsMenuPartnersDraw(CameraId cameraId, void *user);
 
+// statsFollowers
 void statsMenuFollowersInit(Menu *menuPtr);
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button);
 void statsMenuFollowersDraw(CameraId cameraId, void *user);
 
 void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr);
 void selectedOptionMenuFollowersRemoveFollower(Menu *menuPtr);
-
-// Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
-void statsMenuInit(Menu *menuPtr);
-
-void statsMenuInitExit(); // Called when exiting the init part of the stats menu
 
 #endif

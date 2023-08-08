@@ -25,7 +25,7 @@ const MenuOption gDisplaysMenuOnScreenTimerOptions[] = {
 
 const MenuFunctions gDisplaysMenuOnScreenTimerFuncs = {
     gDisplaysMenuOnScreenTimerOptions,
-    displaysMenuOnScreenTimerControls,
+    displaysMenuDefaultControlsWithButtonComboEditor,
     displaysMenuOnScreenTimerDraw,
     nullptr, // Exit function not needed
 };
@@ -37,19 +37,6 @@ void displaysMenuOnScreenTimerInit(Menu *menuPtr)
 
     constexpr uint32_t totalOptions = sizeof(gDisplaysMenuOnScreenTimerOptions) / sizeof(MenuOption);
     enterNextMenu(&gDisplaysMenuOnScreenTimerFuncs, totalOptions);
-}
-
-void displaysMenuOnScreenTimerControls(Menu *menuPtr, MenuButtonInput button)
-{
-    // If the button combo editor is open, then handle the controls for that
-    if (menuPtr->flagIsSet(DisplaysMenuSpecialFlags::DISPLAYS_MENU_CHANGING_BUTTON_COMBO_FLAG))
-    {
-        gDisplaysMenu->getButtonComboEditor()->controls(button);
-        return;
-    }
-
-    // Use the default controls
-    basicMenuLayoutControls(menuPtr, button);
 }
 
 void DisplaysMenu::drawOnScreenTimerInfo() const
@@ -180,5 +167,7 @@ void displaysMenuOnScreenTimerSetNewButtonCombo(uint32_t buttonCombo)
 
 void displaysMenuOnScreeTimerChangeButtonCombo(Menu *menuPtr)
 {
-    displaysMenuChangeButtonCombo(menuPtr, displaysMenuOnScreenTimerSetNewButtonCombo);
+    (void)menuPtr;
+
+    displaysMenuChangeButtonCombo(displaysMenuOnScreenTimerSetNewButtonCombo);
 }
