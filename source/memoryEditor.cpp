@@ -390,6 +390,8 @@ void MemoryEditor::dpadControls(MenuButtonInput button)
 {
     int32_t editorSelectedIndex = static_cast<int32_t>(this->editorSelectedIndex);
     int32_t editorIndex = static_cast<int32_t>(this->editorIndex);
+    uint32_t headerIndex = this->headerIndex;
+
     const uint32_t numBytesBeingEdited = this->numBytesBeingEdited;
     uint8_t *currentAddress = this->currentAddress;
 
@@ -478,7 +480,6 @@ void MemoryEditor::dpadControls(MenuButtonInput button)
             else // Haven't selected an option yet
             {
                 // Only move left if not on the furthest left option
-                uint32_t headerIndex = this->headerIndex;
                 if (headerIndex > 0)
                 {
                     // Move one to the left
@@ -565,7 +566,6 @@ void MemoryEditor::dpadControls(MenuButtonInput button)
             else // Haven't selected an option yet
             {
                 // Only move right if not on the furthest right option
-                uint32_t headerIndex = this->headerIndex;
                 if (headerIndex < (MEMORY_EDITOR_HEADER_TOTAL_OPTIONS - 1))
                 {
                     // Move one to the right
@@ -857,7 +857,7 @@ void MemoryEditor::controls(MenuButtonInput button)
                             currentValue = numBytesBeingEdited;
                             minValuePtr = &minValue;
                             maxValuePtr = &maxValue;
-                            type = VariableType::u16;
+                            type = VariableType::u8;
                         }
 
                         const Window *rootWindowPtr = gRootWindow;
