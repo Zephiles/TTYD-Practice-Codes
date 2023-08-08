@@ -24,7 +24,7 @@ const MenuOption gStatsMenuInitOptions[] = {
 const MenuFunctions gStatsMenuInitFuncs = {
     gStatsMenuInitOptions,
     basicMenuLayoutControls,
-    basicMenuLayoutDraw,
+    basicMenuLayoutDrawMenuLineHeight,
     statsMenuInitExit,
 };
 

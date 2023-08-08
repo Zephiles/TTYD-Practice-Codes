@@ -3,6 +3,7 @@
 #include "mod.h"
 #include "menuUtils.h"
 #include "assembly.h"
+#include "memoryEditor.h"
 #include "classes/positionEditor.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
@@ -2437,9 +2438,10 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
         return ret;
     }
 
-    // Only run if the menu isn't currently open
+    // Do not run if the menu is currently open
     // Run if currently repositioning/scaling displays
-    if (gMenu && !gMod.menuIsHidden())
+    // Do not run if the memory editor is open
+    if ((gMenu && !gMod.menuIsHidden()) || memoryEditorIsOpen())
     {
         // Since the lines are not being drawn, reset the entry count to avoid drawing lines for outdated data
         displaysPtr->getHitCheckVisualizationDisplayPtr()->setEntryCount(0);
@@ -3920,6 +3922,12 @@ const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
 
 void runDisplayFuncsEveryFrame()
 {
+    // Do not do anything if the memory editor is open
+    if (memoryEditorIsOpen())
+    {
+        return;
+    }
+
     // Update the On-Screen Timer if the display is enabled
     updateOnScreenTimer();
 

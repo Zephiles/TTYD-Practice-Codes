@@ -78,4 +78,10 @@ Ptr clearMemory(Ptr ptr, uint32_t size)
     return reinterpret_cast<Ptr>(clearMemory(reinterpret_cast<void *>(ptr), size));
 }
 
+template<typename Ptr>
+void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
+{
+    return clear_DC_IC_Cache(reinterpret_cast<void *>(ptr), size);
+}
+
 #endif

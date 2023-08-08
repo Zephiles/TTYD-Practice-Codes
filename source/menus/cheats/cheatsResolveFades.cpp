@@ -99,7 +99,7 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * MENU_SCALE;
     constexpr float offsetY = lineDecrement * 2.f;
 
-    basicMenuLayoutDraw(cameraId, user, 0.f, offsetY);
+    basicMenuLayoutDraw(cameraId, user, LINE_HEIGHT_FLOAT, 0.f, offsetY);
 
     // Draw the info for the fades
     cheatsMenuPtr->drawResolveFadesInfo(offsetY);

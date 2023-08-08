@@ -7,6 +7,7 @@
 #include "menus/inventoryMenu.h"
 #include "menus/cheatsMenu.h"
 #include "menus/statsMenu.h"
+#include "menus/memoryMenu.h"
 #include "menus/battlesMenu.h"
 #include "menus/displaysMenu.h"
 #include "misc/utils.h"
@@ -32,7 +33,7 @@ const MenuOption gRootMenuOptions[] = {
     nullptr,
 
     "Memory",
-    nullptr,
+    memoryMenuInit,
 
     "Battles",
     battlesMenuInit,
@@ -95,7 +96,7 @@ void rootMenuExit()
 void rootMenuDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
-    basicMenuLayoutDraw(cameraId, user);
+    basicMenuLayoutDrawMenuLineHeight(cameraId, user);
 
     // Draw the version number at the top-right of the main window
     RootMenu *rootMenuPtr = gRootMenu;

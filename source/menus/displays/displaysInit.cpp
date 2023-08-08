@@ -82,7 +82,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
 const MenuFunctions gDisplaysMenuInitFuncs = {
     gDisplaysMenuInitOptions,
     basicMenuLayoutControls,
-    basicMenuLayoutDraw,
+    basicMenuLayoutDrawMenuLineHeight,
     displaysMenuInitExit,
 };
 

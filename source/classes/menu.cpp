@@ -123,7 +123,7 @@ void Menu::setCurrentIndex(uint32_t index)
     this->currentPage = static_cast<uint8_t>(index / this->totalOptionsPerPage);
 }
 
-void Menu::basicLayoutDraw(float offsetX, float offsetY) const
+void Menu::basicLayoutDraw(float lineHeight, float offsetX, float offsetY) const
 {
     // Make sure the options are set
     const MenuFunctions *menuFuncsPtr = this->funcs;
@@ -164,7 +164,7 @@ void Menu::basicLayoutDraw(float offsetX, float offsetY) const
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     float posX = tempPosX + offsetX;
     float posY = tempPosY - offsetY;
-    constexpr float lineDecrement = MENU_LINE_HEIGHT * scale;
+    const float lineDecrement = lineHeight * scale;
     uint32_t color;
 
     const uint32_t totalOptions = this->totalOptions;

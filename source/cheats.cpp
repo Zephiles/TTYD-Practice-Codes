@@ -6,6 +6,7 @@
 #include "assembly.h"
 #include "drawText.h"
 #include "displays.h"
+#include "memoryEditor.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
 #include "gc/pad.h"
@@ -892,10 +893,8 @@ void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
     {
         // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, or if the memory
         // editor is open
-
-        // TODO: Add check for memory editor being open
         if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM) && !gMenu &&
-            !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr())
+            !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr() && !memoryEditorIsOpen())
         {
             reloadRoomMain();
         }
@@ -1044,7 +1043,7 @@ void frameAdvance()
         return g_DEMOPadRead_trampoline();
     }
 
-    // If currently changing button combos, then don't run
+    // If currently changing button combos, then do not run
     if (gMod.changingButtonCombo())
     {
         // Call the original function
@@ -1405,9 +1404,8 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
         valueEditorPtr = spawnItemCheatPtr->freeValueEditor();
     }
 
-    // TODO: Add check for memory editor being open
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPAWN_ITEM) && !gMenu &&
-        !modPtr->changingButtonCombo())
+        !modPtr->changingButtonCombo() && !memoryEditorIsOpen())
     {
         // Make sure a file is currently loaded
         if (!checkIfInGame())
@@ -1415,7 +1413,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
             return;
         }
 
-        // Don't run if the pause menu is open
+        // Do not run if the pause menu is open
         if ((marioStGetSystemLevel() & 15) == 15)
         {
             return;

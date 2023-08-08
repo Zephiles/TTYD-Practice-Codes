@@ -101,7 +101,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
 const MenuFunctions gCheatsMenuInitFuncs = {
     gCheatsMenuInitOptions,
     basicMenuLayoutControls,
-    basicMenuLayoutDraw,
+    basicMenuLayoutDrawMenuLineHeight,
     cheatsMenuInitExit,
 };
 

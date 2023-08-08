@@ -5,6 +5,7 @@
 #include "menuUtils.h"
 #include "cheats.h"
 #include "displays.h"
+#include "memoryEditor.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -370,9 +371,8 @@ void performBattleChecks()
     // Handle the Auto Action Commands cheat
     handleAutoActionCommands();
 
-    // Prevent all buttons from being pressed when the menu is open, except for R and X
-    // TODO: Add check for memory editor being open
-    if (gMenu)
+    // Prevent all buttons from being pressed when either the menu is open or if the memory editor is open, except for R and X
+    if (gMenu || memoryEditorIsOpen())
     {
         if (!checkButtonsEveryFrame(PadInput::PAD_R | PadInput::PAD_X))
         {

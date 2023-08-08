@@ -152,7 +152,7 @@ class Menu
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
     // Generic functions for handling the current menu
-    void basicLayoutDraw(float offsetX, float offsetY) const;
+    void basicLayoutDraw(float lineHeight, float offsetX, float offsetY) const;
     void basicLayoutControls(MenuButtonInput button);
 
    private:

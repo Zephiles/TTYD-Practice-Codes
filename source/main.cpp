@@ -3,6 +3,7 @@
 #include "cxx.h"
 #include "cheats.h"
 #include "displays.h"
+#include "memoryEditor.h"
 #include "patch.h"
 #include "classes/menu.h"
 #include "classes/window.h"
@@ -49,6 +50,7 @@ void init()
 
     gCheats = new (true) Cheats;
     gDisplays = new (true) Displays;
+    gMemoryEditor = new (true) MemoryEditor;
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
     Window *windowPtr = new (true) Window;
@@ -213,6 +215,9 @@ void runOncePerFrame()
 
     // Run display functions
     runDisplayFuncsEveryFrame();
+
+    // Handle the memory editor
+    handleMemoryEditor();
 
     // Call the original function
     return g_marioStMain_trampoline();

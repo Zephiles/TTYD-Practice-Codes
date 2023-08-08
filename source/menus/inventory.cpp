@@ -1106,7 +1106,7 @@ const MenuOption gInventoryMenuInitOptions[] = {
 const MenuFunctions gInventoryMenuInitFuncs = {
     gInventoryMenuInitOptions,
     basicMenuLayoutControls,
-    basicMenuLayoutDraw,
+    basicMenuLayoutDrawMenuLineHeight,
     nullptr, // Exit function not needed
 };
 

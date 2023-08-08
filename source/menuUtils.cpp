@@ -1,6 +1,8 @@
 #include "menuUtils.h"
+#include "drawText.h"
 #include "cxx.h"
 #include "cheats.h"
+#include "memoryEditor.h"
 #include "classes/menu.h"
 #include "gc/pad.h"
 #include "menus/rootMenu.h"
@@ -104,6 +106,12 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
         buttonInput = keyGetButton(PadId::CONTROLLER_ONE);
     }
 
+    // If no buttons were pressed, then return immediately
+    if (!buttonInput)
+    {
+        return MenuButtonInput::BUTTON_NONE;
+    }
+
     for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
     {
         if (i == 7)
@@ -118,7 +126,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
         }
     }
 
-    // Return 0 if no input was found
+    // No button was found
     return MenuButtonInput::BUTTON_NONE;
 }
 
@@ -181,10 +189,15 @@ void drawMainWindow()
 
 void basicMenuLayoutDraw(CameraId cameraId, void *user)
 {
-    basicMenuLayoutDraw(cameraId, user, 0.f, 0.f);
+    basicMenuLayoutDraw(cameraId, user, LINE_HEIGHT_FLOAT, 0.f, 0.f);
 }
 
-void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float offsetY)
+void basicMenuLayoutDrawMenuLineHeight(CameraId cameraId, void *user)
+{
+    basicMenuLayoutDraw(cameraId, user, MENU_LINE_HEIGHT, 0.f, 0.f);
+}
+
+void basicMenuLayoutDraw(CameraId cameraId, void *user, float lineHeight, float offsetX, float offsetY)
 {
     (void)cameraId;
     (void)user;
@@ -193,7 +206,7 @@ void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float off
     drawMainWindow();
 
     // Draw the main text
-    gMenu->basicLayoutDraw(offsetX, offsetY);
+    gMenu->basicLayoutDraw(lineHeight, offsetX, offsetY);
 }
 
 void handleMenu()
@@ -201,9 +214,7 @@ void handleMenu()
     // Check if the menu should be opened/closed
     // Prevent checking it if currently in the process of spawning an item
     // Prevent checking it if the memory editor is open
-
-    // TODO: Add check for memory editor being open
-    if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
+    if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr() || memoryEditorIsOpen())
     {
         return;
     }

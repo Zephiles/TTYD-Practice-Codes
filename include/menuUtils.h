@@ -29,15 +29,18 @@ MenuButtonInput getMenuButtonInput(bool singleFrame);
 // Handles basic controls for the current menu
 void basicMenuLayoutControls(Menu *menuPtr, MenuButtonInput button);
 
-// Handles drawing the main window for the menu, as it can sometimes be hidden via a flag
+// Handles drawing the main window for the menu
 void drawMainWindow();
 
 // Draws the main window and options for the current menu
-// Calls basicMenuLayoutDraw with offsetX and offsetY set to 0.f
+// Calls basicMenuLayoutDraw with lineHeight set to LINE_HEIGHT_FLOAT, and offsetX and offsetY set to 0.f
 void basicMenuLayoutDraw(CameraId cameraId, void *user);
 
+// Calls basicMenuLayoutDraw with lineHeight set to MENU_LINE_HEIGHT, and offsetX and offsetY set to 0.f
+void basicMenuLayoutDrawMenuLineHeight(CameraId cameraId, void *user);
+
 // Draws the main window and options for the current menu
-void basicMenuLayoutDraw(CameraId cameraId, void *user, float offsetX, float offsetY);
+void basicMenuLayoutDraw(CameraId cameraId, void *user, float lineHeight, float offsetX, float offsetY);
 
 // Handles various menu things each frame
 void handleMenu();
