@@ -1088,7 +1088,7 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     }
 
     // If the selected display in the menu is not for the current display, then assume that the player is not
-    // currently manually
+    // currently manually positioning or scaling
     if (indexToDisplayManuallyPositionFlag(displaysMenuPtr->getSelectedDisplay()) != manuallyPositionFlag)
     {
         return false;

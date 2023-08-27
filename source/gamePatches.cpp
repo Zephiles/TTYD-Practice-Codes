@@ -26,7 +26,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-void *cFixPouchInitMemoryLeak(OSHeapHandle heapHandle, uint32_t size)
+void *cFixPouchInitMemoryLeak(int32_t heap, uint32_t size)
 {
     // Check if the memory has already been allocated or not
     PouchData *pouchPtr = pouchGetPtr();
@@ -38,7 +38,7 @@ void *cFixPouchInitMemoryLeak(OSHeapHandle heapHandle, uint32_t size)
     else
     {
         // The memory has not been allocated, so allocate it
-        return __memAlloc(heapHandle, size);
+        return __memAlloc(heap, size);
     }
 }
 

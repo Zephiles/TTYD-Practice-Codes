@@ -399,6 +399,7 @@
 804185F4:mapalloc_base_ptr
 804185F8:heapEnd
 80418610:heapStart
+80418628:heapHandle
 
 // evtmgr.o
 8003538C:evtGetPtrID
@@ -2532,7 +2533,7 @@
 80263CB8:memcmp
 // 80263D04:__memrchr
 // 80263D30:memchr
-// 80263D5C:memmove
+80263D5C:memmove
 
 // printf.c
 80264108:sprintf

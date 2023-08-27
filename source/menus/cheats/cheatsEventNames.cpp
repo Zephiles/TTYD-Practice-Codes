@@ -382,7 +382,7 @@ const char *gCheatsEventNames[CHEATS_TOTAL_EVENT_NAMES] = {
     "Bowser: Poshley Sanctum",
     "The Last Mail",
     "The Hideout Explodes",
-    "A Waiting Prof. Frankly ",
+    "A Waiting Prof. Frankly",
     "Thousand-Year Door",
     "The Pedestal",
     "To the Last Dungeon",

@@ -401,6 +401,7 @@
 8041E818:mapalloc_size
 8041E81C:heapEnd
 8041E830:heapStart
+8041E844:heapHandle
 
 // evtmgr.o
 80035A28:evtGetPtrID
@@ -2534,7 +2535,7 @@ unused:winFontSetCenter
 80269C68:memcmp
 // 80269CB4:__memrchr
 // 80269CE0:memchr
-// 80269D0C:memmove
+80269D0C:memmove
 
 // printf.c
 8026A0B8:sprintf

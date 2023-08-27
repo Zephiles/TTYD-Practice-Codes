@@ -98,10 +98,16 @@ extern "C"
     extern HeapEnd heapEnd;
     extern HeapStart heapStart;
 
+#ifdef TTYD_JP
+    extern OSHeapHandle heapHandle[6];
+#else
+    extern OSHeapHandle heapHandle[5];
+#endif
+
     // memInit
     // memClear
-    void *__memAlloc(OSHeapHandle heapHandle, uint32_t size);
-    void __memFree(OSHeapHandle heapHandle, void *ptr);
+    void *__memAlloc(int32_t heap, uint32_t size);
+    void __memFree(int32_t heap, void *ptr);
     // _mapAlloc
     // _mapAllocTail
     // _mapFree

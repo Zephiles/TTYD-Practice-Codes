@@ -401,6 +401,7 @@
 8042B138:mapalloc_size
 8042B13C:heapEnd
 8042B150:heapStart
+8042B164:heapHandle
 
 // evtmgr.o
 80035B10:evtGetPtrID
@@ -2535,7 +2536,7 @@
 8026DA5C:memcmp
 // 8026DAA8:__memrchr
 // 8026DAD4:memchr
-// 8026DB00:memmove
+8026DB00:memmove
 
 // printf.c
 8026DEAC:sprintf

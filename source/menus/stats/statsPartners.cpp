@@ -315,15 +315,14 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                         yoshiColorSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
 
                         // Get the current index for the color selector
-                        uint32_t yoshiColorIndex = pouchGetPartyColor(PartyMembers::kYoshi);
+                        const uint32_t yoshiColorIndex = pouchGetPartyColor(PartyMembers::kYoshi);
 
                         // Make sure the index is valid
-                        if (yoshiColorIndex >= TOTAL_YOSHI_COLORS)
+                        if (yoshiColorIndex < TOTAL_YOSHI_COLORS)
                         {
-                            yoshiColorIndex = 0;
+                            yoshiColorSelectorPtr->setCurrentIndex(yoshiColorIndex);
                         }
 
-                        yoshiColorSelectorPtr->setCurrentIndex(yoshiColorIndex);
                         yoshiColorSelectorPtr->startDrawing(menuPartnersChangeYoshiColor, cancelMenuPartnersChangeYoshiColor);
                         handledYoshiOption = true;
                         break;

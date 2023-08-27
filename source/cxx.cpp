@@ -1,15 +1,15 @@
 #include "cxx.h"
 #include "gc/OSCache.h"
-#include "ttyd/memory.h"
 #include "misc/heap.h"
 #include "misc/utils.h"
+#include "ttyd/memory.h"
 
 #include <cstdint>
 #include <cstring>
 
 void *allocateMemoryFromTail(std::size_t size)
 {
-    void *ptr = allocFromHeapTail(0, size);
+    void *ptr = allocFromHeapTail(heapHandle[0], size);
     ptr = clearMemory(ptr, size);
     DCFlushRange(ptr, size);
     return ptr;

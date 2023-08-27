@@ -214,6 +214,7 @@ void selectedOptionDuplicate(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
         inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
@@ -221,6 +222,7 @@ void selectedOptionDuplicate(Menu *menuPtr)
     // If the inventory is full, then show an error message
     if (inventoryMenuPtr->inventoryIsFull())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
         inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
         return;
     }
@@ -272,6 +274,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
         inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
@@ -290,6 +293,7 @@ void selectedOptionChangeById(Menu *menuPtr)
     uint32_t index = inventoryMenuPtr->getCurrentIndex();
     if (index >= inventoryMenuPtr->getInventorySize())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
         return;
     }
 
@@ -352,6 +356,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
         inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
@@ -370,6 +375,7 @@ void selectedOptionChangeByIcon(Menu *menuPtr)
     uint32_t index = inventoryMenuPtr->getCurrentIndex();
     if (index >= inventoryMenuPtr->getInventorySize())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
         return;
     }
 
@@ -451,6 +457,7 @@ void selectedOptionDelete(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
         inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
         return;
     }
@@ -668,6 +675,7 @@ void InventoryMenu::drawCurrentInventory()
 
         // If none of the flags are currently set, then the inventory is currently not being interacted with, so draw all of the
         // text as white
+
         // If a separate window is currently open for selecting an item/badge, then draw all of the text as white
         // If changing an item/badge by id/icon, then still draw the text as either white or blue
         if (!anyFlagIsSet || changeByIdWindowOpen || changeByIconWindowOpen)

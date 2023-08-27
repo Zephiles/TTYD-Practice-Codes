@@ -3,6 +3,7 @@
 #include "cxx.h"
 #include "cheats.h"
 #include "displays.h"
+#include "memoryWatch.h"
 #include "memoryEditor.h"
 #include "patch.h"
 #include "classes/menu.h"
@@ -218,6 +219,9 @@ void runOncePerFrame()
 
     // Handle the memory editor
     handleMemoryEditor();
+
+    // Handle memory watches
+    handleMemoryWatches();
 
     // Call the original function
     g_marioStMain_trampoline();

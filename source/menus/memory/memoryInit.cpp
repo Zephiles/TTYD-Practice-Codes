@@ -1,6 +1,8 @@
 #include "menuUtils.h"
 #include "cxx.h"
+#include "memoryWatch.h"
 #include "menus/memoryMenu.h"
+#include "menus/rootMenu.h"
 
 #include <cstdint>
 
@@ -8,7 +10,7 @@ MemoryMenu *gMemoryMenu = nullptr;
 
 const MenuOption gMemoryMenuInitOptions[] {
     "Memory Watches",
-    nullptr,
+    memoryMenuMemoryWatchMenuInit,
 
     "Memory Editor",
     memoryMenuMemoryEditorMenuInit,
@@ -43,4 +45,27 @@ void memoryMenuInitExit()
 {
     delete gMemoryMenu;
     gMemoryMenu = nullptr;
+}
+
+MemoryWatchEntry *getSelectedMemoryWatchEntryPtr()
+{
+    // Make sure the pointer for the entries is set
+    MemoryWatchEntry *entriesPtr = gMemoryWatch.getEntriesPtr();
+    if (!entriesPtr)
+    {
+        return nullptr;
+    }
+
+    return &entriesPtr[gMemoryMenu->getSelectedIndex()];
+}
+
+void MemoryMenu::initErrorWindow(const char *text)
+{
+    ErrorWindow *errorWindowPtr = &this->errorWindow;
+    const Window *rootWindowPtr = gRootWindow;
+
+    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
+    errorWindowPtr->setText(text);
+    errorWindowPtr->setTimer(3000);
+    errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
 }

@@ -66,6 +66,7 @@ uint32_t getOffset(Ptr ptr, uint32_t alignment)
     return reinterpret_cast<uint32_t>(ptr) & (alignment - 1);
 }
 
+// This function will not work correctly if a const variable is used, so const_cast must be used to remove the const
 template<typename Ptr>
 uint32_t ptrIsValid(Ptr ptr)
 {

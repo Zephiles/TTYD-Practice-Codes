@@ -12,7 +12,7 @@
 #define HEADER_SIZE roundUp(sizeof(ChunkInfo), HEAP_ALIGNMENT)
 #define MIN_CHUNK_SIZE (HEADER_SIZE + HEAP_ALIGNMENT)
 
-void *allocFromHeapTail(OSHeapHandle heapHandle, uint32_t size);
-void makeRelFixed(OSHeapHandle heapHandle, OSModuleInfo *rel);
+void *allocFromHeapTail(OSHeapHandle handle, uint32_t size);
+void makeRelFixed(int32_t heap, OSModuleInfo *rel);
 
 #endif

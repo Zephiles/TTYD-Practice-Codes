@@ -110,7 +110,7 @@ class MemoryEditor
 
     uint8_t *currentAddress; // Initial address that values are being retrieved from inside the editor
 
-    uint8_t *bytesBeingEdited; // Pointer to the bytes that are currently being edited. The size is determined by
+    uint8_t *bytesBeingEdited; // Pointer to the bytes that are currently being edited. The amount is determined by
                                // numBytesBeingEdited.
 
     ValueEditor *valueEditor; // For changing currentAddress and numBytesBeingEdited
