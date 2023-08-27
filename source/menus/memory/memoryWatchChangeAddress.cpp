@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gMemoryWatchOffsetsLimitReachedText = "The maximum amount of\nlevels has been reached.";
+const char *gMemoryWatchOffsetsLimitReachedText = "The maximum amount of levels has been reached.";
 const char *gMemoryWatchOffsetsNoOffsetsText = "There are currently no additional levels.";
 
 const MenuOption gMemoryMenuMemoryWatchChangeAddressOptions[] {
