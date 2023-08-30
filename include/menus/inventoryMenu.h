@@ -117,14 +117,14 @@ extern InventoryMenu *gInventoryMenu;
 void inventoryMenuMainInit(Menu *menuPtr); // Called when initially entering the main part of the inventory menu
 void inventoryMenuMainExit();              // Called when exiting the main part of the inventory menu
 
-void selectedOptionAddById(Menu *menuPtr);
-void selectedOptionAddByIcon(Menu *menuPtr);
-void selectedOptionDuplicate(Menu *menuPtr);
-void selectedOptionSwapItems(Menu *menuPtr);
-void selectedOptionMoveItem(Menu *menuPtr);
-void selectedOptionChangeById(Menu *menuPtr);
-void selectedOptionChangeByIcon(Menu *menuPtr);
-void selectedOptionDelete(Menu *menuPtr);
+void inventoryMenuSelectedOptionAddById(Menu *menuPtr);
+void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr);
+void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr);
+void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr);
+void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr);
+void inventoryMenuSelectedOptionChangeById(Menu *menuPtr);
+void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr);
+void inventoryMenuSelectedOptionDelete(Menu *menuPtr);
 
 // Called to handle the controls for the main part of the inventory menu
 void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button);

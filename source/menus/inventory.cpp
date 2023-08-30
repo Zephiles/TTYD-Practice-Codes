@@ -22,28 +22,28 @@ InventoryMenu *gInventoryMenu = nullptr;
 // Main menu
 const MenuOption gInventoryMenuMainOptions[] = {
     "Add By Id",
-    selectedOptionAddById,
+    inventoryMenuSelectedOptionAddById,
 
     "Add By Icon",
-    selectedOptionAddByIcon,
+    inventoryMenuSelectedOptionAddByIcon,
 
     "Duplicate",
-    selectedOptionDuplicate,
+    inventoryMenuSelectedOptionDuplicate,
 
     "Swap Items",
-    selectedOptionSwapItems,
+    inventoryMenuSelectedOptionSwapItems,
 
     "Move Item",
-    selectedOptionMoveItem,
+    inventoryMenuSelectedOptionMoveItem,
 
     "Change By Id",
-    selectedOptionChangeById,
+    inventoryMenuSelectedOptionChangeById,
 
     "Change By Icon",
-    selectedOptionChangeByIcon,
+    inventoryMenuSelectedOptionChangeByIcon,
 
     "Delete",
-    selectedOptionDelete,
+    inventoryMenuSelectedOptionDelete,
 };
 
 const MenuFunctions gInventoryMenuMainFuncs = {
@@ -94,7 +94,7 @@ void addItemFromId(const ValueType *valuePtr)
     }
 }
 
-void selectedOptionAddById(Menu *menuPtr)
+void inventoryMenuSelectedOptionAddById(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -160,7 +160,7 @@ void addItemFromIcon(ItemId item)
     }
 }
 
-void selectedOptionAddByIcon(Menu *menuPtr)
+void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -217,7 +217,7 @@ void InventoryMenu::duplicateItem(Menu *menuPtr)
     }
 }
 
-void selectedOptionDuplicate(Menu *menuPtr)
+void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -326,7 +326,7 @@ void InventoryMenu::swapItems(uint32_t currentIndex, uint32_t selectedIndex, Men
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
 }
 
-void selectedOptionSwapItems(Menu *menuPtr)
+void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
@@ -385,7 +385,7 @@ void InventoryMenu::moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
 }
 
-void selectedOptionMoveItem(Menu *menuPtr)
+void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
@@ -425,7 +425,7 @@ void changeItemFromId(const ValueType *valuePtr)
     cancelAddItemFromId();
 }
 
-void selectedOptionChangeById(Menu *menuPtr)
+void inventoryMenuSelectedOptionChangeById(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -507,7 +507,7 @@ void changeItemFromIcon(ItemId item)
     cancelAddItemFromIcon();
 }
 
-void selectedOptionChangeByIcon(Menu *menuPtr)
+void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -608,7 +608,7 @@ void InventoryMenu::deleteItem(Menu *menuPtr)
     }
 }
 
-void selectedOptionDelete(Menu *menuPtr)
+void inventoryMenuSelectedOptionDelete(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
