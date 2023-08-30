@@ -854,15 +854,15 @@ void InventoryMenu::drawCurrentInventory()
             {
                 textColor = getColorBlue(0xFF);
             }
+            else if (swappingOrMovingItemsSelectedItem && (selectedIndex == i))
+            {
+                textColor = getColorGreen(0xFF);
+            }
 
             // If the item has an invalid id, then set the text to red
             else if (!currentItemIsValid)
             {
                 textColor = getColorRed(0xFF);
-            }
-            else if (swappingOrMovingItemsSelectedItem && (selectedIndex == i))
-            {
-                textColor = getColorGreen(0xFF);
             }
         }
         else if (changeByIdWindowOpen || changeByIconWindowOpen)
