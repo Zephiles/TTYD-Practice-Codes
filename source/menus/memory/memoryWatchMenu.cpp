@@ -112,16 +112,10 @@ void memoryMenuMemoryWatchMenuControls(Menu *menuPtr, MenuButtonInput button)
         }
         case MenuButtonInput::B:
         {
-            // If moving watches and have selected a watch to move, then go back to selecting a watch
-            if (menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE))
+            // If swapping/moving watches and have selected a watch to swap/move, then go back to selecting a watch
+            if (menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP))
             {
-                menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
-            }
-
-            // If swapping watches and have selected a watch to swap, then go back to selecting a watch
-            else if (menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP))
-            {
-                menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
+                menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
             }
             else
             {
@@ -193,13 +187,8 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
     drawText("Value", posX + valueHeaderOffset, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
 
-    const bool swappingWatchesSelectedWatch =
-        menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
-
-    const bool movingWatchesSelectedWatch =
-        menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
-
-    const bool swappingOrMovingWatches = swappingWatchesSelectedWatch || movingWatchesSelectedWatch;
+    const bool swappingOrMovingWatchesSelectedWatch =
+        menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
 
@@ -228,7 +217,7 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
             {
                 color = getColorBlue(0xFF);
             }
-            else if (swappingOrMovingWatches && (selectedIndex == i))
+            else if (swappingOrMovingWatchesSelectedWatch && (selectedIndex == i))
             {
                 color = getColorGreen(0xFF);
             }
@@ -368,63 +357,70 @@ void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
     memoryMenuPtr->duplicateWatch(menuPtr);
 }
 
+bool MemoryMenu::initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+{
+    // If there are not at least two watches, then show an error message
+    if (gMemoryWatch.getTotalEntries() < 2)
+    {
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
+        this->initErrorWindow(gMemoryWatchesNotEnoughWatchesToSwapMoveText);
+        return false;
+    }
+
+    // If the Swap/Move option was just selected, then allow the player to choose a watch to swap/move
+    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT))
+    {
+        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
+
+        // Reset the current index to the top of the current page
+        this->setCurrentIndex(this->currentPage * MAX_MEMORY_WATCHES_PER_PAGE);
+        return false;
+    }
+
+    // If a watch hasn't been selected yet, then select the current one to be swapped/moved
+    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP))
+    {
+        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
+        this->setSelectedIndex(currentIndex);
+        return false;
+    }
+
+    // Make sure the selected watch is not the current watch
+    if (selectedIndex == currentIndex)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void MemoryMenu::swapWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
 {
     // Swap the watches
     if (!gMemoryWatch.swapWatches(currentIndex, selectedIndex))
     {
         // Error occurred
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_INIT);
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
         return;
     }
 
     // Go back to selecting the first watch
-    menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
+    menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
 void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
-
-    // If there are not at least two watches, then show an error message
-    if (gMemoryWatch.getTotalEntries() < 2)
-    {
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_INIT);
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesNotEnoughWatchesToSwapMoveText);
-        return;
-    }
-
-    // If the Swap option was just selected, then allow the player to choose a watch to swap
-    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_INIT))
-    {
-        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_INIT);
-
-        // Reset the current index to the top of the current page
-        memoryMenuPtr->setCurrentIndex(memoryMenuPtr->getCurrentPage() * MAX_MEMORY_WATCHES_PER_PAGE);
-        return;
-    }
-
     const uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
-
-    // If a watch hasn't been selected yet, then select the current one to be swapped
-    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP))
-    {
-        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP);
-        memoryMenuPtr->setSelectedIndex(currentIndex);
-        return;
-    }
-
-    // Make sure the selected watch is not the current watch
     const uint32_t selectedIndex = memoryMenuPtr->getSelectedIndex();
-    if (selectedIndex == currentIndex)
-    {
-        return;
-    }
 
-    // Swap the selected watches
-    memoryMenuPtr->swapWatches(currentIndex, selectedIndex, menuPtr);
+    if (memoryMenuPtr->initSwapMoveWatches(currentIndex, selectedIndex, menuPtr))
+    {
+        // Swap the selected watches
+        memoryMenuPtr->swapWatches(currentIndex, selectedIndex, menuPtr);
+    }
 }
 
 void MemoryMenu::moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
@@ -433,57 +429,26 @@ void MemoryMenu::moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *
     if (!gMemoryWatch.moveWatch(currentIndex, selectedIndex))
     {
         // Error occurred
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_INIT);
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
         return;
     }
 
-    // Go back to selecting the watch to move
-    menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
+    // Go back to selecting a watch to move
+    menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
 void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
-
-    // If there are not at least two watches, then show an error message
-    if (gMemoryWatch.getTotalEntries() < 2)
-    {
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_INIT);
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesNotEnoughWatchesToSwapMoveText);
-        return;
-    }
-
-    // If the Move option was just selected, then allow the player to choose a watch to move
-    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_INIT))
-    {
-        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_INIT);
-
-        // Reset the current index to the top of the current page
-        memoryMenuPtr->setCurrentIndex(memoryMenuPtr->getCurrentPage() * MAX_MEMORY_WATCHES_PER_PAGE);
-        return;
-    }
-
     const uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
-
-    // If a watch hasn't been selected yet, then select the current one to be moved
-    if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE))
-    {
-        menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE);
-        memoryMenuPtr->setSelectedIndex(currentIndex);
-        return;
-    }
-
-    // Make sure the selected watch is not the current watch
     const uint32_t selectedIndex = memoryMenuPtr->getSelectedIndex();
-    if (selectedIndex == currentIndex)
-    {
-        return;
-    }
 
-    // Move the selected watch to the new location
-    memoryMenuPtr->moveWatch(currentIndex, selectedIndex, menuPtr);
+    if (memoryMenuPtr->initSwapMoveWatches(currentIndex, selectedIndex, menuPtr))
+    {
+        // Move the selected watch to the new location
+        memoryMenuPtr->moveWatch(currentIndex, selectedIndex, menuPtr);
+    }
 }
 
 void MemoryMenu::deleteWatch(Menu *menuPtr)

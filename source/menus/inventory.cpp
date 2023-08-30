@@ -30,6 +30,12 @@ const MenuOption gInventoryMenuMainOptions[] = {
     "Duplicate",
     selectedOptionDuplicate,
 
+    "Swap Items",
+    selectedOptionSwapItems,
+
+    "Move Item",
+    selectedOptionMoveItem,
+
     "Change By Id",
     selectedOptionChangeById,
 
@@ -49,6 +55,9 @@ const MenuFunctions gInventoryMenuMainFuncs = {
 
 const char *gInventoryIsEmptyText = "The inventory is currently empty.";
 const char *gInventoryIsFullText = "The inventory is currently full.";
+
+const char *gInventoryNotEnoughItemsToSwapMoveText =
+    "There needs to be at least two items/\nbadges to be able to swap/move them.";
 
 void cancelAddItemFromId()
 {
@@ -239,6 +248,154 @@ void selectedOptionDuplicate(Menu *menuPtr)
 
     // Duplicate the selected item/badge
     inventoryMenuPtr->duplicateItem(menuPtr);
+}
+
+bool InventoryMenu::initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+{
+    // If there are not at least two items/badges, then show an error message
+    const uint32_t totalItems = this->getTotalItemsInInventory();
+    if (totalItems < 2)
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT);
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+        this->initErrorWindow(gInventoryNotEnoughItemsToSwapMoveText);
+        return false;
+    }
+
+    // Make sure the current index is valid
+    if (currentIndex >= totalItems)
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT);
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+        return false;
+    }
+
+    // Make sure the selected item/badge is valid
+    if (!itemIsValid(this->inventoryItemPtr[currentIndex]))
+    {
+        return false;
+    }
+
+    // If the Swap/Move option was just selected, then allow the player to choose an item/badge to swap/move
+    if (!menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT))
+    {
+        menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT);
+
+        // Reset the current index to the top of the current page
+        this->setCurrentIndex(this->currentPage * INVENTORY_ITEMS_PER_PAGE);
+        return false;
+    }
+
+    // If an item/badge hasn't been selected yet, then select the current one to be swapped/moved
+    if (!menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE))
+    {
+        menuPtr->setFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+        this->setSelectedIndex(currentIndex);
+        return false;
+    }
+
+    // Make sure the selected item/badge is not the current item/badge
+    if (selectedIndex == currentIndex)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void swapItemPositions(uint32_t currentIndex, uint32_t selectedIndex)
+{
+    ItemId *inventoryItemPtr = gInventoryMenu->getInventoryItemPtr();
+
+    // Backup the selected item/badge
+    const ItemId selectedItemBackup = inventoryItemPtr[selectedIndex];
+
+    // Move the current item to the selected item/badge
+    inventoryItemPtr[selectedIndex] = inventoryItemPtr[currentIndex];
+
+    // Move the selected item to the current item/badge
+    inventoryItemPtr[currentIndex] = selectedItemBackup;
+}
+
+void InventoryMenu::swapItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+{
+    // Swap the items/badges
+    swapItemPositions(currentIndex, selectedIndex);
+
+    // Go back to selecting the first item/badge
+    menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+}
+
+void selectedOptionSwapItems(Menu *menuPtr)
+{
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
+    const uint32_t selectedIndex = inventoryMenuPtr->getSelectedIndex();
+
+    if (inventoryMenuPtr->initSwapMoveItems(currentIndex, selectedIndex, menuPtr))
+    {
+        // Swap the selected items/badges
+        inventoryMenuPtr->swapItems(currentIndex, selectedIndex, menuPtr);
+    }
+}
+
+void InventoryMenu::moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+{
+    // If the items/badges are right next to each other, then just swap them
+    const bool movingItemDown = currentIndex > selectedIndex;
+    int32_t indexDistance;
+
+    if (movingItemDown)
+    {
+        indexDistance = currentIndex - selectedIndex;
+    }
+    else
+    {
+        indexDistance = selectedIndex - currentIndex;
+    }
+
+    if (indexDistance < 2)
+    {
+        swapItemPositions(currentIndex, selectedIndex);
+    }
+    else
+    {
+        // Backup the selected item/badge
+        ItemId *inventoryItemPtr = this->inventoryItemPtr;
+        const ItemId selectedItemBackup = inventoryItemPtr[selectedIndex];
+
+        if (movingItemDown)
+        {
+            // Move the items/badges from the current item/badge to the selected item/badge up by one
+            ItemId *selectedItemPtr = &inventoryItemPtr[selectedIndex];
+            memmove(selectedItemPtr, &selectedItemPtr[1], sizeof(ItemId) * indexDistance);
+        }
+        else
+        {
+            // Move the items/badges from the current item/badge to the selected item/badge down by one
+            ItemId *currentItemPtr = &inventoryItemPtr[currentIndex];
+            memmove(&currentItemPtr[1], currentItemPtr, sizeof(ItemId) * indexDistance);
+        }
+
+        // Move the selected item/badge to the current item/badge
+        inventoryItemPtr[currentIndex] = selectedItemBackup;
+    }
+
+    // Go back to selecting an item/badge to move
+    menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+}
+
+void selectedOptionMoveItem(Menu *menuPtr)
+{
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
+    const uint32_t selectedIndex = inventoryMenuPtr->getSelectedIndex();
+
+    if (inventoryMenuPtr->initSwapMoveItems(currentIndex, selectedIndex, menuPtr))
+    {
+        // Move the selected item/badge to the new location
+        inventoryMenuPtr->moveItem(currentIndex, selectedIndex, menuPtr);
+    }
 }
 
 void changeItemFromId(const ValueType *valuePtr)
@@ -557,7 +714,16 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
         }
         case MenuButtonInput::B:
         {
-            menuPtr->clearAllFlags();
+            // If swapping/moving items/badges and have selected an item/badge to swap/move, then go back to selecting an
+            // item/badge
+            if (menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE))
+            {
+                menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+            }
+            else
+            {
+                menuPtr->clearAllFlags();
+            }
             break;
         }
         default:
@@ -592,9 +758,7 @@ void InventoryMenu::drawCurrentInventory()
     float itemCountPosX;
     float itemCountPosY;
     inventoryWindow->getTextPosXY(buf, WindowAlignment::TOP_CENTER, scale, &itemCountPosX, &itemCountPosY);
-
-    uint32_t textColor = getColorWhite(0xFF);
-    drawText(buf, itemCountPosX, itemCountPosY, scale, textColor);
+    drawText(buf, itemCountPosX, itemCountPosY, scale, getColorWhite(0xFF));
 
     // Start drawing the items/badges with their icons
     const float padding = inventoryWindow->getPadding() * scale;
@@ -628,10 +792,14 @@ void InventoryMenu::drawCurrentInventory()
     const bool currentlyChangingByIcon = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
     const bool changeByIconWindowOpen = !currentlyChangingByIcon && this->itemIconSelector.shouldDraw();
 
+    const bool swappingOrMovingItemsSelectedItem =
+        menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
+
     const ItemId *inventoryItemPtr = this->inventoryItemPtr;
 
     const uint32_t currentPage = this->currentPage;
     const uint32_t currentIndex = this->currentIndex;
+    const uint32_t selectedIndex = this->selectedIndex;
     const uint32_t startingIndex = INVENTORY_ITEMS_PER_PAGE * currentPage;
     const uint32_t endingIndex = startingIndex + INVENTORY_ITEMS_PER_PAGE;
 
@@ -678,32 +846,31 @@ void InventoryMenu::drawCurrentInventory()
 
         // If a separate window is currently open for selecting an item/badge, then draw all of the text as white
         // If changing an item/badge by id/icon, then still draw the text as either white or blue
-        if (!anyFlagIsSet || changeByIdWindowOpen || changeByIconWindowOpen)
+        uint32_t textColor = getColorWhite(0xFF);
+
+        if (anyFlagIsSet)
+        {
+            if (currentIndex == i)
+            {
+                textColor = getColorBlue(0xFF);
+            }
+
+            // If the item has an invalid id, then set the text to red
+            else if (!currentItemIsValid)
+            {
+                textColor = getColorRed(0xFF);
+            }
+            else if (swappingOrMovingItemsSelectedItem && (selectedIndex == i))
+            {
+                textColor = getColorGreen(0xFF);
+            }
+        }
+        else if (changeByIdWindowOpen || changeByIconWindowOpen)
         {
             // If the item has an invalid id, then set the text to red
             if (!currentItemIsValid)
             {
                 textColor = getColorRed(0xFF);
-            }
-            else
-            {
-                textColor = getColorWhite(0xFF);
-            }
-        }
-        else if (currentIndex == i)
-        {
-            textColor = getColorBlue(0xFF);
-        }
-        else
-        {
-            // If the item has an invalid id, then set the text to red
-            if (!currentItemIsValid)
-            {
-                textColor = getColorRed(0xFF);
-            }
-            else
-            {
-                textColor = getColorWhite(0xFF);
             }
         }
 

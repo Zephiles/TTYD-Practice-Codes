@@ -55,15 +55,15 @@ bool MemoryWatchEntry::addAddressOffset()
     this->totalAddressOffsets = static_cast<uint8_t>(newTotalOffsets);
 
     // Make a backup of the current offsets
-    int32_t offsetsBackupPtr[totalOffsets];
-    memcpy(offsetsBackupPtr, offsetsPtr, sizeof(int32_t) * totalOffsets);
+    int32_t offsetsBackup[totalOffsets];
+    memcpy(offsetsBackup, offsetsPtr, sizeof(int32_t) * totalOffsets);
 
     // Reallocate memory for the offsets and restore the current offsets
     delete[] offsetsPtr;
     offsetsPtr = new int32_t[newTotalOffsets];
     this->addressOffsets = offsetsPtr;
 
-    memcpy(offsetsPtr, offsetsBackupPtr, sizeof(int32_t) * totalOffsets);
+    memcpy(offsetsPtr, offsetsBackup, sizeof(int32_t) * totalOffsets);
     return true;
 }
 
@@ -91,15 +91,15 @@ bool MemoryWatchEntry::removeAddressOffset()
     }
 
     // Make a backup of the current offsets up to the last one
-    int32_t offsetsBackupPtr[newTotalOffsets];
-    memcpy(offsetsBackupPtr, offsetsPtr, sizeof(int32_t) * newTotalOffsets);
+    int32_t offsetsBackup[newTotalOffsets];
+    memcpy(offsetsBackup, offsetsPtr, sizeof(int32_t) * newTotalOffsets);
 
     // Reallocate memory for the offsets and restore the current offsets up to the last one
     delete[] offsetsPtr;
     offsetsPtr = new int32_t[newTotalOffsets];
     this->addressOffsets = offsetsPtr;
 
-    memcpy(offsetsPtr, offsetsBackupPtr, sizeof(int32_t) * newTotalOffsets);
+    memcpy(offsetsPtr, offsetsBackup, sizeof(int32_t) * newTotalOffsets);
     return true;
 }
 

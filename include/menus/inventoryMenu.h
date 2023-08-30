@@ -31,6 +31,8 @@ enum InventoryFlag
     INVENTORY_FLAG_DUPLICATE = 0,
     INVENTORY_FLAG_CHANGE_BY_ID,
     INVENTORY_FLAG_CHANGE_BY_ICON,
+    INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT,
+    INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE,
     INVENTORY_FLAG_DELETE,
 };
 
@@ -59,9 +61,12 @@ class InventoryMenu
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
     uint32_t getInventoryType() const { return this->inventoryType; }
     uint32_t getInventorySize() const { return this->inventorySize; }
+
+    uint32_t getSelectedIndex() const { return this->selectedIndex; }
+    void setSelectedIndex(uint32_t index) { this->selectedIndex = static_cast<uint8_t>(index); }
+
     uint32_t getCurrentPage() const { return this->currentPage; }
     uint32_t getCurrentIndex() const { return this->currentIndex; }
-
     uint8_t *getCurrentPagePtr() { return &this->currentPage; }
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
@@ -71,6 +76,9 @@ class InventoryMenu
 
     void initErrorWindow(const char *text);
     void duplicateItem(Menu *menuPtr);
+    bool initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
+    void swapItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
+    void moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
     void deleteItem(Menu *menuPtr);
 
     void verifyInventoryIndexAndPage(Menu *menuPtr);
@@ -99,6 +107,7 @@ class InventoryMenu
     MenuAutoIncrement autoIncrement;
     uint8_t inventoryType; // Specifier for the inventory that is currently being worked with
     uint8_t inventorySize; // Size of the inventory that is currently being worked with
+    uint8_t selectedIndex; // For swapping/moving items/badges
     uint8_t currentPage;
     uint8_t currentIndex; // Current cursor position
 };
@@ -111,6 +120,8 @@ void inventoryMenuMainExit();              // Called when exiting the main part 
 void selectedOptionAddById(Menu *menuPtr);
 void selectedOptionAddByIcon(Menu *menuPtr);
 void selectedOptionDuplicate(Menu *menuPtr);
+void selectedOptionSwapItems(Menu *menuPtr);
+void selectedOptionMoveItem(Menu *menuPtr);
 void selectedOptionChangeById(Menu *menuPtr);
 void selectedOptionChangeByIcon(Menu *menuPtr);
 void selectedOptionDelete(Menu *menuPtr);

@@ -40,10 +40,8 @@ enum MemoryMenuMemoryWatchFlag
 {
     MEMORY_MENU_MEMORY_WATCH_FLAG_MODIFY = 0,
     MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE,
-    MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_INIT,
-    MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_SELECTED_WATCH_TO_SWAP,
-    MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_INIT,
-    MEMORY_MENU_MEMORY_WATCH_FLAG_MOVE_SELECTED_WATCH_TO_MOVE,
+    MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT,
+    MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP,
     MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE,
 };
 
@@ -83,6 +81,7 @@ class MemoryMenu
     void setChangeAddressCurrentPage(uint32_t page) { this->changeAddressCurrentPage = static_cast<uint8_t>(page); }
 
     void duplicateWatch(Menu *menuPtr);
+    bool initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
     void swapWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
     void moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
     void deleteWatch(Menu *menuPtr);
