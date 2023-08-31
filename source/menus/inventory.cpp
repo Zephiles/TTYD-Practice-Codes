@@ -784,13 +784,8 @@ void InventoryMenu::drawCurrentInventory()
     const Menu *menuPtr = gMenu;
     const uint32_t inventoryType = this->inventoryType;
     const bool drawVertical = (inventoryType == InventoryType::BADGES) || (inventoryType == InventoryType::STORED);
+
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
-
-    const bool currentlyChangingById = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
-    const bool changeByIdWindowOpen = !currentlyChangingById && this->valueEditor.shouldDraw();
-
-    const bool currentlyChangingByIcon = menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
-    const bool changeByIconWindowOpen = !currentlyChangingByIcon && this->itemIconSelector.shouldDraw();
 
     const bool swappingOrMovingItemsSelectedItem =
         menuPtr->flagIsSet(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
@@ -840,12 +835,6 @@ void InventoryMenu::drawCurrentInventory()
 
         const ItemId currentItem = inventoryItemPtr[i];
         const bool currentItemIsValid = itemIsValid(currentItem);
-
-        // If none of the flags are currently set, then the inventory is currently not being interacted with, so draw all of the
-        // text as white
-
-        // If a separate window is currently open for selecting an item/badge, then draw all of the text as white
-        // If changing an item/badge by id/icon, then still draw the text as either white or blue
         uint32_t textColor = getColorWhite(0xFF);
 
         if (anyFlagIsSet)
@@ -858,20 +847,14 @@ void InventoryMenu::drawCurrentInventory()
             {
                 textColor = getColorGreen(0xFF);
             }
-
-            // If the item has an invalid id, then set the text to red
             else if (!currentItemIsValid)
             {
                 textColor = getColorRed(0xFF);
             }
         }
-        else if (changeByIdWindowOpen || changeByIconWindowOpen)
+        else if (!currentItemIsValid)
         {
-            // If the item has an invalid id, then set the text to red
-            if (!currentItemIsValid)
-            {
-                textColor = getColorRed(0xFF);
-            }
+            textColor = getColorRed(0xFF);
         }
 
         const char *itemName = getItemName(currentItem);
