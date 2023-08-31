@@ -10,8 +10,12 @@
 void *allocateMemoryFromTail(std::size_t size)
 {
     void *ptr = allocFromHeapTail(heapHandle[0], size);
-    ptr = clearMemory(ptr, size);
-    DCFlushRange(ptr, size);
+    if (ptr)
+    {
+        clearMemory(ptr, size);
+        DCFlushRange(ptr, size);
+    }
+
     return ptr;
 }
 
