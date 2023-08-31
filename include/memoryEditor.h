@@ -14,6 +14,14 @@
 #define MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED (MEMORY_EDITOR_BYTES_PER_ROW * MEMORY_EDITOR_TOTAL_ROWS)
 #define MEMORY_EDITOR_MAX_NUM_DIGITS_DISPLAYED (MEMORY_EDITOR_DIGITS_PER_ROW * MEMORY_EDITOR_TOTAL_ROWS)
 
+enum class MemoryEditorState : uint8_t
+{
+    MEMORY_EDITOR_STATE_SELECTING_HEADER = 0,
+    MEMORY_EDITOR_STATE_ENTERED_EDITOR,
+    MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT,
+    MEMORY_EDITOR_STATE_EDITING_BYTES,
+};
+
 enum MemoryEditorOptions
 {
     MEMORY_EDITOR_OPTION_CHANGE_ADDRESS = 0,
@@ -43,19 +51,6 @@ enum MemoryEditorEnabledFlag
 #define TOTAL_MEMORY_EDITOR_ENABLED_FLAGS MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_MAX_VALUE
 #define MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE intCeil(TOTAL_MEMORY_EDITOR_ENABLED_FLAGS, sizeof(uint32_t) * 8)
 
-enum MemoryEditorMiscFlag
-{
-    MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED = 0,
-    MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR,
-    MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT,
-    MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES,
-
-    MEMORY_EDITOR_MISC_FLAG_MAX_VALUE, // Don't use this directly other than for defines
-};
-
-#define TOTAL_MEMORY_EDITOR_MISC_FLAGS MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MAX_VALUE
-#define MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE intCeil(TOTAL_MEMORY_EDITOR_MISC_FLAGS, sizeof(uint32_t) * 8)
-
 class MemoryEditor
 {
    public:
@@ -66,11 +61,6 @@ class MemoryEditor
     void setEnabledFlag(uint32_t enabledFlag);
     void clearEnabledFlag(uint32_t enabledFlag);
     bool toggleEnabledFlag(uint32_t enabledFlag);
-
-    bool miscFlagIsSet(uint32_t miscFlag) const;
-    void setMiscFlag(uint32_t miscFlag);
-    void clearMiscFlag(uint32_t miscFlag);
-    bool toggleMiscFlag(uint32_t miscFlag);
 
     void setCurrentAddress(uint32_t addressRaw) { this->currentAddress = reinterpret_cast<uint8_t *>(addressRaw); }
 
@@ -96,6 +86,16 @@ class MemoryEditor
 
     void setNumBytesBeingEdited(uint32_t num) { this->numBytesBeingEdited = static_cast<uint8_t>(num); }
 
+    bool memoryEditorIsDisplayed() const { return this->displayed; }
+    void displayMemoryEditor() { this->displayed = true; }
+    void hideMemoryEditor() { this->displayed = false; }
+
+    void toggleMemoryEditorDisplayed()
+    {
+        const bool displayed = this->displayed;
+        this->displayed = !displayed;
+    }
+
     void dpadControls(MenuButtonInput button);
     void controls(MenuButtonInput button);
 
@@ -106,7 +106,6 @@ class MemoryEditor
     void adjustDigitValueFromAddress(uint32_t currentDigit, int32_t adjustAmount);
 
     uint32_t enabledFlags[MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE];
-    uint32_t miscFlags[MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE];
 
     uint8_t *currentAddress; // Initial address that values are being retrieved from inside the editor
 
@@ -123,6 +122,8 @@ class MemoryEditor
     uint8_t headerIndex;
 
     uint8_t numBytesBeingEdited; // Number of bytes that are currently being edited
+    MemoryEditorState state;
+    bool displayed; // Whether the memory editor is displayed or not
 };
 
 extern MemoryEditor *gMemoryEditor;

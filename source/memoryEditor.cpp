@@ -100,87 +100,6 @@ bool MemoryEditor::toggleEnabledFlag(uint32_t enabledFlag)
     return this->enabledFlagIsSet(enabledFlag);
 }
 
-bool MemoryEditor::miscFlagIsSet(uint32_t miscFlag) const
-{
-    // Make sure the flag is valid
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    constexpr uint32_t maxFlags = MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-    if (miscFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_MISC_FLAGS
-    if (miscFlag >= TOTAL_MEMORY_EDITOR_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->miscFlags[miscFlag / bitsPerWord] >> (miscFlag % bitsPerWord)) & 1U;
-}
-
-void MemoryEditor::setMiscFlag(uint32_t miscFlag)
-{
-    // Make sure the flag is valid
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    constexpr uint32_t maxFlags = MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-    if (miscFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_MISC_FLAGS
-    if (miscFlag >= TOTAL_MEMORY_EDITOR_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] |= (1UL << (miscFlag % bitsPerWord));
-}
-
-void MemoryEditor::clearMiscFlag(uint32_t miscFlag)
-{
-    // Make sure the flag is valid
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    constexpr uint32_t maxFlags = MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-    if (miscFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_MISC_FLAGS
-    if (miscFlag >= TOTAL_MEMORY_EDITOR_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] &= ~(1UL << (miscFlag % bitsPerWord));
-}
-
-bool MemoryEditor::toggleMiscFlag(uint32_t miscFlag)
-{
-    // Make sure the flag is valid
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    constexpr uint32_t maxFlags = MEMORY_EDITOR_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-    if (miscFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_MISC_FLAGS
-    if (miscFlag >= TOTAL_MEMORY_EDITOR_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] ^= (1UL << (miscFlag % bitsPerWord));
-    return this->miscFlagIsSet(miscFlag);
-}
-
 bool verifyNumBytesAndCurrentDigit(uint32_t numBytes, uint32_t currentDigit)
 {
     // Make sure numBytes does not exceed the maximum
@@ -393,6 +312,7 @@ void MemoryEditor::dpadControls(MenuButtonInput button)
     uint32_t headerIndex = this->headerIndex;
 
     const uint32_t numBytesBeingEdited = this->numBytesBeingEdited;
+    const MemoryEditorState currentState = this->state;
     uint8_t *currentAddress = this->currentAddress;
 
     const uint32_t startingHoverDigit = (editorIndex * 2) % MEMORY_EDITOR_DIGITS_PER_ROW;
@@ -402,276 +322,319 @@ void MemoryEditor::dpadControls(MenuButtonInput button)
     {
         case MenuButtonInput::DPAD_LEFT:
         {
-            // This handles EDITOR_EDITING_BYTES as well
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
+            switch (currentState)
             {
-                // Only move left if not on the furthest left byte of the current row
-                const bool furthestLeftCheck = ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW) != 0;
-
-                // Only move left if not on the first digit
-                const bool firstDigitCheck = editorSelectedIndex > 0;
-
-                if (furthestLeftCheck && firstDigitCheck)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
                 {
-                    // Move one to the left
-                    editorSelectedIndex--;
-                }
-                else
-                {
-                    // Move to the furthest right digit of the current row
-                    // Check to see if on the first row
-                    if (!firstDigitCheck)
+                    // Only move left if not on the furthest left byte of the current row
+                    const bool furthestLeftCheck =
+                        ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW) != 0;
+
+                    // Only move left if not on the first digit
+                    const bool firstDigitCheck = editorSelectedIndex > 0;
+
+                    if (furthestLeftCheck && firstDigitCheck)
                     {
-                        // If there's only enough bytes to make a single row, then go to the last valid digit
-                        if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
+                        // Move one to the left
+                        editorSelectedIndex--;
+                    }
+                    else
+                    {
+                        // Move to the furthest right digit of the current row
+                        // Check to see if on the first row
+                        if (!firstDigitCheck)
                         {
-                            editorSelectedIndex = numDigitsBeingEdited - 1;
+                            // If there's only enough bytes to make a single row, then go to the last valid digit
+                            if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
+                            {
+                                editorSelectedIndex = numDigitsBeingEdited - 1;
+                            }
+                            else
+                            {
+                                // Go to the last digit on the first row
+                                editorSelectedIndex = MEMORY_EDITOR_DIGITS_PER_ROW - startingHoverDigit - 1;
+                            }
                         }
                         else
                         {
-                            // Go to the last digit on the first row
-                            editorSelectedIndex = MEMORY_EDITOR_DIGITS_PER_ROW - startingHoverDigit - 1;
+                            // If there's only enough bytes to make a single row, then go to to the previous digit
+                            if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
+                            {
+                                editorSelectedIndex--;
+                            }
+                            else
+                            {
+                                // Go to the last digit on the current row
+                                editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW - 1;
+                            }
+                        }
+
+                        // Make sure the current digit is valid
+                        const bool lastDigitCheck = editorSelectedIndex > (numDigitsBeingEdited - 1);
+                        if (lastDigitCheck)
+                        {
+                            editorSelectedIndex = numDigitsBeingEdited - 1;
+                        }
+                    }
+
+                    this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
+                {
+                    // Check if currently on the furthest left byte of the current row
+                    if ((editorIndex % MEMORY_EDITOR_BYTES_PER_ROW) == 0)
+                    {
+                        // Only move if not on the top row
+                        if (editorIndex > 0)
+                        {
+                            // Move to the last byte in the previous row
+                            editorIndex--;
+                            this->editorIndex = static_cast<uint8_t>(editorIndex);
                         }
                     }
                     else
                     {
-                        // If there's only enough bytes to make a single row, then go to to the previous digit
-                        if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
-                        {
-                            editorSelectedIndex--;
-                        }
-                        else
-                        {
-                            // Go to the last digit on the current row
-                            editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW - 1;
-                        }
-                    }
-
-                    // Make sure the current digit is valid
-                    const bool lastDigitCheck = editorSelectedIndex > (numDigitsBeingEdited - 1);
-                    if (lastDigitCheck)
-                    {
-                        editorSelectedIndex = numDigitsBeingEdited - 1;
-                    }
-                }
-
-                this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                // Check if currently on the furthest left byte of the current row
-                if ((editorIndex % MEMORY_EDITOR_BYTES_PER_ROW) == 0)
-                {
-                    // Only move if not on the top row
-                    if (editorIndex > 0)
-                    {
-                        // Move to the last byte in the previous row
+                        // Move one to the left
                         editorIndex--;
                         this->editorIndex = static_cast<uint8_t>(editorIndex);
                     }
+                    break;
                 }
-                else
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
                 {
-                    // Move one to the left
-                    editorIndex--;
-                    this->editorIndex = static_cast<uint8_t>(editorIndex);
-                }
-            }
-            else // Haven't selected an option yet
-            {
-                // Only move left if not on the furthest left option
-                if (headerIndex > 0)
-                {
-                    // Move one to the left
-                    headerIndex--;
-                }
-                else
-                {
-                    // Move to the furthest right option
-                    headerIndex = MEMORY_EDITOR_HEADER_TOTAL_OPTIONS - 1;
-                }
+                    // Only move left if not on the furthest left option
+                    if (headerIndex > 0)
+                    {
+                        // Move one to the left
+                        headerIndex--;
+                    }
+                    else
+                    {
+                        // Move to the furthest right option
+                        headerIndex = MEMORY_EDITOR_HEADER_TOTAL_OPTIONS - 1;
+                    }
 
-                this->headerIndex = static_cast<uint8_t>(headerIndex);
+                    this->headerIndex = static_cast<uint8_t>(headerIndex);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
             break;
         }
         case MenuButtonInput::DPAD_RIGHT:
         {
-            // This handles EDITOR_EDITING_BYTES as well
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
+            switch (currentState)
             {
-                editorSelectedIndex++;
-
-                // Only move right if not on the furthest right byte of the current row
-                const bool furthestRightByteCheck =
-                    ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW) != 0;
-
-                // Only move right if not on the last digit
-                const bool lastDigitCheck = editorSelectedIndex < numDigitsBeingEdited;
-
-                if (!furthestRightByteCheck || !lastDigitCheck)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
                 {
-                    // Check to see if on the first row
-                    const int32_t rowCheck = editorSelectedIndex + startingHoverDigit;
+                    editorSelectedIndex++;
 
-                    if (rowCheck <= MEMORY_EDITOR_DIGITS_PER_ROW)
+                    // Only move right if not on the furthest right byte of the current row
+                    const bool furthestRightByteCheck =
+                        ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW) != 0;
+
+                    // Only move right if not on the last digit
+                    const bool lastDigitCheck = editorSelectedIndex < numDigitsBeingEdited;
+
+                    if (!furthestRightByteCheck || !lastDigitCheck)
                     {
-                        // Go to the first digit if the amount of bytes exceeds a single row
-                        // Also go to the first digit if the next digit exceeds the maximum
-                        if ((numBytesBeingEdited > MEMORY_EDITOR_BYTES_PER_ROW) ||
-                            (editorSelectedIndex > (numDigitsBeingEdited - 1)))
+                        // Check to see if on the first row
+                        const int32_t rowCheck = editorSelectedIndex + startingHoverDigit;
+
+                        if (rowCheck <= MEMORY_EDITOR_DIGITS_PER_ROW)
                         {
-                            editorSelectedIndex = 0;
-                        }
-                    }
-                    else
-                    {
-                        // If there's only enough bytes to make a single row, then go to the first digit
-                        if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
-                        {
-                            editorSelectedIndex = 0;
+                            // Go to the first digit if the amount of bytes exceeds a single row
+                            // Also go to the first digit if the next digit exceeds the maximum
+                            if ((numBytesBeingEdited > MEMORY_EDITOR_BYTES_PER_ROW) ||
+                                (editorSelectedIndex > (numDigitsBeingEdited - 1)))
+                            {
+                                editorSelectedIndex = 0;
+                            }
                         }
                         else
                         {
-                            // Move to the first digit of the current row
-                            // Check to see if on the furthest right digit of the current row
-                            if (!furthestRightByteCheck)
+                            // If there's only enough bytes to make a single row, then go to the first digit
+                            if (numBytesBeingEdited <= MEMORY_EDITOR_BYTES_PER_ROW)
                             {
-                                editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
+                                editorSelectedIndex = 0;
                             }
                             else
                             {
-                                editorSelectedIndex -=
-                                    ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW);
+                                // Move to the first digit of the current row
+                                // Check to see if on the furthest right digit of the current row
+                                if (!furthestRightByteCheck)
+                                {
+                                    editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
+                                }
+                                else
+                                {
+                                    editorSelectedIndex -=
+                                        ((editorSelectedIndex + startingHoverDigit) % MEMORY_EDITOR_DIGITS_PER_ROW);
+                                }
                             }
                         }
                     }
+
+                    this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
+                    break;
                 }
-
-                this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                editorIndex++;
-
-                // Only move if not on the bottom row
-                const int32_t rowCheck = (editorIndex + numBytesBeingEdited) - MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
-
-                if (rowCheck <= 0)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
                 {
-                    // Move one to the right
-                    this->editorIndex = static_cast<uint8_t>(editorIndex);
-                }
-            }
-            else // Haven't selected an option yet
-            {
-                // Only move right if not on the furthest right option
-                if (headerIndex < (MEMORY_EDITOR_HEADER_TOTAL_OPTIONS - 1))
-                {
-                    // Move one to the right
-                    headerIndex++;
-                }
-                else
-                {
-                    // Move to the furthest left option
-                    headerIndex = 0;
-                }
+                    editorIndex++;
 
-                this->headerIndex = static_cast<uint8_t>(headerIndex);
+                    // Only move if not on the bottom row
+                    const int32_t rowCheck = (editorIndex + numBytesBeingEdited) - MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
+
+                    if (rowCheck <= 0)
+                    {
+                        // Move one to the right
+                        this->editorIndex = static_cast<uint8_t>(editorIndex);
+                    }
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
+                {
+                    // Only move right if not on the furthest right option
+                    if (headerIndex < (MEMORY_EDITOR_HEADER_TOTAL_OPTIONS - 1))
+                    {
+                        // Move one to the right
+                        headerIndex++;
+                    }
+                    else
+                    {
+                        // Move to the furthest left option
+                        headerIndex = 0;
+                    }
+
+                    this->headerIndex = static_cast<uint8_t>(headerIndex);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
             break;
         }
         case MenuButtonInput::DPAD_DOWN:
         {
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES))
+            switch (currentState)
             {
-                // Decrement the current digit value
-                adjustDigitValueFromAddress(editorSelectedIndex, -1);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
-            {
-                // Move down one row
-                editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW;
-
-                // Check if there's a row under the current one
-                const int32_t rowCheck = numDigitsBeingEdited - editorSelectedIndex;
-                if (rowCheck <= 0)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
                 {
-                    // Loop backwards through the rows until the first invalid digit is reached
-                    do
-                    {
-                        editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
-                    } while (editorSelectedIndex >= 0);
-
-                    // Go back to the first valid digit
+                    // Decrement the current digit value
+                    adjustDigitValueFromAddress(editorSelectedIndex, -1);
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
+                {
+                    // Move down one row
                     editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW;
+
+                    // Check if there's a row under the current one
+                    const int32_t rowCheck = numDigitsBeingEdited - editorSelectedIndex;
+                    if (rowCheck <= 0)
+                    {
+                        // Loop backwards through the rows until the first invalid digit is reached
+                        do
+                        {
+                            editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
+                        } while (editorSelectedIndex >= 0);
+
+                        // Go back to the first valid digit
+                        editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW;
+                    }
+
+                    this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
+                    break;
                 }
-
-                this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                editorIndex += MEMORY_EDITOR_BYTES_PER_ROW;
-
-                // Check to see if moving down goes to the next row
-                const bool rowCheck = (editorIndex + numBytesBeingEdited) > MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
-
-                if (rowCheck)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
                 {
-                    // Move down one row
-                    // Don't set editorIndex, as it's already correct
-                    this->currentAddress = currentAddress + MEMORY_EDITOR_BYTES_PER_ROW;
+                    editorIndex += MEMORY_EDITOR_BYTES_PER_ROW;
+
+                    // Check to see if moving down goes to the next row
+                    const bool rowCheck = (editorIndex + numBytesBeingEdited) > MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
+
+                    if (rowCheck)
+                    {
+                        // Move down one row
+                        // Don't set editorIndex, as it's already correct
+                        this->currentAddress = currentAddress + MEMORY_EDITOR_BYTES_PER_ROW;
+                    }
+                    else
+                    {
+                        // Move down one row
+                        this->editorIndex = static_cast<uint8_t>(editorIndex);
+                    }
+                    break;
                 }
-                else
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
+                default:
                 {
-                    // Move down one row
-                    this->editorIndex = static_cast<uint8_t>(editorIndex);
+                    break;
                 }
             }
             break;
         }
         case MenuButtonInput::DPAD_UP:
         {
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES))
+            switch (currentState)
             {
-                // Decrement the current digit value
-                adjustDigitValueFromAddress(editorSelectedIndex, 1);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
-            {
-                // Move up one row
-                editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
-
-                // Check if there's a row above the current one
-                if (editorSelectedIndex < 0)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
                 {
-                    // Loop forwards through the rows until the first invalid digit is reached
-                    do
-                    {
-                        editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW;
-                    } while (editorSelectedIndex <= (numDigitsBeingEdited - 1));
-
-                    // Go back to the first valid digit
+                    // Decrement the current digit value
+                    adjustDigitValueFromAddress(editorSelectedIndex, 1);
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
+                {
+                    // Move up one row
                     editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
-                }
 
-                this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                editorIndex -= MEMORY_EDITOR_BYTES_PER_ROW;
+                    // Check if there's a row above the current one
+                    if (editorSelectedIndex < 0)
+                    {
+                        // Loop forwards through the rows until the first invalid digit is reached
+                        do
+                        {
+                            editorSelectedIndex += MEMORY_EDITOR_DIGITS_PER_ROW;
+                        } while (editorSelectedIndex <= (numDigitsBeingEdited - 1));
 
-                // Check to see if moving up goes to the previous row
-                if (editorIndex < 0)
-                {
-                    // Move up one row
-                    // Don't set editorIndex, as it's already correct
-                    this->currentAddress = currentAddress - MEMORY_EDITOR_BYTES_PER_ROW;
+                        // Go back to the first valid digit
+                        editorSelectedIndex -= MEMORY_EDITOR_DIGITS_PER_ROW;
+                    }
+
+                    this->editorSelectedIndex = static_cast<uint16_t>(editorSelectedIndex);
+                    break;
                 }
-                else
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
                 {
-                    // Move up one row
-                    this->editorIndex = static_cast<uint8_t>(editorIndex);
+                    editorIndex -= MEMORY_EDITOR_BYTES_PER_ROW;
+
+                    // Check to see if moving up goes to the previous row
+                    if (editorIndex < 0)
+                    {
+                        // Move up one row
+                        // Don't set editorIndex, as it's already correct
+                        this->currentAddress = currentAddress - MEMORY_EDITOR_BYTES_PER_ROW;
+                    }
+                    else
+                    {
+                        // Move up one row
+                        this->editorIndex = static_cast<uint8_t>(editorIndex);
+                    }
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
+                default:
+                {
+                    break;
                 }
             }
             break;
@@ -719,6 +682,7 @@ void MemoryEditor::controls(MenuButtonInput button)
 
     // Handle the button inputs pressed this frame
     const uint32_t editorIndex = this->editorIndex;
+    const MemoryEditorState currentState = this->state;
     const uint32_t numBytesBeingEdited = this->numBytesBeingEdited;
     uint8_t *currentAddress = this->currentAddress;
     uint8_t *bytesBeingEdited = this->bytesBeingEdited;
@@ -735,213 +699,234 @@ void MemoryEditor::controls(MenuButtonInput button)
         }
         case MenuButtonInput::A:
         {
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES))
+            switch (currentState)
             {
-                // Copy the bytes from the amount of bytes to change into memory
-                // Only copy bytes that are at a valid address
-                uint8_t *tempAddress = currentAddress + editorIndex;
-
-                for (uint32_t i = 0; i < numBytesBeingEdited; i++)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
                 {
-                    uint8_t *address = &tempAddress[i];
+                    // Copy the bytes from the amount of bytes to change into memory
+                    // Only copy bytes that are at a valid address
+                    uint8_t *tempAddress = currentAddress + editorIndex;
 
-                    if (ptrIsValid(address))
+                    for (uint32_t i = 0; i < numBytesBeingEdited; i++)
                     {
-                        *address = bytesBeingEdited[i];
-                    }
-                }
+                        uint8_t *address = &tempAddress[i];
 
-                // Clear the cache of the memory if the flag is set
-                if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE))
-                {
-                    // Only clear the cache of valid memory
-                    uint32_t startAddressRaw = reinterpret_cast<uint32_t>(tempAddress);
-                    uint32_t endAddressRaw = startAddressRaw + numBytesBeingEdited;
-
-                    // Arbitrary check for cached memory
-                    if (ptrIsValid(startAddressRaw) == PointerVerificationType::PTR_UNCACHED)
-                    {
-                        // Only need to clear cached memory, so adjust the start and end to be in cached memory
-                        startAddressRaw -= 0x40000000;
-                        endAddressRaw -= 0x40000000;
-                    }
-
-                    if (startAddressRaw < 0x80000000)
-                    {
-                        startAddressRaw = 0x80000000;
-                    }
-
-                    if (endAddressRaw > 0x81800000)
-                    {
-                        endAddressRaw = 0x81800000;
-                    }
-
-                    const uint32_t size = endAddressRaw - startAddressRaw;
-                    clear_DC_IC_Cache(startAddressRaw, size);
-                }
-
-                // Go back to selecting a range of bytes to edit
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES);
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
-            {
-                // Start editing bytes
-                this->setMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                // Clear the array for the amount of bytes to change
-                clearMemory(bytesBeingEdited, numBytesBeingEdited);
-
-                // Copy the bytes from memory into the array for the amount of bytes to change
-                // Make sure there's at least one valid byte to copy
-                uint8_t *tempAddress = currentAddress + editorIndex;
-                bool validBytesCopied = false;
-
-                for (uint32_t i = 0; i < numBytesBeingEdited; i++)
-                {
-                    uint8_t *address = &tempAddress[i];
-
-                    if (ptrIsValid(address))
-                    {
-                        bytesBeingEdited[i] = *address;
-                        validBytesCopied = true;
-                    }
-                }
-
-                // If at least one valid byte was copied, then allow selecting digits to edit
-                if (validBytesCopied)
-                {
-                    this->editorSelectedIndex = 0;
-                    this->setMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT);
-                }
-            }
-            else // Haven't selected an option yet
-            {
-                const uint32_t headerIndex = this->headerIndex;
-                switch (headerIndex)
-                {
-                    case MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS:
-                    case MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_BYTES_SIZE:
-                    {
-                        // Initialize the value editor
-                        valueEditorPtr = new ValueEditor;
-                        this->valueEditor = valueEditorPtr;
-
-                        constexpr uint32_t minValue = 1;
-                        constexpr uint32_t maxValue = MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
-
-                        uint32_t currentValue;
-                        const uint32_t *minValuePtr;
-                        const uint32_t *maxValuePtr;
-                        VariableType type;
-
-                        uint32_t flags = 0;
-                        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-
-                        if (headerIndex == MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS)
+                        if (ptrIsValid(address))
                         {
-                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
-
-                            currentValue = reinterpret_cast<uint32_t>(currentAddress);
-                            minValuePtr = nullptr;
-                            maxValuePtr = nullptr;
-                            type = VariableType::u32;
+                            *address = bytesBeingEdited[i];
                         }
-                        else
-                        {
-                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                    }
 
-                            currentValue = numBytesBeingEdited;
-                            minValuePtr = &minValue;
-                            maxValuePtr = &maxValue;
-                            type = VariableType::u8;
+                    // Clear the cache of the memory if the flag is set
+                    if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE))
+                    {
+                        // Only clear the cache of valid memory
+                        uint32_t startAddressRaw = reinterpret_cast<uint32_t>(tempAddress);
+                        uint32_t endAddressRaw = startAddressRaw + numBytesBeingEdited;
+
+                        // Arbitrary check for cached memory
+                        if (ptrIsValid(startAddressRaw) == PointerVerificationType::PTR_UNCACHED)
+                        {
+                            // Only need to clear cached memory, so adjust the start and end to be in cached memory
+                            startAddressRaw -= 0x40000000;
+                            endAddressRaw -= 0x40000000;
                         }
 
-                        const Window *rootWindowPtr = gRootWindow;
-
-                        valueEditorPtr->init(&currentValue,
-                                             minValuePtr,
-                                             maxValuePtr,
-                                             rootWindowPtr,
-                                             flags,
-                                             type,
-                                             rootWindowPtr->getAlpha());
-
-                        valueEditorPtr->startDrawing(memoryEditorAdjustValueEditorValue,
-                                                     memoryEditorCancelAdjustValueEditorValue);
-                        break;
-                    }
-                    case MemoryEditorOptions::MEMORY_EDITOR_OPTION_ENTER_EDITOR:
-                    {
-                        // If memory was previously allocated for the bytes that are being changed, then free it
-                        if (bytesBeingEdited)
+                        if (startAddressRaw < 0x80000000)
                         {
-                            delete[] bytesBeingEdited;
+                            startAddressRaw = 0x80000000;
                         }
 
-                        // Allocate memory for the bytes that are being changed
-                        this->bytesBeingEdited = new uint8_t[numBytesBeingEdited];
-                        this->editorIndex = 0;
+                        if (endAddressRaw > 0x81800000)
+                        {
+                            endAddressRaw = 0x81800000;
+                        }
 
-                        // Open the editor
-                        this->setMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR);
-                        break;
+                        const uint32_t size = endAddressRaw - startAddressRaw;
+                        clear_DC_IC_Cache(startAddressRaw, size);
                     }
-                    default:
+
+                    // Go back to selecting a range of bytes to edit
+                    this->state = MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR;
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
+                {
+                    // Start editing bytes
+                    this->state = MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES;
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
+                {
+                    // Clear the array for the amount of bytes to change
+                    clearMemory(bytesBeingEdited, numBytesBeingEdited);
+
+                    // Copy the bytes from memory into the array for the amount of bytes to change
+                    // Make sure there's at least one valid byte to copy
+                    uint8_t *tempAddress = currentAddress + editorIndex;
+                    bool validBytesCopied = false;
+
+                    for (uint32_t i = 0; i < numBytesBeingEdited; i++)
                     {
-                        break;
+                        uint8_t *address = &tempAddress[i];
+
+                        if (ptrIsValid(address))
+                        {
+                            bytesBeingEdited[i] = *address;
+                            validBytesCopied = true;
+                        }
                     }
+
+                    // If at least one valid byte was copied, then allow selecting digits to edit
+                    if (validBytesCopied)
+                    {
+                        this->editorSelectedIndex = 0;
+                        this->state = MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT;
+                    }
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
+                {
+                    const uint32_t headerIndex = this->headerIndex;
+                    switch (headerIndex)
+                    {
+                        case MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS:
+                        case MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_BYTES_SIZE:
+                        {
+                            // Initialize the value editor
+                            valueEditorPtr = new ValueEditor;
+                            this->valueEditor = valueEditorPtr;
+
+                            constexpr uint32_t minValue = 1;
+                            constexpr uint32_t maxValue = MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED;
+
+                            uint32_t currentValue;
+                            const uint32_t *minValuePtr;
+                            const uint32_t *maxValuePtr;
+                            VariableType type;
+
+                            uint32_t flags = 0;
+                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+
+                            if (headerIndex == MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS)
+                            {
+                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+
+                                currentValue = reinterpret_cast<uint32_t>(currentAddress);
+                                minValuePtr = nullptr;
+                                maxValuePtr = nullptr;
+                                type = VariableType::u32;
+                            }
+                            else
+                            {
+                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+
+                                currentValue = numBytesBeingEdited;
+                                minValuePtr = &minValue;
+                                maxValuePtr = &maxValue;
+                                type = VariableType::u8;
+                            }
+
+                            const Window *rootWindowPtr = gRootWindow;
+
+                            valueEditorPtr->init(&currentValue,
+                                                 minValuePtr,
+                                                 maxValuePtr,
+                                                 rootWindowPtr,
+                                                 flags,
+                                                 type,
+                                                 rootWindowPtr->getAlpha());
+
+                            valueEditorPtr->startDrawing(memoryEditorAdjustValueEditorValue,
+                                                         memoryEditorCancelAdjustValueEditorValue);
+                            break;
+                        }
+                        case MemoryEditorOptions::MEMORY_EDITOR_OPTION_ENTER_EDITOR:
+                        {
+                            // If memory was previously allocated for the bytes that are being changed, then free it
+                            if (bytesBeingEdited)
+                            {
+                                delete[] bytesBeingEdited;
+                            }
+
+                            // Allocate memory for the bytes that are being changed
+                            this->bytesBeingEdited = new uint8_t[numBytesBeingEdited];
+                            this->editorIndex = 0;
+
+                            // Open the editor
+                            this->state = MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR;
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
                 }
             }
             break;
         }
         case MenuButtonInput::B:
         {
-            if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES))
+            switch (currentState)
             {
-                // Go back to navigating through the selected bytes
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
-            {
-                // Clear the memory for the amount of bytes to change
-                clearMemory(bytesBeingEdited, numBytesBeingEdited);
-
-                // Go back to selecting a range to modify
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT);
-            }
-            else if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
-            {
-                // Clear the memory for the amount of bytes to change
-                if (bytesBeingEdited)
+                case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
                 {
-                    delete[] bytesBeingEdited;
-                    this->bytesBeingEdited = nullptr;
+                    // Go back to navigating through the selected bytes
+                    this->state = MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT;
+                    break;
                 }
-
-                // Go back to selecting a header option
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR);
-            }
-            else // Haven't selected an option yet
-            {
-                // Reset the System Level if it was previously set
-                if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL))
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT:
                 {
-                    setSystemLevel(0);
-                }
+                    // Clear the memory for the amount of bytes to change
+                    clearMemory(bytesBeingEdited, numBytesBeingEdited);
 
-                // Enable the pause menu if it was disabled
-                if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU))
+                    // Go back to selecting a range to modify
+                    this->state = MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR;
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR:
                 {
-                    winOpenEnable();
-                }
+                    // Clear the memory for the amount of bytes to change
+                    if (bytesBeingEdited)
+                    {
+                        delete[] bytesBeingEdited;
+                        this->bytesBeingEdited = nullptr;
+                    }
 
-                // Close the editor
-                this->headerIndex = 0;
-                this->clearMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED);
+                    // Go back to selecting a header option
+                    this->state = MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER;
+                    break;
+                }
+                case MemoryEditorState::MEMORY_EDITOR_STATE_SELECTING_HEADER:
+                {
+                    // Reset the System Level if it was previously set
+                    if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL))
+                    {
+                        setSystemLevel(0);
+                    }
+
+                    // Enable the pause menu if it was disabled
+                    if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU))
+                    {
+                        winOpenEnable();
+                    }
+
+                    // Close the memory editor
+                    this->headerIndex = 0;
+                    this->hideMemoryEditor();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
             break;
         }
@@ -1113,6 +1098,7 @@ void MemoryEditor::draw() const
     }
 
     // Draw the bytes displayed in the editor
+    const MemoryEditorState currentState = this->state;
     uint32_t selectedBytesCurrentDigit = 0;
 
     for (uint32_t i = 0; i < MEMORY_EDITOR_MAX_NUM_DIGITS_DISPLAYED; i++)
@@ -1122,7 +1108,7 @@ void MemoryEditor::draw() const
             // Go to the next line
             // This also handles setting the first line
             posX = mainEditorTextPosX;
-            posY = (mainEditorTextPosY - lineDecrement) - ((i / MEMORY_EDITOR_DIGITS_PER_ROW) * lineDecrement);
+            posY -= lineDecrement;
         }
 
         // Set the default color to white
@@ -1135,7 +1121,7 @@ void MemoryEditor::draw() const
         int32_t currentDigit;
 
         // Check to see if currently hovering over addresses
-        if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_ENTER_EDITOR))
+        if (currentState >= MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR)
         {
             // Check if the current address is part of the hover address
             if (this->checkIfAddressInHoverRange(digitAddress, selectedBytesCurrentDigit))
@@ -1144,7 +1130,7 @@ void MemoryEditor::draw() const
                 const bool digitAddressIsValid = ptrIsValid(const_cast<uint8_t *>(digitAddress));
 
                 // Check to see if an address has been selected
-                if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_SELECTED_BYTES_TO_EDIT))
+                if (currentState >= MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT)
                 {
                     // Check if the current digit is being hovered over
                     if (this->editorSelectedIndex == selectedBytesCurrentDigit)
@@ -1168,7 +1154,7 @@ void MemoryEditor::draw() const
                         drawTextInit(false);
 
                         // Set the text color
-                        if (this->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_EDITING_BYTES))
+                        if (currentState >= MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES)
                         {
                             // Make the text orange
                             color = 0xFFA31AFF;
@@ -1322,7 +1308,7 @@ bool memoryEditorIsOpen()
         return false;
     }
 
-    return memoryEditorPtr->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED);
+    return memoryEditorPtr->memoryEditorIsDisplayed();
 }
 
 void handleMemoryEditor()
@@ -1343,15 +1329,12 @@ void handleMemoryEditor()
     }
 
     // If the memory editor is not currently open, then check for and handle the button combo for opening/closing it
-    if (!memoryEditorPtr->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED) &&
-        checkButtonCombo(memoryEditorPtr->getButtonCombo()))
+    if (!memoryEditorPtr->memoryEditorIsDisplayed())
     {
-        memoryEditorPtr->toggleMiscFlag(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED);
-    }
-
-    // Check if the memory editor is now open
-    if (!memoryEditorPtr->miscFlagIsSet(MemoryEditorMiscFlag::MEMORY_EDITOR_MISC_FLAG_MEMORY_EDITOR_OPENED))
-    {
+        if (checkButtonCombo(memoryEditorPtr->getButtonCombo()))
+        {
+            memoryEditorPtr->toggleMemoryEditorDisplayed();
+        }
         return;
     }
 
@@ -1360,7 +1343,6 @@ void handleMemoryEditor()
     // If the Settings menu is open, then handle the controls for that
     // If it is open, then gMenu will be set
     Menu *settingsMenuPtr = gMenu;
-
     if (settingsMenuPtr)
     {
         // Handle the controls for the Settings menu
