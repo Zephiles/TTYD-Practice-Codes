@@ -52,8 +52,7 @@ bool ButtonComboEditor::checkIfBPressedThreeTimes(uint32_t buttonsHeld, MenuButt
         if (buttonsHeld == PadInput::PAD_B)
         {
             // Increment the B Button counter
-            bButtonCounter++;
-            this->setBButtonCounter(bButtonCounter);
+            this->setBButtonCounter(++bButtonCounter);
         }
         else
         {
@@ -109,8 +108,7 @@ bool ButtonComboEditor::decrementTimerAndCheckIfZero(uint32_t buttonsHeld)
             uint32_t timer = this->timer;
             if (timer > 0)
             {
-                timer--;
-                this->setTimer(timer);
+                this->setTimer(--timer);
             }
 
             return timer == 0;

@@ -859,7 +859,7 @@ bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *namesOut[2]
         const EventStageEventDescription *eventDesc = &stageDesc->pEvents[0];
         const int32_t eventCount = stageDesc->eventCount;
 
-        for (int32_t j = 0; j < eventCount; j++)
+        for (int32_t j = 0; j < eventCount; j++, eventDesc++)
         {
             if (eventDesc->gsw0 >= sequencePosition)
             {
@@ -868,8 +868,6 @@ bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *namesOut[2]
                 foundName = true;
                 break;
             }
-
-            eventDesc++;
         }
 
         if (foundName)

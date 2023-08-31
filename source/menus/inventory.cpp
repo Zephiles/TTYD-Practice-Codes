@@ -583,8 +583,7 @@ void InventoryMenu::deleteItem(Menu *menuPtr)
     // If the current index was at the last valid index, then it needs to be moved back one
     if (index >= this->getTotalItemsInInventory())
     {
-        index--;
-        this->setCurrentIndex(index);
+        this->setCurrentIndex(--index);
 
         // Check if moving back one should be placed on the previous page
         const uint32_t currentPage = this->currentPage;
@@ -1039,8 +1038,7 @@ void InventoryMenu::inventoryMenuMoveUpOnePage()
     }
 
     // Go to the previous page
-    currentPage--;
-    this->setCurrentPage(currentPage);
+    this->setCurrentPage(--currentPage);
 
     // Set currentIndex to the first option on the current page
     this->setCurrentIndex(currentPage * INVENTORY_ITEMS_PER_PAGE);
@@ -1143,13 +1141,12 @@ uint32_t InventoryMenu::getTotalItemsInInventory() const
     const ItemId *inventoryItemPtr = this->inventoryItemPtr;
     uint32_t currentItemCount = 0;
 
-    for (uint32_t i = 0; i < totalItems; i++)
+    for (uint32_t i = 0; i < totalItems; i++, currentItemCount++)
     {
         if (inventoryItemPtr[i] == ItemId::ITEM_NONE)
         {
             break;
         }
-        currentItemCount++;
     }
 
     return currentItemCount;

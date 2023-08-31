@@ -158,9 +158,8 @@ int32_t crashScreenDecrementYPos()
 
     constexpr int32_t kPosYIncrementAmount = 50;
     int32_t textPosY = tempDecrementCount + kPosYIncrementAmount;
-    tempDecrementCount--;
 
-    if (tempDecrementCount < -960)
+    if (--tempDecrementCount < -960)
     {
         // Simulate incrementing exactly once to match the US/PAL code
         decrementCount = -1;

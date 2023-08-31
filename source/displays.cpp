@@ -1794,13 +1794,12 @@ void drawEffsActive(CameraId cameraId, void *user)
     const EffEntry *entry = &workPtr->pEntries[0];
     uint32_t count = 0;
 
-    for (uint32_t i = 0; i < maxEntries; i++)
+    for (uint32_t i = 0; i < maxEntries; i++, entry++)
     {
         if (entry->wFlags)
         {
             count++;
         }
-        entry++;
     }
 
     // Draw the total amount of effs active out of the max
@@ -1839,13 +1838,12 @@ void drawEvtsActive(CameraId cameraId, void *user)
     const EvtEntry *entry = &evtWorkPtr->entries[0];
     uint32_t count = 0;
 
-    for (uint32_t i = 0; i < maxEntries; i++)
+    for (uint32_t i = 0; i < maxEntries; i++, entry++)
     {
         if (entry->flags & 0x1)
         {
             count++;
         }
-        entry++;
     }
 
     // Draw the total amount of evts active out of the max

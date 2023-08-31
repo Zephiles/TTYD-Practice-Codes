@@ -1090,8 +1090,7 @@ void MemoryEditor::draw() const
         posX += (digitSpace * 2.f) + 4.f;
 
         // Increment and handle looping
-        headerNum++;
-        if (headerNum > 0xF)
+        if (++headerNum > 0xF)
         {
             headerNum = 0;
         }
