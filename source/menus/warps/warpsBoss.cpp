@@ -99,13 +99,14 @@ void warpsMenuBossInit(Menu *menuPtr)
     enterNextMenu(&gWarpsMenuBossFuncs, totalOptions);
 }
 
-void warpsMenuBossDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr, uint32_t totalOptions)
+void warpsMenuBossDPadControls(MenuButtonInput button, Menu *menuPtr)
 {
+    const uint32_t totalOptions = menuPtr->getTotalOptions();
     const uint32_t totalRows = intCeil(totalOptions, WARPS_MENU_BOSS_MAX_OPTIONS_PER_ROW);
     const uint32_t totalOptionsPerPage = totalRows * WARPS_MENU_BOSS_MAX_OPTIONS_PER_ROW;
 
     menuControlsVertical(button,
-                         currentIndexPtr,
+                         menuPtr->getCurrentIndexPtr(),
                          nullptr,
                          totalOptions,
                          totalOptionsPerPage,
@@ -117,7 +118,6 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool autoIncrement = handleMenuAutoIncrement(gWarpsMenu->getAutoIncrementPtr());
-    const uint32_t totalOptions = menuPtr->getTotalOptions();
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -130,7 +130,7 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                warpsMenuBossDPadControls(buttonHeld, menuPtr->getCurrentIndexPtr(), totalOptions);
+                warpsMenuBossDPadControls(buttonHeld, menuPtr);
                 break;
             }
             default:
@@ -148,7 +148,7 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            warpsMenuBossDPadControls(button, menuPtr->getCurrentIndexPtr(), totalOptions);
+            warpsMenuBossDPadControls(button, menuPtr);
             break;
         }
 
