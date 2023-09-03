@@ -7,6 +7,7 @@
 #include "ttyd/battle.h"
 #include "ttyd/mariost.h"
 #include "ttyd/battle_unit.h"
+#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstdio>

@@ -38,7 +38,7 @@ void memoryMenuMemoryWatchChangeAddressInit(Menu *menuPtr)
     enterNextMenu(&gMemoryMenuMemoryWatchChangeAddressFuncs, totalOptions);
 }
 
-void MemoryMenu::memoryMenuMemoryWatchChangeAddressFlagSetControls(MenuButtonInput button)
+void MemoryMenu::memoryWatchChangeAddressFlagSetControls(MenuButtonInput button)
 {
     const MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
     const uint32_t totalOptions = currentEntry->getTotalAddressOffsets() + 1; // Add one since address is index 0
@@ -95,7 +95,7 @@ void memoryMenuMemoryWatchChangeAddressControls(Menu *menuPtr, MenuButtonInput b
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                memoryMenuPtr->memoryMenuMemoryWatchChangeAddressFlagSetControls(buttonHeld);
+                memoryMenuPtr->memoryWatchChangeAddressFlagSetControls(buttonHeld);
                 break;
             }
             default:
@@ -111,7 +111,7 @@ void memoryMenuMemoryWatchChangeAddressControls(Menu *menuPtr, MenuButtonInput b
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            memoryMenuPtr->memoryMenuMemoryWatchChangeAddressFlagSetControls(button);
+            memoryMenuPtr->memoryWatchChangeAddressFlagSetControls(button);
             break;
         }
         case MenuButtonInput::A:

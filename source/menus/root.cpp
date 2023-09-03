@@ -10,6 +10,7 @@
 #include "menus/memoryMenu.h"
 #include "menus/battlesMenu.h"
 #include "menus/displaysMenu.h"
+#include "menus/warpsMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
 #include "ttyd/win_main.h"
@@ -42,7 +43,7 @@ const MenuOption gRootMenuOptions[] = {
     displaysMenuInit,
 
     "Warps",
-    nullptr,
+    warpsMenuInit,
 };
 
 const MenuFunctions gRootMenuFuncs = {

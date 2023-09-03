@@ -51,7 +51,7 @@ void memoryMenuMemoryWatchMenuInit(Menu *menuPtr)
     enterNextMenu(&gMemoryMenuMemoryWatchMenuFuncs, totalOptions);
 }
 
-void MemoryMenu::memoryMenuMemoryWatchFlagSetControls(MenuButtonInput button)
+void MemoryMenu::memoryWatchFlagSetControls(MenuButtonInput button)
 {
     const uint32_t totalOptions = gMemoryWatch.getTotalEntries();
 
@@ -86,7 +86,7 @@ void memoryMenuMemoryWatchMenuControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                memoryMenuPtr->memoryMenuMemoryWatchFlagSetControls(buttonHeld);
+                memoryMenuPtr->memoryWatchFlagSetControls(buttonHeld);
                 break;
             }
             default:
@@ -102,7 +102,7 @@ void memoryMenuMemoryWatchMenuControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            memoryMenuPtr->memoryMenuMemoryWatchFlagSetControls(button);
+            memoryMenuPtr->memoryWatchFlagSetControls(button);
             break;
         }
         case MenuButtonInput::A:

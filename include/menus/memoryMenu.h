@@ -87,8 +87,8 @@ class MemoryMenu
     void deleteWatch(Menu *menuPtr);
 
     void initErrorWindow(const char *text);
-    void memoryMenuMemoryWatchFlagSetControls(MenuButtonInput button);
-    void memoryMenuMemoryWatchChangeAddressFlagSetControls(MenuButtonInput button);
+    void memoryWatchFlagSetControls(MenuButtonInput button);
+    void memoryWatchChangeAddressFlagSetControls(MenuButtonInput button);
 
     void drawMemoryWatchMenuInfo() const;
     void drawMemoryWatchModifyInfo() const;

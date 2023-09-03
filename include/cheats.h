@@ -48,7 +48,7 @@ enum CheatsEnabledFlag
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC,   // Disable Certain Sounds
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS, // Disable Certain Sounds
 
-    CHEATS_ENABLED_FLAG_MAX_VALUE,                         // Don't use this directly other than for defines
+    CHEATS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
 
 #define TOTAL_CHEATS_ENABLED_FLAGS CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MAX_VALUE
@@ -57,15 +57,15 @@ enum CheatsEnabledFlag
 // Misc flags are mainly for things that will not be saved to the settings file
 enum CheatsMiscFlag
 {
-    CHEATS_MISC_FLAG_RESET_MARIO_PROPERTIES = 0,      // Walk Through Most Objects
+    CHEATS_MISC_FLAG_RESET_MARIO_PROPERTIES = 0, // Walk Through Most Objects
 
-    CHEATS_MISC_FLAG_SAVE_SCRIPT_IS_RUNNING,          // Save Anywhere
+    CHEATS_MISC_FLAG_SAVE_SCRIPT_IS_RUNNING, // Save Anywhere
 
-    CHEATS_MISC_FLAG_MANUALLY_RELOADING_ROOM,         // Reload Room
-    CHEATS_MISC_FLAG_SYSTEM_LEVEL_SHOULD_BE_LOWERED,  // Reload Room
+    CHEATS_MISC_FLAG_MANUALLY_RELOADING_ROOM,        // Reload Room
+    CHEATS_MISC_FLAG_SYSTEM_LEVEL_SHOULD_BE_LOWERED, // Reload Room
 
-    CHEATS_MISC_FLAG_FRAME_ADVANCE_ADVANCE_FRAME,     // Frame Advance
-    CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED,    // Frame Advance
+    CHEATS_MISC_FLAG_FRAME_ADVANCE_ADVANCE_FRAME,  // Frame Advance
+    CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED, // Frame Advance
 
     CHEATS_MISC_FLAG_AREA_FLAGS_SHOULD_BE_CLEARED,    // Clear Area Flags
     CHEATS_MISC_FLAG_AREA_FLAGS_START_CLEARING_FLAGS, // Clear Area Flags
@@ -461,6 +461,7 @@ extern Cheats *gCheats;
 void handleAutoActionCommands();
 bool disableBattles();
 bool infiniteItemUsage(ItemId item, uint32_t index);
+void reloadRoomMain();
 void disableBattlesOnReload(SeqIndex seq, const char *map, const char *bero);
 uint32_t autoMashText(PadId controllerId);
 void frameAdvance();
