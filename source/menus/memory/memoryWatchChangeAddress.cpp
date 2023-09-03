@@ -365,24 +365,11 @@ void memoryMenuMemoryWatchChangeAddressChangeValues(Menu *menuPtr)
     uint32_t currentValue;
     VariableType type;
 
-    uint32_t minValue;
-    uint32_t maxValue;
-    uint32_t *minValuePtr;
-    uint32_t *maxValuePtr;
-
     if (currentIndex == 0)
     {
         // Changing address
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-
         currentValue = reinterpret_cast<uint32_t>(currentEntry->getAddressPtr());
         type = VariableType::u32;
-
-        minValue = 0x80000000;
-        maxValue = 0x817FFFFF;
-        minValuePtr = &minValue;
-        maxValuePtr = &maxValue;
     }
     else
     {
@@ -392,13 +379,10 @@ void memoryMenuMemoryWatchChangeAddressChangeValues(Menu *menuPtr)
         const int32_t offset = currentEntry->getAddressOffset(currentIndex - 1); // Subtract one since address is index 0
         currentValue = static_cast<uint32_t>(offset);
         type = VariableType::s32;
-
-        minValuePtr = nullptr;
-        maxValuePtr = nullptr;
     }
 
     const Window *rootWindowPtr = gRootWindow;
-    valueEditorPtr->init(&currentValue, minValuePtr, maxValuePtr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
+    valueEditorPtr->init(&currentValue, nullptr, nullptr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
 
     valueEditorPtr->startDrawing(memoryMenuMemoryWatchChangeAddressSetNewOffset,
                                  memoryMenuMemoryWatchChangeAddressCancelSetNewOffset);
