@@ -64,9 +64,9 @@ uint32_t getSequencePosition()
     return swByteGet(0);
 }
 
-void setSequencePosition(uint32_t value)
+void setSequencePosition(uint32_t position)
 {
-    swByteSet(0, value);
+    swByteSet(0, position);
 }
 
 bool compareStringToNextMap(const char *str)

@@ -62,7 +62,7 @@ const MenuOption gWarpsMenuInitOptions[] = {
     nullptr,
 
     "Warp To Boss",
-    nullptr,
+    warpsMenuBossInit,
 
     "Custom States",
     nullptr,
@@ -93,19 +93,19 @@ void warpsMenuInit(Menu *menuPtr)
     enterNextMenu(&gWarpsMenuInitFuncs, totalOptions);
 }
 
-void WarpsMenu::initFlagSetControls(MenuButtonInput button)
+void warpsMenuInitFlagSetControls(MenuButtonInput button, uint8_t *currentIndexPtr)
 {
     constexpr uint32_t totalOptions = sizeof(gWarpsMenuInitDestinations) / sizeof(const char *);
     constexpr uint32_t totalRows = intCeil(totalOptions, WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW);
     constexpr uint32_t totalOptionsPerPage = totalRows * WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW;
 
     menuControlsVertical(button,
-                         &this->currentIndex,
+                         currentIndexPtr,
                          nullptr,
                          totalOptions,
                          totalOptionsPerPage,
                          WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW,
-                         false);
+                         true);
 }
 
 void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
@@ -141,7 +141,7 @@ void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                warpsMenuPtr->initFlagSetControls(buttonHeld);
+                warpsMenuInitFlagSetControls(buttonHeld, warpsMenuPtr->getCurrentIndexPtr());
                 break;
             }
             default:
@@ -159,7 +159,7 @@ void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            warpsMenuPtr->initFlagSetControls(button);
+            warpsMenuInitFlagSetControls(button, warpsMenuPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:
@@ -186,10 +186,10 @@ void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void WarpsMenu::drawSelectWarpInfo()
+void WarpsMenu::drawSelectInitWarpInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
-    Menu *menuPtr = gMenu;
+    const Menu *menuPtr = gMenu;
     constexpr float scale = MENU_SCALE;
     const uint32_t totalOptions = menuPtr->getTotalOptions();
 
@@ -258,7 +258,7 @@ void warpsMenuInitDraw(CameraId cameraId, void *user)
 
     // Draw the info for selecting a warp
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawSelectWarpInfo();
+    warpsMenuPtr->drawSelectInitWarpInfo();
 
     // Draw the value editor if applicable
     ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
@@ -279,37 +279,6 @@ void warpsMenuInitExit()
 {
     delete gWarpsMenu;
     gWarpsMenu = nullptr;
-}
-
-uint32_t getCurrentPitLevel()
-{
-    uint32_t level = swByteGet(1321);
-
-    // Make sure the current level is valid
-    if (level >= 100) // Level is zero-indexed
-    {
-        // Default to the first level
-        level = 0;
-    }
-
-    return level + 1; // Start at one
-}
-
-void setCurrentPitLevel(uint32_t level)
-{
-    // Make sure the desired level is valid
-    if ((level >= 1) && (level <= 100))
-    {
-        // Adjust the level to be zero-indexed
-        level -= 1;
-    }
-    else
-    {
-        // Default to the first level
-        level = 0;
-    }
-
-    swByteSet(1321, level);
 }
 
 uint32_t warpToMap(uint32_t index)
@@ -339,7 +308,7 @@ uint32_t warpToMap(uint32_t index)
         // newPitMap needs to be a global variable
         static char newPitMap[7];
 
-        // Get proper room to use for the current level
+        // Get the proper map to use for the current level
         if (currentPitLevel % 10 == 0)
         {
             // Current level is a chest level or Bonetail
@@ -376,7 +345,7 @@ uint32_t warpToMap(uint32_t index)
             }
         }
 
-        // Set the new room string
+        // Set the new map string
         snprintf(newPitMap, sizeof(newPitMap), "jon_0%c", newPitMapChar);
         map = newPitMap;
     }
@@ -498,6 +467,37 @@ void WarpsMenu::initErrorWindow(const char *text)
     errorWindowPtr->setText(text);
     errorWindowPtr->setTimer(3000);
     errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
+}
+
+uint32_t getCurrentPitLevel()
+{
+    uint32_t level = swByteGet(1321);
+
+    // Make sure the current level is valid
+    if (level >= 100) // Level is zero-indexed
+    {
+        // Default to the first level
+        level = 0;
+    }
+
+    return level + 1; // Start at one
+}
+
+void setCurrentPitLevel(uint32_t level)
+{
+    // Make sure the desired level is valid
+    if ((level >= 1) && (level <= 100))
+    {
+        // Adjust the level to be zero-indexed
+        level -= 1;
+    }
+    else
+    {
+        // Default to the first level
+        level = 0;
+    }
+
+    swByteSet(1321, level);
 }
 
 void setNextMap(const char *map)

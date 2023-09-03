@@ -95,13 +95,13 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     // Help text will be drawn at the top-left of the window, so draw the main text two lines under it
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * MENU_SCALE;
     constexpr float offsetY = lineDecrement * 2.f;
 
     basicMenuLayoutDraw(cameraId, user, LINE_HEIGHT_FLOAT, 0.f, offsetY);
 
     // Draw the info for the fades
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     cheatsMenuPtr->drawResolveFadesInfo(offsetY);
 
     // Draw the error window if applicable
