@@ -62,7 +62,7 @@ void rootMenuInit()
     winOpenDisable();
 
     // Make sure the menu is actually being displayed
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Need to enter the root menu before initializing gRootMenu
     constexpr uint32_t totalOptions = sizeof(gRootMenuOptions) / sizeof(MenuOption);
@@ -85,7 +85,7 @@ void rootMenuExit()
     gRootMenu = nullptr;
 
     // Reset the flag for the menu being shown to be safe
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Enable the pause menu
     winOpenEnable();

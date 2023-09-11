@@ -1322,7 +1322,8 @@ void handleMemoryEditor()
     // Do not run if the menu is open; Need to check gRootMenu since gMenu is used in the memory editor
     // Do not run if changing button combos
     // Do not run if currently in the process of spawning an item
-    if (gRootMenu || gMod.changingButtonCombo() || gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
+    if (gRootMenu || gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) ||
+        gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
     {
         return;
     }

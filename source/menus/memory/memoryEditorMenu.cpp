@@ -121,7 +121,7 @@ void memoryMenuMemoryEditorMenuToggleFlag(Menu *menuPtr)
 void memoryMenuMemoryEditorMenuCancelSetNewButtonCombo()
 {
     gMemoryMenu->getButtonComboEditorPtr()->stopDrawing();
-    gMod.stopChangingButtonCombo();
+    gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 }
 
 void memoryMenuMemoryEditorMenuSetNewButtonCombo(uint32_t buttonCombo)
@@ -136,7 +136,7 @@ void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    gMod.startChangingButtonCombo();
+    gMod->setFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 
     // Initialize the button combo editor
     ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr();

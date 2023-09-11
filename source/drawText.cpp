@@ -86,7 +86,7 @@ void drawText(const char *text, float posX, float posY, float scale, float width
             break;
         }
 
-        // Copy this line to the temporary buffer and append a NULL byte
+        // Copy this line to the temporary buffer and append a null byte
         int32_t lineLength = newline - text;
 
         // Make sure the current line won't be an empty string

@@ -56,10 +56,10 @@ const MenuOption gWarpsMenuInitOptions[] = {
     warpsMenuInitSelectWarp,
 
     "Warp By Event",
-    nullptr,
+    warpsMenuEventInit,
 
     "Warp By Index",
-    nullptr,
+    warpsMenuIndexInit,
 
     "Warp To Boss",
     warpsMenuBossInit,
@@ -281,6 +281,17 @@ void warpsMenuInitExit()
     gWarpsMenu = nullptr;
 }
 
+void WarpsMenu::initErrorWindow(const char *text)
+{
+    ErrorWindow *errorWindowPtr = &this->errorWindow;
+    const Window *rootWindowPtr = gRootWindow;
+
+    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
+    errorWindowPtr->setText(text);
+    errorWindowPtr->setTimer(3000);
+    errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
+}
+
 uint32_t warpToMap(uint32_t index)
 {
     // Make sure a file is currently loaded and the player is not currently transitioning screens nor in a battle
@@ -377,7 +388,6 @@ bool warpToMapSelectWarp()
             warpsMenuPtr->initErrorWindow(gWarpsMenuCannotWarpText);
             return false;
         }
-        case WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_INVALID_INDEX:
         default:
         {
             break;
@@ -385,11 +395,6 @@ bool warpToMapSelectWarp()
     }
 
     return false;
-}
-
-void warpsMenuInitCancelSelectedPitLevel()
-{
-    gWarpsMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void warpsMenuInitSelectedPitLevel(const ValueType *valuePtr)
@@ -403,7 +408,7 @@ void warpsMenuInitSelectedPitLevel(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    warpsMenuInitCancelSelectedPitLevel();
+    warpsMenuCloseValueEditor();
 }
 
 void warpsMenuInitSelectWarp(Menu *menuPtr)
@@ -446,7 +451,7 @@ void warpsMenuInitSelectWarp(Menu *menuPtr)
         valueEditorPtr
             ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::u8, rootWindowPtr->getAlpha());
 
-        valueEditorPtr->startDrawing(warpsMenuInitSelectedPitLevel, warpsMenuInitCancelSelectedPitLevel);
+        valueEditorPtr->startDrawing(warpsMenuInitSelectedPitLevel, warpsMenuCloseValueEditor);
     }
     else
     {
@@ -458,15 +463,23 @@ void warpsMenuInitSelectWarp(Menu *menuPtr)
     }
 }
 
-void WarpsMenu::initErrorWindow(const char *text)
+void warpsMenuEventIndexControls(Menu *menuPtr, MenuButtonInput button)
 {
-    ErrorWindow *errorWindowPtr = &this->errorWindow;
-    const Window *rootWindowPtr = gRootWindow;
+    // If the value editor is open, then handle the controls for that
+    ValueEditor *valueEditorPtr = gWarpsMenu->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
+    {
+        valueEditorPtr->controls(button);
+        return;
+    }
 
-    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
-    errorWindowPtr->setText(text);
-    errorWindowPtr->setTimer(3000);
-    errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
+}
+
+void warpsMenuCloseValueEditor()
+{
+    gWarpsMenu->getValueEditorPtr()->stopDrawing();
 }
 
 uint32_t getCurrentPitLevel()

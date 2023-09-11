@@ -12,76 +12,76 @@
 
 const MenuOption gWarpsMenuBossOptions[] = {
     "Crump",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Gus",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Blooper",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Gold Fuzzy",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Red Bones (Ch1)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Hooktail",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Shadow Sirens (Ch2)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Magnus Von Grapple",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Macho Grubba",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Atomic Boo",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Doopliss 1",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Doopliss 2",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Cortez",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Crump (Ch5)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Smorg",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Magnus Von Grapple 2.0",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Dark Bones",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Gloomtail",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Shadow Sirens (Ch8)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Grodus",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Bowser & Kammy",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Shadow Queen (Battle 1)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Shadow Queen (Battle 2)",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 
     "Bonetail",
-    warpsMenuBossSelectWarp,
+    warpsMenuBossWarp,
 };
 
 const MenuFunctions gWarpsMenuBossFuncs = {
@@ -248,7 +248,7 @@ uint32_t warpToBoss(Menu *menuPtr)
         return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_NOT_IN_GAME;
     }
 
-    // Make sure the index is valid
+    // Make sure the current index is valid
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
     const uint32_t totalOptions = menuPtr->getTotalOptions();
     if (currentIndex >= totalOptions)
@@ -265,7 +265,6 @@ uint32_t warpToBoss(Menu *menuPtr)
     switch (currentIndex)
     {
         case WarpsMenuBossOptions::WARPS_MENU_BOSS_OPTION_CRUMP_PROLOGUE:
-        default:
         {
             sequencePosition = 4;
             bossMap = "gor_00";
@@ -462,6 +461,10 @@ uint32_t warpToBoss(Menu *menuPtr)
             }
             break;
         }
+        default:
+        {
+            return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_FATAL_ERROR;
+        }
     }
 
     // Bring out a partner if one is not currently out
@@ -487,7 +490,7 @@ uint32_t warpToBoss(Menu *menuPtr)
     return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_SUCCESS;
 }
 
-void warpsMenuBossSelectWarp(Menu *menuPtr)
+void warpsMenuBossWarp(Menu *menuPtr)
 {
     switch (warpToBoss(menuPtr))
     {
@@ -501,7 +504,6 @@ void warpsMenuBossSelectWarp(Menu *menuPtr)
             gWarpsMenu->initErrorWindow(gWarpsMenuCannotWarpText);
             break;
         }
-        case WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_INVALID_INDEX:
         default:
         {
             break;

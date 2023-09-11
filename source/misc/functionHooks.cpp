@@ -7,6 +7,8 @@
 #include "ttyd/battle_database_common.h"
 #include "ttyd/camdrv.h"
 #include "ttyd/hitdrv.h"
+#include "ttyd/mapdata.h"
+#include "ttyd/evtmgr.h"
 
 #include <cstdint>
 
@@ -32,6 +34,10 @@ void (*g_winMarioDisp_trampoline)(CameraId cameraId, void *winWorkPtr, int32_t i
 HitEntry *(*g_hitCheckVecFilter_trampoline)(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction) = nullptr;
 NpcEntry *(*g_npcNameToPtr_trampoline)(const char *name) = nullptr;
 void (*g_animPoseMain_trampoline)(int32_t poseId) = nullptr;
+MapData *(*g_mapDataPtr_trampoline)(const char *mapName) = nullptr;
+void (*g__unload_trampoline)(const char *currentMap, const char *nextMap, const char *nextBero) = nullptr;
+void (*g_relSetEvtAddr_trampoline)(const char *mapName, const void *pInitEvtCode);
+int32_t (*g_evt_bero_get_info_trampoline)(EvtEntry *evtPtr, bool isFirstCall) = nullptr;
 
 int32_t (*g_SoundEfxPlayEx_trampoline)(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan) = nullptr;
 

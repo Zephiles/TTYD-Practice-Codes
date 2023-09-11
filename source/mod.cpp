@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-Mod gMod;
+Mod *gMod = nullptr;
 
 const char *gHelpTextAConfirmBCancel = "Press A to confirm\nPress B to cancel";
 const char *gHelpTextButtonCombo = "Button Combo (Can be used in any order)";

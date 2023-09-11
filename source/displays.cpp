@@ -487,7 +487,7 @@ bool checkIfAdjustingManualPositionOrScale(uint32_t enabledFlag)
     // If the Displays menu is open but hidden, then the display may need to be handled
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
-    if (displaysMenuPtr && gMenu && gMod.menuIsHidden())
+    if (displaysMenuPtr && gMenu && gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         // If the selected display in the menu is for the current display, then assume that the player is currently manually
         // positioning the display
@@ -1548,10 +1548,11 @@ void updateOnScreenTimer()
 
     if (previousFrameTime != 0)
     {
-        const Mod *modPtr = &gMod;
+        const Mod *modPtr = gMod;
 
         if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED) &&
-            (!gMenu || modPtr->menuIsHidden()) && !modPtr->changingButtonCombo())
+            (!gMenu || modPtr->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) &&
+            !modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
         {
             const OSTime incrementAmount = currentFrameTime - previousFrameTime;
             onScreenTimerPtr->setMainTimer(onScreenTimerPtr->getMainTimer() + incrementAmount);
@@ -1945,8 +1946,8 @@ void drawJumpStorage(CameraId cameraId, void *user)
     const char *string;
     getOnOffTextAndColor(jumpStorageFlag, &string, &color, 0xFF);
 
-    char buf[96];
-    snprintf(buf, sizeof(buf), "JS: <col %" PRIx32 ">%s<col ffffffff>\nSpdY: %.2f", color, string, playerPtr->wJumpVelocityY);
+    char buf[64];
+    snprintf(buf, sizeof(buf), "JS: <col %" PRIx32 ">%s\nSpdY: %.2f", color, string, playerPtr->wJumpVelocityY);
 
     // Get the position and scale for the text
     DisplayManuallyPosition data;
@@ -2435,7 +2436,7 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     // Do not run if the menu is currently open
     // Run if currently repositioning/scaling displays
     // Do not run if the memory editor is currently open
-    if ((gMenu && !gMod.menuIsHidden()) || memoryEditorIsOpen())
+    if ((gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) || memoryEditorIsOpen())
     {
         // Since the lines are not being drawn, reset the entry count to avoid drawing lines for outdated data
         displaysPtr->getHitCheckVisualizationDisplayPtr()->setEntryCount(0);
@@ -2513,7 +2514,7 @@ void handleHitCheckVisualization()
 
     // Do not run if the menu is currently open
     // Run if currently repositioning/scaling displays
-    if (gMenu && !gMod.menuIsHidden())
+    if (gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         return;
     }
@@ -3941,8 +3942,8 @@ void runDisplayFuncsEveryFrame()
     // Run each display function
     // Only run if the menu isn't currently open
     // Run if currently repositioning/scaling displays
-    const Mod *modPtr = &gMod;
-    if (gMenu && !modPtr->menuIsHidden())
+    const Mod *modPtr = gMod;
+    if (gMenu && !modPtr->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         return;
     }
@@ -3972,7 +3973,7 @@ void runDisplayFuncsEveryFrame()
     }
 
     // Only run button-based displays if currently not changing button combos
-    if (!modPtr->changingButtonCombo())
+    if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         constexpr uint32_t loopCount = sizeof(gDisplaysWithButtonCombos) / sizeof(DisplaysArrayFunc);
         const DisplaysArrayFunc *displaysWithButtonCombosPtr = gDisplaysWithButtonCombos;

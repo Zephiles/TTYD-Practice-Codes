@@ -13,7 +13,7 @@ struct EventStageEventDescription
     PartyMembers partnerId;
     PartyMembers followerId;
     uint8_t pad_3;
-    uint16_t gsw0; // Sequence Position
+    uint16_t sequencePosition;
     uint16_t pad_6;
     char *textId;
     char *nameJp;

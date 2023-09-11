@@ -129,8 +129,8 @@ void setSystemLevel(int32_t level)
         return;
     }
 
-    Mod *modPtr = &gMod;
-    const bool systemLevelIsSet = modPtr->checkIfSystemLevelIsSet();
+    Mod *modPtr = gMod;
+    const bool systemLevelIsSet = modPtr->flagIsSet(ModFlag::MOD_FLAG_SYSTEM_LEVEL);
 
     if (level == 0) // Being reset
     {
@@ -141,7 +141,7 @@ void setSystemLevel(int32_t level)
         }
 
         // The only reason the system level wouldn't be reset now is if in a screen ransion/battle/etc., so reset it
-        modPtr->clearSystemLevel();
+        modPtr->clearFlag(ModFlag::MOD_FLAG_SYSTEM_LEVEL);
 
         // Only reset if not in a battle nor a screen transition
         if (!checkIfInGame())
@@ -169,7 +169,7 @@ void setSystemLevel(int32_t level)
             return;
         }
 
-        modPtr->setSystemLevel();
+        modPtr->setFlag(ModFlag::MOD_FLAG_SYSTEM_LEVEL);
     }
 
     // Set the new system level

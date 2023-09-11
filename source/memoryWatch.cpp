@@ -624,7 +624,7 @@ void handleMemoryWatches()
     // Draw each watch
     // Only draw if the menu isn't currently open
     // Draw if currently repositioning/scaling watches
-    if (gMenu && !gMod.menuIsHidden())
+    if (gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         return;
     }

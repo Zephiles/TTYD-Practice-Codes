@@ -9,6 +9,8 @@
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
+#include "misc/utils.h"
+#include "misc/functionHooks.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/party.h"
@@ -18,8 +20,10 @@
 #include "ttyd/mario.h"
 #include "ttyd/seq_title.h"
 #include "ttyd/npcdrv.h"
-#include "misc/utils.h"
-#include "misc/functionHooks.h"
+#include "ttyd/swdrv.h"
+#include "ttyd/mariost.h"
+#include "menus/cheatsMenu.h"
+#include "menus/warpsMenu.h"
 
 #include <cstdint>
 #include <cstring>
@@ -343,21 +347,21 @@ bool performPreBattleActions()
     recheckJumpAndHammerLevels();
 
     PouchData *pouchPtr = pouchGetPtr();
-    Mod *modPtr = &gMod;
+    Mod *modPtr = gMod;
 
     // Clear the cache for Mario's stats if they were changed manually
-    if (modPtr->shouldClearMarioStatsCache())
+    if (modPtr->flagIsSet(ModFlag::MOD_FLAG_CLEAR_MARIO_STATS))
     {
-        modPtr->resetMarioStatsCacheBool();
+        modPtr->clearFlag(ModFlag::MOD_FLAG_CLEAR_MARIO_STATS);
 
         const uint32_t size = (&pouchPtr->starPoints - &pouchPtr->currentHp) * sizeof(int16_t);
         DCFlushRange(&pouchPtr->currentHp, size + sizeof(int16_t));
     }
 
     // Clear the cache for the partners' stats if they were changed manually
-    if (modPtr->shouldClearPartnerStatsCache())
+    if (modPtr->flagIsSet(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS))
     {
-        modPtr->resetPartnerStatsCacheBool();
+        modPtr->clearFlag(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS);
         DCFlushRange(pouchPtr->partyData, sizeof(pouchPtr->partyData));
     }
 
@@ -401,6 +405,76 @@ NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk)
     {
         return ret;
     }
+}
+
+void fixMapProblems() // Gets called in initStageEvents
+{
+    const uint32_t sequencePosition = getSequencePosition();
+
+    if (compareStringToNextMap("nok_00"))
+    {
+        // Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past
+        // slot 10 Check if the cutscene is going to play
+        if (sequencePosition < 26)
+        {
+            // Clear the pointer used to check which animation Mario should use when greeting the Koopa
+            fbatGetPointer()->wHitNpc = nullptr; // Mario will do no animation when the pointer is not set
+        }
+    }
+    else if (compareStringToNextMap("rsh_05_a"))
+    {
+        // Prevent the game from crashing if the player enters rsh_05_a with the sequence past 338
+        if (sequencePosition > 338)
+        {
+            // Set the sequence to 338 to prevent the crash
+            setSequencePosition(338);
+        }
+    }
+    else if (compareStringToNextMap("aji_13"))
+    {
+        // Prevent the game from crashing if the conveyor belt has not been activated
+        // Set GW(11) to 0 upon entering the room to prevent the crash
+        setGW(11, 0);
+    }
+    else if (compareStringToNextMap("las_08"))
+    {
+        // Prevent the game from crashing if the player entered las_08 with the sequence at 385 and GSW(1121) at 7
+        if (sequencePosition == 385)
+        {
+            // Check if GSW(1121) is currently higher than 6
+            if (swByteGet(1121) > 6)
+            {
+                // Lower the value to 6 to prevent the game from crashing
+                swByteSet(1121, 6);
+            }
+        }
+    }
+}
+
+GlobalWork *initStageEvents()
+{
+    Mod *modPtr = gMod;
+
+    // TODO: Add if check for custom states
+    if (false)
+    {
+        modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT); // Failsafe
+    }
+    else if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT))
+    {
+        modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT);
+        // TODO: Set CustomState.StateWasSelected to false as a failsafe
+        handleWarpByEvent();
+    }
+
+    // Override any flags set in this function if the previous flags were locked
+    lockFlags(gCheats, modPtr);
+
+    // Check to see if any fixes need to be applied to specific maps
+    fixMapProblems();
+
+    // The overwritten instruction sets r3 to the global work pointer, so return that
+    return globalWorkPtr;
 }
 
 void applyGameFixes()
@@ -547,59 +621,72 @@ void applyVariousGamePatches()
 
     // Prevent the game from crashing if the player tries to read the diary while not on the Excess Express
 #ifdef TTYD_US
-    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800D214C;
+    constexpr uint32_t preventDiaryTextboxSelectionAddress = 0x800D214C;
 #elif defined TTYD_JP
-    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800CE01C;
+    constexpr uint32_t preventDiaryTextboxSelectionAddress = 0x800CE01C;
 #elif defined TTYD_EU
-    constexpr uint32_t PreventDiaryTextboxSelectionAddress = 0x800D2F44;
+    constexpr uint32_t preventDiaryTextboxSelectionAddress = 0x800D2F44;
 #endif
 
-    writeBranchBL(PreventDiaryTextboxSelectionAddress, asmPreventDiaryTextboxSelection);
+    writeBranchBL(preventDiaryTextboxSelectionAddress, asmPreventDiaryTextboxSelection);
 
     // Always show the Mega Jump and Mega Hammer options in the battle menu if those badges are equipped, as normally they are
     // only present if the player has the Ultra Boots or Ultra Hammer respectively
 #ifdef TTYD_US
-    constexpr uint32_t BattleMenuJumpAddress = 0x80122BA4;
-    constexpr uint32_t BattleMenuHammerAddress = 0x80122BB8;
+    constexpr uint32_t battleMenuJumpAddress = 0x80122BA4;
+    constexpr uint32_t battleMenuHammerAddress = 0x80122BB8;
 #elif defined TTYD_JP
-    constexpr uint32_t BattleMenuJumpAddress = 0x8011D6DC;
-    constexpr uint32_t BattleMenuHammerAddress = 0x8011D6F0;
+    constexpr uint32_t battleMenuJumpAddress = 0x8011D6DC;
+    constexpr uint32_t battleMenuHammerAddress = 0x8011D6F0;
 #elif defined TTYD_EU
-    constexpr uint32_t BattleMenuJumpAddress = 0x80123AE4;
-    constexpr uint32_t BattleMenuHammerAddress = 0x80123AF8;
+    constexpr uint32_t battleMenuJumpAddress = 0x80123AE4;
+    constexpr uint32_t battleMenuHammerAddress = 0x80123AF8;
 #endif
 
-    writeBranchBL(BattleMenuJumpAddress, asmDisplayMegaJumpBadgeInBattleMenu);
-    writeBranchBL(BattleMenuHammerAddress, asmDisplayMegaHammerBadgesInBattleMenu);
+    writeBranchBL(battleMenuJumpAddress, asmDisplayMegaJumpBadgeInBattleMenu);
+    writeBranchBL(battleMenuHammerAddress, asmDisplayMegaHammerBadgesInBattleMenu);
 
     // Always show the partner menu, even if the sequence is below 7 and the player has no partners
     // Always show the badge menu, even if the sequence is below 20 and the player has no badges
 #ifdef TTYD_US
-    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x801649A0;
-    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x80164A44;
+    constexpr uint32_t pauseMenuPartnerMenuAddress = 0x801649A0;
+    constexpr uint32_t pauseMenuBadgeMenuAddress = 0x80164A44;
 #elif defined TTYD_JP
-    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x8015EFBC;
-    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x8015F060;
+    constexpr uint32_t pauseMenuPartnerMenuAddress = 0x8015EFBC;
+    constexpr uint32_t pauseMenuBadgeMenuAddress = 0x8015F060;
 #elif defined TTYD_EU
-    constexpr uint32_t PauseMenuPartnerMenuAddress = 0x80166490;
-    constexpr uint32_t PauseMenuBadgeMenuAddress = 0x80166534;
+    constexpr uint32_t pauseMenuPartnerMenuAddress = 0x80166490;
+    constexpr uint32_t pauseMenuBadgeMenuAddress = 0x80166534;
 #endif
 
-    applyAssemblyPatch(PauseMenuPartnerMenuAddress, 0x60000000); // nop
-    applyAssemblyPatch(PauseMenuBadgeMenuAddress, 0x60000000);   // nop
+    applyAssemblyPatch(pauseMenuPartnerMenuAddress, 0x60000000); // nop
+    applyAssemblyPatch(pauseMenuBadgeMenuAddress, 0x60000000);   // nop
 
     // Allow FontDrawMessageMtx to handle more custom commands like FontDrawMessage can
 #ifdef TTYD_US
-    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x800759E0;
+    constexpr uint32_t fontDrawMessageMtxHandleCommandAddress = 0x800759E0;
 #elif defined TTYD_JP
-    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x8007471C;
+    constexpr uint32_t fontDrawMessageMtxHandleCommandAddress = 0x8007471C;
 #elif defined TTYD_EU
-    constexpr uint32_t FontDrawMessageMtxHandleCommandAddress = 0x80076C9C;
+    constexpr uint32_t fontDrawMessageMtxHandleCommandAddress = 0x80076C9C;
 #endif
 
-    writeStandardBranches(FontDrawMessageMtxHandleCommandAddress,
+    writeStandardBranches(fontDrawMessageMtxHandleCommandAddress,
                           asmFontDrawMessageMtxHandleCommandStart,
                           asmFontDrawMessageMtxHandleCommandBranchBack);
+
+    // In order for custom states and warping by event to work properly, they need to handle their main code at a specific point
+    // during the screen transition, so hook a specific address for that. A function for checking for and fixing problems in
+    // specific rooms will also run at this address, as that needs to run at this time as well.
+#ifdef TTYD_US
+    constexpr uint32_t initStageEventsAddress = 0x800080E4;
+#elif defined TTYD_JP
+    constexpr uint32_t initStageEventsAddress = 0x80008054;
+#elif defined TTYD_EU
+    constexpr uint32_t initStageEventsAddress = 0x800082BC;
+#endif
+
+    writeBranchBL(initStageEventsAddress, initStageEvents);
 }
 
 void applyCheatAndDisplayInjects()

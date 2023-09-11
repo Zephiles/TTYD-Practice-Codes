@@ -223,6 +223,19 @@ void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user);
 
 void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr);
 
+#ifdef TTYD_JP
+bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequencePosition);
+
+bool getSequenceStageAndEvent(char *stageNameBuffer,
+                              uint32_t stageNameSize,
+                              uint32_t sequencePosition,
+                              const char *stageEventOut[2]);
+#else
+bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *stageEventOut[2]);
+#endif
+
+void drawStageAndEvent(uint32_t sequencePosition, float posX, float posY);
+
 // cheatsModifyMariosCoordinates
 void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);
 void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user);

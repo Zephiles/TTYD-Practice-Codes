@@ -185,7 +185,7 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
             // Only set the flag for clearing the cache if not in a battle
             if (!checkForSpecificSeq(SeqIndex::kBattle))
             {
-                gMod.clearPartnerStatsCache();
+                gMod->setFlag(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS);
             }
             break;
         }

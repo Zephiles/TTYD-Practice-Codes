@@ -84,40 +84,40 @@ extern "C"
 
     EvtWork *evtGetWork();
 
-    EvtEntry *evtEntry(const void *evtCode, int32_t executionOrder, uint32_t flags);
-    EvtEntry *evtEntryType(const void *evtCode, int8_t priority, uint32_t flags, uint32_t types);
-    EvtEntry *evtChildEntry(EvtEntry *parentEvt, const void *evtCode, uint32_t flags);
-    EvtEntry *evtBrotherEntry(EvtEntry *parentEvt, const void *evtCode, uint32_t flags);
-    EvtEntry *evtRestart(EvtEntry *evt);
-    void evtDelete(EvtEntry *evt);
+    EvtEntry *evtEntry(const void *evtCodePtr, int32_t executionOrder, uint32_t flags);
+    EvtEntry *evtEntryType(const void *evtCodePtr, int8_t priority, uint32_t flags, uint32_t types);
+    EvtEntry *evtChildEntry(EvtEntry *parentEvtPtr, const void *evtCodePtr, uint32_t flags);
+    EvtEntry *evtBrotherEntry(EvtEntry *parentEvPtr, const void *evtCodePtr, uint32_t flags);
+    EvtEntry *evtRestart(EvtEntry *evtPtr);
+    void evtDelete(EvtEntry *evtPtr);
     void evtDeleteID(int32_t threadId);
     bool evtCheckID(int32_t threadId);
-    void evtSetPri(EvtEntry *evt, int32_t priority);
-    void evtSetSpeed(EvtEntry *evt, float timescale);
-    void evtSetType(EvtEntry *evt, uint8_t typeMask);
-    void evtStop(EvtEntry *evt, uint8_t typeMask);
-    void evtStart(EvtEntry *evt, uint8_t typeMask);
+    void evtSetPri(EvtEntry *evtPtr, int32_t priority);
+    void evtSetSpeed(EvtEntry *evtPtr, float timescale);
+    void evtSetType(EvtEntry *evtPtr, uint8_t typeMask);
+    void evtStop(EvtEntry *evtPtr, uint8_t typeMask);
+    void evtStart(EvtEntry *evtPtr, uint8_t typeMask);
     void evtStopID(int32_t threadId);
     void evtStartID(int32_t threadId);
     void evtStopAll(uint8_t typeMask);
     void evtStartAll(uint8_t typeMask);
-    void evtStopOther(EvtEntry *evt, uint8_t typeMask);
-    void evtStartOther(EvtEntry *evt, uint8_t typeMask);
+    void evtStopOther(EvtEntry *evtPtr, uint8_t typeMask);
+    void evtStartOther(EvtEntry *evtPtr, uint8_t typeMask);
     EvtEntry *evtGetPtr(int32_t index);
     EvtEntry *evtGetPtrID(int32_t threadId);
 
     // Local functions
     // void make_pri_table();
-    // void evtEntryRunCheck(EvtEntry *evt);
+    // void evtEntryRunCheck(EvtEntry *evtPtr);
 }
 
 // clang-format off
 #define EVT_DECLARE_USER_FUNC(name, parameter_count) \
     constexpr int name##_parameter_count = (parameter_count); \
-    int32_t name(EvtEntry *evt, bool isFirstCall);
+    int32_t name(EvtEntry *evtPtr, bool isFirstCall);
 
 #define EVT_DEFINE_USER_FUNC(name) \
-    int32_t name(EvtEntry *evt, bool isFirstCall);
+    int32_t name(EvtEntry *evtPtr, bool isFirstCall);
 
 #define EVT_DECLARE(name) \
     extern const int32_t name[];

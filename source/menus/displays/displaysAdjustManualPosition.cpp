@@ -128,7 +128,7 @@ void DisplaysMenu::drawDisplayManualPositionData() const
 void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user)
 {
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    if (!gMod.menuIsHidden())
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         // Draw the main window and text
         basicMenuLayoutDraw(cameraId, user);
@@ -163,7 +163,7 @@ void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr)
 void displaysMenuAdjustManualPositionCancelChangingPosition()
 {
     gDisplaysMenu->getPositionEditorPtr()->stopDrawing();
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
 bool displaysMenuAdjustManualPositionConfirmChangingPosition()
@@ -185,7 +185,7 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
         return;
     }
 
-    gMod.hideMenu();
+    gMod->setFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Initialize the position editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
@@ -205,7 +205,7 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
 void displaysMenudjustManualPositionCancelSetNewScale()
 {
     gDisplaysMenu->getValueEditorPtr()->stopDrawing();
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
 void displaysMenuAdjustManualPositionSetNewScale(const ValueType *valuePtr)
@@ -231,7 +231,7 @@ void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
         return;
     }
 
-    gMod.hideMenu();
+    gMod->setFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;

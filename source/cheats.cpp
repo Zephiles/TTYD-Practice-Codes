@@ -360,7 +360,7 @@ void *fallThroughMostObjects(void *ptr)
     }
 
     // Don't fall if currently changing button combos
-    if (gMod.changingButtonCombo())
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         return ptr;
     }
@@ -402,7 +402,7 @@ void handleAutoActionCommands()
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_AUTO_ACTION_COMMANDS))
     {
         // Check to see if currently changing button combos
-        if (!gMod.changingButtonCombo())
+        if (!gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
         {
             if (cheatsPtr->checkCheatButtonComboEveryFrame(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS) ||
                 checkIfBadgeEquipped(ItemId::ITEM_DEBUG_BADGE))
@@ -436,7 +436,7 @@ void handleAutoActionCommands()
 void walkThroughMostObjects(Cheats *cheatsPtr, Mod *modPtr)
 {
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_WALK_THROUGH_WALLS) &&
-        !modPtr->changingButtonCombo() &&
+        !modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) &&
         cheatsPtr->checkCheatButtonComboEveryFrame(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_WALK_THROUGH_WALLS))
     {
         cheatsPtr->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_RESET_MARIO_PROPERTIES);
@@ -622,7 +622,7 @@ void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
             return;
         }
 
-        if (modPtr->changingButtonCombo())
+        if (modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
         {
             return;
         }
@@ -710,7 +710,8 @@ void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
     const float new_unk_184 = playerPtr->unk_184;
     const float new_unk_188 = playerPtr->unk_188;
 
-    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO) || modPtr->changingButtonCombo())
+    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO) ||
+        modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         // Check if the values should be restored
         if (speedUpMarioPtr->getChangedState() > SpeedUpMarioChangedState::SPEED_UP_MARIO_CHANGED_STATE_NO_CHANGES)
@@ -769,7 +770,7 @@ bool disableBattles()
         // Prevent entering a non-cutscene battle if opening the menu
         return true;
     }
-    else if (!gMod.changingButtonCombo())
+    else if (!gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         Cheats *cheatsPtr = gCheats;
 
@@ -799,7 +800,7 @@ bool infiniteItemUsage(ItemId item, uint32_t index)
         return g_pouchRemoveItemIndex_trampoline(item, index);
     }
 
-    if (gMod.changingButtonCombo())
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         // Call the original function
         return g_pouchRemoveItemIndex_trampoline(item, index);
@@ -864,7 +865,7 @@ void reloadRoomMain()
     cheatsPtr->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_MANUALLY_RELOADING_ROOM);
 
     // Make sure the System Level can be set again
-    gMod.clearSystemLevel();
+    gMod->clearFlag(ModFlag::MOD_FLAG_SYSTEM_LEVEL);
 
     // Reset the camera - mainly for the black bars at the top and bottom of the screen
     CameraEntry *cameraPtr = camGetPtr(CameraId::k2d);
@@ -888,7 +889,7 @@ void reloadRoomMain()
 
 void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
 {
-    if (!modPtr->changingButtonCombo() &&
+    if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) &&
         cheatsPtr->checkCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM))
     {
         // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, or if the memory
@@ -1002,7 +1003,7 @@ uint32_t autoMashText(PadId controllerId)
     }
 
     // Don't auto mash if currently changing button combos
-    if (gMod.changingButtonCombo())
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         // Return the intended value
         return keyGetButtonTrg(controllerId);
@@ -1044,7 +1045,7 @@ void frameAdvance()
     }
 
     // If currently changing button combos, then do not run
-    if (gMod.changingButtonCombo())
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         // Call the original function
         return g_DEMOPadRead_trampoline();
@@ -1405,7 +1406,7 @@ void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
     }
 
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPAWN_ITEM) && !gMenu &&
-        !modPtr->changingButtonCombo() && !memoryEditorIsOpen())
+        !modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) && !memoryEditorIsOpen())
     {
         // Make sure a file is currently loaded
         if (!checkIfInGame())
@@ -1607,11 +1608,11 @@ const CheatsArrayFunc gCheatsNoButtonCombos[] = {
 void runCheatFuncsEveryFrame()
 {
     Cheats *cheatsPtr = gCheats;
-    Mod *modPtr = &gMod;
+    Mod *modPtr = gMod;
 
     // Run each cheat function that is button-based
     // Only run button-based codes if currently not changing button combos
-    if (!modPtr->changingButtonCombo())
+    if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         constexpr uint32_t loopCount = sizeof(gCheatsWithButtonCombos) / sizeof(CheatsArrayFunc);
         const CheatsArrayFunc *cheatsWithButtonCombosPtr = gCheatsWithButtonCombos;

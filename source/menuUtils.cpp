@@ -10,7 +10,6 @@
 #include "misc/utils.h"
 #include "ttyd/system.h"
 #include "ttyd/win_main.h"
-#include "ttyd/event.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -220,7 +219,7 @@ void handleMenu()
     }
 
     // Check if the menu is being manually opened/closed via the button combo
-    if (checkButtonCombo(OPEN_CLOSE_MENU_BUTTON_COMBO) && !gMod.changingButtonCombo())
+    if (checkButtonCombo(OPEN_CLOSE_MENU_BUTTON_COMBO) && !gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO))
     {
         if (!gMenu)
         {
@@ -768,121 +767,4 @@ void menuControlsHorizontal(MenuButtonInput button,
     {
         *currentPagePtr = static_cast<uint8_t>(currentPage);
     }
-}
-
-#ifdef TTYD_JP
-bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequencePosition)
-{
-    // Make sure the sequence position is valid
-    if (sequencePosition >= CHEATS_TOTAL_EVENT_NAMES)
-    {
-        return false;
-    }
-
-    if (sequencePosition <= 22)
-    {
-        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stageNameBuffer, stageNameSize, "Opening");
-        return true;
-    }
-
-    if ((sequencePosition >= 403) && (sequencePosition <= 405))
-    {
-        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stageNameBuffer, stageNameSize, "Ending");
-        return true;
-    }
-
-    uint32_t stageNumber;
-    if ((sequencePosition >= 23) && (sequencePosition <= 70))
-    {
-        stageNumber = 1;
-    }
-    else if ((sequencePosition >= 71) && (sequencePosition <= 126))
-    {
-        stageNumber = 2;
-    }
-    else if ((sequencePosition >= 127) && (sequencePosition <= 177))
-    {
-        stageNumber = 3;
-    }
-    else if ((sequencePosition >= 178) && (sequencePosition <= 229))
-    {
-        stageNumber = 4;
-    }
-    else if ((sequencePosition >= 230) && (sequencePosition <= 281))
-    {
-        stageNumber = 5;
-    }
-    else if ((sequencePosition >= 282) && (sequencePosition <= 351))
-    {
-        stageNumber = 6;
-    }
-    else if ((sequencePosition >= 352) && (sequencePosition <= 381))
-    {
-        stageNumber = 7;
-    }
-    else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
-    {
-        stageNumber = 8;
-    }
-
-    snprintf(stageNameBuffer, stageNameSize, "Stage %" PRIu32, stageNumber);
-    return true;
-}
-#endif
-
-#ifdef TTYD_JP
-bool getSequenceStageAndEvent(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequencePosition, const char *namesOut[2])
-#else
-bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *namesOut[2])
-#endif
-{
-    const char *stageName;
-    const char *eventName;
-
-#ifdef TTYD_JP
-    if (!getStageString(stageNameBuffer, stageNameSize, sequencePosition))
-    {
-        return false;
-    }
-
-    stageName = stageNameBuffer;
-    eventName = gCheatsEventNames[sequencePosition];
-#else
-    const int32_t totalStages = eventStgNum();
-    bool foundName = false;
-
-    for (int32_t i = 0; i < totalStages; i++)
-    {
-        const EventStageDescription *stageDesc = eventStgDtPtr(i);
-        const EventStageEventDescription *eventDesc = &stageDesc->pEvents[0];
-        const int32_t eventCount = stageDesc->eventCount;
-
-        for (int32_t j = 0; j < eventCount; j++, eventDesc++)
-        {
-            if (eventDesc->gsw0 >= sequencePosition)
-            {
-                stageName = stageDesc->nameEn;
-                eventName = eventDesc->nameEn;
-                foundName = true;
-                break;
-            }
-        }
-
-        if (foundName)
-        {
-            break;
-        }
-    }
-
-    if (!foundName)
-    {
-        return false;
-    }
-#endif
-
-    namesOut[0] = stageName;
-    namesOut[1] = eventName;
-    return true;
 }

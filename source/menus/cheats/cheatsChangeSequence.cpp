@@ -6,6 +6,7 @@
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
+#include "ttyd/event.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -54,35 +55,9 @@ void CheatsMenu::drawSequenceInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 
     // Draw the stage and event names for the current sequence position
-    const char *names[2];
-
-#ifdef TTYD_JP
-    char stageNameBuffer[8];
-    if (!getSequenceStageAndEvent(stageNameBuffer, sizeof(stageNameBuffer), sequencePosition, names))
-#else
-    if (!getSequenceStageAndEvent(sequencePosition, names))
-#endif
-    {
-        return;
-    }
-
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const float posYBase = posY - (lineDecrement * 2.f);
-    posY = posYBase;
-
-    const char *stageEventText = "Stage\nEvent";
-    drawText(stageEventText, posX, posY, scale, getColorWhite(0xFF));
-
-    // Get the text position a bit to the right of the Stage and Event text
-    float width;
-    getTextWidthHeight(stageEventText, scale, &width, nullptr);
-
-    posX += width + (40.f * scale);
-    for (uint32_t i = 0; i < 2; i++)
-    {
-        drawText(names[i], posX, posY, scale, getColorWhite(0xFF));
-        posY -= lineDecrement;
-    }
+    posY -= (lineDecrement * 2.f);
+    drawStageAndEvent(sequencePosition, posX, posY);
 }
 
 void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user)
@@ -141,4 +116,154 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
                               VariableType::u16,
                               true,
                               cheatsMenuChangeSequenceChangeSequence);
+}
+
+#ifdef TTYD_JP
+bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequencePosition)
+{
+    // Make sure the sequence position is valid
+    if (sequencePosition >= CHEATS_TOTAL_EVENT_NAMES)
+    {
+        return false;
+    }
+
+    if (sequencePosition <= 22)
+    {
+        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
+        snprintf(stageNameBuffer, stageNameSize, "Opening");
+        return true;
+    }
+
+    if ((sequencePosition >= 403) && (sequencePosition <= 405))
+    {
+        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
+        snprintf(stageNameBuffer, stageNameSize, "Ending");
+        return true;
+    }
+
+    uint32_t stageNumber;
+    if ((sequencePosition >= 23) && (sequencePosition <= 70))
+    {
+        stageNumber = 1;
+    }
+    else if ((sequencePosition >= 71) && (sequencePosition <= 126))
+    {
+        stageNumber = 2;
+    }
+    else if ((sequencePosition >= 127) && (sequencePosition <= 177))
+    {
+        stageNumber = 3;
+    }
+    else if ((sequencePosition >= 178) && (sequencePosition <= 229))
+    {
+        stageNumber = 4;
+    }
+    else if ((sequencePosition >= 230) && (sequencePosition <= 281))
+    {
+        stageNumber = 5;
+    }
+    else if ((sequencePosition >= 282) && (sequencePosition <= 351))
+    {
+        stageNumber = 6;
+    }
+    else if ((sequencePosition >= 352) && (sequencePosition <= 381))
+    {
+        stageNumber = 7;
+    }
+    else // if ((sequencePosition >= 382) && (sequencePosition <= 402))
+    {
+        stageNumber = 8;
+    }
+
+    snprintf(stageNameBuffer, stageNameSize, "Stage %" PRIu32, stageNumber);
+    return true;
+}
+
+bool getSequenceStageAndEvent(char *stageNameBuffer,
+                              uint32_t stageNameSize,
+                              uint32_t sequencePosition,
+                              const char *stageEventOut[2])
+#else
+bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *stageEventOut[2])
+#endif
+{
+    const char *stageName;
+    const char *eventName;
+
+#ifdef TTYD_JP
+    if (!getStageString(stageNameBuffer, stageNameSize, sequencePosition))
+    {
+        return false;
+    }
+
+    stageName = stageNameBuffer;
+    eventName = gCheatsEventNames[sequencePosition];
+#else
+    const int32_t totalStages = eventStgNum();
+    bool foundName = false;
+
+    for (int32_t i = 0; i < totalStages; i++)
+    {
+        const EventStageDescription *stageDesc = eventStgDtPtr(i);
+        const EventStageEventDescription *eventDesc = &stageDesc->pEvents[0];
+        const int32_t eventCount = stageDesc->eventCount;
+
+        for (int32_t j = 0; j < eventCount; j++, eventDesc++)
+        {
+            if (eventDesc->sequencePosition >= sequencePosition)
+            {
+                stageName = stageDesc->nameEn;
+                eventName = eventDesc->nameEn;
+                foundName = true;
+                break;
+            }
+        }
+
+        if (foundName)
+        {
+            break;
+        }
+    }
+
+    if (!foundName)
+    {
+        return false;
+    }
+#endif
+
+    stageEventOut[0] = stageName;
+    stageEventOut[1] = eventName;
+    return true;
+}
+
+void drawStageAndEvent(uint32_t sequencePosition, float posX, float posY)
+{
+    // Draw the stage and event names for the current sequence position
+    const char *names[2];
+
+#ifdef TTYD_JP
+    char stageNameBuffer[8];
+    if (!getSequenceStageAndEvent(stageNameBuffer, sizeof(stageNameBuffer), sequencePosition, names))
+#else
+    if (!getSequenceStageAndEvent(sequencePosition, names))
+#endif
+    {
+        return;
+    }
+
+    constexpr float scale = MENU_SCALE;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    const char *stageEventText = "Stage\nEvent";
+    drawText(stageEventText, posX, posY, scale, getColorWhite(0xFF));
+
+    // Get the text position a bit to the right of the Stage and Event text
+    float width;
+    getTextWidthHeight(stageEventText, scale, &width, nullptr);
+
+    posX += width + (30.f * scale);
+    for (uint32_t i = 0; i < 2; i++)
+    {
+        drawText(names[i], posX, posY, scale, getColorWhite(0xFF));
+        posY -= lineDecrement;
+    }
 }

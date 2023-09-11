@@ -176,7 +176,7 @@ void MemoryMenu::drawMemoryWatchModifyInfo() const
 void memoryMenuMemoryWatchModifyDraw(CameraId cameraId, void *user)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    if (!gMod.menuIsHidden())
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         // Draw the main window and text
         basicMenuLayoutDraw(cameraId, user);
@@ -299,7 +299,7 @@ void memoryMenuMemoryWatchModifyStartChangingType(Menu *menuPtr)
 void memoryMenuMemoryWatchModifyCancelChangingPosition()
 {
     gMemoryMenu->getPositionEditorPtr()->stopDrawing();
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
 bool memoryMenuMemoryWatchModifyConfirmChangingPosition()
@@ -314,7 +314,7 @@ void memoryMenuMemoryWatchModifyStartChangingPosition(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    gMod.hideMenu();
+    gMod->setFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Initialize the position editor
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
@@ -332,7 +332,7 @@ void memoryMenuMemoryWatchModifyStartChangingPosition(Menu *menuPtr)
 void memoryMenuMemoryWatchModifyCancelSetNewScale()
 {
     gMemoryMenu->getValueEditorPtr()->stopDrawing();
-    gMod.showMenu();
+    gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
 void memoryMenuMemoryWatchModifySetNewScale(const ValueType *valuePtr)
@@ -348,7 +348,7 @@ void memoryMenuMemoryWatchModifyStartChangingScale(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    gMod.hideMenu();
+    gMod->setFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Initialize the value editor
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();

@@ -1,6 +1,7 @@
 #include "mod.h"
 #include "gamePatches.h"
 #include "cxx.h"
+#include "drawText.h"
 #include "cheats.h"
 #include "displays.h"
 #include "memoryWatch.h"
@@ -12,6 +13,7 @@
 #include "gc/DEMOPad.h"
 #include "gc/OSAlloc.h"
 #include "menus/rootMenu.h"
+#include "menus/warpsMenu.h"
 #include "misc/functionHooks.h"
 #include "misc/utils.h"
 #include "ttyd/mariost.h"
@@ -30,6 +32,9 @@
 #include "ttyd/win_mario.h"
 #include "ttyd/hitdrv.h"
 #include "ttyd/animdrv.h"
+#include "ttyd/mapdata.h"
+#include "ttyd/evt_bero.h"
+#include "ttyd/seq_mapchange.h"
 #include "ttyd/sound.h"
 #include "ttyd/pmario_sound.h"
 #include "ttyd/fontmgr.h"
@@ -49,13 +54,14 @@ void init()
     // Apply assembly injects for cheats and displays
     applyCheatAndDisplayInjects();
 
+    gMod = new (true) Mod;
     gCheats = new (true) Cheats;
     gDisplays = new (true) Displays;
     gMemoryEditor = new (true) MemoryEditor;
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
     Window *windowPtr = new (true) Window;
-    windowPtr->init(0x000000F4, -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
+    windowPtr->init(getColorBlack(0xF4), -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
     gRootWindow = windowPtr;
 
     // Handle function hooks
@@ -124,6 +130,19 @@ void init()
 
     // For handling checking for errors in animPoseMain
     g_animPoseMain_trampoline = hookFunction(animPoseMain, preventAnimPoseMainCrash);
+
+    // For allowing mapDataPtr to propaly handle unused maps
+    g_mapDataPtr_trampoline = hookFunction(mapDataPtr, mapDataPtrHandleUnusedMaps);
+
+    // For handling setting the loading zone when warping by index
+    g_evt_bero_get_info_trampoline = hookFunction(evt_bero_get_info, setIndexWarpEntrances);
+
+    // For clearing WarpByIndex::currentMapInitScript and WarpByIndex::totalEntrances upon unloading a map, as some maps don't
+    // have init scripts
+    g__unload_trampoline = hookFunction(_unload, unloadClearCurrentMapInitScript);
+
+    // For setting WarpByIndex::currentMapInitScript upon a map being loaded
+    g_relSetEvtAddr_trampoline = hookFunction(relSetEvtAddr, relSetEvtAddrSetCurrentMapInitScript);
 
     // For handling the Disable Certain Sounds cheat, specifically for disabling the pause menu/Z menu sounds
     g_SoundEfxPlayEx_trampoline = hookFunction(SoundEfxPlayEx, disableMenuSounds);

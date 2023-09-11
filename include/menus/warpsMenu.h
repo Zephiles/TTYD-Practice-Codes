@@ -4,12 +4,27 @@
 #include "menuUtils.h"
 #include "classes/valueEditor.h"
 #include "classes/errorwindow.h"
+#include "ttyd/item_data.h"
+#include "ttyd/mario_pouch.h"
 #include "ttyd/camdrv.h"
+#include "ttyd/party.h"
+#include "ttyd/evtmgr.h"
+#include "ttyd/mapdata.h"
 
 #include <cstdint>
 
 #define WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW 4
 #define WARPS_MENU_BOSS_MAX_OPTIONS_PER_ROW 2
+
+#define WARPS_TOTAL_EVENT_NAMES 494
+
+#define WARPS_INDEX_TOTAL_UNUSED_MAPS 7
+#define WARPS_INDEX_MAX_INDEX 278
+
+#define WARPS_INDEX_MAX_ENTRANCES_SINGLE_PAGE 13 // Used when there is only one page
+
+#define WARPS_INDEX_MAX_ENTRANCES_MULTIPLE_PAGES \
+    (WARPS_INDEX_MAX_ENTRANCES_SINGLE_PAGE - 1) // Used when there is more than one page
 
 enum WarpsMenuInitOptions
 {
@@ -37,6 +52,14 @@ enum WarpsMenuInitOptions
     WARPS_MENU_INIT_OPTION_PALACE_OF_SHADOW_ROOM_BEFORE_GRODUS,
     WARPS_MENU_INIT_OPTION_PIT_OF_100_TRIALS,
     WARPS_MENU_INIT_OPTION_TITLE_SCREEN,
+};
+
+enum WarpsMenuIndexOptions
+{
+    WARPS_MENU_INDEX_OPTION_SELECT_NEW_MAP = 0,
+    WARPS_MENU_INDEX_OPTION_SELECT_NEW_ENTRANCE_ID,
+    WARPS_MENU_INDEX_OPTION_VIEW_CURRENT_MAP_ENTRANCES,
+    WARPS_MENU_INDEX_OPTION_WARP,
 };
 
 enum WarpsMenuBossOptions
@@ -72,11 +95,51 @@ enum WarpsMenuWarpToMapReturnValue
     WARPS_MENU_WARP_TO_MAP_SUCCESS = 0,
     WARPS_MENU_WARP_TO_MAP_NOT_IN_GAME,
     WARPS_MENU_WARP_TO_MAP_INVALID_INDEX,
+    WARPS_MENU_WARP_TO_MAP_FATAL_ERROR,
 };
 
 enum WarpsMenuInitFlag
 {
     WARPS_MENU_INIT_FLAG_SELECTING_WARP_OPTION = 0,
+};
+
+struct WarpByEventInventory
+{
+    ItemId items[sizeof(PouchData::items) / sizeof(ItemId)];
+    ItemId badges[sizeof(PouchData::badges) / sizeof(ItemId)];
+};
+
+struct WarpByEventDetails
+{
+    const char *getStagePtr()
+    {
+#ifdef TTYD_JP
+        return this->stage;
+#else
+        return this->stagePtr;
+#endif
+    }
+
+#ifdef TTYD_JP
+    char stage[8];
+#else
+    const char *stagePtr;
+#endif
+
+    const char *eventPtr;
+    const char *partnerPtr;
+    const char *followerPtr;
+    const char *mapPtr;
+    const char *beroPtr;
+    uint16_t sequencePosition;
+};
+
+struct MapAndBeroDetails
+{
+    uint32_t mapColor;
+    const char *mapTextPtr;
+    uint32_t beroColor;
+    const char *beroTextPtr;
 };
 
 class WarpsMenu
@@ -97,6 +160,8 @@ class WarpsMenu
     void initErrorWindow(const char *text);
 
     void drawSelectInitWarpInfo();
+    void drawSelectEventWarpInfo(float offsetY) const;
+    void drawSelectIndexWarpInfo() const;
     void drawSelectBossWarpInfo() const;
 
    private:
@@ -109,6 +174,11 @@ class WarpsMenu
 
 extern WarpsMenu *gWarpsMenu;
 extern const char *gWarpsMenuCannotWarpText;
+extern const char *gUnusedMaps[WARPS_INDEX_TOTAL_UNUSED_MAPS];
+
+#ifdef TTYD_JP
+extern const char *gWarpsEventNames[WARPS_TOTAL_EVENT_NAMES];
+#endif
 
 // warpsInit
 void warpsMenuInit(Menu *menuPtr);
@@ -117,17 +187,57 @@ void warpsMenuInitDraw(CameraId cameraId, void *user);
 void warpsMenuInitExit();
 
 void warpsMenuInitSelectWarp(Menu *menuPtr);
+void warpsMenuEventIndexControls(Menu *menuPtr, MenuButtonInput button);
+void warpsMenuCloseValueEditor();
 
 uint32_t getCurrentPitLevel();
 void setCurrentPitLevel(uint32_t level);
 void setNextMap(const char *map);
 void setNextBero(const char *bero);
 
+// warpsEvent
+void warpsMenuEventInit(Menu *menuPtr);
+void warpsMenuEventDraw(CameraId cameraId, void *user);
+
+void warpsMenuEventSelectEvent(Menu *menuPtr);
+void warpsMenuEventToggleKeepInventory(Menu *menuPtr);
+void warpsMenuEventToggleSetFlags(Menu *menuPtr);
+void warpsMenuEventWarp(Menu *menuPtr);
+
+void handleWarpByEvent();
+uint32_t getTotalStageEvents();
+bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2]);
+bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
+uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId);
+const char *getPartyName(PartyMembers id);
+void getMapAndBeroTextAndColor(const char *mapTextPtr, const char *beroTextPtr, MapAndBeroDetails *mapAndBeroDetailsPtr);
+bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetailsPtr);
+void drawEventDetails(uint32_t index, float posX, float posY);
+
+// warpsIndex
+void warpsMenuIndexInit(Menu *menuPtr);
+void warpsMenuIndexDraw(CameraId cameraId, void *user);
+
+void warpsMenuIndexSelectNewMapOrEntranceId(Menu *menuPtr);
+void warpsMenuIndexWarp(Menu *menuPtr);
+
+const char *getMapFromIndex(uint32_t index);
+int32_t getMapIndex();
+MapData *mapDataPtrHandleUnusedMaps(const char *mapName);
+int32_t setIndexWarpEntrances(EvtEntry *evtPtr, bool isFirstCall);
+void unloadClearCurrentMapInitScript(const char *currentMap, const char *nextMap, const char *nextBero);
+void relSetEvtAddrSetCurrentMapInitScript(const char *mapName, const void *pInitEvtCode);
+
+// warpsIndexViewEntrances
+void warpsMenuIndexViewEntrancesInit(Menu *menuPtr);
+void warpsMenuIndexViewEntrancesControls(Menu *menuPtr, MenuButtonInput button);
+void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user);
+
 // warpsBoss
 void warpsMenuBossInit(Menu *menuPtr);
 void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button);
 void warpsMenuBossDraw(CameraId cameraId, void *user);
 
-void warpsMenuBossSelectWarp(Menu *menuPtr);
+void warpsMenuBossWarp(Menu *menuPtr);
 
 #endif

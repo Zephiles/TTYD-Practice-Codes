@@ -146,7 +146,7 @@ void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t
 void displaysMenuCancelSetNewButtonCombo()
 {
     gDisplaysMenu->getButtonComboEditorPtr()->stopDrawing();
-    gMod.stopChangingButtonCombo();
+    gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 }
 
 void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo)
@@ -159,7 +159,7 @@ void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t but
 
 void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 {
-    gMod.startChangingButtonCombo();
+    gMod->setFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 
     // Initialize the button combo editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;

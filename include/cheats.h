@@ -203,8 +203,8 @@ class ReloadRoomCheat
     char *getNewMapPtr() { return &this->newMap[0]; }
 
    private:
-    char newBero[17]; // 16 bytes for NewBero, one byte for NULL
-    char newMap[9];   // 8 bytes for NewMap, one byte for NULL
+    char newBero[17]; // 16 bytes for NewBero, one byte for null
+    char newMap[9];   // 8 bytes for NewMap, one byte for null
 };
 
 class SpawnItemCheat
@@ -469,6 +469,7 @@ void preventViPostCallBackOnFramePause(uint32_t retraceCount);
 int32_t disableMenuSounds(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
 bool disableBgm(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
 bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
+void lockFlags(Cheats *cheatsPtr, Mod *modPtr);
 void runCheatFuncsEveryFrame();
 
 #endif

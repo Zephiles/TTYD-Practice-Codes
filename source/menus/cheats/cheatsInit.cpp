@@ -195,7 +195,7 @@ void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t butto
 void cheatsMenuCancelSetNewButtonCombo()
 {
     gCheatsMenu->getButtonComboEditorPtr()->stopDrawing();
-    gMod.stopChangingButtonCombo();
+    gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 }
 
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
@@ -208,7 +208,7 @@ void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonC
 
 void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 {
-    gMod.startChangingButtonCombo();
+    gMod->setFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 
     // Initialize the button combo editor
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
