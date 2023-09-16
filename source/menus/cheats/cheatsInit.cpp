@@ -73,6 +73,9 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Lock Mario's HP To Its Max",
     cheatsMenuGenericNoButtonComboInit,
 
+    "Lock Partner's HP To Its Max",
+    cheatsMenuGenericNoButtonComboInit,
+
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
@@ -322,6 +325,10 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         case CheatsMenuOptions::CHEATS_MENU_LOCK_MARIO_HP_TO_MAX:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_MARIO_HP_TO_MAX;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_LOCK_PARTNER_HP_TO_MAX:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_PARTNER_HP_TO_MAX;
         }
         case CheatsMenuOptions::CHEATS_MENU_RUN_FROM_BATTLES:
         {

@@ -289,6 +289,7 @@ Cheats::Cheats()
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FRAME_ADVANCE);
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_GENERATE_LAG_SPIKE);
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_MARIO_HP_TO_MAX);
+    // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_PARTNER_HP_TO_MAX);
     this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RUN_FROM_BATTLES);
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_BOBBERY_EARLY);
     // this->setEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP);
@@ -1269,6 +1270,35 @@ void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
+void lockPartnerHpToMax(Cheats *cheatsPtr, Mod *modPtr)
+{
+    (void)modPtr;
+
+    if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_PARTNER_HP_TO_MAX))
+    {
+        return;
+    }
+
+    // Set the partner's HP outside of battles if one is currently out
+    const PartyEntry *partnerPtr = getPartnerPtr();
+    if (partnerPtr)
+    {
+        // Get the current partner out
+        const uint32_t index = static_cast<uint32_t>(partnerPtr->currentMemberId);
+
+        // Set the HP
+        PouchPartyData *partnerDataPtr = &pouchGetPtr()->partyData[index];
+        partnerDataPtr->currentHp = partnerDataPtr->maxHp;
+    }
+
+    // Set the partner's HP inside of battles
+    BattleWorkUnit *partnerBattlePtr = getPartnerBattlePtr();
+    if (partnerBattlePtr)
+    {
+        partnerBattlePtr->current_hp = partnerBattlePtr->max_hp;
+    }
+}
+
 void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
@@ -1589,6 +1619,7 @@ const CheatsArrayFunc gCheatsWithButtonCombos[] = {
     setTextStorage,
     setTimeStopTextStorage,
     lockMarioHpToMax,
+    lockPartnerHpToMax,
     levitate,
     generateLagSpike,
 };
