@@ -111,6 +111,16 @@ void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user)
 
 void displaysMenuMemoryUsageToggleFlag(Menu *menuPtr)
 {
-    displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() - 1 +
-                                  DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);
+    const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() - 1 +
+                                                   DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);
+
+    if (!ret)
+    {
+        // If none of the flags are enabled, then free the memory used by the memory usage buffer
+        Displays *displaysPtr = gDisplays;
+        if (!displaysPtr->anyHeapDisplayIsEnabled())
+        {
+            displaysPtr->getMemoryUsageDisplayPtr()->freeMemoryUsageBuffer();
+        }
+    }
 }

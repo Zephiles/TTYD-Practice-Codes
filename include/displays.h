@@ -728,6 +728,7 @@ class Displays
     void clearEnabledFlag(uint32_t enabledFlag);
     bool toggleEnabledFlag(uint32_t enabledFlag);
     void handleEnablingTrickDisplayFlag(uint32_t enabledFlag);
+    bool anyHeapDisplayIsEnabled();
 
     bool manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const;
     void setManuallyPositionFlag(uint32_t manuallyPositionFlag);

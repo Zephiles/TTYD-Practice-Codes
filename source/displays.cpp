@@ -238,6 +238,19 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
     }
 }
 
+bool Displays::anyHeapDisplayIsEnabled()
+{
+    for (uint32_t i = 0; i < DISPLAYS_TOTAL_HEAPS; i++)
+    {
+        if (this->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool Displays::manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
 {
     // Make sure the flag is valid
