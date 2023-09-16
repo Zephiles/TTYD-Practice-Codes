@@ -223,14 +223,13 @@ void cancelMenuPartnersChangeYoshiName()
     gStatsMenu->getNameEditorPtr()->stopDrawing();
 }
 
-bool selectMenuPartnersChangeYoshiName(char *newName)
+void selectMenuPartnersChangeYoshiName(char *newNamePtr, uint32_t newNameSize)
 {
-    (void)newName;
+    (void)newNamePtr;
+    (void)newNameSize;
 
     // Close the name editor
     cancelMenuPartnersChangeYoshiName();
-
-    return true;
 }
 
 void cancelMenuPartnersChangeYoshiColor()
@@ -338,6 +337,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                                             yoshiNamePtr,
                                             yoshiNamePtr,
                                             sizeof(PouchData::yoshiName),
+                                            true,
                                             rootWindowPtr->getAlpha());
 
                         nameEditorPtr->startDrawing(selectMenuPartnersChangeYoshiName, cancelMenuPartnersChangeYoshiName);
@@ -439,7 +439,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     NameEditor *nameEditorPtr;
     if (nameEditorPtr = statsMenuPtr->getNameEditorPtr(), nameEditorPtr->shouldDraw())
     {
-        nameEditorPtr->controls(button, true);
+        nameEditorPtr->controls(button);
         return;
     }
 

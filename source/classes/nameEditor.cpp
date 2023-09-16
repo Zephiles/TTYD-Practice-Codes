@@ -17,15 +17,20 @@ const char *gNameEditorHelpText =
 
 const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
 
-void NameEditor::init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize)
+void NameEditor::init(const Window *parentWindow,
+                      const char *initialText,
+                      char *namePtr,
+                      uint32_t nameSize,
+                      bool applyNullTerminator)
 {
-    this->init(parentWindow, initialText, namePtr, nameSize, 0xFF);
+    this->init(parentWindow, initialText, namePtr, nameSize, applyNullTerminator, 0xFF);
 }
 
 void NameEditor::init(const Window *parentWindow,
                       const char *initialText,
                       char *namePtr,
                       uint32_t nameSize,
+                      bool applyNullTerminator,
                       uint8_t windowAlpha)
 {
     this->namePtr = namePtr;
@@ -36,6 +41,8 @@ void NameEditor::init(const Window *parentWindow,
     this->enabled = false;
     this->currentStringIndex = 0;
     this->currentIndex = 0;
+
+    this->applyNullTerminator = applyNullTerminator;
 
     // Make sure nameSize does not exceed the size of the buffer
     constexpr uint32_t bufferSize = sizeof(this->buffer);
@@ -57,18 +64,54 @@ void NameEditor::init(const Window *parentWindow,
         {
             // Text does not start with a Japanese character
 #endif
+            // Get the length of the initial string
             uint32_t len = strlen(initialText);
 
-            // Make sure len does not exceed the max index
-            constexpr uint32_t maxIndex = bufferSize - 1;
-            if (len > maxIndex)
+            // Make sure there is at least one character in the string
+            if (len > 0)
             {
-                len = maxIndex;
+                // Make sure the length does not exceed the max index of the buffer, as otherwise the buffer will not be null
+                // terminated
+                constexpr uint32_t maxBufferIndex = bufferSize - 1;
+                if (len > maxBufferIndex)
+                {
+                    len = maxBufferIndex;
+                }
+
+                // Get the max index
+                // Make sure the length does not reach or exceed the max index
+                uint32_t maxIndex = nameSize;
+                uint32_t maxLenIndex = len;
+
+                if (applyNullTerminator)
+                {
+                    // Subtract 1 to account for the null terminator
+                    maxLenIndex--;
+
+                    if (nameSize >= 1)
+                    {
+                        // Subtract 1 to account for the null terminator
+                        maxIndex--;
+                    }
+                }
+
+                if (maxLenIndex > maxIndex)
+                {
+                    len = maxIndex + 1;
+                }
+
+                // Get the current index to use for currentStringIndex
+                // Initialize it to the character after the last character in the string
+                uint32_t currentIndex = len;
+                if (currentIndex >= maxIndex)
+                {
+                    // Reached the end of the string, so set the current index to the last character
+                    currentIndex--;
+                }
+
+                this->currentStringIndex = static_cast<uint8_t>(currentIndex);
+                strncpy(this->buffer, initialText, len);
             }
-
-            this->currentStringIndex = static_cast<uint8_t>(len);
-            strncpy(this->buffer, initialText, len);
-
 #ifdef TTYD_JP
         }
 #endif
@@ -116,7 +159,7 @@ void NameEditor::dpadControls(MenuButtonInput button)
                            true);
 }
 
-void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
+void NameEditor::controls(MenuButtonInput button)
 {
     // Make sure the current index is valid
     uint32_t currentIndex = this->currentIndex;
@@ -151,12 +194,26 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
         }
     }
 
-    uint32_t currentStringIndex = this->currentStringIndex;
+    const bool applyNullTerminator = this->applyNullTerminator;
     const uint32_t nameSize = this->nameSize;
-    char *buf = this->buffer;
+    uint32_t maxIndex = 0;
 
-    // Subtract 2 from nameSize to account for the current index starting at 0 and the null terminator
-    const uint32_t maxIndex = nameSize - 2;
+    if (applyNullTerminator)
+    {
+        if (nameSize >= 2)
+        {
+            // Subtract 2 from nameSize to account for the current index starting at 0 and the null terminator
+            maxIndex = nameSize - 2;
+        }
+    }
+    else if (nameSize >= 1)
+    {
+        // Subtract 1 from nameSize to account for the current index starting at 0
+        maxIndex = nameSize - 1;
+    }
+
+    uint32_t currentStringIndex = this->currentStringIndex;
+    char *buf = this->buffer;
 
     // Handle the button inputs pressed this frame
     switch (button)
@@ -277,19 +334,18 @@ void NameEditor::controls(MenuButtonInput button, bool applyNullTerminator)
                 break;
             }
 
-            // Run the function for when a new name is being set
-            const NameEditorSetNameFunc setNameFunc = this->setNameFunc;
-            if (setNameFunc && !setNameFunc(buf))
-            {
-                return;
-            }
-
-            // Subtract 1 from nameSize to account for the null terminator
-            char *namePtr = strncpy(this->namePtr, buf, nameSize - 1);
-
+            // Set the new name
+            char *namePtr = strncpy(this->namePtr, buf, nameSize);
             if (applyNullTerminator)
             {
                 namePtr[nameSize - 1] = '\0';
+            }
+
+            // Call the function for when the new name is set
+            const NameEditorSetNameFunc func = this->setNameFunc;
+            if (func)
+            {
+                func(buf, nameSize);
             }
             return;
         }
@@ -403,12 +459,12 @@ void NameEditor::draw()
 
     // Draw the current buffer text
     const char *buffer = this->buffer;
-    const uint32_t currentStringLen = strlen(buffer);
+    const uint32_t len = strlen(buffer);
 
     posX = currentStringPosX;
     posY = currentStringPosY;
 
-    for (uint32_t i = 0; i < currentStringLen; i++)
+    for (uint32_t i = 0; i < len; i++)
     {
         char currentChar = buffer[i];
         if (currentChar == '\0')
@@ -422,16 +478,24 @@ void NameEditor::draw()
     }
 
     // Draw the current amount of characters in the buffer out of the maximum
-    // Draw the counts as int32_ts, to prevent long text if they somehow become negative
+    // Draw the counts as ints, to prevent long text if they somehow become negative
     posX = currentStringPosX;
     posY -= lineDecrement;
 
-    char buf[32];
-    snprintf(buf,
-             sizeof(buf),
-             "%" PRId32 "/%" PRId32,
-             static_cast<int32_t>(currentStringLen),
-             static_cast<int32_t>(this->nameSize - 1));
+    // Get the max index
+    const uint32_t nameSize = this->nameSize;
+    int32_t maxIndex = static_cast<int32_t>(nameSize);
 
+    if (this->applyNullTerminator)
+    {
+        if (nameSize >= 1)
+        {
+            // Subtract 1 to account for the null terminator
+            maxIndex--;
+        }
+    }
+
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%" PRId32 "/%" PRId32, static_cast<int32_t>(len), maxIndex);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }

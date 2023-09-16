@@ -21,6 +21,9 @@ MemoryWatch gMemoryWatch;
 
 void MemoryWatchEntry::init(uint32_t entryId)
 {
+    // Make sure the memory for the watch is cleared before doing anything
+    clearMemory(this, sizeof(MemoryWatchEntry));
+
     this->posX = -44.f;
     this->posY = -32.f;
     this->type = VariableType::string;

@@ -55,6 +55,12 @@ void MemoryMenu::memoryWatchFlagSetControls(MenuButtonInput button)
 {
     const uint32_t totalOptions = gMemoryWatch.getTotalEntries();
 
+    // If there is only one option, then don't bother doing anything
+    if (totalOptions <= 1)
+    {
+        return;
+    }
+
     uint8_t *currentPagePtr = nullptr;
     if (totalOptions > MAX_MEMORY_WATCHES_PER_PAGE)
     {
@@ -206,8 +212,6 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
             break;
         }
 
-        const MemoryWatchEntry *currentWatchPtr = &entriesPtr[i];
-
         // Draw the name
         uint32_t color = getColorWhite(0xFF);
 
@@ -223,6 +227,7 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
             }
         }
 
+        const MemoryWatchEntry *currentWatchPtr = &entriesPtr[i];
         drawText(currentWatchPtr->getNamePtrConst(), posX, posY, scale, 170.f, color);
 
         // Draw whether the watch will be drawn or not
@@ -477,7 +482,7 @@ void MemoryMenu::deleteWatch(Menu *menuPtr)
         }
     }
 
-    // If there are no more watches,, then stop deleting them
+    // If there are no more watches, then stop deleting them
     if (memoryWatchPtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);

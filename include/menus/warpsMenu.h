@@ -2,7 +2,9 @@
 #define MENUS_WARPS_MENU_H
 
 #include "menuUtils.h"
+#include "customState.h"
 #include "classes/valueEditor.h"
+#include "classes/nameEditor.h"
 #include "classes/errorwindow.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_pouch.h"
@@ -25,6 +27,8 @@
 
 #define WARPS_INDEX_MAX_ENTRANCES_MULTIPLE_PAGES \
     (WARPS_INDEX_MAX_ENTRANCES_SINGLE_PAGE - 1) // Used when there is more than one page
+
+#define MAX_CUSTOM_STATES_PER_PAGE 18
 
 enum WarpsMenuInitOptions
 {
@@ -103,6 +107,17 @@ enum WarpsMenuInitFlag
     WARPS_MENU_INIT_FLAG_SELECTING_WARP_OPTION = 0,
 };
 
+enum WarpsMenuCustomStatesFlag
+{
+    WARPS_MENU_CUSTOM_STATES_FLAG_LOAD = 0,
+    WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE,
+    WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_INIT,
+    WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP,
+    WARPS_MENU_CUSTOM_STATES_FLAG_OVERWRITE,
+    WARPS_MENU_CUSTOM_STATES_FLAG_RENAME,
+    WARPS_MENU_CUSTOM_STATES_FLAG_DELETE,
+};
+
 struct WarpByEventInventory
 {
     ItemId items[sizeof(PouchData::items) / sizeof(ItemId)];
@@ -149,6 +164,7 @@ class WarpsMenu
     ~WarpsMenu() {}
 
     ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
+    NameEditor *getNameEditorPtr() { return &this->nameEditor; }
     ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
@@ -157,19 +173,43 @@ class WarpsMenu
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
+    uint32_t getSelectedIndex() const { return this->selectedIndex; }
+    void setSelectedIndex(uint32_t index) { this->selectedIndex = static_cast<uint8_t>(index); }
+
+    uint32_t getCurrentPage() const { return this->currentPage; }
+    uint8_t *getCurrentPagePtr() { return &this->currentPage; }
+    void setCurrentPage(uint32_t page) { this->currentPage = static_cast<uint8_t>(page); }
+
+    char *getStateNamePtr() { return this->stateName; }
+
     void initErrorWindow(const char *text);
+    void customStatesFlagSetControls(MenuButtonInput button);
+
+    void duplicateState(Menu *menuPtr);
+    bool initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
+    void swapStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
+    void moveState(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
+    void overwriteState(Menu *menuPtr);
+    void deleteState(Menu *menuPtr);
 
     void drawSelectInitWarpInfo();
     void drawSelectEventWarpInfo(float offsetY) const;
     void drawSelectIndexWarpInfo() const;
     void drawSelectBossWarpInfo() const;
+    void drawCustomStatesInfo() const;
 
    private:
     ValueEditor valueEditor;
+    NameEditor nameEditor;
     ErrorWindow errorWindow;
 
     MenuAutoIncrement autoIncrement;
+
     uint8_t currentIndex;
+    uint8_t selectedIndex; // Custom States
+    uint8_t currentPage;   // Custom States
+
+    char stateName[CUSTOM_STATE_NAME_SIZE + 1]; // Custom States - Temporary name buffer
 };
 
 extern WarpsMenu *gWarpsMenu;
@@ -239,5 +279,19 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button);
 void warpsMenuBossDraw(CameraId cameraId, void *user);
 
 void warpsMenuBossWarp(Menu *menuPtr);
+
+// warpsCustomStates
+void warpsMenuCustomStatesInit(Menu *menuPtr);
+void warpsMenuCustomStatesControls(Menu *menuPtr, MenuButtonInput button);
+void warpsMenuCustomStatesDraw(CameraId cameraId, void *user);
+
+void warpsMenuCustomStatesLoadState(Menu *menuPtr);
+void warpsMenuCustomStatesCreateState(Menu *menuPtr);
+void warpsMenuCustomStatesDuplicateState(Menu *menuPtr);
+void warpsMenuCustomStatesSwapStates(Menu *menuPtr);
+void warpsMenuCustomStatesMoveState(Menu *menuPtr);
+void warpsMenuCustomStatesOverwriteState(Menu *menuPtr);
+void warpsMenuCustomStatesRenameState(Menu *menuPtr);
+void warpsMenuCustomStatesDeleteState(Menu *menuPtr);
 
 #endif

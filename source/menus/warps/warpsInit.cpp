@@ -65,7 +65,7 @@ const MenuOption gWarpsMenuInitOptions[] = {
     warpsMenuBossInit,
 
     "Custom States",
-    nullptr,
+    warpsMenuCustomStatesInit,
 };
 
 const MenuFunctions gWarpsMenuInitFuncs = {

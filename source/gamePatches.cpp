@@ -6,6 +6,7 @@
 #include "cheats.h"
 #include "displays.h"
 #include "memoryEditor.h"
+#include "customState.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -453,17 +454,20 @@ void fixMapProblems() // Gets called in initStageEvents
 
 GlobalWork *initStageEvents()
 {
+    CustomState *customStatePtr = &gCustomState;
     Mod *modPtr = gMod;
 
     // TODO: Add if check for custom states
-    if (false)
+    if (customStatePtr->stateWasSelected())
     {
+        customStatePtr->clearInit();
         modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT); // Failsafe
+        customStatePtr->loadState(customStatePtr->getSelectedState());
     }
     else if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT))
     {
         modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT);
-        // TODO: Set CustomState.StateWasSelected to false as a failsafe
+        customStatePtr->clearInit(); // Failsafe
         handleWarpByEvent();
     }
 

@@ -9,7 +9,7 @@
 #define NAME_EDITOR_CHARS_TOTAL_ROWS 5
 #define NAME_EDITOR_CHARS_TOTAL_ROWS_FLOAT 5.f
 
-typedef bool (*NameEditorSetNameFunc)(char *newName); // Return true if the new name should be set
+typedef void (*NameEditorSetNameFunc)(char *newNamePtr, uint32_t newNameSize);
 typedef void (*NameEditorCancelFunc)();
 
 class NameEditor
@@ -19,9 +19,14 @@ class NameEditor
     ~NameEditor() {}
 
     // Sets windowAlpha to 0xFF
-    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize);
+    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, bool applyNullTerminator);
 
-    void init(const Window *parentWindow, const char *initialText, char *namePtr, uint32_t nameSize, uint8_t windowAlpha);
+    void init(const Window *parentWindow,
+              const char *initialText,
+              char *namePtr,
+              uint32_t nameSize,
+              bool applyNullTerminator,
+              uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->enabled; }
     void stopDrawing() { this->enabled = false; }
@@ -37,7 +42,7 @@ class NameEditor
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
     void dpadControls(MenuButtonInput button);
-    void controls(MenuButtonInput button, bool applyNullTerminator);
+    void controls(MenuButtonInput button);
     void draw();
 
    private:
@@ -55,8 +60,9 @@ class NameEditor
     uint8_t currentStringIndex; // Index to be used with the buffer for the current string
     char buffer[32];            // Buffer for where the current string is stored
 
-    bool enabled;         // Whether this window is enabled/drawn or not
-    uint8_t currentIndex; // Current cursor position
+    bool enabled;             // Whether this window is enabled/drawn or not
+    bool applyNullTerminator; // Whether the name will be null terminated upon being written
+    uint8_t currentIndex;     // Current cursor position
 };
 
 #endif

@@ -58,7 +58,7 @@ void memoryMenuMemoryWatchModifyControls(Menu *menuPtr, MenuButtonInput button)
     NameEditor *nameEditorPtr = memoryMenuPtr->getNameEditorPtr();
     if (nameEditorPtr->shouldDraw())
     {
-        nameEditorPtr->controls(button, true);
+        nameEditorPtr->controls(button);
         return;
     }
 
@@ -233,14 +233,13 @@ void memoryMenuMemoryWatchModifyCancelSetNewName()
     gMemoryMenu->getNameEditorPtr()->stopDrawing();
 }
 
-bool memoryMenuMemoryWatchModifySetNewName(char *newName)
+void memoryMenuMemoryWatchModifySetNewName(char *newNamePtr, uint32_t newNameSize)
 {
-    (void)newName;
+    (void)newNamePtr;
+    (void)newNameSize;
 
     // Close the name editor
     memoryMenuMemoryWatchModifyCancelSetNewName();
-
-    return true;
 }
 
 void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr)
@@ -253,7 +252,7 @@ void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
 
     NameEditor *nameEditorPtr = gMemoryMenu->getNameEditorPtr();
-    nameEditorPtr->init(rootWindowPtr, watchName, watchName, currentEntry->getNameSize(), rootWindowPtr->getAlpha());
+    nameEditorPtr->init(rootWindowPtr, watchName, watchName, currentEntry->getNameSize(), true, rootWindowPtr->getAlpha());
     nameEditorPtr->startDrawing(memoryMenuMemoryWatchModifySetNewName, memoryMenuMemoryWatchModifyCancelSetNewName);
 }
 
