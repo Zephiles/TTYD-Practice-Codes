@@ -308,25 +308,6 @@ void memoryMenuMemoryWatchModifyWatch(Menu *menuPtr)
     return memoryMenuMemoryWatchModifyInit(menuPtr);
 }
 
-void MemoryMenu::duplicateWatch(Menu *menuPtr)
-{
-    MemoryWatch *memoryWatchPtr = &gMemoryWatch;
-
-    // Duplicate the selected watch
-    if (!memoryWatchPtr->duplicateWatch(this->currentIndex))
-    {
-        // Error occurred
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
-        return;
-    }
-
-    // If the maximum amount of watches have been added, then stop duplicating watches
-    if (memoryWatchPtr->limitHasBeenReached())
-    {
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
-    }
-}
-
 void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
 {
     MemoryWatch *memoryWatchPtr = &gMemoryWatch;
@@ -359,10 +340,21 @@ void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
     }
 
     // Duplicate the selected watch
-    memoryMenuPtr->duplicateWatch(menuPtr);
+    if (!memoryWatchPtr->duplicateWatch(memoryMenuPtr->getCurrentIndex()))
+    {
+        // Error occurred
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
+        return;
+    }
+
+    // If the maximum amount of watches have been added, then stop duplicating watches
+    if (memoryWatchPtr->limitHasBeenReached())
+    {
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
+    }
 }
 
-bool MemoryMenu::initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+bool MemoryMenu::initSwapMoveWatches(Menu *menuPtr)
 {
     // If there are not at least two watches, then show an error message
     if (gMemoryWatch.getTotalEntries() < 2)
@@ -384,6 +376,7 @@ bool MemoryMenu::initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedInd
     }
 
     // If a watch hasn't been selected yet, then select the current one to be swapped/moved
+    const uint32_t currentIndex = this->currentIndex;
     if (!menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP))
     {
         menuPtr->setFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
@@ -392,7 +385,7 @@ bool MemoryMenu::initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedInd
     }
 
     // Make sure the selected watch is not the current watch
-    if (selectedIndex == currentIndex)
+    if (this->selectedIndex == currentIndex)
     {
         return false;
     }
@@ -400,10 +393,16 @@ bool MemoryMenu::initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedInd
     return true;
 }
 
-void MemoryMenu::swapWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr)
 {
-    // Swap the watches
-    if (!gMemoryWatch.swapWatches(currentIndex, selectedIndex))
+    MemoryMenu *memoryMenuPtr = gMemoryMenu;
+    if (!memoryMenuPtr->initSwapMoveWatches(menuPtr))
+    {
+        return;
+    }
+
+    // Swap the selected watches
+    if (!gMemoryWatch.swapWatches(memoryMenuPtr->getCurrentIndex(), memoryMenuPtr->getSelectedIndex()))
     {
         // Error occurred
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
@@ -415,23 +414,16 @@ void MemoryMenu::swapWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu
     menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
-void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr)
+void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    const uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
-    const uint32_t selectedIndex = memoryMenuPtr->getSelectedIndex();
-
-    if (memoryMenuPtr->initSwapMoveWatches(currentIndex, selectedIndex, menuPtr))
+    if (!memoryMenuPtr->initSwapMoveWatches(menuPtr))
     {
-        // Swap the selected watches
-        memoryMenuPtr->swapWatches(currentIndex, selectedIndex, menuPtr);
+        return;
     }
-}
 
-void MemoryMenu::moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
-{
-    // Move the watches
-    if (!gMemoryWatch.moveWatch(currentIndex, selectedIndex))
+    // Move the selected watch to the new location
+    if (!gMemoryWatch.moveWatch(memoryMenuPtr->getCurrentIndex(), memoryMenuPtr->getSelectedIndex()))
     {
         // Error occurred
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
@@ -443,58 +435,13 @@ void MemoryMenu::moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *
     menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
-void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr)
-{
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    const uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
-    const uint32_t selectedIndex = memoryMenuPtr->getSelectedIndex();
-
-    if (memoryMenuPtr->initSwapMoveWatches(currentIndex, selectedIndex, menuPtr))
-    {
-        // Move the selected watch to the new location
-        memoryMenuPtr->moveWatch(currentIndex, selectedIndex, menuPtr);
-    }
-}
-
-void MemoryMenu::deleteWatch(Menu *menuPtr)
-{
-    MemoryWatch *memoryWatchPtr = &gMemoryWatch;
-    uint32_t currentIndex = this->currentIndex;
-
-    // Delete the current watch
-    if (!memoryWatchPtr->deleteWatch(currentIndex))
-    {
-        // Error occurred
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
-        return;
-    }
-
-    // If the current index was at the last valid index, then it needs to be moved up one
-    if (currentIndex >= memoryWatchPtr->getTotalEntries())
-    {
-        this->setCurrentIndex(--currentIndex);
-
-        // Check if moving up one should be placed on the previous page
-        const uint32_t currentPage = this->currentPage;
-        if (currentIndex < (currentPage * MAX_MEMORY_WATCHES_PER_PAGE))
-        {
-            this->setCurrentPage(currentPage - 1);
-        }
-    }
-
-    // If there are no more watches, then stop deleting them
-    if (memoryWatchPtr->getTotalEntries() == 0)
-    {
-        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
-    }
-}
-
 void memoryMenuMemoryWatchDeleteWatch(Menu *menuPtr)
 {
+    MemoryWatch *memoryWatchPtr = &gMemoryWatch;
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
 
     // Make sure there is at least one watch
-    if (gMemoryWatch.getTotalEntries() == 0)
+    if (memoryWatchPtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
         memoryMenuPtr->initErrorWindow(gMemoryWatchesNoWatchesText);
@@ -512,5 +459,31 @@ void memoryMenuMemoryWatchDeleteWatch(Menu *menuPtr)
     }
 
     // Delete the selected watch
-    memoryMenuPtr->deleteWatch(menuPtr);
+    uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
+    if (!memoryWatchPtr->deleteWatch(currentIndex))
+    {
+        // Error occurred
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
+        return;
+    }
+
+    // If the current index was at the last valid index, then it needs to be moved up one
+    const uint32_t totalEntries = memoryWatchPtr->getTotalEntries();
+    if (currentIndex >= totalEntries)
+    {
+        memoryMenuPtr->setCurrentIndex(--currentIndex);
+
+        // Check if moving up one should be placed on the previous page
+        const uint32_t currentPage = memoryMenuPtr->getCurrentPage();
+        if (currentIndex < (currentPage * MAX_MEMORY_WATCHES_PER_PAGE))
+        {
+            memoryMenuPtr->setCurrentPage(currentPage - 1);
+        }
+    }
+
+    // If there are no more watches, then stop deleting them
+    if (totalEntries == 0)
+    {
+        menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
+    }
 }

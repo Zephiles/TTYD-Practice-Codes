@@ -75,11 +75,7 @@ class InventoryMenu
     bool inventoryIsFull() const;
 
     void initErrorWindow(const char *text);
-    void duplicateItem(Menu *menuPtr);
-    bool initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void swapItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void deleteItem(Menu *menuPtr);
+    bool initSwapMoveItems(Menu *menuPtr);
 
     void verifyInventoryIndexAndPage(Menu *menuPtr);
     bool checkIfItemsOnNextPage(uint32_t currentItemCount) const;

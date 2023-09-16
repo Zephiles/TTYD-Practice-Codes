@@ -183,40 +183,6 @@ void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr)
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
-void InventoryMenu::duplicateItem(Menu *menuPtr)
-{
-    // Make sure the current index is valid
-    const uint32_t index = this->currentIndex;
-    if (index >= this->inventorySize)
-    {
-        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
-        return;
-    }
-
-    // Get the item to be duplicated
-    ItemId *inventoryItemPtr = this->inventoryItemPtr;
-    const ItemId item = inventoryItemPtr[index];
-
-    // Make sure the item is valid
-    if (!itemIsValid(item))
-    {
-        return;
-    }
-
-    // Add the item to the next empty slot in the array
-    inventoryItemPtr[this->getTotalItemsInInventory()] = item;
-
-    // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
-    // Important Items menu
-    resetPauseMenuImportantItems();
-
-    // If the inventory is now full, then stop duplicating items
-    if (this->inventoryIsFull())
-    {
-        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
-    }
-}
-
 void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
@@ -247,10 +213,39 @@ void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr)
     }
 
     // Duplicate the selected item/badge
-    inventoryMenuPtr->duplicateItem(menuPtr);
+    // Make sure the current index is valid
+    const uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    if (index >= inventoryMenuPtr->getInventorySize())
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
+        return;
+    }
+
+    // Get the item to be duplicated
+    ItemId *inventoryItemPtr = inventoryMenuPtr->getInventoryItemPtr();
+    const ItemId item = inventoryItemPtr[index];
+
+    // Make sure the item is valid
+    if (!itemIsValid(item))
+    {
+        return;
+    }
+
+    // Add the item to the next empty slot in the array
+    inventoryItemPtr[inventoryMenuPtr->getTotalItemsInInventory()] = item;
+
+    // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
+
+    // If the inventory is now full, then stop duplicating items
+    if (inventoryMenuPtr->inventoryIsFull())
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
+    }
 }
 
-bool InventoryMenu::initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+bool InventoryMenu::initSwapMoveItems(Menu *menuPtr)
 {
     // If there are not at least two items/badges, then show an error message
     const uint32_t totalItems = this->getTotalItemsInInventory();
@@ -263,6 +258,7 @@ bool InventoryMenu::initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIn
     }
 
     // Make sure the current index is valid
+    const uint32_t currentIndex = this->currentIndex;
     if (currentIndex >= totalItems)
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT);
@@ -295,7 +291,7 @@ bool InventoryMenu::initSwapMoveItems(uint32_t currentIndex, uint32_t selectedIn
     }
 
     // Make sure the selected item/badge is not the current item/badge
-    if (selectedIndex == currentIndex)
+    if (this->selectedIndex == currentIndex)
     {
         return false;
     }
@@ -317,31 +313,33 @@ void swapItemPositions(uint32_t currentIndex, uint32_t selectedIndex)
     inventoryItemPtr[currentIndex] = selectedItemBackup;
 }
 
-void InventoryMenu::swapItems(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr)
 {
-    // Swap the items/badges
-    swapItemPositions(currentIndex, selectedIndex);
+    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (!inventoryMenuPtr->initSwapMoveItems(menuPtr))
+    {
+        return;
+    }
+
+    // Swap the selected items/badges
+    swapItemPositions(inventoryMenuPtr->getCurrentIndex(), inventoryMenuPtr->getSelectedIndex());
 
     // Go back to selecting the first item/badge
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
 }
 
-void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr)
+void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
+    if (!inventoryMenuPtr->initSwapMoveItems(menuPtr))
+    {
+        return;
+    }
+
+    // Move the selected item/badge to the new location
+    // If the items/badges are right next to each other, then just swap them
     const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
     const uint32_t selectedIndex = inventoryMenuPtr->getSelectedIndex();
-
-    if (inventoryMenuPtr->initSwapMoveItems(currentIndex, selectedIndex, menuPtr))
-    {
-        // Swap the selected items/badges
-        inventoryMenuPtr->swapItems(currentIndex, selectedIndex, menuPtr);
-    }
-}
-
-void InventoryMenu::moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
-{
-    // If the items/badges are right next to each other, then just swap them
     const bool movingItemDown = currentIndex > selectedIndex;
     int32_t indexDistance;
 
@@ -361,7 +359,7 @@ void InventoryMenu::moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu
     else
     {
         // Backup the selected item/badge
-        ItemId *inventoryItemPtr = this->inventoryItemPtr;
+        ItemId *inventoryItemPtr = inventoryMenuPtr->getInventoryItemPtr();
         const ItemId selectedItemBackup = inventoryItemPtr[selectedIndex];
 
         if (movingItemDown)
@@ -383,19 +381,6 @@ void InventoryMenu::moveItem(uint32_t currentIndex, uint32_t selectedIndex, Menu
 
     // Go back to selecting an item/badge to move
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
-}
-
-void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr)
-{
-    InventoryMenu *inventoryMenuPtr = gInventoryMenu;
-    const uint32_t currentIndex = inventoryMenuPtr->getCurrentIndex();
-    const uint32_t selectedIndex = inventoryMenuPtr->getSelectedIndex();
-
-    if (inventoryMenuPtr->initSwapMoveItems(currentIndex, selectedIndex, menuPtr))
-    {
-        // Move the selected item/badge to the new location
-        inventoryMenuPtr->moveItem(currentIndex, selectedIndex, menuPtr);
-    }
 }
 
 void changeItemFromId(const ValueType *valuePtr)
@@ -558,55 +543,6 @@ void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr)
     itemIconSelectorPtr->startDrawing(changeItemFromIcon, cancelAddItemFromIcon);
 }
 
-void InventoryMenu::deleteItem(Menu *menuPtr)
-{
-    // Make sure the current index is valid
-    uint32_t index = this->currentIndex;
-    if (index >= this->inventorySize)
-    {
-        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
-        return;
-    }
-
-    // Make a backup of the current item being deleted
-    ItemId *inventoryItemPtr = this->inventoryItemPtr;
-    const ItemId deletedItem = inventoryItemPtr[index];
-
-    // Move the array back one slot
-    const uint32_t inventorySize = this->inventorySize;
-    const uint32_t remainingSize = inventorySize - index - 1;
-    memcpy(&inventoryItemPtr[index], &inventoryItemPtr[index + 1], remainingSize * sizeof(ItemId));
-
-    // Clear the last slot to make sure that the last item/badge in the array does not get duplicated
-    inventoryItemPtr[inventorySize - 1] = ItemId::ITEM_NONE;
-
-    // If the current index was at the last valid index, then it needs to be moved back one
-    if (index >= this->getTotalItemsInInventory())
-    {
-        this->setCurrentIndex(--index);
-
-        // Check if moving back one should be placed on the previous page
-        const uint32_t currentPage = this->currentPage;
-        if (index < (currentPage * INVENTORY_ITEMS_PER_PAGE))
-        {
-            this->setCurrentPage(currentPage - 1);
-        }
-    }
-
-    // The battle menu will not properly update if an upgrade is removed, so manually update it
-    recheckBattleUpgrades(deletedItem);
-
-    // The Important Items in the pause menu will not visually update when an important item is removed, so manually reset the
-    // Important Items menu
-    resetPauseMenuImportantItems();
-
-    // If the inventory is now empty, then stop deleting items
-    if (this->inventoryIsEmpty())
-    {
-        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
-    }
-}
-
 void inventoryMenuSelectedOptionDelete(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
@@ -629,7 +565,53 @@ void inventoryMenuSelectedOptionDelete(Menu *menuPtr)
     }
 
     // Remove the selected item/badge
-    inventoryMenuPtr->deleteItem(menuPtr);
+    // Make sure the current index is valid
+    uint32_t index = inventoryMenuPtr->getCurrentIndex();
+    const uint32_t inventorySize = inventoryMenuPtr->getInventorySize();
+
+    if (index >= inventorySize)
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
+        return;
+    }
+
+    // Make a backup of the current item being deleted
+    ItemId *inventoryItemPtr = inventoryMenuPtr->getInventoryItemPtr();
+    const ItemId deletedItem = inventoryItemPtr[index];
+
+    // Move the array back one slot
+    const uint32_t remainingSize = inventorySize - index - 1;
+    memcpy(&inventoryItemPtr[index], &inventoryItemPtr[index + 1], remainingSize * sizeof(ItemId));
+
+    // Clear the last slot to make sure that the last item/badge in the array does not get duplicated
+    inventoryItemPtr[inventorySize - 1] = ItemId::ITEM_NONE;
+
+    // If the current index was at the last valid index, then it needs to be moved back one
+    const uint32_t totalItems = inventoryMenuPtr->getTotalItemsInInventory();
+    if (index >= totalItems)
+    {
+        inventoryMenuPtr->setCurrentIndex(--index);
+
+        // Check if moving back one should be placed on the previous page
+        const uint32_t currentPage = inventoryMenuPtr->getCurrentPage();
+        if (index < (currentPage * INVENTORY_ITEMS_PER_PAGE))
+        {
+            inventoryMenuPtr->setCurrentPage(currentPage - 1);
+        }
+    }
+
+    // The battle menu will not properly update if an upgrade is removed, so manually update it
+    recheckBattleUpgrades(deletedItem);
+
+    // The Important Items in the pause menu will not visually update when an important item is removed, so manually reset the
+    // Important Items menu
+    resetPauseMenuImportantItems();
+
+    // If the inventory is now empty, then stop deleting items
+    if (totalItems == 0)
+    {
+        menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
+    }
 }
 
 void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)

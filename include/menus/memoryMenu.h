@@ -80,12 +80,7 @@ class MemoryMenu
     uint32_t getChangeAddressCurrentPage() const { return this->changeAddressCurrentPage; }
     void setChangeAddressCurrentPage(uint32_t page) { this->changeAddressCurrentPage = static_cast<uint8_t>(page); }
 
-    void duplicateWatch(Menu *menuPtr);
-    bool initSwapMoveWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void swapWatches(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void moveWatch(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void deleteWatch(Menu *menuPtr);
-
+    bool initSwapMoveWatches(Menu *menuPtr);
     void initErrorWindow(const char *text);
     void memoryWatchFlagSetControls(MenuButtonInput button);
     void memoryWatchChangeAddressFlagSetControls(MenuButtonInput button);

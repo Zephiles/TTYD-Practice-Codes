@@ -410,25 +410,6 @@ void warpsMenuCustomStatesCreateState(Menu *menuPtr)
     nameEditorPtr->startDrawing(warpsMenuCustomStatesCreateStateNameSet, warpsMenuCustomStatesCloseNameEditor);
 }
 
-void WarpsMenu::duplicateState(Menu *menuPtr)
-{
-    CustomState *customStatePtr = &gCustomState;
-
-    // Duplicate the selected state
-    if (!customStatePtr->duplicateState(this->currentIndex))
-    {
-        // Error occurred
-        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
-        return;
-    }
-
-    // If the maximum amount of states have been added, then stop duplicating states
-    if (customStatePtr->limitHasBeenReached())
-    {
-        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
-    }
-}
-
 void warpsMenuCustomStatesDuplicateState(Menu *menuPtr)
 {
     CustomState *customStatePtr = &gCustomState;
@@ -461,10 +442,21 @@ void warpsMenuCustomStatesDuplicateState(Menu *menuPtr)
     }
 
     // Duplicate the selected state
-    warpsMenuPtr->duplicateState(menuPtr);
+    if (!customStatePtr->duplicateState(warpsMenuPtr->getCurrentIndex()))
+    {
+        // Error occurred
+        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
+        return;
+    }
+
+    // If the maximum amount of states have been added, then stop duplicating states
+    if (customStatePtr->limitHasBeenReached())
+    {
+        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
+    }
 }
 
-bool WarpsMenu::initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+bool WarpsMenu::initSwapMoveStates(Menu *menuPtr)
 {
     // If there are not at least two states, then show an error message
     if (gCustomState.getTotalEntries() < 2)
@@ -486,6 +478,7 @@ bool WarpsMenu::initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex
     }
 
     // If a state hasn't been selected yet, then select the current one to be swapped/moved
+    const uint32_t currentIndex = this->currentIndex;
     if (!menuPtr->flagIsSet(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP))
     {
         menuPtr->setFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
@@ -494,7 +487,7 @@ bool WarpsMenu::initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex
     }
 
     // Make sure the selected state is not the current state
-    if (selectedIndex == currentIndex)
+    if (this->selectedIndex == currentIndex)
     {
         return false;
     }
@@ -502,10 +495,16 @@ bool WarpsMenu::initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex
     return true;
 }
 
-void WarpsMenu::swapStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
+void warpsMenuCustomStatesSwapStates(Menu *menuPtr)
 {
-    // Swap the states
-    if (!gCustomState.swapStates(currentIndex, selectedIndex))
+    WarpsMenu *warpsMenuPtr = gWarpsMenu;
+    if (!warpsMenuPtr->initSwapMoveStates(menuPtr))
+    {
+        return;
+    }
+
+    // Swap the selected states
+    if (!gCustomState.swapStates(warpsMenuPtr->getCurrentIndex(), warpsMenuPtr->getSelectedIndex()))
     {
         // Error occurred
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_INIT);
@@ -517,23 +516,16 @@ void WarpsMenu::swapStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *
     menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
 }
 
-void warpsMenuCustomStatesSwapStates(Menu *menuPtr)
+void warpsMenuCustomStatesMoveState(Menu *menuPtr)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    const uint32_t currentIndex = warpsMenuPtr->getCurrentIndex();
-    const uint32_t selectedIndex = warpsMenuPtr->getSelectedIndex();
-
-    if (warpsMenuPtr->initSwapMoveStates(currentIndex, selectedIndex, menuPtr))
+    if (!warpsMenuPtr->initSwapMoveStates(menuPtr))
     {
-        // Swap the selected states
-        warpsMenuPtr->swapStates(currentIndex, selectedIndex, menuPtr);
+        return;
     }
-}
 
-void WarpsMenu::moveState(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr)
-{
-    // Move the states
-    if (!gCustomState.moveState(currentIndex, selectedIndex))
+    // Move the selected state to the new location
+    if (!gCustomState.moveState(warpsMenuPtr->getCurrentIndex(), warpsMenuPtr->getSelectedIndex()))
     {
         // Error occurred
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_INIT);
@@ -545,39 +537,13 @@ void WarpsMenu::moveState(uint32_t currentIndex, uint32_t selectedIndex, Menu *m
     menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
 }
 
-void warpsMenuCustomStatesMoveState(Menu *menuPtr)
-{
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    const uint32_t currentIndex = warpsMenuPtr->getCurrentIndex();
-    const uint32_t selectedIndex = warpsMenuPtr->getSelectedIndex();
-
-    if (warpsMenuPtr->initSwapMoveStates(currentIndex, selectedIndex, menuPtr))
-    {
-        // Move the selected state to the new location
-        warpsMenuPtr->moveState(currentIndex, selectedIndex, menuPtr);
-    }
-}
-
-void WarpsMenu::overwriteState(Menu *menuPtr)
-{
-    // Overwrite the current state
-    if (!gCustomState.overwriteState(this->currentIndex))
-    {
-        // Error occurred
-        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_OVERWRITE);
-        return;
-    }
-
-    // By default there is no way to tell that the overwrite was successful, so draw text for that
-    this->initErrorWindow(gCustomStatesSuccessfullyOverwriteStateText);
-}
-
 void warpsMenuCustomStatesOverwriteState(Menu *menuPtr)
 {
+    CustomState *customStatePtr = &gCustomState;
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
     // Make sure there is at least one state
-    if (gCustomState.getTotalEntries() == 0)
+    if (customStatePtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_OVERWRITE);
         warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
@@ -595,7 +561,15 @@ void warpsMenuCustomStatesOverwriteState(Menu *menuPtr)
     }
 
     // Overwrite the selected state
-    warpsMenuPtr->overwriteState(menuPtr);
+    if (!customStatePtr->overwriteState(warpsMenuPtr->getCurrentIndex()))
+    {
+        // Error occurred
+        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_OVERWRITE);
+        return;
+    }
+
+    // By default there is no way to tell that the overwrite was successful, so draw text for that
+    warpsMenuPtr->initErrorWindow(gCustomStatesSuccessfullyOverwriteStateText);
 }
 
 void warpsMenuCustomStatesRenameStateNameSet(char *newNamePtr, uint32_t newNameSize)
@@ -659,45 +633,13 @@ void warpsMenuCustomStatesRenameState(Menu *menuPtr)
     nameEditorPtr->startDrawing(warpsMenuCustomStatesRenameStateNameSet, warpsMenuCustomStatesCloseNameEditor);
 }
 
-void WarpsMenu::deleteState(Menu *menuPtr)
-{
-    CustomState *customStatePtr = &gCustomState;
-    uint32_t currentIndex = this->currentIndex;
-
-    // Delete the current state
-    if (!customStatePtr->deleteState(currentIndex))
-    {
-        // Error occurred
-        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
-        return;
-    }
-
-    // If the current index was at the last valid index, then it needs to be moved up one
-    if (currentIndex >= customStatePtr->getTotalEntries())
-    {
-        this->setCurrentIndex(--currentIndex);
-
-        // Check if moving up one should be placed on the previous page
-        const uint32_t currentPage = this->currentPage;
-        if (currentIndex < (currentPage * MAX_CUSTOM_STATES_PER_PAGE))
-        {
-            this->setCurrentPage(currentPage - 1);
-        }
-    }
-
-    // If there are no more states, then stop deleting them
-    if (customStatePtr->getTotalEntries() == 0)
-    {
-        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
-    }
-}
-
 void warpsMenuCustomStatesDeleteState(Menu *menuPtr)
 {
+    CustomState *customStatePtr = &gCustomState;
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
     // Make sure there is at least one state
-    if (gCustomState.getTotalEntries() == 0)
+    if (customStatePtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
         warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
@@ -715,5 +657,31 @@ void warpsMenuCustomStatesDeleteState(Menu *menuPtr)
     }
 
     // Delete the selected state
-    warpsMenuPtr->deleteState(menuPtr);
+    uint32_t currentIndex = warpsMenuPtr->getCurrentIndex();
+    if (!customStatePtr->deleteState(currentIndex))
+    {
+        // Error occurred
+        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
+        return;
+    }
+
+    // If the current index was at the last valid index, then it needs to be moved up one
+    const uint32_t totalEntries = customStatePtr->getTotalEntries();
+    if (currentIndex >= totalEntries)
+    {
+        warpsMenuPtr->setCurrentIndex(--currentIndex);
+
+        // Check if moving up one should be placed on the previous page
+        const uint32_t currentPage = warpsMenuPtr->getCurrentPage();
+        if (currentIndex < (currentPage * MAX_CUSTOM_STATES_PER_PAGE))
+        {
+            warpsMenuPtr->setCurrentPage(currentPage - 1);
+        }
+    }
+
+    // If there are no more states, then stop deleting them
+    if (totalEntries == 0)
+    {
+        menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
+    }
 }

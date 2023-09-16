@@ -182,15 +182,9 @@ class WarpsMenu
 
     char *getStateNamePtr() { return this->stateName; }
 
+    bool initSwapMoveStates(Menu *menuPtr);
     void initErrorWindow(const char *text);
     void customStatesFlagSetControls(MenuButtonInput button);
-
-    void duplicateState(Menu *menuPtr);
-    bool initSwapMoveStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void swapStates(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void moveState(uint32_t currentIndex, uint32_t selectedIndex, Menu *menuPtr);
-    void overwriteState(Menu *menuPtr);
-    void deleteState(Menu *menuPtr);
 
     void drawSelectInitWarpInfo();
     void drawSelectEventWarpInfo(float offsetY) const;
