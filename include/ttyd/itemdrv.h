@@ -43,6 +43,8 @@ static_assert(sizeof(ItemWork) == 0x1C);
 
 extern "C"
 {
+    extern ItemWork itemDrvWork[2]; // Index 0 used for field, index 1 used for battles
+
     // itemPickUp
     // itemStatus
     // itemStatusOn
@@ -82,8 +84,6 @@ extern "C"
     // itemCoinDrop
     // itemReInit
     // itemInit
-
-    extern ItemWork itemDrvWork[2]; // Index 0 used for field, index 1 used for battles
 }
 
 #endif

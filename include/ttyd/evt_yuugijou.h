@@ -5,6 +5,8 @@
 
 extern "C"
 {
+    extern void *yuugijouWorkPtr;
+
     // evtYuuWindowEndChk
     // evtYuuWindow
     // yuuminigame_end
@@ -21,8 +23,6 @@ extern "C"
     // yuugijou_add_montemedal
     // monteCountDisp
     // yuugijou_init
-
-    extern void *yuugijouWorkPtr;
 }
 
 #endif

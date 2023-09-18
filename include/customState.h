@@ -102,6 +102,7 @@ class CustomState
     bool init;             // A custom state was selected to be loaded
 };
 
+// The CustomState class is very small, so making it dynamic would waste a lot of memory
 extern CustomState gCustomState;
 
 #endif

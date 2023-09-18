@@ -9,6 +9,9 @@
 
 extern "C"
 {
+    extern uint8_t _guardFrames[];
+    extern uint8_t _superguardFrames[];
+
     // BattleAcGaugeSeDelete
     // BattleAcGaugeSeUpdate
     // BattleAcGaugeSeInit
@@ -28,9 +31,6 @@ extern "C"
     // BattleActionCommandResult
     // BattleActionCommandManager
     // BattleActionCommandManagerInit
-
-    extern uint8_t _guardFrames[];
-    extern uint8_t _superguardFrames[];
 }
 
 #endif

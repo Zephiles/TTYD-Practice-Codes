@@ -25,6 +25,8 @@ static_assert(sizeof(SeqTitleWork2) == 0x34);
 
 extern "C"
 {
+    extern SeqTitleWork2 *seqTitleWorkPtr2;
+
     // pressStartGX
     // disp2
     // disp1
@@ -35,8 +37,6 @@ extern "C"
     // seq_titleExit
     // seq_titleInit
     // DbgBtlSel_GetMsgDataPtr
-
-    extern SeqTitleWork2 *seqTitleWorkPtr2;
 }
 
 #endif

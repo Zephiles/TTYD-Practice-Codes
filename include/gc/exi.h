@@ -33,6 +33,8 @@ static_assert(sizeof(EXIControl) == 0x40);
 
 extern "C"
 {
+    extern EXIControl Ecb[3];
+
     // SetExiInterruptMask
     // EXIImm
     // EXIImmEx
@@ -60,8 +62,6 @@ extern "C"
     // __OSEnableBarnacle
     // InitializeUART
     // WriteUARTN
-
-    extern EXIControl Ecb[3];
 
     // Manually-written functions
     void EXIProbeReset();

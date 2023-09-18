@@ -33,12 +33,12 @@ static_assert(sizeof(DEMOPadStatus) == 0x1E);
 
 extern "C"
 {
+    extern DEMOPadStatus DemoPad[4]; // One for each controller port
+    extern PadStatus Pad[4];         // One for each controller port
+
     void DEMOPadInit();
     void DEMOPadRead();
     // DEMOPadCopy
-
-    extern DEMOPadStatus DemoPad[4]; // One for each controller port
-    extern PadStatus Pad[4];         // One for each controller port
 }
 
 #endif
