@@ -30,7 +30,7 @@ static_assert(sizeof(EffWork) == 0x18);
 
 extern "C"
 {
-    extern EffWork *effWorkPtr;
+    extern EffWork *_effWorkPtr;
 
     // effDrawMayaPoly
     // effCalcMayaAnim

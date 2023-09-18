@@ -309,7 +309,7 @@ static_assert(sizeof(BattleWork) == 0x19098);
 
 extern "C"
 {
-    extern BattleWork *_battleWorkPointer;
+    extern BattleWork *_battleWorkPtr;
 
     // BattleConsumeReserveItem
     // BattleStatusWindowCheck

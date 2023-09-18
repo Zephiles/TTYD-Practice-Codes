@@ -42,7 +42,7 @@ static_assert(sizeof(StatusWindowWork) == 0x8C);
 
 extern "C"
 {
-    extern StatusWindowWork *statusWindowWorkPtr;
+    extern StatusWindowWork *_statusWindowWorkPtr;
 
     // statusPartyHPBlink
     // statusMarioHPBlink

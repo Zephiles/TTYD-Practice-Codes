@@ -1592,7 +1592,7 @@ void drawFrameCounter(CameraId cameraId, void *user)
     }
 
     // Get the time string
-    const uint32_t currentFps = static_cast<uint32_t>(globalWorkPtr->framerate);
+    const uint32_t currentFps = static_cast<uint32_t>(_globalWorkPtr->framerate);
     const uint32_t totalSeconds = timer / currentFps;
     const uint32_t totalMinutes = totalSeconds / 60;
 
@@ -1802,10 +1802,10 @@ void drawEffsActive(CameraId cameraId, void *user)
     (void)user;
 
     // Get the total amount of effs active
-    const EffWork *workPtr = effWorkPtr;
-    const uint32_t maxEntries = workPtr->maxEntries;
+    const EffWork *effWorkPtr = _effWorkPtr;
+    const uint32_t maxEntries = effWorkPtr->maxEntries;
 
-    const EffEntry *entry = &workPtr->pEntries[0];
+    const EffEntry *entry = &effWorkPtr->pEntries[0];
     uint32_t count = 0;
 
     for (uint32_t i = 0; i < maxEntries; i++, entry++)
@@ -3621,7 +3621,7 @@ void drawStarPowerValue()
     }
 
     // Don't display SP if the status bar is not on-screen
-    const float posY = statusWindowWorkPtr->field_0x24;
+    const float posY = _statusWindowWorkPtr->field_0x24;
     if ((posY > 330.f) || (posY < 100.f))
     {
         return;

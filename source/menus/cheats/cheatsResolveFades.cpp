@@ -66,14 +66,14 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     float posY = posYBase - offsetY;
 
     char buf[16];
-    const FadeWork *workPtr = fadeWorkPtr;
+    const FadeWork *fadeWorkPtr = _fadeWorkPtr;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     constexpr uint32_t totalEntries = sizeof(FadeWork::entry) / sizeof(FadeEntry);
 
     for (uint32_t i = 0; i < totalEntries; i++)
     {
         // Check if the current fade is active
-        const FadeEntry *entry = &workPtr->entry[i];
+        const FadeEntry *entry = &fadeWorkPtr->entry[i];
 
         if (entry->flags & 1U)
         {
@@ -167,15 +167,15 @@ ResolveFadeReturnValue resolveFade(uint32_t index)
     }
 
     // Check if the current fade is active
-    FadeEntry *entry = &fadeWorkPtr->entry[index];
-    if (!(entry->flags & 1U))
+    FadeEntry *entryPtr = &_fadeWorkPtr->entry[index];
+    if (!(entryPtr->flags & 1U))
     {
         // Fade is not active
         return ResolveFadeReturnValue::RESOLVE_FADE_RETURN_TYPE_NOT_ACTIVE;
     }
 
     // Check if the selected fade needs to be resolved
-    FadeType type = entry->fadeType;
+    FadeType type = entryPtr->fadeType;
 
     switch (type)
     {

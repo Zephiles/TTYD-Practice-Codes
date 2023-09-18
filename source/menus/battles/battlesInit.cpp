@@ -342,13 +342,13 @@ void battlesMenuReturnToInitMenu()
 
 BattleWork *getBattleWorkPtr()
 {
-    // globalWorkPtr->inBattle should be set to anything other than 0 to indicate that the player is currently in a battle
-    if (globalWorkPtr->inBattle == 0)
+    // _globalWorkPtr->inBattle should be set to anything other than 0 to indicate that the player is currently in a battle
+    if (_globalWorkPtr->inBattle == 0)
     {
         return nullptr;
     }
 
-    return _battleWorkPointer;
+    return _battleWorkPtr;
 }
 
 BattleWorkUnit *getMarioBattlePtr()

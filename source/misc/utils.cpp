@@ -107,7 +107,7 @@ bool checkIfInGame()
         return false;
     }
 
-    const OSModuleInfo *relPtr = globalWorkPtr->relocationBase;
+    const OSModuleInfo *relPtr = _globalWorkPtr->relocationBase;
     if (!relPtr)
     {
         return false;
@@ -434,7 +434,7 @@ void getTimeString(char *stringOut, uint32_t stringSize, OSTime time)
 {
     const uint32_t busClock = OSBusClock;
     const uint32_t timeBase = busClock / 4;
-    const uint32_t currentFps = static_cast<uint32_t>(globalWorkPtr->framerate);
+    const uint32_t currentFps = static_cast<uint32_t>(_globalWorkPtr->framerate);
 
     OSTime currentTime = time / (timeBase / currentFps);
 

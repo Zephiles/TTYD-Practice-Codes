@@ -44,7 +44,7 @@ static_assert(sizeof(CardMgrWork) == 0xF0);
 
 extern "C"
 {
-    extern CardMgrWork *cardMgrWorkPtr;
+    extern CardMgrWork *_cardMgrWorkPtr;
 
     // memcard_open
     // statusCallback

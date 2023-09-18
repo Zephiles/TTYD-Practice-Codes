@@ -277,17 +277,17 @@ void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr)
 void *getLockFlagsRegionPtr(uint32_t region)
 {
     EvtWork *eventWorkPtr = evtGetWork();
-    GlobalWork *tempGlobalWorkPtr = globalWorkPtr;
+    GlobalWork *globalWorkPtr = _globalWorkPtr;
 
     switch (region)
     {
         case LockFlagsOptions::LOCK_FLAGS_GSW:
         {
-            return &tempGlobalWorkPtr->mGSW[0];
+            return &globalWorkPtr->mGSW[0];
         }
         case LockFlagsOptions::LOCK_FLAGS_GSWF:
         {
-            return &tempGlobalWorkPtr->mGSWF[0];
+            return &globalWorkPtr->mGSWF[0];
         }
         case LockFlagsOptions::LOCK_FLAGS_GW:
         {
@@ -299,11 +299,11 @@ void *getLockFlagsRegionPtr(uint32_t region)
         }
         case LockFlagsOptions::LOCK_FLAGS_LSW:
         {
-            return &tempGlobalWorkPtr->mLSW[0];
+            return &globalWorkPtr->mLSW[0];
         }
         case LockFlagsOptions::LOCK_FLAGS_LSWF:
         {
-            return &tempGlobalWorkPtr->mLSWF[0];
+            return &globalWorkPtr->mLSWF[0];
         }
         default:
         {

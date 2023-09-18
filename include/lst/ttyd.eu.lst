@@ -162,7 +162,7 @@
 // 80013D54:fadeInit
 // 80013E68:_callback
 // data
-8042AF40:fadeWorkPtr
+8042AF40:_fadeWorkPtr
 
 // hitdrv.o
 80013EB0:hitBindUpdate
@@ -394,7 +394,7 @@
 8003023C:memClear
 80030300:memInit
 // data
-80421A20:smartWorkPtr
+80421A20:_smartWorkPtr
 8042B128:mapalloc_base_ptr
 8042B12C:R_battlemapalloc_base_ptr
 8042B134:R_battlemapalloc_size
@@ -711,7 +711,7 @@
 // 8005F058:effInit
 // 8005F0E0:_callback_tpl
 // data
-80422720:effWorkPtr
+80422720:_effWorkPtr
 
 // mariost.o
 // text
@@ -731,7 +731,7 @@
 80261A48:N_systemErrorHandler
 // 80262084:N_setupErrorHandler
 // data
-80422810:globalWorkPtr
+80422810:_globalWorkPtr
 8042B260:_mariostSystemLevel
 
 // seq_battle.o
@@ -1018,7 +1018,7 @@
 // 800B3F28:cardBufReset
 // 800B4118:cardGetFilePtr
 // data
-8042B3D8:cardMgrWorkPtr
+8042B3D8:_cardMgrWorkPtr
 
 // party.o
 // 800B7E70:partySetFamicomMode
@@ -1683,7 +1683,7 @@
 // 800F9EA8:battleSeqEndCheck
 // 800F9EB8:battleMain
 // data
-8042B4B0:_battleWorkPointer
+8042B4B0:_battleWorkPtr
 
 // battle_ac.o
 // text
@@ -2232,7 +2232,7 @@
 // 8013F720:statusWinReInit
 // 8013F800:statusWinInit
 // data
-8042B50C:statusWindowWorkPtr
+8042B50C:_statusWindowWorkPtr
 
 // mario_party.o
 // 80142948:partyGetTechLv
@@ -2427,7 +2427,7 @@
 // 8022D408:monteCountDisp
 // 8022D65C:yuugijou_init
 // data
-8042B698:yuugijouWorkPtr
+8042B698:_yuugijouWorkPtr
 
 // sac_scissor.o
 // 80234D0C:wait_star_standby

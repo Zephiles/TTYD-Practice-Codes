@@ -195,7 +195,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
 
 int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
 {
-    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
+    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(_yuugijouWorkPtr);
     switch (index)
     {
         case StatsMarioOptions::STATS_MARIO_COINS:
@@ -284,7 +284,7 @@ void menuMarioChangeValue(const ValueType *valuePtr)
 
     const int32_t value = valuePtr->s32;
     PouchData *pouchPtr = pouchGetPtr();
-    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(yuugijouWorkPtr);
+    uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(_yuugijouWorkPtr);
 
     // Set the new value
     switch (index)

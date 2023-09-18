@@ -433,7 +433,7 @@ int32_t setIndexWarpEntrances(EvtEntry *evtPtr, bool isFirstCall)
         }
 
         // Set the chosen entrance
-        strcpy(globalWorkPtr->beroEnterName, chosenEntranceName);
+        strcpy(_globalWorkPtr->beroEnterName, chosenEntranceName);
         setNextBero(chosenEntranceName);
     }
 

@@ -183,7 +183,7 @@ void ButtonComboEditor::draw() const
 
     // Draw the amount of time left
     const uint32_t currentTime = this->timer;
-    const uint32_t currentFps = static_cast<uint32_t>(globalWorkPtr->framerate);
+    const uint32_t currentFps = static_cast<uint32_t>(_globalWorkPtr->framerate);
     const uint32_t seconds = (currentTime / currentFps) % 60;
     const uint32_t frames = currentTime % currentFps;
 

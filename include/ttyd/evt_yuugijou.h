@@ -5,7 +5,7 @@
 
 extern "C"
 {
-    extern void *yuugijouWorkPtr;
+    extern void *_yuugijouWorkPtr;
 
     // evtYuuWindowEndChk
     // evtYuuWindow

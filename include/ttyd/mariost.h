@@ -104,7 +104,7 @@ static_assert(sizeof(GlobalWork) == 0x13D8);
 
 extern "C"
 {
-    extern GlobalWork *globalWorkPtr; // gp
+    extern GlobalWork *_globalWorkPtr; // gp
     extern int32_t _mariostSystemLevel;
 
     void marioStInit();

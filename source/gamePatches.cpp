@@ -478,7 +478,7 @@ GlobalWork *initStageEvents()
     fixMapProblems();
 
     // The overwritten instruction sets r3 to the global work pointer, so return that
-    return globalWorkPtr;
+    return _globalWorkPtr;
 }
 
 void applyGameFixes()

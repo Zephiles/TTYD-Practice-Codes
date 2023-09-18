@@ -86,7 +86,7 @@ static_assert(sizeof(HeapStart) == 0x14);
 
 extern "C"
 {
-    extern SmartWork *smartWorkPtr; // wp
+    extern SmartWork *_smartWorkPtr; // wp
     extern uint32_t mapalloc_size;
     extern MapAllocEntry *mapalloc_base_ptr;
 

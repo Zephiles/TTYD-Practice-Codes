@@ -193,16 +193,16 @@ void checkHeaps()
     }
 
     // Check the smart heap
-    const SmartWork *tempSmartWorkPtr = smartWorkPtr;
+    const SmartWork *smartWorkPtr = _smartWorkPtr;
 
     // Check the used entries
-    const SmartAllocationData *tempChunk = tempSmartWorkPtr->pFirstUsed;
+    const SmartAllocationData *tempChunk = smartWorkPtr->pFirstUsed;
     addressWithError = checkIndividualSmartHeap(tempChunk);
     displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter++, enabledFlag, true);
 
     // Check the free entries
     // Don't incrememt MemoryUsageCounter since free entries are not drawn
-    tempChunk = tempSmartWorkPtr->pFirstFree;
+    tempChunk = smartWorkPtr->pFirstFree;
     addressWithError = checkIndividualSmartHeap(tempChunk);
     displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, enabledFlag++, false);
 

@@ -90,7 +90,7 @@ static_assert(sizeof(FadeWork) == 0x360);
 
 extern "C"
 {
-    extern FadeWork *fadeWorkPtr; // wp
+    extern FadeWork *_fadeWorkPtr; // wp
 
     // fadeSetNarrowFast
     // fadeGetTpl
