@@ -159,6 +159,7 @@ void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr);
 
 // memoryEditorSettings
 void memoryMenuMemoryEditorSettingsInit(Menu *menuPtr);
+void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput button);
 void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user);
 
 void memoryMenuMemoryEditorSettingsToggleFlag(Menu *menuPtr);

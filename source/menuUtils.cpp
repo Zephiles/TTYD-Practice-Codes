@@ -22,18 +22,35 @@ Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions)
     return enterNextMenu(funcs, totalOptions, totalOptions);
 }
 
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, Menu *menuPtr)
+{
+    return enterNextMenu(funcs, totalOptions, totalOptions, menuPtr);
+}
+
 Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage)
 {
+    Menu *menuPtr = enterNextMenu(funcs, totalOptions, totalOptionsPerPage, gMenu);
+    gMenu = menuPtr;
+    return menuPtr;
+}
+
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage, Menu *menuPtr)
+{
     Menu *nextMenu = new Menu(funcs, totalOptions, totalOptionsPerPage);
-    nextMenu->setPrevMenu(gMenu);
-    gMenu = nextMenu;
+    nextMenu->setPrevMenu(menuPtr);
     return nextMenu;
 }
 
 Menu *enterPrevMenu()
 {
+    Menu *menuPtr = enterPrevMenu(gMenu);
+    gMenu = menuPtr;
+    return menuPtr;
+}
+
+Menu *enterPrevMenu(Menu *menuPtr)
+{
     // Make sure there is at least one menu
-    Menu *menuPtr = gMenu;
     if (!menuPtr)
     {
         return menuPtr;
@@ -43,7 +60,6 @@ Menu *enterPrevMenu()
     Menu *prevMenu = menuPtr->getPrevMenuPtr();
     delete menuPtr;
 
-    gMenu = prevMenu;
     return prevMenu;
 }
 

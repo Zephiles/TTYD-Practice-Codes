@@ -30,24 +30,90 @@ const MenuOption gMemoryMenuMemoryEditorSettingsOptions[] {
 
 const MenuFunctions gMemoryMenuMemoryEditorSettingsFuncs = {
     gMemoryMenuMemoryEditorSettingsOptions,
-    basicMenuLayoutControls,
+    memoryMenuMemoryEditorSettingsControls,
     memoryMenuMemoryEditorSettingsDraw,
     nullptr, // Exit function not needed
 };
 
-// menuPtr is assumed to not be used in this function; The memory editor calls this function with menuPtr set to nullptr
 void memoryMenuMemoryEditorSettingsInit(Menu *menuPtr)
 {
-    (void)menuPtr;
-
     constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryEditorSettingsOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuMemoryEditorSettingsFuncs, totalOptions);
+
+    if (gMenu)
+    {
+        // Normal menu is open, so proceed as normal
+        enterNextMenu(&gMemoryMenuMemoryEditorSettingsFuncs, totalOptions);
+    }
+    else
+    {
+        // Memory Editor is open
+        menuPtr = enterNextMenu(&gMemoryMenuMemoryEditorSettingsFuncs, totalOptions, menuPtr);
+        gMemoryEditor->setMenuPtr(menuPtr);
+    }
+}
+
+// enterPrevMenu is called in basicMenuLayoutControls, which uses gMenu. If the Memory Editor is open, then gMenu will not be
+// used, so basicMenuLayoutControls cannot be used. So a custom controls function must be used here, in which the B button is
+// handled separately.
+void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput button)
+{
+    switch (button)
+    {
+        case MenuButtonInput::B:
+        {
+            if (gMenu)
+            {
+                // Normal menu is open, so proceed as normal
+                enterPrevMenu();
+            }
+            else
+            {
+                // Memory Editor is open
+                // Failsafe: Loop repeatedly until nullptr is reached
+                do
+                {
+                    menuPtr = enterPrevMenu(menuPtr);
+                } while (menuPtr);
+
+                gMemoryEditor->setMenuPtr(nullptr);
+            }
+            break;
+        }
+        default:
+        {
+            // Use the default controls
+            basicMenuLayoutControls(menuPtr, button);
+            break;
+        }
+    }
 }
 
 void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user)
 {
-    // Draw the main window and text
-    basicMenuLayoutDraw(cameraId, user);
+    // Cannot use basicMenuLayoutDraw since that uses gMenu
+    (void)cameraId;
+    (void)user;
+
+    // Draw the main window
+    drawMainWindow();
+
+    MemoryEditor *memoryEditorPtr = gMemoryEditor;
+    const Menu *menuPtr = gMenu;
+
+    if (!menuPtr)
+    {
+        // Memory Editor is open
+        menuPtr = memoryEditorPtr->getMenuPtr();
+    }
+
+    // Failsafe: Make sure menuPtr is properly set
+    if (!menuPtr)
+    {
+        return;
+    }
+
+    // Draw the main text
+    menuPtr->basicLayoutDraw(LINE_HEIGHT_FLOAT, 0.f, 0.f);
 
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -64,7 +130,6 @@ void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user)
 
     // Draw the on/off text for each flag
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const MemoryEditor *memoryEditorPtr = gMemoryEditor;
     const char *onOffText;
     uint32_t color;
 
@@ -92,8 +157,9 @@ void memoryMenuMemoryEditorSettingsToggleFlag(Menu *menuPtr)
         gMemoryEditor->toggleEnabledFlag(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE + currentIndex);
 
     // Certain things must be done if the memory editor is currently open
-    if (!memoryEditorIsOpen())
+    if (gMenu)
     {
+        // Normal menu is open
         return;
     }
 

@@ -932,8 +932,8 @@ void MemoryEditor::controls(MenuButtonInput button)
         }
         case MenuButtonInput::Y:
         {
-            // menuPtr should be unused in memoryMenuMemoryEditorSettingsInit, so just pass in nullptr
-            return memoryMenuMemoryEditorSettingsInit(nullptr);
+            // Open the Settings menu
+            return memoryMenuMemoryEditorSettingsInit(this->menuPtr);
         }
         default:
         {
@@ -1319,10 +1319,10 @@ void handleMemoryEditor()
         return;
     }
 
-    // Do not run if the menu is open; Need to check gRootMenu since gMenu is used in the memory editor
+    // Do not run if the menu is open
     // Do not run if changing button combos
     // Do not run if currently in the process of spawning an item
-    if (gRootMenu || gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) ||
+    if (gMenu || gMod->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) ||
         gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
     {
         return;
@@ -1341,16 +1341,15 @@ void handleMemoryEditor()
     const MenuButtonInput button = getMenuButtonInput(true);
 
     // If the Settings menu is open, then handle the controls for that
-    // If it is open, then gMenu will be set
-    Menu *settingsMenuPtr = gMenu;
+    Menu *settingsMenuPtr = memoryEditorPtr->getMenuPtr();
     if (settingsMenuPtr)
     {
         // Handle the controls for the Settings menu
         settingsMenuPtr->runControlsFunc(button);
 
         // Draw the Settings menu
-        // gMenu may have been modified, so have to re-get it
-        settingsMenuPtr = gMenu;
+        // The menu pointer may have been modified, so have to re-get it
+        settingsMenuPtr = memoryEditorPtr->getMenuPtr();
         if (settingsMenuPtr)
         {
             settingsMenuPtr->runDrawFunc();

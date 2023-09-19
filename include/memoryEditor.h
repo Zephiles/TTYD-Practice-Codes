@@ -76,6 +76,9 @@ class MemoryEditor
         }
     }
 
+    Menu *getMenuPtr() { return this->menuPtr; }
+    void setMenuPtr(Menu *menuPtr) { this->menuPtr = menuPtr; }
+
     uint32_t getButtonCombo() const { return this->buttonCombo; }
     void setButtonCombo(uint32_t combo) { this->buttonCombo = static_cast<uint16_t>(combo); }
 
@@ -113,6 +116,8 @@ class MemoryEditor
                                // numBytesBeingEdited.
 
     ValueEditor *valueEditor; // For changing currentAddress and numBytesBeingEdited
+
+    Menu *menuPtr; // Pointer used for handling the Settings menu
 
     MenuAutoIncrement autoIncrement;
     uint16_t buttonCombo; // For opening/closing the memory editor

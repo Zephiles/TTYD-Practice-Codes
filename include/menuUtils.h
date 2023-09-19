@@ -11,11 +11,21 @@
 
 extern Menu *gMenu;
 
-// Calls enterNextMenu with totalOptionsPerPage set to totalOptions
+// Calls enterNextMenu with totalOptionsPerPage set to totalOptions, which sets gMenu to the next menu pointer
 Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions);
 
+// Calls enterNextMenu with totalOptionsPerPage set to totalOptions
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, Menu *menuPtr);
+
+// Calls enterNextMenu with menuPtr set to gMenu, and sets gMenu to the next menu pointer
 Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage);
+
+Menu *enterNextMenu(const MenuFunctions *funcs, uint32_t totalOptions, uint32_t totalOptionsPerPage, Menu *menuPtr);
+
+// Calls enterPrevMenu with menuPtr set to gMenu, and sets gMenu to the previous menu pointer
 Menu *enterPrevMenu();
+
+Menu *enterPrevMenu(Menu *menuPtr);
 
 // Closes all menus, calls each of their exit functions, and sets gMenu to nullptr
 void closeAllMenus();
