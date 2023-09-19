@@ -1328,13 +1328,28 @@ void handleMemoryEditor()
         return;
     }
 
-    // If the memory editor is not currently open, then check for and handle the button combo for opening/closing it
+    // If the memory editor is not currently open, then check for and handle the button combo for opening it
     if (!memoryEditorPtr->memoryEditorIsDisplayed())
     {
         if (checkButtonCombo(memoryEditorPtr->getButtonCombo()))
         {
-            memoryEditorPtr->toggleMemoryEditorDisplayed();
+            // Open the memory editor
+            memoryEditorPtr->displayMemoryEditor();
+
+            // Set the System Level if it should be set
+            if (memoryEditorPtr->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL))
+            {
+                setSystemLevel(1);
+            }
+
+            // Disable the pause menu if it should be disabled
+            if (memoryEditorPtr->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU))
+            {
+                winOpenDisable();
+            }
         }
+
+        // Do not accept inputs on the frame that the memory editor was opened
         return;
     }
 
@@ -1362,18 +1377,6 @@ void handleMemoryEditor()
     }
     else
     {
-        // Set the System Level if it should be set
-        if (memoryEditorPtr->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL))
-        {
-            setSystemLevel(1);
-        }
-
-        // Disable the pause menu if it should be disabled
-        if (memoryEditorPtr->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU))
-        {
-            winOpenDisable();
-        }
-
         // Handle the controls for the memory editor
         memoryEditorPtr->controls(button);
 
