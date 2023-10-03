@@ -341,19 +341,19 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < totalManuallyPositionEntries; i++)
         {
-            const DisplayManuallyPosition *currentManuallyPositionPtr = &manuallyPositionPtr[i];
-            DisplayManuallyPosition *currentEntryPtr = &entriesPtr[i];
+            offset += sizeof(float); // Pos X
+            offset += sizeof(float); // Pos Y
+            offset += sizeof(float); // Scale
 
-            currentEntryPtr->setPosX(currentManuallyPositionPtr->getPosX());
-            currentEntryPtr->setPosY(currentManuallyPositionPtr->getPosY());
-            currentEntryPtr->setScale(currentManuallyPositionPtr->getScale());
-
-            // Only increment the offset if the max amount of entries has not been reached
+            // Only set the values if the max amount of entries has not been reached
             if (i < maxManuallyPositionEntries)
             {
-                offset += sizeof(float); // Pos X
-                offset += sizeof(float); // Pos Y
-                offset += sizeof(float); // Scale
+                const DisplayManuallyPosition *currentManuallyPositionPtr = &manuallyPositionPtr[i];
+                DisplayManuallyPosition *currentEntryPtr = &entriesPtr[i];
+
+                currentEntryPtr->setPosX(currentManuallyPositionPtr->getPosX());
+                currentEntryPtr->setPosY(currentManuallyPositionPtr->getPosY());
+                currentEntryPtr->setScale(currentManuallyPositionPtr->getScale());
             }
         }
 
