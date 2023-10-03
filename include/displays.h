@@ -61,6 +61,11 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER,
     DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION,
 
+    // All of the flags for the Hit Check Visualization display need to be next to each other in order to work correctly
+    // The code assumes that DRAW_HITS comes first
+    DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS,   // Hit Check Visualization
+    DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES, // Hit Check Visualization
+
     // All of the flags for the trick displays need to be next to each other in order to work correctly
     // The code assumes that YOSHI_SKIP is first
     DISPLAYS_ENABLED_FLAG_YOSHI_SKIP,
@@ -152,11 +157,6 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED = 0, // On-Screen Timer
     DISPLAYS_MISC_FLAG_FRAME_COUNTER_PAUSED,      // Frame Counter
 
-    // All of the flags for the Hit Check Visualization display need to be next to each other in order to work correctly
-    // The code assumes that DRAW_HITS comes first
-    DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS,   // Hit Check Visualization
-    DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES, // Hit Check Visualization
-
     DISPLAYS_MISC_FLAG_YOSHI_SKIP_TIMER_STOPPED, // Yoshi Skip
     DISPLAYS_MISC_FLAG_YOSHI_SKIP_TIMER_PAUSED,  // Yoshi Skip
 
@@ -243,6 +243,7 @@ enum DisplaysWithButtonCombo
 
 #define TOTAL_DISPLAYS_BUTTON_COMBOS DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_MAX_VALUE
 
+// This class needs to be packed in order for it to work properly in the settings
 class DisplayManuallyPosition
 {
    public:
@@ -265,7 +266,9 @@ class DisplayManuallyPosition
     float posX;
     float posY;
     float scale;
-};
+} __attribute__((__packed__));
+
+static_assert(sizeof(DisplayManuallyPosition) == 0xC);
 
 class OnScreenTimerDisplay
 {
@@ -722,11 +725,14 @@ class Displays
     bool checkDisplayButtonComboEveryFrame(uint32_t cheatWithCombo) const;
     uint32_t getDisplayButtonCombo(uint32_t cheatWithCombo);
     void setDisplayButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
+    uint16_t *getButtonCombosPtr() { return this->buttonCombos; }
 
     bool enabledFlagIsSet(uint32_t enabledFlag) const;
     void setEnabledFlag(uint32_t enabledFlag);
     void clearEnabledFlag(uint32_t enabledFlag);
     bool toggleEnabledFlag(uint32_t enabledFlag);
+    const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
+
     void handleEnablingTrickDisplayFlag(uint32_t enabledFlag);
     bool anyHeapDisplayIsEnabled();
 
@@ -734,6 +740,7 @@ class Displays
     void setManuallyPositionFlag(uint32_t manuallyPositionFlag);
     void clearManuallyPositionFlag(uint32_t manuallyPositionFlag);
     bool toggleManuallyPositionFlag(uint32_t manuallyPositionFlag);
+    const uint32_t *getManuallyPositionFlagsPtr() const { return this->manuallyPositionFlags; }
 
     bool miscFlagIsSet(uint32_t miscFlag) const;
     void setMiscFlag(uint32_t miscFlag);
@@ -775,6 +782,7 @@ class Displays
 
     bool displayShouldBeHandled(uint32_t enabledFlag) const;
     DisplayManuallyPosition *getDisplayManuallyPositionPtr(uint32_t manuallyPositionFlag);
+    DisplayManuallyPosition *getManuallyPositionEntriesPtr() { return this->manuallyPosition; }
 
     float getErrorTextPosY() const { return this->defaultPosYErrors; }
     float getErrorTextPosYDecrement();
@@ -816,9 +824,9 @@ class Displays
     uint32_t manuallyPositionFlags[DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE];
     uint32_t miscFlags[DISPLAYS_MISC_FLAGS_ARRAY_SIZE];
     uint32_t shouldDrawFlags[DISPLAYS_SHOULD_DRAW_ARRAY_SIZE];
+    DisplayManuallyPosition manuallyPosition[TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS];
     uint16_t buttonCombos[TOTAL_DISPLAYS_BUTTON_COMBOS];
 
-    DisplayManuallyPosition manuallyPosition[TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS];
     float defaultPosYBottomLeft;
     float defaultPosYTopLeft;
     float defaultPosYTopRight;

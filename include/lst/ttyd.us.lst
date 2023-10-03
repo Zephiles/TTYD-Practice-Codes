@@ -2821,7 +2821,7 @@ unused:winFontSetCenter
 // 802AEBC8:VerifyFAT
 // 802AEE4C:__CARDVerify
 // 802AEED8:CARDCheckExAsync
-// 802AF468:CARDCheckAsync
+802AF468:CARDCheckAsync
 // 802AF490:IsCard
 // 802AF55C:CARDProbe
 802AF594:CARDProbeEx

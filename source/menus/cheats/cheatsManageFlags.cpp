@@ -70,8 +70,8 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -213,8 +213,8 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;

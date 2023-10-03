@@ -43,16 +43,16 @@ void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the button combo editor is open, then handle the controls for that
-    ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
+    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = cheatsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;

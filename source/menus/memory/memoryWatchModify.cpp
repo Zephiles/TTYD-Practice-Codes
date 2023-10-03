@@ -252,7 +252,7 @@ void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
 
     NameEditor *nameEditorPtr = gMemoryMenu->getNameEditorPtr();
-    nameEditorPtr->init(rootWindowPtr, watchName, watchName, currentEntry->getNameSize(), true, rootWindowPtr->getAlpha());
+    nameEditorPtr->init(rootWindowPtr, watchName, watchName, MEMORY_WATCH_NAME_SIZE, true, rootWindowPtr->getAlpha());
     nameEditorPtr->startDrawing(memoryMenuMemoryWatchModifySetNewName, memoryMenuMemoryWatchModifyCancelSetNewName);
 }
 

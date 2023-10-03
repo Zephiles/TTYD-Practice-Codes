@@ -69,7 +69,7 @@ void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput butto
             else
             {
                 // Memory Editor is open
-                // Failsafe: Loop repeatedly until nullptr is reached
+                // Failsafe: Loop until nullptr is reached
                 do
                 {
                     menuPtr = enterPrevMenu(menuPtr);

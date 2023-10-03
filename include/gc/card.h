@@ -69,35 +69,36 @@ extern "C"
 {
     // Main functions
     int32_t CARDGetResultCode(int32_t channel);
-    int32_t CARDProbeEx(int32_t channel, int32_t *memSize, int32_t *sectorSize);
-    int32_t CARDMountAsync(int32_t channel, void *workArea, CARDCallback detachCallback, CARDCallback attachCallback);
+    int32_t CARDCheckAsync(int32_t channel, CARDCallback callback);
+    int32_t CARDProbeEx(int32_t channel, int32_t *memSizePtr, int32_t *sectorSizePtr);
+    int32_t CARDMountAsync(int32_t channel, void *workAreaPtr, CARDCallback detachCallback, CARDCallback attachCallback);
     int32_t CARDUnmount(int32_t channel);
-    int32_t CARDOpen(int32_t channel, const char *fileName, CARDFileInfo *fileInfo);
-    int32_t CARDClose(CARDFileInfo *fileInfo);
+    int32_t CARDOpen(int32_t channel, const char *fileNamePtr, CARDFileInfo *fileInfoPtr);
+    int32_t CARDClose(CARDFileInfo *fileInfoPtr);
 
     int32_t CARDCreateAsync(int32_t channel,
-                            const char *fileName,
+                            const char *fileNamePtr,
                             uint32_t size,
-                            CARDFileInfo *fileInfo,
+                            CARDFileInfo *fileInfoPtr,
                             CARDCallback callback);
 
-    int32_t CARDReadAsync(CARDFileInfo *fileInfo, void *buffer, int32_t length, int32_t offset, CARDCallback callback);
-    int32_t CARDWriteAsync(CARDFileInfo *fileInfo, void *buffer, int32_t length, int32_t offset, CARDCallback callback);
-    int32_t CARDDelete(int32_t channel, const char *fileName);
-    int32_t CARDGetStatus(int32_t channel, int32_t fileNum, CARDStat *stat);
-    int32_t CARDSetStatusAsync(int32_t channel, int32_t fileNum, CARDStat *stat, CARDCallback callback);
+    int32_t CARDReadAsync(CARDFileInfo *fileInfoPtr, void *bufferPtr, int32_t length, int32_t offset, CARDCallback callback);
+    int32_t CARDWriteAsync(CARDFileInfo *fileInfoPtr, void *bufferPtr, int32_t length, int32_t offset, CARDCallback callback);
+    int32_t CARDDelete(int32_t channel, const char *fileNamePtr);
+    int32_t CARDGetStatus(int32_t channel, int32_t fileNum, CARDStat *statPtr);
+    int32_t CARDSetStatusAsync(int32_t channel, int32_t fileNum, CARDStat *statPtr, CARDCallback callback);
 
     // Internal functions
-    int32_t __CARDGetControlBlock(int32_t channel, void **card);
-    int32_t __CARDPutControlBlock(void *card, int32_t result);
-    void *__CARDGetDirBlock(void *card);
+    int32_t __CARDGetControlBlock(int32_t channel, void **cardPtr);
+    int32_t __CARDPutControlBlock(void *cardPtr, int32_t result);
+    void *__CARDGetDirBlock(void *cardPtr);
     int32_t __CARDUpdateDir(int32_t channel, CARDCallback callback);
-    bool __CARDCompareFileName(void *dirBlock, const char *fileName);
-    int32_t __CARDAccess(void *card, void *dirBlock);
-    int32_t __CARDIsWritable(void *card, void *dirBlock);
+    bool __CARDCompareFileName(void *dirBlockPtr, const char *fileNamePtr);
+    int32_t __CARDAccess(void *cardPtr, void *dirBlockPtr);
+    int32_t __CARDIsWritable(void *cardPtr, void *dirBlockPtr);
 }
 
 // Manually-written functions
-int32_t card_rename_async(int32_t channel, const char *oldName, const char *newName, CARDCallback callback);
+int32_t card_rename_async(int32_t channel, const char *oldNamePtr, const char *newNamePtr, CARDCallback callback);
 
 #endif

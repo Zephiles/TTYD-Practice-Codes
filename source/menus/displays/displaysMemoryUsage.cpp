@@ -8,9 +8,6 @@
 #include <cstdint>
 
 const MenuOption gDisplaysMenuMemoryUsageOptions[] = {
-    "Adjust Manual Positioning",
-    displaysAdjustManualPositionInit,
-
     "Main Heap 0",
     displaysMenuMemoryUsageToggleFlag,
 
@@ -41,6 +38,9 @@ const MenuOption gDisplaysMenuMemoryUsageOptions[] = {
     "Battle Map Heap",
     displaysMenuMemoryUsageToggleFlag,
 #endif
+
+    "Adjust Manual Positioning",
+    displaysAdjustManualPositionInit,
 };
 
 const MenuFunctions gDisplaysMenuMemoryUsageFuncs = {
@@ -94,8 +94,8 @@ void DisplaysMenu::drawMemoryUsageInfo() const
                              &color,
                              0xFF);
 
-        posY -= lineDecrement;
         drawText(string, posX, posY, scale, color);
+        posY -= lineDecrement;
     }
 }
 
@@ -111,7 +111,7 @@ void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user)
 
 void displaysMenuMemoryUsageToggleFlag(Menu *menuPtr)
 {
-    const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() - 1 +
+    const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() +
                                                    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);
 
     if (!ret)

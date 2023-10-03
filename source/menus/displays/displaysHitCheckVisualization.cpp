@@ -47,16 +47,16 @@ void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput bu
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
     // If the confirmation window is open, then handle the controls for that
-    ConfirmationWindow *confirmationWindowPtr;
-    if (confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr(), confirmationWindowPtr->shouldDraw())
+    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
+    if (confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = displaysMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -96,7 +96,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     posY -= lineDecrement;
 
     // Draw the yes/no text for drawing the hits
-    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS),
+    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS),
                          &string,
                          &color,
                          0xFF);
@@ -105,7 +105,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     posY -= lineDecrement;
 
     // Draw the yes/no text for drawing the misses
-    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES),
+    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES),
                          &string,
                          &color,
                          0xFF);
@@ -205,11 +205,11 @@ void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
     uint32_t miscFlag;
     if (menuPtr->getCurrentIndex() == DisplaysMenuHitCheckVisualizationOptions::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_HITS)
     {
-        miscFlag = DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS;
+        miscFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS;
     }
     else
     {
-        miscFlag = DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES;
+        miscFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES;
     }
 
     Displays *displaysPtr = gDisplays;
@@ -219,8 +219,8 @@ void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
 
     // The memory for the buffer will be allocated automatically when it is needed, so just check for resetting the entry count
     // freeing the memory for the buffer when both flags are disabled
-    if (!displaysPtr->enabledFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS) &&
-        !displaysPtr->enabledFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES))
+    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS) &&
+        !displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES))
     {
         HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
         hitCheckVisualizationDisplayPtr->setEntryCount(0);

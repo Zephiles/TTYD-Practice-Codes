@@ -38,10 +38,32 @@ class CustomStateEntry
     void init(const char *stateName);
     void load();
 
-    const char *getCurrentMapPtr() const { return this->currentMap; }
+    ItemId *getItemsPtr() { return this->items; }
+
+    ItemId *getKeyItemsPtr() { return this->keyItems; }
+
+    ItemId *getStoredItemsPtr() { return this->storedItems; }
+
+    ItemId *getBadgesPtr() { return this->badges; }
+
+    ItemId *getEquippedBadgesPtr() { return this->equippedBadges; }
+
+    void setSequencePosition(uint32_t position) { this->sequencePosition = static_cast<uint16_t>(position); }
+
+    CustomStateMarioData *getMarioDataPtr() { return &this->marioData; }
+
+    PouchPartyData *getPouchPartyDataPtr() { return this->partyData; }
+
+    void setPartnerOut(PartyMembers partner) { this->partnerOut = partner; }
+
+    void setFollowerOut(PartyMembers follower) { this->followerOut = follower; }
+
+    void setInBoatMoad(bool inBoatMode) { this->inBoatMode = inBoatMode; }
+
+    char *getCurrentMapPtr() { return this->currentMap; }
     uint32_t getCurrentMapSize() const { return sizeof(this->currentMap); }
 
-    const char *getCurrentBeroPtr() const { return this->currentBero; }
+    char *getCurrentBeroPtr() { return this->currentBero; }
     uint32_t getCurrentBeroSize() const { return sizeof(this->currentBero); }
 
     char *getStateNamePtr() { return this->stateName; }
@@ -73,6 +95,30 @@ class CustomState
    public:
     CustomState() {}
     ~CustomState() {}
+
+    CustomStateEntry *reinitEntries(uint32_t totalStates)
+    {
+        // If memory is already allocated for the entries, then free it
+        CustomStateEntry *entriesPtr = this->entries;
+        if (entriesPtr)
+        {
+            delete[] entriesPtr;
+        }
+
+        // Make sure totalStates is valid
+        if (totalStates > MAX_CUSTOM_STATES)
+        {
+            totalStates = MAX_CUSTOM_STATES;
+        }
+
+        // Set the new total
+        this->totalEntries = totalStates;
+
+        // Allocate memory for the entries
+        entriesPtr = new CustomStateEntry[totalStates];
+        this->entries = entriesPtr;
+        return entriesPtr;
+    }
 
     bool loadState(uint32_t index);
     CustomStateEntry *addState(const char *stateNamePtr);

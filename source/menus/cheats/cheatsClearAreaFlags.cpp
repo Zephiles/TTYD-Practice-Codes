@@ -56,8 +56,8 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
     // If the confirmation window is open, then handle the controls for that
-    ConfirmationWindow *confirmationWindowPtr;
-    if (confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr(), confirmationWindowPtr->shouldDraw())
+    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr();
+    if (confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->controls(button);
         return;

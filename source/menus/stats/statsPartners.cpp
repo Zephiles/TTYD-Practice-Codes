@@ -420,24 +420,24 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = statsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
     }
 
     // If the window for selecting a Yoshi color is open, then handle the controls for that
-    YoshiColorSelector *yoshiColorSelectorPtr;
-    if (yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelectorPtr(), yoshiColorSelectorPtr->shouldDraw())
+    YoshiColorSelector *yoshiColorSelectorPtr = statsMenuPtr->getYoshiColorSelectorPtr();
+    if (yoshiColorSelectorPtr->shouldDraw())
     {
         yoshiColorSelectorPtr->controls(button);
         return;
     }
 
     // If the window for changing Yoshi's name is open, then handle the controls for that
-    NameEditor *nameEditorPtr;
-    if (nameEditorPtr = statsMenuPtr->getNameEditorPtr(), nameEditorPtr->shouldDraw())
+    NameEditor *nameEditorPtr = statsMenuPtr->getNameEditorPtr();
+    if (nameEditorPtr->shouldDraw())
     {
         nameEditorPtr->controls(button);
         return;

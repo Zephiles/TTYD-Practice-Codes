@@ -90,18 +90,15 @@ void statsMenuFollowersInit(Menu *menuPtr)
 void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the follower selector is open, then handle the controls for that
-    FollowerSelector *followerSelectorPtr;
-    if (followerSelectorPtr = gStatsMenu->getFollowerSelectorPtr(), followerSelectorPtr->shouldDraw())
+    FollowerSelector *followerSelectorPtr = gStatsMenu->getFollowerSelectorPtr();
+    if (followerSelectorPtr->shouldDraw())
     {
         followerSelectorPtr->controls(button);
         return;
     }
-    else
-    {
-        // Use the default controls
-        basicMenuLayoutControls(menuPtr, button);
-        return;
-    }
+
+    // Use the default controls
+    basicMenuLayoutControls(menuPtr, button);
 }
 
 void StatsMenu::drawFollowerOut() const

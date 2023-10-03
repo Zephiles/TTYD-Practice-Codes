@@ -313,7 +313,7 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
             firstStringWritten = true;
 
             // Set the initial button pressed
-            textLength = snprintf(stringOut, stringSize, "%s", buttonText);
+            textLength = snprintf(stringOut, stringSize, buttonText);
         }
         else
         {

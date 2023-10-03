@@ -160,8 +160,8 @@ void cheatsMenuInitExit()
 void cheatsMenuDefaultControlsWithValueEditor(Menu *menuPtr, MenuButtonInput button)
 {
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = gCheatsMenu->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
@@ -174,8 +174,8 @@ void cheatsMenuDefaultControlsWithValueEditor(Menu *menuPtr, MenuButtonInput but
 void cheatsMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
-    ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
+    ButtonComboEditor *buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;

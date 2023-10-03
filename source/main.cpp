@@ -6,9 +6,11 @@
 #include "displays.h"
 #include "memoryWatch.h"
 #include "memoryEditor.h"
+#include "settings.h"
 #include "patch.h"
 #include "classes/menu.h"
 #include "classes/window.h"
+#include "gc/card.h"
 #include "gc/OSModule.h"
 #include "gc/DEMOPad.h"
 #include "gc/OSAlloc.h"
@@ -54,15 +56,22 @@ void init()
     // Apply assembly injects for cheats and displays
     applyCheatAndDisplayInjects();
 
+    // The root window is used for various things outside of the menu, so it can just exist at all times
+    Window *windowPtr = new (true) Window;
+    windowPtr->init(getColorBlack(0xF4), -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
+    gRootWindow = windowPtr;
+
     gMod = new (true) Mod;
     gCheats = new (true) Cheats;
     gDisplays = new (true) Displays;
     gMemoryEditor = new (true) MemoryEditor;
 
-    // The root window is used for various things outside of the menu, so it can just exist at all times
-    Window *windowPtr = new (true) Window;
-    windowPtr->init(getColorBlack(0xF4), -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
-    gRootWindow = windowPtr;
+    // Load the custom settings from the settings file if it exists
+    // Try both memory card slots
+    if (loadSettings(CARD_SLOT_A) != CARD_RESULT_READY)
+    {
+        loadSettings(CARD_SLOT_B);
+    }
 
     // Handle function hooks
     // For code that runs once per frame

@@ -7,6 +7,7 @@
 #include "menus/inventoryMenu.h"
 #include "menus/cheatsMenu.h"
 #include "menus/statsMenu.h"
+#include "menus/settingsMenu.h"
 #include "menus/memoryMenu.h"
 #include "menus/battlesMenu.h"
 #include "menus/displaysMenu.h"
@@ -31,7 +32,7 @@ const MenuOption gRootMenuOptions[] = {
     statsMenuInit,
 
     "Settings",
-    nullptr,
+    settingsMenuInit,
 
     "Memory",
     memoryMenuInit,

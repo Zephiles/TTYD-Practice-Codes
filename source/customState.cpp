@@ -42,8 +42,8 @@ void CustomStateEntry::init(const char *stateNamePtr)
     marioData->starPowersObtained = pouchPtr->starPowersObtained;
     marioData->baseMaxHp = pouchPtr->baseMaxHp;
     marioData->baseMaxFp = pouchPtr->baseMaxFp;
-    marioData->totalBp = pouchPtr->totalBp;
     marioData->unallocatedBp = pouchPtr->unallocatedBp;
+    marioData->totalBp = pouchPtr->totalBp;
     marioData->starPoints = pouchPtr->starPoints;
 
     // Back up the partner data
@@ -414,7 +414,7 @@ bool CustomState::overwriteState(uint32_t index)
     // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
     char nameBuf[CUSTOM_STATE_NAME_SIZE + 1];
     CustomStateEntry *currentStatePtr = &entriesPtr[index];
-    snprintf(nameBuf, sizeof(nameBuf), "%s", currentStatePtr->getStateNamePtr());
+    snprintf(nameBuf, sizeof(nameBuf), currentStatePtr->getStateNamePtr());
 
     // Overwrite the selected state
     currentStatePtr->init(nameBuf);

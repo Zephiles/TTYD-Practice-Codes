@@ -255,7 +255,7 @@ void WarpsMenu::drawCustomStatesInfo() const
         }
 
         // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-        snprintf(buf, size, "%s", entriesPtr[i].getStateNamePtr());
+        snprintf(buf, size, entriesPtr[i].getStateNamePtr());
 
         drawText(buf, posX, posY, scale, color);
         posY -= lineDecrement;
@@ -294,7 +294,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
 
     // If there are currently no states, then show an error message
     CustomState *customStatePtr = &gCustomState;
-    const CustomStateEntry *entriesPtr = customStatePtr->getEntriesPtr();
+    CustomStateEntry *entriesPtr = customStatePtr->getEntriesPtr();
 
     if ((customStatePtr->getTotalEntries() == 0) || !entriesPtr)
     {
@@ -326,7 +326,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     customStatePtr->setInit();
 
     // Set the next map and loading zone based on the selected custom state
-    const CustomStateEntry *currentEntry = &entriesPtr[currentIndex];
+    CustomStateEntry *currentEntry = &entriesPtr[currentIndex];
 
     // Neither are null terminated, so must copy them to a temporary buffer
     char buf[32];
@@ -340,7 +340,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     }
 
     // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-    snprintf(buf, size, "%s", currentEntry->getCurrentMapPtr());
+    snprintf(buf, size, currentEntry->getCurrentMapPtr());
     setNextMap(buf);
 
     // Failsafe: Make sure the size does not exceed bufSize
@@ -351,7 +351,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     }
 
     // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-    snprintf(buf, size, "%s", currentEntry->getCurrentBeroPtr());
+    snprintf(buf, size, currentEntry->getCurrentBeroPtr());
     setNextBero(buf);
 
     // Start the warping process
@@ -625,7 +625,7 @@ void warpsMenuCustomStatesRenameState(Menu *menuPtr)
     // The initial string needs to be null terminated, so copy the state name to a temporary buffer
     // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
     char *stateNameBufferPtr = warpsMenuPtr->getStateNamePtr();
-    snprintf(stateNameBufferPtr, CUSTOM_STATE_NAME_SIZE + 1, "%s", stateNamePtr);
+    snprintf(stateNameBufferPtr, CUSTOM_STATE_NAME_SIZE + 1, stateNamePtr);
 
     nameEditorPtr
         ->init(rootWindowPtr, stateNameBufferPtr, stateNamePtr, CUSTOM_STATE_NAME_SIZE, false, rootWindowPtr->getAlpha());

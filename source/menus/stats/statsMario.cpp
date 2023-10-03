@@ -123,16 +123,16 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     StatsMenu *statsMenuPtr = gStatsMenu;
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = statsMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;
     }
 
     // If the window for toggling a special move is open, then handle the controls for that
-    SpecialMoveToggler *specialMoveTogglerPtr;
-    if (specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr(), specialMoveTogglerPtr->shouldDraw())
+    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr();
+    if (specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->controls(button);
         return;

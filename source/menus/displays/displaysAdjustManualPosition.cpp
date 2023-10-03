@@ -49,16 +49,16 @@ void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput but
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
     // If the position editor is open, then handle the controls for that
-    PositionEditor *positionEditorPtr;
-    if (positionEditorPtr = displaysMenuPtr->getPositionEditorPtr(), positionEditorPtr->shouldDraw())
+    PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditorPtr();
+    if (positionEditorPtr->shouldDraw())
     {
         positionEditorPtr->controls(button);
         return;
     }
 
     // If the value editor is open, then handle the controls for that
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = displaysMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;

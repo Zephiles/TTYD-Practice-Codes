@@ -418,11 +418,13 @@ class Cheats
     bool checkCheatButtonComboDemo(uint32_t cheatWithCombo) const;
     uint32_t getCheatButtonCombo(uint32_t cheatWithCombo);
     void setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
+    uint16_t *getButtonCombosPtr() { return this->buttonCombos; }
 
     bool enabledFlagIsSet(uint32_t flag) const;
     void setEnabledFlag(uint32_t flag);
     void clearEnabledFlag(uint32_t flag);
     bool toggleEnabledFlag(uint32_t flag);
+    const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
 
     bool miscFlagIsSet(uint32_t flag) const;
     void setMiscFlag(uint32_t flag);

@@ -38,8 +38,8 @@ void memoryMenuMemoryEditorMenuInit(Menu *menuPtr)
 void memoryMenuMemoryEditorMenuControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
-    ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
+    ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;

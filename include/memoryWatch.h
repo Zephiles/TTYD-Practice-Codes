@@ -7,6 +7,7 @@
 
 #define MAX_MEMORY_WATCHES 100
 #define MAX_MEMORY_WATCH_ADDRESS_OFFSETS 20
+#define MEMORY_WATCH_NAME_SIZE 16
 
 class MemoryWatchEntry
 {
@@ -23,6 +24,36 @@ class MemoryWatchEntry
     void setAddress(uint8_t *address) { this->address = address; }
 
     int32_t *getAddressOffsetsPtr() const { return this->addressOffsets; }
+    void setAddressOffsetsPtr(int32_t *offsetsPtr) { this->addressOffsets = offsetsPtr; }
+
+    void freeAddressOffsets()
+    {
+        int32_t *addressOffsetsPtr = this->addressOffsets;
+        if (addressOffsetsPtr)
+        {
+            delete[] addressOffsetsPtr;
+            this->addressOffsets = nullptr;
+        }
+    }
+
+    uint32_t initAddressOffsetsPtr(uint32_t totalOffsets)
+    {
+        // Make sure totalOffsets is valid
+        if (totalOffsets > MAX_MEMORY_WATCH_ADDRESS_OFFSETS)
+        {
+            totalOffsets = MAX_MEMORY_WATCH_ADDRESS_OFFSETS;
+        }
+
+        // If memory is already allocated for the entries, then free it
+        this->freeAddressOffsets();
+
+        // Set the new total
+        this->totalAddressOffsets = totalOffsets;
+
+        // Allocate memory for the entries
+        this->addressOffsets = new int32_t[totalOffsets];
+        return totalOffsets;
+    }
 
     int32_t getAddressOffset(uint32_t index)
     {
@@ -37,9 +68,11 @@ class MemoryWatchEntry
 
     float getPosX() const { return this->posX; }
     float *getPosXPtr() { return &this->posX; }
+    void setPosX(float pos) { this->posX = pos; }
 
     float getPosY() const { return this->posY; }
     float *getPosYPtr() { return &this->posY; }
+    void setPosY(float pos) { this->posY = pos; }
 
     float getScale() const { return this->scale; }
     float *getScalePtr() { return &this->scale; }
@@ -47,10 +80,16 @@ class MemoryWatchEntry
 
     uint32_t getTotalAddressOffsets() const { return this->totalAddressOffsets; }
 
+    void setTotalAddressOffsets(uint32_t totalAddressOffsets)
+    {
+        this->totalAddressOffsets = static_cast<uint8_t>(totalAddressOffsets);
+    }
+
     VariableType getType() const { return this->type; }
     void setType(VariableType type) { this->type = type; }
 
     bool shouldShowAsHex() const { return this->showAsHex; }
+    void setShowAsHex(bool showAsHex) { this->showAsHex = showAsHex; }
 
     bool toggleShowAsHex()
     {
@@ -60,6 +99,7 @@ class MemoryWatchEntry
     }
 
     bool shouldDisplay() const { return this->display; }
+    void setDisplay(bool display) { this->display = display; }
 
     bool toggleDisplay()
     {
@@ -70,7 +110,6 @@ class MemoryWatchEntry
 
     const char *getNamePtrConst() const { return &this->name[0]; }
     char *getNamePtr() { return &this->name[0]; }
-    uint32_t getNameSize() const { return sizeof(this->name); }
 
     void getValueString(char *stringOut, uint32_t stringSize) const;
 
@@ -91,7 +130,7 @@ class MemoryWatchEntry
     bool showAsHex;
     bool display;
 
-    char name[16];
+    char name[MEMORY_WATCH_NAME_SIZE];
 };
 
 class MemoryWatch
@@ -101,6 +140,38 @@ class MemoryWatch
     ~MemoryWatch() {}
 
     MemoryWatchEntry *getEntriesPtr() { return this->entries; }
+
+    MemoryWatchEntry *reinitEntries(uint32_t totalWatches)
+    {
+        // If memory is already allocated for the entries, then free it
+        const uint32_t totalEntries = this->totalEntries;
+        MemoryWatchEntry *entriesPtr = this->entries;
+        if ((totalEntries > 0) && entriesPtr)
+        {
+            // Free the memory used by the address offsets of each watch
+            for (uint32_t i = 0; i < totalEntries; i++)
+            {
+                entriesPtr[i].freeAddressOffsets();
+            }
+
+            // Free the main memory
+            delete[] entriesPtr;
+        }
+
+        // Make sure totalWatches is valid
+        if (totalWatches > MAX_MEMORY_WATCHES)
+        {
+            totalWatches = MAX_MEMORY_WATCHES;
+        }
+
+        // Set the new total
+        this->totalEntries = static_cast<uint8_t>(totalWatches);
+
+        // Allocate memory for the entries
+        entriesPtr = new MemoryWatchEntry[totalWatches];
+        this->entries = entriesPtr;
+        return entriesPtr;
+    }
 
     uint32_t getTotalEntries() const { return this->totalEntries; }
     bool limitHasBeenReached() const { return this->totalEntries >= MAX_MEMORY_WATCHES; }

@@ -149,7 +149,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX16;
+                format = "0x%04" PRIX16;
             }
             else
             {
@@ -163,7 +163,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX32;
+                format = "0x%08" PRIX32;
             }
             else
             {
@@ -177,7 +177,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX64;
+                format = "0x%016" PRIX64;
             }
             else
             {
@@ -205,7 +205,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX16;
+                format = "0x%04" PRIX16;
             }
             else
             {
@@ -219,7 +219,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX32;
+                format = "0x%08" PRIX32;
             }
             else
             {
@@ -233,7 +233,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         {
             if (showAsHex)
             {
-                format = "0x%02" PRIX64;
+                format = "0x%016" PRIX64;
             }
             else
             {
@@ -421,7 +421,20 @@ bool MemoryWatch::duplicateWatch(uint32_t index)
     delete[] entriesBackupPtr;
 
     // Copy the selected watch to the new watch
-    memcpy(&entriesPtr[totalEntries], &entriesPtr[index], watchSize);
+    MemoryWatchEntry *newEntryPtr = &entriesPtr[totalEntries];
+    memcpy(newEntryPtr, &entriesPtr[index], watchSize);
+
+    // The new watch's addressOffsets pointer is currently set to the original's, so set up new memory for it if it has at least
+    // one offset
+    const uint32_t totalOffsets = newEntryPtr->getTotalAddressOffsets();
+    const int32_t *offsetsPtr = newEntryPtr->getAddressOffsetsPtr();
+    if ((totalOffsets > 0) && offsetsPtr)
+    {
+        int32_t *newOffsets = new int32_t[totalOffsets];
+        newEntryPtr->setAddressOffsetsPtr(newOffsets);
+        memcpy(newOffsets, offsetsPtr, totalOffsets * sizeof(int32_t));
+    }
+
     return true;
 }
 
@@ -553,6 +566,9 @@ bool MemoryWatch::deleteWatch(uint32_t index)
     {
         return false;
     }
+
+    // Free the memory used by the address offsets of the selected watch
+    entriesPtr[index].freeAddressOffsets();
 
     // Remove one entry
     const uint32_t newTotalEntries = totalEntries - 1;

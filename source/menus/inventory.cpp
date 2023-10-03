@@ -621,16 +621,16 @@ void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
     inventoryMenuPtr->verifyInventoryIndexAndPage(menuPtr);
 
     // If a separate window is currently open for selecting an item/badge, then only call the control functions for those
-    ItemIconSelector *itemIconSelectorPtr;
+    ItemIconSelector *itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelectorPtr();
 
-    if (itemIconSelectorPtr = inventoryMenuPtr->getItemIconSelectorPtr(), itemIconSelectorPtr->shouldDraw())
+    if (itemIconSelectorPtr->shouldDraw())
     {
         itemIconSelectorPtr->controls(button);
         return;
     }
 
-    ValueEditor *valueEditorPtr;
-    if (valueEditorPtr = inventoryMenuPtr->getValueEditorPtr(), valueEditorPtr->shouldDraw())
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
+    if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->controls(button);
         return;

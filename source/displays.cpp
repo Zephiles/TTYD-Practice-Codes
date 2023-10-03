@@ -579,6 +579,8 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
@@ -588,8 +590,6 @@ Displays::Displays()
     // Set default displays misc flags enabled
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_FRAME_COUNTER_PAUSED);
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS);
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_YOSHI_SKIP_TIMER_STOPPED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_STOPPED);
@@ -2457,14 +2457,14 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     }
 
     // If the current check is a hit and hits are disabled, then exit
-    const bool shouldDrawHits = displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_HITS);
+    const bool shouldDrawHits = displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS);
     if (ret && !shouldDrawHits)
     {
         return ret;
     }
 
     // If the current check is a miss and misses are disabled, then exit
-    const bool shouldDrawMisses = displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_SHOULD_DRAW_MISSES);
+    const bool shouldDrawMisses = displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES);
     if (!ret && !shouldDrawMisses)
     {
         return ret;

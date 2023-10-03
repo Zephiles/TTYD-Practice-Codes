@@ -113,8 +113,8 @@ void displaysMenuInitExit()
 void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
-    ButtonComboEditor *buttonComboEditorPtr;
-    if (buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr(), buttonComboEditorPtr->shouldDraw())
+    ButtonComboEditor *buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->controls(button);
         return;

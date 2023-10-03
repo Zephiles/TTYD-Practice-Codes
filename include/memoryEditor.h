@@ -61,8 +61,11 @@ class MemoryEditor
     void setEnabledFlag(uint32_t enabledFlag);
     void clearEnabledFlag(uint32_t enabledFlag);
     bool toggleEnabledFlag(uint32_t enabledFlag);
+    const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
 
+    uint8_t *getCurrentAddressPtr() const { return this->currentAddress; }
     void setCurrentAddress(uint32_t addressRaw) { this->currentAddress = reinterpret_cast<uint8_t *>(addressRaw); }
+    void setCurrentAddress(uint8_t *address) { this->currentAddress = address; }
 
     ValueEditor *getValueEditorPtr() { return this->valueEditor; }
 
@@ -87,6 +90,7 @@ class MemoryEditor
         return this->headerIndex == MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS;
     }
 
+    uint32_t getNumBytesBeingEdited() const { return this->numBytesBeingEdited; }
     void setNumBytesBeingEdited(uint32_t num) { this->numBytesBeingEdited = static_cast<uint8_t>(num); }
 
     bool memoryEditorIsDisplayed() const { return this->displayed; }
