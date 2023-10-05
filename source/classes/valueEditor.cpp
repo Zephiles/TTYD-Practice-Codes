@@ -2134,9 +2134,8 @@ void ValueEditor::draw()
     const int32_t stringLength = static_cast<int32_t>(strlen(editorValue));
     const float stringLengthFloat = intToFloat(stringLength);
 
-    constexpr float digitLength = EDITOR_DIGIT_LENGTH;
     constexpr float valueScale = scale + 0.3f;
-    const float valueStringWidth = (stringLengthFloat * digitLength) * valueScale;
+    const float valueStringWidth = (stringLengthFloat * EDITOR_DIGIT_LENGTH) * valueScale;
 
     posX = windowPtr->getPosX() + ((windowPtr->getWidth() - valueStringWidth) / 2.f);
 
@@ -2149,7 +2148,7 @@ void ValueEditor::draw()
 
     // Draw the value
     const uint32_t currentIndex = this->currentIndex;
-    constexpr float posXIncrement = digitLength * valueScale;
+    constexpr float posXIncrement = EDITOR_DIGIT_LENGTH * valueScale;
     uint32_t color;
 
     // Place the current character into a temporary buffer
