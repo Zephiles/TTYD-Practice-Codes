@@ -1106,7 +1106,7 @@ static_assert(sizeof(MemoryEditorSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryEditorSettingsData) == 0xC);
 static_assert(sizeof(CustomStatesSettingsHeader) == 0x8);
 static_assert(sizeof(CustomStateSettingsMarioData) == 0x1E);
-static_assert(sizeof(CustomStatesSettingsData) == 0x528); // Excludes stateName
+static_assert(sizeof(CustomStatesSettingsData) == 0x528);
 
 inline uint32_t getWrittenSettingsSize()
 {

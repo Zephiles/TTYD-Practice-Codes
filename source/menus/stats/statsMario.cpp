@@ -676,7 +676,7 @@ void StatsMenu::drawMarioStats() const
             value = getMarioStat(pouchPtr, i);
 
             snprintf(buf, sizeof(buf), "%" PRId32, value);
-            drawTextMain(buf, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), true);
+            drawText(buf, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), TextAlignment::RIGHT);
         }
 
         textPosY -= lineDecrement;

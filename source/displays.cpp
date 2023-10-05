@@ -3857,7 +3857,7 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     scale = 0.9f;
 #endif
 
-    drawText(buf, posX + posXIncrement, posY, scale, 50.f * scale, getColorWhite(0xFF), true);
+    drawText(buf, posX + posXIncrement, posY, scale, 50.f * scale, getColorWhite(0xFF), TextAlignment::RIGHT);
 }
 
 // Handle setting up/calling display draw functions

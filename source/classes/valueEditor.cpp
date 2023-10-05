@@ -2161,20 +2161,8 @@ void ValueEditor::draw()
         const char currentCharacter = editorValue[i];
         tempBuf[0] = currentCharacter;
 
-        // If the current character is the decimal point, then move it to the right slightly
-        float tempPosX = posX;
-        if (currentCharacter == '.')
-        {
-#ifdef TTYD_JP
-            constexpr float baseOffset = 4.5f;
-#else
-            constexpr float baseOffset = 5.f;
-#endif
-            tempPosX += (baseOffset / valueScale);
-        }
-
         color = getCurrentOptionColor(static_cast<uint32_t>(i) == currentIndex, 0xFF);
-        drawText(tempBuf, tempPosX, posY, valueScale, color);
+        drawText(tempBuf, posX, posY, valueScale, posXIncrement, color, TextAlignment::CENTER);
         posX += posXIncrement;
     }
 }

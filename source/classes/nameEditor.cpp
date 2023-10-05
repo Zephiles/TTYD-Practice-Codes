@@ -362,15 +362,19 @@ void NameEditor::draw()
     const Window *windowPtr = &this->window;
     windowPtr->draw();
 
-    // Draw a window for the current index of the buffer text
-    // Set up a string to hold the current character being drawn
+    // Set up a string to hold the letter A
     char currentCharString[2];
     currentCharString[0] = 'A';
     currentCharString[1] = '\0';
 
+    // Get the text width of the letter A, as it will be used for positioning the windows and text
+    float textWidth;
+    constexpr float scale = MENU_SCALE;
+    getTextWidthHeight(currentCharString, scale, &textWidth, nullptr);
+
+    // Draw a window for the current index of the buffer text
     float tempPosX;
     float tempPosY;
-    constexpr float scale = MENU_SCALE;
     windowPtr->getTextPosXY(currentCharString, WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
 
     const float currentStringIndexFloat = intToFloat(static_cast<int32_t>(this->currentStringIndex));
@@ -382,11 +386,13 @@ void NameEditor::draw()
 
     const uint32_t windowCursorColor = getColorBlue(0xFF);
     constexpr float charPosXIncrement = (LINE_HEIGHT_FLOAT - 7.f) * scale;
-    constexpr float posXadjustment6 = 6.f * scale;
+
+    // Move the window back based on the size of the A character centered
+    const float initialPosXAdjustment = (charPosXIncrement / 2.f) - (textWidth / 2.f);
 
     windowDispGX_Waku_col(0,
                           reinterpret_cast<const uint8_t *>(&windowCursorColor),
-                          currentStringPosX + (currentStringIndexFloat * charPosXIncrement) - posXadjustment6,
+                          currentStringPosX - initialPosXAdjustment + (currentStringIndexFloat * charPosXIncrement),
                           currentStringPosY,
                           charPosXIncrement,
                           charPosXIncrement,
@@ -403,7 +409,7 @@ void NameEditor::draw()
     // Get the position for the characters to choose from
     const uint32_t charsPerRow = this->charsPerRow;
     const float spaceUsedPerRow = lineDecrement * intToFloat(static_cast<int32_t>(charsPerRow));
-    const float posXBase = windowPtr->getPosX() + (windowPtr->getWidth() / 2.f) - (spaceUsedPerRow / 2.f) + posXadjustment6;
+    const float posXBase = windowPtr->getPosX() + (windowPtr->getWidth() / 2.f) - (spaceUsedPerRow / 2.f);
 
     float posX = posXBase;
     float posY = charactersPosYBase;
@@ -437,7 +443,7 @@ void NameEditor::draw()
             constexpr float windowCursorAdjustment = 1.5f * scale;
             constexpr float windowCursorWidthHeight = lineDecrement - windowCursorAdjustment;
 
-            const float windowPosX = posX - (7.f * scale);
+            const float windowPosX = posX;
             const float windowPosY = posY + windowCursorAdjustment;
 
             windowDispGX_Waku_col(0,
@@ -453,7 +459,7 @@ void NameEditor::draw()
         }
 
         currentCharString[0] = options[i];
-        drawText(currentCharString, posX, posY, scale, getColorWhite(0xFF));
+        drawText(currentCharString, posX, posY, scale, lineDecrement, getColorWhite(0xFF), TextAlignment::CENTER);
         posX += lineDecrement;
     }
 
@@ -461,19 +467,19 @@ void NameEditor::draw()
     const char *buffer = this->buffer;
     const uint32_t len = strlen(buffer);
 
-    posX = currentStringPosX;
+    posX = currentStringPosX - initialPosXAdjustment;
     posY = currentStringPosY;
 
     for (uint32_t i = 0; i < len; i++)
     {
-        char currentChar = buffer[i];
+        const char currentChar = buffer[i];
         if (currentChar == '\0')
         {
             break;
         }
 
         currentCharString[0] = currentChar;
-        drawText(currentCharString, posX, posY, scale, getColorWhite(0xFF));
+        drawText(currentCharString, posX, posY, scale, charPosXIncrement, getColorWhite(0xFF), TextAlignment::CENTER);
         posX += charPosXIncrement;
     }
 

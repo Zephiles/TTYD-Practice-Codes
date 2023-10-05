@@ -189,9 +189,16 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
 
     // Draw the headers for the values
     drawText("Name", posX, posY, scale, getColorWhite(0xFF));
-    drawText("Display", posX + displayHeaderOffset, posY, scale, getColorWhite(0xFF));
+
+    const char *displayHeaderText = "Display";
+    drawText(displayHeaderText, posX + displayHeaderOffset, posY, scale, getColorWhite(0xFF));
+
     drawText("Value", posX + valueHeaderOffset, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
+
+    // The on/off text will be centered based on the Display text
+    float displayTextWidth;
+    getTextWidthHeight(displayHeaderText, scale, &displayTextWidth, nullptr);
 
     const bool swappingOrMovingWatchesSelectedWatch =
         menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
@@ -231,20 +238,12 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
         drawText(currentWatchPtr->getNamePtrConst(), posX, posY, scale, 170.f, color);
 
         // Draw whether the watch will be drawn or not
-        // Center the on/off text based on the Display text
-        float displayTextWidth;
-        getTextWidthHeight("Display", scale, &displayTextWidth, nullptr);
-
-        float offTextWidth;
-        getTextWidthHeight("Off", scale, &offTextWidth, nullptr);
-
         // Get the text and color
         const char *onOffText;
         getOnOffTextAndColor(currentWatchPtr->shouldDisplay(), &onOffText, &color, 0xFF);
 
         // Draw the text
-        const float onOffTextOffset = (displayTextWidth / 2.f) - (offTextWidth / 2.f);
-        drawText(onOffText, posX + displayHeaderOffset + onOffTextOffset, posY, scale, color);
+        drawText(onOffText, posX + displayHeaderOffset, posY, scale, displayTextWidth, color, TextAlignment::CENTER);
 
         // Draw the value
         currentWatchPtr->getValueString(buf, bufSize);

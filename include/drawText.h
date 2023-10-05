@@ -5,6 +5,13 @@
 
 #include <cstdint>
 
+enum class TextAlignment
+{
+    LEFT = 0,
+    CENTER, // If the width specified to drawText/drawTextMain is <= 0, then LEFT will be used instead
+    RIGHT,
+};
+
 #define LINE_HEIGHT_ADJUSTMENT_4(scale) (4.f * (scale))
 #define LINE_HEIGHT_ADJUSTMENT_5(scale) (5.f * (scale))
 
@@ -93,16 +100,16 @@ float getTextMultilineIncrement(const char *text, float scale, uint32_t addition
 // If either the width or the height are not needed, then they can be set to nullptr
 void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut);
 
-// Calls drawText with the width set to 0.f and alignRight set to false
+// Calls drawText with the width set to 0.f and alignment set to TextAlignment::LEFT
 void drawText(const char *text, float posX, float posY, float scale, uint32_t color);
 
 // Calls drawText with the width set to 0.f
-void drawText(const char *text, float posX, float posY, float scale, uint32_t color, bool alignRight);
+void drawText(const char *text, float posX, float posY, float scale, uint32_t color, TextAlignment alignment);
 
-// Calls drawText with alignRight set to false
+// Calls drawText with alignment set to TextAlignment::LEFT
 void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color);
 
-void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color, bool alignRight);
+void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment);
 
 // Sets the alpha to 0xFF
 inline void drawTextInit(bool drawFontEdge)
@@ -130,6 +137,6 @@ inline void drawTextInit(uint8_t alpha, bool drawFontEdge)
     }
 }
 
-void drawTextMain(const char *text, float posX, float posY, float scale, float width, uint32_t color, bool alignRight);
+void drawTextMain(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment);
 
 #endif

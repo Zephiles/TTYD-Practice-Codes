@@ -964,18 +964,20 @@ void MemoryEditor::draw() const
     const float mainEditorTextPosX = posX + 103.f;
     const float mainEditorTextPosY = posY - (lineDecrement * 4.f);
 
+    constexpr float digitSpace = 12.f;
+    constexpr float twoDigitSpace = digitSpace * 2.f;
+    constexpr float spaceBetweenEachNum = digitSpace / 3.f; // Each number is made using 2 digits
+
     // Draw the vertical and/or horizontal lines
     const uint32_t windowColor = getColorWhite(0xFF);
+    constexpr float windowPosXAdjustment = twoDigitSpace + spaceBetweenEachNum;
 
     if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_ENABLE_VERITCAL_LINES))
     {
         // Draw a line between each byte
-        float windowPosX = mainEditorTextPosX + 24.f;
+        float windowPosX = mainEditorTextPosX + twoDigitSpace + 0.8f;
 
-#ifdef TTYD_JP
-        windowPosX -= 1.f;
-#endif
-        for (uint32_t i = 0; i < (MEMORY_EDITOR_BYTES_PER_ROW - 1); i++, windowPosX += 28.f)
+        for (uint32_t i = 0; i < (MEMORY_EDITOR_BYTES_PER_ROW - 1); i++, windowPosX += windowPosXAdjustment)
         {
             windowDispGX_Waku_col(0,
                                   reinterpret_cast<const uint8_t *>(&windowColor),
@@ -990,15 +992,23 @@ void MemoryEditor::draw() const
     if (this->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_ENABLE_HORIZONTAL_LINES))
     {
         // Draw a line between each row
-        float windowPosX = posX - 4.f;
-        float windowPosY = mainEditorTextPosY - 36.f;
+        float windowPosX = posX - spaceBetweenEachNum;
+        float windowPosY = mainEditorTextPosY - ((lineDecrement * 2.f) - 4.f);
+        float windowWidth = 470.f;
 
 #ifdef TTYD_JP
         windowPosX -= 1.f;
+        windowWidth += 1.f;
 #endif
         for (uint32_t i = 0; i < (MEMORY_EDITOR_BYTES_PER_ROW - 1); i++, windowPosY -= lineDecrement)
         {
-            windowDispGX_Waku_col(0, reinterpret_cast<const uint8_t *>(&windowColor), windowPosX, windowPosY, 470.f, 2.f, 0.f);
+            windowDispGX_Waku_col(0,
+                                  reinterpret_cast<const uint8_t *>(&windowColor),
+                                  windowPosX,
+                                  windowPosY,
+                                  windowWidth,
+                                  2.f,
+                                  0.f);
         }
     }
 
@@ -1076,18 +1086,18 @@ void MemoryEditor::draw() const
     }
 
     // Draw the headers numbers indicating each byte in the current line in the editor
-    constexpr float digitSpace = 12.f;
-    posX = mainEditorTextPosX + 6.f; // Add a bit extra to start at at the middle of the 2 digits
+    posX = mainEditorTextPosX;
     posY = mainEditorTextPosY;
 
     // Start at the last digit of the current address
     uint32_t headerNum = currentAddressRaw & 0xF;
+    constexpr float headerNumPosXAdjustment = twoDigitSpace + spaceBetweenEachNum;
 
     for (uint32_t i = 0; i < MEMORY_EDITOR_BYTES_PER_ROW; i++)
     {
         snprintf(buf, bufSize, "%" PRIX32, headerNum);
-        drawText(buf, posX, posY, scale, getColorWhite(0xFF));
-        posX += (digitSpace * 2.f) + 4.f;
+        drawText(buf, posX, posY, scale, twoDigitSpace, getColorWhite(0xFF), TextAlignment::CENTER);
+        posX += headerNumPosXAdjustment;
 
         // Increment and handle looping
         if (++headerNum > 0xF)
@@ -1136,17 +1146,13 @@ void MemoryEditor::draw() const
                     {
                         // Draw a window under the current digit
                         const uint32_t windowColor = 0x1C4F57FF;
-                        float windowPosX = posX - 2.f;
-                        float windowPosY = posY + 2.f;
-#ifdef TTYD_JP
-                        windowPosX -= 1.f;
-#endif
+
                         windowDispGX_Waku_col(0,
                                               reinterpret_cast<const uint8_t *>(&windowColor),
-                                              windowPosX,
-                                              windowPosY,
-                                              14.f,
-                                              18.f,
+                                              posX,
+                                              posY,
+                                              digitSpace,
+                                              digitSpace + 3.f,
                                               0.f);
 
                         // Re-initialize text drawing
@@ -1248,19 +1254,19 @@ void MemoryEditor::draw() const
         if ((currentDigit < 0) || (currentDigit > 0xF))
         {
             // Digit is invalid, so draw a ?
-            drawText("?", posX, posY, scale, color);
+            drawText("?", posX, posY, scale, digitSpace, color, TextAlignment::CENTER);
         }
         else
         {
             // Digit is valid
             snprintf(buf, bufSize, "%" PRIX32, currentDigit);
-            drawText(buf, posX, posY, scale, color);
+            drawText(buf, posX, posY, scale, digitSpace, color, TextAlignment::CENTER);
         }
 
         // Add extra space between every 2 digits
         if ((i % 2) == 1)
         {
-            posX += 4.f;
+            posX += spaceBetweenEachNum;
         }
 
         posX += digitSpace;

@@ -386,7 +386,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
             color = getColorWhite(0xFF);
         }
 
-        drawText(valueText, valuesPosX, posY, scale, color, true);
+        drawText(valueText, valuesPosX, posY, scale, color, TextAlignment::RIGHT);
         posY -= lineDecrement;
     }
 }

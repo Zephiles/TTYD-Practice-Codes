@@ -118,6 +118,8 @@ class ValueEditor
         this->enabled = true;
     }
 
+    void setWindowAlpha(uint8_t alpha) { this->window.setAlpha(alpha); }
+
     // Retrieves whatever value is currently in editorValue
     bool getValueFromString(ValueType *valuePtr) const;
 

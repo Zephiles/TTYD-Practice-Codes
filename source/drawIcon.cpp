@@ -225,7 +225,7 @@ void drawIconWithText(float posX,
     getTextPosXYByIcon(posX, posY, scale, &textPosX, &textPosY);
 
     // Draw the text
-    drawText(text, textPosX, textPosY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
+    drawText(text, textPosX, textPosY, scale, width, (textColor & 0xFFFFFF00) | alpha, TextAlignment::LEFT);
 
     /*
     // Based on text position
@@ -243,6 +243,6 @@ void drawIconWithText(float posX,
 
     // Draw the text
     const float textPosX = posX + (ICON_SIZE_FLOAT * scale) - (15.f * scale);
-    drawText(text, textPosX, posY, scale, width, (textColor & 0xFFFFFF00) | alpha, false);
+    drawText(text, textPosX, posY, scale, width, (textColor & 0xFFFFFF00) | alpha, TextAlignment::LEFT);
     */
 }

@@ -149,11 +149,13 @@ void settingsMenuInitDraw(CameraId cameraId, void *user)
     ValueEditor *valueEditorPtr = settingsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
-        // Update gRootWindow's color based on the value editor's current value
+        // Update gRootWindow's color and the value editor's window alpha based on the value editor's current value
         ValueType value;
         if (valueEditorPtr->getValueFromString(&value))
         {
-            gRootWindow->setColor(value.u32);
+            const uint32_t color = value.u32;
+            gRootWindow->setColor(color);
+            valueEditorPtr->setWindowAlpha(color & 0xFF);
         }
 
         valueEditorPtr->draw();

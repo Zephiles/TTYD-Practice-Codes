@@ -54,21 +54,21 @@ void getTextWidthHeight(const char *text, float scale, float *widthOut, float *h
 
 void drawText(const char *text, float posX, float posY, float scale, uint32_t color)
 {
-    drawText(text, posX, posY, scale, 0.f, color, false);
+    drawText(text, posX, posY, scale, 0.f, color, TextAlignment::LEFT);
 }
 
-void drawText(const char *text, float posX, float posY, float scale, uint32_t color, bool alignRight)
+void drawText(const char *text, float posX, float posY, float scale, uint32_t color, TextAlignment alignment)
 {
-    drawText(text, posX, posY, scale, 0.f, color, alignRight);
+    drawText(text, posX, posY, scale, 0.f, color, alignment);
 }
 
 void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color)
 {
-    drawText(text, posX, posY, scale, width, color, false);
+    drawText(text, posX, posY, scale, width, color, TextAlignment::LEFT);
 }
 
 // Credits to Jdaster64 for writing the original code for this function
-void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color, bool alignRight)
+void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment)
 {
     char buf[128];
     constexpr int32_t maxLength = sizeof(buf) - 1;
@@ -101,7 +101,7 @@ void drawText(const char *text, float posX, float posY, float scale, float width
             char *tempBuf = strncpy(buf, text, lineLength);
             tempBuf[lineLength] = '\0';
 
-            drawTextMain(tempBuf, posX, posY, scale, width, color, alignRight);
+            drawTextMain(tempBuf, posX, posY, scale, width, color, alignment);
         }
 
         // Advance to the next line
@@ -110,11 +110,11 @@ void drawText(const char *text, float posX, float posY, float scale, float width
     }
 
     // Draw the rest of the text
-    drawTextMain(text, posX, posY, scale, width, color, alignRight);
+    drawTextMain(text, posX, posY, scale, width, color, alignment);
 }
 
 // Set width to 0 or less to not have a width limit
-void drawTextMain(const char *text, float posX, float posY, float scale, float width, uint32_t color, bool alignRight)
+void drawTextMain(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment)
 {
     // Make sure the text isn't an empty string
     if (text[0] == '\0')
@@ -122,37 +122,56 @@ void drawTextMain(const char *text, float posX, float posY, float scale, float w
         return;
     }
 
+    // Get the width of the text if it is needed
     const bool hasWidthLimit = width > 0.f;
     float textLengthScaled;
 
-    if (alignRight || hasWidthLimit)
+    if ((alignment == TextAlignment::CENTER) || (alignment == TextAlignment::RIGHT) || hasWidthLimit)
     {
         // Retrieve the text width as a separate variable to avoid repeatedly loading it from the stack when using it
         float textWidth;
         getTextWidthHeight(text, scale, &textWidth, nullptr);
-
         textLengthScaled = textWidth;
     }
 
-    // Check if aligning the text to the right
-    if (alignRight)
+    // Handle aligning the text
+    switch (alignment)
     {
-        posX -= textLengthScaled;
+        case TextAlignment::CENTER:
+        {
+            // Make sure a width limit was provided, and that the text's width does not reach/exceed the width limit
+            if (hasWidthLimit && (textLengthScaled < width))
+            {
+                posX += (width / 2.f) - (textLengthScaled / 2.f);
+            }
+            break;
+        }
+        case TextAlignment::RIGHT:
+        {
+            posX -= textLengthScaled;
+            break;
+        }
+        default:
+        {
+            break;
+        }
     }
 
-    // Check if there's a width limit
+    // Handle the width limit if one was provided
     float scaleX = scale;
+
     if (hasWidthLimit && (textLengthScaled > width))
     {
         scaleX = (width / textLengthScaled) * scale;
 
         // If aligning the text to the right, account for the new X scale
-        if (alignRight)
+        if (alignment == TextAlignment::RIGHT)
         {
             posX += textLengthScaled - width;
         }
     }
 
+    // Draw the text
     mtx34 mtxScale;
     PSMTXScale(mtxScale, scaleX, scale, scale);
 

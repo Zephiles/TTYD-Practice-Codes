@@ -100,6 +100,7 @@ class Window
     void setCornerRadius(float cornerRadius) { this->cornerRadius = cornerRadius; }
     void setPadding(float padding) { this->padding = padding; }
     void setColor(uint32_t color) { this->color = color; }
+    void setAlpha(uint8_t alpha) { this->color = (this->color & 0xFFFFFF00) | alpha; }
 
     // Calls setWidthHeightFromText with offsetWidth and offsetHeight set to 0.f
     void setWidthHeightFromText(const char *text, float scale);
