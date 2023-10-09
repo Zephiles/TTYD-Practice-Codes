@@ -21,6 +21,9 @@ MemoryWatch gMemoryWatch;
 
 void MemoryWatchEntry::init(uint32_t entryId)
 {
+    // Free the memory used by the address offsets
+    this->freeAddressOffsets();
+
     // Make sure the memory for the watch is cleared before doing anything
     clearMemory(this, sizeof(MemoryWatchEntry));
 

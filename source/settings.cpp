@@ -266,8 +266,13 @@ int32_t loadSettings(int32_t channel)
             const CustomStatesSettingsData *customStatesSettingsDataPtr =
                 getCustomStatesSettingsDataPtr(fileData, customStatesDataOffset);
 
-            customStatesSettingsDataPtr->getData(customStatesSettingsHeaderPtr->getTotalStates(),
-                                                 customStatesSettingsHeaderPtr->getStateNameLength());
+            // Get the main data for each state
+            const uint32_t itemsOffset =
+                customStatesSettingsDataPtr->getData(customStatesSettingsHeaderPtr->getTotalStates(),
+                                                     customStatesSettingsHeaderPtr->getStateNameLength());
+
+            // Get the data for each state's items
+            customStatesSettingsDataPtr->getItemsData(itemsOffset);
         }
     }
 
@@ -603,14 +608,35 @@ int32_t saveSettings(int32_t channel)
     CustomStatesSettingsHeader *customStatesSettingsHeaderPtr = getCustomStatesSettingsHeaderPtr(fileData, offset);
     const uint32_t customStatesDataOffset = customStatesSettingsHeaderPtr->setData(settingsHeaderPtr, customStatePtr, offset);
 
-    // Make sure there is at least one watch to write
+    // Make sure there is at least one state to write
     if (customStatesDataOffset > 0)
     {
         offset += customStatesDataOffset;
 
-        // Write the custom states data
+        // Write the main data for each state
+        const uint32_t totalEntries = customStatePtr->getTotalEntries();
+        CustomStateEntry *entriesPtr = customStatePtr->getEntriesPtr();
         CustomStatesSettingsData *customSattesSettingsDataPtr = getCustomStatesSettingsDataPtr(fileData, offset);
-        offset += customSattesSettingsDataPtr->setData(&gCustomState);
+
+        for (uint32_t i = 0; i < totalEntries; i++)
+        {
+            offset += customSattesSettingsDataPtr->setData(&entriesPtr[i]);
+
+            // Update the pointer to get the next entry
+            customSattesSettingsDataPtr = getCustomStatesSettingsDataPtr(fileData, offset);
+        }
+
+        // Write the data for each state's items
+        for (uint32_t i = 0; i < totalEntries; i++)
+        {
+            offset += customSattesSettingsDataPtr->setItemsData(&entriesPtr[i]);
+
+            // Update the pointer to get the next entry
+            customSattesSettingsDataPtr = getCustomStatesSettingsDataPtr(fileData, offset);
+        }
+
+        // Make sure the offset is aligned to 4 bytes, as the classes used here are aligned to 4 bytes
+        offset = roundUp(offset, sizeof(uint32_t));
     }
 
     // Write the data to the file

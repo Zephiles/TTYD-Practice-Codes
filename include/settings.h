@@ -953,19 +953,14 @@ class CustomStatesSettingsData
             if (i >= maxStates)
             {
                 // Reached the max number of states, so only increment the offset
-                offset += sizeof(this->items);          // Standard items
-                offset += sizeof(this->keyItems);       // Important items
-                offset += sizeof(this->storedItems);    // Stored items
-                offset += sizeof(this->badges);         // Badges
-                offset += sizeof(this->equippedBadges); // Equipped badges
-                offset += sizeof(uint16_t);             // Sequence Position
-
                 const CustomStateSettingsMarioData *marioDataPtr =
                     PTR_CAST_TYPE_ADD_OFFSET(const CustomStateSettingsMarioData *, this, offset);
 
                 offset += marioDataPtr->getData(currentEntryPtr->getMarioDataPtr(), totalStates); // Some of Mario's data
 
                 offset += sizeof(this->partyData);   // Pouch data
+                offset += sizeof(uint16_t);          // Total inventory items
+                offset += sizeof(uint16_t);          // Sequence position
                 offset += sizeof(PartyMembers);      // Partner out
                 offset += sizeof(PartyMembers);      // Follower out
                 offset += sizeof(bool);              // In boat mode
@@ -979,41 +974,6 @@ class CustomStatesSettingsData
                 continue;
             }
 
-            // Standard items
-            constexpr uint32_t itemsSize = sizeof(this->items);
-            const ItemId *itemsPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
-            memcpy(currentEntryPtr->getItemsPtr(), itemsPtr, itemsSize);
-            offset += itemsSize;
-
-            // Important items
-            constexpr uint32_t keyItemsSize = sizeof(this->keyItems);
-            const ItemId *keyItemsPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
-            memcpy(currentEntryPtr->getKeyItemsPtr(), keyItemsPtr, keyItemsSize);
-            offset += keyItemsSize;
-
-            // Stored items
-            constexpr uint32_t storedItemsSize = sizeof(this->storedItems);
-            const ItemId *storedItemsPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
-            memcpy(currentEntryPtr->getStoredItemsPtr(), storedItemsPtr, storedItemsSize);
-            offset += storedItemsSize;
-
-            // Badges
-            constexpr uint32_t badgesSize = sizeof(this->badges);
-            const ItemId *badgesPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
-            memcpy(currentEntryPtr->getBadgesPtr(), badgesPtr, badgesSize);
-            offset += badgesSize;
-
-            // Equipped badges
-            constexpr uint32_t equippedBadgesSize = sizeof(this->equippedBadges);
-            const ItemId *equippedBadgesPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
-            memcpy(currentEntryPtr->getEquippedBadgesPtr(), equippedBadgesPtr, equippedBadgesSize);
-            offset += equippedBadgesSize;
-
-            // Sequence Position
-            const uint16_t *sequencePositionPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, offset);
-            currentEntryPtr->setSequencePosition(*sequencePositionPtr);
-            offset += sizeof(uint16_t);
-
             // Some of Mario's data
             const CustomStateSettingsMarioData *marioDataPtr =
                 PTR_CAST_TYPE_ADD_OFFSET(const CustomStateSettingsMarioData *, this, offset);
@@ -1025,6 +985,16 @@ class CustomStatesSettingsData
             const PouchData *pouchDataPtr = PTR_CAST_TYPE_ADD_OFFSET(const PouchData *, this, offset);
             memcpy(currentEntryPtr->getPouchPartyDataPtr(), pouchDataPtr, pouchDataSize);
             offset += pouchDataSize;
+
+            // Total inventory items
+            const uint16_t *totalInventoryItemsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, offset);
+            currentEntryPtr->setTotalInventoryItems(*totalInventoryItemsPtr);
+            offset += sizeof(uint16_t);
+
+            // Sequence position
+            const uint16_t *sequencePositionPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, offset);
+            currentEntryPtr->setSequencePosition(*sequencePositionPtr);
+            offset += sizeof(uint16_t);
 
             // Partner out
             const PartyMembers *partnerOutPtr = PTR_CAST_TYPE_ADD_OFFSET(const PartyMembers *, this, offset);
@@ -1065,25 +1035,87 @@ class CustomStatesSettingsData
         return offset;
     }
 
-    // This function assumes that there is at least one state to write
-    uint32_t setData(const CustomState *customStatePtr)
+    void getItemsData(uint32_t offset) const
     {
-        // Write all of the states
-        const uint32_t totalStatesSize = customStatePtr->getTotalEntries() * sizeof(CustomStatesSettingsData);
-        memcpy(this, customStatePtr->getEntriesPtr(), totalStatesSize);
+        CustomState *customStatePtr = &gCustomState;
+        CustomStateEntry *entriesPtr = customStatePtr->getEntriesPtr();
+        const uint32_t totalEntries = customStatePtr->getTotalEntries();
 
-        return totalStatesSize;
+        for (uint32_t i = 0; i < totalEntries; i++)
+        {
+            CustomStateEntry *currentEntryPtr = &entriesPtr[i];
+
+            // Make sure there is at least one item to get
+            uint32_t totalItems = currentEntryPtr->getTotalInventoryItems();
+            if (totalItems == 0)
+            {
+                continue;
+            }
+
+            // Initialize the memory for the items
+            totalItems = currentEntryPtr->initItemsPtr(totalItems);
+
+            // Get all of the items
+            const uint32_t itemsSize = totalItems * sizeof(ItemId);
+            const ItemId *itemsPtr = PTR_CAST_TYPE_ADD_OFFSET(const ItemId *, this, offset);
+            memcpy(currentEntryPtr->getItemsPtr(), itemsPtr, itemsSize);
+            offset += itemsSize;
+        }
+    }
+
+    uint32_t setData(CustomStateEntry *entryPtr)
+    {
+        constexpr uint32_t marioDataSize = sizeof(CustomStateMarioData);
+        memcpy(&this->marioData, entryPtr->getMarioDataPtr(), marioDataSize);
+
+        constexpr uint32_t pouchDataSize = sizeof(this->partyData);
+        memcpy(this->partyData, entryPtr->getPouchPartyDataPtr(), pouchDataSize);
+
+        const uint32_t totalItems = entryPtr->getTotalInventoryItems();
+        if ((totalItems > 0) && entryPtr->getItemsPtr())
+        {
+            this->totalInventoryItems = static_cast<uint16_t>(totalItems);
+        }
+
+        this->sequencePosition = entryPtr->getSequencePosition();
+        this->partnerOut = entryPtr->getPartnerOut();
+        this->followerOut = entryPtr->getFollowerOut();
+        this->inBoatMode = entryPtr->shouldBeInBoatMode();
+
+        constexpr uint32_t currentMapSize = sizeof(this->currentMap);
+        strncpy(this->currentMap, entryPtr->getCurrentMapPtr(), currentMapSize);
+
+        constexpr uint32_t currentBeroSize = sizeof(this->currentBero);
+        strncpy(this->currentBero, entryPtr->getCurrentBeroPtr(), currentBeroSize);
+
+        strncpy(this->stateName, entryPtr->getStateNamePtr(), CUSTOM_STATE_NAME_SIZE);
+
+        return sizeof(CustomStatesSettingsData);
+    }
+
+    // This function returns 0 if there are no items to write
+    uint32_t setItemsData(CustomStateEntry *entryPtr)
+    {
+        // Make sure there is at least one item to write
+        const uint32_t totalItems = entryPtr->getTotalInventoryItems();
+        const ItemId *sourceItemsPtr = entryPtr->getItemsPtr();
+        if ((totalItems == 0) || !sourceItemsPtr)
+        {
+            return 0;
+        }
+
+        const uint32_t itemsSize = totalItems * sizeof(ItemId);
+        ItemId *itemsPtr = PTR_CAST_TYPE_ADD_OFFSET(ItemId *, this, 0);
+        memcpy(itemsPtr, sourceItemsPtr, itemsSize);
+
+        return itemsSize;
     }
 
    private:
-    ItemId items[sizeof(PouchData::items) / sizeof(ItemId)];
-    ItemId keyItems[sizeof(PouchData::keyItems) / sizeof(ItemId)];
-    ItemId storedItems[sizeof(PouchData::storedItems) / sizeof(ItemId)];
-    ItemId badges[sizeof(PouchData::badges) / sizeof(ItemId)];
-    ItemId equippedBadges[sizeof(PouchData::equippedBadges) / sizeof(ItemId)];
-    uint16_t sequencePosition;
     CustomStateSettingsMarioData marioData;
     PouchPartyData partyData[7];
+    uint16_t totalInventoryItems;
+    uint16_t sequencePosition;
     PartyMembers partnerOut;
     PartyMembers followerOut;
     bool inBoatMode;                        // Mario should be in boat mode upon entering the room
@@ -1106,7 +1138,7 @@ static_assert(sizeof(MemoryEditorSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryEditorSettingsData) == 0xC);
 static_assert(sizeof(CustomStatesSettingsHeader) == 0x8);
 static_assert(sizeof(CustomStateSettingsMarioData) == 0x1E);
-static_assert(sizeof(CustomStatesSettingsData) == 0x528);
+static_assert(sizeof(CustomStatesSettingsData) == 0xB0);
 
 inline uint32_t getWrittenSettingsSize()
 {
@@ -1137,6 +1169,14 @@ inline uint32_t getWrittenSettingsSize()
     {
         customStatesSize += sizeof(CustomStatesSettingsHeader);
         customStatesSize += totalCustomStates * sizeof(CustomStatesSettingsData);
+
+        for (uint32_t i = 0; i < totalCustomStates; i++)
+        {
+            customStatesSize += customStatesEntriesPtr[i].getTotalInventoryItems() * sizeof(ItemId);
+        }
+
+        // Make sure the size is aligned to 4 bytes, as a class will be after the items that is aligned to 4 bytes
+        customStatesSize = roundUp(customStatesSize, sizeof(uint32_t));
     }
 
     return sizeof(PracticeCodesDataHeader) + sizeof(SettingsHeader) + sizeof(MiscSettingsHeader) + sizeof(MiscSettingsData) +

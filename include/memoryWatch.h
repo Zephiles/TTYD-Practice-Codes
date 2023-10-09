@@ -20,11 +20,11 @@ class MemoryWatchEntry
     bool addAddressOffset();
     bool removeAddressOffset();
 
-    uint8_t *getAddressPtr() const { return this->address; }
-    void setAddress(uint8_t *address) { this->address = address; }
-
     int32_t *getAddressOffsetsPtr() const { return this->addressOffsets; }
     void setAddressOffsetsPtr(int32_t *offsetsPtr) { this->addressOffsets = offsetsPtr; }
+
+    uint8_t *getAddressPtr() const { return this->address; }
+    void setAddress(uint8_t *address) { this->address = address; }
 
     void freeAddressOffsets()
     {
@@ -118,8 +118,8 @@ class MemoryWatchEntry
     void draw(uint32_t watchIndex) const;
 
    private:
-    uint8_t *address;
     int32_t *addressOffsets; // Amount is determined by totalAddressOffsets
+    uint8_t *address;
 
     float posX;
     float posY;

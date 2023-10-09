@@ -36,29 +36,68 @@ class CustomStateEntry
     ~CustomStateEntry() {}
 
     void init(const char *stateName);
+    void backupInventory();
+
     void load();
+    void restoreInventory();
 
     ItemId *getItemsPtr() { return this->items; }
+    void setItemsPtr(ItemId *itemsPtr) { this->items = itemsPtr; }
 
-    ItemId *getKeyItemsPtr() { return this->keyItems; }
+    void freeItems()
+    {
+        ItemId *itemsPtr = this->items;
+        if (itemsPtr)
+        {
+            delete[] itemsPtr;
+            this->items = nullptr;
+        }
+    }
 
-    ItemId *getStoredItemsPtr() { return this->storedItems; }
+    uint32_t initItemsPtr(uint32_t totalItems)
+    {
+        // Make sure totalItems is valid
+        constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
+        constexpr uint32_t maxImportantItems = sizeof(PouchData::keyItems) / sizeof(ItemId);
+        constexpr uint32_t maxStoredItems = sizeof(PouchData::storedItems) / sizeof(ItemId);
+        constexpr uint32_t maxBadges = sizeof(PouchData::badges) / sizeof(ItemId);
+        constexpr uint32_t maxEquippedBadges = sizeof(PouchData::equippedBadges) / sizeof(ItemId);
 
-    ItemId *getBadgesPtr() { return this->badges; }
+        constexpr uint32_t maxItems = maxStandardItems + maxImportantItems + maxStoredItems + maxBadges + maxEquippedBadges;
+        if (totalItems > maxItems)
+        {
+            totalItems = maxItems;
+        }
 
-    ItemId *getEquippedBadgesPtr() { return this->equippedBadges; }
+        // If memory is already allocated for the items, then free it
+        this->freeItems();
 
-    void setSequencePosition(uint32_t position) { this->sequencePosition = static_cast<uint16_t>(position); }
+        // Set the new total
+        this->totalInventoryItems = totalItems;
+
+        // Allocate memory for the items
+        this->items = new ItemId[totalItems];
+        return totalItems;
+    }
 
     CustomStateMarioData *getMarioDataPtr() { return &this->marioData; }
 
     PouchPartyData *getPouchPartyDataPtr() { return this->partyData; }
 
+    uint32_t getTotalInventoryItems() const { return this->totalInventoryItems; }
+    void setTotalInventoryItems(uint32_t totalItems) { this->totalInventoryItems = static_cast<uint16_t>(totalItems); }
+
+    void setSequencePosition(uint32_t position) { this->sequencePosition = static_cast<uint16_t>(position); }
+    uint32_t getSequencePosition() const { return this->sequencePosition; }
+
     void setPartnerOut(PartyMembers partner) { this->partnerOut = partner; }
+    PartyMembers getPartnerOut() const { return this->partnerOut; }
 
     void setFollowerOut(PartyMembers follower) { this->followerOut = follower; }
+    PartyMembers getFollowerOut() const { return this->followerOut; }
 
     void setInBoatMoad(bool inBoatMode) { this->inBoatMode = inBoatMode; }
+    bool shouldBeInBoatMode() const { return this->inBoatMode; }
 
     char *getCurrentMapPtr() { return this->currentMap; }
     uint32_t getCurrentMapSize() const { return sizeof(this->currentMap); }
@@ -70,14 +109,13 @@ class CustomStateEntry
     void setNewStateName(const char *newStateNamePtr);
 
    private:
-    ItemId items[sizeof(PouchData::items) / sizeof(ItemId)];
-    ItemId keyItems[sizeof(PouchData::keyItems) / sizeof(ItemId)];
-    ItemId storedItems[sizeof(PouchData::storedItems) / sizeof(ItemId)];
-    ItemId badges[sizeof(PouchData::badges) / sizeof(ItemId)];
-    ItemId equippedBadges[sizeof(PouchData::equippedBadges) / sizeof(ItemId)];
-    uint16_t sequencePosition;
+    ItemId *items; // Standard items, important items, stored items, badges, and equipped badges. Each section ends with
+                   // ItemId::ITEM_NONE. Amount is determined by totalInventoryItems.
+
     CustomStateMarioData marioData;
     PouchPartyData partyData[7];
+    uint16_t totalInventoryItems;
+    uint16_t sequencePosition;
     PartyMembers partnerOut;
     PartyMembers followerOut;
     bool inBoatMode;                        // Mario should be in boat mode upon entering the room
@@ -88,7 +126,7 @@ class CustomStateEntry
 } __attribute__((__packed__));
 
 static_assert(sizeof(CustomStateMarioData) == 0x1E);
-static_assert(sizeof(CustomStateEntry) == 0x528);
+static_assert(sizeof(CustomStateEntry) == 0xB4);
 
 class CustomState
 {
@@ -99,9 +137,16 @@ class CustomState
     CustomStateEntry *reinitEntries(uint32_t totalStates)
     {
         // If memory is already allocated for the entries, then free it
+        const uint32_t totalEntries = this->totalEntries;
         CustomStateEntry *entriesPtr = this->entries;
-        if (entriesPtr)
+        if ((totalEntries > 0) && entriesPtr)
         {
+            // Free the memory used by the items of each state
+            for (uint32_t i = 0; i < totalEntries; i++)
+            {
+                entriesPtr[i].freeItems();
+            }
+
             delete[] entriesPtr;
         }
 

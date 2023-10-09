@@ -1,5 +1,6 @@
 #include "customState.h"
 #include "cxx.h"
+#include "mod.h"
 #include "misc/utils.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/mario.h"
@@ -17,19 +18,19 @@ CustomState gCustomState;
 
 void CustomStateEntry::init(const char *stateNamePtr)
 {
+    // Free the memory used by the items
+    this->freeItems();
+
     // Make sure the memory for the state is cleared before doing anything
     clearMemory(this, sizeof(CustomStateEntry));
 
     // Back up the inventory
-    const PouchData *pouchPtr = pouchGetPtr();
-    memcpy(this->items, pouchPtr->items, sizeof(PouchData::items));
-    memcpy(this->keyItems, pouchPtr->keyItems, sizeof(PouchData::keyItems));
-    memcpy(this->storedItems, pouchPtr->storedItems, sizeof(PouchData::storedItems));
-    memcpy(this->badges, pouchPtr->badges, sizeof(PouchData::badges));
-    memcpy(this->equippedBadges, pouchPtr->equippedBadges, sizeof(PouchData::equippedBadges));
+    this->backupInventory();
 
     // Back up some of Mario's data
+    const PouchData *pouchPtr = pouchGetPtr();
     CustomStateMarioData *marioData = &this->marioData;
+
     marioData->currentHP = pouchPtr->currentHp;
     marioData->maxHP = pouchPtr->maxHp;
     marioData->currentFP = pouchPtr->currentFp;
@@ -83,18 +84,133 @@ void CustomStateEntry::init(const char *stateNamePtr)
     strncpy(this->stateName, stateNamePtr, sizeof(CustomStateEntry::stateName));
 }
 
+void CustomStateEntry::backupInventory()
+{
+    // Allocate memory for the items
+    constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
+    constexpr uint32_t maxImportantItems = sizeof(PouchData::keyItems) / sizeof(ItemId);
+    constexpr uint32_t maxStoredItems = sizeof(PouchData::storedItems) / sizeof(ItemId);
+    constexpr uint32_t maxBadges = sizeof(PouchData::badges) / sizeof(ItemId);
+    constexpr uint32_t maxEquippedBadges = sizeof(PouchData::equippedBadges) / sizeof(ItemId);
+
+    // Allocate to the front of the heap to avoid fragmentation
+    constexpr uint32_t maxItems = maxStandardItems + maxImportantItems + maxStoredItems + maxBadges + maxEquippedBadges;
+    ItemId *itemsBufferPtr = new (true) ItemId[maxItems];
+
+    const PouchData *pouchPtr = pouchGetPtr();
+    uint32_t totalItems = 0;
+
+    // Backup the standard items
+    const ItemId *standardItemsPtr = pouchPtr->items;
+    for (uint32_t i = 0; i < maxStandardItems; i++)
+    {
+        const ItemId currentItem = standardItemsPtr[i];
+        itemsBufferPtr[totalItems++] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Backup the important items
+    const ItemId *importantItemsPtr = pouchPtr->keyItems;
+    for (uint32_t i = 0; i < maxImportantItems; i++)
+    {
+        const ItemId currentItem = importantItemsPtr[i];
+        itemsBufferPtr[totalItems++] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Backup the stored items
+    const ItemId *storedItemsPtr = pouchPtr->storedItems;
+    for (uint32_t i = 0; i < maxStoredItems; i++)
+    {
+        const ItemId currentItem = storedItemsPtr[i];
+        itemsBufferPtr[totalItems++] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Backup the badges
+    const ItemId *badgesPtr = pouchPtr->badges;
+    uint32_t totalBadges = 0;
+
+    for (; totalBadges < maxBadges; totalBadges++)
+    {
+        const ItemId currentItem = badgesPtr[totalBadges];
+        itemsBufferPtr[totalItems++] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Backup the equipped badges
+
+    // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so backup all equipped badges up to and
+    // including totalBadges
+    ItemId *equippedBadgesBufferPtr = &itemsBufferPtr[totalItems];
+
+    if (totalBadges > 0)
+    {
+        memcpy(equippedBadgesBufferPtr, pouchPtr->equippedBadges, totalBadges * sizeof(ItemId));
+        totalItems += totalBadges;
+    }
+    else
+    {
+        // Set the first entry to ItemId::ITEM_NONE to make sure the game sees that there are no equipped badges
+        equippedBadgesBufferPtr[totalItems++] = ItemId::ITEM_NONE;
+    }
+
+    // Make sure there is at least one item to backup, excluding ItemId::ITEM_NONE entries
+    bool atLeastOneItem = false;
+    for (uint32_t i = 0; i < totalItems; i++)
+    {
+        if (itemsBufferPtr[i] != ItemId::ITEM_NONE)
+        {
+            atLeastOneItem = true;
+            break;
+        }
+    }
+
+    // Make sure memory isn't already allocated for the items
+    this->freeItems();
+    this->totalInventoryItems = 0;
+
+    if (atLeastOneItem)
+    {
+        // Set the new total
+        this->totalInventoryItems = static_cast<uint16_t>(totalItems);
+
+        // Set up the minimum amount of memory needed to hold all of the items
+        ItemId *itemsPtr = new ItemId[totalItems];
+        this->items = itemsPtr;
+
+        // Copy the items from the buffer to the main memory, and then free the buffer
+        memcpy(itemsPtr, itemsBufferPtr, totalItems * sizeof(ItemId));
+    }
+
+    delete[] itemsBufferPtr;
+}
+
 void CustomStateEntry::load()
 {
     // Restore the inventory
-    PouchData *pouchPtr = pouchGetPtr();
-    memcpy(pouchPtr->items, this->items, sizeof(PouchData::items));
-    memcpy(pouchPtr->keyItems, this->keyItems, sizeof(PouchData::keyItems));
-    memcpy(pouchPtr->storedItems, this->storedItems, sizeof(PouchData::storedItems));
-    memcpy(pouchPtr->badges, this->badges, sizeof(PouchData::badges));
-    memcpy(pouchPtr->equippedBadges, this->equippedBadges, sizeof(PouchData::equippedBadges));
+    this->restoreInventory();
 
     // Restore up some of Mario's data
+    PouchData *pouchPtr = pouchGetPtr();
     const CustomStateMarioData *marioData = &this->marioData;
+
     pouchPtr->currentHp = marioData->currentHP;
     pouchPtr->maxHp = marioData->maxHP;
     pouchPtr->currentFp = marioData->currentFP;
@@ -156,6 +272,102 @@ void CustomStateEntry::load()
     else
     {
         marioChgStayMotion();
+    }
+
+    // Make sure Mario's and the partners' stats are properly updated when entering a battle
+    Mod *modPtr = gMod;
+    modPtr->setFlag(ModFlag::MOD_FLAG_CLEAR_MARIO_STATS);
+    modPtr->setFlag(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS);
+}
+
+void CustomStateEntry::restoreInventory()
+{
+    // Make sure there is at least one item to restore
+    const uint32_t totalInventoryItems = this->totalInventoryItems;
+    const ItemId *itemsPtr = this->items;
+    if ((totalInventoryItems == 0) || !itemsPtr)
+    {
+        return;
+    }
+
+    PouchData *pouchPtr = pouchGetPtr();
+    uint32_t totalItems = 0;
+
+    // Restore the standard items
+    constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
+    ItemId *standardItemsPtr = pouchPtr->items;
+
+    for (uint32_t i = 0; (i < maxStandardItems) && (totalItems < totalInventoryItems); i++)
+    {
+        const ItemId currentItem = itemsPtr[totalItems++];
+        standardItemsPtr[i] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Restore the important items
+    constexpr uint32_t maxImportantItems = sizeof(PouchData::keyItems) / sizeof(ItemId);
+    ItemId *importantItemsPtr = pouchPtr->keyItems;
+
+    for (uint32_t i = 0; (i < maxImportantItems) && (totalItems < totalInventoryItems); i++)
+    {
+        const ItemId currentItem = itemsPtr[totalItems++];
+        importantItemsPtr[i] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Restore the stored items
+    constexpr uint32_t maxStoredItems = sizeof(PouchData::storedItems) / sizeof(ItemId);
+    ItemId *storedItemsPtr = pouchPtr->storedItems;
+
+    for (uint32_t i = 0; (i < maxStoredItems) && (totalItems < totalInventoryItems); i++)
+    {
+        const ItemId currentItem = itemsPtr[totalItems++];
+        storedItemsPtr[i] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Restore the badges
+    constexpr uint32_t maxBadges = sizeof(PouchData::badges) / sizeof(ItemId);
+    ItemId *badgesPtr = pouchPtr->badges;
+
+    uint32_t totalBadges = 0;
+    for (; (totalBadges < maxBadges) && (totalItems < totalInventoryItems); totalBadges++)
+    {
+        const ItemId currentItem = itemsPtr[totalItems++];
+        badgesPtr[totalBadges] = currentItem;
+
+        if (currentItem == ItemId::ITEM_NONE)
+        {
+            break;
+        }
+    }
+
+    // Restore the equipped badges
+
+    // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so restore all equipped badges up to and
+    // including totalBadges
+    ItemId *equippedBadgesPtr = pouchPtr->equippedBadges;
+
+    if (totalBadges > 0)
+    {
+        memcpy(equippedBadgesPtr, &itemsPtr[totalItems], totalBadges * sizeof(ItemId));
+    }
+    else
+    {
+        // Set the first entry to ItemId::ITEM_NONE to make sure the game sees that there are no equipped badges
+        equippedBadgesPtr[0] = ItemId::ITEM_NONE;
     }
 }
 
@@ -274,7 +486,21 @@ bool CustomState::duplicateState(uint32_t index)
     delete[] entriesBackupPtr;
 
     // Copy the selected state to the new state
-    memcpy(&entriesPtr[totalEntries], &entriesPtr[index], stateSize);
+    CustomStateEntry *newEntryPtr = &entriesPtr[totalEntries];
+    memcpy(newEntryPtr, &entriesPtr[index], stateSize);
+
+    // The new state's items pointer is currently set to the original's, so set up new memory for it if it has at least one
+    // item
+    const uint32_t totalItems = newEntryPtr->getTotalInventoryItems();
+    const ItemId *itemsPtr = newEntryPtr->getItemsPtr();
+
+    if ((totalItems > 0) && itemsPtr)
+    {
+        ItemId *newItems = new ItemId[totalItems];
+        newEntryPtr->setItemsPtr(newItems);
+        memcpy(newItems, itemsPtr, totalItems * sizeof(ItemId));
+    }
+
     return true;
 }
 
@@ -458,6 +684,9 @@ bool CustomState::deleteState(uint32_t index)
     {
         return false;
     }
+
+    // Free the memory used by the items of the selected state
+    entriesPtr[index].freeItems();
 
     // Remove one entry
     const uint32_t newTotalEntries = totalEntries - 1;
