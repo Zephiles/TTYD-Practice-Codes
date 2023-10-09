@@ -9,36 +9,11 @@
 
 void *allocFromHeapTail(OSHeapHandle handle, uint32_t size)
 {
-    // Make sure HeapArray is set
-    HeapInfo *heapArrayPtr = HeapArray;
-    if (!heapArrayPtr)
-    {
-        return nullptr;
-    }
-
-    // Make sure the size is valid
-    if (size == 0)
-    {
-        return nullptr;
-    }
-
-    // Make sure the heap is valid
-    if (handle >= NumHeaps)
-    {
-        return nullptr;
-    }
-
-    // Make sure the current heap has some free space
-    heapArrayPtr = &heapArrayPtr[handle];
-    if (heapArrayPtr->capacity == 0)
-    {
-        return nullptr;
-    }
-
     // Increase the size to account for extra alignment padding
     size = roundUp(size + HEADER_SIZE, HEAP_ALIGNMENT);
 
     // Make sure there is at least one free chunk available
+    HeapInfo *heapArrayPtr = &HeapArray[handle];
     ChunkInfo *chunk = heapArrayPtr->firstFree;
     if (!chunk)
     {
@@ -75,14 +50,8 @@ void *allocFromHeapTail(OSHeapHandle handle, uint32_t size)
         return nullptr;
     }
 
-    // Make sure the chunk is properly aligned
-    if (getOffset(chunk, HEAP_ALIGNMENT) != 0)
-    {
-        return nullptr;
-    }
-
     // Get the remaining size once the current size is allocated
-    uint32_t remainingSize = chunk->size - size;
+    const uint32_t remainingSize = chunk->size - size;
 
     // Check if the remaining size can be made into a chunk
     if (remainingSize >= MIN_CHUNK_SIZE)
@@ -99,45 +68,32 @@ void *allocFromHeapTail(OSHeapHandle handle, uint32_t size)
     else
     {
         // The remaining size is too small to be made into a chunk, so just use all of it
-        ChunkInfo *prevChunk = chunk->prev;
-        ChunkInfo *nextChunk = chunk->next;
-
-        if (prevChunk)
+        if (chunk->next)
         {
-            prevChunk->next = nextChunk;
+            chunk->next->prev = chunk->prev;
         }
 
-        if (nextChunk)
+        if (chunk->prev)
         {
-            nextChunk->prev = prevChunk;
+            chunk->prev->next = chunk->next;
         }
-    }
-
-    // Add the chunk to the end of the allocated list
-    ChunkInfo *nextChunk = heapArrayPtr->firstUsed;
-    ChunkInfo *prevChunk = nullptr;
-
-    for (; nextChunk; prevChunk = nextChunk, nextChunk = nextChunk->next)
-    {
-        if (chunk <= nextChunk)
+        else
         {
-            break;
+            heapArrayPtr->firstFree = chunk->next;
         }
     }
 
-    chunk->prev = prevChunk;
-    chunk->next = nextChunk;
+    // Add the chunk to the allocated list
+    ChunkInfo *firstUsedChunk = heapArrayPtr->firstUsed;
+    chunk->next = firstUsedChunk;
+    chunk->prev = nullptr;
 
-    if (prevChunk)
+    if (firstUsedChunk)
     {
-        prevChunk->next = chunk;
+        firstUsedChunk->prev = chunk;
     }
 
-    if (nextChunk)
-    {
-        nextChunk->prev = chunk;
-    }
-
+    heapArrayPtr->firstUsed = chunk;
     return reinterpret_cast<void *>(reinterpret_cast<uint32_t>(chunk) + HEADER_SIZE);
 }
 
