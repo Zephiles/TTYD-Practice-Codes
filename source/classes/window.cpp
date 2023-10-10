@@ -267,12 +267,14 @@ void Window::setWidthHeightFromText(const char *text, float scale)
 void Window::setWidthHeightFromText(const char *text, float scale, float offsetWidth, float offsetHeight)
 {
     const float windowPadding = (this->padding * 2.f) * scale;
+    offsetWidth += windowPadding;
+    offsetHeight += windowPadding;
 
     const float newWidth = getTextWidth(text, scale);
-    this->width = newWidth + windowPadding + offsetWidth;
+    this->width = newWidth + offsetWidth;
 
     const float newHeight = getTextHeight(text, scale);
-    this->height = newHeight + windowPadding + offsetHeight;
+    this->height = newHeight + offsetHeight;
 }
 
 void Window::setWidthHeightFromTextAndInit(const char *text, float scale, uint32_t color, float cornerRadius, float padding)
