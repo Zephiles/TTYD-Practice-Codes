@@ -356,18 +356,14 @@ void CustomStateEntry::restoreInventory()
 
     // Restore the equipped badges
 
-    // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so restore all equipped badges up to and
-    // including totalBadges
+    // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so clear all of the memory for the equipped
+    // badges to ensure that no badges are equipped, and then restore all of the equipped badges up to and including totalBadges
     ItemId *equippedBadgesPtr = pouchPtr->equippedBadges;
+    clearMemory(equippedBadgesPtr, sizeof(PouchData::equippedBadges));
 
     if (totalBadges > 0)
     {
         memcpy(equippedBadgesPtr, &itemsPtr[totalItems], totalBadges * sizeof(ItemId));
-    }
-    else
-    {
-        // Set the first entry to ItemId::ITEM_NONE to make sure the game sees that there are no equipped badges
-        equippedBadgesPtr[0] = ItemId::ITEM_NONE;
     }
 }
 
