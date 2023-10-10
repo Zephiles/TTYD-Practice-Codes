@@ -143,10 +143,6 @@ void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user)
     const char *mapsAndEntrancesLabels = "Current Map\nCurrent Entrance";
     drawText(mapsAndEntrancesLabels, posX, posY, scale, getColorWhite(0xFF));
 
-    // Get the width that is being used by the labels
-    float textWidth;
-    getTextWidthHeight(mapsAndEntrancesLabels, scale, &textWidth, nullptr);
-
     // Get the text and color for the current map and entrance
     MapAndBeroDetails mapAndBeroDetails;
     getMapAndBeroTextAndColor(_next_map, _next_bero, &mapAndBeroDetails);
@@ -160,6 +156,9 @@ void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user)
              mapAndBeroDetails.mapTextPtr,
              mapAndBeroDetails.beroColor,
              mapAndBeroDetails.beroTextPtr);
+
+    // Get the width that is being used by the labels
+    float textWidth = getTextWidth(mapsAndEntrancesLabels, scale);
 
     // Set the text to be a bit to the right of the labels
     constexpr float incrementAmount = 30.f * scale;
@@ -202,7 +201,7 @@ void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user)
         entranceTextBase = "Entrance 0";
     }
 
-    getTextWidthHeight(entranceTextBase, scale, &textWidth, nullptr);
+    textWidth = getTextWidth(entranceTextBase, scale);
 
     // Set the text to be a bit to the right of the entrance number text
     posXIncrement = textWidth + incrementAmount;

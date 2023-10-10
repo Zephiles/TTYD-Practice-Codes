@@ -44,24 +44,12 @@ void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr)
 
 void CheatsMenu::drawModifyMariosCoordinatesInfo() const
 {
-    // Get the text position a bit to the right of the last option
-    float width;
-    constexpr float scale = MENU_SCALE;
-    getTextWidthHeight("Modify As Hex", scale, &width, nullptr);
-
     // Get the text position for the top-left of the window two lines under the main text
     float tempPosX;
     float tempPosY;
+    constexpr float scale = MENU_SCALE;
     const uint32_t totalOptions = gMenu->getTotalOptions();
     gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
-
-    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    const float posX = tempPosX;
-    float posY = tempPosY;
-
-    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const float hexTextPosX = posX + width + (20.f * scale);
-    const float hexTextPosY = posY + (lineDecrement * 2.f);
 
     // Draw the flag for whether the coordinates are being modified as hex or not
     Cheats *cheatsPtr = gCheats;
@@ -72,6 +60,17 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
                          &string,
                          &color,
                          0xFF);
+
+    // Get the text position a bit to the right of the last option
+    const float width = getTextWidth("Modify As Hex", scale);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    const float posX = tempPosX;
+    float posY = tempPosY;
+
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    const float hexTextPosX = posX + width + (20.f * scale);
+    const float hexTextPosY = posY + (lineDecrement * 2.f);
 
     drawText(string, hexTextPosX, hexTextPosY, scale, color);
 

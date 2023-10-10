@@ -60,13 +60,10 @@ void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
     windowPtr->setWidthHeightFromTextAndInit(gHelpTextAConfirmBCancel, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
 
     // Increase the width of the window to account for the options if necessary
-    float longestWidthLeftColumn;
-    getTextWidthHeight("Goombella", scale, &longestWidthLeftColumn, nullptr);
-
-    float longestWidthRightColumn;
-    getTextWidthHeight("Ms. Mowz", scale, &longestWidthRightColumn, nullptr);
-
+    const float longestWidthLeftColumn = getTextWidth("Goombella", scale);
+    const float longestWidthRightColumn = getTextWidth("Ms. Mowz", scale);
     const float padding = windowPtr->getPadding() * scale;
+
     const float width = longestWidthLeftColumn + longestWidthRightColumn + (padding * 2.f) + (35.f * scale);
     if (width > windowPtr->getWidth())
     {

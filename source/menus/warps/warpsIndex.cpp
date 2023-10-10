@@ -76,10 +76,6 @@ void WarpsMenu::drawSelectIndexWarpInfo() const
     const char *mapsAndEntrancesLabels = "Current Map\nCurrent Entrance\n\nNew Map\nNew Entrance Id";
     drawText(mapsAndEntrancesLabels, posX, posY, scale, getColorWhite(0xFF));
 
-    // Get the width that is being used by the labels
-    float textWidth;
-    getTextWidthHeight(mapsAndEntrancesLabels, scale, &textWidth, nullptr);
-
     // Get the text and color for the current map and entrance
     MapAndBeroDetails mapAndBeroDetails;
     getMapAndBeroTextAndColor(_next_map, _next_bero, &mapAndBeroDetails);
@@ -99,6 +95,9 @@ void WarpsMenu::drawSelectIndexWarpInfo() const
              mapAndBeroDetails.beroTextPtr,
              mapName,
              entranceId);
+
+    // Get the width that is being used by the labels
+    const float textWidth = getTextWidth(mapsAndEntrancesLabels, scale);
 
     // Set the text to be a bit to the right of the labels
     const float posXIncrement = textWidth + (30.f * scale);

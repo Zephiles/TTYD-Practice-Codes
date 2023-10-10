@@ -110,10 +110,6 @@ void DisplaysMenu::drawDisplayManualPositionData() const
     const char *mainText = "Pos X\nPos Y\nScale";
     drawText(mainText, posX, posY, scale, getColorWhite(0xFF));
 
-    // Get the text position a bit to the right of the main text
-    float width;
-    getTextWidthHeight(mainText, scale, &width, nullptr);
-
     char buf[128];
     snprintf(buf,
              sizeof(buf),
@@ -121,6 +117,9 @@ void DisplaysMenu::drawDisplayManualPositionData() const
              floatToInt(manuallyPositionPtr->getPosX()),
              floatToInt(manuallyPositionPtr->getPosY()),
              manuallyPositionPtr->getScale());
+
+    // Get the text position a bit to the right of the main text
+    const float width = getTextWidth(mainText, scale);
 
     drawText(buf, posX + width, posY, scale, getColorWhite(0xFF));
 }

@@ -197,8 +197,7 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
     posY -= lineDecrement;
 
     // The on/off text will be centered based on the Display text
-    float displayTextWidth;
-    getTextWidthHeight(displayHeaderText, scale, &displayTextWidth, nullptr);
+    const float displayTextWidth = getTextWidth(displayHeaderText, scale);
 
     const bool swappingOrMovingWatchesSelectedWatch =
         menuPtr->flagIsSet(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);

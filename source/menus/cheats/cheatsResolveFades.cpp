@@ -56,8 +56,7 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     drawText("Select a fade to resolve, if applicable.", posXBase, posYBase, scale, getColorWhite(0xFF));
 
     // Get the width that is being used by the main text options
-    float textWidth;
-    getTextWidthHeight("Slot 4:", scale, &textWidth, nullptr);
+    const float textWidth = getTextWidth("Slot 4:", scale);
 
     // Set the text to be a bit to the right of the main text
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them

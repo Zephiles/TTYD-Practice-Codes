@@ -208,8 +208,7 @@ void WarpsMenu::drawCustomStatesInfo() const
 
     // Draw the names of each custom state
     // Set the text position to be a bit to the right of the main text
-    float width;
-    getTextWidthHeight("Overwrite State", scale, &width, nullptr);
+    const float width = getTextWidth("Overwrite State", scale);
     posX = posXBase + width + (50.f * scale);
     posY = posYBase;
 

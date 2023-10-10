@@ -74,13 +74,6 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
-    // Position the text a bit to the right of the longest text
-    float width;
-    getTextWidthHeight("Misses Color", scale, &width, nullptr);
-
-    const float posX = tempPosX + width + (20.f * scale);
-    float posY = tempPosY;
-
     // Draw the on/off text for the enabled flag
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Displays *displaysPtr = gDisplays;
@@ -91,6 +84,11 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
                          &string,
                          &color,
                          0xFF);
+
+    // Position the text a bit to the right of the longest text
+    const float width = getTextWidth("Misses Color", scale);
+    const float posX = tempPosX + width + (20.f * scale);
+    float posY = tempPosY;
 
     drawText(string, posX, posY, scale, color);
     posY -= lineDecrement;

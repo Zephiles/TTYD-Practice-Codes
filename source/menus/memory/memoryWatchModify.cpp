@@ -98,13 +98,12 @@ void MemoryMenu::drawMemoryWatchModifyInfo() const
     constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
-    // Get the text position a bit to the right of the longest text
-    float width;
-    getTextWidthHeight("Show As Hex", scale, &width, nullptr);
-    const float widthAdjustment = width + (40.f * scale);
-
     // Get the pointer to the selected watch
     const MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
+
+    // Get the text position a bit to the right of the longest text
+    const float width = getTextWidth("Show As Hex", scale);
+    const float widthAdjustment = width + (40.f * scale);
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     const float posXBase = tempPosX;

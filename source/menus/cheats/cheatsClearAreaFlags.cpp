@@ -164,13 +164,12 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
     // Draw the current area
     drawText(buf, posXBase, posY, scale, getColorWhite(0xFF));
 
+    // Get the width of one of the areas and set the width increment for the areas
+    const float width = getTextWidth(areaNames[0][0], scale);
+    const float incrementWidth = width + (40.f * scale);
+
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (lineDecrement * 2.f);
-
-    // Get the width of one of the areas and set the width increment for the areas
-    float width;
-    getTextWidthHeight(areaNames[0][0], scale, &width, nullptr);
-    const float incrementWidth = width + (40.f * scale);
 
     // Draw each area to choose from
     constexpr uint32_t totalRows = intCeil(CHEATS_TOTAL_AREAS, CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW);

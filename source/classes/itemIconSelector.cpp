@@ -27,18 +27,13 @@ void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, Ite
     this->enabled = false;
     this->currentIndex = 0;
 
-    // Get the height that is being used by the text
-    const char *text = gItemIconSelectorTextOptions;
-    constexpr float scale = MENU_SCALE;
-
-    float textHeight;
-    getTextWidthHeight(text, scale, nullptr, &textHeight);
-
     // Initialize the main window
     Window *windowPtr = &this->window;
-
     windowPtr->copyWindow(parentWindow);
     windowPtr->setColor(SPECIAL_WINDOW_COLOR | windowAlpha);
+
+    constexpr float scale = MENU_SCALE;
+    const float textHeight = getTextHeight(gItemIconSelectorTextOptions, scale);
     windowPtr->setHeight(textHeight);
 
     // Adjust the height of the main window to account for all of the icons

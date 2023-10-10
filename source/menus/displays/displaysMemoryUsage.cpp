@@ -74,9 +74,7 @@ void DisplaysMenu::drawMemoryUsageInfo() const
     const char *longestText = "Battle Map Heap";
 #endif
 
-    float width;
-    getTextWidthHeight(longestText, scale, &width, nullptr);
-
+    const float width = getTextWidth(longestText, scale);
     const float posX = tempPosX + width + (20.f * scale);
     float posY = tempPosY;
 

@@ -175,9 +175,7 @@ void ButtonComboEditor::draw() const
     drawText(mainHelpText, posX, posY, scale, getColorWhite(0xFF));
 
     // Get the position three lines under the help text
-    float height;
-    getTextWidthHeight(mainHelpText, scale, nullptr, &height);
-
+    const float height = getTextHeight(mainHelpText, scale);
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (height + (lineDecrement * 2.f));
 

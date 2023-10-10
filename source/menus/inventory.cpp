@@ -1098,9 +1098,8 @@ InventoryMenu::InventoryMenu()
     inventoryWindowPtr->copyWindow(rootWindowPtr);
 
     // Get the width that is being used by the main text options
-    float textWidth;
     constexpr float scale = MENU_SCALE;
-    getTextWidthHeight("Change By Icon", scale, &textWidth, nullptr);
+    const float textWidth = getTextWidth("Change By Icon", scale);
     const float mainTextWidth = textWidth + (inventoryWindowPtr->getPadding() * scale);
 
     // Adjust the window to exclude the space used by the main text options, plus a bit extra

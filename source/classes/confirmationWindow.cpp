@@ -150,15 +150,14 @@ void ConfirmationWindow::draw() const
     drawText(this->helpText, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Draw Yes and No
-    constexpr float yesNoScale = scale + 0.1f;
     const char **yesNoStringsPtr = gConfirmationWindowYesNoStrings;
+    const char *currentString = yesNoStringsPtr[0];
+
+    constexpr float yesNoScale = scale + 0.1f;
+    const float posX = windowPtr->getTextPosX(currentString, WindowAlignment::BOTTOM_CENTER, yesNoScale);
 
     // getTextPosY only uses one scale, while two are required here, so have to calculate posY manually
-    float yesNoHeight;
-    const char *currentString = yesNoStringsPtr[0];
-    getTextWidthHeight(currentString, yesNoScale, nullptr, &yesNoHeight);
-
-    const float posX = windowPtr->getTextPosX(currentString, WindowAlignment::BOTTOM_CENTER, yesNoScale);
+    const float yesNoHeight = getTextHeight(currentString, yesNoScale);
 
     float posY = windowPtr->getPosY() - windowPtr->getHeight() + yesNoHeight + (windowPtr->getPadding() * scale) +
                  LINE_HEIGHT_ADJUSTMENT_4(scale);

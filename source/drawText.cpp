@@ -17,38 +17,43 @@ float getTextMultilineIncrement(const char *text, float scale, uint32_t addition
     return lineCount * (LINE_HEIGHT_FLOAT * scale);
 }
 
+float getTextWidth(const char *text, float scale)
+{
+    if (!text)
+    {
+        return 0.f;
+    }
+
+    const int32_t textWidth = static_cast<int32_t>(FontGetMessageWidth(text));
+    return intToFloat(textWidth) * scale;
+}
+
+float getTextHeight(const char *text, float scale)
+{
+    if (!text)
+    {
+        return 0.f;
+    }
+
+    uint16_t numLines;
+    FontGetMessageWidthLine(text, &numLines);
+    const float height = intToFloat(LINE_HEIGHT * (numLines + 1) - 9) * scale;
+
+    // Reduce the hight slighly so capital letters look properly positioned
+    // It is not a mistake that this uses 5.f and getTextPosY uses 4.f
+    return height - LINE_HEIGHT_ADJUSTMENT_5(scale);
+}
+
 void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut)
 {
-    if (text)
+    if (widthOut)
     {
-        uint16_t numLines;
-        const int32_t textWidth = static_cast<int32_t>(FontGetMessageWidthLine(text, &numLines));
-
-        if (widthOut)
-        {
-            *widthOut = intToFloat(textWidth) * scale;
-        }
-
-        if (heightOut)
-        {
-            const float height = intToFloat(LINE_HEIGHT * (numLines + 1) - 9) * scale;
-
-            // Reduce the hight slighly so capital letters look properly positioned
-            // It is not a mistake that this uses 5.f and getTextPosY uses 4.f
-            *heightOut = height - LINE_HEIGHT_ADJUSTMENT_5(scale);
-        }
+        *widthOut = getTextWidth(text, scale);
     }
-    else
-    {
-        if (widthOut)
-        {
-            *widthOut = 0.f;
-        }
 
-        if (heightOut)
-        {
-            *heightOut = 0.f;
-        }
+    if (heightOut)
+    {
+        *heightOut = getTextHeight(text, scale);
     }
 }
 
@@ -128,10 +133,7 @@ void drawTextMain(const char *text, float posX, float posY, float scale, float w
 
     if ((alignment == TextAlignment::CENTER) || (alignment == TextAlignment::RIGHT) || hasWidthLimit)
     {
-        // Retrieve the text width as a separate variable to avoid repeatedly loading it from the stack when using it
-        float textWidth;
-        getTextWidthHeight(text, scale, &textWidth, nullptr);
-        textLengthScaled = textWidth;
+        textLengthScaled = getTextWidth(text, scale);
     }
 
     // Handle aligning the text

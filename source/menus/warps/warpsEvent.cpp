@@ -71,8 +71,7 @@ void WarpsMenu::drawSelectEventWarpInfo(float offsetY) const
     drawText(helpText, posX, posY, scale, getColorWhite(0xFF));
 
     // Get the width that is being used by the main text options
-    float textWidth;
-    getTextWidthHeight("Keep Inventory", scale, &textWidth, nullptr);
+    const float textWidth = getTextWidth("Keep Inventory", scale);
 
     // Set the text to be a bit to the right of the main text
     posX += textWidth + (30.f * scale);
@@ -812,8 +811,7 @@ void drawEventDetails(uint32_t index, float posX, float posY)
              mapAndBeroDetails.beroTextPtr);
 
     // Get the width that is being used by the labels
-    float textWidth;
-    getTextWidthHeight("Sequence", scale, &textWidth, nullptr);
+    const float textWidth = getTextWidth("Sequence", scale);
 
     // Set the text to be a bit to the right of the labels
     posX += textWidth + (30.f * scale);

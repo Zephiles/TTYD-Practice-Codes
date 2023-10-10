@@ -501,14 +501,13 @@ void CheatsMenu::drawManageFlagsInfo() const
     }
 
     // Draw the text for the values
-    // Get the text position a bit to the right of the longest text
-    float width;
-    getTextWidthHeight("Current Value", scale, &width, nullptr);
-    const float widthAdjustment = width + (40.f * scale);
-
     posY -= lineDecrement;
     const uint32_t flagVariableToSet = this->flagVariableToSet;
     const uint32_t currentFlagVariableValue = getGlobalVariableFlagValue(selectedOption, flagVariableToSet);
+
+    // Get the text position a bit to the right of the longest text
+    const float width = getTextWidth("Current Value", scale);
+    const float widthAdjustment = width + (40.f * scale);
 
     if (changingWord)
     {

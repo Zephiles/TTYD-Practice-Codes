@@ -63,8 +63,7 @@ void CheatsMenu::drawLockFlagsInfo() const
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Get the width that is being used by the main text options
-    float textWidth;
-    getTextWidthHeight("Lock GSWFs", scale, &textWidth, nullptr);
+    const float textWidth = getTextWidth("Lock GSWFs", scale);
 
     // Set the text to be a bit to the right of the main text
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them

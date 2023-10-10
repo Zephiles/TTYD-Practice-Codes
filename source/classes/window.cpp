@@ -14,13 +14,11 @@ void Window::copyWindow(const Window *parent)
 
 float Window::getTextPosX(const char *text, WindowAlignment alignment, float scale) const
 {
-    float width;
-    getTextWidthHeight(text, scale, &width, nullptr);
+    const float textWidth = getTextWidth(text, scale);
 
     const float windowPosX = this->posX;
     const float windowWidth = this->width;
     const float padding = this->padding * scale;
-    const float textWidth = width;
 
     switch (alignment)
     {
@@ -51,16 +49,14 @@ float Window::getTextPosX(const char *text, WindowAlignment alignment, float sca
 
 float Window::getTextPosY(const char *text, WindowAlignment alignment, float scale) const
 {
-    float height;
-    getTextWidthHeight(text, scale, nullptr, &height);
+    const float textHeight = getTextHeight(text, scale);
 
     const float windowPosY = this->posY;
     const float windowHeight = this->height;
     const float padding = this->padding * scale;
-    const float textHeight = height;
 
     // Move up slightly so capital letters look properly positioned
-    // It is not a mistake that this uses 4.f and getTextWidthHeight uses 5.f
+    // It is not a mistake that this uses 4.f and getTextHeight uses 5.f
     const float adjustment = LINE_HEIGHT_ADJUSTMENT_4(scale);
 
     switch (alignment)
@@ -270,12 +266,12 @@ void Window::setWidthHeightFromText(const char *text, float scale)
 
 void Window::setWidthHeightFromText(const char *text, float scale, float offsetWidth, float offsetHeight)
 {
-    float newWidth;
-    float newHeight;
-    getTextWidthHeight(text, scale, &newWidth, &newHeight);
-
     const float windowPadding = (this->padding * 2.f) * scale;
+
+    const float newWidth = getTextWidth(text, scale);
     this->width = newWidth + windowPadding + offsetWidth;
+
+    const float newHeight = getTextHeight(text, scale);
     this->height = newHeight + windowPadding + offsetHeight;
 }
 

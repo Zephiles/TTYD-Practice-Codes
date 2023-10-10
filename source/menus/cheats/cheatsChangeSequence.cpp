@@ -257,10 +257,9 @@ void drawStageAndEvent(uint32_t sequencePosition, float posX, float posY)
     drawText(stageEventText, posX, posY, scale, getColorWhite(0xFF));
 
     // Get the text position a bit to the right of the Stage and Event text
-    float width;
-    getTextWidthHeight(stageEventText, scale, &width, nullptr);
-
+    const float width = getTextWidth(stageEventText, scale);
     posX += width + (30.f * scale);
+
     for (uint32_t i = 0; i < 2; i++)
     {
         drawText(names[i], posX, posY, scale, getColorWhite(0xFF));

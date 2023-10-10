@@ -122,9 +122,7 @@ void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user)
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Position the text a bit to the right of the longest text
-    float width;
-    getTextWidthHeight("Enable Horizontal Separaters", scale, &width, nullptr);
-
+    const float width = getTextWidth("Enable Horizontal Separaters", scale);
     const float posX = tempPosX + width + (20.f * scale);
     float posY = tempPosY;
 

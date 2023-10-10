@@ -466,15 +466,17 @@ void StatsMenu::drawPartnerStats()
         return getCurrentOptionColor(currentOption, 0xFF);
     };
 
-    // Get the width that is being used by the main text options
-    constexpr float scale = MENU_SCALE;
-    float textWidth;
-    getTextWidthHeight("Goombella", scale, &textWidth, nullptr);
+    // Make sure the menu current index and the current index are valid
+    verifyMenuAndCurrentIndexes();
 
     // Set the text to be a bit to the right of the main text
     float tempPosX;
     float tempPosY;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
+
+    // Get the width that is being used by the main text options
+    float textWidth = getTextWidth("Goombella", scale);
 
     // Retrieve posXBase and posYBase as separate variables to avoid repeatedly loading them from the stack when using them
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -484,9 +486,6 @@ void StatsMenu::drawPartnerStats()
 
     float posX = posXBase;
     float posY = posYBase;
-
-    // Make sure the menu current index and the current index are valid
-    verifyMenuAndCurrentIndexes();
 
     // Draw the first 4 options, as they will always be in the same order
     Menu *menuPtr = gMenu;
@@ -554,7 +553,7 @@ void StatsMenu::drawPartnerStats()
     partnerStats[2] = partnerData->attackLevel; // Rank
 
     // Set the values text to be a bit to the right of the previous text
-    getTextWidthHeight("Bring Out", scale, &textWidth, nullptr);
+    textWidth = getTextWidth("Bring Out", scale);
     posX = posXBase + textWidth + textIncrement;
     posY = posYBase;
     counter = 0;

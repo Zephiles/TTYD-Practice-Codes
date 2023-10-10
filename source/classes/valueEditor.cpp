@@ -2091,9 +2091,7 @@ void ValueEditor::draw()
 
     // Draw various things based on flags that are set
     // Set posY to be two lines under the help text
-    float height;
-    getTextWidthHeight(helpText, scale, nullptr, &height);
-
+    const float height = getTextHeight(helpText, scale);
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (height + lineDecrement);
 
@@ -2133,18 +2131,16 @@ void ValueEditor::draw()
     // Get the X and Y coordinates for the value
     const int32_t stringLength = static_cast<int32_t>(strlen(editorValue));
     const float stringLengthFloat = intToFloat(stringLength);
-
     constexpr float valueScale = scale + 0.3f;
-    const float valueStringWidth = (stringLengthFloat * EDITOR_DIGIT_LENGTH) * valueScale;
-
-    posX = windowPtr->getPosX() + ((windowPtr->getWidth() - valueStringWidth) / 2.f);
 
     // getTextPosY only uses one scale, while two are required here, so have to calculate posY manually
-    float valueHeight;
-    getTextWidthHeight(editorValue, valueScale, nullptr, &valueHeight);
+    const float valueHeight = getTextHeight(editorValue, valueScale);
 
     posY = windowPtr->getPosY() - windowPtr->getHeight() + valueHeight + (windowPtr->getPadding() * scale) +
            LINE_HEIGHT_ADJUSTMENT_4(scale);
+
+    const float valueStringWidth = (stringLengthFloat * EDITOR_DIGIT_LENGTH) * valueScale;
+    posX = windowPtr->getPosX() + ((windowPtr->getWidth() - valueStringWidth) / 2.f);
 
     // Draw the value
     const uint32_t currentIndex = this->currentIndex;

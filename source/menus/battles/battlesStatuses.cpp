@@ -314,14 +314,12 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
         if (i == currentIndex)
         {
             // Draw a window for the current line
-            float textWidth;
-            getTextWidthHeight("Yes", scale, &textWidth, nullptr);
-
+            const float textWidth = getTextWidth("Yes", scale);
             const float padding = (rootWindowPtr->getPadding() * scale) * 2.f;
+            const float windowWidth = valuesPosXOffset + textWidth + padding;
 
             const float windowPosX = rootWindowPtr->getPosX();
             const float windowPosY = valuesPosYBase + (lineAdjustment * 1.5f) - (counter * lineDecrement);
-            const float windowWidth = valuesPosXOffset + textWidth + padding;
             constexpr float windowHeight = lineDecrement + LINE_HEIGHT_ADJUSTMENT_5(scale);
             const uint32_t windowColor = SPECIAL_WINDOW_COLOR | 0xFF;
 

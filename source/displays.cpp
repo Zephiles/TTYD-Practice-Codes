@@ -1228,9 +1228,7 @@ bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
 
             // This is assuming the text will be aligned to the left to avoid having it move constantly from constantly changing
             // values
-            float width;
-            getTextWidthHeight(text, scale, &width, nullptr);
-
+            const float width = getTextWidth(text, scale);
             dataOut->setPosX(DISPLAYS_DEFAULT_POS_X_RIGHT - width);
             break;
         }
@@ -1255,9 +1253,7 @@ bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
 
             // This is assuming the text will be aligned to the left to avoid having it move constantly from constantly changing
             // values
-            float width;
-            getTextWidthHeight(text, scale, &width, nullptr);
-
+            const float width = getTextWidth(text, scale);
             dataOut->setPosX(DISPLAYS_DEFAULT_POS_X_RIGHT - width);
             break;
         }

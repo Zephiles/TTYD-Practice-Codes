@@ -97,6 +97,9 @@ inline uint32_t getCurrentOptionColor(bool currentOption, uint8_t alpha)
 
 float getTextMultilineIncrement(const char *text, float scale, uint32_t additionalLines);
 
+float getTextWidth(const char *text, float scale);
+float getTextHeight(const char *text, float scale);
+
 // If either the width or the height are not needed, then they can be set to nullptr
 void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut);
 

@@ -367,15 +367,16 @@ void NameEditor::draw()
     currentCharString[0] = 'A';
     currentCharString[1] = '\0';
 
-    // Get the text width of the letter A, as it will be used for positioning the windows and text
-    float textWidth;
-    constexpr float scale = MENU_SCALE;
-    getTextWidthHeight(currentCharString, scale, &textWidth, nullptr);
-
     // Draw a window for the current index of the buffer text
     float tempPosX;
     float tempPosY;
+    constexpr float scale = MENU_SCALE;
     windowPtr->getTextPosXY(currentCharString, WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);
+
+    // Move the window back based on the size of the A character centered
+    const float textWidth = getTextWidth(currentCharString, scale);
+    constexpr float charPosXIncrement = (LINE_HEIGHT_FLOAT - 7.f) * scale;
+    const float initialPosXAdjustment = (charPosXIncrement / 2.f) - (textWidth / 2.f);
 
     const float currentStringIndexFloat = intToFloat(static_cast<int32_t>(this->currentStringIndex));
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -383,12 +384,7 @@ void NameEditor::draw()
 
     const float currentStringPosX = tempPosX;
     const float currentStringPosY = charactersPosYBase + (lineDecrement * 2.f) + (windowPtr->getPadding() * scale);
-
     const uint32_t windowCursorColor = getColorBlue(0xFF);
-    constexpr float charPosXIncrement = (LINE_HEIGHT_FLOAT - 7.f) * scale;
-
-    // Move the window back based on the size of the A character centered
-    const float initialPosXAdjustment = (charPosXIncrement / 2.f) - (textWidth / 2.f);
 
     windowDispGX_Waku_col(0,
                           reinterpret_cast<const uint8_t *>(&windowCursorColor),

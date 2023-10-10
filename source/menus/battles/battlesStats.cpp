@@ -274,14 +274,10 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
         return;
     }
 
-    // Get the width that is being used by the main text options
-    constexpr float scale = MENU_SCALE;
-    float textWidth;
-    getTextWidthHeight("Change Held Item", scale, &textWidth, nullptr);
-
     // Get the text position for the top-left of the window
     float tempPosX;
     float tempPosY;
+    constexpr float scale = MENU_SCALE;
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Draw the selected actor text two lines under the options
@@ -295,6 +291,9 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 
     snprintf(buf, bufSize, "Selected Actor\n%s", gBattleActors[static_cast<int32_t>(type) - 1]);
     drawText(buf, tempPosX, selectedActorTextPosY, scale, textColor);
+
+    // Get the width that is being used by the main text options
+    float textWidth = getTextWidth("Change Held Item", scale);
 
     // Set the text to be a bit to the right of the main text
     constexpr float textIncrement = lineDecrement + (lineDecrement / 2.f) - LINE_HEIGHT_ADJUSTMENT_5(scale);
@@ -315,7 +314,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     }
 
     // Set the values text to be a bit to the right of the previous text
-    getTextWidthHeight("Max HP", scale, &textWidth, nullptr);
+    textWidth = getTextWidth("Max HP", scale);
     posX = posXBase + textWidth + textIncrement;
     posY = posYBase;
 
