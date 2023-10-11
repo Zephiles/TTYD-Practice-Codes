@@ -1966,18 +1966,9 @@ void drawJumpStorage(CameraId cameraId, void *user)
                           &data,
                           "SpdY: -18.00");
 
-    // This display needs to be moved down if the Star Power Value display is enabled, but that display does not use
-    // getDisplayPosAndScale to get its position, so it must be moved manually here
-    float posY = data.getPosY();
-
-    if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_STAR_POWER_VALUE))
-    {
-        posY -= GET_DISPLAYS_DEFAULT_SCALED_LINE_DECREMENT;
-    }
-
     // Draw the text
     const float scale = data.getScale();
-    drawText(buf, data.getPosX(), posY, scale, 170.f * scale, getColorWhite(0xFF));
+    drawText(buf, data.getPosX(), data.getPosY(), scale, 170.f * scale, getColorWhite(0xFF));
 }
 
 void handleJumpStorage(Displays *displaysPtr)
