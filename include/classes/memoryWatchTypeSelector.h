@@ -2,18 +2,23 @@
 #define CLASSES_MEMORYWATCHTYPESELECTOR_H
 
 #include "mod.h"
+#include "classes/optionSelector.h"
 #include "classes/window.h"
-#include "classes/menu.h"
 
 #include <cstdint>
 
+// Need to define some external variables/functions first, as the class will use them
+class MemoryWatchTypeSelector;
+extern MemoryWatchTypeSelector *gMemoryWatchTypeSelector;
+
+void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex);
+
 #define TOTAL_MEMORY_WATCH_TYPES 12
-#define TOTAL_MEMORY_WATCH_TYPES_FLOAT 12.f
 
-typedef void (*MemoryWatchTypeSelectorSetTypeFunc)(VariableType type);
-typedef void (*MemoryWatchTypeSelectorCancelFunc)();
+typedef void (*MemoryWatchTypeSelectorSetTypeFunc)(VariableType type); // Called when the player presses A to select a type
+typedef void (*MemoryWatchTypeSelectorCancelFunc)(); // Called when the player presses B to cancel selecting a type
 
-class MemoryWatchTypeSelector
+class MemoryWatchTypeSelector: private OptionSelector
 {
    public:
     MemoryWatchTypeSelector() {}
@@ -24,33 +29,31 @@ class MemoryWatchTypeSelector
 
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
-    bool shouldDraw() const { return this->enabled; }
-    void stopDrawing() { this->enabled = false; }
+    bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
+
+    void stopDrawing()
+    {
+        gMemoryWatchTypeSelector = nullptr;
+        this->OptionSelector::stopDrawing();
+    }
 
     void startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc, MemoryWatchTypeSelectorCancelFunc cancelFunc)
     {
+        gMemoryWatchTypeSelector = this;
         this->setTypeFunc = setTypeFunc;
-        this->cancelFunc = cancelFunc;
-        this->enabled = true;
+
+        this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);
     }
 
-    void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
+    void setCurrentIndex(uint32_t index) { this->OptionSelector::setCurrentIndex(index); }
 
-    void controlsMoveDownOnce();
-    void controlsMoveUpOnce();
-    void controls(MenuButtonInput button);
+    void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
+    void draw() const { this->OptionSelector::draw(); }
 
-    void draw();
+    MemoryWatchTypeSelectorSetTypeFunc getSetTypeFunc() const { return this->setTypeFunc; }
 
    private:
-    Window window;
-
-    MemoryWatchTypeSelectorSetTypeFunc setTypeFunc; // Called when the player presses A to select a type
-    MemoryWatchTypeSelectorCancelFunc cancelFunc;   // Called when the player presses B to cancel selecting a type
-    MenuAutoIncrement autoIncrement;
-
-    bool enabled;         // Whether this window is enabled/drawn or not
-    uint8_t currentIndex; // Current cursor position
+    MemoryWatchTypeSelectorSetTypeFunc setTypeFunc;
 };
 
 extern const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES];

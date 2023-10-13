@@ -31,13 +31,13 @@ void cancelMenuFollowersBringOutFollower()
     gStatsMenu->getFollowerSelectorPtr()->stopDrawing();
 }
 
-void selectedMenuFollowersBringOutFollower(PartyMembers selectedFollower)
+void selectedMenuFollowersBringOutFollower(PartyMembers followerSelected)
 {
     // Make sure a follower can actually be spawned right now
     if (checkIfInGame())
     {
         // Spawn the follower
-        spawnPartnerOrFollower(selectedFollower);
+        spawnPartnerOrFollower(followerSelected);
     }
     else
     {

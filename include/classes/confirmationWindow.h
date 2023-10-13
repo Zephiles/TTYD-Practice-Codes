@@ -1,21 +1,26 @@
 #ifndef CLASSES_CONFIRMATIONWINDOW_H
 #define CLASSES_CONFIRMATIONWINDOW_H
 
+#include "classes/optionSelector.h"
 #include "classes/window.h"
-#include "classes/menu.h"
 
 #include <cstdint>
 
+// Need to define some external variables/functions first, as the class will use them
+class ConfirmationWindow;
+extern ConfirmationWindow *gConfirmationWindow;
+
+void confirmationWindowSelectedOption(uint32_t currentIndex);
+void confirmationWindowSelectedNo();
+
+#define CONFIRMATION_WINDOW_OPTION_YES 0
+#define CONFIRMATION_WINDOW_OPTION_NO (CONFIRMATION_WINDOW_OPTION_YES + 1)
+
+// Called when the player selects yes/no or presses B to cancel
 typedef void (*ConfirmationWindowSelectedOptionFunc)(bool selectedYes);
 
-class ConfirmationWindow
+class ConfirmationWindow: private OptionSelector
 {
-    enum ConfirmationWindowOptions
-    {
-        Yes = 0,
-        No,
-    };
-
    public:
     ConfirmationWindow() {}
     ~ConfirmationWindow() {}
@@ -25,30 +30,29 @@ class ConfirmationWindow
 
     void init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha);
 
-    bool shouldDraw() const { return this->enabled; }
-    void stopDrawing() { this->enabled = false; }
+    bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
+
+    void stopDrawing()
+    {
+        gConfirmationWindow = nullptr;
+        this->OptionSelector::stopDrawing();
+    }
 
     void startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
     {
+        gConfirmationWindow = this;
         this->selectedOptionFunc = selectedOptionFunc;
-        this->enabled = true;
+
+        this->OptionSelector::startDrawing(confirmationWindowSelectedOption, confirmationWindowSelectedNo);
     }
 
-    void callSelectedOptionFunc(bool selectedYes) const;
-    void dpadControls(MenuButtonInput button);
-    void controls(MenuButtonInput button);
+    void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
+    void draw() const { this->OptionSelector::draw(); }
 
-    void draw() const;
+    ConfirmationWindowSelectedOptionFunc getSelectedOptionFunc() const { return this->selectedOptionFunc; }
 
    private:
-    Window window;
-
-    ConfirmationWindowSelectedOptionFunc selectedOptionFunc; // Called when the player selects yes/no or presses B to cancel
-    MenuAutoIncrement autoIncrement;
-    const char *helpText;
-
-    bool enabled; // Whether this window is enabled/drawn or not
-    uint8_t currentIndex;
+    ConfirmationWindowSelectedOptionFunc selectedOptionFunc;
 };
 
 #endif

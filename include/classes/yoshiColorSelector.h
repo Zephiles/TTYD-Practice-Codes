@@ -1,18 +1,17 @@
 #ifndef CLASSES_YOSHICOLORSELECTOR_H
 #define CLASSES_YOSHICOLORSELECTOR_H
 
+#include "classes/optionSelector.h"
 #include "classes/window.h"
-#include "classes/menu.h"
 
 #include <cstdint>
 
 #define TOTAL_YOSHI_COLORS 7
-#define TOTAL_YOSHI_COLORS_FLOAT 7.f
 
-typedef void (*YoshiColorSelectorSetColorFunc)(uint32_t selectedColorId);
-typedef void (*YoshiColorSelectorCancelFunc)();
+typedef void (*YoshiColorSelectorSetColorFunc)(uint32_t selectedColorId); // Called when the player presses A to select a color
+typedef void (*YoshiColorSelectorCancelFunc)(); // Called when the player presses B to cancel selecting a color
 
-class YoshiColorSelector
+class YoshiColorSelector: private OptionSelector
 {
    public:
     YoshiColorSelector() {}
@@ -23,33 +22,18 @@ class YoshiColorSelector
 
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
-    bool shouldDraw() const { return this->enabled; }
-    void stopDrawing() { this->enabled = false; }
+    bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
+    void stopDrawing() { this->OptionSelector::stopDrawing(); }
 
     void startDrawing(YoshiColorSelectorSetColorFunc setColorFunc, YoshiColorSelectorCancelFunc cancelFunc)
     {
-        this->setColorFunc = setColorFunc;
-        this->cancelFunc = cancelFunc;
-        this->enabled = true;
+        this->OptionSelector::startDrawing(setColorFunc, cancelFunc);
     }
 
-    void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
+    void setCurrentIndex(uint32_t index) { this->OptionSelector::setCurrentIndex(index); }
 
-    void controlsMoveDownOnce();
-    void controlsMoveUpOnce();
-    void controls(MenuButtonInput button);
-
-    void draw();
-
-   private:
-    Window window;
-
-    YoshiColorSelectorSetColorFunc setColorFunc; // Called when the player presses A to select a color
-    YoshiColorSelectorCancelFunc cancelFunc;     // Called when the player presses B to cancel selecting a color
-    MenuAutoIncrement autoIncrement;
-
-    bool enabled;         // Whether this window is enabled/drawn or not
-    uint8_t currentIndex; // Current cursor position
+    void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
+    void draw() const { this->OptionSelector::draw(); }
 };
 
 extern const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS];

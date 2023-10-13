@@ -1,22 +1,24 @@
 #ifndef CLASSES_FOLLOWERSELECTOR_h
 #define CLASSES_FOLLOWERSELECTOR_h
 
+#include "classes/optionSelector.h"
 #include "classes/window.h"
-#include "classes/menu.h"
 #include "ttyd/party.h"
 
 #include <cstdint>
 
-#define TOTAL_FOLLOWERS_PER_COLUMN (TOTAL_FOLLOWERS / 2)
-#define TOTAL_FOLLOWERS_PER_ROW (TOTAL_FOLLOWERS / TOTAL_FOLLOWERS_PER_COLUMN)
+// Need to define some external variables/functions first, as the class will use them
+class FollowerSelector;
+extern FollowerSelector *gFollowerSelector;
 
-#define TOTAL_FOLLOWERS_PER_COLUMN_FLOAT (TOTAL_FOLLOWERS_FLOAT / 2.f)
-#define TOTAL_FOLLOWERS_PER_ROW_FLOAT (TOTAL_FOLLOWERS_FLOAT / TOTAL_FOLLOWERS_PER_COLUMN_FLOAT)
+void followerSelectorSelectedFollower(uint32_t currentIndex);
 
-typedef void (*FollowerSelectorSelectFunc)(PartyMembers selectedFollower);
-typedef void (*FollowerSelectorCancelFunc)();
+// Called when the player presses A to select a follower
+typedef void (*FollowerSelectorSelectFunc)(PartyMembers followerSelected);
 
-class FollowerSelector
+typedef void (*FollowerSelectorCancelFunc)(); // Called when the player presses B to cancel selecting a follower
+
+class FollowerSelector: private OptionSelector
 {
    public:
     FollowerSelector() {}
@@ -27,28 +29,29 @@ class FollowerSelector
 
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
-    bool shouldDraw() const { return this->enabled; }
-    void stopDrawing() { this->enabled = false; }
+    bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
+
+    void stopDrawing()
+    {
+        gFollowerSelector = nullptr;
+        this->OptionSelector::stopDrawing();
+    }
 
     void startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc)
     {
+        gFollowerSelector = this;
         this->selectFunc = selectedFunc;
-        this->cancelFunc = cancelFunc;
-        this->enabled = true;
+
+        this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
     }
 
-    void controls(MenuButtonInput button);
-    void draw() const;
+    void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
+    void draw() const { this->OptionSelector::draw(); }
+
+    FollowerSelectorSelectFunc getSelectFunc() const { return this->selectFunc; }
 
    private:
-    Window window;
-
-    FollowerSelectorSelectFunc selectFunc; // Called when the player presses A to select a follower
-    FollowerSelectorCancelFunc cancelFunc; // Called when the player presses B to cancel selecting a follower
-    MenuAutoIncrement autoIncrement;
-
-    bool enabled;         // Whether this window is enabled/drawn or not
-    uint8_t currentIndex; // Current cursor position
+    FollowerSelectorSelectFunc selectFunc;
 };
 
 extern const char *gFollowersOptions[TOTAL_FOLLOWERS];
