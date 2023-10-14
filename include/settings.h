@@ -208,6 +208,28 @@ class CheatsSettingsData
             }
         }
 
+        // Certain things need to happen depending on whether the Frame Advance cheat is now enabled/disabled
+        FrameAdvanceCheat *frameAdvancePtr = cheatsPtr->getFrameAdvanceCheatPtr();
+
+        if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FRAME_ADVANCE))
+        {
+            // The cheat is now disabled, so make sure memory is not allocated for it and that its misc flags are cleared
+            cheatsPtr->clearMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_ADVANCE_FRAME);
+            cheatsPtr->clearMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED);
+            frameAdvancePtr->freePrevInputs();
+        }
+        else
+        {
+            // The cheat is now enabled, so allocate memory for the backup inputs
+            frameAdvancePtr->allocMemoryForPrevInputs();
+
+            // Clear any existing backup inputs to be safe
+
+            // This is needed because memory could have already been allocated for the backup inputs before
+            // allocMemoryForPrevInputs was called
+            frameAdvancePtr->clearAllInputs();
+        }
+
         // Get all of the button combos
         const uint32_t buttonCombosOffset = intCeil(totalCheats, bitsPerWord) * sizeof(uint32_t);
         const uint16_t *buttonCombosPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, buttonCombosOffset);
@@ -307,6 +329,35 @@ class DisplaysSettingsData
             }
         }
 
+        // If the Memory Usage display is now disabled, then make sure memory is not allocated for the memory usage buffer
+        if (!displaysPtr->anyHeapDisplayIsEnabled())
+        {
+            displaysPtr->getMemoryUsageDisplayPtr()->freeMemoryUsageBuffer();
+        }
+
+        // Certain things need to happen depending on whether the Hit Check Visualization display is now enabled/disabled
+        HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+        if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
+        {
+            // The display is now disabled, so make sure memory is not allocated for it and reset the entry count
+            hitCheckVisualizationPtr->setEntryCount(0);
+            hitCheckVisualizationPtr->freeBuffer();
+        }
+        else
+        {
+            // The display is now enabled, so if both the hit and miss flags are disabled, then make sure memory is not
+            // allocated for it and reset the entry count
+
+            // The memory for the buffer will be allocated automatically when it is needed, so just check for freeing the memory
+            // for the buffer and resetting the entry count when both flags are disabled
+            if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS) &&
+                !displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES))
+            {
+                hitCheckVisualizationPtr->setEntryCount(0);
+                hitCheckVisualizationPtr->freeBuffer();
+            }
+        }
+
         // Get all of the manually position flags
         uint32_t offset = intCeil(totalDisplays, bitsPerWord) * sizeof(uint32_t);
         const uint32_t *manuallyPositionFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
@@ -371,8 +422,6 @@ class DisplaysSettingsData
         offset += roundUp(totalButtonCombos, sizeof(uint16_t)) * sizeof(uint16_t);
 
         // Get the Hit Check Visualization hits and misses colors
-        HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
-
         const uint32_t *hitsColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
         hitCheckVisualizationPtr->setHitsColor(*hitsColorPtr);
         offset += sizeof(uint32_t);

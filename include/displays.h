@@ -164,7 +164,7 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED,       // Palace Skip, Palace Skip Minimal
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_PAUSED,        // Palace Skip, Palace Skip Minimal
 
-    DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED, // Jabbi Hive Skip, // Either D-Pad Left or A was
+    DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED, // Jabbi Hive Skip; either D-Pad Left or A was
                                                                                // pressed for opening the pause menu
 
     DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_FRAMES_STOPPED, // Jabbi Hive Skip
