@@ -7,16 +7,11 @@
 
 #include <cstdint>
 
-// Need to define some external variables/functions first, as the class will use them
-class FollowerSelector;
-extern FollowerSelector *gFollowerSelector;
-
-void followerSelectorSelectedFollower(uint32_t currentIndex);
-
 // Called when the player presses A to select a follower
 typedef void (*FollowerSelectorSelectFunc)(PartyMembers followerSelected);
 
-typedef void (*FollowerSelectorCancelFunc)(); // Called when the player presses B to cancel selecting a follower
+// Called when the player presses B to cancel selecting a follower
+typedef void (*FollowerSelectorCancelFunc)();
 
 class FollowerSelector: private OptionSelector
 {
@@ -30,20 +25,8 @@ class FollowerSelector: private OptionSelector
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
-
-    void stopDrawing()
-    {
-        gFollowerSelector = nullptr;
-        this->OptionSelector::stopDrawing();
-    }
-
-    void startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc)
-    {
-        gFollowerSelector = this;
-        this->selectFunc = selectedFunc;
-
-        this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
-    }
+    void stopDrawing();
+    void startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc);
 
     void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
     void draw() const { this->OptionSelector::draw(); }

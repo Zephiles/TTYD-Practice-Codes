@@ -33,6 +33,12 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
     this->OptionSelector::setCurrentIndex(CONFIRMATION_WINDOW_OPTION_NO);
 }
 
+void ConfirmationWindow::stopDrawing()
+{
+    gConfirmationWindow = nullptr;
+    this->OptionSelector::stopDrawing();
+}
+
 void confirmationWindowSelectedOption(uint32_t currentIndex)
 {
     // Make sure gConfirmationWindow is set
@@ -59,4 +65,12 @@ void confirmationWindowSelectedOption(uint32_t currentIndex)
 void confirmationWindowSelectedNo()
 {
     confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO);
+}
+
+void ConfirmationWindow::startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
+{
+    gConfirmationWindow = this;
+    this->selectedOptionFunc = selectedOptionFunc;
+
+    this->OptionSelector::startDrawing(confirmationWindowSelectedOption, confirmationWindowSelectedNo);
 }

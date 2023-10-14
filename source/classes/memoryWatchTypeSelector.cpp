@@ -39,6 +39,12 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlp
                                MENU_SCALE);
 }
 
+void MemoryWatchTypeSelector::stopDrawing()
+{
+    gMemoryWatchTypeSelector = nullptr;
+    this->OptionSelector::stopDrawing();
+}
+
 void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
 {
     // Make sure MemoryWatchTypeSelector is set
@@ -54,4 +60,13 @@ void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
     {
         return func(static_cast<VariableType>(currentIndex));
     }
+}
+
+void MemoryWatchTypeSelector::startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc,
+                                           MemoryWatchTypeSelectorCancelFunc cancelFunc)
+{
+    gMemoryWatchTypeSelector = this;
+    this->setTypeFunc = setTypeFunc;
+
+    this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);
 }

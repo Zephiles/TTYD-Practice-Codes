@@ -56,6 +56,12 @@ void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
                                MENU_SCALE);
 }
 
+void FollowerSelector::stopDrawing()
+{
+    gFollowerSelector = nullptr;
+    this->OptionSelector::stopDrawing();
+}
+
 void followerSelectorSelectedFollower(uint32_t currentIndex)
 {
     // Make sure gFollowerSelector is set
@@ -71,4 +77,12 @@ void followerSelectorSelectedFollower(uint32_t currentIndex)
     {
         return func(gFollowersOptionsId[currentIndex]);
     }
+}
+
+void FollowerSelector::startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc)
+{
+    gFollowerSelector = this;
+    this->selectFunc = selectedFunc;
+
+    this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
 }

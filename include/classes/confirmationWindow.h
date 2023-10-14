@@ -6,13 +6,6 @@
 
 #include <cstdint>
 
-// Need to define some external variables/functions first, as the class will use them
-class ConfirmationWindow;
-extern ConfirmationWindow *gConfirmationWindow;
-
-void confirmationWindowSelectedOption(uint32_t currentIndex);
-void confirmationWindowSelectedNo();
-
 #define CONFIRMATION_WINDOW_OPTION_YES 0
 #define CONFIRMATION_WINDOW_OPTION_NO (CONFIRMATION_WINDOW_OPTION_YES + 1)
 
@@ -31,20 +24,8 @@ class ConfirmationWindow: private OptionSelector
     void init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
-
-    void stopDrawing()
-    {
-        gConfirmationWindow = nullptr;
-        this->OptionSelector::stopDrawing();
-    }
-
-    void startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
-    {
-        gConfirmationWindow = this;
-        this->selectedOptionFunc = selectedOptionFunc;
-
-        this->OptionSelector::startDrawing(confirmationWindowSelectedOption, confirmationWindowSelectedNo);
-    }
+    void stopDrawing();
+    void startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc);
 
     void controls(MenuButtonInput button) { this->OptionSelector::controls(button); }
     void draw() const { this->OptionSelector::draw(); }

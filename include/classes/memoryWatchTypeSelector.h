@@ -7,12 +7,6 @@
 
 #include <cstdint>
 
-// Need to define some external variables/functions first, as the class will use them
-class MemoryWatchTypeSelector;
-extern MemoryWatchTypeSelector *gMemoryWatchTypeSelector;
-
-void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex);
-
 #define TOTAL_MEMORY_WATCH_TYPES 12
 
 typedef void (*MemoryWatchTypeSelectorSetTypeFunc)(VariableType type); // Called when the player presses A to select a type
@@ -30,20 +24,8 @@ class MemoryWatchTypeSelector: private OptionSelector
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
     bool shouldDraw() const { return this->OptionSelector::shouldDraw(); }
-
-    void stopDrawing()
-    {
-        gMemoryWatchTypeSelector = nullptr;
-        this->OptionSelector::stopDrawing();
-    }
-
-    void startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc, MemoryWatchTypeSelectorCancelFunc cancelFunc)
-    {
-        gMemoryWatchTypeSelector = this;
-        this->setTypeFunc = setTypeFunc;
-
-        this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);
-    }
+    void stopDrawing();
+    void startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc, MemoryWatchTypeSelectorCancelFunc cancelFunc);
 
     void setCurrentIndex(uint32_t index) { this->OptionSelector::setCurrentIndex(index); }
 
