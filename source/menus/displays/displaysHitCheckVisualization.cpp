@@ -94,7 +94,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     posY -= lineDecrement;
 
     // Draw the yes/no text for drawing the hits
-    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS),
+    getYesNoTextAndColor(displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS),
                          &string,
                          &color,
                          0xFF);
@@ -103,7 +103,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     posY -= lineDecrement;
 
     // Draw the yes/no text for drawing the misses
-    getYesNoTextAndColor(displaysPtr->miscFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES),
+    getYesNoTextAndColor(displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES),
                          &string,
                          &color,
                          0xFF);
@@ -200,23 +200,23 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
 
 void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
 {
-    uint32_t miscFlag;
+    uint32_t enabledFlag;
     if (menuPtr->getCurrentIndex() == DisplaysMenuHitCheckVisualizationOptions::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_HITS)
     {
-        miscFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS;
+        enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS;
     }
     else
     {
-        miscFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES;
+        enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES;
     }
 
     Displays *displaysPtr = gDisplays;
-    displaysPtr->toggleMiscFlag(miscFlag);
+    displaysPtr->toggleEnabledFlag(enabledFlag);
 
     // If both flags are now disabled, then free the memory used by the buffer
 
     // The memory for the buffer will be allocated automatically when it is needed, so just check for resetting the entry count
-    // freeing the memory for the buffer when both flags are disabled
+    // and freeing the memory for the buffer when both flags are disabled
     if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS) &&
         !displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES))
     {

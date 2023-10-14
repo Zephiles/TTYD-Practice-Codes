@@ -2435,8 +2435,10 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
 
     // Do not run if the menu is currently open
     // Run if currently repositioning/scaling displays
+    // Do not run if the pause menu is open
     // Do not run if the memory editor is currently open
-    if ((gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) || memoryEditorIsOpen())
+    if ((gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) || ((marioStGetSystemLevel() & 15) == 15) ||
+        memoryEditorIsOpen())
     {
         // Since the lines are not being drawn, reset the entry count to avoid drawing lines for outdated data
         displaysPtr->getHitCheckVisualizationDisplayPtr()->setEntryCount(0);
