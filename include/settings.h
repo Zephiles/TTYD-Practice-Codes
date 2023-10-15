@@ -336,24 +336,25 @@ class DisplaysSettingsData
         }
 
         // Certain things need to happen depending on whether the Hit Check Visualization display is now enabled/disabled
+        // Reset the entry count to be safe
         HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+        hitCheckVisualizationPtr->setEntryCount(0);
+
         if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
         {
-            // The display is now disabled, so make sure memory is not allocated for it and reset the entry count
-            hitCheckVisualizationPtr->setEntryCount(0);
+            // The display is now disabled, so make sure memory is not allocated for it
             hitCheckVisualizationPtr->freeBuffer();
         }
         else
         {
             // The display is now enabled, so if both the hit and miss flags are disabled, then make sure memory is not
-            // allocated for it and reset the entry count
+            // allocated for it
 
             // The memory for the buffer will be allocated automatically when it is needed, so just check for freeing the memory
-            // for the buffer and resetting the entry count when both flags are disabled
+            // for the buffer when both flags are disabled
             if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS) &&
                 !displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES))
             {
-                hitCheckVisualizationPtr->setEntryCount(0);
                 hitCheckVisualizationPtr->freeBuffer();
             }
         }

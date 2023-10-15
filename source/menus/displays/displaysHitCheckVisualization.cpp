@@ -46,14 +46,6 @@ void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput bu
 {
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
-    // If the confirmation window is open, then handle the controls for that
-    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
-    if (confirmationWindowPtr->shouldDraw())
-    {
-        confirmationWindowPtr->controls(button);
-        return;
-    }
-
     // If the value editor is open, then handle the controls for that
     ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
@@ -137,13 +129,6 @@ void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user)
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
     displaysMenuPtr->drawHitCheckVisualizationInfo();
 
-    // Draw the confirmation window if applicable
-    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
-    if (confirmationWindowPtr->shouldDraw())
-    {
-        confirmationWindowPtr->draw();
-    }
-
     // Draw the value editor if applicable
     ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
@@ -152,50 +137,22 @@ void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user)
     }
 }
 
-void displaysMenuHitCheckVisualizationMenuTurnOn(bool selectedYes)
-{
-    if (selectedYes)
-    {
-        // The memory for the buffer will be allocated automatically when it is needed, so no need to allocate it here
-        Displays *displaysPtr = gDisplays;
-        displaysPtr->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION);
-
-        // Reset the entry count to be safe
-        displaysPtr->getHitCheckVisualizationDisplayPtr()->setEntryCount(0);
-    }
-
-    // Close the confirmation window
-    gDisplaysMenu->getConfirmationWindowPtr()->stopDrawing();
-}
-
 void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    // If the flag is currently set, then just disable it, reset the entry count, and free the memory used by the buffer
+    // Reset the entry count to be safe
     Displays *displaysPtr = gDisplays;
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
+    HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+    hitCheckVisualizationDisplayPtr->setEntryCount(0);
+
+    // The memory for the buffer will be allocated automatically when it is needed, so only need to check if the flag is
+    // disabled
+    if (!displaysPtr->toggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
     {
-        displaysPtr->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION);
-
-        HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
-        hitCheckVisualizationDisplayPtr->setEntryCount(0);
+        // The display is now disabled, so reset the entry count and free the memory used by the buffer
         hitCheckVisualizationDisplayPtr->freeBuffer();
-        return;
     }
-
-    // Initialize the confirmation window
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ConfirmationWindow *confirmationWindowPtr = displaysMenuPtr->getConfirmationWindowPtr();
-
-    const char *helpText =
-        "The Hit Check Visualization display currently\ncrashes on console, so it should only be used\non emulator for "
-        "now.\n\nAre you sure you want to use this display?";
-
-    const Window *rootWindowPtr = gRootWindow;
-
-    confirmationWindowPtr->init(rootWindowPtr, helpText, rootWindowPtr->getAlpha());
-    confirmationWindowPtr->startDrawing(displaysMenuHitCheckVisualizationMenuTurnOn);
 }
 
 void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)

@@ -57,7 +57,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Enemy Encounter Notifier",
     displaysMenuGenericNoButtonComboInit,
 
-    "Hit Check Visualization (Emulator Only)",
+    "Hit Check Visualization",
     displaysMenuHitCheckVisualizationInit,
 
     "Yoshi Skip",
