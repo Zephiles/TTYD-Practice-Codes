@@ -270,6 +270,9 @@ void settingsMenuLoadSettingsFile(bool selectedYes)
             }
             case CARD_RESULT_READY:
             {
+                // gRootWindow's color was updated by the settings, so the backup color must be updated as well
+                settingsMenuPtr->setRootWindowBackupColor(gRootWindow->getColor());
+
                 settingsMenuPtr->initErrorWindow("Load Successful");
                 break;
             }

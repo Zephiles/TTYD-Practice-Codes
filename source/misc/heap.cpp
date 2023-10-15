@@ -122,18 +122,14 @@ void shrinkAllocation(int32_t heap, OSModuleInfo *rel, int32_t new_size)
     second_chunk->size = old_size - new_size;
 
     // Insert free space into heap
-    // You can just pass the id in if you don't want to derive it
     HeapInfo *heap_info = &HeapArray[heapHandle[heap]];
     heap_info->firstFree = DLInsert(heap_info->firstFree, second_chunk);
 }
 
 void makeRelFixed(int32_t heap, OSModuleInfo *rel)
 {
-    // Remove imports for the current rel and the dol to avoid invalid
-    // memory accesses during unlink.
-
-    // The imports for the current rel and dol should always be at the
-    // end of the imp table.
+    // Remove imports for the current rel and the dol to avoid invalid memory accesses during unlink.
+    // The imports for the current rel and dol should always be at the end of the imp table.
     constexpr int32_t impTableSectionSize = sizeof(OSModuleImpSection);
     const uint32_t imp_size_rounded = roundUp(rel->impSize, impTableSectionSize);
     const int32_t total_sections = imp_size_rounded / impTableSectionSize;
