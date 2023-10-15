@@ -150,7 +150,7 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
     // disabled
     if (!displaysPtr->toggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION))
     {
-        // The display is now disabled, so reset the entry count and free the memory used by the buffer
+        // The display is now disabled, so free the memory used by the buffer
         hitCheckVisualizationDisplayPtr->freeBuffer();
     }
 }
