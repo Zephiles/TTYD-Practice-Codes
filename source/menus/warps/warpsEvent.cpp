@@ -30,6 +30,9 @@ const MenuOption gWarpsMenuEventOptions[] {
     "Keep Inventory",
     warpsMenuEventToggleKeepInventory,
 
+    "Equip Badges",
+    warpsMenuEventToggleEquipBadges,
+
     "Set Flags",
     warpsMenuEventToggleSetFlags,
 
@@ -86,6 +89,12 @@ void WarpsMenu::drawSelectEventWarpInfo(float offsetY) const
 
     const bool shouldKeepInventory = modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY);
     getYesNoTextAndColor(shouldKeepInventory, &yesNoText, &color, 0xFF);
+    drawText(yesNoText, posX, posY, scale, color);
+    posY -= lineDecrement;
+
+    // Draw the flag for whether the equiped badges should be restored or not
+    const bool shouldEquipBadges = modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
+    getYesNoTextAndColor(shouldEquipBadges, &yesNoText, &color, 0xFF);
     drawText(yesNoText, posX, posY, scale, color);
     posY -= lineDecrement;
 
@@ -167,7 +176,26 @@ void warpsMenuEventToggleKeepInventory(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    gMod->toggleFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY);
+    Mod *modPtr = gMod;
+    if (!modPtr->toggleFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY))
+    {
+        // MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY is now off, so turn off MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES
+        modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
+    }
+}
+
+void warpsMenuEventToggleEquipBadges(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    // If MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY is not set, then do nothing
+    Mod *modPtr = gMod;
+    if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY))
+    {
+        return;
+    }
+
+    modPtr->toggleFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
 }
 
 void warpsMenuEventToggleSetFlags(Menu *menuPtr)
@@ -275,6 +303,7 @@ void handleWarpByEvent()
     WarpByEventInventory *warpByEventInventoryPtr = nullptr;
     ItemId *standardInventoryPtr = nullptr;
     ItemId *badgesInventoryPtr = nullptr;
+    ItemId *equippedBadgesInventoryPtr = nullptr;
 
     constexpr uint32_t standardInventorySize = sizeof(PouchData::items) / sizeof(ItemId);
     constexpr uint32_t badgesInventorySize = sizeof(PouchData::badges) / sizeof(ItemId);
@@ -287,12 +316,18 @@ void handleWarpByEvent()
         PouchData *pouchPtr = pouchGetPtr();
         standardInventoryPtr = pouchPtr->items;
         badgesInventoryPtr = pouchPtr->badges;
+        equippedBadgesInventoryPtr = pouchPtr->equippedBadges;
 
         // Back up the standard inventory
         memcpy(warpByEventInventoryPtr->items, standardInventoryPtr, sizeof(warpByEventInventoryPtr->items));
 
         // Back up the badges
         memcpy(warpByEventInventoryPtr->badges, badgesInventoryPtr, sizeof(warpByEventInventoryPtr->badges));
+
+        // Back up the equipped badges
+        memcpy(warpByEventInventoryPtr->equippedBadges,
+               equippedBadgesInventoryPtr,
+               sizeof(warpByEventInventoryPtr->equippedBadges));
     }
 
     // Clear all current states
@@ -337,6 +372,14 @@ void handleWarpByEvent()
 
         // Restore the badges
         memcpy(badgesInventoryPtr, warpByEventInventoryPtr->badges, sizeof(warpByEventInventoryPtr->badges));
+
+        if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES))
+        {
+            // Restore the equipped badges
+            memcpy(equippedBadgesInventoryPtr,
+                   warpByEventInventoryPtr->equippedBadges,
+                   sizeof(warpByEventInventoryPtr->equippedBadges));
+        }
 
         delete warpByEventInventoryPtr;
         warpByEventInventoryPtr = nullptr;

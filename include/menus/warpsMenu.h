@@ -122,6 +122,7 @@ struct WarpByEventInventory
 {
     ItemId items[sizeof(PouchData::items) / sizeof(ItemId)];
     ItemId badges[sizeof(PouchData::badges) / sizeof(ItemId)];
+    ItemId equippedBadges[sizeof(PouchData::equippedBadges) / sizeof(ItemId)];
 };
 
 struct WarpByEventDetails
@@ -235,6 +236,7 @@ void warpsMenuEventDraw(CameraId cameraId, void *user);
 
 void warpsMenuEventSelectEvent(Menu *menuPtr);
 void warpsMenuEventToggleKeepInventory(Menu *menuPtr);
+void warpsMenuEventToggleEquipBadges(Menu *menuPtr);
 void warpsMenuEventToggleSetFlags(Menu *menuPtr);
 void warpsMenuEventWarp(Menu *menuPtr);
 

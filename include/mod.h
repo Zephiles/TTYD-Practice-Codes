@@ -54,9 +54,10 @@ enum ModFlag
     MOD_FLAG_CLEAR_MARIO_STATS,
     MOD_FLAG_CLEAR_PARTNER_STATS,
 
-    // Warp By Index
+    // Warp By Event
     MOD_FLAG_WARP_BY_EVENT_INIT,
     MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY,
+    MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES,
     MOD_FLAG_WARP_BY_EVENT_SET_FLAGS,
 
     // Warp By Index
@@ -129,6 +130,7 @@ class Mod
     Mod()
     {
         this->setFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY);
+        this->setFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
         this->setFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_SET_FLAGS);
     }
 
