@@ -100,9 +100,6 @@ float getTextMultilineIncrement(const char *text, float scale, uint32_t addition
 float getTextWidth(const char *text, float scale);
 float getTextHeight(const char *text, float scale);
 
-// If either the width or the height are not needed, then they can be set to nullptr
-void getTextWidthHeight(const char *text, float scale, float *widthOut, float *heightOut);
-
 // Calls drawText with the width set to 0.f and alignment set to TextAlignment::LEFT
 void drawText(const char *text, float posX, float posY, float scale, uint32_t color);
 
@@ -139,7 +136,5 @@ inline void drawTextInit(uint8_t alpha, bool drawFontEdge)
         FontDrawEdge();
     }
 }
-
-void drawTextMain(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment);
 
 #endif

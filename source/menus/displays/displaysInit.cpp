@@ -9,6 +9,8 @@
 
 #include <cstdint>
 
+static void exit();
+
 DisplaysMenu *gDisplaysMenu = nullptr;
 
 const MenuOption gDisplaysMenuInitOptions[] = {
@@ -79,11 +81,11 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     displaysMenuGenericHasButtonComboInit,
 };
 
-const MenuFunctions gDisplaysMenuInitFuncs = {
+static const MenuFunctions gFuncs = {
     gDisplaysMenuInitOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDrawMenuLineHeight,
-    displaysMenuInitExit,
+    exit,
 };
 
 void displaysMenuInit(Menu *menuPtr)
@@ -101,10 +103,10 @@ void displaysMenuInit(Menu *menuPtr)
     gDisplaysMenu = displaysMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gDisplaysMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gDisplaysMenuInitFuncs, totalOptions, MAX_DISPLAYS_PER_PAGE);
+    enterNextMenu(&gFuncs, totalOptions, MAX_DISPLAYS_PER_PAGE);
 }
 
-void displaysMenuInitExit()
+static void exit()
 {
     delete gDisplaysMenu;
     gDisplaysMenu = nullptr;
@@ -138,12 +140,12 @@ bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag)
     return ret;
 }
 
-void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo)
+static void setButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo)
 {
     gDisplays->setDisplayButtonCombo(displayButtonComboFlag, buttonCombo);
 }
 
-void displaysMenuCancelSetNewButtonCombo()
+static void cancelSetButtonCombo()
 {
     gDisplaysMenu->getButtonComboEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
@@ -151,10 +153,10 @@ void displaysMenuCancelSetNewButtonCombo()
 
 void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo)
 {
-    displaysMenuSetDisplayButtonCombo(displayButtonComboFlag, buttonCombo);
+    setButtonCombo(displayButtonComboFlag, buttonCombo);
 
     // Close the button combo editor
-    displaysMenuCancelSetNewButtonCombo();
+    cancelSetButtonCombo();
 }
 
 void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
@@ -167,7 +169,7 @@ void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    buttonComboEditorPtr->startDrawing(setComboFunc, displaysMenuCancelSetNewButtonCombo);
+    buttonComboEditorPtr->startDrawing(setComboFunc, cancelSetButtonCombo);
 }
 
 uint32_t indexToDisplayEnabledFlag(uint32_t index)

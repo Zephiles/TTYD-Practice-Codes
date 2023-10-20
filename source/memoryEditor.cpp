@@ -100,7 +100,7 @@ bool MemoryEditor::toggleEnabledFlag(uint32_t enabledFlag)
     return this->enabledFlagIsSet(enabledFlag);
 }
 
-bool verifyNumBytesAndCurrentDigit(uint32_t numBytes, uint32_t currentDigit)
+static bool verifyNumBytesAndCurrentDigit(uint32_t numBytes, uint32_t currentDigit)
 {
     // Make sure numBytes does not exceed the maximum
     if (numBytes > MEMORY_EDITOR_MAX_NUM_BYTES_DISPLAYED)
@@ -117,7 +117,7 @@ bool verifyNumBytesAndCurrentDigit(uint32_t numBytes, uint32_t currentDigit)
     return true;
 }
 
-uint8_t *getDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
+static uint8_t *getDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
 {
     // Make sure numBytes and currentDigit are valid
     if (!verifyNumBytesAndCurrentDigit(numBytes, currentDigit))
@@ -131,7 +131,7 @@ uint8_t *getDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDi
     return address;
 }
 
-int32_t getDigitValue(const uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
+static int32_t getDigitValue(const uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
 {
     // Make sure the address is valid
     if (!ptrIsValid(const_cast<uint8_t *>(address)))
@@ -153,7 +153,7 @@ int32_t getDigitValue(const uint8_t *address, uint32_t numBytes, uint32_t curren
     return (value & (0xF << shiftAmount)) >> shiftAmount;
 }
 
-int32_t getDigitValueFromAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
+static int32_t getDigitValueFromAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
 {
     // Get the address of the current digit
     address = getDigitAddress(address, numBytes, currentDigit);
@@ -162,7 +162,7 @@ int32_t getDigitValueFromAddress(uint8_t *address, uint32_t numBytes, uint32_t c
     return getDigitValue(address, numBytes, currentDigit);
 }
 
-uint8_t *getAndVerifyDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
+static uint8_t *getAndVerifyDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
 {
     // Get the address of the current digit
     address = getDigitAddress(address, numBytes, currentDigit);
@@ -176,7 +176,7 @@ uint8_t *getAndVerifyDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t 
     return address;
 }
 
-void adjustDigitValue(uint8_t *address, uint32_t numBytes, uint32_t currentDigit, int32_t value)
+static void adjustDigitValue(uint8_t *address, uint32_t numBytes, uint32_t currentDigit, int32_t value)
 {
     // Make sure the address is valid
     if (!ptrIsValid(address))
@@ -282,12 +282,12 @@ void MemoryEditor::adjustDigitValueFromAddress(uint32_t currentDigit, int32_t ad
     adjustDigitValue(digitAddress, numBytesBeingEdited, currentDigit, currentDigitValue);
 }
 
-void memoryEditorCancelAdjustValueEditorValue()
+static void cancelAdjustValueEditorValue()
 {
     gMemoryEditor->freeValueEditor();
 }
 
-void memoryEditorAdjustValueEditorValue(const ValueType *valuePtr)
+static void adjustValueEditorValue(const ValueType *valuePtr)
 {
     MemoryEditor *memoryEditorPtr = gMemoryEditor;
     const uint32_t value = valuePtr->u32;
@@ -302,7 +302,7 @@ void memoryEditorAdjustValueEditorValue(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    memoryEditorCancelAdjustValueEditorValue();
+    cancelAdjustValueEditorValue();
 }
 
 void MemoryEditor::dpadControls(MenuButtonInput button)
@@ -838,8 +838,7 @@ void MemoryEditor::controls(MenuButtonInput button)
                                                  type,
                                                  rootWindowPtr->getAlpha());
 
-                            valueEditorPtr->startDrawing(memoryEditorAdjustValueEditorValue,
-                                                         memoryEditorCancelAdjustValueEditorValue);
+                            valueEditorPtr->startDrawing(adjustValueEditorValue, cancelAdjustValueEditorValue);
                             break;
                         }
                         case MemoryEditorOptions::MEMORY_EDITOR_OPTION_ENTER_EDITOR:
@@ -1284,7 +1283,7 @@ MemoryEditor::MemoryEditor()
     this->setEnabledFlag(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU);
 }
 
-void drawMemoryEditor(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1378,7 +1377,7 @@ void handleMemoryEditor()
         else
         {
             // Draw the memory editor
-            drawOnDebugLayer(drawMemoryEditor, DRAW_ORDER_MENU);
+            drawOnDebugLayer(draw, DRAW_ORDER_MENU);
         }
     }
     else
@@ -1387,6 +1386,6 @@ void handleMemoryEditor()
         memoryEditorPtr->controls(button);
 
         // Draw the memory editor
-        drawOnDebugLayer(drawMemoryEditor, DRAW_ORDER_MENU);
+        drawOnDebugLayer(draw, DRAW_ORDER_MENU);
     }
 }

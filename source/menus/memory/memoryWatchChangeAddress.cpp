@@ -9,24 +9,31 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gMemoryWatchOffsetsLimitReachedText = "The maximum amount of levels has been reached.";
-const char *gMemoryWatchOffsetsNoOffsetsText = "There are currently no additional levels.";
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
 
-const MenuOption gMemoryMenuMemoryWatchChangeAddressOptions[] {
+static void selectedOptionChangeValues(Menu *menuPtr);
+static void selectedOptionAddPointerLevel(Menu *menuPtr);
+static void selectedOptionRemovePointerLevel(Menu *menuPtr);
+
+static const char *gOffsetsLimitReached = "The maximum amount of levels has been reached.";
+static const char *gNoOffsets = "There are currently no additional levels.";
+
+static const MenuOption gOptions[] {
     "Change Address/Pointer Levels",
-    memoryMenuMemoryWatchChangeAddressChangeValues,
+    selectedOptionChangeValues,
 
     "Add Pointer Level",
-    memoryMenuMemoryWatchChangeAddressAddPointerLevel,
+    selectedOptionAddPointerLevel,
 
     "Remove Pointer Level",
-    memoryMenuMemoryWatchChangeAddressRemovePointerLevel,
+    selectedOptionRemovePointerLevel,
 };
 
-const MenuFunctions gMemoryMenuMemoryWatchChangeAddressFuncs = {
-    gMemoryMenuMemoryWatchChangeAddressOptions,
-    memoryMenuMemoryWatchChangeAddressControls,
-    memoryMenuMemoryWatchChangeAddressDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -34,8 +41,8 @@ void memoryMenuMemoryWatchChangeAddressInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryWatchChangeAddressOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuMemoryWatchChangeAddressFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void MemoryMenu::memoryWatchChangeAddressFlagSetControls(MenuButtonInput button)
@@ -64,7 +71,7 @@ void MemoryMenu::memoryWatchChangeAddressFlagSetControls(MenuButtonInput button)
                          false);
 }
 
-void memoryMenuMemoryWatchChangeAddressControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
 
@@ -282,7 +289,7 @@ void MemoryMenu::drawMemoryWatchChangeAddressInfo() const
     }
 }
 
-void memoryMenuMemoryWatchChangeAddressDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
@@ -306,12 +313,12 @@ void memoryMenuMemoryWatchChangeAddressDraw(CameraId cameraId, void *user)
     }
 }
 
-void memoryMenuMemoryWatchChangeAddressCancelSetNewOffset()
+static void cancelSetNewOffset()
 {
     gMemoryMenu->getValueEditorPtr()->stopDrawing();
 }
 
-void memoryMenuMemoryWatchChangeAddressSetNewOffset(const ValueType *valuePtr)
+static void setNewOffset(const ValueType *valuePtr)
 {
     const uint32_t currentIndex = gMemoryMenu->getChangeAddressCurrentIndex();
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
@@ -328,10 +335,10 @@ void memoryMenuMemoryWatchChangeAddressSetNewOffset(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    memoryMenuMemoryWatchChangeAddressCancelSetNewOffset();
+    cancelSetNewOffset();
 }
 
-void memoryMenuMemoryWatchChangeAddressChangeValues(Menu *menuPtr)
+static void selectedOptionChangeValues(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
 
@@ -383,12 +390,10 @@ void memoryMenuMemoryWatchChangeAddressChangeValues(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, nullptr, nullptr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-
-    valueEditorPtr->startDrawing(memoryMenuMemoryWatchChangeAddressSetNewOffset,
-                                 memoryMenuMemoryWatchChangeAddressCancelSetNewOffset);
+    valueEditorPtr->startDrawing(setNewOffset, cancelSetNewOffset);
 }
 
-void memoryMenuMemoryWatchChangeAddressAddPointerLevel(Menu *menuPtr)
+static void selectedOptionAddPointerLevel(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -396,11 +401,11 @@ void memoryMenuMemoryWatchChangeAddressAddPointerLevel(Menu *menuPtr)
     if (!currentEntry->addAddressOffset())
     {
         // The maximum amount of watches have been added, so show an error message
-        gMemoryMenu->initErrorWindow(gMemoryWatchOffsetsLimitReachedText);
+        gMemoryMenu->initErrorWindow(gOffsetsLimitReached);
     }
 }
 
-void memoryMenuMemoryWatchChangeAddressRemovePointerLevel(Menu *menuPtr)
+static void selectedOptionRemovePointerLevel(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -408,6 +413,6 @@ void memoryMenuMemoryWatchChangeAddressRemovePointerLevel(Menu *menuPtr)
     if (!currentEntry->removeAddressOffset())
     {
         // There are currently no offsets, so show an error message
-        gMemoryMenu->initErrorWindow(gMemoryWatchOffsetsNoOffsetsText);
+        gMemoryMenu->initErrorWindow(gNoOffsets);
     }
 }

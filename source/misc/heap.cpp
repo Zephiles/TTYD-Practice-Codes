@@ -99,7 +99,7 @@ void *allocFromHeapTail(OSHeapHandle handle, uint32_t size)
 
 // Origial code made by PistonMiner:
 // https://gist.github.com/PistonMiner/3cf955e887bc87f149f5349807a77f8b
-void shrinkAllocation(int32_t heap, OSModuleInfo *rel, int32_t new_size)
+static void shrinkAllocation(int32_t heap, OSModuleInfo *rel, int32_t new_size)
 {
     // Round to HEAP_ALIGNMENT
     new_size = roundUp(new_size, HEAP_ALIGNMENT);

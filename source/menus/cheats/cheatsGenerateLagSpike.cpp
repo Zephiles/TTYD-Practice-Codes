@@ -11,21 +11,27 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuGenerateLagSpikeOptions[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+static void selectedOptionSetDuration(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    cheatsMenuGenerateLagSpikeToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Button Combo",
-    cheatsMenuGenerateLagSpikeChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 
     "Set Duration",
-    cheatsMenuGenerateLagSpikeSetDuration,
+    selectedOptionSetDuration,
 };
 
-const MenuFunctions gCheatsMenuGenerateLagSpikeFuncs = {
-    gCheatsMenuGenerateLagSpikeOptions,
-    cheatsMenuGenerateLagSpikeControls,
-    cheatsMenuGenerateLagSpikeDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -34,11 +40,11 @@ void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr)
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuGenerateLagSpikeOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuGenerateLagSpikeFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -116,7 +122,7 @@ void CheatsMenu::drawGenerateLagSpikeInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -140,26 +146,26 @@ void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuGenerateLagSpikeToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_GENERATE_LAG_SPIKE);
 }
 
-void cheatsMenuGenerateLagSpikeSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     cheatsMenuSetNewButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, buttonCombo);
 }
 
-void cheatsMenuGenerateLagSpikeChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    cheatsMenuChangeButtonCombo(cheatsMenuGenerateLagSpikeSetNewButtonCombo);
+    cheatsMenuChangeButtonCombo(setButtonCombo);
 }
 
-void cheatsMenuGenerateLagSpikeSetNewDuration(const ValueType *valuePtr)
+static void setNewDuration(const ValueType *valuePtr)
 {
     gCheats->getGenerateLagSpikeCheatPtr()->setDuration(valuePtr->u32);
 
@@ -167,7 +173,7 @@ void cheatsMenuGenerateLagSpikeSetNewDuration(const ValueType *valuePtr)
     cheatsMenuValueEditorCancelSetValue();
 }
 
-void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
+static void selectedOptionSetDuration(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -183,11 +189,5 @@ void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    cheatsMenuInitValueEditor(currentValue,
-                              minValue,
-                              maxValue,
-                              flags,
-                              VariableType::u16,
-                              true,
-                              cheatsMenuGenerateLagSpikeSetNewDuration);
+    cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u16, true, setNewDuration);
 }

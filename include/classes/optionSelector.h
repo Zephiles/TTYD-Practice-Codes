@@ -1,8 +1,8 @@
 #ifndef CLASSES_OPTION_SELECTOR_H
 #define CLASSES_OPTION_SELECTOR_H
 
-#include "classes/menu.h"
 #include "classes/window.h"
+#include "classes/menu.h"
 
 #include <cstdint>
 

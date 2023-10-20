@@ -8,9 +8,11 @@
 #include <cstdio>
 #include <cinttypes>
 
+static void exit();
+
 StatsMenu *gStatsMenu = nullptr;
 
-const MenuOption gStatsMenuInitOptions[] = {
+static const MenuOption gOptions[] = {
     "Mario",
     statsMenuMarioInit,
 
@@ -21,19 +23,19 @@ const MenuOption gStatsMenuInitOptions[] = {
     statsMenuFollowersInit,
 };
 
-const MenuFunctions gStatsMenuInitFuncs = {
-    gStatsMenuInitOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDrawMenuLineHeight,
-    statsMenuInitExit,
+    exit,
 };
 
 void statsMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gStatsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gStatsMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gStatsMenu
     StatsMenu *statsMenuPtr = gStatsMenu;
@@ -45,7 +47,7 @@ void statsMenuInit(Menu *menuPtr)
     gStatsMenu = new StatsMenu;
 }
 
-void statsMenuInitExit()
+static void exit()
 {
     delete gStatsMenu;
     gStatsMenu = nullptr;

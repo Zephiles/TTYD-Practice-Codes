@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-const char *gItemIconSelectorTextOptions = "Press A to confirm\nPress B to cancel";
+static const char *gOptions = "Press A to confirm\nPress B to cancel";
 
 void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem)
 {
@@ -33,7 +33,7 @@ void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, Ite
     windowPtr->setColor(SPECIAL_WINDOW_COLOR | windowAlpha);
 
     constexpr float scale = MENU_SCALE;
-    const float textHeight = getTextHeight(gItemIconSelectorTextOptions, scale);
+    const float textHeight = getTextHeight(gOptions, scale);
     windowPtr->setHeight(textHeight);
 
     // Adjust the height of the main window to account for all of the icons
@@ -147,13 +147,13 @@ void ItemIconSelector::draw()
     drawTextInit(false);
 
     // Draw the text
-    const char *text = gItemIconSelectorTextOptions;
+    const char *optionsPtr = gOptions;
     constexpr float scale = MENU_SCALE;
 
     float tempPosX;
     float tempPosY;
-    windowPtr->getTextPosXY(text, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
-    drawText(text, tempPosX, tempPosY, scale, getColorWhite(0xFF));
+    windowPtr->getTextPosXY(optionsPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
+    drawText(optionsPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 
     // Get the intitial position for the icons
     windowPtr->getIconPosXY(WindowAlignment::BOTTOM_LEFT, scale, &tempPosX, &tempPosY);

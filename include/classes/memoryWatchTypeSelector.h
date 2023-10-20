@@ -4,6 +4,7 @@
 #include "mod.h"
 #include "classes/optionSelector.h"
 #include "classes/window.h"
+#include "classes/menu.h"
 
 #include <cstdint>
 

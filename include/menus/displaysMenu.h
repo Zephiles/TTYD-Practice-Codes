@@ -6,7 +6,6 @@
 #include "classes/positionEditor.h"
 #include "classes/confirmationWindow.h"
 #include "classes/menu.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
@@ -118,11 +117,9 @@ extern const MenuOption gDisplaysMenuInitOptions[];
 
 // displaysInit
 void displaysMenuInit(Menu *menuPtr);
-void displaysMenuInitExit();
 
 void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button);
 bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag);
-void displaysMenuSetDisplayButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
 void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
 void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc);
 
@@ -135,42 +132,18 @@ void displaysMenuGenericNoButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
-void displaysMenuGenericDraw(CameraId cameraId, void *user);
-
-void displaysMenuGenericToggleFlag(Menu *menuPtr);
-void displaysMenuGenericChangeButtonCombo(Menu *menuPtr);
 
 // displaysOnScreenTimer
 // The Frame Founter display is also handled by these
 void displaysMenuOnScreenTimerInit(Menu *menuPtr);
-void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user);
-
-void displaysMenuOnScreenTimerToggleFlag(Menu *menuPtr);
-void displaysMenuOnScreeTimerChangeButtonCombo(Menu *menuPtr);
 
 // displaysMemoryUsage
 void displaysMenuMemoryUsageInit(Menu *menuPtr);
-void displaysMenuMemoryUsageControls(Menu *menuPtr, MenuButtonInput button);
-void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user);
-
-void displaysMenuMemoryUsageToggleFlag(Menu *menuPtr);
 
 // displaysHitCheckVisualization
 void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
-void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput button);
-void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user);
-
-void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr);
-void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr);
-void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr);
 
 // displaysAdjustManualPosition
 void displaysAdjustManualPositionInit(Menu *menuPtr);
-void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput button);
-void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user);
-
-void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr);
-void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr);
-void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr);
 
 #endif

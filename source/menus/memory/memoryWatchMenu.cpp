@@ -10,36 +10,44 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gMemoryWatchesLimitReachedText = "The maximum amount of\nwatches has been reached.";
-const char *gMemoryWatchesNoWatchesText = "There are currently no watches.";
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
 
-const char *gMemoryWatchesNotEnoughWatchesToSwapMoveText =
-    "There needs to be at least two watches\nto be able to swap/move them.";
+static void selectedOptionAddWatch(Menu *menuPtr);
+static void selectedOptionModifyWatch(Menu *menuPtr);
+static void selectedOptionDuplicateWatch(Menu *menuPtr);
+static void selectedOptionSwapWatches(Menu *menuPtr);
+static void selectedOptionMoveWatch(Menu *menuPtr);
+static void selectedOptionDeleteWatch(Menu *menuPtr);
 
-const MenuOption gMemoryMenuMemoryWatchMenuOptions[] {
+static const char *gLimitReached = "The maximum amount of\nwatches has been reached.";
+static const char *gNoWatches = "There are currently no watches.";
+static const char *gNotEnoughWatchesToSwapMove = "There needs to be at least two watches\nto be able to swap/move them.";
+
+static const MenuOption gOptions[] {
     "Add Watch",
-    memoryMenuMemoryWatchAddWatch,
+    selectedOptionAddWatch,
 
     "Modify Watch",
-    memoryMenuMemoryWatchModifyWatch,
+    selectedOptionModifyWatch,
 
     "Duplicate Watch",
-    memoryMenuMemoryWatchDuplicateWatch,
+    selectedOptionDuplicateWatch,
 
     "Swap Watches",
-    memoryMenuMemoryWatchSwapWatches,
+    selectedOptionSwapWatches,
 
     "Move Watch",
-    memoryMenuMemoryWatchMoveWatch,
+    selectedOptionMoveWatch,
 
     "Delete Watch",
-    memoryMenuMemoryWatchDeleteWatch,
+    selectedOptionDeleteWatch,
 };
 
-const MenuFunctions gMemoryMenuMemoryWatchMenuFuncs = {
-    gMemoryMenuMemoryWatchMenuOptions,
-    memoryMenuMemoryWatchMenuControls,
-    memoryMenuMemoryWatchMenuDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -47,8 +55,8 @@ void memoryMenuMemoryWatchMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryWatchMenuOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuMemoryWatchMenuFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void MemoryMenu::memoryWatchFlagSetControls(MenuButtonInput button)
@@ -70,7 +78,7 @@ void MemoryMenu::memoryWatchFlagSetControls(MenuButtonInput button)
     menuControlsVertical(button, &this->currentIndex, currentPagePtr, totalOptions, MAX_MEMORY_WATCHES_PER_PAGE, 1, false);
 }
 
-void memoryMenuMemoryWatchMenuControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // If no flags are set, then use the default controls
     if (!menuPtr->anyFlagIsSet())
@@ -251,7 +259,7 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
     }
 }
 
-void memoryMenuMemoryWatchMenuDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
@@ -268,18 +276,18 @@ void memoryMenuMemoryWatchMenuDraw(CameraId cameraId, void *user)
     }
 }
 
-void memoryMenuMemoryWatchAddWatch(Menu *menuPtr)
+static void selectedOptionAddWatch(Menu *menuPtr)
 {
     (void)menuPtr;
 
     if (!gMemoryWatch.addWatch())
     {
         // The maximum amount of watches have been added, so show an error message
-        gMemoryMenu->initErrorWindow(gMemoryWatchesLimitReachedText);
+        gMemoryMenu->initErrorWindow(gLimitReached);
     }
 }
 
-void memoryMenuMemoryWatchModifyWatch(Menu *menuPtr)
+static void selectedOptionModifyWatch(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
 
@@ -287,7 +295,7 @@ void memoryMenuMemoryWatchModifyWatch(Menu *menuPtr)
     if (gMemoryWatch.getTotalEntries() == 0)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_MODIFY);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesNoWatchesText);
+        memoryMenuPtr->initErrorWindow(gNoWatches);
         return;
     }
 
@@ -306,7 +314,7 @@ void memoryMenuMemoryWatchModifyWatch(Menu *menuPtr)
     return memoryMenuMemoryWatchModifyInit(menuPtr);
 }
 
-void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
+static void selectedOptionDuplicateWatch(Menu *menuPtr)
 {
     MemoryWatch *memoryWatchPtr = &gMemoryWatch;
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
@@ -315,7 +323,7 @@ void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
     if (memoryWatchPtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesNoWatchesText);
+        memoryMenuPtr->initErrorWindow(gNoWatches);
         return;
     }
 
@@ -323,7 +331,7 @@ void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr)
     if (memoryWatchPtr->limitHasBeenReached())
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DUPLICATE);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesLimitReachedText);
+        memoryMenuPtr->initErrorWindow(gLimitReached);
         return;
     }
 
@@ -359,7 +367,7 @@ bool MemoryMenu::initSwapMoveWatches(Menu *menuPtr)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_INIT);
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
-        this->initErrorWindow(gMemoryWatchesNotEnoughWatchesToSwapMoveText);
+        this->initErrorWindow(gNotEnoughWatchesToSwapMove);
         return false;
     }
 
@@ -391,7 +399,7 @@ bool MemoryMenu::initSwapMoveWatches(Menu *menuPtr)
     return true;
 }
 
-void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr)
+static void selectedOptionSwapWatches(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
     if (!memoryMenuPtr->initSwapMoveWatches(menuPtr))
@@ -412,7 +420,7 @@ void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr)
     menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
-void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr)
+static void selectedOptionMoveWatch(Menu *menuPtr)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
     if (!memoryMenuPtr->initSwapMoveWatches(menuPtr))
@@ -433,7 +441,7 @@ void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr)
     menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_SWAP_MOVE_SELECTED_WATCH_TO_SWAP);
 }
 
-void memoryMenuMemoryWatchDeleteWatch(Menu *menuPtr)
+static void selectedOptionDeleteWatch(Menu *menuPtr)
 {
     MemoryWatch *memoryWatchPtr = &gMemoryWatch;
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
@@ -442,7 +450,7 @@ void memoryMenuMemoryWatchDeleteWatch(Menu *menuPtr)
     if (memoryWatchPtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(MemoryMenuMemoryWatchFlag::MEMORY_MENU_MEMORY_WATCH_FLAG_DELETE);
-        memoryMenuPtr->initErrorWindow(gMemoryWatchesNoWatchesText);
+        memoryMenuPtr->initErrorWindow(gNoWatches);
         return;
     }
 

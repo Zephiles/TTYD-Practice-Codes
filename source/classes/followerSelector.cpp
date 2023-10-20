@@ -37,7 +37,7 @@ const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kGus,
 };
 
-FollowerSelector *gFollowerSelector = nullptr;
+static FollowerSelector *gFollowerSelector = nullptr;
 
 void FollowerSelector::init(const Window *parentWindow)
 {
@@ -62,7 +62,7 @@ void FollowerSelector::stopDrawing()
     this->OptionSelector::stopDrawing();
 }
 
-void followerSelectorSelectedFollower(uint32_t currentIndex)
+static void followerSelectorSelectedFollower(uint32_t currentIndex)
 {
     // Make sure gFollowerSelector is set
     const FollowerSelector *followerSelectorPtr = gFollowerSelector;

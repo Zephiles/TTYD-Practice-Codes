@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-void drawTitleScreenInfo(CameraId cameraId, void *user)
+static void drawTitleScreenInfo(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -45,7 +45,7 @@ void drawTitleScreenInfo(CameraId cameraId, void *user)
     drawText(text, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void drawFileSelectScreenInfo(CameraId cameraId, void *user)
+static void drawFileSelectScreenInfo(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

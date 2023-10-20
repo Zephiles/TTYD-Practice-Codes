@@ -434,7 +434,7 @@ void handleAutoActionCommands()
     }
 }
 
-void walkThroughMostObjects(Cheats *cheatsPtr, Mod *modPtr)
+static void walkThroughMostObjects(Cheats *cheatsPtr, Mod *modPtr)
 {
     if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_WALK_THROUGH_WALLS) &&
         !modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) &&
@@ -498,7 +498,7 @@ const char *replaceJumpFallAnim(char *jumpFallString)
     return jumpFallString;
 }
 
-void saveMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
+static void saveMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -541,7 +541,7 @@ void saveMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
     savedPosPtr[6] = partnerPtr->wPartnerDirection;        // Partner Direction
 }
 
-void loadMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
+static void loadMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -586,8 +586,7 @@ void loadMarioAndPartnerPositions(Cheats *cheatsPtr, Mod *modPtr)
 
 // Custom script for handling saving
 // clang-format off
-EVT_BEGIN(memcardSaveScript)
-
+EVT_BEGIN_STATIC(memcardSaveScript)
     // Set the System Level
     USER_FUNC(lect_set_systemlevel, 1)
 
@@ -610,7 +609,7 @@ EVT_BEGIN(memcardSaveScript)
 EVT_END()
 // clang-format on
 
-void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
+static void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
 {
     SaveAnywhereCheat *saveAnywherePtr = cheatsPtr->getSaveAnywhereCheatPtr();
 
@@ -657,7 +656,7 @@ void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void setTextStorage(Cheats *cheatsPtr, Mod *modPtr)
+static void setTextStorage(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -678,7 +677,7 @@ void setTextStorage(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void setTimeStopTextStorage(Cheats *cheatsPtr, Mod *modPtr)
+static void setTimeStopTextStorage(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -699,7 +698,7 @@ void setTimeStopTextStorage(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
+static void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
 {
     Player *playerPtr = marioGetPtr();
     SpeedUpMarioCheat *speedUpMarioPtr = cheatsPtr->getSpeedUpMarioCheatPtr();
@@ -888,7 +887,7 @@ void reloadRoomMain()
     cheatsPtr->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_SYSTEM_LEVEL_SHOULD_BE_LOWERED);
 }
 
-void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
+static void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
 {
     if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) &&
         cheatsPtr->checkCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM))
@@ -922,7 +921,7 @@ void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
     cameraPtr->flags &= ~0x300;
 }
 
-void checkIfSystemLevelShouldBeLowered(Cheats *cheatsPtr, Mod *modPtr)
+static void checkIfSystemLevelShouldBeLowered(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -967,7 +966,7 @@ void disableBattlesOnReload(SeqIndex seq, const char *map, const char *bero)
     return g_seqSetSeq_trampoline(seq, map, bero);
 }
 
-void levitate(Cheats *cheatsPtr, Mod *modPtr)
+static void levitate(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1020,7 +1019,7 @@ uint32_t autoMashText(PadId controllerId)
     return PadInput::PAD_B;
 }
 
-void setOSTime(int64_t time)
+static void setOSTime(int64_t time)
 {
     // Interrupts should be disabled for safety
     const bool enable = OSDisableInterrupts();
@@ -1213,7 +1212,7 @@ bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, boo
     return g_psndENVOn_f_d_trampoline(flags, envName, wFadeTime, unused);
 }
 
-void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
+static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1249,7 +1248,7 @@ void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
+static void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1270,7 +1269,7 @@ void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void lockPartnerHpToMax(Cheats *cheatsPtr, Mod *modPtr)
+static void lockPartnerHpToMax(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1299,7 +1298,7 @@ void lockPartnerHpToMax(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
+static void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1365,7 +1364,7 @@ void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
     npcPtr->wJumpFlags &= 0xFFFFFF00;          // Clear byte 0x1D7 in npcPtr
 }
 
-void cancelSpawnSelectedItem()
+static void cancelSpawnSelectedItem()
 {
     gCheats->getSpawnItemCheatPtr()->freeValueEditor();
 
@@ -1374,7 +1373,7 @@ void cancelSpawnSelectedItem()
     setSystemLevel(0);
 }
 
-void spawnSelectedItem(const ValueType *valuePtr)
+static void spawnSelectedItem(const ValueType *valuePtr)
 {
     // Spawn the selected item
     Cheats *cheatsPtr = gCheats;
@@ -1411,7 +1410,7 @@ void spawnSelectedItem(const ValueType *valuePtr)
     cancelSpawnSelectedItem();
 }
 
-void drawSpawnItemValueEditor(CameraId cameraId, void *user)
+static void drawSpawnItemValueEditor(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1420,7 +1419,7 @@ void drawSpawnItemValueEditor(CameraId cameraId, void *user)
     gCheats->getSpawnItemCheatPtr()->getValueEditorPtr()->draw();
 }
 
-void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
+static void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
 {
     SpawnItemCheat *spawnItemCheatPtr = cheatsPtr->getSpawnItemCheatPtr();
     ValueEditor *valueEditorPtr = spawnItemCheatPtr->getValueEditorPtr();
@@ -1537,7 +1536,7 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
             case LockFlagsOptions::LOCK_FLAGS_GSW:
             {
                 // Restore the sequence position
-                setSequencePosition(lockFlagsPtr->getSequencePosition());
+                setSequencePosition(lockFlagsPtr->getLockFlagsSequencePosition());
                 break;
             }
             case LockFlagsOptions::LOCK_FLAGS_LSW:
@@ -1574,7 +1573,7 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
+static void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
 
@@ -1613,7 +1612,7 @@ void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
 }
 
 // Handle setting up/calling cheats
-const CheatsArrayFunc gCheatsWithButtonCombos[] = {
+static const CheatsArrayFunc gCheatsWithButtonCombos[] = {
     saveMarioAndPartnerPositions,
     loadMarioAndPartnerPositions,
     setTextStorage,
@@ -1624,7 +1623,7 @@ const CheatsArrayFunc gCheatsWithButtonCombos[] = {
     generateLagSpike,
 };
 
-const CheatsArrayFunc gCheatsNoButtonCombos[] = {
+static const CheatsArrayFunc gCheatsNoButtonCombos[] = {
     walkThroughMostObjects, // Needs to always run due to a variable constantly being checked
     saveAnywhere,           // Needs to always run due to the script taking more than one frame
     spawnItem,              // Needs to always run due to the value editor sometimes being open

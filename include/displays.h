@@ -851,7 +851,6 @@ class Displays
 };
 
 extern Displays *gDisplays;
-extern const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS];
 
 const void *checkIndividualStandardHeap(const ChunkInfo *start);
 const void *checkIndividualSmartHeap(const SmartAllocationData *start);

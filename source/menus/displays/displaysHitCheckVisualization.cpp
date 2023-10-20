@@ -10,27 +10,33 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gDisplaysMenuHitCheckVisualizationOptions[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionToggleHitOrMissFlags(Menu *menuPtr);
+static void selectedOptionChangeHitOrMissColors(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    displaysMenuHitCheckVisualizationMenuSelectTurnOnOff,
+    selectedOptionTurnOnOff,
 
     "Draw Hits",
-    displaysMenuHitCheckVisualizationToggleHitOrMissFlags,
+    selectedOptionToggleHitOrMissFlags,
 
     "Draw Misses",
-    displaysMenuHitCheckVisualizationToggleHitOrMissFlags,
+    selectedOptionToggleHitOrMissFlags,
 
     "Hits Color",
-    displaysMenuHitCheckVisualizationStartSelectingColor,
+    selectedOptionChangeHitOrMissColors,
 
     "Misses Color",
-    displaysMenuHitCheckVisualizationStartSelectingColor,
+    selectedOptionChangeHitOrMissColors,
 };
 
-const MenuFunctions gDisplaysMenuHitCheckVisualizationFuncs = {
-    gDisplaysMenuHitCheckVisualizationOptions,
-    displaysMenuHitCheckVisualizationControls,
-    displaysMenuHitCheckVisualizationDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -38,11 +44,11 @@ void displaysMenuHitCheckVisualizationInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gDisplaysMenuHitCheckVisualizationOptions) / sizeof(MenuOption);
-    enterNextMenu(&gDisplaysMenuHitCheckVisualizationFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void displaysMenuHitCheckVisualizationControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
@@ -120,7 +126,7 @@ void DisplaysMenu::drawHitCheckVisualizationInfo() const
     drawText(buf, posX, posY, scale, color);
 }
 
-void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -137,7 +143,7 @@ void displaysMenuHitCheckVisualizationDraw(CameraId cameraId, void *user)
     }
 }
 
-void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -155,7 +161,7 @@ void displaysMenuHitCheckVisualizationMenuSelectTurnOnOff(Menu *menuPtr)
     }
 }
 
-void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
+static void selectedOptionToggleHitOrMissFlags(Menu *menuPtr)
 {
     uint32_t enabledFlag;
     if (menuPtr->getCurrentIndex() == DisplaysMenuHitCheckVisualizationOptions::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_HITS)
@@ -183,12 +189,12 @@ void displaysMenuHitCheckVisualizationToggleHitOrMissFlags(Menu *menuPtr)
     }
 }
 
-void displaysMenuHitCheckVisualizationCancelSelectColor()
+static void cancelChangeColor()
 {
     gDisplaysMenu->getValueEditorPtr()->stopDrawing();
 }
 
-void displaysMenuHitCheckVisualizationSelectColor(const ValueType *valuePtr)
+static void changeColor(const ValueType *valuePtr)
 {
     // Only set the color if the alpha is not 0
     // Do not close the value editor if the alpha is 0
@@ -212,10 +218,10 @@ void displaysMenuHitCheckVisualizationSelectColor(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    displaysMenuHitCheckVisualizationCancelSelectColor();
+    cancelChangeColor();
 }
 
-void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr)
+static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
 {
     // Initialize the value editor
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
@@ -240,7 +246,5 @@ void displaysMenuHitCheckVisualizationStartSelectingColor(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentColor, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
-
-    valueEditorPtr->startDrawing(displaysMenuHitCheckVisualizationSelectColor,
-                                 displaysMenuHitCheckVisualizationCancelSelectColor);
+    valueEditorPtr->startDrawing(changeColor, cancelChangeColor);
 }

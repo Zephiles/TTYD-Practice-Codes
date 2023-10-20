@@ -1,10 +1,9 @@
 #ifndef MENUS_ROOT_MENU_H
 #define MENUS_ROOT_MENU_H
 
-#include "menuUtils.h"
+#include "classes/menu.h"
 #include "classes/window.h"
 #include "classes/errorWindow.h"
-#include "ttyd/camdrv.h"
 
 extern Window *gRootWindow;
 
@@ -39,9 +38,7 @@ class RootMenu
 
 extern RootMenu *gRootMenu;
 
-void rootMenuInit();                              // Called when initially entering the root menu
-void rootMenuExit();                              // Called when exiting the root menu
-void rootMenuDraw(CameraId cameraId, void *user); // Called to handle drawing the root menu
+void rootMenuInit(); // Called when initially entering the root menu
 
 // Called when either trying to enter the battle menu when not in a battle, or while in the Battles menu when a battle has just
 // ended

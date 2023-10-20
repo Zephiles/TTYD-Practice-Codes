@@ -10,6 +10,8 @@
 
 #include <cstdint>
 
+static void exit();
+
 CheatsMenu *gCheatsMenu = nullptr;
 
 const MenuOption gCheatsMenuInitOptions[] = {
@@ -101,11 +103,11 @@ const MenuOption gCheatsMenuInitOptions[] = {
     cheatsMenuClearAreaFlagsInit,
 };
 
-const MenuFunctions gCheatsMenuInitFuncs = {
+static const MenuFunctions gFuncs = {
     gCheatsMenuInitOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDrawMenuLineHeight,
-    cheatsMenuInitExit,
+    exit,
 };
 
 const char *gCheatsAreaNames[CHEATS_TOTAL_AREAS][2] = {
@@ -148,10 +150,10 @@ void cheatsMenuInit(Menu *menuPtr)
     gCheatsMenu = cheatsMenuPtr;
 
     constexpr uint32_t totalOptions = sizeof(gCheatsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuInitFuncs, totalOptions, MAX_CHEATS_PER_PAGE);
+    enterNextMenu(&gFuncs, totalOptions, MAX_CHEATS_PER_PAGE);
 }
 
-void cheatsMenuInitExit()
+static void exit()
 {
     delete gCheatsMenu;
     gCheatsMenu = nullptr;
@@ -190,12 +192,12 @@ bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag)
     return gCheats->toggleEnabledFlag(cheatEnabledFlag);
 }
 
-void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
+static void setButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
 {
     gCheats->setCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
 }
 
-void cheatsMenuCancelSetNewButtonCombo()
+static void cancelSetNewButtonCombo()
 {
     gCheatsMenu->getButtonComboEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
@@ -203,10 +205,10 @@ void cheatsMenuCancelSetNewButtonCombo()
 
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo)
 {
-    cheatsMenuSetCheatButtonCombo(cheatButtonComboFlag, buttonCombo);
+    setButtonCombo(cheatButtonComboFlag, buttonCombo);
 
     // Close the button combo editor
-    cheatsMenuCancelSetNewButtonCombo();
+    cancelSetNewButtonCombo();
 }
 
 void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
@@ -219,7 +221,7 @@ void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    buttonComboEditorPtr->startDrawing(setComboFunc, cheatsMenuCancelSetNewButtonCombo);
+    buttonComboEditorPtr->startDrawing(setComboFunc, cancelSetNewButtonCombo);
 }
 
 void cheatsMenuValueEditorCancelSetValue()

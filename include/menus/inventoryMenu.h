@@ -7,7 +7,6 @@
 #include "classes/valueEditor.h"
 #include "classes/window.h"
 #include "ttyd/item_data.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 #include <cstring>
@@ -59,7 +58,6 @@ class InventoryMenu
     int32_t *getMaxValuePtr() { return &this->maxValue; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
-    uint32_t getInventoryType() const { return this->inventoryType; }
     uint32_t getInventorySize() const { return this->inventorySize; }
 
     uint32_t getSelectedIndex() const { return this->selectedIndex; }
@@ -67,8 +65,6 @@ class InventoryMenu
 
     uint32_t getCurrentPage() const { return this->currentPage; }
     uint32_t getCurrentIndex() const { return this->currentIndex; }
-    uint8_t *getCurrentPagePtr() { return &this->currentPage; }
-    uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
 
     uint32_t getTotalItemsInInventory() const;
     bool inventoryIsEmpty() const { return this->getTotalItemsInInventory() == 0; }
@@ -78,7 +74,6 @@ class InventoryMenu
     bool initSwapMoveItems(Menu *menuPtr);
 
     void verifyInventoryIndexAndPage(Menu *menuPtr);
-    bool checkIfItemsOnNextPage(uint32_t currentItemCount) const;
     void inventoryMenuMoveUpOnePage();
     void inventoryMenuMoveDownOnePage();
 
@@ -88,6 +83,8 @@ class InventoryMenu
     void drawCurrentInventory();
 
    private:
+    bool checkIfItemsOnNextPage(uint32_t currentItemCount) const;
+
     // Window that the inventory will be placed in. This includes all of the space in the root window, excluding the space used
     // by the main text for the options.
     Window inventoryWindow;
@@ -109,23 +106,6 @@ class InventoryMenu
 };
 
 extern InventoryMenu *gInventoryMenu;
-
-void inventoryMenuMainInit(Menu *menuPtr); // Called when initially entering the main part of the inventory menu
-void inventoryMenuMainExit();              // Called when exiting the main part of the inventory menu
-
-void inventoryMenuSelectedOptionAddById(Menu *menuPtr);
-void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr);
-void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr);
-void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr);
-void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr);
-void inventoryMenuSelectedOptionChangeById(Menu *menuPtr);
-void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr);
-void inventoryMenuSelectedOptionDelete(Menu *menuPtr);
-
-// Called to handle the controls for the main part of the inventory menu
-void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button);
-
-void inventoryMenuMainDraw(CameraId cameraId, void *user); // Called to handle drawing the main part of the inventory menu
 
 // Called when initially entering the part of the inventory menu for selecting which inventory to work with
 void inventoryMenuInit(Menu *menuPtr);

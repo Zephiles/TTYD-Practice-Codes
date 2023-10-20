@@ -34,13 +34,13 @@ class SpecialMoveToggler
         this->enabled = true;
     }
 
-    void controlsMoveDownOnce();
-    void controlsMoveUpOnce();
     void controls(MenuButtonInput button);
-
     void draw();
 
    private:
+    void controlsMoveDownOnce();
+    void controlsMoveUpOnce();
+
     Window window;
 
     SpecialMoveTogglerToggleFunc toggleFunc; // Called when the player presses A to toggle the selected special move

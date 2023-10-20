@@ -13,24 +13,28 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuModifyMariosCoordinatesOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionModifyAsHex(Menu *menuPtr);
+static void selectedOptionModifyCoordinate(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Modify X Coordinate",
-    cheatsMenuModifyMariosCoordinatesSetCoordinate,
+    selectedOptionModifyCoordinate,
 
     "Modify Y Coordinate",
-    cheatsMenuModifyMariosCoordinatesSetCoordinate,
+    selectedOptionModifyCoordinate,
 
     "Modify Z Coordinate",
-    cheatsMenuModifyMariosCoordinatesSetCoordinate,
+    selectedOptionModifyCoordinate,
 
     "Modify As Hex",
-    cheatsMenuModifyMariosCoordinatesToggleFlag,
+    selectedOptionModifyAsHex,
 };
 
-const MenuFunctions gCheatsMenuModifyMariosCoordinatesFuncs = {
-    gCheatsMenuModifyMariosCoordinatesOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     cheatsMenuDefaultControlsWithValueEditor,
-    cheatsMenuModifyMariosCoordinatesDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -38,8 +42,8 @@ void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuModifyMariosCoordinatesOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuModifyMariosCoordinatesFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawModifyMariosCoordinatesInfo() const
@@ -109,7 +113,7 @@ void CheatsMenu::drawModifyMariosCoordinatesInfo() const
     }
 }
 
-void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -133,14 +137,14 @@ void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuModifyMariosCoordinatesToggleFlag(Menu *menuPtr)
+static void selectedOptionModifyAsHex(Menu *menuPtr)
 {
     (void)menuPtr;
 
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX);
 }
 
-void cheatsMenuModifyMariosCoordinatesSetNewCoordinate(const ValueType *valuePtr)
+static void setNewCoordinate(const ValueType *valuePtr)
 {
     Player *playerPtr = marioGetPtr();
     float *coordinatesPtr = reinterpret_cast<float *>(&playerPtr->playerPosition.x);
@@ -151,7 +155,7 @@ void cheatsMenuModifyMariosCoordinatesSetNewCoordinate(const ValueType *valuePtr
     cheatsMenuValueEditorCancelSetValue();
 }
 
-void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
+static void selectedOptionModifyCoordinate(Menu *menuPtr)
 {
     // If the value is not being modified as hex, then make sure the number is one that can easily be edited
     Player *playerPtr = marioGetPtr();
@@ -201,11 +205,5 @@ void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr)
     ValueType value;
     value.f32 = coordinatesPtr[currentIndex];
 
-    cheatsMenuInitValueEditor(value.u32,
-                              0,
-                              0,
-                              flags,
-                              VariableType::f32,
-                              false,
-                              cheatsMenuModifyMariosCoordinatesSetNewCoordinate);
+    cheatsMenuInitValueEditor(value.u32, 0, 0, flags, VariableType::f32, false, setNewCoordinate);
 }

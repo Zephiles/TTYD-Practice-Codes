@@ -31,22 +31,6 @@
 #include <cstdio>
 #include <cinttypes>
 
-void *cFixPouchInitMemoryLeak(int32_t heap, uint32_t size)
-{
-    // Check if the memory has already been allocated or not
-    PouchData *pouchPtr = pouchGetPtr();
-    if (pouchPtr)
-    {
-        // The memory has already been allocated
-        return pouchPtr;
-    }
-    else
-    {
-        // The memory has not been allocated, so allocate it
-        return __memAlloc(heap, size);
-    }
-}
-
 uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr)
 {
     if (ptrIsValid(battleUnitPtr))
@@ -177,6 +161,22 @@ int32_t crashScreenDecrementYPos()
     }
 }
 #endif
+
+static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
+{
+    // Check if the memory has already been allocated or not
+    PouchData *pouchPtr = pouchGetPtr();
+    if (pouchPtr)
+    {
+        // The memory has already been allocated
+        return pouchPtr;
+    }
+    else
+    {
+        // The memory has not been allocated, so allocate it
+        return __memAlloc(heap, size);
+    }
+}
 
 const char *getCustomMessage(const char *key)
 {
@@ -408,7 +408,7 @@ NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk)
     }
 }
 
-void fixMapProblems() // Gets called in initStageEvents
+static void fixMapProblems() // Gets called in initStageEvents
 {
     const uint32_t sequencePosition = getSequencePosition();
 
@@ -452,7 +452,7 @@ void fixMapProblems() // Gets called in initStageEvents
     }
 }
 
-GlobalWork *initStageEvents()
+static GlobalWork *initStageEvents()
 {
     CustomState *customStatePtr = &gCustomState;
     Mod *modPtr = gMod;
@@ -493,7 +493,7 @@ void applyGameFixes()
     constexpr uint32_t pouchInitMemoryLeakAddress = 0x800D67E4;
 #endif
 
-    writeBranchBL(pouchInitMemoryLeakAddress, cFixPouchInitMemoryLeak);
+    writeBranchBL(pouchInitMemoryLeakAddress, fixPouchInitMemoryLeak);
 
     // Fix the game not properly allocating enough memory for text in textboxes. The vanilla code does not allocate memory for
     // the null terminator.

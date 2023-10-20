@@ -9,21 +9,26 @@
 
 #include <cstdint>
 
-const MenuOption gCheatsMenuDisableCertainSoundsOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionPauseMenuZMenuSounds(Menu *menuPtr);
+static void selectedOptionBackgroundMusic(Menu *menuPtr);
+static void selectedOptionEnvironmentSounds(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Pause Menu/Z Menu Sounds",
-    cheatsMenuTogglePauseMenuZMenuSounds,
+    selectedOptionPauseMenuZMenuSounds,
 
     "Background Music",
-    cheatsMenuToggleBackgroundMusic,
+    selectedOptionBackgroundMusic,
 
     "Environment Sounds",
-    cheatsMenuToggleEnvironmentSounds,
+    selectedOptionEnvironmentSounds,
 };
 
-const MenuFunctions gCheatsDisableCertainSoundsFuncs = {
-    gCheatsMenuDisableCertainSoundsOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
-    cheatsMenuDisableCertainSoundsDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -31,8 +36,8 @@ void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuDisableCertainSoundsOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsDisableCertainSoundsFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawDisableCertainSoundsInfo() const
@@ -50,7 +55,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
     float posY = tempPosY;
 
     // Draw each option with its flag
-    const MenuOption *disableCertainSoundsOptionsPtr = gCheatsMenuDisableCertainSoundsOptions;
+    const MenuOption *optionsPtr = gOptions;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Cheats *cheatsPtr = gCheats;
 
@@ -59,7 +64,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
 
     for (uint32_t i = 0; i < totalOptions; i++)
     {
-        drawText(disableCertainSoundsOptionsPtr[i].name, posX, posY, scale, getColorWhite(0xFF));
+        drawText(optionsPtr[i].name, posX, posY, scale, getColorWhite(0xFF));
         posY -= lineDecrement;
 
         getOnOffTextAndColor(
@@ -73,7 +78,7 @@ void CheatsMenu::drawDisableCertainSoundsInfo() const
     }
 }
 
-void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -82,14 +87,14 @@ void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user)
     gCheatsMenu->drawDisableCertainSoundsInfo();
 }
 
-void cheatsMenuTogglePauseMenuZMenuSounds(Menu *menuPtr)
+static void selectedOptionPauseMenuZMenuSounds(Menu *menuPtr)
 {
     (void)menuPtr;
 
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU);
 }
 
-void cheatsMenuToggleBackgroundMusic(Menu *menuPtr)
+static void selectedOptionBackgroundMusic(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -101,7 +106,7 @@ void cheatsMenuToggleBackgroundMusic(Menu *menuPtr)
     }
 }
 
-void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr)
+static void selectedOptionEnvironmentSounds(Menu *menuPtr)
 {
     (void)menuPtr;
 

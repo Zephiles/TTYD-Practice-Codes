@@ -17,54 +17,70 @@
 #include <cstdio>
 #include <cinttypes>
 
+// Called to handle the controls for the main part of the inventory menu
+static void mainControls(Menu *menuPtr, MenuButtonInput button);
+
+// Called to handle drawing the main part of the inventory menu
+static void mainDraw(CameraId cameraId, void *user);
+
+// Called when exiting the main part of the inventory menu
+static void mainExit();
+
+// Functions for the main part of the inventory menu
+static void selectedOptionAddById(Menu *menuPtr);
+static void selectedOptionAddByIcon(Menu *menuPtr);
+static void selectedOptionDuplicate(Menu *menuPtr);
+static void selectedOptionSwapItems(Menu *menuPtr);
+static void selectedOptionMoveItem(Menu *menuPtr);
+static void selectedOptionChangeById(Menu *menuPtr);
+static void selectedOptionChangeByIcon(Menu *menuPtr);
+static void selectedOptionDelete(Menu *menuPtr);
+
 InventoryMenu *gInventoryMenu = nullptr;
 
-// Main menu
-const MenuOption gInventoryMenuMainOptions[] = {
+static const MenuOption gMainOptions[] = {
     "Add By Id",
-    inventoryMenuSelectedOptionAddById,
+    selectedOptionAddById,
 
     "Add By Icon",
-    inventoryMenuSelectedOptionAddByIcon,
+    selectedOptionAddByIcon,
 
     "Duplicate",
-    inventoryMenuSelectedOptionDuplicate,
+    selectedOptionDuplicate,
 
     "Swap Items",
-    inventoryMenuSelectedOptionSwapItems,
+    selectedOptionSwapItems,
 
     "Move Item",
-    inventoryMenuSelectedOptionMoveItem,
+    selectedOptionMoveItem,
 
     "Change By Id",
-    inventoryMenuSelectedOptionChangeById,
+    selectedOptionChangeById,
 
     "Change By Icon",
-    inventoryMenuSelectedOptionChangeByIcon,
+    selectedOptionChangeByIcon,
 
     "Delete",
-    inventoryMenuSelectedOptionDelete,
+    selectedOptionDelete,
 };
 
-const MenuFunctions gInventoryMenuMainFuncs = {
-    gInventoryMenuMainOptions,
-    inventoryMenuMainControls,
-    inventoryMenuMainDraw,
-    inventoryMenuMainExit,
+static const MenuFunctions gMainFuncs = {
+    gMainOptions,
+    mainControls,
+    mainDraw,
+    mainExit,
 };
 
-const char *gInventoryIsEmptyText = "The inventory is currently empty.";
-const char *gInventoryIsFullText = "The inventory is currently full.";
+static const char *gInventoryIsEmpty = "The inventory is currently empty.";
+static const char *gInventoryIsFull = "The inventory is currently full.";
+static const char *gNotEnoughItemsToSwapMove = "There needs to be at least two items/\nbadges to be able to swap/move them.";
 
-const char *gInventoryNotEnoughItemsToSwapMoveText =
-    "There needs to be at least two items/\nbadges to be able to swap/move them.";
-
-void cancelAddItemFromId()
+static void cancelAddItemFromId()
 {
     gInventoryMenu->getValueEditorPtr()->stopDrawing();
 }
 
-void addItemFromId(const ValueType *valuePtr)
+static void addItemFromId(const ValueType *valuePtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
@@ -94,7 +110,7 @@ void addItemFromId(const ValueType *valuePtr)
     }
 }
 
-void inventoryMenuSelectedOptionAddById(Menu *menuPtr)
+static void selectedOptionAddById(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -102,7 +118,7 @@ void inventoryMenuSelectedOptionAddById(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsFull())
     {
-        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFull);
         return;
     }
 
@@ -126,12 +142,12 @@ void inventoryMenuSelectedOptionAddById(Menu *menuPtr)
     valueEditorPtr->startDrawing(addItemFromId, cancelAddItemFromId);
 }
 
-void cancelAddItemFromIcon()
+static void cancelAddItemFromIcon()
 {
     gInventoryMenu->getItemIconSelectorPtr()->stopDrawing();
 }
 
-void addItemFromIcon(ItemId item)
+static void addItemFromIcon(ItemId item)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
@@ -160,7 +176,7 @@ void addItemFromIcon(ItemId item)
     }
 }
 
-void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr)
+static void selectedOptionAddByIcon(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -168,7 +184,7 @@ void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr)
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsFull())
     {
-        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFull);
         return;
     }
 
@@ -183,14 +199,14 @@ void inventoryMenuSelectedOptionAddByIcon(Menu *menuPtr)
     itemIconSelectorPtr->startDrawing(addItemFromIcon, cancelAddItemFromIcon);
 }
 
-void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr)
+static void selectedOptionDuplicate(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
-        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmpty);
         return;
     }
 
@@ -198,7 +214,7 @@ void inventoryMenuSelectedOptionDuplicate(Menu *menuPtr)
     if (inventoryMenuPtr->inventoryIsFull())
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DUPLICATE);
-        inventoryMenuPtr->initErrorWindow(gInventoryIsFullText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsFull);
         return;
     }
 
@@ -253,7 +269,7 @@ bool InventoryMenu::initSwapMoveItems(Menu *menuPtr)
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_INIT);
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
-        this->initErrorWindow(gInventoryNotEnoughItemsToSwapMoveText);
+        this->initErrorWindow(gNotEnoughItemsToSwapMove);
         return false;
     }
 
@@ -299,7 +315,7 @@ bool InventoryMenu::initSwapMoveItems(Menu *menuPtr)
     return true;
 }
 
-void swapItemPositions(uint32_t currentIndex, uint32_t selectedIndex)
+static void swapItemPositions(uint32_t currentIndex, uint32_t selectedIndex)
 {
     ItemId *inventoryItemPtr = gInventoryMenu->getInventoryItemPtr();
 
@@ -313,7 +329,7 @@ void swapItemPositions(uint32_t currentIndex, uint32_t selectedIndex)
     inventoryItemPtr[currentIndex] = selectedItemBackup;
 }
 
-void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr)
+static void selectedOptionSwapItems(Menu *menuPtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (!inventoryMenuPtr->initSwapMoveItems(menuPtr))
@@ -328,7 +344,7 @@ void inventoryMenuSelectedOptionSwapItems(Menu *menuPtr)
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
 }
 
-void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr)
+static void selectedOptionMoveItem(Menu *menuPtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (!inventoryMenuPtr->initSwapMoveItems(menuPtr))
@@ -383,7 +399,7 @@ void inventoryMenuSelectedOptionMoveItem(Menu *menuPtr)
     menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_SWAP_MOVE_ITEMS_SELECTED_ITEM_TO_SWAP_MOVE);
 }
 
-void changeItemFromId(const ValueType *valuePtr)
+static void changeItemFromId(const ValueType *valuePtr)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
@@ -410,14 +426,14 @@ void changeItemFromId(const ValueType *valuePtr)
     cancelAddItemFromId();
 }
 
-void inventoryMenuSelectedOptionChangeById(Menu *menuPtr)
+static void selectedOptionChangeById(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ID);
-        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmpty);
         return;
     }
 
@@ -466,7 +482,7 @@ void inventoryMenuSelectedOptionChangeById(Menu *menuPtr)
     valueEditorPtr->startDrawing(changeItemFromId, cancelAddItemFromId);
 }
 
-void changeItemFromIcon(ItemId item)
+static void changeItemFromIcon(ItemId item)
 {
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
 
@@ -492,14 +508,14 @@ void changeItemFromIcon(ItemId item)
     cancelAddItemFromIcon();
 }
 
-void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr)
+static void selectedOptionChangeByIcon(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_CHANGE_BY_ICON);
-        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmpty);
         return;
     }
 
@@ -543,14 +559,14 @@ void inventoryMenuSelectedOptionChangeByIcon(Menu *menuPtr)
     itemIconSelectorPtr->startDrawing(changeItemFromIcon, cancelAddItemFromIcon);
 }
 
-void inventoryMenuSelectedOptionDelete(Menu *menuPtr)
+static void selectedOptionDelete(Menu *menuPtr)
 {
     // If the inventory is empty, then show an error message
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
     if (inventoryMenuPtr->inventoryIsEmpty())
     {
         menuPtr->clearFlag(InventoryFlag::INVENTORY_FLAG_DELETE);
-        inventoryMenuPtr->initErrorWindow(gInventoryIsEmptyText);
+        inventoryMenuPtr->initErrorWindow(gInventoryIsEmpty);
         return;
     }
 
@@ -614,7 +630,7 @@ void inventoryMenuSelectedOptionDelete(Menu *menuPtr)
     }
 }
 
-void inventoryMenuMainControls(Menu *menuPtr, MenuButtonInput button)
+static void mainControls(Menu *menuPtr, MenuButtonInput button)
 {
     // If a file is loaded while this menu is open, then the inventory will change, so make sure no issues occur because of this
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -927,7 +943,7 @@ void InventoryMenu::drawCurrentInventory()
     }
 }
 
-void inventoryMenuMainDraw(CameraId cameraId, void *user)
+static void mainDraw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -1138,7 +1154,8 @@ bool InventoryMenu::inventoryIsFull() const
     return this->getTotalItemsInInventory() == this->inventorySize;
 }
 
-void inventoryMenuMainInit(Menu *menuPtr)
+// Called when initially entering the main part of the inventory menu
+static void mainInit(Menu *menuPtr)
 {
     // Failsafe: Make sure memory isn't already allocated for gInventoryMenu
     InventoryMenu *inventoryMenuPtr = gInventoryMenu;
@@ -1205,33 +1222,33 @@ void inventoryMenuMainInit(Menu *menuPtr)
 
     inventoryMenuPtr->setInventoryType(inventoryType);
 
-    constexpr uint32_t totalOptions = sizeof(gInventoryMenuMainOptions) / sizeof(MenuOption);
-    enterNextMenu(&gInventoryMenuMainFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gMainOptions) / sizeof(MenuOption);
+    enterNextMenu(&gMainFuncs, totalOptions);
 }
 
-void inventoryMenuMainExit()
+static void mainExit()
 {
     delete gInventoryMenu;
     gInventoryMenu = nullptr;
 }
 
 // Menu for determining which inventory to work with
-const MenuOption gInventoryMenuInitOptions[] = {
+static const MenuOption gInitOptions[] = {
     "Standard Items",
-    inventoryMenuMainInit,
+    mainInit,
 
     "Important Items",
-    inventoryMenuMainInit,
+    mainInit,
 
     "Badges",
-    inventoryMenuMainInit,
+    mainInit,
 
     "Stored Items",
-    inventoryMenuMainInit,
+    mainInit,
 };
 
-const MenuFunctions gInventoryMenuInitFuncs = {
-    gInventoryMenuInitOptions,
+static const MenuFunctions gInitFuncs = {
+    gInitOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDrawMenuLineHeight,
     nullptr, // Exit function not needed
@@ -1241,6 +1258,6 @@ void inventoryMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gInventoryMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gInventoryMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gInitOptions) / sizeof(MenuOption);
+    enterNextMenu(&gInitFuncs, totalOptions);
 }

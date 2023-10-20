@@ -495,7 +495,7 @@ void Displays::clearAllShouldDrawFlags()
     }
 }
 
-bool checkIfAdjustingManualPositionOrScale(uint32_t enabledFlag)
+static bool checkIfAdjustingManualPositionOrScale(uint32_t enabledFlag)
 {
     // If the Displays menu is open but hidden, then the display may need to be handled
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
@@ -1090,7 +1090,7 @@ void Displays::handleMapHeapChunkResults(const void *addressWithError,
     }
 }
 
-bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPosition *dataOut)
+static bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPosition *dataOut)
 {
     // Check if the player is currently manually positioning the display or adjusting the scale for the manual positioning
     // Make sure the Displays menu is open
@@ -1148,15 +1148,15 @@ bool getDisplayMenuPosAndScale(uint32_t manuallyPositionFlag, DisplayManuallyPos
     return false;
 }
 
-bool menuCurrentlyAdjustingPosOrScale(uint32_t manuallyPositionFlag)
+static bool menuCurrentlyAdjustingPosOrScale(uint32_t manuallyPositionFlag)
 {
     return getDisplayMenuPosAndScale(manuallyPositionFlag, nullptr);
 }
 
-bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
-                           uint32_t manuallyPositionFlag,
-                           DisplayManuallyPosition *dataOut,
-                           const char *text)
+static bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
+                                  uint32_t manuallyPositionFlag,
+                                  DisplayManuallyPosition *dataOut,
+                                  const char *text)
 {
     // Check if the player is currently manually positioning the display or adjusting the scale for the manual positioning
     if (getDisplayMenuPosAndScale(manuallyPositionFlag, dataOut))
@@ -1268,12 +1268,14 @@ bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
     return false;
 }
 
-bool getDisplayPosAndScale(DisplaysScreenPosition screenPos, uint32_t manuallyPositionFlag, DisplayManuallyPosition *dataOut)
+static bool getDisplayPosAndScale(DisplaysScreenPosition screenPos,
+                                  uint32_t manuallyPositionFlag,
+                                  DisplayManuallyPosition *dataOut)
 {
     return getDisplayPosAndScale(screenPos, manuallyPositionFlag, dataOut, nullptr);
 }
 
-void drawButtonInputs(CameraId cameraId, void *user)
+static void drawButtonInputs(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1357,7 +1359,7 @@ void drawButtonInputs(CameraId cameraId, void *user)
     }
 }
 
-void handleButtonInputs(Displays *displaysPtr)
+static void handleButtonInputs(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BUTTON_INPUTS))
     {
@@ -1367,7 +1369,7 @@ void handleButtonInputs(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_BUTTON_INPUTS);
 }
 
-void drawMarioCoordinates(float posX, float posY, float scale)
+static void drawMarioCoordinates(float posX, float posY, float scale)
 {
     // Set up the text
     const Player *playerPtr = marioGetPtr();
@@ -1384,7 +1386,7 @@ void drawMarioCoordinates(float posX, float posY, float scale)
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void drawMarioCoordinatesMain(CameraId cameraId, void *user)
+static void drawMarioCoordinatesMain(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1399,7 +1401,7 @@ void drawMarioCoordinatesMain(CameraId cameraId, void *user)
     drawMarioCoordinates(data.getPosX(), data.getPosY(), data.getScale());
 }
 
-void handleMarioCoordinates(Displays *displaysPtr)
+static void handleMarioCoordinates(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES))
     {
@@ -1409,7 +1411,7 @@ void handleMarioCoordinates(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_MARIO_COORDINATES);
 }
 
-void drawStickAngle(float posX, float posY, float scale)
+static void drawStickAngle(float posX, float posY, float scale)
 {
     // Get the stick angle string
     char stickAngleBuf[32];
@@ -1424,7 +1426,7 @@ void drawStickAngle(float posX, float posY, float scale)
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void drawStickAngleMain(CameraId cameraId, void *user)
+static void drawStickAngleMain(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1439,7 +1441,7 @@ void drawStickAngleMain(CameraId cameraId, void *user)
     drawStickAngle(data.getPosX(), data.getPosY(), data.getScale());
 }
 
-void handleStickAngle(Displays *displaysPtr)
+static void handleStickAngle(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_STICK_ANGLE))
     {
@@ -1449,7 +1451,7 @@ void handleStickAngle(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_STICK_ANGLE);
 }
 
-void drawMarioSpeedXZ(CameraId cameraId, void *user)
+static void drawMarioSpeedXZ(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1470,7 +1472,7 @@ void drawMarioSpeedXZ(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
 }
 
-void handleMarioSpeedXZ(Displays *displaysPtr)
+static void handleMarioSpeedXZ(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_SPEED_X_Z))
     {
@@ -1480,7 +1482,7 @@ void handleMarioSpeedXZ(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_MARIO_SPEED_X_Z);
 }
 
-void drawOnScreenTimer(CameraId cameraId, void *user)
+static void drawOnScreenTimer(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1514,7 +1516,7 @@ void drawOnScreenTimer(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, 172.f * scale, getColorWhite(0xFF));
 }
 
-void handleOnScreenTimer(Displays *displaysPtr)
+static void handleOnScreenTimer(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ONSCREEN_TIMER))
     {
@@ -1541,7 +1543,7 @@ void handleOnScreenTimer(Displays *displaysPtr)
     }
 }
 
-void updateOnScreenTimer()
+static void updateOnScreenTimer()
 {
     Displays *displaysPtr = gDisplays;
     if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ONSCREEN_TIMER))
@@ -1571,7 +1573,7 @@ void updateOnScreenTimer()
     onScreenTimerPtr->setPrevFrameTime(currentFrameTime);
 }
 
-void drawFrameCounter(CameraId cameraId, void *user)
+static void drawFrameCounter(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1624,7 +1626,7 @@ void drawFrameCounter(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, 172.f * scale, getColorWhite(0xFF));
 }
 
-void handleFrameCounter(Displays *displaysPtr)
+static void handleFrameCounter(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_FRAME_COUNTER))
     {
@@ -1651,7 +1653,7 @@ void handleFrameCounter(Displays *displaysPtr)
     }
 }
 
-void drawHeapCorruptionErrors(CameraId cameraId, void *user)
+static void drawHeapCorruptionErrors(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1676,7 +1678,7 @@ void drawHeapCorruptionErrors(CameraId cameraId, void *user)
     memoryUsagePtr->freeHeapCorruptionBuffer();
 }
 
-void drawMemoryUsage(CameraId cameraId, void *user)
+static void drawMemoryUsage(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1769,7 +1771,7 @@ void drawMemoryUsage(CameraId cameraId, void *user)
     memoryUsagePtr->freeMemoryUsageBuffer();
 }
 
-void handleMemoryUsage(Displays *displaysPtr)
+static void handleMemoryUsage(Displays *displaysPtr)
 {
     const MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
 
@@ -1792,7 +1794,7 @@ void handleMemoryUsage(Displays *displaysPtr)
     }
 }
 
-void drawEffsActive(CameraId cameraId, void *user)
+static void drawEffsActive(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1826,7 +1828,7 @@ void drawEffsActive(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
 }
 
-void handleEffsActive(Displays *displaysPtr)
+static void handleEffsActive(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EFFS_ACTIVE))
     {
@@ -1836,7 +1838,7 @@ void handleEffsActive(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EFFS_ACTIVE);
 }
 
-void drawEvtsActive(CameraId cameraId, void *user)
+static void drawEvtsActive(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1870,7 +1872,7 @@ void drawEvtsActive(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
 }
 
-void handleEvtsActive(Displays *displaysPtr)
+static void handleEvtsActive(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE))
     {
@@ -1880,7 +1882,7 @@ void handleEvtsActive(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVTS_ACTIVE);
 }
 
-void drawEnemyEncounterNotifier(CameraId cameraId, void *user)
+static void drawEnemyEncounterNotifier(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1933,7 +1935,7 @@ void checkForEnemyEncounters(void *ptr)
     enemyEncounterNotifierPtr->incrementCounter();
 }
 
-void handleEnemyEncounterNotifier(Displays *displaysPtr)
+static void handleEnemyEncounterNotifier(Displays *displaysPtr)
 {
     if ((displaysPtr->getEnemyEncounterNotifierDisplayPtr()->getTimer() > 0) ||
         checkIfAdjustingManualPositionOrScale(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER))
@@ -1942,7 +1944,7 @@ void handleEnemyEncounterNotifier(Displays *displaysPtr)
     }
 }
 
-void drawJumpStorage(CameraId cameraId, void *user)
+static void drawJumpStorage(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -1971,7 +1973,7 @@ void drawJumpStorage(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), data.getPosY(), scale, 170.f * scale, getColorWhite(0xFF));
 }
 
-void handleJumpStorage(Displays *displaysPtr)
+static void handleJumpStorage(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JUMP_STORAGE))
     {
@@ -2003,7 +2005,7 @@ void handleJumpStorage(Displays *displaysPtr)
     }
 }
 
-void drawGuardSuperguardTimings(CameraId cameraId, void *user)
+static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -2285,7 +2287,7 @@ int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *
     return ret;
 }
 
-void handleGuardSuperguardTimings(Displays *displaysPtr)
+static void handleGuardSuperguardTimings(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_GUARD_SUPERGUARD_TIMINGS))
     {
@@ -2314,7 +2316,7 @@ void handleGuardSuperguardTimings(Displays *displaysPtr)
 }
 
 // Credits to PistonMiner for writing the original code for this function
-void drawHitCheckVisualization(CameraId cameraId, void *user)
+static void drawHitCheckVisualization(CameraId cameraId, void *user)
 {
     (void)user;
 
@@ -2548,7 +2550,7 @@ void handleHitCheckVisualization()
               nullptr);
 }
 
-void drawYoshiSkip(CameraId cameraId, void *user)
+static void drawYoshiSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -2594,7 +2596,7 @@ void drawYoshiSkip(CameraId cameraId, void *user)
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void handleYoshiSkip(Displays *displaysPtr)
+static void handleYoshiSkip(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP))
     {
@@ -2656,7 +2658,7 @@ void handleYoshiSkip(Displays *displaysPtr)
     }
 }
 
-void drawPalaceSkip(CameraId cameraId, void *user)
+static void drawPalaceSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -2790,7 +2792,7 @@ void drawPalaceSkip(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, getColorWhite(0xFF));
 }
 
-void handlePalaceSkip(Displays *displaysPtr)
+static void handlePalaceSkip(Displays *displaysPtr)
 {
     // Check to see if drawing the normal or minimal version of this display
     PalaceSkipDisplay *palaceSkipPtr = displaysPtr->getPalaceSkipDisplayPtr();
@@ -2870,7 +2872,7 @@ void handlePalaceSkip(Displays *displaysPtr)
     }
 }
 
-void drawJabbiHiveSkip(CameraId cameraId, void *user)
+static void drawJabbiHiveSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -2942,7 +2944,7 @@ void drawJabbiHiveSkip(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, data.getScale(), getColorWhite(0xFF));
 }
 
-void handleJabbiHiveSkip(Displays *displaysPtr)
+static void handleJabbiHiveSkip(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP))
     {
@@ -3108,7 +3110,7 @@ void handleJabbiHiveSkip(Displays *displaysPtr)
     }
 }
 
-void drawBridgeSkip(CameraId cameraId, void *user)
+static void drawBridgeSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -3198,7 +3200,7 @@ void *jumpOnWater(void *ptr)
 }
 #endif
 
-void handleBridgeSkip(Displays *displaysPtr)
+static void handleBridgeSkip(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP))
     {
@@ -3319,7 +3321,7 @@ void handleBridgeSkip(Displays *displaysPtr)
     }
 }
 
-void drawBlimpTicketSkip(CameraId cameraId, void *user)
+static void drawBlimpTicketSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -3374,7 +3376,7 @@ void drawBlimpTicketSkip(CameraId cameraId, void *user)
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void handleBlimpTicketSkip(Displays *displaysPtr)
+static void handleBlimpTicketSkip(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP))
     {
@@ -3455,7 +3457,7 @@ void handleBlimpTicketSkip(Displays *displaysPtr)
     }
 }
 
-void drawNpcNameToPtrError(CameraId cameraId, void *user)
+static void drawNpcNameToPtrError(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -3504,7 +3506,7 @@ NpcEntry *checkForNpcNameToPtrError(const char *name)
     return ret;
 }
 
-void handleNpcNameToPtrError(Displays *displaysPtr)
+static void handleNpcNameToPtrError(Displays *displaysPtr)
 {
     NpcNameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
     uint32_t timer = npcNameToPtrErrorPtr->getTimer();
@@ -3516,7 +3518,7 @@ void handleNpcNameToPtrError(Displays *displaysPtr)
     }
 }
 
-void drawAnimPoseMainError(CameraId cameraId, void *user)
+static void drawAnimPoseMainError(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -3563,7 +3565,7 @@ void preventAnimPoseMainCrash(int32_t poseId)
     return g_animPoseMain_trampoline(poseId);
 }
 
-void handleAnimPoseMainError(Displays *displaysPtr)
+static void handleAnimPoseMainError(Displays *displaysPtr)
 {
     AnimPoseMainErrorDisplay *animPoseMainErrorPtr = gDisplays->getAnimPoseMainErrorDisplayPtr();
     uint32_t timer = animPoseMainErrorPtr->getTimer();
@@ -3851,7 +3853,7 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
 
 // Handle setting up/calling display draw functions
 // The function order here needs to match the DisplaysShouldDrawFlag enum order
-const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] = {
+static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] = {
     // Bottom-left positioning
     drawButtonInputs,
     drawMarioCoordinatesMain,
@@ -3879,7 +3881,7 @@ const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] = {
     drawBlimpTicketSkip,
 };
 
-void runDisplayDrawFuncs(CameraId cameraId, void *user)
+static void runDisplayDrawFuncs(CameraId cameraId, void *user)
 {
     // Initialize text drawing
     drawTextInit(true);
@@ -3903,7 +3905,7 @@ void runDisplayDrawFuncs(CameraId cameraId, void *user)
 }
 
 // Handle setting up/calling displays
-const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
+static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleMarioCoordinates,
     handleMarioSpeedXZ,
     handleButtonInputs,
@@ -3917,7 +3919,7 @@ const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleAnimPoseMainError,
 };
 
-const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
+static const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
     handleOnScreenTimer,
     handleFrameCounter,
     handleJumpStorage,

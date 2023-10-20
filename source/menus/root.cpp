@@ -18,10 +18,13 @@
 
 #include <cstdint>
 
+static void draw(CameraId cameraId, void *user); // Called to handle drawing the root menu
+static void exit();                              // Called when exiting the root menu
+
 Window *gRootWindow = nullptr;
 RootMenu *gRootMenu = nullptr;
 
-const MenuOption gRootMenuOptions[] = {
+static const MenuOption gOptions[] = {
     "Inventory",
     inventoryMenuInit,
 
@@ -47,11 +50,11 @@ const MenuOption gRootMenuOptions[] = {
     warpsMenuInit,
 };
 
-const MenuFunctions gRootMenuFuncs = {
-    gRootMenuOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
-    rootMenuDraw,
-    rootMenuExit,
+    draw,
+    exit,
 };
 
 void rootMenuInit()
@@ -66,8 +69,8 @@ void rootMenuInit()
     gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 
     // Need to enter the root menu before initializing gRootMenu
-    constexpr uint32_t totalOptions = sizeof(gRootMenuOptions) / sizeof(MenuOption);
-    Menu *menuPtr = enterNextMenu(&gRootMenuFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    Menu *menuPtr = enterNextMenu(&gFuncs, totalOptions);
 
     // Failsafe: Make sure memory isn't already allocated for gRootMenu
     RootMenu *rootMenuPtr = gRootMenu;
@@ -80,7 +83,7 @@ void rootMenuInit()
     gRootMenu = new RootMenu(menuPtr, battlesErrorMessage);
 }
 
-void rootMenuExit()
+static void exit()
 {
     delete gRootMenu;
     gRootMenu = nullptr;
@@ -95,7 +98,7 @@ void rootMenuExit()
     setSystemLevel(0);
 }
 
-void rootMenuDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);

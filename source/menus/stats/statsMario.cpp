@@ -16,7 +16,12 @@
 #include <cstdio>
 #include <cinttypes>
 
-const IconId gStatsMenuMarioTextIcons[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionChangeValue(Menu *menuPtr);
+static void selectedOptionToggleSpecialMoves(Menu *menuPtr);
+
+static const IconId gOptionsIcons[] = {
     IconId::ICON_BATTLE_DROP_COIN,                      // Coins
     IconId::ICON_PAUSE_MENU_HEART,                      // HP
     IconId::ICON_PAUSE_MENU_FLOWER,                     // FP
@@ -36,63 +41,63 @@ const IconId gStatsMenuMarioTextIcons[] = {
     IconId::ICON_PIANTA,                                // Current Piantas
 };
 
-const MenuOption gStatsMenuMarioOptions[] = {
+static const MenuOption gOptions[] = {
     "Coins",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "HP",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "FP",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "BP",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Max HP",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Max FP",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Level",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Rank",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Star Points",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Star Pieces",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Shine Sprites",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Special Moves",
-    selectedOptionMenuMarioSpecialMoves,
+    selectedOptionToggleSpecialMoves,
 
     "Star Power",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Max Star Power",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Shop Points",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Piantas Stored",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 
     "Current Piantas",
-    selectedOptionMenuMarioChangeValue,
+    selectedOptionChangeValue,
 };
 
-const MenuFunctions gStatsMenuMarioFuncs = {
-    gStatsMenuMarioOptions,
-    statsMenuMarioControls,
-    statsMenuMarioDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -103,11 +108,11 @@ void statsMenuMarioInit(Menu *menuPtr)
     // Reset currentIndex
     gStatsMenu->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(gStatsMenuMarioOptions) / sizeof(MenuOption);
-    enterNextMenu(&gStatsMenuMarioFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+static void dpadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
 {
     menuControlsVertical(button,
                          currentIndexPtr,
@@ -118,7 +123,7 @@ void statsMenuMarioDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr
                          true);
 }
 
-void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     StatsMenu *statsMenuPtr = gStatsMenu;
 
@@ -152,7 +157,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                statsMenuMarioDPadControls(buttonHeld, statsMenuPtr->getCurrentIndexPtr());
+                dpadControls(buttonHeld, statsMenuPtr->getCurrentIndexPtr());
                 break;
             }
             default:
@@ -170,7 +175,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            statsMenuMarioDPadControls(button, statsMenuPtr->getCurrentIndexPtr());
+            dpadControls(button, statsMenuPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:
@@ -193,7 +198,7 @@ void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
+static int32_t getStat(const PouchData *pouchPtr, uint32_t index)
 {
     uint32_t piantaParlorPtrRaw = reinterpret_cast<uint32_t>(_yuugijouWorkPtr);
     switch (index)
@@ -269,7 +274,7 @@ int32_t getMarioStat(const PouchData *pouchPtr, uint32_t index)
     }
 }
 
-void menuMarioChangeValue(const ValueType *valuePtr)
+static void changeValue(const ValueType *valuePtr)
 {
     StatsMenu *statsMenuPtr = gStatsMenu;
 
@@ -432,7 +437,7 @@ void menuMarioChangeValue(const ValueType *valuePtr)
     statsMenuCancelChangingValue();
 }
 
-void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
+static void selectedOptionChangeValue(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -450,7 +455,7 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
     // Get the current, min, and max values
     // Also get the variable type
     const PouchData *pouchPtr = pouchGetPtr();
-    int32_t currentValue = getMarioStat(pouchPtr, index);
+    int32_t currentValue = getStat(pouchPtr, index);
 
     // Make sure the value isn't negative
     if (currentValue < 0)
@@ -524,15 +529,15 @@ void selectedOptionMenuMarioChangeValue(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(menuMarioChangeValue, statsMenuCancelChangingValue);
+    valueEditorPtr->startDrawing(changeValue, statsMenuCancelChangingValue);
 }
 
-void cancelMenuMarioToggleSpecialMoves()
+static void cancelToggleSpecialMoves()
 {
     gStatsMenu->getSpecialMoveTogglerPtr()->stopDrawing();
 }
 
-void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
+static void selectedOptionToggleSpecialMoves(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -542,7 +547,7 @@ void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     specialMoveTogglerPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    specialMoveTogglerPtr->startDrawing(nullptr, cancelMenuMarioToggleSpecialMoves);
+    specialMoveTogglerPtr->startDrawing(nullptr, cancelToggleSpecialMoves);
 }
 
 void StatsMenu::drawMarioStats() const
@@ -562,7 +567,7 @@ void StatsMenu::drawMarioStats() const
     float iconPosY = iconPosYBase;
 
     const uint32_t currentIndex = this->currentIndex;
-    const IconId *icons = gStatsMenuMarioTextIcons;
+    const IconId *optionsIconsPtr = gOptionsIcons;
     uint32_t counter = 0;
 
     // To avoid a lot of unnecessary extra GX calls, draw the icons first
@@ -600,7 +605,7 @@ void StatsMenu::drawMarioStats() const
         }
 
         // Draw the icon
-        drawIcon(iconPosX, tempPosY, scale, icons[i]);
+        drawIcon(iconPosX, tempPosY, scale, optionsIconsPtr[i]);
 
         // Draw the icons for the special moves
         if (i == StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
@@ -636,7 +641,7 @@ void StatsMenu::drawMarioStats() const
     float textPosYBase;
     getTextPosXYByIcon(iconPosXBase, iconPosYBase, scale, &textPosXBase, &textPosYBase);
 
-    const MenuOption *options = gStatsMenuMarioOptions;
+    const MenuOption *optionsPtr = gOptions;
     float textPosX = textPosXBase;
     float textPosY = textPosYBase;
 
@@ -667,13 +672,13 @@ void StatsMenu::drawMarioStats() const
 
         // Draw the main text
         uint32_t color = getCurrentOptionColor(currentIndex == i, 0xFF);
-        drawText(options[i].name, textPosX, textPosY, scale, color);
+        drawText(optionsPtr[i].name, textPosX, textPosY, scale, color);
 
         // Draw the value
         if (i != StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
             // Get the value for the current option
-            value = getMarioStat(pouchPtr, i);
+            value = getStat(pouchPtr, i);
 
             snprintf(buf, sizeof(buf), "%" PRId32, value);
             drawText(buf, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), TextAlignment::RIGHT);
@@ -683,7 +688,7 @@ void StatsMenu::drawMarioStats() const
     }
 }
 
-void statsMenuMarioDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

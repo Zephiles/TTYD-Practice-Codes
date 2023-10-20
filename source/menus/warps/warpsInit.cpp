@@ -15,14 +15,17 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gWarpsMenuCannotWarpText = "To warp, you must have a file loaded and\nnot be in a battle nor a screen transition.";
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void exit();
+static void selectedOptionSelectWarp(Menu *menuPtr);
 
-const char *gWarpsMenuInitDestinations[] = {
+static const char *gDestinations[] = {
     "gor_01",   "tik_00", "hei_00", "gon_00", "win_06", "mri_01", "tou_02", "tou_05", "usu_00", "jin_00", "muj_01", "dou_00",
     "rsh_02_a", "eki_00", "pik_00", "bom_00", "moo_00", "aji_00", "aji_13", "las_00", "las_09", "las_27", "jon_0x", "title",
 };
 
-const char *gWarpsMenuInitDestinationsDescriptions[] = {
+static const char *gDestinationsDescriptions[] = {
     "Rogueport Central",
     "Rogueport Sewers - Underground Shop",
     "Petal Meadows - Entrance",
@@ -49,11 +52,13 @@ const char *gWarpsMenuInitDestinationsDescriptions[] = {
     "Title Screen",
 };
 
+const char *gWarpsMenuCannotWarpText = "To warp, you must have a file loaded and\nnot be in a battle nor a screen transition.";
+
 WarpsMenu *gWarpsMenu = nullptr;
 
-const MenuOption gWarpsMenuInitOptions[] = {
+static const MenuOption gOptions[] = {
     "Select Warp",
-    warpsMenuInitSelectWarp,
+    selectedOptionSelectWarp,
 
     "Warp By Event",
     warpsMenuEventInit,
@@ -68,11 +73,11 @@ const MenuOption gWarpsMenuInitOptions[] = {
     warpsMenuCustomStatesInit,
 };
 
-const MenuFunctions gWarpsMenuInitFuncs = {
-    gWarpsMenuInitOptions,
-    warpsMenuInitControls,
-    warpsMenuInitDraw,
-    warpsMenuInitExit,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
+    exit,
 };
 
 void warpsMenuInit(Menu *menuPtr)
@@ -89,13 +94,13 @@ void warpsMenuInit(Menu *menuPtr)
     warpsMenuPtr = new WarpsMenu;
     gWarpsMenu = warpsMenuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gWarpsMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void warpsMenuInitFlagSetControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+static void flagSetControls(MenuButtonInput button, uint8_t *currentIndexPtr)
 {
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuInitDestinations) / sizeof(const char *);
+    constexpr uint32_t totalOptions = sizeof(gDestinations) / sizeof(const char *);
     constexpr uint32_t totalRows = intCeil(totalOptions, WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW);
     constexpr uint32_t totalOptionsPerPage = totalRows * WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW;
 
@@ -108,7 +113,7 @@ void warpsMenuInitFlagSetControls(MenuButtonInput button, uint8_t *currentIndexP
                          true);
 }
 
-void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
@@ -141,7 +146,7 @@ void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                warpsMenuInitFlagSetControls(buttonHeld, warpsMenuPtr->getCurrentIndexPtr());
+                flagSetControls(buttonHeld, warpsMenuPtr->getCurrentIndexPtr());
                 break;
             }
             default:
@@ -159,7 +164,7 @@ void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            warpsMenuInitFlagSetControls(button, warpsMenuPtr->getCurrentIndexPtr());
+            flagSetControls(button, warpsMenuPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:
@@ -199,7 +204,7 @@ void WarpsMenu::drawSelectInitWarpInfo()
 
     // Make sure the current index is valid
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    constexpr uint32_t totalWarpOptions = sizeof(gWarpsMenuInitDestinations) / sizeof(const char *);
+    constexpr uint32_t totalWarpOptions = sizeof(gDestinations) / sizeof(const char *);
     uint32_t currentIndex = gWarpsMenu->getCurrentIndex();
 
     if (currentIndex >= totalWarpOptions)
@@ -212,7 +217,7 @@ void WarpsMenu::drawSelectInitWarpInfo()
     // Draw each warp option
     const bool selectingWarp = menuPtr->flagIsSet(WarpsMenuInitFlag::WARPS_MENU_INIT_FLAG_SELECTING_WARP_OPTION);
     constexpr uint32_t totalWarpRows = intCeil(totalWarpOptions, WARPS_MENU_INIT_MAX_OPTIONS_PER_ROW);
-    const char **warpDestinationsPtr = gWarpsMenuInitDestinations;
+    const char **destinationsPtr = gDestinations;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     constexpr float posXIncrement = 100.f;
 
@@ -239,7 +244,7 @@ void WarpsMenu::drawSelectInitWarpInfo()
             color = getCurrentOptionColor(currentIndex == i, 0xFF);
         }
 
-        drawText(warpDestinationsPtr[i], posX, posY, scale, color);
+        drawText(destinationsPtr[i], posX, posY, scale, color);
         posY -= lineDecrement;
     }
 
@@ -247,11 +252,11 @@ void WarpsMenu::drawSelectInitWarpInfo()
     if (selectingWarp)
     {
         posY = posYBase - lineDecrement - (lineDecrement * intToFloat(totalWarpRows));
-        drawText(gWarpsMenuInitDestinationsDescriptions[currentIndex], posXBase, posY, scale, getColorWhite(0xFF));
+        drawText(gDestinationsDescriptions[currentIndex], posXBase, posY, scale, getColorWhite(0xFF));
     }
 }
 
-void warpsMenuInitDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -275,7 +280,7 @@ void warpsMenuInitDraw(CameraId cameraId, void *user)
     }
 }
 
-void warpsMenuInitExit()
+static void exit()
 {
     delete gWarpsMenu;
     gWarpsMenu = nullptr;
@@ -292,7 +297,7 @@ void WarpsMenu::initErrorWindow(const char *text)
     errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
 }
 
-uint32_t warpToMap(uint32_t index)
+static uint32_t warpToMap(uint32_t index)
 {
     // Make sure a file is currently loaded and the player is not currently transitioning screens nor in a battle
     if (!checkIfInGame())
@@ -301,7 +306,7 @@ uint32_t warpToMap(uint32_t index)
     }
 
     // Make sure the index is valid
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuInitDestinations) / sizeof(const char *);
+    constexpr uint32_t totalOptions = sizeof(gDestinations) / sizeof(const char *);
     if (index >= totalOptions)
     {
         return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_INVALID_INDEX;
@@ -362,7 +367,7 @@ uint32_t warpToMap(uint32_t index)
     }
     else
     {
-        map = gWarpsMenuInitDestinations[index];
+        map = gDestinations[index];
     }
 
     // Warp to the new map
@@ -372,7 +377,7 @@ uint32_t warpToMap(uint32_t index)
     return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_SUCCESS;
 }
 
-bool warpToMapSelectWarp()
+static bool selectWarp()
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
     switch (warpToMap(warpsMenuPtr->getCurrentIndex()))
@@ -397,12 +402,12 @@ bool warpToMapSelectWarp()
     return false;
 }
 
-void warpsMenuInitSelectedPitLevel(const ValueType *valuePtr)
+static void selectedPitLevel(const ValueType *valuePtr)
 {
     setCurrentPitLevel(valuePtr->u32);
 
     // Warp to the selected level of the Pit
-    if (warpToMapSelectWarp())
+    if (selectWarp())
     {
         return;
     }
@@ -411,7 +416,7 @@ void warpsMenuInitSelectedPitLevel(const ValueType *valuePtr)
     warpsMenuCloseValueEditor();
 }
 
-void warpsMenuInitSelectWarp(Menu *menuPtr)
+static void selectedOptionSelectWarp(Menu *menuPtr)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
@@ -451,12 +456,12 @@ void warpsMenuInitSelectWarp(Menu *menuPtr)
         valueEditorPtr
             ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::u8, rootWindowPtr->getAlpha());
 
-        valueEditorPtr->startDrawing(warpsMenuInitSelectedPitLevel, warpsMenuCloseValueEditor);
+        valueEditorPtr->startDrawing(selectedPitLevel, warpsMenuCloseValueEditor);
     }
     else
     {
         // Warp to the selected map
-        if (warpToMapSelectWarp())
+        if (selectWarp())
         {
             return;
         }

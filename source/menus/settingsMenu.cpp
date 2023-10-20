@@ -13,36 +13,44 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gSettingsFileNotFoundText = "The Settings file was not found on the memory card.";
-const char *gSettingsMemoryCardInUseText = "The memory card is currently already in use.";
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void exit();
 
-const char *gSettingsFileInvalidVersionText =
-    "The Settings file's version does not support\nthis version of the Practice Codes";
+static void selectedOptionChangeMemoryCardSlot(Menu *menuPtr);
+static void selectedOptionChangeWindowColor(Menu *menuPtr);
+static void selectedOptionDeleteSettingsFile(Menu *menuPtr);
+static void selectedOptionLoadSettings(Menu *menuPtr);
+static void selectedOptionSaveSettings(Menu *menuPtr);
+
+static const char *gFileNotFound = "The Settings file was not found on the memory card.";
+static const char *gMemoryCardInUse = "The memory card is currently already in use.";
+static const char *gInvalidVersionText = "The Settings file's version does not support\nthis version of the Practice Codes";
 
 SettingsMenu *gSettingsMenu = nullptr;
 
-const MenuOption gSettingssMenuInitOptions[] = {
+static const MenuOption gOptions[] = {
     "Change Memory Card Slot",
-    settingsMenuToggleMemoryCardSlot,
+    selectedOptionChangeMemoryCardSlot,
 
     "Change Window Color",
-    settingsMenuSelectedChangeWindowColor,
+    selectedOptionChangeWindowColor,
 
     "Delete Settings File",
-    settingsMenuSelectedDeleteSettingsFile,
+    selectedOptionDeleteSettingsFile,
 
     "Load Settings",
-    settingsMenuSelectedLoadSettingsFile,
+    selectedOptionLoadSettings,
 
     "Save Settings",
-    settingsMenuSelectedSaveSettingsFile,
+    selectedOptionSaveSettings,
 };
 
-const MenuFunctions gSettingssMenuInitFuncs = {
-    gSettingssMenuInitOptions,
-    settingsMenuInitControls,
-    settingsMenuInitDraw,
-    settingsMenuInitExit,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
+    exit,
 };
 
 void settingsMenuInit(Menu *menuPtr)
@@ -63,11 +71,11 @@ void settingsMenuInit(Menu *menuPtr)
     settingsMenuPtr->setRootWindowBackupColor(gRootWindow->getColor());
 
     // Enter the menu
-    constexpr uint32_t totalOptions = sizeof(gSettingssMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gSettingssMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void settingsMenuInitControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     SettingsMenu *settingsMenuPtr = gSettingsMenu;
 
@@ -129,7 +137,7 @@ void SettingsMenu::drawSettingsMenuInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void settingsMenuInitDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -169,7 +177,7 @@ void settingsMenuInitDraw(CameraId cameraId, void *user)
     }
 }
 
-void settingsMenuInitExit()
+static void exit()
 {
     // The player may have manually closed the menu via L + Start, so must restore the window color here in case the player
     // closed the menu while changing the window color
@@ -180,19 +188,19 @@ void settingsMenuInitExit()
     gSettingsMenu = nullptr;
 }
 
-void settingsMenuToggleMemoryCardSlot(Menu *menuPtr)
+static void selectedOptionChangeMemoryCardSlot(Menu *menuPtr)
 {
     (void)menuPtr;
 
     gSettingsMenu->toggleMemoryCardSlot();
 }
 
-void settingsMenuCloseConfirmationWindow()
+static void closeConfirmationWindow()
 {
     gSettingsMenu->getConfirmationWindowPtr()->stopDrawing();
 }
 
-void settingsMenuInitConfirmationWindow(const char *helpTextPtr, ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
+static void initConfirmationWindow(const char *helpTextPtr, ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
 {
     // Initialize the confirmation window
     SettingsMenu *settingsMenuPtr = gSettingsMenu;
@@ -204,7 +212,7 @@ void settingsMenuInitConfirmationWindow(const char *helpTextPtr, ConfirmationWin
     confirmationWindowPtr->startDrawing(selectedOptionFunc);
 }
 
-void settingsMenuDeleteSettingsFile(bool selectedYes)
+static void sDeleteSettingsFile(bool selectedYes)
 {
     if (selectedYes)
     {
@@ -213,12 +221,12 @@ void settingsMenuDeleteSettingsFile(bool selectedYes)
         {
             case CARD_RESULT_CARD_IN_USE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsMemoryCardInUseText);
+                settingsMenuPtr->initErrorWindow(gMemoryCardInUse);
                 break;
             }
             case CARD_RESULT_NOFILE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsFileNotFoundText);
+                settingsMenuPtr->initErrorWindow(gFileNotFound);
                 break;
             }
             case CARD_RESULT_READY:
@@ -235,18 +243,18 @@ void settingsMenuDeleteSettingsFile(bool selectedYes)
     }
 
     // Close the confirmation window
-    settingsMenuCloseConfirmationWindow();
+    closeConfirmationWindow();
 }
 
-void settingsMenuSelectedDeleteSettingsFile(Menu *menuPtr)
+static void selectedOptionDeleteSettingsFile(Menu *menuPtr)
 {
     (void)menuPtr;
 
     const char *helpText = "Are you sure you want to delete the\nSettings file?";
-    settingsMenuInitConfirmationWindow(helpText, settingsMenuDeleteSettingsFile);
+    initConfirmationWindow(helpText, sDeleteSettingsFile);
 }
 
-void settingsMenuLoadSettingsFile(bool selectedYes)
+static void sLoadSettings(bool selectedYes)
 {
     if (selectedYes)
     {
@@ -255,17 +263,17 @@ void settingsMenuLoadSettingsFile(bool selectedYes)
         {
             case CARD_RESULT_INVALID_SETTNGS_VERSION:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsFileInvalidVersionText);
+                settingsMenuPtr->initErrorWindow(gInvalidVersionText);
                 break;
             }
             case CARD_RESULT_CARD_IN_USE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsMemoryCardInUseText);
+                settingsMenuPtr->initErrorWindow(gMemoryCardInUse);
                 break;
             }
             case CARD_RESULT_NOFILE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsFileNotFoundText);
+                settingsMenuPtr->initErrorWindow(gFileNotFound);
                 break;
             }
             case CARD_RESULT_READY:
@@ -285,10 +293,10 @@ void settingsMenuLoadSettingsFile(bool selectedYes)
     }
 
     // Close the confirmation window
-    settingsMenuCloseConfirmationWindow();
+    closeConfirmationWindow();
 }
 
-void settingsMenuSelectedLoadSettingsFile(Menu *menuPtr)
+static void selectedOptionLoadSettings(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -296,10 +304,10 @@ void settingsMenuSelectedLoadSettingsFile(Menu *menuPtr)
         "Are you sure you want to load the\nsettings from the Settings file? Your\ncurrent settings will be overwritten\nwith "
         "the settings from the Settings file.";
 
-    settingsMenuInitConfirmationWindow(helpText, settingsMenuLoadSettingsFile);
+    initConfirmationWindow(helpText, sLoadSettings);
 }
 
-void settingsMenuSaveSettingsFile(bool selectedYes)
+static void sSaveSettings(bool selectedYes)
 {
     if (selectedYes)
     {
@@ -308,12 +316,12 @@ void settingsMenuSaveSettingsFile(bool selectedYes)
         {
             case CARD_RESULT_CARD_IN_USE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsMemoryCardInUseText);
+                settingsMenuPtr->initErrorWindow(gMemoryCardInUse);
                 break;
             }
             case CARD_RESULT_NOFILE:
             {
-                settingsMenuPtr->initErrorWindow(gSettingsFileNotFoundText);
+                settingsMenuPtr->initErrorWindow(gFileNotFound);
                 break;
             }
             case CARD_RESULT_READY:
@@ -330,10 +338,10 @@ void settingsMenuSaveSettingsFile(bool selectedYes)
     }
 
     // Close the confirmation window
-    settingsMenuCloseConfirmationWindow();
+    closeConfirmationWindow();
 }
 
-void settingsMenuSelectedSaveSettingsFile(Menu *menuPtr)
+static void selectedOptionSaveSettings(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -341,10 +349,10 @@ void settingsMenuSelectedSaveSettingsFile(Menu *menuPtr)
         "Are you sure you want to save your\ncurrent settings? The settings in the\nsettings file will be overwritten "
         "with\nyour current settings.";
 
-    settingsMenuInitConfirmationWindow(helpText, settingsMenuSaveSettingsFile);
+    initConfirmationWindow(helpText, sSaveSettings);
 }
 
-void settingsMenuCancelSetWindowColor()
+static void cancelSetWindowColor()
 {
     // Reset gRootWindow's color to the backup color
     SettingsMenu *settingsMenuPtr = gSettingsMenu;
@@ -354,7 +362,7 @@ void settingsMenuCancelSetWindowColor()
     settingsMenuPtr->getValueEditorPtr()->stopDrawing();
 }
 
-void settingsMenuSetWindowColor(const ValueType *valuePtr)
+static void setWindowColor(const ValueType *valuePtr)
 {
     // Update gRootWindow's color as well as the backup color
     const uint32_t color = valuePtr->u32;
@@ -367,7 +375,7 @@ void settingsMenuSetWindowColor(const ValueType *valuePtr)
     settingsMenuPtr->getValueEditorPtr()->stopDrawing();
 }
 
-void settingsMenuSelectedChangeWindowColor(Menu *menuPtr)
+static void selectedOptionChangeWindowColor(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -383,7 +391,7 @@ void settingsMenuSelectedChangeWindowColor(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
 
     valueEditorPtr->init(&currentValue, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(settingsMenuSetWindowColor, settingsMenuCancelSetWindowColor);
+    valueEditorPtr->startDrawing(setWindowColor, cancelSetWindowColor);
 }
 
 void SettingsMenu::initErrorWindow(const char *text)

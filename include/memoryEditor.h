@@ -103,14 +103,13 @@ class MemoryEditor
         this->displayed = !displayed;
     }
 
-    void dpadControls(MenuButtonInput button);
     void controls(MenuButtonInput button);
-
     void draw() const;
 
    private:
     bool checkIfAddressInHoverRange(const uint8_t *address, uint32_t currentDigit) const;
     void adjustDigitValueFromAddress(uint32_t currentDigit, int32_t adjustAmount);
+    void dpadControls(MenuButtonInput button);
 
     uint32_t enabledFlags[MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE];
 

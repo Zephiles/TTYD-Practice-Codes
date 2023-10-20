@@ -14,7 +14,10 @@
 #include <cstdio>
 #include <cinttypes>
 
-const IconId gBattlesStatusesOptionsIcons[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+
+static const IconId gOptionsIcons[] = {
     IconId::ICON_SLEEPY_SHEEP,           // Sleep
     IconId::ICON_STOPWATCH,              // Stop
     IconId::ICON_DIZZY_DIAL,             // Dizzy
@@ -44,7 +47,7 @@ const IconId gBattlesStatusesOptionsIcons[] = {
     IconId::ICON_UNKNOWN_WHITE_LARGE_X,  // Defeated Flag
 };
 
-const char *gBattlesStatusesOptions[] = {
+static const char *gOptions[] = {
     "Sleep Turns Left",          "Immobilized Turns Left", "Dizzy Turns Left",
     "Poison Turns Left",         "Poison Damage Amount",   "Confused Turns Left",
     "Electrified Turns Left",    "Dodgy Turns Left",       "Burn Turns Left",
@@ -56,12 +59,12 @@ const char *gBattlesStatusesOptions[] = {
     "FP Regen Turns Left",       "FP Regen Amount",        "Defeated Flag",
 };
 
-const MenuFunctions gBattlesMenuStatusesFuncs = {
+static const MenuFunctions gFuncs = {
     nullptr, // All of the options will use the same function, and the drawing code will not use the default function, so avoid
              // an array of MenuOption to save memory
 
-    battlesMenuStatusesControls,
-    battlesMenuStatusesDraw,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -69,11 +72,11 @@ void battlesMenuStatusesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gBattlesStatusesOptions) / sizeof(gBattlesStatusesOptions[0]);
-    enterNextMenu(&gBattlesMenuStatusesFuncs, totalOptions, BATTLES_STATUSES_MAX_STATUSES_PER_PAGE);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(const char *);
+    enterNextMenu(&gFuncs, totalOptions, BATTLES_STATUSES_MAX_STATUSES_PER_PAGE);
 }
 
-int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)
+static int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)
 {
     uint32_t counter = 0;
 
@@ -94,7 +97,7 @@ int8_t *getActorStatusPtr(BattleWorkUnit *actorPtr, uint32_t index)
     return reinterpret_cast<int8_t *>(reinterpret_cast<uint32_t>(&actorPtr->sleep_turns) + index + counter);
 }
 
-void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
+static void changeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
     BattleWorkUnit *actorPtr = getActorBattlePtr(gBattlesMenu->getCurrentActorIndex());
@@ -107,7 +110,7 @@ void menuBattlesStatusesChangeValue(const ValueType *valuePtr)
     battlesMenuCancelChangeValue();
 }
 
-void battlesMenuStatusesDPadControls(MenuButtonInput button, Menu *menuPtr, uint32_t totalOptions)
+static void dpadControls(MenuButtonInput button, Menu *menuPtr, uint32_t totalOptions)
 {
     menuControlsVertical(button,
                          menuPtr->getCurrentIndexPtr(),
@@ -118,7 +121,7 @@ void battlesMenuStatusesDPadControls(MenuButtonInput button, Menu *menuPtr, uint
                          false);
 }
 
-void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
@@ -147,7 +150,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
 
     // Make sure the current index is valid
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-    constexpr uint32_t totalOptions = sizeof(gBattlesStatusesOptions) / sizeof(gBattlesStatusesOptions[0]);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(const char *);
 
     if (currentIndex >= totalOptions)
     {
@@ -168,7 +171,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                battlesMenuStatusesDPadControls(buttonHeld, menuPtr, totalOptions);
+                dpadControls(buttonHeld, menuPtr, totalOptions);
                 break;
             }
             default:
@@ -186,7 +189,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            battlesMenuStatusesDPadControls(button, menuPtr, totalOptions);
+            dpadControls(button, menuPtr, totalOptions);
             break;
         }
         case MenuButtonInput::A:
@@ -248,7 +251,7 @@ void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button)
                                      VariableType::s8,
                                      rootWindowPtr->getAlpha());
 
-                valueEditorPtr->startDrawing(menuBattlesStatusesChangeValue, battlesMenuCancelChangeValue);
+                valueEditorPtr->startDrawing(changeValue, battlesMenuCancelChangeValue);
             }
             break;
         }
@@ -298,8 +301,8 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
     const uint32_t startingIndex = currentPage * BATTLES_STATUSES_MAX_STATUSES_PER_PAGE;
     const uint32_t endingIndex = startingIndex + BATTLES_STATUSES_MAX_STATUSES_PER_PAGE;
 
-    const IconId *optionsIcons = gBattlesStatusesOptionsIcons;
-    constexpr uint32_t totalOptions = sizeof(gBattlesStatusesOptions) / sizeof(gBattlesStatusesOptions[0]);
+    const IconId *optionsIconsPtr = gOptionsIcons;
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(const char *);
 
     // Draw the icons
     uint32_t counter = 0;
@@ -332,7 +335,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
                                   0.f);
         }
 
-        drawIcon(posX, posY, scale, optionsIcons[i]);
+        drawIcon(posX, posY, scale, optionsIconsPtr[i]);
         posY -= lineDecrement;
     }
 
@@ -355,7 +358,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
     posY = valuesPosYBase;
 
     // Draw the text
-    const char **statusesOptionsPtr = gBattlesStatusesOptions;
+    const char **optionsPtr = gOptions;
 
     for (uint32_t i = startingIndex; i < endingIndex; i++)
     {
@@ -367,7 +370,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
 
         // Draw the main text
         uint32_t color = getCurrentOptionColor(currentIndex == i, 0xFF);
-        drawText(statusesOptionsPtr[i], posX, posY, scale, color);
+        drawText(optionsPtr[i], posX, posY, scale, color);
 
         // Draw the current value
         int32_t value = *getActorStatusPtr(actorPtr, i);
@@ -389,7 +392,7 @@ void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
     }
 }
 
-void battlesMenuStatusesDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

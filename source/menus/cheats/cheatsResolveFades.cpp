@@ -9,27 +9,30 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuResolveFadeOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionResolveFade(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Slot 1:",
-    cheatsMenuResolveFadeHandleResolve,
+    selectedOptionResolveFade,
 
     "Slot 2:",
-    cheatsMenuResolveFadeHandleResolve,
+    selectedOptionResolveFade,
 
     "Slot 3:",
-    cheatsMenuResolveFadeHandleResolve,
+    selectedOptionResolveFade,
 
     "Slot 4:",
-    cheatsMenuResolveFadeHandleResolve,
+    selectedOptionResolveFade,
 
     "Slot 5:",
-    cheatsMenuResolveFadeHandleResolve,
+    selectedOptionResolveFade,
 };
 
-const MenuFunctions gCheatsMenuResolveFadeInitFuncs = {
-    gCheatsMenuResolveFadeOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
-    cheatsMenuResolveFadesDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -37,8 +40,8 @@ void cheatsMenuResolveFadesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuResolveFadeOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuResolveFadeInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawResolveFadesInfo(float offsetY) const
@@ -90,7 +93,7 @@ void CheatsMenu::drawResolveFadesInfo(float offsetY) const
     }
 }
 
-void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     // Help text will be drawn at the top-left of the window, so draw the main text two lines under it
@@ -111,7 +114,7 @@ void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr)
+static void selectedOptionResolveFade(Menu *menuPtr)
 {
     const char *errorMessage;
 

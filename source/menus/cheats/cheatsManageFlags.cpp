@@ -13,16 +13,20 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gCheatsMenuManageFlagsGlobalWordsOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void variablesControls(Menu *menuPtr, MenuButtonInput button);
+static void flagsControls(Menu *menuPtr, MenuButtonInput button);
+
+static const char *gGlobalWordsOptions[] = {
     "Change Value",
     "Set New Value", // The code assumes that Set New Value will be the last option
 };
 
-const char *gCheatsMenuManageFlagsGlobalFlagsOptions[] = {
+static const char *gGlobalFlagsOptions[] = {
     "Toggle Value", // The code assumes that Toggle Value will be the last option
 };
 
-void cheatsMenuManageFlagsSetValue(const ValueType *valuePtr)
+static void flagsSetValue(const ValueType *valuePtr)
 {
     CheatsMenu *cheatsPtr = gCheatsMenu;
     const uint32_t value = valuePtr->u32;
@@ -41,16 +45,16 @@ void cheatsMenuManageFlagsSetValue(const ValueType *valuePtr)
 }
 
 // Menu for working with flags
-const MenuFunctions gCheatsMenuManageFlagsFlagsFuncs = {
+static const MenuFunctions gFlagsFuncs = {
     nullptr, // The first line of the options will be different depending on which flag was selected, so all of the options must
              // be drawn manually
 
-    cheatsMenuManageFlagsFlagsControls,
-    cheatsMenuManageFlagsDraw,
+    flagsControls,
+    draw,
     nullptr, // Exit function not needed
 };
 
-void cheatsMenuManageFlagsFlagsInit(Menu *menuPtr)
+static void selectedOptionSetFlags(Menu *menuPtr)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -61,11 +65,11 @@ void cheatsMenuManageFlagsFlagsInit(Menu *menuPtr)
     cheatsMenuPtr->setFlagVariableToSet(0);
     cheatsMenuPtr->setFlagVariableValue(0);
 
-    constexpr uint32_t totalOptions = (sizeof(gCheatsMenuManageFlagsGlobalFlagsOptions) / sizeof(const char *)) + 1;
-    enterNextMenu(&gCheatsMenuManageFlagsFlagsFuncs, totalOptions);
+    constexpr uint32_t totalOptions = (sizeof(gGlobalFlagsOptions) / sizeof(const char *)) + 1;
+    enterNextMenu(&gFlagsFuncs, totalOptions);
 }
 
-void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
+static void flagsControls(Menu *menuPtr, MenuButtonInput button)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -125,13 +129,7 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
                 flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-                cheatsMenuInitValueEditor(currentValue,
-                                          minValue,
-                                          maxValue,
-                                          flags,
-                                          VariableType::u32,
-                                          true,
-                                          cheatsMenuManageFlagsSetValue);
+                cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u32, true, flagsSetValue);
             }
             else
             {
@@ -184,16 +182,16 @@ void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button)
 }
 
 // Menu for working with non-flag variables
-const MenuFunctions gCheatsMenuManageFlagsVariableFuncs = {
+static const MenuFunctions gVariableFuncs = {
     nullptr, // The first line of the options will be different depending on which non-flag variable was selected, so all of the
              // options must be drawn manually
 
-    cheatsMenuManageFlagsVariablesControls,
-    cheatsMenuManageFlagsDraw,
+    variablesControls,
+    draw,
     nullptr, // Exit function not needed
 };
 
-void cheatsMenuManageFlagsVariablesInit(Menu *menuPtr)
+static void selectedOptionSetVariables(Menu *menuPtr)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -204,11 +202,11 @@ void cheatsMenuManageFlagsVariablesInit(Menu *menuPtr)
     cheatsMenuPtr->setFlagVariableToSet(0);
     cheatsMenuPtr->setFlagVariableValue(0);
 
-    constexpr uint32_t totalOptions = (sizeof(gCheatsMenuManageFlagsGlobalWordsOptions) / sizeof(const char *)) + 1;
-    enterNextMenu(&gCheatsMenuManageFlagsVariableFuncs, totalOptions);
+    constexpr uint32_t totalOptions = (sizeof(gGlobalWordsOptions) / sizeof(const char *)) + 1;
+    enterNextMenu(&gVariableFuncs, totalOptions);
 }
 
-void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput button)
+static void variablesControls(Menu *menuPtr, MenuButtonInput button)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -314,7 +312,7 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
                                           flags,
                                           VariableType::u32,
                                           hasMinAndMax,
-                                          cheatsMenuManageFlagsSetValue);
+                                          flagsSetValue);
             }
             else
             {
@@ -354,28 +352,28 @@ void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput butto
 }
 
 // Menu for determining which set of variables/flags to work with
-const MenuOption gCheatsMenuManageFlagsInitOptions[] = {
+static const MenuOption gInitOptions[] = {
     "Set GSWs",
-    cheatsMenuManageFlagsVariablesInit,
+    selectedOptionSetVariables,
 
     "Set GSWFs",
-    cheatsMenuManageFlagsFlagsInit,
+    selectedOptionSetFlags,
 
     "Set GWs",
-    cheatsMenuManageFlagsVariablesInit,
+    selectedOptionSetVariables,
 
     "Set GFs",
-    cheatsMenuManageFlagsFlagsInit,
+    selectedOptionSetFlags,
 
     "Set LSWs",
-    cheatsMenuManageFlagsVariablesInit,
+    selectedOptionSetVariables,
 
     "Set LSWFs",
-    cheatsMenuManageFlagsFlagsInit,
+    selectedOptionSetFlags,
 };
 
-const MenuFunctions gCheatsMenuManageFlagsInitFuncs = {
-    gCheatsMenuManageFlagsInitOptions,
+static const MenuFunctions gInitFuncs = {
+    gInitOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDraw,
     nullptr, // Exit function not needed
@@ -385,8 +383,8 @@ void cheatsMenuManageFlagsInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuManageFlagsInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuManageFlagsInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gInitOptions) / sizeof(MenuOption);
+    enterNextMenu(&gInitFuncs, totalOptions);
 }
 
 void CheatsMenu::drawManageFlagsInfo() const
@@ -402,7 +400,7 @@ void CheatsMenu::drawManageFlagsInfo() const
 
     // Determine if working with variables or flags
     bool changingWord;
-    const char **lines;
+    const char **linesPtr;
 
     const uint32_t selectedOption = this->currentIndex;
     switch (selectedOption)
@@ -412,7 +410,7 @@ void CheatsMenu::drawManageFlagsInfo() const
         case ManageFlagsOptions::MANAGE_FLAGS_LSW:
         {
             changingWord = true;
-            lines = gCheatsMenuManageFlagsGlobalWordsOptions;
+            linesPtr = gGlobalWordsOptions;
             break;
         }
         case ManageFlagsOptions::MANAGE_FLAGS_GSWF:
@@ -420,7 +418,7 @@ void CheatsMenu::drawManageFlagsInfo() const
         case ManageFlagsOptions::MANAGE_FLAGS_LSWF:
         {
             changingWord = false;
-            lines = gCheatsMenuManageFlagsGlobalFlagsOptions;
+            linesPtr = gGlobalFlagsOptions;
             break;
         }
         default:
@@ -494,7 +492,7 @@ void CheatsMenu::drawManageFlagsInfo() const
         }
         else
         {
-            drawText(lines[lineIndex++], posX, posY, scale, color);
+            drawText(linesPtr[lineIndex++], posX, posY, scale, color);
         }
 
         posY -= lineDecrement;
@@ -546,7 +544,7 @@ void CheatsMenu::drawManageFlagsInfo() const
     }
 }
 
-void cheatsMenuManageFlagsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

@@ -13,13 +13,17 @@
 #include <cstdio>
 #include <cinttypes>
 
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void exit();
+
 BattlesMenu *gBattlesMenu = nullptr;
 
-const MenuFunctions gBattlesMenuInitFuncs = {
+static const MenuFunctions gFuncs = {
     nullptr, // The amount of options depends on the amount of actors currently in a battle, so that must be handled manually
-    battlesMenuInitControls,
-    battlesMenuInitDraw,
-    battlesMenuInitExit,
+    controls,
+    draw,
+    exit,
 };
 
 void battlesMenuInit(Menu *menuPtr)
@@ -32,7 +36,7 @@ void battlesMenuInit(Menu *menuPtr)
     }
 
     // Need to enter the battles menu before initializing gBattlesMenu
-    menuPtr = enterNextMenu(&gBattlesMenuInitFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
+    menuPtr = enterNextMenu(&gFuncs, getbattlesMenuInitMaxIndex(), BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE);
 
     // Failsafe: Make sure memory isn't already allocated for gBattlesMenu
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
@@ -44,13 +48,13 @@ void battlesMenuInit(Menu *menuPtr)
     gBattlesMenu = new BattlesMenu(menuPtr);
 }
 
-void battlesMenuInitExit()
+static void exit()
 {
     delete gBattlesMenu;
     gBattlesMenu = nullptr;
 }
 
-uint32_t getBattleActorsHighestIndex()
+static uint32_t getBattleActorsHighestIndex()
 {
     const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
 
@@ -66,7 +70,7 @@ uint32_t getBattleActorsHighestIndex()
     return counter;
 }
 
-void battlesMenuInitDPadControls(Menu *menuPtr, MenuButtonInput button)
+static void dpadControls(Menu *menuPtr, MenuButtonInput button)
 {
     int32_t highestIndex = static_cast<int32_t>(getBattleActorsHighestIndex());
 
@@ -137,7 +141,7 @@ void battlesMenuInitDPadControls(Menu *menuPtr, MenuButtonInput button)
                          false);
 }
 
-void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
@@ -159,7 +163,7 @@ void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                battlesMenuInitDPadControls(menuPtr, buttonHeld);
+                dpadControls(menuPtr, buttonHeld);
                 break;
             }
             default:
@@ -175,7 +179,7 @@ void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            battlesMenuInitDPadControls(menuPtr, button);
+            dpadControls(menuPtr, button);
             break;
         }
         case MenuButtonInput::A:
@@ -304,7 +308,7 @@ void BattlesMenu::drawBattlesActors() const
     }
 }
 
-void battlesMenuInitDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

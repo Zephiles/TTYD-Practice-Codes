@@ -10,7 +10,18 @@
 
 #include <cstdint>
 
-const char *gSpecialMoveTogglerHelpText = "Press A to turn on/off\nPress B to cancel";
+static const char *gHelpText = "Press A to turn on/off\nPress B to cancel";
+
+static const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
+    "Sweet Treat",
+    "Earth Tremor",
+    "Clock Out",
+    "Power Lift",
+    "Art Attack",
+    "Sweet Feast",
+    "Showstopper",
+    "Supernova",
+};
 
 const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_MAGICAL_MAP_SMALL,
@@ -21,17 +32,6 @@ const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_SAPPHIRE_STAR,
     IconId::ICON_GARNET_STAR,
     IconId::ICON_CRYSTAL_STAR,
-};
-
-const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
-    "Sweet Treat",
-    "Earth Tremor",
-    "Clock Out",
-    "Power Lift",
-    "Art Attack",
-    "Sweet Feast",
-    "Showstopper",
-    "Supernova",
 };
 
 void SpecialMoveToggler::init(const Window *parentWindow)
@@ -53,11 +53,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, uint8_t windowAlpha)
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
 
-    windowPtr->setWidthHeightFromTextAndInit(gSpecialMoveTogglerHelpText,
-                                             scale,
-                                             SPECIAL_WINDOW_COLOR | windowAlpha,
-                                             20.f,
-                                             30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the icon and item texts
     const float spaceUsedByIcons = SPACE_USED_PER_ICON(scale) * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);
@@ -227,7 +223,7 @@ void SpecialMoveToggler::draw()
     float textPosXBase;
     float textPosYBase;
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &textPosXBase, &textPosYBase);
-    drawText(gSpecialMoveTogglerHelpText, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
+    drawText(gHelpText, textPosXBase, textPosYBase, scale, getColorWhite(0xFF));
 
     // Get the starting position for the special move texts
     getTextPosXYByIcon(iconPosXBase, iconPosYBase, scale, &textPosXBase, &textPosYBase);

@@ -191,9 +191,6 @@ class MemoryWatch
 extern MemoryWatch gMemoryWatch;
 
 void handleMemoryWatches();
-bool positioningOrScalingWatch(uint32_t watchIndex);
-bool getWatchPosAndScale(float posAndScaleOut[3], uint32_t watchIndex);
 uint8_t *getFinalAddressFromPointerPath(uint8_t *address, const int32_t *addressOffsets, uint32_t totalAddressOffsets);
-uint8_t *fixBaseAddress(uint8_t *address, VariableType type);
 
 #endif

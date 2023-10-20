@@ -3,6 +3,7 @@
 #include "cheats.h"
 #include "classes/window.h"
 #include "menus/cheatsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/camdrv.h"
 #include "ttyd/swdrv.h"
@@ -11,18 +12,23 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuClearAreaFlagsOptions[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionSelectArea(Menu *menuPtr);
+static void selectedOptionClearFlags(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Select Area",
-    cheatsMenuClearAreaFlagsStartSelectingArea,
+    selectedOptionSelectArea,
 
     "Clear Flags",
-    cheatsMenuClearAreaFlagsSelectedClearFlags,
+    selectedOptionClearFlags,
 };
 
-const MenuFunctions gCheatsMenuClearAreaFlagsFuncs = {
-    gCheatsMenuClearAreaFlagsOptions,
-    cheatsMenuClearAreaFlagsControls,
-    cheatsMenuClearAreaFlagsDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -33,11 +39,11 @@ void cheatsMenuClearAreaFlagsInit(Menu *menuPtr)
     // Make sure the current index is valid
     gCheatsMenu->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuClearAreaFlagsOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuClearAreaFlagsFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void cheatsMenuClearAreaFlagsSelectAreaDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
+static void selectAreaDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr)
 {
     constexpr uint32_t totalRows = intCeil(CHEATS_TOTAL_AREAS, CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW);
     constexpr uint32_t totalOptionsPerPage = totalRows * CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW;
@@ -51,7 +57,7 @@ void cheatsMenuClearAreaFlagsSelectAreaDPadControls(MenuButtonInput button, uint
                          false);
 }
 
-void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     CheatsMenu *cheatsMenuPtr = gCheatsMenu;
 
@@ -94,7 +100,7 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                cheatsMenuClearAreaFlagsSelectAreaDPadControls(buttonHeld, cheatsMenuPtr->getCurrentIndexPtr());
+                selectAreaDPadControls(buttonHeld, cheatsMenuPtr->getCurrentIndexPtr());
                 break;
             }
             default:
@@ -112,7 +118,7 @@ void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            cheatsMenuClearAreaFlagsSelectAreaDPadControls(button, cheatsMenuPtr->getCurrentIndexPtr());
+            selectAreaDPadControls(button, cheatsMenuPtr->getCurrentIndexPtr());
             break;
         }
         case MenuButtonInput::A:
@@ -207,7 +213,7 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
     }
 }
 
-void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -224,12 +230,12 @@ void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuClearAreaFlagsStartSelectingArea(Menu *menuPtr)
+static void selectedOptionSelectArea(Menu *menuPtr)
 {
     menuPtr->setFlag(CheatsMenuClearAreaFlags::CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA);
 }
 
-void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
+static void clearFlags(bool selectedYes)
 {
     if (selectedYes)
     {
@@ -240,7 +246,7 @@ void cheatsMenuClearAreaFlagsClearFlags(bool selectedYes)
     gCheatsMenu->getConfirmationWindowPtr()->stopDrawing();
 }
 
-void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
+static void selectedOptionClearFlags(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -255,10 +261,10 @@ void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
 
     confirmationWindowPtr->init(rootWindowPtr, helpText, rootWindowPtr->getAlpha());
-    confirmationWindowPtr->startDrawing(cheatsMenuClearAreaFlagsClearFlags);
+    confirmationWindowPtr->startDrawing(clearFlags);
 }
 
-void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
+static void clearGSWFsRange(uint32_t lowerBound, uint32_t upperBound)
 {
     for (uint32_t i = lowerBound; i <= upperBound; i++)
     {

@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-const char *gPositionEditorHelpText =
+static const char *gHelpText =
     "Press/Hold the D-Pad directions\nto adjust the position\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to "
     "cancel";
 
@@ -31,13 +31,13 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gPositionEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Place the window inside of the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::TOP_CENTER, scale);
 }
 
-bool PositionEditor::checkAutoIncrement()
+bool PositionEditor::shouldAutoIncrement()
 {
     // Check to see if any of the D-Pad buttons are held
     constexpr uint32_t buttons =
@@ -99,7 +99,7 @@ void PositionEditor::dpadControls(MenuButtonInput button)
 void PositionEditor::controls(MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
-    const bool autoIncrement = this->checkAutoIncrement();
+    const bool autoIncrement = this->shouldAutoIncrement();
 
     // Handle held button inputs if auto-incrementing should be done
     if (autoIncrement)
@@ -183,5 +183,5 @@ void PositionEditor::draw() const
     constexpr float scale = MENU_SCALE;
 
     windowPtr->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &posX, &posY);
-    drawText(gPositionEditorHelpText, posX, posY, scale, getColorWhite(0xFF));
+    drawText(gHelpText, posX, posY, scale, getColorWhite(0xFF));
 }

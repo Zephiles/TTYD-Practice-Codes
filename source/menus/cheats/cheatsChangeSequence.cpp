@@ -12,15 +12,18 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuChangeSequenceOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionChangeValue(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Change Value",
-    cheatsMenuChangeSequenceStartChangingSequence,
+    selectedOptionChangeValue,
 };
 
-const MenuFunctions gCheatsMenuChangeSequenceFuncs = {
-    gCheatsMenuChangeSequenceOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     cheatsMenuDefaultControlsWithValueEditor,
-    cheatsMenuChangeSequenceDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -28,8 +31,8 @@ void cheatsMenuChangeSequenceInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuChangeSequenceOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuChangeSequenceFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawSequenceInfo() const
@@ -60,7 +63,7 @@ void CheatsMenu::drawSequenceInfo() const
     drawStageAndEvent(sequencePosition, posX, posY);
 }
 
-void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -77,7 +80,7 @@ void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuChangeSequenceChangeSequence(const ValueType *valuePtr)
+static void changeSequence(const ValueType *valuePtr)
 {
     setSequencePosition(valuePtr->u32);
 
@@ -85,7 +88,7 @@ void cheatsMenuChangeSequenceChangeSequence(const ValueType *valuePtr)
     cheatsMenuValueEditorCancelSetValue();
 }
 
-void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
+static void selectedOptionChangeValue(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -108,14 +111,7 @@ void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr)
 
     constexpr uint32_t minValue = 0;
     constexpr uint32_t maxValue = CHEATS_TOTAL_EVENT_NAMES - 1;
-
-    cheatsMenuInitValueEditor(currentValue,
-                              minValue,
-                              maxValue,
-                              flags,
-                              VariableType::u16,
-                              true,
-                              cheatsMenuChangeSequenceChangeSequence);
+    cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u16, true, changeSequence);
 }
 
 #ifdef TTYD_JP
@@ -179,12 +175,12 @@ bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequ
     return true;
 }
 
-bool getSequenceStageAndEvent(char *stageNameBuffer,
-                              uint32_t stageNameSize,
-                              uint32_t sequencePosition,
-                              const char *stageEventOut[2])
+static bool getSequenceStageAndEvent(char *stageNameBuffer,
+                                     uint32_t stageNameSize,
+                                     uint32_t sequencePosition,
+                                     const char *stageEventOut[2])
 #else
-bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *stageEventOut[2])
+static bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *stageEventOut[2])
 #endif
 {
     const char *stageName;

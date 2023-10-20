@@ -11,18 +11,22 @@
 
 #include <cstdint>
 
-const MenuOption gCheatsMenuForceNpcItemDropOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeById(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    cheatsMenuForceNpcItemDropToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Item By Id",
-    cheatsMenuForceNpcItemDropSetItem,
+    selectedOptionChangeById,
 };
 
-const MenuFunctions gCheatsMenuForceNpcItemDropFuncs = {
-    gCheatsMenuForceNpcItemDropOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     cheatsMenuDefaultControlsWithValueEditor,
-    cheatsMenuForceNpcItemDropDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -31,8 +35,8 @@ void cheatsMenuForceNpcItemDropInit(Menu *menuPtr)
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuForceNpcItemDropOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuForceNpcItemDropFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawForceNpcItemDropInfo() const
@@ -81,7 +85,7 @@ void CheatsMenu::drawForceNpcItemDropInfo() const
     drawItemIconWithText(iconPosX, iconPosY, iconScale, scale, 0.f, item, getColorWhite(0xFF));
 }
 
-void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -98,14 +102,14 @@ void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuForceNpcItemDropToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
     cheatsMenuToggleEnabledFlag(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP);
 }
 
-void cheatsMenuForceNpcItemDropSetNewItem(const ValueType *valuePtr)
+static void setNewItem(const ValueType *valuePtr)
 {
     gCheats->getForceNpcItemDropCheatPtr()->setItemDrop(static_cast<ItemId>(valuePtr->s32));
 
@@ -113,7 +117,7 @@ void cheatsMenuForceNpcItemDropSetNewItem(const ValueType *valuePtr)
     cheatsMenuValueEditorCancelSetValue();
 }
 
-void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
+static void selectedOptionChangeById(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -131,11 +135,5 @@ void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr)
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM);
     flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
-    cheatsMenuInitValueEditor(currentValue,
-                              minValue,
-                              maxValue,
-                              flags,
-                              VariableType::s16,
-                              true,
-                              cheatsMenuForceNpcItemDropSetNewItem);
+    cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::s16, true, setNewItem);
 }

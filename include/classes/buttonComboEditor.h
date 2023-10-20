@@ -30,17 +30,16 @@ class ButtonComboEditor
         this->enabled = true;
     }
 
-    void setButtonsPrevFrame(uint32_t buttons) { this->buttonsPrevFrame = static_cast<uint16_t>(buttons); }
-    void setBButtonCounter(uint32_t count) { this->bButtonCounter = static_cast<uint8_t>(count); }
-    void setTimer(uint32_t timer) { this->timer = static_cast<uint8_t>(timer); }
-
-    bool checkIfBPressedThreeTimes(uint32_t buttonsHeld, MenuButtonInput button);
-    bool decrementTimerAndCheckIfZero(uint32_t buttonsHeld);
     void controls(MenuButtonInput button);
-
     void draw() const;
 
    private:
+    void setButtonsPrevFrame(uint32_t buttons) { this->buttonsPrevFrame = static_cast<uint16_t>(buttons); }
+    void setBButtonCounter(uint32_t count) { this->bButtonCounter = static_cast<uint8_t>(count); }
+    void setTimer(uint32_t timer) { this->timer = static_cast<uint8_t>(timer); }
+    bool checkIfBPressedThreeTimes(uint32_t buttonsHeld, MenuButtonInput button);
+    bool decrementTimerAndCheckIfZero(uint32_t buttonsHeld);
+
     Window window;
 
     // Called when the player has held any arbitrary buttons for 3 seconds

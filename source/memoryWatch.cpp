@@ -16,6 +16,10 @@
 #include <cstdio>
 #include <cinttypes>
 
+static bool positioningOrScalingWatch(uint32_t watchIndex);
+static bool getWatchPosAndScale(float posAndScaleOut[3], uint32_t watchIndex);
+static uint8_t *fixBaseAddress(uint8_t *address, VariableType type);
+
 // The MemoryWatch class is very small, so making it dynamic would waste a lot of memory
 MemoryWatch gMemoryWatch;
 
@@ -612,7 +616,7 @@ bool MemoryWatch::deleteWatch(uint32_t index)
     return true;
 }
 
-void drawMemoryWatches(CameraId cameraId, void *user)
+static void drawMemoryWatches(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -681,12 +685,12 @@ void handleMemoryWatches()
     drawOnDebugLayer(drawMemoryWatches, DRAW_ORDER_DISPLAYS);
 }
 
-bool positioningOrScalingWatch(uint32_t watchIndex)
+static bool positioningOrScalingWatch(uint32_t watchIndex)
 {
     return getWatchPosAndScale(nullptr, watchIndex);
 }
 
-bool getWatchPosAndScale(float posAndScaleOut[3], uint32_t watchIndex)
+static bool getWatchPosAndScale(float posAndScaleOut[3], uint32_t watchIndex)
 {
     // Make sure the pointer for the entries is set
     MemoryWatchEntry *entriesPtr = gMemoryWatch.getEntriesPtr();
@@ -795,7 +799,7 @@ uint8_t *getFinalAddressFromPointerPath(uint8_t *address, const int32_t *address
     return address;
 }
 
-uint8_t *fixBaseAddress(uint8_t *address, VariableType type)
+static uint8_t *fixBaseAddress(uint8_t *address, VariableType type)
 {
     uint32_t typeSize;
     switch (type)

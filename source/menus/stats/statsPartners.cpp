@@ -13,7 +13,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-const PartyMembers gPartnersIds[] = {
+static void mainControls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionSelectPartner(Menu *menuPtr);
+
+static const PartyMembers gPartnersIds[] = {
     PartyMembers::kGoombella,
     PartyMembers::kKoops,
     PartyMembers::kFlurrie,
@@ -23,7 +27,7 @@ const PartyMembers gPartnersIds[] = {
     PartyMembers::kMsMowz,
 };
 
-const uint32_t gYoshiColors[] = {
+static const uint32_t gYoshiColors[] = {
     0x29AD21FF, // Green
     0xE8385AFF, // Red
     0x8E7DDFFF, // Blue
@@ -33,45 +37,45 @@ const uint32_t gYoshiColors[] = {
     0xC6E1ECFF, // White
 };
 
-const char *gPartnerStatsInitialStrings[] = {
+static const char *gStatsStrings[] = {
     "HP",
     "Max HP",
     "Rank",
     "Toggle",
 };
 
-const char *gPartnerYoshiStatsStrings[] = {
+static const char *gYoshiStatsStrings[] = {
     "Color",
     "Name",
 };
 
-const MenuOption gStatsMenuPartnersOptions[] = {
+static const MenuOption gOptions[] = {
     "Goombella",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Koops",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Flurrie",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Yoshi",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Vivian",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Bobbery",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 
     "Ms. Mowz",
-    statsMenuPartnersSelectedPartner,
+    selectedOptionSelectPartner,
 };
 
-const MenuFunctions gStatsMenuPartnersFuncs = {
-    gStatsMenuPartnersOptions,
-    statsMenuPartnersControls,
-    statsMenuPartnersDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    mainControls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -79,11 +83,11 @@ void statsMenuPartnersInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gStatsMenuPartnersOptions) / sizeof(gStatsMenuPartnersOptions[0]);
-    enterNextMenu(&gStatsMenuPartnersFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void statsMenuPartnersSelectedPartner(Menu *menuPtr)
+static void selectedOptionSelectPartner(Menu *menuPtr)
 {
     // Set the flag for a partner being selected
     menuPtr->setFlag(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER);
@@ -92,7 +96,7 @@ void statsMenuPartnersSelectedPartner(Menu *menuPtr)
     gStatsMenu->setCurrentIndex(0);
 }
 
-uint32_t menuPartnersGetTotalPartnerOptions(uint32_t currentIndex)
+static uint32_t getTotalOptions(uint32_t currentIndex)
 {
     uint32_t totalOptions = StatsPartnersCurrentPartnerOption::STATS_PARTNER_BRING_OUT_OR_REMOVE + 1;
     if (STATS_PARTNERS_DRAWING_YOSHI_STATS(currentIndex))
@@ -102,7 +106,7 @@ uint32_t menuPartnersGetTotalPartnerOptions(uint32_t currentIndex)
     return totalOptions;
 }
 
-void verifyMenuAndCurrentIndexes()
+static void verifyMenuAndCurrentIndexes()
 {
     Menu *menuPtr = gMenu;
     uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
@@ -118,7 +122,7 @@ void verifyMenuAndCurrentIndexes()
     // Make sure the current index is valid
     StatsMenu *statsMenuPtr = gStatsMenu;
     const uint32_t currentIndex = statsMenuPtr->getCurrentIndex();
-    const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
+    const uint32_t totalOptions = getTotalOptions(menuCurrentIndex);
 
     if (currentIndex >= totalOptions)
     {
@@ -127,7 +131,7 @@ void verifyMenuAndCurrentIndexes()
     }
 }
 
-PouchPartyData *getCurrentPartnerData()
+static PouchPartyData *getCurrentPartnerData()
 {
     // Make sure both of the current indexes are valid
     verifyMenuAndCurrentIndexes();
@@ -136,7 +140,7 @@ PouchPartyData *getCurrentPartnerData()
     return &pouchGetPtr()->partyData[static_cast<uint32_t>(gPartnersIds[currentIndex])];
 }
 
-void menuPartnersChangeValue(const ValueType *valuePtr)
+static void changeValue(const ValueType *valuePtr)
 {
     const int32_t value = valuePtr->s32;
     PouchPartyData *partnerData = getCurrentPartnerData();
@@ -199,7 +203,7 @@ void menuPartnersChangeValue(const ValueType *valuePtr)
     statsMenuCancelChangingValue();
 }
 
-void selectedOptionMenuPartnersSetValueById(int32_t currentValue, int32_t minValue, int32_t maxValue)
+static void setValueById(int32_t currentValue, int32_t minValue, int32_t maxValue)
 {
     // Initialize the value editor
     StatsMenu *statsMenuPtr = gStatsMenu;
@@ -215,29 +219,29 @@ void selectedOptionMenuPartnersSetValueById(int32_t currentValue, int32_t minVal
     valueEditorPtr
         ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::s16, rootWindowPtr->getAlpha());
 
-    valueEditorPtr->startDrawing(menuPartnersChangeValue, statsMenuCancelChangingValue);
+    valueEditorPtr->startDrawing(changeValue, statsMenuCancelChangingValue);
 }
 
-void cancelMenuPartnersChangeYoshiName()
+static void cancelChangeYoshiName()
 {
     gStatsMenu->getNameEditorPtr()->stopDrawing();
 }
 
-void selectMenuPartnersChangeYoshiName(char *newNamePtr, uint32_t newNameSize)
+static void changeYoshiName(char *newNamePtr, uint32_t newNameSize)
 {
     (void)newNamePtr;
     (void)newNameSize;
 
     // Close the name editor
-    cancelMenuPartnersChangeYoshiName();
+    cancelChangeYoshiName();
 }
 
-void cancelMenuPartnersChangeYoshiColor()
+static void cancelChangeYoshiColor()
 {
     gStatsMenu->getYoshiColorSelectorPtr()->stopDrawing();
 }
 
-void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
+static void changeYoshiColor(uint32_t selectedColorId)
 {
     // Set the new color
     pouchSetPartyColor(PartyMembers::kYoshi, selectedColorId);
@@ -247,10 +251,10 @@ void menuPartnersChangeYoshiColor(uint32_t selectedColorId)
     resetPauseMenuPartners();
 
     // Close the color selector
-    cancelMenuPartnersChangeYoshiColor();
+    cancelChangeYoshiColor();
 }
 
-void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
+static void bringOutOrRemoveFromOverworld(Menu *menuPtr)
 {
     const PartyMembers currentPartnerOut = getCurrentPartnerOrFollowerOut(true);
 
@@ -279,7 +283,7 @@ void selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(Menu *menuPtr)
     }
 }
 
-void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput button)
+static void selectedPartnerControls(Menu *menuPtr, MenuButtonInput button)
 {
     // Make sure the menu current index and the current index are valid
     verifyMenuAndCurrentIndexes();
@@ -294,7 +298,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            const uint32_t totalOptions = menuPartnersGetTotalPartnerOptions(menuCurrentIndex);
+            const uint32_t totalOptions = getTotalOptions(menuCurrentIndex);
             menuControlsVertical(button, statsMenuPtr->getCurrentIndexPtr(), nullptr, totalOptions, totalOptions, 1, true);
             break;
         }
@@ -322,7 +326,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                             yoshiColorSelectorPtr->setCurrentIndex(yoshiColorIndex);
                         }
 
-                        yoshiColorSelectorPtr->startDrawing(menuPartnersChangeYoshiColor, cancelMenuPartnersChangeYoshiColor);
+                        yoshiColorSelectorPtr->startDrawing(changeYoshiColor, cancelChangeYoshiColor);
                         handledYoshiOption = true;
                         break;
                     }
@@ -340,13 +344,13 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                                             true,
                                             rootWindowPtr->getAlpha());
 
-                        nameEditorPtr->startDrawing(selectMenuPartnersChangeYoshiName, cancelMenuPartnersChangeYoshiName);
+                        nameEditorPtr->startDrawing(changeYoshiName, cancelChangeYoshiName);
                         handledYoshiOption = true;
                         break;
                     }
                     case StatsPartnersCurrentPartnerOptionYoshi::STATS_PARTNER_YOSHI_BRING_OUT_OR_REMOVE:
                     {
-                        selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(menuPtr);
+                        bringOutOrRemoveFromOverworld(menuPtr);
                         handledYoshiOption = true;
                         break;
                     }
@@ -366,17 +370,17 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_CURRENT_HP:
                     {
                         const int32_t maxHp = partnerData->maxHp; // Make sure the current HP does not exceed the max HP
-                        selectedOptionMenuPartnersSetValueById(partnerData->currentHp, 0, maxHp);
+                        setValueById(partnerData->currentHp, 0, maxHp);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_MAX_HP:
                     {
-                        selectedOptionMenuPartnersSetValueById(partnerData->maxHp, 0, 999);
+                        setValueById(partnerData->maxHp, 0, 999);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_SET_RANK:
                     {
-                        selectedOptionMenuPartnersSetValueById(partnerData->attackLevel, 0, 2);
+                        setValueById(partnerData->attackLevel, 0, 2);
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_TOGGLE_ENABLED_BOOL:
@@ -391,7 +395,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_BRING_OUT_OR_REMOVE:
                     {
-                        selectedOptionMenuPartnersBringOutOrRemoveFromOverworld(menuPtr);
+                        bringOutOrRemoveFromOverworld(menuPtr);
                         break;
                     }
                     default:
@@ -415,7 +419,7 @@ void statsMenuPartnersSelectedPartnerControls(Menu *menuPtr, MenuButtonInput but
     }
 }
 
-void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
+static void mainControls(Menu *menuPtr, MenuButtonInput button)
 {
     StatsMenu *statsMenuPtr = gStatsMenu;
 
@@ -446,7 +450,7 @@ void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button)
     // If a partner was selected and neither of the previous windows are open, then handle the controls for the current partner
     if (menuPtr->flagIsSet(StatsFlagPartner::STATS_FLAG_PARTNER_SELECTED_PARTNER))
     {
-        statsMenuPartnersSelectedPartnerControls(menuPtr, button);
+        selectedPartnerControls(menuPtr, button);
         return;
     }
 
@@ -493,14 +497,14 @@ void StatsMenu::drawPartnerStats()
     uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
     uint32_t currentIndex = this->currentIndex;
 
-    const char **partnerStatsInitialStringsPtr = gPartnerStatsInitialStrings;
+    const char **statsStringsPtr = gStatsStrings;
     uint32_t counter = 0;
     uint32_t color;
 
     for (uint32_t i = 0; i < 4; i++, counter++)
     {
         color = getTextColor(anyFlagIsSet, currentIndex == counter);
-        drawText(partnerStatsInitialStringsPtr[i], posX, posY, scale, color);
+        drawText(statsStringsPtr[i], posX, posY, scale, color);
         posY -= lineDecrement;
     }
 
@@ -508,11 +512,11 @@ void StatsMenu::drawPartnerStats()
     const bool drawingYoshiStats = STATS_PARTNERS_DRAWING_YOSHI_STATS(menuCurrentIndex);
     if (drawingYoshiStats)
     {
-        const char **partnerYoshiStatsStringsPtr = gPartnerYoshiStatsStrings;
+        const char **yoshiStatsStringsPtr = gYoshiStatsStrings;
         for (uint32_t i = 0; i < 2; i++, counter++)
         {
             color = getTextColor(anyFlagIsSet, currentIndex == counter);
-            drawText(partnerYoshiStatsStringsPtr[i], posX, posY, scale, color);
+            drawText(yoshiStatsStringsPtr[i], posX, posY, scale, color);
             posY -= lineDecrement;
         }
     }
@@ -596,7 +600,7 @@ void StatsMenu::drawPartnerStats()
     }
 }
 
-void statsMenuPartnersDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);

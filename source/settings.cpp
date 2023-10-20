@@ -11,14 +11,14 @@
 
 #include <cstdint>
 
-const char *gSettingsFileName = "Practice_Codes_Data";
+static const char *gSettingsFileName = "Practice_Codes_Data";
 
 #ifdef TTYD_US
-const char *gSettingsDescription = "Settings (US)";
+static const char *gSettingsDescription = "Settings (US)";
 #elif defined TTYD_JP
-const char *gSettingsDescription = "Settings (JP)";
+static const char *gSettingsDescription = "Settings (JP)";
 #elif defined TTYD_EU
-const char *gSettingsDescription = "Settings (EU)";
+static const char *gSettingsDescription = "Settings (EU)";
 #endif
 
 int32_t finishAsyncMemoryCardFunc(int32_t ret, int32_t channel)
@@ -34,7 +34,7 @@ int32_t finishAsyncMemoryCardFunc(int32_t ret, int32_t channel)
     return ret;
 }
 
-int32_t checkForMemoryCard(int32_t channel)
+static int32_t checkForMemoryCard(int32_t channel)
 {
     // Check if a memory card is inserted
     int32_t ret;
@@ -283,7 +283,7 @@ int32_t loadSettings(int32_t channel)
 
 // This function keeps the current memory card file open, but closes it and unmounts the memory card if it fails to create the
 // settings file
-int32_t createSettingsFile(int32_t channel, CARDFileInfo *settingsFileInfoPtr, uint32_t dataSizeAdjusted)
+static int32_t createSettingsFile(int32_t channel, CARDFileInfo *settingsFileInfoPtr, uint32_t dataSizeAdjusted)
 {
     int32_t ret;
 

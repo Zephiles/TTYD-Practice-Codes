@@ -6,8 +6,6 @@
 #include "classes/confirmationWindow.h"
 #include "classes/errorWindow.h"
 #include "classes/menu.h"
-#include "menus/rootMenu.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
@@ -186,14 +184,11 @@ extern const char *gCheatsEventNames[CHEATS_TOTAL_EVENT_NAMES];
 
 // cheatsInit
 void cheatsMenuInit(Menu *menuPtr);
-void cheatsMenuInitExit();
 
 void cheatsMenuDefaultControlsWithValueEditor(Menu *menuPtr, MenuButtonInput button);
 void cheatsMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button);
 
 bool cheatsMenuToggleEnabledFlag(uint32_t cheatEnabledFlag);
-
-void cheatsMenuSetCheatButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 void cheatsMenuSetNewButtonCombo(uint32_t cheatButtonComboFlag, uint32_t buttonCombo);
 void cheatsMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc);
 
@@ -213,95 +208,43 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index);
 // cheatsGeneric
 void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr);
-void cheatsMenuGenericDraw(CameraId cameraId, void *user);
-
-void cheatsMenuGenericToggleFlag(Menu *menuPtr);
-void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr);
 
 // cheatsChangeSequence
 void cheatsMenuChangeSequenceInit(Menu *menuPtr);
-void cheatsMenuChangeSequenceDraw(CameraId cameraId, void *user);
-
-void cheatsMenuChangeSequenceStartChangingSequence(Menu *menuPtr);
 
 #ifdef TTYD_JP
 bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequencePosition);
-
-bool getSequenceStageAndEvent(char *stageNameBuffer,
-                              uint32_t stageNameSize,
-                              uint32_t sequencePosition,
-                              const char *stageEventOut[2]);
-#else
-bool getSequenceStageAndEvent(uint32_t sequencePosition, const char *stageEventOut[2]);
 #endif
 
 void drawStageAndEvent(uint32_t sequencePosition, float posX, float posY);
 
 // cheatsModifyMariosCoordinates
 void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);
-void cheatsMenuModifyMariosCoordinatesDraw(CameraId cameraId, void *user);
-
-void cheatsMenuModifyMariosCoordinatesToggleFlag(Menu *menuPtr);
-void cheatsMenuModifyMariosCoordinatesSetCoordinate(Menu *menuPtr);
 
 // cheatsFrameAdvance
 void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
-void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user);
-
-void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr);
-void cheatsMenuFrameAdvanceChangeButtonCombo(Menu *menuPtr);
 
 // cheatsGenerateLagSpike
 void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
-void cheatsMenuGenerateLagSpikeControls(Menu *menuPtr, MenuButtonInput button);
-void cheatsMenuGenerateLagSpikeDraw(CameraId cameraId, void *user);
-
-void cheatsMenuGenerateLagSpikeToggleFlag(Menu *menuPtr);
-void cheatsMenuGenerateLagSpikeChangeButtonCombo(Menu *menuPtr);
-void cheatsMenuGenerateLagSpikeSetDuration(Menu *menuPtr);
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);
-void cheatsMenuDisableCertainSoundsDraw(CameraId cameraId, void *user);
-
-void cheatsMenuTogglePauseMenuZMenuSounds(Menu *menuPtr);
-void cheatsMenuToggleBackgroundMusic(Menu *menuPtr);
-void cheatsMenuToggleEnvironmentSounds(Menu *menuPtr);
 
 // cheatsForceNpcItemDrop
 void cheatsMenuForceNpcItemDropInit(Menu *menuPtr);
-void cheatsMenuForceNpcItemDropDraw(CameraId cameraId, void *user);
-
-void cheatsMenuForceNpcItemDropToggleFlag(Menu *menuPtr);
-void cheatsMenuForceNpcItemDropSetItem(Menu *menuPtr);
 
 // cheatsResolveFades
 void cheatsMenuResolveFadesInit(Menu *menuPtr);
-void cheatsMenuResolveFadesDraw(CameraId cameraId, void *user);
 
-void cheatsMenuResolveFadeHandleResolve(Menu *menuPtr);
 ResolveFadeReturnValue resolveFade(uint32_t index);
 
 // cheatsLockFlags
 void cheatsMenuLockFlagsInit(Menu *menuPtr);
-void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user);
 
-void cheatsMenuLockFlagsLockSeletedFlags(Menu *menuPtr);
-void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr);
-
-void *getLockFlagsRegionPtr(uint32_t region);
-uint32_t getLockFlagsRegionSize(uint32_t region);
 void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size);
 
 // cheatsManageFlags
 void cheatsMenuManageFlagsInit(Menu *menuPtr);
-void cheatsMenuManageFlagsDraw(CameraId cameraId, void *user);
-
-void cheatsMenuManageFlagsVariablesInit(Menu *menuPtr);
-void cheatsMenuManageFlagsVariablesControls(Menu *menuPtr, MenuButtonInput button);
-
-void cheatsMenuManageFlagsFlagsInit(Menu *menuPtr);
-void cheatsMenuManageFlagsFlagsControls(Menu *menuPtr, MenuButtonInput button);
 
 uint32_t getGW(uint32_t gw);
 void setGW(uint32_t gw, uint32_t value);
@@ -311,11 +254,6 @@ uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFl
 
 // cheatsClearAreaFlags
 void cheatsMenuClearAreaFlagsInit(Menu *menuPtr);
-void cheatsMenuClearAreaFlagsControls(Menu *menuPtr, MenuButtonInput button);
-void cheatsMenuClearAreaFlagsDraw(CameraId cameraId, void *user);
-
-void cheatsMenuClearAreaFlagsStartSelectingArea(Menu *menuPtr);
-void cheatsMenuClearAreaFlagsSelectedClearFlags(Menu *menuPtr);
 
 void clearAreaFlags(uint32_t index);
 

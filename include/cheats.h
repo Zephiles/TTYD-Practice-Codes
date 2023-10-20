@@ -329,8 +329,8 @@ class LockFlagsCheat
     LockFlagsCheat() {}
     ~LockFlagsCheat() {}
 
-    uint32_t getSequencePosition() const { return this->sequencePosition; }
-    void setSequencePosition(uint32_t sequence) { this->sequencePosition = static_cast<uint16_t>(sequence); }
+    uint32_t getLockFlagsSequencePosition() const { return this->sequencePosition; }
+    void setLockFlagsSequencePosition(uint32_t sequence) { this->sequencePosition = static_cast<uint16_t>(sequence); }
 
     char *getLswAreaLocked() { return &this->lswAreaLocked[0]; }
     char *getLswfAreaLocked() { return &this->lswfAreaLocked[0]; }

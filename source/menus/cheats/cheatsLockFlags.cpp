@@ -3,6 +3,7 @@
 #include "cheats.h"
 #include "classes/window.h"
 #include "menus/cheatsMenu.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/evtmgr.h"
@@ -13,36 +14,40 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gCheatsMenuLockFlagsOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionLockSeletedFlags(Menu *menuPtr);
+static void selectedOptionSetNewArea(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Lock GSWs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Lock GSWFs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Lock GWs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Lock GFs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Lock LSWs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Lock LSWFs",
-    cheatsMenuLockFlagsLockSeletedFlags,
+    selectedOptionLockSeletedFlags,
 
     "Set New LSW Area",
-    cheatsMenuLockFlagsSetNewArea,
+    selectedOptionSetNewArea,
 
     "Set New LSWF Area",
-    cheatsMenuLockFlagsSetNewArea,
+    selectedOptionSetNewArea,
 };
 
-const MenuFunctions gCheatsMenuLockFlagsInitFuncs = {
-    gCheatsMenuLockFlagsOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
-    cheatsMenuLockFlagsDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -50,8 +55,8 @@ void cheatsMenuLockFlagsInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuLockFlagsOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuLockFlagsInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawLockFlagsInfo() const
@@ -162,7 +167,7 @@ void CheatsMenu::drawLockFlagsInfo() const
     drawText(buf, posX, posY, scale, color);
 }
 
-void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -171,7 +176,7 @@ void cheatsMenuLockFlagsDraw(CameraId cameraId, void *user)
     gCheatsMenu->drawLockFlagsInfo();
 }
 
-void lockFlagsSetAreaString(LockFlagsCheat *lockFlagsPtr, uint32_t currentIndex)
+static void setAreaString(LockFlagsCheat *lockFlagsPtr, uint32_t currentIndex)
 {
     // Update the area for the flags to be locked
     char *area;
@@ -187,7 +192,7 @@ void lockFlagsSetAreaString(LockFlagsCheat *lockFlagsPtr, uint32_t currentIndex)
     strncpy(area, _next_area, 3);
 }
 
-void cheatsMenuLockFlagsLockSeletedFlags(Menu *menuPtr)
+static void selectedOptionLockSeletedFlags(Menu *menuPtr)
 {
     // Flip the bool for the selected flags
     Cheats *cheatsPtr = gCheats;
@@ -219,14 +224,14 @@ void cheatsMenuLockFlagsLockSeletedFlags(Menu *menuPtr)
             case LockFlagsOptions::LOCK_FLAGS_GSW:
             {
                 // Back up the sequence position
-                lockFlagsPtr->setSequencePosition(getSequencePosition());
+                lockFlagsPtr->setLockFlagsSequencePosition(getSequencePosition());
                 break;
             }
             case LockFlagsOptions::LOCK_FLAGS_LSW:
             case LockFlagsOptions::LOCK_FLAGS_LSWF:
             {
                 // Update the area for the flags to be locked
-                lockFlagsSetAreaString(lockFlagsPtr, currentIndex);
+                setAreaString(lockFlagsPtr, currentIndex);
                 break;
             }
             default:
@@ -242,7 +247,7 @@ void cheatsMenuLockFlagsLockSeletedFlags(Menu *menuPtr)
     }
 }
 
-void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr)
+static void selectedOptionSetNewArea(Menu *menuPtr)
 {
     // Get the proper index to use for the selected flags
     // This assumes that both the LSW and LSWF options are at the end of the options
@@ -270,10 +275,10 @@ void cheatsMenuLockFlagsSetNewArea(Menu *menuPtr)
     memcpy(prevMemoryPtr, sourceMemory, sourceSize);
 
     // Update the area for the flags to be locked
-    lockFlagsSetAreaString(lockFlagsPtr, selectedFlagIndex);
+    setAreaString(lockFlagsPtr, selectedFlagIndex);
 }
 
-void *getLockFlagsRegionPtr(uint32_t region)
+static void *getRegionPtr(uint32_t region)
 {
     EvtWork *eventWorkPtr = evtGetWork();
     GlobalWork *globalWorkPtr = _globalWorkPtr;
@@ -311,7 +316,7 @@ void *getLockFlagsRegionPtr(uint32_t region)
     }
 }
 
-uint32_t getLockFlagsRegionSize(uint32_t region)
+static uint32_t getRegionSize(uint32_t region)
 {
     switch (region)
     {
@@ -350,11 +355,11 @@ void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size)
 {
     if (ptr)
     {
-        *ptr = getLockFlagsRegionPtr(region);
+        *ptr = getRegionPtr(region);
     }
 
     if (size)
     {
-        *size = getLockFlagsRegionSize(region);
+        *size = getRegionSize(region);
     }
 }

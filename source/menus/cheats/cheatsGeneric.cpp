@@ -9,27 +9,31 @@
 
 #include <cstdint>
 
-const MenuOption gCheatsMenuGenericOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    cheatsMenuGenericToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Button Combo",
-    cheatsMenuGenericChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 };
 
-const MenuFunctions gCheatsMenuInitFuncs = {
-    gCheatsMenuGenericOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     cheatsMenuDefaultControlsWithButtonComboEditor,
-    cheatsMenuGenericDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
-void enterCheatsMenuGeneric(Menu *menuPtr, bool hasButtonCombo)
+static void enterCheatsMenuGeneric(Menu *menuPtr, bool hasButtonCombo)
 {
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
-    uint32_t totalOptions = sizeof(gCheatsMenuGenericOptions) / sizeof(MenuOption);
+    uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
     if (!hasButtonCombo)
     {
         // Subtract one to exclude the button combo from the options
@@ -37,7 +41,7 @@ void enterCheatsMenuGeneric(Menu *menuPtr, bool hasButtonCombo)
         totalOptions--;
     }
 
-    menuPtr = enterNextMenu(&gCheatsMenuInitFuncs, totalOptions);
+    menuPtr = enterNextMenu(&gFuncs, totalOptions);
 
     if (hasButtonCombo)
     {
@@ -55,7 +59,7 @@ void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr)
     enterCheatsMenuGeneric(menuPtr, true);
 }
 
-void cheatsMenuGenericDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -120,7 +124,7 @@ void CheatsMenu::drawGenericCheatInfo() const
     }
 }
 
-void cheatsMenuGenericToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -128,15 +132,15 @@ void cheatsMenuGenericToggleFlag(Menu *menuPtr)
     cheatsMenuToggleEnabledFlag(cheatEnabledFlag);
 }
 
-void cheatsMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(gCheatsMenu->getSelectedCheat());
     cheatsMenuSetNewButtonCombo(cheatButtonComboFlag, buttonCombo);
 }
 
-void cheatsMenuGenericChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    cheatsMenuChangeButtonCombo(cheatsMenuGenericSetNewButtonCombo);
+    cheatsMenuChangeButtonCombo(setButtonCombo);
 }

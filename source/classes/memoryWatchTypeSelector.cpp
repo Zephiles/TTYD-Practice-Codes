@@ -20,7 +20,7 @@ const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES] = {
     "time",
 };
 
-MemoryWatchTypeSelector *gMemoryWatchTypeSelector = nullptr;
+static MemoryWatchTypeSelector *gMemoryWatchTypeSelector = nullptr;
 
 void MemoryWatchTypeSelector::init(const Window *parentWindow)
 {
@@ -45,7 +45,7 @@ void MemoryWatchTypeSelector::stopDrawing()
     this->OptionSelector::stopDrawing();
 }
 
-void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
+static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
 {
     // Make sure MemoryWatchTypeSelector is set
     const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = gMemoryWatchTypeSelector;

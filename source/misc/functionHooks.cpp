@@ -36,7 +36,7 @@ NpcEntry *(*g_npcNameToPtr_trampoline)(const char *name) = nullptr;
 void (*g_animPoseMain_trampoline)(int32_t poseId) = nullptr;
 MapData *(*g_mapDataPtr_trampoline)(const char *mapName) = nullptr;
 void (*g__unload_trampoline)(const char *currentMap, const char *nextMap, const char *nextBero) = nullptr;
-void (*g_relSetEvtAddr_trampoline)(const char *mapName, const void *pInitEvtCode);
+void (*g_relSetEvtAddr_trampoline)(const char *mapName, const void *pInitEvtCode) = nullptr;
 int32_t (*g_evt_bero_get_info_trampoline)(EvtEntry *evtPtr, bool isFirstCall) = nullptr;
 
 int32_t (*g_SoundEfxPlayEx_trampoline)(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan) = nullptr;

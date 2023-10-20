@@ -6,6 +6,10 @@
 // clang-format off
 #define EVT_BEGIN(name) \
     const int32_t name[] = {
+
+#define EVT_BEGIN_STATIC(name) \
+    static const int32_t name[] = {
+
 #define EVT_END() \
     0x1 };
 

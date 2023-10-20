@@ -12,47 +12,56 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gCustomStatesCannotCreateText =
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+
+static void selectedOptionLoadState(Menu *menuPtr);
+static void selectedOptionCreateState(Menu *menuPtr);
+static void selectedOptionDuplicateState(Menu *menuPtr);
+static void selectedOptionSwapStates(Menu *menuPtr);
+static void selectedOptionMoveState(Menu *menuPtr);
+static void selectedOptionOverwriteState(Menu *menuPtr);
+static void selectedOptionRenameState(Menu *menuPtr);
+static void selectedOptionDeleteState(Menu *menuPtr);
+
+static const char *gCannotCreate =
     "To create a custom state, you must have\na file loaded and not be in a battle nor a\nscreen transition.";
 
-const char *gCustomStatesNoStatesText = "No custom states currently exist.";
-const char *gCustomStatesLimitReachedText = "The maximum amount of custom states currently exist.";
+static const char *gNoStates = "No custom states currently exist.";
+static const char *gLimitReached = "The maximum amount of custom states currently exist.";
+static const char *gSuccessfullyOverwriteState = "The custom state was successfully overwritten.";
+static const char *gNotEnoughStatesToSwapMove = "There needs to be at least two custom\nstates to be able to swap/move them.";
 
-const char *gCustomStatesSuccessfullyOverwriteStateText = "The custom state was successfully overwritten.";
-
-const char *gCustomStatesNotEnoughStatesToSwapMoveText =
-    "There needs to be at least two custom\nstates to be able to swap/move them.";
-
-const MenuOption gWarpsMenuCustomStatesOptions[] {
+static const MenuOption gOptions[] {
     "Load State",
-    warpsMenuCustomStatesLoadState,
+    selectedOptionLoadState,
 
     "Create State",
-    warpsMenuCustomStatesCreateState,
+    selectedOptionCreateState,
 
     "Duplicate State",
-    warpsMenuCustomStatesDuplicateState,
+    selectedOptionDuplicateState,
 
     "Swap States",
-    warpsMenuCustomStatesSwapStates,
+    selectedOptionSwapStates,
 
     "Move State",
-    warpsMenuCustomStatesMoveState,
+    selectedOptionMoveState,
 
     "Overwrite State",
-    warpsMenuCustomStatesOverwriteState,
+    selectedOptionOverwriteState,
 
     "Rename State",
-    warpsMenuCustomStatesRenameState,
+    selectedOptionRenameState,
 
     "Delete State",
-    warpsMenuCustomStatesDeleteState,
+    selectedOptionDeleteState,
 };
 
-const MenuFunctions gWarpsMenuCustomStatesFuncs = {
-    gWarpsMenuCustomStatesOptions,
-    warpsMenuCustomStatesControls,
-    warpsMenuCustomStatesDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -60,8 +69,8 @@ void warpsMenuCustomStatesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuCustomStatesOptions) / sizeof(MenuOption);
-    enterNextMenu(&gWarpsMenuCustomStatesFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void WarpsMenu::customStatesFlagSetControls(MenuButtonInput button)
@@ -83,7 +92,7 @@ void WarpsMenu::customStatesFlagSetControls(MenuButtonInput button)
     menuControlsVertical(button, &this->currentIndex, currentPagePtr, totalOptions, MAX_CUSTOM_STATES_PER_PAGE, 1, false);
 }
 
-void warpsMenuCustomStatesControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
@@ -261,7 +270,7 @@ void WarpsMenu::drawCustomStatesInfo() const
     }
 }
 
-void warpsMenuCustomStatesDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
@@ -285,7 +294,7 @@ void warpsMenuCustomStatesDraw(CameraId cameraId, void *user)
     }
 }
 
-void warpsMenuCustomStatesLoadState(Menu *menuPtr)
+static void selectedOptionLoadState(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -298,7 +307,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     if ((customStatePtr->getTotalEntries() == 0) || !entriesPtr)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_LOAD);
-        warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
+        warpsMenuPtr->initErrorWindow(gNoStates);
         return;
     }
 
@@ -315,7 +324,7 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     // Make sure a file is currently loaded and the player is not currently transitioning screens nor in a battle
     if (!checkIfInGame())
     {
-        warpsMenuPtr->initErrorWindow(gCustomStatesCannotCreateText);
+        warpsMenuPtr->initErrorWindow(gCannotCreate);
         return;
     }
 
@@ -360,12 +369,12 @@ void warpsMenuCustomStatesLoadState(Menu *menuPtr)
     return closeAllMenus();
 }
 
-void warpsMenuCustomStatesCloseNameEditor()
+static void closeNameEditor()
 {
     gWarpsMenu->getNameEditorPtr()->stopDrawing();
 }
 
-void warpsMenuCustomStatesCreateStateNameSet(char *newNamePtr, uint32_t newNameSize)
+static void createState(char *newNamePtr, uint32_t newNameSize)
 {
     (void)newNameSize;
 
@@ -374,14 +383,14 @@ void warpsMenuCustomStatesCreateStateNameSet(char *newNamePtr, uint32_t newNameS
     {
         // The maximum amount of states have been created, so show an error message
         // Shouldn't ever be reached, but add anyway as a failsafe
-        gWarpsMenu->initErrorWindow(gCustomStatesLimitReachedText);
+        gWarpsMenu->initErrorWindow(gLimitReached);
     }
 
     // Close the name editor
-    warpsMenuCustomStatesCloseNameEditor();
+    closeNameEditor();
 }
 
-void warpsMenuCustomStatesCreateState(Menu *menuPtr)
+static void selectedOptionCreateState(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -391,7 +400,7 @@ void warpsMenuCustomStatesCreateState(Menu *menuPtr)
     // If the maximum amount of states have been created, then show an error message
     if (customStatePtr->limitHasBeenReached())
     {
-        warpsMenuPtr->initErrorWindow(gCustomStatesLimitReachedText);
+        warpsMenuPtr->initErrorWindow(gLimitReached);
         return;
     }
 
@@ -406,10 +415,10 @@ void warpsMenuCustomStatesCreateState(Menu *menuPtr)
                         true,
                         rootWindowPtr->getAlpha());
 
-    nameEditorPtr->startDrawing(warpsMenuCustomStatesCreateStateNameSet, warpsMenuCustomStatesCloseNameEditor);
+    nameEditorPtr->startDrawing(createState, closeNameEditor);
 }
 
-void warpsMenuCustomStatesDuplicateState(Menu *menuPtr)
+static void selectedOptionDuplicateState(Menu *menuPtr)
 {
     CustomState *customStatePtr = &gCustomState;
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
@@ -418,7 +427,7 @@ void warpsMenuCustomStatesDuplicateState(Menu *menuPtr)
     if (customStatePtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
-        warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
+        warpsMenuPtr->initErrorWindow(gNoStates);
         return;
     }
 
@@ -426,7 +435,7 @@ void warpsMenuCustomStatesDuplicateState(Menu *menuPtr)
     if (customStatePtr->limitHasBeenReached())
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DUPLICATE);
-        warpsMenuPtr->initErrorWindow(gCustomStatesLimitReachedText);
+        warpsMenuPtr->initErrorWindow(gLimitReached);
         return;
     }
 
@@ -462,7 +471,7 @@ bool WarpsMenu::initSwapMoveStates(Menu *menuPtr)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_INIT);
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
-        this->initErrorWindow(gCustomStatesNotEnoughStatesToSwapMoveText);
+        this->initErrorWindow(gNotEnoughStatesToSwapMove);
         return false;
     }
 
@@ -494,7 +503,7 @@ bool WarpsMenu::initSwapMoveStates(Menu *menuPtr)
     return true;
 }
 
-void warpsMenuCustomStatesSwapStates(Menu *menuPtr)
+static void selectedOptionSwapStates(Menu *menuPtr)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
     if (!warpsMenuPtr->initSwapMoveStates(menuPtr))
@@ -515,7 +524,7 @@ void warpsMenuCustomStatesSwapStates(Menu *menuPtr)
     menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
 }
 
-void warpsMenuCustomStatesMoveState(Menu *menuPtr)
+static void selectedOptionMoveState(Menu *menuPtr)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
     if (!warpsMenuPtr->initSwapMoveStates(menuPtr))
@@ -536,7 +545,7 @@ void warpsMenuCustomStatesMoveState(Menu *menuPtr)
     menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_SWAP_MOVE_SELECTED_STATE_TO_SWAP);
 }
 
-void warpsMenuCustomStatesOverwriteState(Menu *menuPtr)
+static void selectedOptionOverwriteState(Menu *menuPtr)
 {
     CustomState *customStatePtr = &gCustomState;
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
@@ -545,7 +554,7 @@ void warpsMenuCustomStatesOverwriteState(Menu *menuPtr)
     if (customStatePtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_OVERWRITE);
-        warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
+        warpsMenuPtr->initErrorWindow(gNoStates);
         return;
     }
 
@@ -568,10 +577,10 @@ void warpsMenuCustomStatesOverwriteState(Menu *menuPtr)
     }
 
     // By default there is no way to tell that the overwrite was successful, so draw text for that
-    warpsMenuPtr->initErrorWindow(gCustomStatesSuccessfullyOverwriteStateText);
+    warpsMenuPtr->initErrorWindow(gSuccessfullyOverwriteState);
 }
 
-void warpsMenuCustomStatesRenameStateNameSet(char *newNamePtr, uint32_t newNameSize)
+static void renameState(char *newNamePtr, uint32_t newNameSize)
 {
     (void)newNamePtr;
     (void)newNameSize;
@@ -586,10 +595,10 @@ void warpsMenuCustomStatesRenameStateNameSet(char *newNamePtr, uint32_t newNameS
     */
 
     // Close the name editor
-    warpsMenuCustomStatesCloseNameEditor();
+    closeNameEditor();
 }
 
-void warpsMenuCustomStatesRenameState(Menu *menuPtr)
+static void selectedOptionRenameState(Menu *menuPtr)
 {
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
 
@@ -600,7 +609,7 @@ void warpsMenuCustomStatesRenameState(Menu *menuPtr)
     if ((customStatePtr->getTotalEntries() == 0) || !entriesPtr)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_RENAME);
-        warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
+        warpsMenuPtr->initErrorWindow(gNoStates);
         return;
     }
 
@@ -629,10 +638,10 @@ void warpsMenuCustomStatesRenameState(Menu *menuPtr)
     nameEditorPtr
         ->init(rootWindowPtr, stateNameBufferPtr, stateNamePtr, CUSTOM_STATE_NAME_SIZE, false, rootWindowPtr->getAlpha());
 
-    nameEditorPtr->startDrawing(warpsMenuCustomStatesRenameStateNameSet, warpsMenuCustomStatesCloseNameEditor);
+    nameEditorPtr->startDrawing(renameState, closeNameEditor);
 }
 
-void warpsMenuCustomStatesDeleteState(Menu *menuPtr)
+static void selectedOptionDeleteState(Menu *menuPtr)
 {
     CustomState *customStatePtr = &gCustomState;
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
@@ -641,7 +650,7 @@ void warpsMenuCustomStatesDeleteState(Menu *menuPtr)
     if (customStatePtr->getTotalEntries() == 0)
     {
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
-        warpsMenuPtr->initErrorWindow(gCustomStatesNoStatesText);
+        warpsMenuPtr->initErrorWindow(gNoStates);
         return;
     }
 

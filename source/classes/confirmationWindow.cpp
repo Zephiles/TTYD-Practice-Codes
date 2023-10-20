@@ -4,12 +4,12 @@
 
 #include <cstdint>
 
-const char *gConfirmationWindowYesNoStrings[] = {
+static const char *gYesNoStrings[] = {
     "Yes",
     "No",
 };
 
-ConfirmationWindow *gConfirmationWindow = nullptr;
+static ConfirmationWindow *gConfirmationWindow = nullptr;
 
 void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
 {
@@ -18,16 +18,8 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
 
 void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha)
 {
-    constexpr uint32_t totalOptions = sizeof(gConfirmationWindowYesNoStrings) / sizeof(const char *);
-
-    this->OptionSelector::init(helpText,
-                               gConfirmationWindowYesNoStrings,
-                               totalOptions,
-                               1,
-                               parentWindow,
-                               windowAlpha,
-                               20.f,
-                               MENU_SCALE);
+    constexpr uint32_t totalOptions = sizeof(gYesNoStrings) / sizeof(const char *);
+    this->OptionSelector::init(helpText, gYesNoStrings, totalOptions, 1, parentWindow, windowAlpha, 20.f, MENU_SCALE);
 
     // Start on no
     this->OptionSelector::setCurrentIndex(CONFIRMATION_WINDOW_OPTION_NO);
@@ -39,7 +31,7 @@ void ConfirmationWindow::stopDrawing()
     this->OptionSelector::stopDrawing();
 }
 
-void confirmationWindowSelectedOption(uint32_t currentIndex)
+static void confirmationWindowSelectedOption(uint32_t currentIndex)
 {
     // Make sure gConfirmationWindow is set
     const ConfirmationWindow *confirmationWindowPtr = gConfirmationWindow;
@@ -62,7 +54,7 @@ void confirmationWindowSelectedOption(uint32_t currentIndex)
     }
 }
 
-void confirmationWindowSelectedNo()
+static void confirmationWindowSelectedNo()
 {
     confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO);
 }

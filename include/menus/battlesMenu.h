@@ -3,7 +3,6 @@
 
 #include "menuUtils.h"
 #include "classes/valueEditor.h"
-#include "ttyd/camdrv.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/battle.h"
 
@@ -90,30 +89,23 @@ inline uint32_t getbattlesMenuInitMaxIndex()
     return maxActors - 2;
 }
 
+// battlesInit
 void battlesMenuInit(Menu *menuPtr);
-void battlesMenuInitControls(Menu *menuPtr, MenuButtonInput button);
-void battlesMenuInitDraw(CameraId cameraId, void *user);
-void battlesMenuInitExit();
 
 void battlesMenuCancelChangeValue();
 
 // Called when inside part of the Battles menu in which an actor was selected, but the actor is no longer in the battle
 void battlesMenuReturnToInitMenu();
 
-void battlesMenuStatsInit();
-void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button);
-void battlesMenuStatsDraw(CameraId cameraId, void *user);
-
-void selectedOptionBattlesChangeValue(Menu *menuPtr);
-void selectedOptionBattlesClearHeldItem(Menu *menuPtr);
-
-void battlesMenuStatusesInit(Menu *menuPtr);
-void battlesMenuStatusesControls(Menu *menuPtr, MenuButtonInput button);
-void battlesMenuStatusesDraw(CameraId cameraId, void *user);
-
 BattleWork *getBattleWorkPtr();
 BattleWorkUnit *getMarioBattlePtr();
 BattleWorkUnit *getPartnerBattlePtr();
 BattleWorkUnit *getActorBattlePtr(uint32_t slot);
+
+// battlesStats
+void battlesMenuStatsInit();
+
+// battlesStatuses
+void battlesMenuStatusesInit(Menu *menuPtr);
 
 #endif

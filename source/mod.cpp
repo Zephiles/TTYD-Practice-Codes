@@ -1,5 +1,6 @@
 #include "mod.h"
 
+#include <cstdint>
 #include <cstdio>
 #include <cinttypes>
 

@@ -8,7 +8,6 @@
 
 void writeBranch(void *ptr, void *destination);
 void writeBranchBL(void *ptr, void *destination);
-void writeBranchMain(void *ptr, void *destination, uint32_t branch);
 void writeStandardBranches(void *ptr, void *funcStart, void *funcEnd);
 void applyAssemblyPatch(void *address, uint32_t value);
 

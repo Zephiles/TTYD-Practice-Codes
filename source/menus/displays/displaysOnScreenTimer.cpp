@@ -8,25 +8,29 @@
 
 #include <cstdint>
 
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+
 // The code assumes that the button combos are last, and that Start/Pause/Resume comes before Reset
-const MenuOption gDisplaysMenuOnScreenTimerOptions[] = {
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    displaysMenuOnScreenTimerToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
 
     "Change Start/Pause/Resume Button Combo",
-    displaysMenuOnScreeTimerChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 
     "Change Reset Button Combo",
-    displaysMenuOnScreeTimerChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 };
 
-const MenuFunctions gDisplaysMenuOnScreenTimerFuncs = {
-    gDisplaysMenuOnScreenTimerOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     displaysMenuDefaultControlsWithButtonComboEditor,
-    displaysMenuOnScreenTimerDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -35,8 +39,8 @@ void displaysMenuOnScreenTimerInit(Menu *menuPtr)
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
 
-    constexpr uint32_t totalOptions = sizeof(gDisplaysMenuOnScreenTimerOptions) / sizeof(MenuOption);
-    enterNextMenu(&gDisplaysMenuOnScreenTimerFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void DisplaysMenu::drawOnScreenTimerInfo() const
@@ -98,7 +102,7 @@ void DisplaysMenu::drawOnScreenTimerInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -115,7 +119,7 @@ void displaysMenuOnScreenTimerDraw(CameraId cameraId, void *user)
     }
 }
 
-void displaysMenuOnScreenTimerToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -142,7 +146,7 @@ void displaysMenuOnScreenTimerToggleFlag(Menu *menuPtr)
     }
 }
 
-void displaysMenuOnScreenTimerSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     uint32_t currentIndex = gMenu->getCurrentIndex();
     if (currentIndex > 1)
@@ -165,9 +169,9 @@ void displaysMenuOnScreenTimerSetNewButtonCombo(uint32_t buttonCombo)
     displaysMenuSetNewButtonCombo(displayButtonComboFlag, buttonCombo);
 }
 
-void displaysMenuOnScreeTimerChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuChangeButtonCombo(displaysMenuOnScreenTimerSetNewButtonCombo);
+    displaysMenuChangeButtonCombo(setButtonCombo);
 }

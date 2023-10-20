@@ -36,10 +36,7 @@ class CustomStateEntry
     ~CustomStateEntry() {}
 
     void init(const char *stateName);
-    void backupInventory();
-
     void load();
-    void restoreInventory();
 
     ItemId *getItemsPtr() { return this->items; }
     void setItemsPtr(ItemId *itemsPtr) { this->items = itemsPtr; }
@@ -87,8 +84,8 @@ class CustomStateEntry
     uint32_t getTotalInventoryItems() const { return this->totalInventoryItems; }
     void setTotalInventoryItems(uint32_t totalItems) { this->totalInventoryItems = static_cast<uint16_t>(totalItems); }
 
-    void setSequencePosition(uint32_t position) { this->sequencePosition = static_cast<uint16_t>(position); }
-    uint32_t getSequencePosition() const { return this->sequencePosition; }
+    void setStateSequencePosition(uint32_t position) { this->sequencePosition = static_cast<uint16_t>(position); }
+    uint32_t getStateSequencePosition() const { return this->sequencePosition; }
 
     void setPartnerOut(PartyMembers partner) { this->partnerOut = partner; }
     PartyMembers getPartnerOut() const { return this->partnerOut; }
@@ -96,7 +93,7 @@ class CustomStateEntry
     void setFollowerOut(PartyMembers follower) { this->followerOut = follower; }
     PartyMembers getFollowerOut() const { return this->followerOut; }
 
-    void setInBoatMoad(bool inBoatMode) { this->inBoatMode = inBoatMode; }
+    void setInBoatMode(bool inBoatMode) { this->inBoatMode = inBoatMode; }
     bool shouldBeInBoatMode() const { return this->inBoatMode; }
 
     char *getCurrentMapPtr() { return this->currentMap; }
@@ -109,6 +106,9 @@ class CustomStateEntry
     void setNewStateName(const char *newStateNamePtr);
 
    private:
+    void backupInventory();
+    void restoreInventory();
+
     ItemId *items; // Standard items, important items, stored items, badges, and equipped badges. Each section ends with
                    // ItemId::ITEM_NONE. Amount is determined by totalInventoryItems.
 

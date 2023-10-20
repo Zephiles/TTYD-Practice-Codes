@@ -2,8 +2,8 @@
 #define CLASSES_VALUEEDITOR_H
 
 #include "mod.h"
-#include "classes/menu.h"
 #include "classes/window.h"
+#include "classes/menu.h"
 
 #include <cstdint>
 
@@ -127,18 +127,17 @@ class ValueEditor
     // Retrieves whatever value is currently in editorValue
     bool getValueFromString(ValueType *valuePtr) const;
 
+    void controls(MenuButtonInput button);
+    void draw();
+
+   private:
     bool handleCheckMinMax(const ValueType *valuePtr, bool valueIsPositive, uint32_t specialCase);
     void adjustValue(bool increment);
     void setValueToMin();
     void setValueToMax();
-
     void controlsMoveLeftOnce(uint32_t maxDigit);
     void controlsMoveRightOnce(uint32_t maxDigit);
-    void controls(MenuButtonInput button);
 
-    void draw();
-
-   private:
     Window window;
 
     ValueType minValue;
@@ -160,42 +159,5 @@ class ValueEditor
     char editorValue[32]; // Current value in string format. This is what is being modified while the editor is displayed.
     char helpText[224];   // Text that shows what buttons can be pressed to handle certain things in the window
 };
-
-uint32_t getMaxDigits(uint32_t value, bool handleAsHex);
-uint32_t getMaxDigits(int32_t value, bool handleAsHex);
-uint32_t getMaxDigits(uint64_t value, bool handleAsHex);
-uint32_t getMaxDigits(int64_t value, bool handleAsHex);
-
-// uint32_t getMaxDigits(float value, bool handleAsHex);
-uint32_t getMaxDigits(float value);
-uint32_t getMaxDigits(double value);
-
-uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
-int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
-uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
-int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
-
-/*
-float handleAdjustValue(float value,
-                        uint32_t currentIndex,
-                        uint32_t totalDigits,
-                        bool valueIsSigned,
-                        bool handleAsHex,
-                        bool increment);
-*/
-
-float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
-double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
-
-// void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment);
-
-int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, float value);
-
-int32_t doubleToString(char *bufOut,
-                       uint32_t bufSize,
-                       char *formatOut,
-                       uint32_t formatSize,
-                       uint32_t totalLength,
-                       double value);
 
 #endif

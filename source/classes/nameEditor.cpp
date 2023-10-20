@@ -11,11 +11,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gNameEditorHelpText =
+static const char *gHelpText =
     "Press Start to set the new text\nPress A to select a character\nPress B to undo/cancel\nPress Y to move backward one "
     "character\nPress X to move forward one character\nPress Z to cancel immediately";
 
-const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
+static const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
 
 void NameEditor::init(const Window *parentWindow,
                       const char *initialText,
@@ -127,7 +127,7 @@ void NameEditor::init(const Window *parentWindow,
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gNameEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Adjust the width to be the same as the parent window
     windowPtr->setWidth(parentWindow->getWidth());
@@ -398,7 +398,7 @@ void NameEditor::draw()
     drawTextInit(false);
 
     // Draw the help text
-    const char *helpTextPtr = gNameEditorHelpText;
+    const char *helpTextPtr = gHelpText;
     windowPtr->getTextPosXY(helpTextPtr, WindowAlignment::TOP_CENTER, scale, &tempPosX, &tempPosY);
     drawText(helpTextPtr, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 

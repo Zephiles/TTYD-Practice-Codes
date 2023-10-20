@@ -7,46 +7,49 @@
 
 #include <cstdint>
 
-const MenuOption gDisplaysMenuMemoryUsageOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionToggleFlag(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Main Heap 0",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
     "Main Heap 1",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
     "Main Heap 2",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
     "Main Heap 3",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
     "Main Heap 4",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
 #ifdef TTYD_JP
     "Main Heap 5",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 #endif
 
     "Smart Heap",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
     "Map Heap",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 
 #ifndef TTYD_JP
     "Battle Map Heap",
-    displaysMenuMemoryUsageToggleFlag,
+    selectedOptionToggleFlag,
 #endif
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
 };
 
-const MenuFunctions gDisplaysMenuMemoryUsageFuncs = {
-    gDisplaysMenuMemoryUsageOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
-    displaysMenuMemoryUsageDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -55,8 +58,8 @@ void displaysMenuMemoryUsageInit(Menu *menuPtr)
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
 
-    constexpr uint32_t totalOptions = sizeof(gDisplaysMenuMemoryUsageOptions) / sizeof(MenuOption);
-    enterNextMenu(&gDisplaysMenuMemoryUsageFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void DisplaysMenu::drawMemoryUsageInfo() const
@@ -97,7 +100,7 @@ void DisplaysMenu::drawMemoryUsageInfo() const
     }
 }
 
-void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -107,7 +110,7 @@ void displaysMenuMemoryUsageDraw(CameraId cameraId, void *user)
     displaysMenuPtr->drawMemoryUsageInfo();
 }
 
-void displaysMenuMemoryUsageToggleFlag(Menu *menuPtr)
+static void selectedOptionToggleFlag(Menu *menuPtr)
 {
     const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() +
                                                    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);

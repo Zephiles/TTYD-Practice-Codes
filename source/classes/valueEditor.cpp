@@ -15,6 +15,60 @@
 #include <cstdio>
 #include <cinttypes>
 
+// Helper functions
+static uint32_t getMaxDigits(uint32_t value, bool handleAsHex);
+static uint32_t getMaxDigits(int32_t value, bool handleAsHex);
+static uint32_t getMaxDigits(uint64_t value, bool handleAsHex);
+static uint32_t getMaxDigits(int64_t value, bool handleAsHex);
+// static uint32_t getMaxDigits(float value, bool handleAsHex);
+static uint32_t getMaxDigits(float value);
+static uint32_t getMaxDigits(double value);
+
+static uint32_t handleAdjustValue(uint32_t value,
+                                  uint32_t currentIndex,
+                                  uint32_t totalDigits,
+                                  bool handleAsHex,
+                                  bool increment);
+
+static int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
+
+static uint64_t handleAdjustValue(uint64_t value,
+                                  uint32_t currentIndex,
+                                  uint32_t totalDigits,
+                                  bool handleAsHex,
+                                  bool increment);
+
+static int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment);
+
+/*
+static float handleAdjustValue(float value,
+                               uint32_t currentIndex,
+                               uint32_t totalDigits,
+                               bool valueIsSigned,
+                               bool handleAsHex,
+                               bool increment);
+*/
+
+static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
+static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
+
+// static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment);
+
+static int32_t floatToString(char *bufOut,
+                             uint32_t bufSize,
+                             char *formatOut,
+                             uint32_t formatSize,
+                             uint32_t totalLength,
+                             float value);
+
+static int32_t doubleToString(char *bufOut,
+                              uint32_t bufSize,
+                              char *formatOut,
+                              uint32_t formatSize,
+                              uint32_t totalLength,
+                              double value);
+
+// Main functions
 void ValueEditor::init(const void *valuePtr,
                        const void *minValuePtr,
                        const void *maxValuePtr,
@@ -2162,7 +2216,7 @@ void ValueEditor::draw()
     }
 }
 
-uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
+static uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
 {
     uint32_t divideAmount;
     if (handleAsHex)
@@ -2184,7 +2238,7 @@ uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
     return count;
 }
 
-uint32_t getMaxDigits(int32_t value, bool handleAsHex)
+static uint32_t getMaxDigits(int32_t value, bool handleAsHex)
 {
     int32_t divideAmount;
     if (handleAsHex)
@@ -2206,7 +2260,7 @@ uint32_t getMaxDigits(int32_t value, bool handleAsHex)
     return count;
 }
 
-uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
+static uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
 {
     uint32_t divideAmount;
     if (handleAsHex)
@@ -2228,7 +2282,7 @@ uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
     return count;
 }
 
-uint32_t getMaxDigits(int64_t value, bool handleAsHex)
+static uint32_t getMaxDigits(int64_t value, bool handleAsHex)
 {
     int32_t divideAmount;
     if (handleAsHex)
@@ -2251,7 +2305,7 @@ uint32_t getMaxDigits(int64_t value, bool handleAsHex)
 }
 
 /*
-uint32_t getMaxDigits(float value, bool handleAsHex)
+static uint32_t getMaxDigits(float value, bool handleAsHex)
 {
     // For simplicity, convert the value to a string, and then count the characters in it
     char buf[64];
@@ -2293,7 +2347,7 @@ uint32_t getMaxDigits(float value, bool handleAsHex)
 }
 */
 
-uint32_t getMaxDigits(float value)
+static uint32_t getMaxDigits(float value)
 {
     // For simplicity, convert the value to a string, and then count the characters in it
     char buf[32];
@@ -2322,7 +2376,7 @@ uint32_t getMaxDigits(float value)
     return static_cast<uint32_t>(len);
 }
 
-uint32_t getMaxDigits(double value)
+static uint32_t getMaxDigits(double value)
 {
     // For simplicity, convert the value to a string, and then count the characters in it
     char buf[32];
@@ -2351,7 +2405,7 @@ uint32_t getMaxDigits(double value)
     return static_cast<uint32_t>(len);
 }
 
-uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
+static uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
     int32_t base;
@@ -2387,7 +2441,7 @@ uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t total
     return value += adjustmentValue;
 }
 
-int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
+static int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
     int32_t base;
@@ -2426,7 +2480,7 @@ int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDi
     return value += adjustmentValue;
 }
 
-uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
+static uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
     int32_t base;
@@ -2462,7 +2516,7 @@ uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t total
     return value += adjustmentValue;
 }
 
-int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
+static int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
     int32_t base;
@@ -2502,12 +2556,12 @@ int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDi
 }
 
 /*
-float handleAdjustValue(float value,
-                        uint32_t currentIndex,
-                        uint32_t totalDigits,
-                        bool valueIsSigned,
-                        bool handleAsHex,
-                        bool increment)
+static float handleAdjustValue(float value,
+                               uint32_t currentIndex,
+                               uint32_t totalDigits,
+                               bool valueIsSigned,
+                               bool handleAsHex,
+                               bool increment)
 {
     float base;
     if (handleAsHex)
@@ -2557,7 +2611,7 @@ float handleAdjustValue(float value,
 }
 */
 
-float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
+static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
     constexpr float base = 10.f;
     float adjustmentValue = 0.000001f; // Based on MAX_DOUBLE_DIGITS
@@ -2589,7 +2643,7 @@ float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits
     return value += adjustmentValue;
 }
 
-double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
+static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
     constexpr double base = 10.0;
     double adjustmentValue = 0.000001; // Based on MAX_DOUBLE_DIGITS
@@ -2622,7 +2676,7 @@ double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigi
 }
 
 /*
-void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment)
+static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment)
 {
     // Handle special cases first for the current digit
     char currentDigit = valueString[currentIndex];
@@ -2731,7 +2785,12 @@ void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool hand
 }
 */
 
-int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, float value)
+static int32_t floatToString(char *bufOut,
+                             uint32_t bufSize,
+                             char *formatOut,
+                             uint32_t formatSize,
+                             uint32_t totalLength,
+                             float value)
 {
     // Make sure the number is one that can be edited easily
     if (!floatCanBeWorkedWith(value))
@@ -2752,7 +2811,12 @@ int32_t floatToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t 
     return snprintf(bufOut, bufSize, formatOut, value);
 }
 
-int32_t doubleToString(char *bufOut, uint32_t bufSize, char *formatOut, uint32_t formatSize, uint32_t totalLength, double value)
+static int32_t doubleToString(char *bufOut,
+                              uint32_t bufSize,
+                              char *formatOut,
+                              uint32_t formatSize,
+                              uint32_t totalLength,
+                              double value)
 {
     // Make sure the number is one that can be edited easily
     if (!doubleCanBeWorkedWith(value))

@@ -1043,7 +1043,7 @@ class CustomStatesSettingsData
 
             // Sequence position
             const uint16_t *sequencePositionPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, offset);
-            currentEntryPtr->setSequencePosition(*sequencePositionPtr);
+            currentEntryPtr->setStateSequencePosition(*sequencePositionPtr);
             offset += sizeof(uint16_t);
 
             // Partner out
@@ -1058,7 +1058,7 @@ class CustomStatesSettingsData
 
             // In boat mode
             const bool *inBoatModePtr = PTR_CAST_TYPE_ADD_OFFSET(const bool *, this, offset);
-            currentEntryPtr->setInBoatMoad(*inBoatModePtr);
+            currentEntryPtr->setInBoatMode(*inBoatModePtr);
             offset += sizeof(bool);
 
             // Current map
@@ -1127,7 +1127,7 @@ class CustomStatesSettingsData
             this->totalInventoryItems = static_cast<uint16_t>(totalItems);
         }
 
-        this->sequencePosition = entryPtr->getSequencePosition();
+        this->sequencePosition = entryPtr->getStateSequencePosition();
         this->partnerOut = entryPtr->getPartnerOut();
         this->followerOut = entryPtr->getFollowerOut();
         this->inBoatMode = entryPtr->shouldBeInBoatMode();

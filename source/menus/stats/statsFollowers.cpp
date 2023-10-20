@@ -11,27 +11,32 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gStatsMenuFollowersOptions[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionBringFollowerOut(Menu *menuPtr);
+static void selectedOptionRemoveCurrentFollower(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Bring Follower Out",
-    selectedOptionMenuFollowersBringFollowerOut,
+    selectedOptionBringFollowerOut,
 
     "Remove Current Follower",
-    selectedOptionMenuFollowersRemoveFollower,
+    selectedOptionRemoveCurrentFollower,
 };
 
-const MenuFunctions gStatsMenuFollowersFuncs = {
-    gStatsMenuFollowersOptions,
-    statsMenuFollowersControls,
-    statsMenuFollowersDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
-void cancelMenuFollowersBringOutFollower()
+static void cancelBringOutFollower()
 {
     gStatsMenu->getFollowerSelectorPtr()->stopDrawing();
 }
 
-void selectedMenuFollowersBringOutFollower(PartyMembers followerSelected)
+static void bringOutFollower(PartyMembers followerSelected)
 {
     // Make sure a follower can actually be spawned right now
     if (checkIfInGame())
@@ -46,10 +51,10 @@ void selectedMenuFollowersBringOutFollower(PartyMembers followerSelected)
     }
 
     // Close the follower selector
-    cancelMenuFollowersBringOutFollower();
+    cancelBringOutFollower();
 }
 
-void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
+static void selectedOptionBringFollowerOut(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -66,10 +71,10 @@ void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr)
     FollowerSelector *followerSelectorPtr = statsMenuPtr->getFollowerSelectorPtr();
 
     followerSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-    followerSelectorPtr->startDrawing(selectedMenuFollowersBringOutFollower, cancelMenuFollowersBringOutFollower);
+    followerSelectorPtr->startDrawing(bringOutFollower, cancelBringOutFollower);
 }
 
-void selectedOptionMenuFollowersRemoveFollower(Menu *menuPtr)
+static void selectedOptionRemoveCurrentFollower(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -83,11 +88,11 @@ void statsMenuFollowersInit(Menu *menuPtr)
     // Reset currentIndex
     gStatsMenu->setCurrentIndex(0);
 
-    constexpr uint32_t totalOptions = sizeof(gStatsMenuFollowersOptions) / sizeof(MenuOption);
-    enterNextMenu(&gStatsMenuFollowersFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the follower selector is open, then handle the controls for that
     FollowerSelector *followerSelectorPtr = gStatsMenu->getFollowerSelectorPtr();
@@ -142,7 +147,7 @@ void StatsMenu::drawFollowerOut() const
     drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
 }
 
-void statsMenuFollowersDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);

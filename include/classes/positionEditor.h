@@ -33,13 +33,13 @@ class PositionEditor
     float getPosX() const { return this->posX; }
     float getPosY() const { return this->posY; }
 
-    bool checkAutoIncrement();
-    void dpadControls(MenuButtonInput button);
     void controls(MenuButtonInput button);
-
     void draw() const;
 
    private:
+    bool shouldAutoIncrement();
+    void dpadControls(MenuButtonInput button);
+
     Window window;
 
     PositionEditorConfirmFunc confirmFunc; // Called when the player presses A to confirm

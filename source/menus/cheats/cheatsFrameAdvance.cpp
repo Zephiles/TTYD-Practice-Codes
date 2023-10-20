@@ -8,21 +8,25 @@
 
 #include <cstdint>
 
-const MenuOption gCheatsMenuFrameAdvanceOptions[] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Turn On/Off",
-    cheatsMenuFrameAdvanceToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Frame Advance Button Combo",
-    cheatsMenuFrameAdvanceChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 
     "Change Pause/Resume Button Combo",
-    cheatsMenuFrameAdvanceChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 };
 
-const MenuFunctions gCheatsMenuFrameAdvanceFuncs = {
-    gCheatsMenuFrameAdvanceOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     cheatsMenuDefaultControlsWithButtonComboEditor,
-    cheatsMenuFrameAdvanceDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -31,8 +35,8 @@ void cheatsMenuFrameAdvanceInit(Menu *menuPtr)
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
 
-    constexpr uint32_t totalOptions = sizeof(gCheatsMenuFrameAdvanceOptions) / sizeof(MenuOption);
-    enterNextMenu(&gCheatsMenuFrameAdvanceFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void CheatsMenu::drawFrameAdvanceInfo() const
@@ -92,7 +96,7 @@ void CheatsMenu::drawFrameAdvanceInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -109,7 +113,7 @@ void cheatsMenuFrameAdvanceDraw(CameraId cameraId, void *user)
     }
 }
 
-void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -138,7 +142,7 @@ void cheatsMenuFrameAdvanceToggleFlag(Menu *menuPtr)
     cheatsPtr->clearMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED);
 }
 
-void cheatsMenuFrameAdvanceSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     uint32_t cheatButtonComboFlag;
     if (gMenu->getCurrentIndex() == CheatsMenuFrameAdvanceOptions::CHEATS_MENU_FRAME_ADVANCE_CHANGE_FRAME_ADVANCE_COMBO)
@@ -153,9 +157,9 @@ void cheatsMenuFrameAdvanceSetNewButtonCombo(uint32_t buttonCombo)
     cheatsMenuSetNewButtonCombo(cheatButtonComboFlag, buttonCombo);
 }
 
-void cheatsMenuFrameAdvanceChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    cheatsMenuChangeButtonCombo(cheatsMenuFrameAdvanceSetNewButtonCombo);
+    cheatsMenuChangeButtonCombo(setButtonCombo);
 }

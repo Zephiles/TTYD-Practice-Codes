@@ -1,17 +1,14 @@
 #ifndef MENUS_WARPS_MENU_H
 #define MENUS_WARPS_MENU_H
 
-#include "menuUtils.h"
 #include "customState.h"
+#include "classes/menu.h"
 #include "classes/valueEditor.h"
 #include "classes/nameEditor.h"
 #include "classes/errorwindow.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_pouch.h"
-#include "ttyd/camdrv.h"
-#include "ttyd/party.h"
 #include "ttyd/evtmgr.h"
-#include "ttyd/mapdata.h"
 
 #include <cstdint>
 
@@ -178,7 +175,6 @@ class WarpsMenu
     void setSelectedIndex(uint32_t index) { this->selectedIndex = static_cast<uint8_t>(index); }
 
     uint32_t getCurrentPage() const { return this->currentPage; }
-    uint8_t *getCurrentPagePtr() { return &this->currentPage; }
     void setCurrentPage(uint32_t page) { this->currentPage = static_cast<uint8_t>(page); }
 
     char *getStateNamePtr() { return this->stateName; }
@@ -209,7 +205,6 @@ class WarpsMenu
 
 extern WarpsMenu *gWarpsMenu;
 extern const char *gWarpsMenuCannotWarpText;
-extern const char *gUnusedMaps[WARPS_INDEX_TOTAL_UNUSED_MAPS];
 
 #ifdef TTYD_JP
 extern const char *gWarpsEventNames[WARPS_TOTAL_EVENT_NAMES];
@@ -217,11 +212,7 @@ extern const char *gWarpsEventNames[WARPS_TOTAL_EVENT_NAMES];
 
 // warpsInit
 void warpsMenuInit(Menu *menuPtr);
-void warpsMenuInitControls(Menu *menuPtr, MenuButtonInput button);
-void warpsMenuInitDraw(CameraId cameraId, void *user);
-void warpsMenuInitExit();
 
-void warpsMenuInitSelectWarp(Menu *menuPtr);
 void warpsMenuEventIndexControls(Menu *menuPtr, MenuButtonInput button);
 void warpsMenuCloseValueEditor();
 
@@ -232,33 +223,15 @@ void setNextBero(const char *bero);
 
 // warpsEvent
 void warpsMenuEventInit(Menu *menuPtr);
-void warpsMenuEventDraw(CameraId cameraId, void *user);
-
-void warpsMenuEventSelectEvent(Menu *menuPtr);
-void warpsMenuEventToggleKeepInventory(Menu *menuPtr);
-void warpsMenuEventToggleEquipBadges(Menu *menuPtr);
-void warpsMenuEventToggleSetFlags(Menu *menuPtr);
-void warpsMenuEventWarp(Menu *menuPtr);
 
 void handleWarpByEvent();
-uint32_t getTotalStageEvents();
-bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2]);
-bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
-uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId);
-const char *getPartyName(PartyMembers id);
 void getMapAndBeroTextAndColor(const char *mapTextPtr, const char *beroTextPtr, MapAndBeroDetails *mapAndBeroDetailsPtr);
-bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetailsPtr);
 void drawEventDetails(uint32_t index, float posX, float posY);
 
 // warpsIndex
 void warpsMenuIndexInit(Menu *menuPtr);
-void warpsMenuIndexDraw(CameraId cameraId, void *user);
-
-void warpsMenuIndexSelectNewMapOrEntranceId(Menu *menuPtr);
-void warpsMenuIndexWarp(Menu *menuPtr);
 
 const char *getMapFromIndex(uint32_t index);
-int32_t getMapIndex();
 MapData *mapDataPtrHandleUnusedMaps(const char *mapName);
 int32_t setIndexWarpEntrances(EvtEntry *evtPtr, bool isFirstCall);
 void unloadClearCurrentMapInitScript(const char *currentMap, const char *nextMap, const char *nextBero);
@@ -266,28 +239,11 @@ void relSetEvtAddrSetCurrentMapInitScript(const char *mapName, const void *pInit
 
 // warpsIndexViewEntrances
 void warpsMenuIndexViewEntrancesInit(Menu *menuPtr);
-void warpsMenuIndexViewEntrancesControls(Menu *menuPtr, MenuButtonInput button);
-void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user);
 
 // warpsBoss
 void warpsMenuBossInit(Menu *menuPtr);
-void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button);
-void warpsMenuBossDraw(CameraId cameraId, void *user);
-
-void warpsMenuBossWarp(Menu *menuPtr);
 
 // warpsCustomStates
 void warpsMenuCustomStatesInit(Menu *menuPtr);
-void warpsMenuCustomStatesControls(Menu *menuPtr, MenuButtonInput button);
-void warpsMenuCustomStatesDraw(CameraId cameraId, void *user);
-
-void warpsMenuCustomStatesLoadState(Menu *menuPtr);
-void warpsMenuCustomStatesCreateState(Menu *menuPtr);
-void warpsMenuCustomStatesDuplicateState(Menu *menuPtr);
-void warpsMenuCustomStatesSwapStates(Menu *menuPtr);
-void warpsMenuCustomStatesMoveState(Menu *menuPtr);
-void warpsMenuCustomStatesOverwriteState(Menu *menuPtr);
-void warpsMenuCustomStatesRenameState(Menu *menuPtr);
-void warpsMenuCustomStatesDeleteState(Menu *menuPtr);
 
 #endif

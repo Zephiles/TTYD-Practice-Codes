@@ -9,42 +9,46 @@
 
 #include <cstdint>
 
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+
 // For all selection types except displaysMenuGenericNoButtonComboNoManualPositionInit
-const MenuOption gDisplaysMenuGenericMainOptions[] {
+static const MenuOption gMainOptions[] {
     "Turn On/Off",
-    displaysMenuGenericToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
 
     "Change Button Combo",
-    displaysMenuGenericChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 };
 
-const MenuFunctions gDisplaysMenuGenericMainFuncs = {
-    gDisplaysMenuGenericMainOptions,
+static const MenuFunctions gMainFuncs = {
+    gMainOptions,
     displaysMenuDefaultControlsWithButtonComboEditor,
-    displaysMenuGenericDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
 // For displaysMenuGenericHasButtonComboNoManualPositionInit
-const MenuOption gDisplaysMenuGenericHasComboNoPositionOptions[] {
+static const MenuOption gHasComboNoPositionOptions[] {
     "Turn On/Off",
-    displaysMenuGenericToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Button Combo",
-    displaysMenuGenericChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 };
 
-const MenuFunctions gDisplaysMenuGenericHasComboNoPositionFuncs = {
-    gDisplaysMenuGenericHasComboNoPositionOptions,
+static const MenuFunctions gHasComboNoPositionFuncs = {
+    gHasComboNoPositionOptions,
     displaysMenuDefaultControlsWithButtonComboEditor,
-    displaysMenuGenericDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
-void enterDisplayssMenuGeneric(Menu *menuPtr, uint32_t flags)
+static void enterDisplaysMenuGeneric(Menu *menuPtr, uint32_t flags)
 {
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
@@ -63,20 +67,20 @@ void enterDisplayssMenuGeneric(Menu *menuPtr, uint32_t flags)
 
     if (hasButtonComboNoPosition)
     {
-        funcs = &gDisplaysMenuGenericHasComboNoPositionFuncs;
-        totalOptions = sizeof(gDisplaysMenuGenericHasComboNoPositionOptions) / sizeof(MenuOption);
+        funcs = &gHasComboNoPositionFuncs;
+        totalOptions = sizeof(gHasComboNoPositionOptions) / sizeof(MenuOption);
     }
     else
     {
-        funcs = &gDisplaysMenuGenericMainFuncs;
-        totalOptions = sizeof(gDisplaysMenuGenericMainOptions) / sizeof(MenuOption);
+        funcs = &gMainFuncs;
+        totalOptions = sizeof(gMainOptions) / sizeof(MenuOption);
 
         if (displaysMenuGenericSelectionFlagIsSet(
                 flags,
                 DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_BUTTON_COMBO))
         {
             // Subtract one to exclude the button combo from the options
-            // This assumes that the button combo is the last option in gDisplaysMenuGenericMainOptions
+            // This assumes that the button combo is the last option in gMainOptions
             totalOptions--;
         }
 
@@ -107,7 +111,7 @@ void displaysMenuGenericHasButtonComboInit(Menu *menuPtr)
         setDisplaysMenuGenericSelectionFlag(flags,
                                             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_HAS_BUTTON_COMBO);
 
-    enterDisplayssMenuGeneric(menuPtr, flags);
+    enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
 void displaysMenuGenericNoButtonComboInit(Menu *menuPtr)
@@ -118,7 +122,7 @@ void displaysMenuGenericNoButtonComboInit(Menu *menuPtr)
         setDisplaysMenuGenericSelectionFlag(flags,
                                             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_BUTTON_COMBO);
 
-    enterDisplayssMenuGeneric(menuPtr, flags);
+    enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr)
@@ -133,7 +137,7 @@ void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr)
         setDisplaysMenuGenericSelectionFlag(flags,
                                             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION);
 
-    enterDisplayssMenuGeneric(menuPtr, flags);
+    enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
@@ -148,10 +152,10 @@ void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
         setDisplaysMenuGenericSelectionFlag(flags,
                                             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION);
 
-    enterDisplayssMenuGeneric(menuPtr, flags);
+    enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
-void displaysMenuGenericDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -216,7 +220,7 @@ void DisplaysMenu::drawGenericDisplayInfo() const
     }
 }
 
-void displaysMenuGenericToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -224,15 +228,15 @@ void displaysMenuGenericToggleFlag(Menu *menuPtr)
     displaysMenuToggleEnabledFlag(displayEnabledFlag);
 }
 
-void displaysMenuGenericSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     const uint32_t displayButtonComboFlag = indexToDisplayButtonComboFlag(gDisplaysMenu->getSelectedDisplay());
     displaysMenuSetNewButtonCombo(displayButtonComboFlag, buttonCombo);
 }
 
-void displaysMenuGenericChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuChangeButtonCombo(displaysMenuGenericSetNewButtonCombo);
+    displaysMenuChangeButtonCombo(setButtonCombo);
 }

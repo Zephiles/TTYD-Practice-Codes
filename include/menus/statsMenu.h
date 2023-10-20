@@ -9,7 +9,6 @@
 #include "classes/nameEditor.h"
 #include "classes/errorWindow.h"
 #include "misc/utils.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
@@ -109,29 +108,15 @@ extern StatsMenu *gStatsMenu;
 // Called when initially entering the part of the stats menu for selecting whether to work with Mario, partners, or followers
 void statsMenuInit(Menu *menuPtr);
 
-void statsMenuInitExit(); // Called when exiting the init part of the stats menu
 void statsMenuCancelChangingValue();
 
 // statsMario
 void statsMenuMarioInit(Menu *menuPtr);
-void statsMenuMarioControls(Menu *menuPtr, MenuButtonInput button);
-void statsMenuMarioDraw(CameraId cameraId, void *user);
-
-void selectedOptionMenuMarioChangeValue(Menu *menuPtr);
-void selectedOptionMenuMarioSpecialMoves(Menu *menuPtr);
 
 // statsPartners
 void statsMenuPartnersInit(Menu *menuPtr);
-void statsMenuPartnersSelectedPartner(Menu *menuPtr);
-void statsMenuPartnersControls(Menu *menuPtr, MenuButtonInput button);
-void statsMenuPartnersDraw(CameraId cameraId, void *user);
 
 // statsFollowers
 void statsMenuFollowersInit(Menu *menuPtr);
-void statsMenuFollowersControls(Menu *menuPtr, MenuButtonInput button);
-void statsMenuFollowersDraw(CameraId cameraId, void *user);
-
-void selectedOptionMenuFollowersBringFollowerOut(Menu *menuPtr);
-void selectedOptionMenuFollowersRemoveFollower(Menu *menuPtr);
 
 #endif

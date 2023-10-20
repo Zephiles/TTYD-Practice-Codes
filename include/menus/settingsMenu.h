@@ -1,12 +1,11 @@
 #ifndef MENUS_SETTINGS_MENU_H
 #define MENUS_SETTINGS_MENU_H
 
-#include "menuUtils.h"
 #include "gc/card.h"
+#include "classes/menu.h"
 #include "classes/valueEditor.h"
 #include "classes/confirmationWindow.h"
 #include "classes/errorWindow.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
@@ -52,14 +51,5 @@ class SettingsMenu
 extern SettingsMenu *gSettingsMenu;
 
 void settingsMenuInit(Menu *menuPtr);
-void settingsMenuInitControls(Menu *menuPtr, MenuButtonInput button);
-void settingsMenuInitDraw(CameraId cameraId, void *user);
-void settingsMenuInitExit();
-
-void settingsMenuToggleMemoryCardSlot(Menu *menuPtr);
-void settingsMenuSelectedDeleteSettingsFile(Menu *menuPtr);
-void settingsMenuSelectedLoadSettingsFile(Menu *menuPtr);
-void settingsMenuSelectedSaveSettingsFile(Menu *menuPtr);
-void settingsMenuSelectedChangeWindowColor(Menu *menuPtr);
 
 #endif

@@ -41,11 +41,12 @@ class NameEditor
     void setCurrentStringIndex(uint32_t index) { this->currentStringIndex = static_cast<uint8_t>(index); }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
-    void dpadControls(MenuButtonInput button);
     void controls(MenuButtonInput button);
     void draw();
 
    private:
+    void dpadControls(MenuButtonInput button);
+
     Window window;
 
     NameEditorSetNameFunc setNameFunc; // Called when the player presses Start to set the new name

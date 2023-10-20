@@ -9,21 +9,26 @@
 
 #include <cstdint>
 
-const MenuOption gMemoryMenuMemoryEditorMenuOptions[] {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionEnableMemoryEditor(Menu *menuPtr);
+static void selectedOptionChangeButtonCombo(Menu *menuPtr);
+
+static const MenuOption gOptions[] {
     "Enable Memory Editor",
-    memoryMenuMemoryEditorMenuToggleFlag,
+    selectedOptionEnableMemoryEditor,
 
     "Change Button Combo",
-    memoryMenuMemoryEditorMenuChangeButtonCombo,
+    selectedOptionChangeButtonCombo,
 
     "Open Settings Menu",
     memoryMenuMemoryEditorSettingsInit,
 };
 
-const MenuFunctions gMemoryMenuMemoryEditorMenuFuncs = {
-    gMemoryMenuMemoryEditorMenuOptions,
-    memoryMenuMemoryEditorMenuControls,
-    memoryMenuMemoryEditorMenuDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -31,11 +36,11 @@ void memoryMenuMemoryEditorMenuInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryEditorMenuOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuMemoryEditorMenuFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void memoryMenuMemoryEditorMenuControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // If the button combo editor is open, then handle the controls for that
     ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr();
@@ -94,7 +99,7 @@ void MemoryMenu::drawMemoryEditorMenuInfo() const
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
-void memoryMenuMemoryEditorMenuDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -111,28 +116,28 @@ void memoryMenuMemoryEditorMenuDraw(CameraId cameraId, void *user)
     }
 }
 
-void memoryMenuMemoryEditorMenuToggleFlag(Menu *menuPtr)
+static void selectedOptionEnableMemoryEditor(Menu *menuPtr)
 {
     (void)menuPtr;
 
     gMemoryEditor->toggleEnabledFlag(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_MEMORY_EDITOR_ENABLED);
 }
 
-void memoryMenuMemoryEditorMenuCancelSetNewButtonCombo()
+static void cancelSetNewButtonCombo()
 {
     gMemoryMenu->getButtonComboEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO);
 }
 
-void memoryMenuMemoryEditorMenuSetNewButtonCombo(uint32_t buttonCombo)
+static void setButtonCombo(uint32_t buttonCombo)
 {
     gMemoryEditor->setButtonCombo(buttonCombo);
 
     // Close the button combo editor
-    memoryMenuMemoryEditorMenuCancelSetNewButtonCombo();
+    cancelSetNewButtonCombo();
 }
 
-void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr)
+static void selectedOptionChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -143,7 +148,5 @@ void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
-
-    buttonComboEditorPtr->startDrawing(memoryMenuMemoryEditorMenuSetNewButtonCombo,
-                                       memoryMenuMemoryEditorMenuCancelSetNewButtonCombo);
+    buttonComboEditorPtr->startDrawing(setButtonCombo, cancelSetNewButtonCombo);
 }

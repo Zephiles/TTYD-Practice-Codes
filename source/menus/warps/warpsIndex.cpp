@@ -18,7 +18,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gUnusedMaps[WARPS_INDEX_TOTAL_UNUSED_MAPS] = {
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionNewMapOrEntranceId(Menu *menuPtr);
+static void selectedOptionWarp(Menu *menuPtr);
+
+static const char *gUnusedMaps[WARPS_INDEX_TOTAL_UNUSED_MAPS] = {
     "tik_09",
     "tik_10",
     "tik_14",
@@ -28,24 +32,24 @@ const char *gUnusedMaps[WARPS_INDEX_TOTAL_UNUSED_MAPS] = {
     "rsh_06_c",
 };
 
-const MenuOption gWarpsMenuIndexOptions[] {
+static const MenuOption gOptions[] {
     "Select New Map",
-    warpsMenuIndexSelectNewMapOrEntranceId,
+    selectedOptionNewMapOrEntranceId,
 
     "Select New Entrance Id",
-    warpsMenuIndexSelectNewMapOrEntranceId,
+    selectedOptionNewMapOrEntranceId,
 
     "View Current Map Entrances",
     warpsMenuIndexViewEntrancesInit,
 
     "Warp",
-    warpsMenuIndexWarp,
+    selectedOptionWarp,
 };
 
-const MenuFunctions gWarpsMenuIndexFuncs = {
-    gWarpsMenuIndexOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     warpsMenuEventIndexControls,
-    warpsMenuIndexDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -53,8 +57,8 @@ void warpsMenuIndexInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuIndexOptions) / sizeof(MenuOption);
-    enterNextMenu(&gWarpsMenuIndexFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void WarpsMenu::drawSelectIndexWarpInfo() const
@@ -106,7 +110,7 @@ void WarpsMenu::drawSelectIndexWarpInfo() const
     drawText(buf, posX + posXIncrement, posY, scale, getColorWhite(0xFF));
 }
 
-void warpsMenuIndexDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
@@ -130,7 +134,7 @@ void warpsMenuIndexDraw(CameraId cameraId, void *user)
     }
 }
 
-void warpsMenuIndexSelectedNewMapOrEntranceId(const ValueType *valuePtr)
+static void selectedNewMapOrEntranceId(const ValueType *valuePtr)
 {
     const uint32_t id = valuePtr->u32;
     WarpByIndex *warpByIndexPtr = gMod->getWarpByIndexPtr();
@@ -148,7 +152,19 @@ void warpsMenuIndexSelectedNewMapOrEntranceId(const ValueType *valuePtr)
     warpsMenuCloseValueEditor();
 }
 
-void warpsMenuIndexSelectNewMapOrEntranceId(Menu *menuPtr)
+static int32_t getMapIndex()
+{
+    for (int32_t i = 0; i <= WARPS_INDEX_MAX_INDEX; i++)
+    {
+        if (compareStringToNextMap(getMapFromIndex(i)))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static void selectedOptionNewMapOrEntranceId(Menu *menuPtr)
 {
     // Initialize the value editor
     WarpsMenu *warpsMenuPtr = gWarpsMenu;
@@ -191,10 +207,10 @@ void warpsMenuIndexSelectNewMapOrEntranceId(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(warpsMenuIndexSelectedNewMapOrEntranceId, warpsMenuCloseValueEditor);
+    valueEditorPtr->startDrawing(selectedNewMapOrEntranceId, warpsMenuCloseValueEditor);
 }
 
-uint32_t warpToMapByString(const char *map)
+static uint32_t warpToMapByString(const char *map)
 {
     // Make sure the player is currently in the game
     if (!checkIfInGame())
@@ -209,7 +225,7 @@ uint32_t warpToMapByString(const char *map)
     return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_SUCCESS;
 }
 
-void warpsMenuIndexWarp(Menu *menuPtr)
+static void selectedOptionWarp(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -329,18 +345,6 @@ const char *getMapFromIndex(uint32_t index)
 
     const uint32_t worldDataPtrRaw = reinterpret_cast<uint32_t>(worldData.unk_18);
     return *reinterpret_cast<const char **>(*reinterpret_cast<uint32_t *>(worldDataPtrRaw + 0x10) + counter + (newIndex * 0x8));
-}
-
-int32_t getMapIndex()
-{
-    for (int32_t i = 0; i <= WARPS_INDEX_MAX_INDEX; i++)
-    {
-        if (compareStringToNextMap(getMapFromIndex(i)))
-        {
-            return i;
-        }
-    }
-    return -1;
 }
 
 MapData *mapDataPtrHandleUnusedMaps(const char *mapName)

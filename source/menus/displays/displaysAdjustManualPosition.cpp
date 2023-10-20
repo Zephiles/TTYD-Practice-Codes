@@ -12,25 +12,31 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gDisplaysMenuAdjustManualPositionOptions[] {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionChangePosition(Menu *menuPtr);
+static void selectedOptionChangeScale(Menu *menuPtr);
+
+static const MenuOption gOptions[] {
     "Turn On/Off",
-    displaysMenuAdjustManualPositionToggleFlag,
+    selectedOptionTurnOnOff,
 
     "Change Position",
-    displaysMenuAdjustManualPositionStartChangingPosition,
+    selectedOptionChangePosition,
 
     "Change Scale",
-    displaysMenuAdjustManualPositionStartChangingScale,
+    selectedOptionChangeScale,
 };
 
-const MenuFunctions gDisplaysMenuAdjustManualPositionFuncs = {
-    gDisplaysMenuAdjustManualPositionOptions,
-    displaysMenuAdjustManualPositionControls,
-    displaysMenuAdjustManualPositionDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
-DisplayManuallyPosition *getSelectedDisplayManuallyPositionPtr()
+static DisplayManuallyPosition *getSelectedDisplayManuallyPositionPtr()
 {
     const uint32_t displayManuallyPositionFlag = indexToDisplayManuallyPositionFlag(gDisplaysMenu->getSelectedDisplay());
     return gDisplays->getDisplayManuallyPositionPtr(displayManuallyPositionFlag);
@@ -40,11 +46,11 @@ void displaysAdjustManualPositionInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gDisplaysMenuAdjustManualPositionOptions) / sizeof(MenuOption);
-    enterNextMenu(&gDisplaysMenuAdjustManualPositionFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void displaysMenuAdjustManualPositionControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
@@ -124,7 +130,7 @@ void DisplaysMenu::drawDisplayManualPositionData() const
     drawText(buf, posX + width, posY, scale, getColorWhite(0xFF));
 }
 
-void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
     if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
@@ -151,7 +157,7 @@ void displaysMenuAdjustManualPositionDraw(CameraId cameraId, void *user)
     }
 }
 
-void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr)
+static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -159,21 +165,21 @@ void displaysMenuAdjustManualPositionToggleFlag(Menu *menuPtr)
     gDisplays->toggleManuallyPositionFlag(displayManuallyPositionFlag);
 }
 
-void displaysMenuAdjustManualPositionCancelChangingPosition()
+static void cancelChangePosition()
 {
     gDisplaysMenu->getPositionEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
-bool displaysMenuAdjustManualPositionConfirmChangingPosition()
+static bool confirmChangePosition()
 {
     // Close the position editor
-    displaysMenuAdjustManualPositionCancelChangingPosition();
+    cancelChangePosition();
 
     return true;
 }
 
-void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
+static void selectedOptionChangePosition(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -197,17 +203,16 @@ void displaysMenuAdjustManualPositionStartChangingPosition(Menu *menuPtr)
                             manuallyPositionPtr->getPosYPtr(),
                             rootWindowPtr->getAlpha());
 
-    positionEditorPtr->startDrawing(displaysMenuAdjustManualPositionConfirmChangingPosition,
-                                    displaysMenuAdjustManualPositionCancelChangingPosition);
+    positionEditorPtr->startDrawing(confirmChangePosition, cancelChangePosition);
 }
 
-void displaysMenudjustManualPositionCancelSetNewScale()
+static void cancelSetScale()
 {
     gDisplaysMenu->getValueEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
-void displaysMenuAdjustManualPositionSetNewScale(const ValueType *valuePtr)
+static void setScale(const ValueType *valuePtr)
 {
     DisplayManuallyPosition *manuallyPositionPtr = getSelectedDisplayManuallyPositionPtr();
     if (manuallyPositionPtr)
@@ -216,10 +221,10 @@ void displaysMenuAdjustManualPositionSetNewScale(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    displaysMenudjustManualPositionCancelSetNewScale();
+    cancelSetScale();
 }
 
-void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
+static void selectedOptionChangeScale(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -255,5 +260,5 @@ void displaysMenuAdjustManualPositionStartChangingScale(Menu *menuPtr)
                          VariableType::f32,
                          rootWindowPtr->getAlpha());
 
-    valueEditorPtr->startDrawing(displaysMenuAdjustManualPositionSetNewScale, displaysMenudjustManualPositionCancelSetNewScale);
+    valueEditorPtr->startDrawing(setScale, cancelSetScale);
 }

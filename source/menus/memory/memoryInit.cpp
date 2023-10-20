@@ -8,7 +8,9 @@
 
 MemoryMenu *gMemoryMenu = nullptr;
 
-const MenuOption gMemoryMenuInitOptions[] {
+static void exit();
+
+static const MenuOption gOptions[] {
     "Memory Watches",
     memoryMenuMemoryWatchMenuInit,
 
@@ -16,11 +18,11 @@ const MenuOption gMemoryMenuInitOptions[] {
     memoryMenuMemoryEditorMenuInit,
 };
 
-const MenuFunctions gMemoryMenuInitFuncs = {
-    gMemoryMenuInitOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     basicMenuLayoutControls,
     basicMenuLayoutDrawMenuLineHeight,
-    memoryMenuInitExit,
+    exit,
 };
 
 void memoryMenuInit(Menu *menuPtr)
@@ -37,11 +39,11 @@ void memoryMenuInit(Menu *menuPtr)
     memoryMenuPtr = new MemoryMenu;
     gMemoryMenu = memoryMenuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuInitOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuInitFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void memoryMenuInitExit()
+static void exit()
 {
     delete gMemoryMenu;
     gMemoryMenu = nullptr;

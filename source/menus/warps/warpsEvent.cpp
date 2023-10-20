@@ -23,27 +23,41 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gWarpsMenuEventOptions[] {
+static void draw(CameraId cameraId, void *user);
+
+static void selectedOptionSelectEvent(Menu *menuPtr);
+static void selectedOptionKeepInventory(Menu *menuPtr);
+static void selectedOptionEquipBadges(Menu *menuPtr);
+static void selectedOptionSetFlags(Menu *menuPtr);
+static void selectedOptionWarp(Menu *menuPtr);
+
+static uint32_t getTotalStageEvents();
+static bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2]);
+static bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId);
+static uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId);
+static bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetailsPtr);
+
+static const MenuOption gOptions[] {
     "Select Event",
-    warpsMenuEventSelectEvent,
+    selectedOptionSelectEvent,
 
     "Keep Inventory",
-    warpsMenuEventToggleKeepInventory,
+    selectedOptionKeepInventory,
 
     "Equip Badges",
-    warpsMenuEventToggleEquipBadges,
+    selectedOptionEquipBadges,
 
     "Set Flags",
-    warpsMenuEventToggleSetFlags,
+    selectedOptionSetFlags,
 
     "Warp",
-    warpsMenuEventWarp,
+    selectedOptionWarp,
 };
 
-const MenuFunctions gWarpsMenuEventFuncs = {
-    gWarpsMenuEventOptions,
+static const MenuFunctions gFuncs = {
+    gOptions,
     warpsMenuEventIndexControls,
-    warpsMenuEventDraw,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -51,8 +65,8 @@ void warpsMenuEventInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuEventOptions) / sizeof(MenuOption);
-    enterNextMenu(&gWarpsMenuEventFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 void WarpsMenu::drawSelectEventWarpInfo(float offsetY) const
@@ -111,7 +125,7 @@ void WarpsMenu::drawSelectEventWarpInfo(float offsetY) const
     drawEventDetails(modPtr->getWarpByEventPtr()->getIndex(), tempPosX, tempPosY);
 }
 
-void warpsMenuEventDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     // Help text will be drawn at the top-left of the window, so draw the main text two lines under it
@@ -139,7 +153,7 @@ void warpsMenuEventDraw(CameraId cameraId, void *user)
     }
 }
 
-void warpsMenuEventSelectedEvent(const ValueType *valuePtr)
+static void selectEvent(const ValueType *valuePtr)
 {
     gMod->getWarpByEventPtr()->setIndex(valuePtr->u32);
 
@@ -147,7 +161,7 @@ void warpsMenuEventSelectedEvent(const ValueType *valuePtr)
     warpsMenuCloseValueEditor();
 }
 
-void warpsMenuEventSelectEvent(Menu *menuPtr)
+static void selectedOptionSelectEvent(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -169,10 +183,10 @@ void warpsMenuEventSelectEvent(Menu *menuPtr)
     valueEditorPtr
         ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::u16, rootWindowPtr->getAlpha());
 
-    valueEditorPtr->startDrawing(warpsMenuEventSelectedEvent, warpsMenuCloseValueEditor);
+    valueEditorPtr->startDrawing(selectEvent, warpsMenuCloseValueEditor);
 }
 
-void warpsMenuEventToggleKeepInventory(Menu *menuPtr)
+static void selectedOptionKeepInventory(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -184,7 +198,7 @@ void warpsMenuEventToggleKeepInventory(Menu *menuPtr)
     }
 }
 
-void warpsMenuEventToggleEquipBadges(Menu *menuPtr)
+static void selectedOptionEquipBadges(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -198,14 +212,14 @@ void warpsMenuEventToggleEquipBadges(Menu *menuPtr)
     modPtr->toggleFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
 }
 
-void warpsMenuEventToggleSetFlags(Menu *menuPtr)
+static void selectedOptionSetFlags(Menu *menuPtr)
 {
     (void)menuPtr;
 
     gMod->toggleFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_SET_FLAGS);
 }
 
-uint32_t warpToMapByEvent(uint32_t index)
+static uint32_t warpToMapByEvent(uint32_t index)
 {
     // Make sure a file is currently loaded and the player is not currently transitioning screens nor in a battle
     if (!checkIfInGame())
@@ -252,7 +266,7 @@ uint32_t warpToMapByEvent(uint32_t index)
     return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_SUCCESS;
 }
 
-void warpsMenuEventWarp(Menu *menuPtr)
+static void selectedOptionWarp(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -518,7 +532,7 @@ void handleWarpByEvent()
     evt_pouch_all_party_recovery(nullptr, false); // Parameters are unused for this function
 }
 
-uint32_t getTotalStageEvents()
+static uint32_t getTotalStageEvents()
 {
     const int32_t totalStages = eventStgNum();
     int32_t totalEvents = 0;
@@ -538,7 +552,7 @@ uint32_t getTotalStageEvents()
     return static_cast<uint32_t>(totalEvents);
 }
 
-bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2])
+static bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2])
 {
     if (index >= getTotalStageEvents())
     {
@@ -567,7 +581,7 @@ bool indexToStageAndEvent(uint32_t index, int32_t stageEventIdsOut[2])
     return false;
 }
 
-bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
+static bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
 {
     if ((stageId < 0) || (stageId >= eventStgNum()))
     {
@@ -583,7 +597,7 @@ bool checkForValidStageAndEvent(int32_t stageId, int32_t eventId)
     return true;
 }
 
-uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId)
+static uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId)
 {
     if ((stageId <= 0) && (eventId <= 0))
     {
@@ -626,7 +640,7 @@ uint32_t getSequenceForEvent(int32_t stageId, int32_t eventId)
     }
 }
 
-const char *getPartyName(PartyMembers id)
+static const char *getPartyName(PartyMembers id)
 {
     switch (id)
     {
@@ -744,7 +758,7 @@ void getMapAndBeroTextAndColor(const char *mapTextPtr, const char *beroTextPtr, 
     }
 }
 
-bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetailsPtr)
+static bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetailsPtr)
 {
     int32_t stageEventIds[2];
     if (!indexToStageAndEvent(index, stageEventIds))

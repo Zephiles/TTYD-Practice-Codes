@@ -11,10 +11,13 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuFunctions gWarpsMenuIndexViewEntrancesFuncs = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+
+static const MenuFunctions gFuncs = {
     nullptr, // There are no menu options to select in this menu
-    warpsMenuIndexViewEntrancesControls,
-    warpsMenuIndexViewEntrancesDraw,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -22,12 +25,10 @@ void warpsMenuIndexViewEntrancesInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    enterNextMenu(&gWarpsMenuIndexViewEntrancesFuncs,
-                  gMod->getWarpByIndexPtr()->getTotalEntrances(),
-                  WARPS_INDEX_MAX_ENTRANCES_MULTIPLE_PAGES);
+    enterNextMenu(&gFuncs, gMod->getWarpByIndexPtr()->getTotalEntrances(), WARPS_INDEX_MAX_ENTRANCES_MULTIPLE_PAGES);
 }
 
-void warpsMenuIndexViewEntrancesControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     const uint32_t totalEntrances = gMod->getWarpByIndexPtr()->getTotalEntrances();
     const uint32_t currentPage = menuPtr->getCurrentPage();
@@ -89,7 +90,7 @@ void warpsMenuIndexViewEntrancesControls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void warpsMenuIndexViewEntrancesDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;

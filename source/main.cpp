@@ -8,7 +8,7 @@
 #include "memoryEditor.h"
 #include "settings.h"
 #include "patch.h"
-#include "classes/menu.h"
+#include "menuUtils.h"
 #include "classes/window.h"
 #include "gc/card.h"
 #include "gc/OSModule.h"
@@ -173,7 +173,7 @@ void init()
 
 void exit() {}
 
-void checkHeaps()
+static void checkHeaps()
 {
     // Check the standard heaps
     uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;

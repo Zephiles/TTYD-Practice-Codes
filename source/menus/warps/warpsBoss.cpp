@@ -10,84 +10,88 @@
 
 #include <cstdint>
 
-const MenuOption gWarpsMenuBossOptions[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionBoss(Menu *menuPtr);
+
+static const MenuOption gOptions[] = {
     "Crump",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Gus",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Blooper",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Gold Fuzzy",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Red Bones (Ch1)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Hooktail",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Shadow Sirens (Ch2)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Magnus Von Grapple",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Macho Grubba",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Atomic Boo",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Doopliss 1",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Doopliss 2",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Cortez",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Crump (Ch5)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Smorg",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Magnus Von Grapple 2.0",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Dark Bones",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Gloomtail",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Shadow Sirens (Ch8)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Grodus",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Bowser & Kammy",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Shadow Queen (Battle 1)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Shadow Queen (Battle 2)",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 
     "Bonetail",
-    warpsMenuBossWarp,
+    selectedOptionBoss,
 };
 
-const MenuFunctions gWarpsMenuBossFuncs = {
-    gWarpsMenuBossOptions,
-    warpsMenuBossControls,
-    warpsMenuBossDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -95,11 +99,11 @@ void warpsMenuBossInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gWarpsMenuBossOptions) / sizeof(MenuOption);
-    enterNextMenu(&gWarpsMenuBossFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void warpsMenuBossDPadControls(MenuButtonInput button, Menu *menuPtr)
+static void dpadControls(MenuButtonInput button, Menu *menuPtr)
 {
     const uint32_t totalOptions = menuPtr->getTotalOptions();
     const uint32_t totalRows = intCeil(totalOptions, WARPS_MENU_BOSS_MAX_OPTIONS_PER_ROW);
@@ -114,7 +118,7 @@ void warpsMenuBossDPadControls(MenuButtonInput button, Menu *menuPtr)
                          true);
 }
 
-void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool autoIncrement = handleMenuAutoIncrement(gWarpsMenu->getAutoIncrementPtr());
@@ -130,7 +134,7 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
             case MenuButtonInput::DPAD_DOWN:
             case MenuButtonInput::DPAD_UP:
             {
-                warpsMenuBossDPadControls(buttonHeld, menuPtr);
+                dpadControls(buttonHeld, menuPtr);
                 break;
             }
             default:
@@ -148,7 +152,7 @@ void warpsMenuBossControls(Menu *menuPtr, MenuButtonInput button)
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            warpsMenuBossDPadControls(button, menuPtr);
+            dpadControls(button, menuPtr);
             break;
         }
 
@@ -194,7 +198,7 @@ void WarpsMenu::drawSelectBossWarpInfo() const
     posY -= (lineDecrement * 2.f);
 
     // Draw each warp option
-    const MenuOption *bossOptionsPtr = gWarpsMenuBossOptions;
+    const MenuOption *optionsPtr = gOptions;
     constexpr float posXIncrement = 200.f;
     const float posYBase = posY;
 
@@ -215,12 +219,12 @@ void WarpsMenu::drawSelectBossWarpInfo() const
         }
 
         const uint32_t color = getCurrentOptionColor(currentIndex == i, 0xFF);
-        drawText(bossOptionsPtr[i].name, posX, posY, scale, color);
+        drawText(optionsPtr[i].name, posX, posY, scale, color);
         posY -= lineDecrement;
     }
 }
 
-void warpsMenuBossDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -240,7 +244,7 @@ void warpsMenuBossDraw(CameraId cameraId, void *user)
     }
 }
 
-uint32_t warpToBoss(Menu *menuPtr)
+static uint32_t warpToBoss(Menu *menuPtr)
 {
     // Make sure a file is currently loaded and the player is not currently transitioning screens nor in a battle
     if (!checkIfInGame())
@@ -490,7 +494,7 @@ uint32_t warpToBoss(Menu *menuPtr)
     return WarpsMenuWarpToMapReturnValue::WARPS_MENU_WARP_TO_MAP_SUCCESS;
 }
 
-void warpsMenuBossWarp(Menu *menuPtr)
+static void selectedOptionBoss(Menu *menuPtr)
 {
     switch (warpToBoss(menuPtr))
     {

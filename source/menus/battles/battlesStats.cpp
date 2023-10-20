@@ -14,50 +14,55 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gBattlesActorStatsInitialStrings[] = {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionChangeValue(Menu *menuPtr);
+static void selectedOptionClearHeldItem(Menu *menuPtr);
+
+static const char *gStatsStrings[] = {
     "HP",
     "Max HP",
     "FP",
     "Max FP",
 };
 
-const MenuOption gBattlesMenuStatsOptions[] = {
+static const MenuOption gOptions[] = {
     "Change HP",
-    selectedOptionBattlesChangeValue,
+    selectedOptionChangeValue,
 
     "Change Max HP",
-    selectedOptionBattlesChangeValue,
+    selectedOptionChangeValue,
 
     "Change FP",
-    selectedOptionBattlesChangeValue,
+    selectedOptionChangeValue,
 
     "Change Max FP",
-    selectedOptionBattlesChangeValue,
+    selectedOptionChangeValue,
 
     "Change Held Item",
-    selectedOptionBattlesChangeValue,
+    selectedOptionChangeValue,
 
     "Clear Held Item",
-    selectedOptionBattlesClearHeldItem,
+    selectedOptionClearHeldItem,
 
     "Change Statuses",
     battlesMenuStatusesInit,
 };
 
-const MenuFunctions gBattlesMenuStatsFuncs = {
-    gBattlesMenuStatsOptions,
-    battlesMenuStatsControls,
-    battlesMenuStatsDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
 void battlesMenuStatsInit()
 {
-    constexpr uint32_t totalOptions = sizeof(gBattlesMenuStatsOptions) / sizeof(MenuOption);
-    enterNextMenu(&gBattlesMenuStatsFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     // Close the Battles menu if not in a battle
     if (!getBattleWorkPtr())
@@ -86,7 +91,7 @@ void battlesMenuStatsControls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void menuBattlesStatsChangeValue(const ValueType *valuePtr)
+static void changeValue(const ValueType *valuePtr)
 {
     // Make sure the current index is valid
     Menu *menuPtr = gMenu;
@@ -159,7 +164,7 @@ void menuBattlesStatsChangeValue(const ValueType *valuePtr)
     battlesMenuCancelChangeValue();
 }
 
-void selectedOptionBattlesChangeValue(Menu *menuPtr)
+static void selectedOptionChangeValue(Menu *menuPtr)
 {
     // Make sure the current index is valid
     const uint32_t index = menuPtr->getCurrentIndex();
@@ -245,10 +250,10 @@ void selectedOptionBattlesChangeValue(Menu *menuPtr)
 
     const Window *rootWindowPtr = gRootWindow;
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(menuBattlesStatsChangeValue, battlesMenuCancelChangeValue);
+    valueEditorPtr->startDrawing(changeValue, battlesMenuCancelChangeValue);
 }
 
-void selectedOptionBattlesClearHeldItem(Menu *menuPtr)
+static void selectedOptionClearHeldItem(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -281,7 +286,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Draw the selected actor text two lines under the options
-    constexpr uint32_t totalOptions = sizeof(gBattlesMenuStatsOptions) / sizeof(MenuOption);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float selectedActorTextPosY = tempPosY - (intToFloat(totalOptions + 1) * lineDecrement);
 
@@ -305,11 +310,11 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
 
     // Draw the option descriptions
     constexpr uint32_t totalStats = 4;
-    const char **battlesActorStatsInitialStringsPtr = gBattlesActorStatsInitialStrings;
+    const char **statsStringsPtr = gStatsStrings;
 
     for (uint32_t i = 0; i < totalStats; i++)
     {
-        drawText(battlesActorStatsInitialStringsPtr[i], posX, posY, scale, textColor);
+        drawText(statsStringsPtr[i], posX, posY, scale, textColor);
         posY -= lineDecrement;
     }
 
@@ -356,7 +361,7 @@ void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
     }
 }
 
-void battlesMenuStatsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);

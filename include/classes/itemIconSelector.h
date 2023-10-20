@@ -1,8 +1,8 @@
 #ifndef CLASSES_ITEMICONSELECTOR_H
 #define CLASSES_ITEMICONSELECTOR_H
 
-#include "classes/menu.h"
 #include "classes/window.h"
+#include "classes/menu.h"
 #include "ttyd/item_data.h"
 
 #include <cstdint>
@@ -30,8 +30,8 @@ class ItemIconSelector
         this->currentIndex = static_cast<uint8_t>(static_cast<uint32_t>(item) - static_cast<uint32_t>(this->startingItem));
     }
 
-    void dpadControls(MenuButtonInput button, uint32_t totalIcons);
-    void controls(MenuButtonInput button);
+    bool shouldDraw() const { return this->enabled; }
+    void stopDrawing() { this->enabled = false; }
 
     void startDrawing(SelectedItemFunc selectedItemFunc, ItemSelectorCancelFunc cancelFunc)
     {
@@ -40,12 +40,12 @@ class ItemIconSelector
         this->enabled = true;
     }
 
-    bool shouldDraw() const { return this->enabled; }
-    void stopDrawing() { this->enabled = false; }
-
+    void controls(MenuButtonInput button);
     void draw();
 
    private:
+    void dpadControls(MenuButtonInput button, uint32_t totalIcons);
+
     Window window;
 
     SelectedItemFunc selectedItemFunc; // Called when the player presses A to select an item/badge

@@ -35,6 +35,8 @@ struct MenuAutoIncrement
     uint16_t framesBeforeIncrement; // Used to limit how fast auto-incrementing should occur
 } __attribute__((__packed__));
 
+static_assert(sizeof(MenuAutoIncrement) == 0x4);
+
 class Menu;
 typedef void (*MenuSelectedOptionFunc)(Menu *menuPtr);
 typedef void (*MenuExitFunc)();

@@ -11,43 +11,47 @@
 
 // Note that this specific menu will also be used by the Memory Editor, so gMemoryMenu should not be used in this file.
 
-const MenuOption gMemoryMenuMemoryEditorSettingsOptions[] {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+static void selectedOptionToggleFlag(Menu *menuPtr);
+
+static const MenuOption gOptions[] {
     "Clear Cache",
-    memoryMenuMemoryEditorSettingsToggleFlag,
+    selectedOptionToggleFlag,
 
     "Set System Level",
-    memoryMenuMemoryEditorSettingsToggleFlag,
+    selectedOptionToggleFlag,
 
     "Disable Pause Menu",
-    memoryMenuMemoryEditorSettingsToggleFlag,
+    selectedOptionToggleFlag,
 
     "Enable Vertical Separaters",
-    memoryMenuMemoryEditorSettingsToggleFlag,
+    selectedOptionToggleFlag,
 
     "Enable Horizontal Separaters",
-    memoryMenuMemoryEditorSettingsToggleFlag,
+    selectedOptionToggleFlag,
 };
 
-const MenuFunctions gMemoryMenuMemoryEditorSettingsFuncs = {
-    gMemoryMenuMemoryEditorSettingsOptions,
-    memoryMenuMemoryEditorSettingsControls,
-    memoryMenuMemoryEditorSettingsDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
 void memoryMenuMemoryEditorSettingsInit(Menu *menuPtr)
 {
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryEditorSettingsOptions) / sizeof(MenuOption);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
 
     if (gMenu)
     {
         // Normal menu is open, so proceed as normal
-        enterNextMenu(&gMemoryMenuMemoryEditorSettingsFuncs, totalOptions);
+        enterNextMenu(&gFuncs, totalOptions);
     }
     else
     {
         // Memory Editor is open
-        menuPtr = enterNextMenu(&gMemoryMenuMemoryEditorSettingsFuncs, totalOptions, menuPtr);
+        menuPtr = enterNextMenu(&gFuncs, totalOptions, menuPtr);
         gMemoryEditor->setMenuPtr(menuPtr);
     }
 }
@@ -55,7 +59,7 @@ void memoryMenuMemoryEditorSettingsInit(Menu *menuPtr)
 // enterPrevMenu is called in basicMenuLayoutControls, which uses gMenu. If the Memory Editor is open, then gMenu will not be
 // used, so basicMenuLayoutControls cannot be used. So a custom controls function must be used here, in which the B button is
 // handled separately.
-void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     switch (button)
     {
@@ -88,7 +92,7 @@ void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput butto
     }
 }
 
-void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     // Cannot use basicMenuLayoutDraw since that uses gMenu
     (void)cameraId;
@@ -147,7 +151,7 @@ void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user)
     }
 }
 
-void memoryMenuMemoryEditorSettingsToggleFlag(Menu *menuPtr)
+static void selectedOptionToggleFlag(Menu *menuPtr)
 {
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
 

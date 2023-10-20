@@ -9,7 +9,6 @@
 #include "classes/buttonComboEditor.h"
 #include "classes/errorWindow.h"
 #include "classes/menu.h"
-#include "ttyd/camdrv.h"
 
 #include <cstdint>
 
@@ -78,7 +77,6 @@ class MemoryMenu
     void setCurrentPage(uint32_t page) { this->currentPage = static_cast<uint8_t>(page); }
 
     uint32_t getChangeAddressCurrentPage() const { return this->changeAddressCurrentPage; }
-    void setChangeAddressCurrentPage(uint32_t page) { this->changeAddressCurrentPage = static_cast<uint8_t>(page); }
 
     bool initSwapMoveWatches(Menu *menuPtr);
     void initErrorWindow(const char *text);
@@ -113,55 +111,22 @@ extern MemoryMenu *gMemoryMenu;
 
 // memoryInit
 void memoryMenuInit(Menu *menuPtr);
-void memoryMenuInitExit();
 
 MemoryWatchEntry *getSelectedMemoryWatchEntryPtr();
 
 // memoryWatchMenu
 void memoryMenuMemoryWatchMenuInit(Menu *menuPtr);
-void memoryMenuMemoryWatchMenuControls(Menu *menuPtr, MenuButtonInput button);
-void memoryMenuMemoryWatchMenuDraw(CameraId cameraId, void *user);
-
-void memoryMenuMemoryWatchAddWatch(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyWatch(Menu *menuPtr);
-void memoryMenuMemoryWatchDuplicateWatch(Menu *menuPtr);
-void memoryMenuMemoryWatchSwapWatches(Menu *menuPtr);
-void memoryMenuMemoryWatchMoveWatch(Menu *menuPtr);
-void memoryMenuMemoryWatchDeleteWatch(Menu *menuPtr);
 
 // memoryWatchModify
 void memoryMenuMemoryWatchModifyInit(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyControls(Menu *menuPtr, MenuButtonInput button);
-void memoryMenuMemoryWatchModifyDraw(CameraId cameraId, void *user);
-
-void memoryMenuMemoryWatchModifyToggleFlag(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyStartChangingType(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyStartChangingPosition(Menu *menuPtr);
-void memoryMenuMemoryWatchModifyStartChangingScale(Menu *menuPtr);
 
 // memoryWatchChangeAddress
 void memoryMenuMemoryWatchChangeAddressInit(Menu *menuPtr);
-void memoryMenuMemoryWatchChangeAddressControls(Menu *menuPtr, MenuButtonInput button);
-void memoryMenuMemoryWatchChangeAddressDraw(CameraId cameraId, void *user);
-
-void memoryMenuMemoryWatchChangeAddressChangeValues(Menu *menuPtr);
-void memoryMenuMemoryWatchChangeAddressAddPointerLevel(Menu *menuPtr);
-void memoryMenuMemoryWatchChangeAddressRemovePointerLevel(Menu *menuPtr);
 
 // memoryEditorMenu
 void memoryMenuMemoryEditorMenuInit(Menu *menuPtr);
-void memoryMenuMemoryEditorMenuControls(Menu *menuPtr, MenuButtonInput button);
-void memoryMenuMemoryEditorMenuDraw(CameraId cameraId, void *user);
-
-void memoryMenuMemoryEditorMenuToggleFlag(Menu *menuPtr);
-void memoryMenuMemoryEditorMenuChangeButtonCombo(Menu *menuPtr);
 
 // memoryEditorSettings
 void memoryMenuMemoryEditorSettingsInit(Menu *menuPtr);
-void memoryMenuMemoryEditorSettingsControls(Menu *menuPtr, MenuButtonInput button);
-void memoryMenuMemoryEditorSettingsDraw(CameraId cameraId, void *user);
-
-void memoryMenuMemoryEditorSettingsToggleFlag(Menu *menuPtr);
 
 #endif

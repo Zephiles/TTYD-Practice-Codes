@@ -293,77 +293,134 @@ void CustomStateEntry::restoreInventory()
     PouchData *pouchPtr = pouchGetPtr();
     uint32_t totalItems = 0;
 
-    // Restore the standard items
-    constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
-    ItemId *standardItemsPtr = pouchPtr->items;
-
-    for (uint32_t i = 0; (i < maxStandardItems) && (totalItems < totalInventoryItems); i++)
+    // Make sure there is at least one standard item to restore
+    if ((itemsPtr[totalItems] != ItemId::ITEM_NONE) && (totalItems < totalInventoryItems))
     {
-        const ItemId currentItem = itemsPtr[totalItems++];
-        standardItemsPtr[i] = currentItem;
+        // All of the current standard items need to be cleared before restoring the ones from the state
+        ItemId *standardItemsPtr = pouchPtr->items;
+        clearMemory(standardItemsPtr, sizeof(PouchData::items));
 
-        if (currentItem == ItemId::ITEM_NONE)
+        // Restore the standard items
+        constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
+
+        for (uint32_t i = 0; (i < maxStandardItems) && (totalItems < totalInventoryItems); i++)
         {
-            break;
+            const ItemId currentItem = itemsPtr[totalItems++];
+            standardItemsPtr[i] = currentItem;
+
+            if (currentItem == ItemId::ITEM_NONE)
+            {
+                break;
+            }
         }
     }
-
-    // Restore the important items
-    constexpr uint32_t maxImportantItems = sizeof(PouchData::keyItems) / sizeof(ItemId);
-    ItemId *importantItemsPtr = pouchPtr->keyItems;
-
-    for (uint32_t i = 0; (i < maxImportantItems) && (totalItems < totalInventoryItems); i++)
+    else
     {
-        const ItemId currentItem = itemsPtr[totalItems++];
-        importantItemsPtr[i] = currentItem;
-
-        if (currentItem == ItemId::ITEM_NONE)
-        {
-            break;
-        }
+        // Advance to the next section
+        totalItems++;
     }
 
-    // Restore the stored items
-    constexpr uint32_t maxStoredItems = sizeof(PouchData::storedItems) / sizeof(ItemId);
-    ItemId *storedItemsPtr = pouchPtr->storedItems;
-
-    for (uint32_t i = 0; (i < maxStoredItems) && (totalItems < totalInventoryItems); i++)
+    // Make sure there is at least one important item to restore
+    if ((itemsPtr[totalItems] != ItemId::ITEM_NONE) && (totalItems < totalInventoryItems))
     {
-        const ItemId currentItem = itemsPtr[totalItems++];
-        storedItemsPtr[i] = currentItem;
+        // All of the current important items need to be cleared before restoring the ones from the state
+        ItemId *importantItemsPtr = pouchPtr->keyItems;
+        clearMemory(importantItemsPtr, sizeof(PouchData::keyItems));
 
-        if (currentItem == ItemId::ITEM_NONE)
+        // Restore the important items
+        constexpr uint32_t maxImportantItems = sizeof(PouchData::keyItems) / sizeof(ItemId);
+
+        for (uint32_t i = 0; (i < maxImportantItems) && (totalItems < totalInventoryItems); i++)
         {
-            break;
+            const ItemId currentItem = itemsPtr[totalItems++];
+            importantItemsPtr[i] = currentItem;
+
+            if (currentItem == ItemId::ITEM_NONE)
+            {
+                break;
+            }
         }
     }
+    else
+    {
+        // Advance to the next section
+        totalItems++;
+    }
 
-    // Restore the badges
-    constexpr uint32_t maxBadges = sizeof(PouchData::badges) / sizeof(ItemId);
-    ItemId *badgesPtr = pouchPtr->badges;
+    // Make sure there is at least one stored item to restore
+    if ((itemsPtr[totalItems] != ItemId::ITEM_NONE) && (totalItems < totalInventoryItems))
+    {
+        // All of the current stored items need to be cleared before restoring the ones from the state
+        ItemId *storedItemsPtr = pouchPtr->storedItems;
+        clearMemory(storedItemsPtr, sizeof(PouchData::storedItems));
 
+        // Restore the stored items
+        constexpr uint32_t maxStoredItems = sizeof(PouchData::storedItems) / sizeof(ItemId);
+
+        for (uint32_t i = 0; (i < maxStoredItems) && (totalItems < totalInventoryItems); i++)
+        {
+            const ItemId currentItem = itemsPtr[totalItems++];
+            storedItemsPtr[i] = currentItem;
+
+            if (currentItem == ItemId::ITEM_NONE)
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Advance to the next section
+        totalItems++;
+    }
+
+    // Make sure there is at least one badge to restore
     uint32_t totalBadges = 0;
-    for (; (totalBadges < maxBadges) && (totalItems < totalInventoryItems); totalBadges++)
-    {
-        const ItemId currentItem = itemsPtr[totalItems++];
-        badgesPtr[totalBadges] = currentItem;
 
-        if (currentItem == ItemId::ITEM_NONE)
+    if ((itemsPtr[totalItems] != ItemId::ITEM_NONE) && (totalItems < totalInventoryItems))
+    {
+        // All of the current badges need to be cleared before restoring the ones from the state
+        ItemId *badgesPtr = pouchPtr->badges;
+        clearMemory(badgesPtr, sizeof(PouchData::badges));
+
+        // Restore the badges
+        constexpr uint32_t maxBadges = sizeof(PouchData::badges) / sizeof(ItemId);
+
+        for (; (totalBadges < maxBadges) && (totalItems < totalInventoryItems); totalBadges++)
         {
-            break;
+            const ItemId currentItem = itemsPtr[totalItems++];
+            badgesPtr[totalBadges] = currentItem;
+
+            if (currentItem == ItemId::ITEM_NONE)
+            {
+                break;
+            }
         }
+    }
+    else
+    {
+        // Advance to the next section
+        totalItems++;
     }
 
     // Restore the equipped badges
-
-    // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so clear all of the memory for the equipped
-    // badges to ensure that no badges are equipped, and then restore all of the equipped badges up to and including totalBadges
-    ItemId *equippedBadgesPtr = pouchPtr->equippedBadges;
-    clearMemory(equippedBadgesPtr, sizeof(PouchData::equippedBadges));
-
     if (totalBadges > 0)
     {
-        memcpy(equippedBadgesPtr, &itemsPtr[totalItems], totalBadges * sizeof(ItemId));
+        // When a badge is not equipped, the entry for it will be ItemId::ITEM_NONE, so clear all of the memory for the equipped
+        // badges to ensure that no badges are equipped
+        ItemId *equippedBadgesPtr = pouchPtr->equippedBadges;
+        clearMemory(equippedBadgesPtr, sizeof(PouchData::equippedBadges));
+
+        if (totalItems < totalInventoryItems)
+        {
+            // Failsafe: Make sure totalBadges is valid
+            if ((totalItems + totalBadges) > totalInventoryItems)
+            {
+                totalBadges = totalInventoryItems - totalItems;
+            }
+
+            memcpy(equippedBadgesPtr, &itemsPtr[totalItems], totalBadges * sizeof(ItemId));
+        }
     }
 }
 

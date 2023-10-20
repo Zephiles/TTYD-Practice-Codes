@@ -12,33 +12,42 @@
 #include <cstdio>
 #include <cinttypes>
 
-const MenuOption gMemoryMenuMemoryWatchModifyOptions[] {
+static void controls(Menu *menuPtr, MenuButtonInput button);
+static void draw(CameraId cameraId, void *user);
+
+static void selectedOptionToggleFlag(Menu *menuPtr);
+static void selectedOptionChangeName(Menu *menuPtr);
+static void selectedOptionChangeType(Menu *menuPtr);
+static void selectedOptionChangePosition(Menu *menuPtr);
+static void selectedOptionChangeScale(Menu *menuPtr);
+
+static const MenuOption gOptions[] {
     "Name",
-    memoryMenuMemoryWatchModifyStartChangingName,
+    selectedOptionChangeName,
 
     "Address",
     memoryMenuMemoryWatchChangeAddressInit,
 
     "Type",
-    memoryMenuMemoryWatchModifyStartChangingType,
+    selectedOptionChangeType,
 
     "Show As Hex",
-    memoryMenuMemoryWatchModifyToggleFlag,
+    selectedOptionToggleFlag,
 
     "Position",
-    memoryMenuMemoryWatchModifyStartChangingPosition,
+    selectedOptionChangePosition,
 
     "Scale",
-    memoryMenuMemoryWatchModifyStartChangingScale,
+    selectedOptionChangeScale,
 
     "Display",
-    memoryMenuMemoryWatchModifyToggleFlag,
+    selectedOptionToggleFlag,
 };
 
-const MenuFunctions gMemoryMenuMemoryWatchModifyFuncs = {
-    gMemoryMenuMemoryWatchModifyOptions,
-    memoryMenuMemoryWatchModifyControls,
-    memoryMenuMemoryWatchModifyDraw,
+static const MenuFunctions gFuncs = {
+    gOptions,
+    controls,
+    draw,
     nullptr, // Exit function not needed
 };
 
@@ -46,11 +55,11 @@ void memoryMenuMemoryWatchModifyInit(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    constexpr uint32_t totalOptions = sizeof(gMemoryMenuMemoryWatchModifyOptions) / sizeof(MenuOption);
-    enterNextMenu(&gMemoryMenuMemoryWatchModifyFuncs, totalOptions);
+    constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
-void memoryMenuMemoryWatchModifyControls(Menu *menuPtr, MenuButtonInput button)
+static void controls(Menu *menuPtr, MenuButtonInput button)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
 
@@ -172,7 +181,7 @@ void MemoryMenu::drawMemoryWatchModifyInfo() const
     drawText(buf, posXBase, posY, scale, getColorWhite(0xFF));
 }
 
-void memoryMenuMemoryWatchModifyDraw(CameraId cameraId, void *user)
+static void draw(CameraId cameraId, void *user)
 {
     MemoryMenu *memoryMenuPtr = gMemoryMenu;
     if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
@@ -213,7 +222,7 @@ void memoryMenuMemoryWatchModifyDraw(CameraId cameraId, void *user)
     }
 }
 
-void memoryMenuMemoryWatchModifyToggleFlag(Menu *menuPtr)
+static void selectedOptionToggleFlag(Menu *menuPtr)
 {
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
 
@@ -227,21 +236,21 @@ void memoryMenuMemoryWatchModifyToggleFlag(Menu *menuPtr)
     }
 }
 
-void memoryMenuMemoryWatchModifyCancelSetNewName()
+static void cancelSetNewName()
 {
     gMemoryMenu->getNameEditorPtr()->stopDrawing();
 }
 
-void memoryMenuMemoryWatchModifySetNewName(char *newNamePtr, uint32_t newNameSize)
+static void setNewName(char *newNamePtr, uint32_t newNameSize)
 {
     (void)newNamePtr;
     (void)newNameSize;
 
     // Close the name editor
-    memoryMenuMemoryWatchModifyCancelSetNewName();
+    cancelSetNewName();
 }
 
-void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr)
+static void selectedOptionChangeName(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -252,24 +261,24 @@ void memoryMenuMemoryWatchModifyStartChangingName(Menu *menuPtr)
 
     NameEditor *nameEditorPtr = gMemoryMenu->getNameEditorPtr();
     nameEditorPtr->init(rootWindowPtr, watchName, watchName, MEMORY_WATCH_NAME_SIZE, true, rootWindowPtr->getAlpha());
-    nameEditorPtr->startDrawing(memoryMenuMemoryWatchModifySetNewName, memoryMenuMemoryWatchModifyCancelSetNewName);
+    nameEditorPtr->startDrawing(setNewName, cancelSetNewName);
 }
 
-void memoryMenuMemoryWatchModifyCancelSetNewType()
+static void cancelSetNewType()
 {
     gMemoryMenu->getMemoryWatchTypeSelectorPtr()->stopDrawing();
 }
 
-void memoryMenuMemoryWatchModifySetNewType(VariableType type)
+static void setNewType(VariableType type)
 {
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
     currentEntry->setType(type);
 
     // Close the type selector
-    memoryMenuMemoryWatchModifyCancelSetNewType();
+    cancelSetNewType();
 }
 
-void memoryMenuMemoryWatchModifyStartChangingType(Menu *menuPtr)
+static void selectedOptionChangeType(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -291,24 +300,24 @@ void memoryMenuMemoryWatchModifyStartChangingType(Menu *menuPtr)
         typeSelectorPtr->setCurrentIndex(typeIndex);
     }
 
-    typeSelectorPtr->startDrawing(memoryMenuMemoryWatchModifySetNewType, memoryMenuMemoryWatchModifyCancelSetNewType);
+    typeSelectorPtr->startDrawing(setNewType, cancelSetNewType);
 }
 
-void memoryMenuMemoryWatchModifyCancelChangingPosition()
+static void cancelChangePosition()
 {
     gMemoryMenu->getPositionEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
-bool memoryMenuMemoryWatchModifyConfirmChangingPosition()
+static bool confirmChangePosition()
 {
     // Close the position editor
-    memoryMenuMemoryWatchModifyCancelChangingPosition();
+    cancelChangePosition();
 
     return true;
 }
 
-void memoryMenuMemoryWatchModifyStartChangingPosition(Menu *menuPtr)
+static void selectedOptionChangePosition(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -322,27 +331,25 @@ void memoryMenuMemoryWatchModifyStartChangingPosition(Menu *menuPtr)
     const Window *rootWindowPtr = gRootWindow;
 
     positionEditorPtr->init(rootWindowPtr, currentEntry->getPosXPtr(), currentEntry->getPosYPtr(), rootWindowPtr->getAlpha());
-
-    positionEditorPtr->startDrawing(memoryMenuMemoryWatchModifyConfirmChangingPosition,
-                                    memoryMenuMemoryWatchModifyCancelChangingPosition);
+    positionEditorPtr->startDrawing(confirmChangePosition, cancelChangePosition);
 }
 
-void memoryMenuMemoryWatchModifyCancelSetNewScale()
+static void cancelSetNewScale()
 {
     gMemoryMenu->getValueEditorPtr()->stopDrawing();
     gMod->clearFlag(ModFlag::MOD_FLAG_MENU_IS_HIDDEN);
 }
 
-void memoryMenuMemoryWatchModifySetNewScale(const ValueType *valuePtr)
+static void setNewScale(const ValueType *valuePtr)
 {
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
     currentEntry->setScale(valuePtr->f32);
 
     // Close the value editor
-    memoryMenuMemoryWatchModifyCancelSetNewScale();
+    cancelSetNewScale();
 }
 
-void memoryMenuMemoryWatchModifyStartChangingScale(Menu *menuPtr)
+static void selectedOptionChangeScale(Menu *menuPtr)
 {
     (void)menuPtr;
 
@@ -373,5 +380,5 @@ void memoryMenuMemoryWatchModifyStartChangingScale(Menu *menuPtr)
                          VariableType::f32,
                          rootWindowPtr->getAlpha());
 
-    valueEditorPtr->startDrawing(memoryMenuMemoryWatchModifySetNewScale, memoryMenuMemoryWatchModifyCancelSetNewScale);
+    valueEditorPtr->startDrawing(setNewScale, cancelSetNewScale);
 }

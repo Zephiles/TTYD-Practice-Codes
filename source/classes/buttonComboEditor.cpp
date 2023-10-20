@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-const char *gButtonComboEditorHelpText =
+static const char *gHelpText =
     "Hold the button(s) for 3 seconds to set the\nnew button combo\n\nPress B three times in succession to cancel";
 
 void ButtonComboEditor::init(const Window *parentWindow)
@@ -32,7 +32,7 @@ void ButtonComboEditor::init(const Window *parentWindow, uint8_t windowAlpha)
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gButtonComboEditorHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
 
     // Increase the height of the window to account for the rest of the text, which is assumed to use six more lines
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -171,11 +171,11 @@ void ButtonComboEditor::draw() const
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     const float posX = tempPosX;
     float posY = tempPosY;
-    const char *mainHelpText = gButtonComboEditorHelpText;
-    drawText(mainHelpText, posX, posY, scale, getColorWhite(0xFF));
+    const char *helpTextPtr = gHelpText;
+    drawText(helpTextPtr, posX, posY, scale, getColorWhite(0xFF));
 
     // Get the position three lines under the help text
-    const float height = getTextHeight(mainHelpText, scale);
+    const float height = getTextHeight(helpTextPtr, scale);
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (height + (lineDecrement * 2.f));
 
