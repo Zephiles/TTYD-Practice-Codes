@@ -64,7 +64,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
     const uint32_t startingItem = static_cast<uint32_t>(this->startingItem);
     const uint32_t totalIcons = static_cast<uint32_t>(this->endingItem) - startingItem + 1;
 
-    // Handle held button inputs if auto-incrementing should be done
+    // Handle held button input if auto-incrementing should be done
     if (autoIncrement)
     {
         const MenuButtonInput buttonHeld = getMenuButtonInput(false);
@@ -85,7 +85,7 @@ void ItemIconSelector::controls(MenuButtonInput button)
         }
     }
 
-    // Handle the button inputs pressed this frame
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:

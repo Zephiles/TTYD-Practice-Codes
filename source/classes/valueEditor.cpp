@@ -2009,7 +2009,7 @@ void ValueEditor::controls(MenuButtonInput button)
     const char *editorValue = this->editorValue;
     const uint32_t maxDigit = strlen(editorValue) - 1;
 
-    // Handle held button inputs if auto-incrementing should be done
+    // Handle held button input if auto-incrementing should be done
     if (autoIncrement)
     {
         switch (getMenuButtonInput(false))
@@ -2040,7 +2040,7 @@ void ValueEditor::controls(MenuButtonInput button)
         }
     }
 
-    // Handle the button inputs pressed this frame
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:

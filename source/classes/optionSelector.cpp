@@ -131,7 +131,7 @@ void OptionSelector::controls(MenuButtonInput button)
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool autoIncrement = handleMenuAutoIncrement(&this->autoIncrement);
 
-    // Handle held button inputs if auto-incrementing should be done
+    // Handle held button input if auto-incrementing should be done
     if (autoIncrement)
     {
         const MenuButtonInput buttonHeld = getMenuButtonInput(false);
@@ -152,7 +152,7 @@ void OptionSelector::controls(MenuButtonInput button)
         }
     }
 
-    // Handle the button inputs pressed this frame
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_LEFT:

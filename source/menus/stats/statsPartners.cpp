@@ -283,23 +283,52 @@ static void bringOutOrRemoveFromOverworld(Menu *menuPtr)
     }
 }
 
+static void selectedPartnerDPadControls(MenuButtonInput button, uint8_t *currentIndexPtr, uint32_t menuCurrentIndex)
+{
+    const uint32_t totalOptions = getTotalOptions(menuCurrentIndex);
+    menuControlsVertical(button, currentIndexPtr, nullptr, totalOptions, totalOptions, 1, true);
+}
+
 static void selectedPartnerControls(Menu *menuPtr, MenuButtonInput button)
 {
     // Make sure the menu current index and the current index are valid
     verifyMenuAndCurrentIndexes();
 
+    // The function for checking for auto-incrementing needs to run every frame to be handled correctly
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    const bool autoIncrement = handleMenuAutoIncrement(statsMenuPtr->getAutoIncrementPtr());
+
+    uint8_t *statsMenuCurrentIndexPtr = statsMenuPtr->getCurrentIndexPtr();
     const uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
 
-    StatsMenu *statsMenuPtr = gStatsMenu;
+    // Handle held button input if auto-incrementing should be done
+    if (autoIncrement)
+    {
+        const MenuButtonInput buttonHeld = getMenuButtonInput(false);
+        switch (buttonHeld)
+        {
+            case MenuButtonInput::DPAD_DOWN:
+            case MenuButtonInput::DPAD_UP:
+            {
+                selectedPartnerDPadControls(buttonHeld, statsMenuCurrentIndexPtr, menuCurrentIndex);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
     const uint32_t currentIndex = statsMenuPtr->getCurrentIndex();
 
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_DOWN:
         case MenuButtonInput::DPAD_UP:
         {
-            const uint32_t totalOptions = getTotalOptions(menuCurrentIndex);
-            menuControlsVertical(button, statsMenuPtr->getCurrentIndexPtr(), nullptr, totalOptions, totalOptions, 1, true);
+            selectedPartnerDPadControls(button, statsMenuCurrentIndexPtr, menuCurrentIndex);
             break;
         }
         case MenuButtonInput::A:

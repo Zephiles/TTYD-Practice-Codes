@@ -154,7 +154,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     BattlesMenu *battlesMenuPtr = gBattlesMenu;
     const bool autoIncrement = handleMenuAutoIncrement(battlesMenuPtr->getAutoIncrementPtr());
 
-    // Handle held button inputs if auto-incrementing should be done
+    // Handle held button input if auto-incrementing should be done
     if (autoIncrement)
     {
         const MenuButtonInput buttonHeld = getMenuButtonInput(false);
@@ -173,7 +173,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
         }
     }
 
-    // Handle the button inputs pressed this frame
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_DOWN:

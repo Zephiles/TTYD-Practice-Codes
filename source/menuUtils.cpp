@@ -152,7 +152,7 @@ void basicMenuLayoutControls(Menu *menuPtr, MenuButtonInput button)
     // The function for checking for auto-incrementing needs to run every frame to be handled correctly
     const bool shouldAutoIncrement = handleMenuAutoIncrement(&autoIncrement);
 
-    // Handle held button inputs if auto-incrementing should be done
+    // Handle held button input if auto-incrementing should be done
     if (shouldAutoIncrement)
     {
         const MenuButtonInput buttonHeld = getMenuButtonInput(false);
@@ -171,7 +171,7 @@ void basicMenuLayoutControls(Menu *menuPtr, MenuButtonInput button)
         }
     }
 
-    // Handle the button inputs pressed this frame
+    // Handle the button input pressed this frame
     switch (button)
     {
         case MenuButtonInput::DPAD_DOWN:
