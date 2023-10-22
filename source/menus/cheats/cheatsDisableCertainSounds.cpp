@@ -40,7 +40,7 @@ void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawDisableCertainSoundsInfo() const
+static void drawDisableCertainSoundsInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -84,7 +84,7 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the sounds
-    gCheatsMenu->drawDisableCertainSoundsInfo();
+    drawDisableCertainSoundsInfo();
 }
 
 static void selectedOptionPauseMenuZMenuSounds(Menu *menuPtr)

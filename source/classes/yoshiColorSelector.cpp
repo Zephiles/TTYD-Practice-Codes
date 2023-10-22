@@ -28,6 +28,5 @@ void YoshiColorSelector::init(const Window *parentWindow, uint8_t windowAlpha)
                                1,
                                parentWindow,
                                windowAlpha,
-                               0.f,
-                               MENU_SCALE);
+                               0.f);
 }

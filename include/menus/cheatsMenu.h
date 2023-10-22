@@ -147,18 +147,6 @@ class CheatsMenu
     uint32_t getCurrentIndex() const { return this->currentIndex; }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
-    void drawGenericCheatInfo() const;
-    void drawSequenceInfo() const;
-    void drawModifyMariosCoordinatesInfo() const;
-    void drawFrameAdvanceInfo() const;
-    void drawGenerateLagSpikeInfo() const;
-    void drawDisableCertainSoundsInfo() const;
-    void drawForceNpcItemDropInfo() const;
-    void drawResolveFadesInfo(float offsetY) const;
-    void drawLockFlagsInfo() const;
-    void drawManageFlagsInfo() const;
-    void drawClearAreaFlagsInfo() const;
-
    private:
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;

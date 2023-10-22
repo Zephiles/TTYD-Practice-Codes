@@ -99,7 +99,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void SettingsMenu::drawSettingsMenuInfo() const
+static void drawSettingsMenuInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -110,8 +110,10 @@ void SettingsMenu::drawSettingsMenuInfo() const
     gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
 
     // Draw the memory card slot being used
+    const SettingsMenu *settingsMenuPtr = gSettingsMenu;
     char cardSlot;
-    if (this->memoryCardSlot == CARD_SLOT_A)
+
+    if (settingsMenuPtr->getMemoryCardSlot() == CARD_SLOT_A)
     {
         cardSlot = 'A';
     }
@@ -133,7 +135,7 @@ void SettingsMenu::drawSettingsMenuInfo() const
     posY -= (lineDecrement * 3.f);
 
     // Draw the current window color
-    snprintf(buf, butSize, "Window Color\n0x%08" PRIX32, this->rootWindowBackupColor);
+    snprintf(buf, butSize, "Window Color\n0x%08" PRIX32, settingsMenuPtr->getRootWindowBackupColor());
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
@@ -143,10 +145,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the settings menu
-    SettingsMenu *settingsMenuPtr = gSettingsMenu;
-    settingsMenuPtr->drawSettingsMenuInfo();
+    drawSettingsMenuInfo();
 
     // Draw the confirmation window if applicable
+    SettingsMenu *settingsMenuPtr = gSettingsMenu;
     ConfirmationWindow *confirmationWindowPtr = settingsMenuPtr->getConfirmationWindowPtr();
     if (confirmationWindowPtr->shouldDraw())
     {

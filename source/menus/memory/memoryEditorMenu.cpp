@@ -54,7 +54,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void MemoryMenu::drawMemoryEditorMenuInfo() const
+static void drawMemoryEditorMenuInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;
@@ -105,11 +105,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the memory editor
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    memoryMenuPtr->drawMemoryEditorMenuInfo();
+    drawMemoryEditorMenuInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = memoryMenuPtr->getButtonComboEditorPtr();
+    ButtonComboEditor *buttonComboEditorPtr = gMemoryMenu->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

@@ -387,7 +387,7 @@ void cheatsMenuManageFlagsInit(Menu *menuPtr)
     enterNextMenu(&gInitFuncs, totalOptions);
 }
 
-void CheatsMenu::drawManageFlagsInfo() const
+static void drawManageFlagsInfo()
 {
     // Initialize text drawing
     drawTextInit(false);
@@ -399,26 +399,27 @@ void CheatsMenu::drawManageFlagsInfo() const
     gRootWindow->getTextPosXY(nullptr, WindowAlignment::TOP_LEFT, scale, &tempPosX, &tempPosY);
 
     // Determine if working with variables or flags
-    bool changingWord;
+    const CheatsMenu *cheatsMenuPtr = gCheatsMenu;
+    const uint32_t selectedOption = cheatsMenuPtr->getCurrentIndex();
     const char **linesPtr;
+    bool changingWord;
 
-    const uint32_t selectedOption = this->currentIndex;
     switch (selectedOption)
     {
         case ManageFlagsOptions::MANAGE_FLAGS_GSW:
         case ManageFlagsOptions::MANAGE_FLAGS_GW:
         case ManageFlagsOptions::MANAGE_FLAGS_LSW:
         {
-            changingWord = true;
             linesPtr = gGlobalWordsOptions;
+            changingWord = true;
             break;
         }
         case ManageFlagsOptions::MANAGE_FLAGS_GSWF:
         case ManageFlagsOptions::MANAGE_FLAGS_GF:
         case ManageFlagsOptions::MANAGE_FLAGS_LSWF:
         {
-            changingWord = false;
             linesPtr = gGlobalFlagsOptions;
+            changingWord = false;
             break;
         }
         default:
@@ -500,7 +501,7 @@ void CheatsMenu::drawManageFlagsInfo() const
 
     // Draw the text for the values
     posY -= lineDecrement;
-    const uint32_t flagVariableToSet = this->flagVariableToSet;
+    const uint32_t flagVariableToSet = cheatsMenuPtr->getFlagVariableToSet();
     const uint32_t currentFlagVariableValue = getGlobalVariableFlagValue(selectedOption, flagVariableToSet);
 
     // Get the text position a bit to the right of the longest text
@@ -525,7 +526,7 @@ void CheatsMenu::drawManageFlagsInfo() const
             format = "%" PRIu32 "\n%" PRIu32 "\n%" PRIu32;
         }
 
-        snprintf(buf, bufSize, format, flagVariableToSet, currentFlagVariableValue, this->flagVariableValue);
+        snprintf(buf, bufSize, format, flagVariableToSet, currentFlagVariableValue, cheatsMenuPtr->getFlagVariableValue());
         drawText(buf, posX + widthAdjustment, posY, scale, getColorWhite(0xFF));
     }
     else
@@ -553,11 +554,10 @@ static void draw(CameraId cameraId, void *user)
     drawMainWindow();
 
     // Draw the info for the flags/variables
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawManageFlagsInfo();
+    drawManageFlagsInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

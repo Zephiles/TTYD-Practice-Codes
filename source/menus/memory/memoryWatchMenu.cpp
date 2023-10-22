@@ -144,10 +144,11 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void MemoryMenu::drawMemoryWatchMenuInfo() const
+static void drawMemoryWatchMenuInfo()
 {
     // Draw the page number at the top-right of the main window if there is more than one page
-    const uint32_t currentPage = this->currentPage;
+    const MemoryMenu *memoryMenuPtr = gMemoryMenu;
+    const uint32_t currentPage = memoryMenuPtr->getCurrentPage();
     const Window *rootWindowPtr = gRootWindow;
     constexpr float scale = MENU_SCALE;
     float tempPosX;
@@ -212,8 +213,8 @@ void MemoryMenu::drawMemoryWatchMenuInfo() const
 
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
 
-    const uint32_t currentIndex = this->currentIndex;
-    const uint32_t selectedIndex = this->selectedIndex;
+    const uint32_t currentIndex = memoryMenuPtr->getCurrentIndex();
+    const uint32_t selectedIndex = memoryMenuPtr->getSelectedIndex();
     const uint32_t startingIndex = MAX_MEMORY_WATCHES_PER_PAGE * currentPage;
     const uint32_t endingIndex = startingIndex + MAX_MEMORY_WATCHES_PER_PAGE;
 
@@ -265,11 +266,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
 
     // Draw the info for the memory watches
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    memoryMenuPtr->drawMemoryWatchMenuInfo();
+    drawMemoryWatchMenuInfo();
 
     // Draw an error message if applicable
-    ErrorWindow *errorWindowPtr = memoryMenuPtr->getErrorWindowPtr();
+    ErrorWindow *errorWindowPtr = gMemoryMenu->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

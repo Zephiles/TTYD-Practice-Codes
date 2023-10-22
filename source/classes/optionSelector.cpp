@@ -11,10 +11,9 @@ void OptionSelector::init(const char *helpText,
                           uint32_t totalOptions,
                           uint32_t totalColumns,
                           const Window *parentWindow,
-                          float spaceBetweenHelpTextAndOptions,
-                          float scale)
+                          float spaceBetweenHelpTextAndOptions)
 {
-    return this->init(helpText, options, totalOptions, totalColumns, parentWindow, 0xFF, spaceBetweenHelpTextAndOptions, scale);
+    return this->init(helpText, options, totalOptions, totalColumns, parentWindow, 0xFF, spaceBetweenHelpTextAndOptions);
 }
 
 void OptionSelector::init(const char *helpText,
@@ -23,14 +22,12 @@ void OptionSelector::init(const char *helpText,
                           uint32_t totalColumns,
                           const Window *parentWindow,
                           uint8_t windowAlpha,
-                          float spaceBetweenHelpTextAndOptions,
-                          float scale)
+                          float spaceBetweenHelpTextAndOptions)
 {
     this->helpText = helpText;
     this->options = options;
     this->totalOptions = static_cast<uint8_t>(totalOptions);
     this->totalColumns = static_cast<uint8_t>(totalColumns);
-    this->scale = scale;
 
     this->selectOptionFunc = nullptr;
     this->cancelFunc = nullptr;
@@ -42,6 +39,7 @@ void OptionSelector::init(const char *helpText,
     // Set up the window
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
+    constexpr float scale = MENU_SCALE;
     windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
 
     // Get the height used by the options
@@ -209,7 +207,7 @@ void OptionSelector::draw() const
     drawTextInit(false);
 
     // Draw the help text
-    const float scale = this->scale;
+    constexpr float scale = MENU_SCALE;
     const char *helpTextPtr = this->helpText;
 
     float tempPosX;
@@ -225,12 +223,12 @@ void OptionSelector::draw() const
     const uint32_t totalColumns = this->totalColumns;
     const uint32_t totalOptionsPerColumn = intCeil(totalOptions, totalColumns);
 
-    const float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const float posYBase = tempPosY + (lineDecrement * intToFloat(totalOptionsPerColumn - 1));
     float posY = posYBase;
 
     // Assume that each column will have OPTION_SELECTOR_COLUMN_PADDING padding between them
-    const float spaceBetweenColumns = OPTION_SELECTOR_COLUMN_PADDING(scale);
+    constexpr float spaceBetweenColumns = OPTION_SELECTOR_COLUMN_PADDING(scale);
     float posX = tempPosX + (windowPtr->getWidth() / 2.f) - (this->totalWidth / 2.f);
 
     // Draw the options

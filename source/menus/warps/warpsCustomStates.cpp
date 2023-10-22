@@ -167,7 +167,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void WarpsMenu::drawCustomStatesInfo() const
+static void drawCustomStatesInfo()
 {
     // Get the total states out of the maximum
     const CustomState *customStatePtr = &gCustomState;
@@ -205,7 +205,8 @@ void WarpsMenu::drawCustomStatesInfo() const
     }
 
     // Draw the page number at the top-right of the window if there is more than one page of states
-    const uint32_t currentPage = this->currentPage;
+    const WarpsMenu *warpsMenuPtr = gWarpsMenu;
+    const uint32_t currentPage = warpsMenuPtr->getCurrentPage();
     if (totalEntries > MAX_CUSTOM_STATES_PER_PAGE)
     {
         // Draw the page as an int, to prevent long text if it somehow becomes negative
@@ -226,8 +227,8 @@ void WarpsMenu::drawCustomStatesInfo() const
 
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
 
-    const uint32_t currentIndex = this->currentIndex;
-    const uint32_t selectedIndex = this->selectedIndex;
+    const uint32_t currentIndex = warpsMenuPtr->getCurrentIndex();
+    const uint32_t selectedIndex = warpsMenuPtr->getSelectedIndex();
     const uint32_t startingIndex = MAX_CUSTOM_STATES_PER_PAGE * currentPage;
     const uint32_t endingIndex = startingIndex + MAX_CUSTOM_STATES_PER_PAGE;
 
@@ -276,10 +277,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
 
     // Draw the info for the custom states
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawCustomStatesInfo();
+    drawCustomStatesInfo();
 
     // Draw the name editor if applicable
+    WarpsMenu *warpsMenuPtr = gWarpsMenu;
     NameEditor *nameEditorPtr = warpsMenuPtr->getNameEditorPtr();
     if (nameEditorPtr->shouldDraw())
     {

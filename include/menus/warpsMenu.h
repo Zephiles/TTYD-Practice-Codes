@@ -183,12 +183,6 @@ class WarpsMenu
     void initErrorWindow(const char *text);
     void customStatesFlagSetControls(MenuButtonInput button);
 
-    void drawSelectInitWarpInfo();
-    void drawSelectEventWarpInfo(float offsetY) const;
-    void drawSelectIndexWarpInfo() const;
-    void drawSelectBossWarpInfo() const;
-    void drawCustomStatesInfo() const;
-
    private:
     ValueEditor valueEditor;
     NameEditor nameEditor;

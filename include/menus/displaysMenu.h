@@ -97,12 +97,6 @@ class DisplaysMenu
     uint32_t getSelectedDisplay() const { return this->selectedDisplay; }
     void setSelectedDisplay(uint32_t selectedDisplay) { this->selectedDisplay = static_cast<uint8_t>(selectedDisplay); }
 
-    void drawGenericDisplayInfo() const;
-    void drawOnScreenTimerInfo() const;
-    void drawMemoryUsageInfo() const;
-    void drawHitCheckVisualizationInfo() const;
-    void drawDisplayManualPositionData() const;
-
    private:
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;

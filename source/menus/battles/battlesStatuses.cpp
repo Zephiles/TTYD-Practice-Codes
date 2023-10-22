@@ -267,7 +267,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void BattlesMenu::drawBattleActorStatuses(BattleWorkUnit *actorPtr) const
+static void drawBattleActorStatuses(BattleWorkUnit *actorPtr)
 {
     // To avoid a lot of unnecessary extra GX calls, draw the icons first
     // Get the starting position for the icons
@@ -411,7 +411,7 @@ static void draw(CameraId cameraId, void *user)
     }
 
     // Draw the actor's statuses
-    battlesMenuPtr->drawBattleActorStatuses(actorPtr);
+    drawBattleActorStatuses(actorPtr);
 
     // Draw the value editor if applicable
     ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();

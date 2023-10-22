@@ -59,24 +59,7 @@ void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr)
     enterCheatsMenuGeneric(menuPtr, true);
 }
 
-static void draw(CameraId cameraId, void *user)
-{
-    // Draw the main window and text
-    basicMenuLayoutDraw(cameraId, user);
-
-    // Draw the info for the current cheat
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawGenericCheatInfo();
-
-    // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
-    if (buttonComboEditorPtr->shouldDraw())
-    {
-        buttonComboEditorPtr->draw();
-    }
-}
-
-void CheatsMenu::drawGenericCheatInfo() const
+static void drawCheatInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;
@@ -92,7 +75,7 @@ void CheatsMenu::drawGenericCheatInfo() const
     float posY = tempPosY;
 
     // Draw the text for the current cheat
-    const uint32_t selectedCheat = this->selectedCheat;
+    const uint32_t selectedCheat = gCheatsMenu->getSelectedCheat();
     drawText(gCheatsMenuInitOptions[selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -121,6 +104,22 @@ void CheatsMenu::drawGenericCheatInfo() const
 
         buttonsToString(cheatsPtr->getCheatButtonCombo(cheatButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+    }
+}
+
+static void draw(CameraId cameraId, void *user)
+{
+    // Draw the main window and text
+    basicMenuLayoutDraw(cameraId, user);
+
+    // Draw the info for the current cheat
+    drawCheatInfo();
+
+    // Draw the button combo editor if applicable
+    ButtonComboEditor *buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
+    {
+        buttonComboEditorPtr->draw();
     }
 }
 

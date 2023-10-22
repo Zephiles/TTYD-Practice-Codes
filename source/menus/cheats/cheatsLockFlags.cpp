@@ -59,7 +59,7 @@ void cheatsMenuLockFlagsInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawLockFlagsInfo() const
+static void drawLockFlagsInfo()
 {
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -173,7 +173,7 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the flags
-    gCheatsMenu->drawLockFlagsInfo();
+    drawLockFlagsInfo();
 }
 
 static void setAreaString(LockFlagsCheat *lockFlagsPtr, uint32_t currentIndex)

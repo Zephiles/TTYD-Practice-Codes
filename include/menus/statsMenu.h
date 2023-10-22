@@ -84,9 +84,6 @@ class StatsMenu
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
     void initErrorWindow(bool drawForPartner);
-    void drawMarioStats() const;
-    void drawPartnerStats();
-    void drawFollowerOut() const;
 
    private:
     ValueEditor valueEditor;

@@ -175,7 +175,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void WarpsMenu::drawSelectBossWarpInfo() const
+static void drawSelectBossWarpInfo()
 {
     // Initialize text drawing
     drawTextInit(false);
@@ -233,11 +233,10 @@ static void draw(CameraId cameraId, void *user)
     drawMainWindow();
 
     // Draw the info for selecting a warp
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawSelectBossWarpInfo();
+    drawSelectBossWarpInfo();
 
     // Draw an error message if applicable
-    ErrorWindow *errorWindowPtr = warpsMenuPtr->getErrorWindowPtr();
+    ErrorWindow *errorWindowPtr = gWarpsMenu->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

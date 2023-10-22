@@ -35,7 +35,7 @@ void cheatsMenuChangeSequenceInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawSequenceInfo() const
+static void drawSequenceInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -50,11 +50,10 @@ void CheatsMenu::drawSequenceInfo() const
     float posY = tempPosY;
 
     // Draw the text for showing what the current sequence position is
+    const uint32_t sequencePosition = getSequencePosition();
     char buf[32];
-    constexpr uint32_t bufSize = sizeof(buf);
 
-    const uint32_t sequencePosition = getSequencePosition() & 0xFFFF; // Trim to avoid possible long values
-    snprintf(buf, bufSize, "Current Value: %" PRIu32, sequencePosition);
+    snprintf(buf, sizeof(buf), "Current Value: %" PRIu32, sequencePosition);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 
     // Draw the stage and event names for the current sequence position
@@ -69,11 +68,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the sequence position
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawSequenceInfo();
+    drawSequenceInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
+    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

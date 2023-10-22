@@ -550,7 +550,7 @@ static void selectedOptionToggleSpecialMoves(Menu *menuPtr)
     specialMoveTogglerPtr->startDrawing(nullptr, cancelToggleSpecialMoves);
 }
 
-void StatsMenu::drawMarioStats() const
+static void drawMarioStats()
 {
     // Draw the main text and icons
     float iconPosXBase;
@@ -566,7 +566,7 @@ void StatsMenu::drawMarioStats() const
     float iconPosX = iconPosXBase;
     float iconPosY = iconPosYBase;
 
-    const uint32_t currentIndex = this->currentIndex;
+    const uint32_t currentIndex = gStatsMenu->getCurrentIndex();
     const IconId *optionsIconsPtr = gOptionsIcons;
     uint32_t counter = 0;
 
@@ -697,10 +697,10 @@ static void draw(CameraId cameraId, void *user)
     drawMainWindow();
 
     // Draw Mario's stats
-    StatsMenu *statsMenuPtr = gStatsMenu;
-    statsMenuPtr->drawMarioStats();
+    drawMarioStats();
 
     // Draw the value editor if applicable
+    StatsMenu *statsMenuPtr = gStatsMenu;
     ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

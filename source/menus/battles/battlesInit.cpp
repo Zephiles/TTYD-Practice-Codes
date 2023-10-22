@@ -209,7 +209,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void BattlesMenu::drawBattlesActors() const
+static void drawBattlesActors()
 {
     // Initialize text drawing
     drawTextInit(false);
@@ -317,7 +317,7 @@ static void draw(CameraId cameraId, void *user)
     drawMainWindow();
 
     // Draw each actor
-    gBattlesMenu->drawBattlesActors();
+    drawBattlesActors();
 }
 
 void battlesMenuCancelChangeValue()

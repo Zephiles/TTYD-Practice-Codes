@@ -149,13 +149,14 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void MemoryMenu::drawMemoryWatchChangeAddressInfo() const
+static void drawMemoryWatchChangeAddressInfo()
 {
     // Get the pointer to the selected watch
     const MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
 
     // Draw the page number at the top-right of the main window if there is more than one page
-    const uint32_t currentPage = this->changeAddressCurrentPage;
+    const MemoryMenu *memoryMenuPtr = gMemoryMenu;
+    const uint32_t currentPage = memoryMenuPtr->getChangeAddressCurrentPage();
     const Window *rootWindowPtr = gRootWindow;
     constexpr float scale = MENU_SCALE;
     float tempPosX;
@@ -201,7 +202,7 @@ void MemoryMenu::drawMemoryWatchChangeAddressInfo() const
         menuPtr->flagIsSet(MemoryMenuMemoryWatchChangeAddressFlag::MEMORY_MENU_MEMORY_WATCH_CHANGE_ADDRESS_FLAG_CHANGE_VALUES);
 
     const int32_t *offsetsPtr = currentEntry->getAddressOffsetsPtr();
-    const uint32_t currentIndex = this->changeAddressCurrentIndex;
+    const uint32_t currentIndex = memoryMenuPtr->getChangeAddressCurrentIndex();
     uint8_t *baseAddress = currentEntry->getAddressPtr();
 
     const uint32_t startingIndex = MAX_MEMORY_WATCH_OFFSETS_PER_PAGE * currentPage;
@@ -295,10 +296,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDrawMenuLineHeight(cameraId, user);
 
     // Draw the info for the memory watch's address and pointer levels
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    memoryMenuPtr->drawMemoryWatchChangeAddressInfo();
+    drawMemoryWatchChangeAddressInfo();
 
     // Draw the value editor if applicable
+    MemoryMenu *memoryMenuPtr = gMemoryMenu;
     ValueEditor *valueEditorPtr = memoryMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

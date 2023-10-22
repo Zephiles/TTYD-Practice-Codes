@@ -99,7 +99,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void MemoryMenu::drawMemoryWatchModifyInfo() const
+static void drawMemoryWatchModifyInfo()
 {
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -183,17 +183,17 @@ void MemoryMenu::drawMemoryWatchModifyInfo() const
 
 static void draw(CameraId cameraId, void *user)
 {
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
     if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         // Draw the main window and text
         basicMenuLayoutDraw(cameraId, user);
 
         // Draw the info for the Modify menu
-        memoryMenuPtr->drawMemoryWatchModifyInfo();
+        drawMemoryWatchModifyInfo();
     }
 
     // Draw the name editor if applicable
+    MemoryMenu *memoryMenuPtr = gMemoryMenu;
     NameEditor *nameEditorPtr = memoryMenuPtr->getNameEditorPtr();
     if (nameEditorPtr->shouldDraw())
     {

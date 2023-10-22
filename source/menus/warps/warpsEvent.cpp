@@ -69,7 +69,7 @@ void warpsMenuEventInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void WarpsMenu::drawSelectEventWarpInfo(float offsetY) const
+static void drawSelectEventWarpInfo(float offsetY)
 {
     // Get the text position for the top-left of the window
     const Window *rootWindowPtr = gRootWindow;
@@ -135,10 +135,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user, LINE_HEIGHT_FLOAT, 0.f, offsetY);
 
     // Draw the info for selecting a warp
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawSelectEventWarpInfo(offsetY);
+    drawSelectEventWarpInfo(offsetY);
 
     // Draw the value editor if applicable
+    WarpsMenu *warpsMenuPtr = gWarpsMenu;
     ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
@@ -323,11 +323,12 @@ void handleWarpByEvent()
     constexpr uint32_t badgesInventorySize = sizeof(PouchData::badges) / sizeof(ItemId);
 
     const bool shouldKeepInventory = modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY);
+    const bool shouldEquipBadges = modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
     if (shouldKeepInventory)
     {
         warpByEventInventoryPtr = new WarpByEventInventory;
-
         PouchData *pouchPtr = pouchGetPtr();
+
         standardInventoryPtr = pouchPtr->items;
         badgesInventoryPtr = pouchPtr->badges;
         equippedBadgesInventoryPtr = pouchPtr->equippedBadges;
@@ -338,10 +339,13 @@ void handleWarpByEvent()
         // Back up the badges
         memcpy(warpByEventInventoryPtr->badges, badgesInventoryPtr, sizeof(warpByEventInventoryPtr->badges));
 
-        // Back up the equipped badges
-        memcpy(warpByEventInventoryPtr->equippedBadges,
-               equippedBadgesInventoryPtr,
-               sizeof(warpByEventInventoryPtr->equippedBadges));
+        if (shouldEquipBadges)
+        {
+            // Back up the equipped badges
+            memcpy(warpByEventInventoryPtr->equippedBadges,
+                   equippedBadgesInventoryPtr,
+                   sizeof(warpByEventInventoryPtr->equippedBadges));
+        }
     }
 
     // Clear all current states
@@ -387,7 +391,7 @@ void handleWarpByEvent()
         // Restore the badges
         memcpy(badgesInventoryPtr, warpByEventInventoryPtr->badges, sizeof(warpByEventInventoryPtr->badges));
 
-        if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES))
+        if (shouldEquipBadges)
         {
             // Restore the equipped badges
             memcpy(equippedBadgesInventoryPtr,
@@ -479,10 +483,8 @@ void handleWarpByEvent()
     // Reset Mario's motion
     marioChgMot(MarioMotion::kStay);
 
-    const EventStageDescription *targetStage = eventStgDtPtr(stageId);
-    const EventStageEventDescription *targetEvent = &targetStage->pEvents[eventId];
-
     // Set Mario's motion
+    const EventStageEventDescription *targetEvent = &eventStgDtPtr(stageId)->pEvents[eventId];
     switch (targetEvent->entryMotionType)
     {
         case 0:
@@ -773,12 +775,13 @@ static bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetai
         return false;
     }
 
+    const uint32_t eventSequencePosition = getSequenceForEvent(stageId, eventId);
     const EventStageDescription *targetStage = eventStgDtPtr(stageId);
     const EventStageEventDescription *targetEvent = &targetStage->pEvents[eventId];
 
 #ifdef TTYD_JP
     char *stageNameBuffer = warpByEventDetailsPtr->stage;
-    if (!getStageString(stageNameBuffer, sizeof(warpByEventDetailsPtr->stage), getSequenceForEvent(stageId, eventId)))
+    if (!getStageString(stageNameBuffer, sizeof(warpByEventDetailsPtr->stage), eventSequencePosition))
     {
         stageNameBuffer[0] = '\0';
     }
@@ -796,11 +799,11 @@ static bool getEventDetails(uint32_t index, WarpByEventDetails *warpByEventDetai
     warpByEventDetailsPtr->eventPtr = targetEvent->nameEn;
 #endif
 
-    warpByEventDetailsPtr->partnerPtr = getPartyName(targetEvent->partnerId);
-    warpByEventDetailsPtr->followerPtr = getPartyName(targetEvent->followerId);
     warpByEventDetailsPtr->mapPtr = targetEvent->map;
     warpByEventDetailsPtr->beroPtr = targetEvent->bero;
-    warpByEventDetailsPtr->sequencePosition = getSequenceForEvent(stageId, eventId);
+    warpByEventDetailsPtr->sequencePosition = eventSequencePosition;
+    warpByEventDetailsPtr->partnerPtr = getPartyName(targetEvent->partnerId);
+    warpByEventDetailsPtr->followerPtr = getPartyName(targetEvent->followerId);
 
     return true;
 }

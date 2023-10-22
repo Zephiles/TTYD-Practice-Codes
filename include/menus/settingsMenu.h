@@ -36,7 +36,6 @@ class SettingsMenu
         }
     }
 
-    void drawSettingsMenuInfo() const;
     void initErrorWindow(const char *text);
 
    private:

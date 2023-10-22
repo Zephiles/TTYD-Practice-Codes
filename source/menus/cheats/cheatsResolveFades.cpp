@@ -44,7 +44,7 @@ void cheatsMenuResolveFadesInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawResolveFadesInfo(float offsetY) const
+static void drawResolveFadesInfo(float offsetY)
 {
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -103,11 +103,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user, LINE_HEIGHT_FLOAT, 0.f, offsetY);
 
     // Draw the info for the fades
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawResolveFadesInfo(offsetY);
+    drawResolveFadesInfo(offsetY);
 
     // Draw the error window if applicable
-    ErrorWindow *errorWindowPtr = cheatsMenuPtr->getErrorWindowPtr();
+    ErrorWindow *errorWindowPtr = gCheatsMenu->getErrorWindowPtr();
     if (errorWindowPtr->shouldDraw())
     {
         errorWindowPtr->draw();

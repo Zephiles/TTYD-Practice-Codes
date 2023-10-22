@@ -487,7 +487,7 @@ static void mainControls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void StatsMenu::drawPartnerStats()
+static void drawPartnerStats()
 {
     auto getTextColor = [](bool anyFlagIsSet, bool currentOption)
     {
@@ -524,7 +524,7 @@ void StatsMenu::drawPartnerStats()
     Menu *menuPtr = gMenu;
     const bool anyFlagIsSet = menuPtr->anyFlagIsSet();
     uint32_t menuCurrentIndex = menuPtr->getCurrentIndex();
-    uint32_t currentIndex = this->currentIndex;
+    uint32_t currentIndex = gStatsMenu->getCurrentIndex();
 
     const char **statsStringsPtr = gStatsStrings;
     uint32_t counter = 0;
@@ -635,10 +635,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the partner's stats that the cursor is currently over
-    StatsMenu *statsMenuPtr = gStatsMenu;
-    statsMenuPtr->drawPartnerStats();
+    drawPartnerStats();
 
     // Draw the value editor if applicable
+    StatsMenu *statsMenuPtr = gStatsMenu;
     ValueEditor *valueEditorPtr = statsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

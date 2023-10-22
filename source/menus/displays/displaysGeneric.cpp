@@ -155,24 +155,7 @@ void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
     enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
-static void draw(CameraId cameraId, void *user)
-{
-    // Draw the main window and text
-    basicMenuLayoutDraw(cameraId, user);
-
-    // Draw the info for the current display
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    displaysMenuPtr->drawGenericDisplayInfo();
-
-    // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditorPtr();
-    if (buttonComboEditorPtr->shouldDraw())
-    {
-        buttonComboEditorPtr->draw();
-    }
-}
-
-void DisplaysMenu::drawGenericDisplayInfo() const
+static void drawGenericDisplayInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;
@@ -188,7 +171,7 @@ void DisplaysMenu::drawGenericDisplayInfo() const
     float posY = tempPosY;
 
     // Draw the text for the current display
-    const uint32_t selectedDisplay = this->selectedDisplay;
+    const uint32_t selectedDisplay = gDisplaysMenu->getSelectedDisplay();
     drawText(gDisplaysMenuInitOptions[selectedDisplay].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -217,6 +200,22 @@ void DisplaysMenu::drawGenericDisplayInfo() const
 
         buttonsToString(displaysPtr->getDisplayButtonCombo(displayButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+    }
+}
+
+static void draw(CameraId cameraId, void *user)
+{
+    // Draw the main window and text
+    basicMenuLayoutDraw(cameraId, user);
+
+    // Draw the info for the current display
+    drawGenericDisplayInfo();
+
+    // Draw the button combo editor if applicable
+    ButtonComboEditor *buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr();
+    if (buttonComboEditorPtr->shouldDraw())
+    {
+        buttonComboEditorPtr->draw();
     }
 }
 

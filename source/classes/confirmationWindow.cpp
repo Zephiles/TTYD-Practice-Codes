@@ -19,7 +19,7 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
 void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, uint8_t windowAlpha)
 {
     constexpr uint32_t totalOptions = sizeof(gYesNoStrings) / sizeof(const char *);
-    this->OptionSelector::init(helpText, gYesNoStrings, totalOptions, 1, parentWindow, windowAlpha, 20.f, MENU_SCALE);
+    this->OptionSelector::init(helpText, gYesNoStrings, totalOptions, 1, parentWindow, windowAlpha, 20.f);
 
     // Start on no
     this->OptionSelector::setCurrentIndex(CONFIRMATION_WINDOW_OPTION_NO);

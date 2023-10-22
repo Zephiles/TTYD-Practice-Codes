@@ -43,7 +43,7 @@ void displaysMenuOnScreenTimerInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void DisplaysMenu::drawOnScreenTimerInfo() const
+static void drawOnScreenTimerInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -58,7 +58,7 @@ void DisplaysMenu::drawOnScreenTimerInfo() const
     float posY = tempPosY;
 
     // Draw the current display with its flag
-    const uint32_t selectedDisplay = this->selectedDisplay;
+    const uint32_t selectedDisplay = gDisplaysMenu->getSelectedDisplay();
     drawText(gDisplaysMenuInitOptions[selectedDisplay].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -108,11 +108,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the On-Screen Timer or Frame Counter display
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    displaysMenuPtr->drawOnScreenTimerInfo();
+    drawOnScreenTimerInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = displaysMenuPtr->getButtonComboEditorPtr();
+    ButtonComboEditor *buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

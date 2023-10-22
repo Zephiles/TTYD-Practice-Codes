@@ -142,7 +142,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void CheatsMenu::drawClearAreaFlagsInfo() const
+static void drawClearAreaFlagsInfo()
 {
     // Set the the current area string
     char buf[32];
@@ -179,7 +179,7 @@ void CheatsMenu::drawClearAreaFlagsInfo() const
 
     // Draw each area to choose from
     constexpr uint32_t totalRows = intCeil(CHEATS_TOTAL_AREAS, CHEATS_AREA_FLAGS_MAX_OPTIONS_PER_ROW);
-    const uint32_t currentIndex = this->currentIndex;
+    const uint32_t currentIndex = gCheatsMenu->getCurrentIndex();
 
     float posX = posXBase;
     const float posYBase = posY;
@@ -219,11 +219,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the areas
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawClearAreaFlagsInfo();
+    drawClearAreaFlagsInfo();
 
     // Draw the confirmation window if applicable
-    ConfirmationWindow *confirmationWindowPtr = cheatsMenuPtr->getConfirmationWindowPtr();
+    ConfirmationWindow *confirmationWindowPtr = gCheatsMenu->getConfirmationWindowPtr();
     if (confirmationWindowPtr->shouldDraw())
     {
         confirmationWindowPtr->draw();

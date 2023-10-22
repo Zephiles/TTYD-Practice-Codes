@@ -23,8 +23,7 @@ class OptionSelector
               uint32_t totalOptions,
               uint32_t totalColumns,
               const Window *parentWindow,
-              float spaceBetweenHelpTextAndOptions,
-              float scale);
+              float spaceBetweenHelpTextAndOptions);
 
     void init(const char *helpText,
               const char **options,
@@ -32,8 +31,7 @@ class OptionSelector
               uint32_t totalColumns,
               const Window *parentWindow,
               uint8_t windowAlpha,
-              float spaceBetweenHelpTextAndOptions,
-              float scale);
+              float spaceBetweenHelpTextAndOptions);
 
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
@@ -54,8 +52,6 @@ class OptionSelector
     void dpadControls(MenuButtonInput button);
 
     Window window;
-    float scale;
-
     OptionSelectorSelectOptionFunc selectOptionFunc; // Called when the player presses A to select an option
     OptionSelectorCancelFunc cancelFunc;             // Called when the player presses B to cancel selecting an option
 

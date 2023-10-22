@@ -191,7 +191,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     }
 }
 
-void WarpsMenu::drawSelectInitWarpInfo()
+static void drawSelectInitWarpInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const Menu *menuPtr = gMenu;
@@ -262,10 +262,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for selecting a warp
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawSelectInitWarpInfo();
+    drawSelectInitWarpInfo();
 
     // Draw the value editor if applicable
+    WarpsMenu *warpsMenuPtr = gWarpsMenu;
     ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

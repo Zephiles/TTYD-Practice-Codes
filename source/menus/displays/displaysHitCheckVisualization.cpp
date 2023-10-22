@@ -64,7 +64,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void DisplaysMenu::drawHitCheckVisualizationInfo() const
+static void drawHitCheckVisualizationInfo()
 {
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -132,11 +132,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Hit Check Visualization display
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    displaysMenuPtr->drawHitCheckVisualizationInfo();
+    drawHitCheckVisualizationInfo();
 
     // Draw the value editor if applicable
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
+    ValueEditor *valueEditorPtr = gDisplaysMenu->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {
         valueEditorPtr->draw();

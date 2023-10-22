@@ -46,7 +46,7 @@ void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawModifyMariosCoordinatesInfo() const
+static void drawMarioCoordinatesInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     float tempPosX;
@@ -119,10 +119,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Modify Mario's Coordinates cheat
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawModifyMariosCoordinatesInfo();
+    drawMarioCoordinatesInfo();
 
     // Draw the value editor if applicable
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

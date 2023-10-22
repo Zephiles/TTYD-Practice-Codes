@@ -35,8 +35,7 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlp
                                1,
                                parentWindow,
                                windowAlpha,
-                               0.f,
-                               MENU_SCALE);
+                               0.f);
 }
 
 void MemoryWatchTypeSelector::stopDrawing()

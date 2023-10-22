@@ -39,7 +39,7 @@ void cheatsMenuFrameAdvanceInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void CheatsMenu::drawFrameAdvanceInfo() const
+static void drawFrameAdvanceInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -54,7 +54,8 @@ void CheatsMenu::drawFrameAdvanceInfo() const
     float posY = tempPosY;
 
     // Draw the current cheat with its flag
-    drawText(gCheatsMenuInitOptions[this->selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
+    const uint32_t selectedCheat = gCheatsMenu->getSelectedCheat();
+    drawText(gCheatsMenuInitOptions[selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
@@ -102,11 +103,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Frame Advance cheat
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawFrameAdvanceInfo();
+    drawFrameAdvanceInfo();
 
     // Draw the button combo editor if applicable
-    ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
+    ButtonComboEditor *buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {
         buttonComboEditorPtr->draw();

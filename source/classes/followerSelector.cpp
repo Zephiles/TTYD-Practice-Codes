@@ -46,14 +46,7 @@ void FollowerSelector::init(const Window *parentWindow)
 
 void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 {
-    this->OptionSelector::init(gHelpTextAConfirmBCancel,
-                               gFollowersOptions,
-                               TOTAL_FOLLOWERS,
-                               2,
-                               parentWindow,
-                               windowAlpha,
-                               0.f,
-                               MENU_SCALE);
+    this->OptionSelector::init(gHelpTextAConfirmBCancel, gFollowersOptions, TOTAL_FOLLOWERS, 2, parentWindow, windowAlpha, 0.f);
 }
 
 void FollowerSelector::stopDrawing()

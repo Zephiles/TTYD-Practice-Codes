@@ -270,7 +270,7 @@ static void selectedOptionClearHeldItem(Menu *menuPtr)
     clearMemory(&actorPtr->badges_equipped, sizeof(actorPtr->badges_equipped));
 }
 
-void BattlesMenu::drawBattleActorStats(BattleWorkUnit *actorPtr) const
+static void drawBattleActorStats(BattleWorkUnit *actorPtr)
 {
     // Failsafe: Make sure current_kind is valid for the selected actor
     const BattleUnitType type = actorPtr->current_kind;
@@ -377,7 +377,7 @@ static void draw(CameraId cameraId, void *user)
     }
 
     // Draw the stats for the selected actor
-    battlesMenuPtr->drawBattleActorStats(actorPtr);
+    drawBattleActorStats(actorPtr);
 
     // Draw the value editor if applicable
     ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();

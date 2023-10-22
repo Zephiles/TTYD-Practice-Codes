@@ -106,7 +106,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void StatsMenu::drawFollowerOut() const
+static void drawFollowerOut()
 {
     // Get the text for the current follower out
     const PartyMembers follower = getCurrentPartnerOrFollowerOut(false);
@@ -153,10 +153,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the current follower out
-    StatsMenu *statsMenuPtr = gStatsMenu;
-    statsMenuPtr->drawFollowerOut();
+    drawFollowerOut();
 
     // Draw the follower selector if applicable
+    StatsMenu *statsMenuPtr = gStatsMenu;
     FollowerSelector *followerSelector = statsMenuPtr->getFollowerSelectorPtr();
     if (followerSelector->shouldDraw())
     {

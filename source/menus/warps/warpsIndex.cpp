@@ -61,7 +61,7 @@ void warpsMenuIndexInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void WarpsMenu::drawSelectIndexWarpInfo() const
+static void drawSelectIndexWarpInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -116,10 +116,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for selecting a map id or entrance id
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    warpsMenuPtr->drawSelectIndexWarpInfo();
+    drawSelectIndexWarpInfo();
 
     // Draw the value editor if applicable
+    WarpsMenu *warpsMenuPtr = gWarpsMenu;
     ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
     if (valueEditorPtr->shouldDraw())
     {

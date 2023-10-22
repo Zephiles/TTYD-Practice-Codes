@@ -68,7 +68,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void CheatsMenu::drawGenerateLagSpikeInfo() const
+static void drawGenerateLagSpikeInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -83,7 +83,8 @@ void CheatsMenu::drawGenerateLagSpikeInfo() const
     float posY = tempPosY;
 
     // Draw the current cheat with its flag
-    drawText(gCheatsMenuInitOptions[this->selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
+    const uint32_t selectedCheat = gCheatsMenu->getSelectedCheat();
+    drawText(gCheatsMenuInitOptions[selectedCheat].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
@@ -128,10 +129,10 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Generate Lag Spike cheat
-    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
-    cheatsMenuPtr->drawGenerateLagSpikeInfo();
+    drawGenerateLagSpikeInfo();
 
     // Draw the button combo editor if applicable
+    CheatsMenu *cheatsMenuPtr = gCheatsMenu;
     ButtonComboEditor *buttonComboEditorPtr = cheatsMenuPtr->getButtonComboEditorPtr();
     if (buttonComboEditorPtr->shouldDraw())
     {

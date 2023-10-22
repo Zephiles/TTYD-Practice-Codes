@@ -65,10 +65,6 @@ class BattlesMenu
     uint32_t getCurrentActorIndex() const { return this->currentActorIndex; }
     void setCurrentActorIndex(uint32_t index) { this->currentActorIndex = static_cast<uint8_t>(index); }
 
-    void drawBattlesActors() const;
-    void drawBattleActorStats(BattleWorkUnit *actorPtr) const;
-    void drawBattleActorStatuses(BattleWorkUnit *actorPtr) const;
-
    private:
     ValueEditor valueEditor;
     Menu *battlesMenu; // Backup of gMenu when the Battles menu was initially opened

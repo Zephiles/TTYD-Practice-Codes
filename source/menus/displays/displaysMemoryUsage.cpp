@@ -62,7 +62,7 @@ void displaysMenuMemoryUsageInit(Menu *menuPtr)
     enterNextMenu(&gFuncs, totalOptions);
 }
 
-void DisplaysMenu::drawMemoryUsageInfo() const
+static void drawMemoryUsageInfo()
 {
     // Get the text position for the top-left of the window
     float tempPosX;
@@ -106,8 +106,7 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the Memory Usage display
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    displaysMenuPtr->drawMemoryUsageInfo();
+    drawMemoryUsageInfo();
 }
 
 static void selectedOptionToggleFlag(Menu *menuPtr)

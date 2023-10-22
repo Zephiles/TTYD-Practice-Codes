@@ -83,11 +83,6 @@ class MemoryMenu
     void memoryWatchFlagSetControls(MenuButtonInput button);
     void memoryWatchChangeAddressFlagSetControls(MenuButtonInput button);
 
-    void drawMemoryWatchMenuInfo() const;
-    void drawMemoryWatchModifyInfo() const;
-    void drawMemoryWatchChangeAddressInfo() const;
-    void drawMemoryEditorMenuInfo() const;
-
    private:
     ValueEditor valueEditor;              // Memory Watches - Modify menu, Change Address menu
     NameEditor nameEditor;                // Memory Watches - Modify menu

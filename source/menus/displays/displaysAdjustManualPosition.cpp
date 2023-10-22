@@ -74,7 +74,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-void DisplaysMenu::drawDisplayManualPositionData() const
+static void drawDisplayManualPositionData()
 {
     // Get the text position for the top-left of the window two lines under the main text
     const uint32_t totalOptions = gMenu->getTotalOptions();
@@ -89,7 +89,7 @@ void DisplaysMenu::drawDisplayManualPositionData() const
     float posY = tempPosY;
 
     // Draw the current display with its flag
-    const uint32_t selectedDisplay = this->selectedDisplay;
+    const uint32_t selectedDisplay = gDisplaysMenu->getSelectedDisplay();
     drawText(gDisplaysMenuInitOptions[selectedDisplay].name, posX, posY, scale, getColorWhite(0xFF));
 
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
@@ -132,17 +132,17 @@ void DisplaysMenu::drawDisplayManualPositionData() const
 
 static void draw(CameraId cameraId, void *user)
 {
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
     if (!gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN))
     {
         // Draw the main window and text
         basicMenuLayoutDraw(cameraId, user);
 
         // Draw the info for the display's manual position data
-        displaysMenuPtr->drawDisplayManualPositionData();
+        drawDisplayManualPositionData();
     }
 
     // Draw the position editor if applicable
+    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
     PositionEditor *positionEditorPtr = displaysMenuPtr->getPositionEditorPtr();
     if (positionEditorPtr->shouldDraw())
     {
