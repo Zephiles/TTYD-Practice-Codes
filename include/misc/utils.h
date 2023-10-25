@@ -6,6 +6,8 @@
 #include "ttyd/party.h"
 #include "ttyd/item_data.h"
 #include "ttyd/dispdrv.h"
+#include "ttyd/mario_party.h"
+#include "ttyd/mario_pouch.h"
 
 #include <cstdint>
 
@@ -35,18 +37,11 @@ bool systemLevelIsZero();
 void setSystemLevel(int32_t level);
 float intToFloat(int32_t value);
 int32_t floatToInt(float value);
-void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues);
 uint32_t ptrIsValid(void *ptr);
-PartyEntry *getPartnerPtr();
-PartyEntry *getFollowerPtr();
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner);
-void removePartnerFromOverworld();
-void removeFollowerFromOverworld();
 PartySlotId spawnPartnerOrFollower(PartyMembers id);
 PartySlotId spawnFailsafePartnerOrFollower(bool shouldSpawnPartner);
-void recheckJumpAndHammerLevels();
 void recheckBattleUpgrades(ItemId item);
-bool checkIfBadgeEquipped(ItemId badge);
 void resetPauseMenuImportantItems();
 void resetPauseMenuPartners();
 void drawOnDebugLayer(DispCallback func, float order);
@@ -59,6 +54,37 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size);
 // Functions for calling fpclassify on floats/doubles and checking if they are either FP_ZERO or FP_NORMAL
 bool floatCanBeWorkedWith(float value);
 bool doubleCanBeWorkedWith(double value);
+
+inline PartyEntry *getPartnerPtr()
+{
+    return partyGetPtr(marioGetPartyId());
+}
+
+inline PartyEntry *getFollowerPtr()
+{
+    return partyGetPtr(marioGetExtraPartyId());
+}
+
+inline void removePartnerFromOverworld()
+{
+    partyKill2(marioGetPartyId());
+}
+
+inline void removeFollowerFromOverworld()
+{
+    partyKill2(marioGetExtraPartyId());
+}
+
+inline void recheckJumpAndHammerLevels()
+{
+    pouchGetJumpLv();
+    pouchGetHammerLv();
+}
+
+inline bool checkIfBadgeEquipped(ItemId badge)
+{
+    return pouchEquipCheckBadge(badge) > 0;
+}
 
 template<typename Ptr>
 uint32_t getOffset(Ptr ptr, uint32_t alignment)

@@ -164,11 +164,11 @@ void init()
 
     // Initialize text stuff early
     fontmgrTexSetup();
-    applyAssemblyPatch(fontmgrTexSetup, 0x4E800020); // blr
+    applyAssemblyPatch(fontmgrTexSetup, 0x4E800020); // blr; prevent fontmgrTexSetup from running again
 
     // Initialize window stuff early
     windowTexSetup();
-    applyAssemblyPatch(windowTexSetup, 0x4E800020); // blr
+    applyAssemblyPatch(windowTexSetup, 0x4E800020); // blr; prevent windowTexSetup from running again
 }
 
 void exit() {}

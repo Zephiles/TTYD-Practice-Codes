@@ -328,7 +328,7 @@ Cheats::Cheats()
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, PadInput::PAD_Y | PadInput::PAD_Z);
 }
 
-uint32_t allowRunningFromBattles(void *ptr)
+uint32_t cAllowRunningFromBattles(void *ptr)
 {
     if (gCheats->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RUN_FROM_BATTLES))
     {
@@ -339,7 +339,7 @@ uint32_t allowRunningFromBattles(void *ptr)
     return *reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(ptr) + 0x4);
 }
 
-int32_t forceNpcItemDrop(void *ptr)
+int32_t cForceNpcItemDrop(void *ptr)
 {
     Cheats *cheatsPtr = gCheats;
 
@@ -351,7 +351,7 @@ int32_t forceNpcItemDrop(void *ptr)
     return *reinterpret_cast<int32_t *>(reinterpret_cast<uint32_t>(ptr) + 0x23C);
 }
 
-void *fallThroughMostObjects(void *ptr)
+void *cFallThroughMostObjects(void *ptr)
 {
     Cheats *cheatsPtr = gCheats;
 
@@ -459,7 +459,7 @@ static void walkThroughMostObjects(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
-const char *replaceJumpFallAnim(char *jumpFallString)
+const char *cReplaceJumpFallAnim(char *jumpFallString)
 {
     Cheats *cheatsPtr = gCheats;
     if (strncmp(jumpFallString, "M_J_", 4) == 0)

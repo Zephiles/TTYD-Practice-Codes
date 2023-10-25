@@ -4,7 +4,7 @@
 .global asmCrashScreenDecrementYPosBranchBack
 
 asmCrashScreenDecrementYPosStart:
-bl crashScreenDecrementYPos
+bl cCrashScreenDecrementYPos
 mr %r25,%r3 # posY
 
 asmCrashScreenDecrementYPosBranchBack:

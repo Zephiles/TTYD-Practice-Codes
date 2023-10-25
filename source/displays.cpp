@@ -175,61 +175,26 @@ bool Displays::toggleEnabledFlag(uint32_t enabledFlag)
 void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
 {
     // Only one trick display should be drawn at a time, so handle disabling other flags if a trick display was just enabled
+    // Make sure the enabled flag is for one of the tricks
     switch (enabledFlag)
     {
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
-        {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-            break;
-        }
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
-        {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-            break;
-        }
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
-        {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-            break;
-        }
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
-        {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-            break;
-        }
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
-        {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-            break;
-        }
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
         {
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            break;
+            // Disable all of the trick display flags
+            for (uint32_t i = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP;
+                 i <= DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP;
+                 i++)
+            {
+                this->clearEnabledFlag(i);
+            }
+
+            // Enable the current trick display flag
+            this->setEnabledFlag(enabledFlag);
         }
         default:
         {
@@ -3185,7 +3150,7 @@ static void drawBridgeSkip(CameraId cameraId, void *user)
 }
 
 #ifdef TTYD_EU
-void *jumpOnWater(void *ptr)
+void *cJumpOnWater(void *ptr)
 {
     // Allow jumping on water if the Bridge Skip display is enabled
     if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP))
@@ -3577,7 +3542,7 @@ static void handleAnimPoseMainError(Displays *displaysPtr)
     }
 }
 
-bool disableDPadOptionsDisplay(uint32_t unkVar)
+bool cDisableDPadOptionsDisplay(uint32_t unkVar)
 {
     if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_DPAD_OPTIONS))
     {

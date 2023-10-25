@@ -5,7 +5,7 @@
 
 asmJumpOnWaterStart:
 # r3 already contains ptr
-bl jumpOnWater
+bl cJumpOnWater
 
 # Restore the overwritten instruction
 cmplwi %r3,0

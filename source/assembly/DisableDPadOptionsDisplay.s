@@ -8,7 +8,7 @@ stw %r31,0xC(%sp)
 mr %r31,%r4
 
 mr %r3,%r0 # unkVar
-bl disableDPadOptionsDisplay
+bl cDisableDPadOptionsDisplay
 
 # Check the returned bool
 cmpwi %r3,0 # False

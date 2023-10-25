@@ -68,6 +68,7 @@ enum DisplaysEnabledFlag
 
     // All of the flags for the trick displays need to be next to each other in order to work correctly
     // The code assumes that YOSHI_SKIP is first
+    // The code assumes that BLIMP_TICKET_SKIP is last
     DISPLAYS_ENABLED_FLAG_YOSHI_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL,

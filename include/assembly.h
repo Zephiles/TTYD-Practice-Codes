@@ -52,27 +52,27 @@ extern "C"
     PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner);
 
 #ifdef TTYD_JP
-    int32_t crashScreenDecrementYPos();
+    int32_t cCrashScreenDecrementYPos();
 #endif
 
-    void preventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeAddress, int32_t selectedOption);
+    void cPreventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeAddress, int32_t selectedOption);
 
-    bool displayMegaBadgesInBattleMenu(bool checkJumpBadge, uint32_t bitfield);
+    bool cDisplayMegaBadgesInBattleMenu(bool checkJumpBadge, uint32_t bitfield);
 
     bool cFontDrawMessageMtxHandleCommand(const char *command, const char *commandValueString);
 
-    uint32_t allowRunningFromBattles(void *ptr);
+    uint32_t cAllowRunningFromBattles(void *ptr);
 
-    int32_t forceNpcItemDrop(void *ptr);
+    int32_t cForceNpcItemDrop(void *ptr);
 
-    void *fallThroughMostObjects(void *ptr);
+    void *cFallThroughMostObjects(void *ptr);
 
-    const char *replaceJumpFallAnim(char *jumpFallString);
+    const char *cReplaceJumpFallAnim(char *jumpFallString);
 
-    bool disableDPadOptionsDisplay(uint32_t unkVar);
+    bool cDisableDPadOptionsDisplay(uint32_t unkVar);
 
 #ifdef TTYD_EU
-    void *jumpOnWater(void *ptr);
+    void *cJumpOnWater(void *ptr);
 #endif
 
     // Misc assembly functions

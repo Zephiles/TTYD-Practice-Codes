@@ -11,7 +11,7 @@ stw %r4,0x8(%sp)
 
 li %r3,0 # False
 mr %r4,%r0 # bitfield
-bl displayMegaBadgesInBattleMenu
+bl cDisplayMegaBadgesInBattleMenu
 
 # Check the returned bool
 cmpwi %r3,0 # False

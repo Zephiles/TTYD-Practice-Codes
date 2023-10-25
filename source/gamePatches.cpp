@@ -60,7 +60,7 @@ PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner
     return partyGetPtr(spawnFailsafePartnerOrFollower(shouldSpawnPartner));
 }
 
-void preventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeAddress, int32_t selectedOption)
+void cPreventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeAddress, int32_t selectedOption)
 {
     enum DiaryTextboxOption
     {
@@ -91,7 +91,7 @@ void preventDiaryTextboxOptionSelection(const char *currentText, int32_t *storeA
     *storeAddress = newOption;
 }
 
-bool displayMegaBadgesInBattleMenu(bool checkJumpBadge, uint32_t bitfield)
+bool cDisplayMegaBadgesInBattleMenu(bool checkJumpBadge, uint32_t bitfield)
 {
     if (checkJumpBadge)
     {
@@ -140,7 +140,7 @@ bool cFontDrawMessageMtxHandleCommand(const char *command, const char *commandVa
 }
 
 #ifdef TTYD_JP
-int32_t crashScreenDecrementYPos()
+int32_t cCrashScreenDecrementYPos()
 {
     static int32_t decrementCount = 0;
     int32_t tempDecrementCount = decrementCount;
@@ -213,9 +213,7 @@ const char *getCustomMessage(const char *key)
 int32_t pauseMenuPreventUnpause(void *pauseMenuPtr)
 {
     // Prevent unpausing if L + Start is being held
-    constexpr uint32_t openMenuCombo = PadInput::PAD_L | PadInput::PAD_START;
-
-    if (checkButtonComboEveryFrame(openMenuCombo))
+    if (checkButtonComboEveryFrame(OPEN_CLOSE_MENU_BUTTON_COMBO))
     {
         // Prevent being able to close the menu if L + Start is being held
         return 0;

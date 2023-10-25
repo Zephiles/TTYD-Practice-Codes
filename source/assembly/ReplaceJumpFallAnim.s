@@ -8,7 +8,7 @@ stw %r31,0xC(%sp)
 mr %r31,%r0
 
 mr %r3,%r25 # jumpFallString
-bl replaceJumpFallAnim
+bl cReplaceJumpFallAnim
 mr %r4,%r3
 
 mr %r0,%r31

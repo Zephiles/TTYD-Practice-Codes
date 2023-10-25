@@ -6,7 +6,7 @@ mflr %r0
 stw %r0,0x14(%sp)
 
 # r3 already contains ptr
-bl fallThroughMostObjects
+bl cFallThroughMostObjects
 
 # Restore the overwritten instruction
 mr. %r24,%r3

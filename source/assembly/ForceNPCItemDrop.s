@@ -8,7 +8,7 @@ stw %r31,0xC(%sp)
 mr %r31,%r4
 
 # r3 already contains ptr
-bl forceNpcItemDrop
+bl cForceNpcItemDrop
 mr %r5,%r3
 
 mr %r4,%r31

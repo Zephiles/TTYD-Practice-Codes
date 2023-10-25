@@ -3,7 +3,7 @@
 
 asmAllowRunningFromBattlesStart:
 # r3 already contains ptr
-bl allowRunningFromBattles
+bl cAllowRunningFromBattles
 mr %r0,%r3
 
 asmAllowRunningFromBattlesBranchBack:

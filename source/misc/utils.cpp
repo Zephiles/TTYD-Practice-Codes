@@ -12,7 +12,6 @@
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/party.h"
 #include "ttyd/mario_party.h"
-#include "ttyd/mario_pouch.h"
 #include "ttyd/mario.h"
 #include "ttyd/item_data.h"
 #include "ttyd/win_main.h"
@@ -186,14 +185,6 @@ __attribute__((noinline)) int32_t floatToInt(float value)
     return static_cast<int32_t>(value);
 }
 
-void intToFloatArray(int32_t *values, float *valuesOut, int32_t numValues)
-{
-    for (int32_t i = 0; i < numValues; i++)
-    {
-        valuesOut[i] = intToFloat(values[i]);
-    }
-}
-
 uint32_t ptrIsValid(void *ptr)
 {
     const uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
@@ -211,16 +202,6 @@ uint32_t ptrIsValid(void *ptr)
     }
 
     return PointerVerificationType::PTR_INVALID;
-}
-
-PartyEntry *getPartnerPtr()
-{
-    return partyGetPtr(marioGetPartyId());
-}
-
-PartyEntry *getFollowerPtr()
-{
-    return partyGetPtr(marioGetExtraPartyId());
 }
 
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
@@ -246,16 +227,6 @@ PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
     }
 
     return currentPartnerOut;
-}
-
-void removePartnerFromOverworld()
-{
-    partyKill2(marioGetPartyId());
-}
-
-void removeFollowerFromOverworld()
-{
-    partyKill2(marioGetExtraPartyId());
 }
 
 PartySlotId spawnPartnerOrFollower(PartyMembers id)
@@ -338,12 +309,6 @@ PartySlotId spawnFailsafePartnerOrFollower(bool shouldSpawnPartner)
     }
 }
 
-void recheckJumpAndHammerLevels()
-{
-    pouchGetJumpLv();
-    pouchGetHammerLv();
-}
-
 void recheckBattleUpgrades(ItemId item)
 {
     // Only run while in a battle
@@ -371,11 +336,6 @@ void recheckBattleUpgrades(ItemId item)
             break;
         }
     }
-}
-
-bool checkIfBadgeEquipped(ItemId badge)
-{
-    return pouchEquipCheckBadge(badge) > 0;
 }
 
 void resetPauseMenuImportantItems()
