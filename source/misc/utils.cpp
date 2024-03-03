@@ -1,6 +1,5 @@
 #include "mod.h"
 #include "gc/pad.h"
-#include "gc/DEMOPad.h"
 #include "gc/OSModule.h"
 #include "gc/types.h"
 #include "gc/os.h"
@@ -46,18 +45,6 @@ bool checkButtonComboEveryFrame(uint32_t combo)
     return (keyGetButton(PadId::CONTROLLER_ONE) & combo) == combo;
 }
 
-bool checkButtonComboDemo(uint32_t combo)
-{
-    const DEMOPadStatus *demoPadPtr = &DemoPad[static_cast<uint32_t>(PadId::CONTROLLER_ONE)];
-
-    if ((demoPadPtr->buttons & combo) != combo)
-    {
-        return false;
-    }
-
-    return demoPadPtr->buttonsDown & combo;
-}
-
 uint32_t getSequencePosition()
 {
     return swByteGet(0);
@@ -76,11 +63,6 @@ bool compareStringToNextMap(const char *str)
 void setSeqMapChange(const char *map, const char *bero)
 {
     seqSetSeq(SeqIndex::kMapChange, map, bero);
-}
-
-void *clearMemory(void *ptr, uint32_t size)
-{
-    return memset(ptr, 0, size);
 }
 
 bool checkForSpecificSeq(SeqIndex wantedSeq)
@@ -183,25 +165,6 @@ __attribute__((noinline)) float intToFloat(int32_t value)
 __attribute__((noinline)) int32_t floatToInt(float value)
 {
     return static_cast<int32_t>(value);
-}
-
-uint32_t ptrIsValid(void *ptr)
-{
-    const uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
-
-    // Cached memory
-    if ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000))
-    {
-        return PointerVerificationType::PTR_CACHED;
-    }
-
-    // Uncached memory
-    if ((ptrRaw >= 0xC0000000) && (ptrRaw < 0xC1800000))
-    {
-        return PointerVerificationType::PTR_UNCACHED;
-    }
-
-    return PointerVerificationType::PTR_INVALID;
 }
 
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
@@ -338,7 +301,7 @@ void recheckBattleUpgrades(ItemId item)
     }
 }
 
-void resetPauseMenuImportantItems()
+void resetPauseMenuItemsMenu()
 {
     // Only run if the pause menu is currently open
     if ((marioStGetSystemLevel() & 15) != 15)
@@ -362,7 +325,7 @@ void resetPauseMenuImportantItems()
     *subMenu = importantItemsSubMenu;
 }
 
-void resetPauseMenuPartners()
+void resetPauseMenuPartnersMenu()
 {
     // Only run if the pause menu is currently open
     if ((marioStGetSystemLevel() & 15) != 15)
@@ -499,12 +462,6 @@ void getStickAngleString(char *stringOut, uint32_t stringSize)
     snprintf(stringOut, stringSize, "%.2f  %" PRId32 "  %" PRId32, stickAngle, stickXYAngles[0], stickXYAngles[1]);
 }
 
-void clear_DC_IC_Cache(void *ptr, uint32_t size)
-{
-    DCFlushRange(ptr, size);
-    ICInvalidateRange(ptr, size);
-}
-
 bool floatCanBeWorkedWith(float value)
 {
     const int32_t ret = std::fpclassify(value);
@@ -515,4 +472,34 @@ bool doubleCanBeWorkedWith(double value)
 {
     const int32_t ret = std::fpclassify(value);
     return (ret == FP_ZERO) || (ret == FP_NORMAL);
+}
+
+uint32_t ptrIsValid(void *ptr)
+{
+    const uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
+
+    // Cached memory
+    if ((ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000))
+    {
+        return PointerVerificationType::PTR_CACHED;
+    }
+
+    // Uncached memory
+    if ((ptrRaw >= 0xC0000000) && (ptrRaw < 0xC1800000))
+    {
+        return PointerVerificationType::PTR_UNCACHED;
+    }
+
+    return PointerVerificationType::PTR_INVALID;
+}
+
+void *clearMemory(void *ptr, uint32_t size)
+{
+    return memset(ptr, 0, size);
+}
+
+void clear_DC_IC_Cache(void *ptr, uint32_t size)
+{
+    DCFlushRange(ptr, size);
+    ICInvalidateRange(ptr, size);
 }

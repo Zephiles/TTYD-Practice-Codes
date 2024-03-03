@@ -101,7 +101,7 @@ int32_t card_rename_async(int32_t channel, const char *oldNamePtr, const char *n
 
     // Update the time when the file was last modified
     *reinterpret_cast<uint32_t *>(&currentDirBlockPtr[0x28]) =
-        static_cast<uint32_t>(OSGetTime() / static_cast<int64_t>(OSBusClock >> 2));
+        static_cast<uint32_t>(OSGetTime() / static_cast<OSTime>(OSBusClock >> 2));
 
     // Apply the changes
     ret = __CARDUpdateDir(channel, callback);

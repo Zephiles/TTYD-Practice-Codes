@@ -9,10 +9,10 @@
 #include "memoryEditor.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
+#include "gc/DEMOPad.h"
 #include "gc/pad.h"
 #include "gc/OSInterrupt.h"
 #include "gc/exi.h"
-#include "gc/DEMOPad.h"
 #include "gc/OSTime.h"
 #include "gc/vi.h"
 #include "gc/os.h"
@@ -81,7 +81,15 @@ bool Cheats::checkCheatButtonComboDemo(uint32_t cheatWithCombo) const
         return false;
     }
 
-    return checkButtonComboDemo(this->buttonCombos[cheatWithCombo]);
+    const DEMOPadStatus *demoPadPtr = &DemoPad[static_cast<uint32_t>(PadId::CONTROLLER_ONE)];
+    const uint32_t combo = this->buttonCombos[cheatWithCombo];
+
+    if ((demoPadPtr->buttons & combo) != combo)
+    {
+        return false;
+    }
+
+    return demoPadPtr->buttonsDown & combo;
 }
 
 uint32_t Cheats::getCheatButtonCombo(uint32_t cheatWithCombo)
@@ -1019,7 +1027,7 @@ uint32_t autoMashText(PadId controllerId)
     return PadInput::PAD_B;
 }
 
-static void setOSTime(int64_t time)
+static void setOSTime(OSTime time)
 {
     // Interrupts should be disabled for safety
     const bool enable = OSDisableInterrupts();
@@ -1099,7 +1107,7 @@ void frameAdvance()
     cheatsPtr->setMiscFlag(CheatsMiscFlag::CHEATS_MISC_FLAG_FRAME_ADVANCE_GAME_IS_PAUSED);
 
     // Back up the current OSTime
-    const int64_t currentTime = OSGetTime();
+    const OSTime currentTime = OSGetTime();
 
     // Go to the next frame to avoid button combos from the previous frame from activating
     VIWaitForRetrace();
@@ -1236,12 +1244,10 @@ static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
         generateLagSpikeCheatPtr->setDuration(duration);
     }
 
-    const uint32_t startTick = OSGetTick();
-    const uint32_t durationTick = duration * ((OSBusClock / 4) / 1000);
-
+    const OSTime endingTime = OSGetTime() + static_cast<OSTime>(duration * ((OSBusClock / 4) / 1000));
     while (1)
     {
-        if ((OSGetTick() - startTick) >= durationTick)
+        if (OSGetTime() >= endingTime)
         {
             break;
         }

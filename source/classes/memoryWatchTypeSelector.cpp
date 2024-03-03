@@ -20,6 +20,8 @@ const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES] = {
     "time",
 };
 
+// Global variable for the current memory watch type selector being used, as a non-class helper function must be used for
+// handling the memory watch type that was selected.
 static MemoryWatchTypeSelector *gMemoryWatchTypeSelector = nullptr;
 
 void MemoryWatchTypeSelector::init(const Window *parentWindow)
@@ -44,6 +46,14 @@ void MemoryWatchTypeSelector::stopDrawing()
     this->OptionSelector::stopDrawing();
 }
 
+/**
+ * Callback function for when an option is selected. Calls the `setTypeFunc` variable function from the follower selector, based
+ * on the `gMemoryWatchTypeSelector` global variable.
+ *
+ * @param currentIndex The index of the option that was selected.
+ *
+ * @relatesalso MemoryWatchTypeSelector
+ */
 static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
 {
     // Make sure MemoryWatchTypeSelector is set

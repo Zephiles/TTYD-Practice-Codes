@@ -11,10 +11,12 @@
 #include <cstdio>
 #include <cinttypes>
 
+// Help text for the name editor window.
 static const char *gHelpText =
     "Press Start to set the new text\nPress A to select a character\nPress B to undo/cancel\nPress Y to move backward one "
     "character\nPress X to move forward one character\nPress Z to cancel immediately";
 
+// Characters that can be used to create the new name.
 static const char *gNameEditorCharacterOptions = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/. ";
 
 void NameEditor::init(const Window *parentWindow,
@@ -127,7 +129,7 @@ void NameEditor::init(const Window *parentWindow,
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 20.f);
 
     // Adjust the width to be the same as the parent window
     windowPtr->setWidth(parentWindow->getWidth());

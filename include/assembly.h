@@ -1,6 +1,7 @@
 #ifndef ASSEMBLY_H
 #define ASSEMBLY_H
 
+#include "gc/types.h"
 #include "ttyd/party.h"
 
 #include <cstdint>
@@ -76,7 +77,7 @@ extern "C"
 #endif
 
     // Misc assembly functions
-    void asmSetTime(int64_t time);
+    void asmSetTime(OSTime time);
 }
 
 #endif

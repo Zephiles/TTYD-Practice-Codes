@@ -389,8 +389,8 @@ struct BattleWorkUnitPart
     float unk_078; // some sort of scale
 
     MovementParams movement_params;
-    uint32_t parts_work[16];       // length unknown; at least 3
-    Vec3 hit_base_position;        // ?
+    uint32_t parts_work[16]; // length unknown; at least 3
+    Vec3 hit_base_position;  // ?
     Vec3 hit_offset;
     Vec3 hit_cursor_base_position; // ?
     Vec3 hit_cursor_offset;
@@ -410,7 +410,7 @@ struct BattleWorkUnitPart
     uint32_t unk_204;        // anim-related flags
     float unk_208;
     float anim_motion_speed;
-    void *unk_210;  // some sort of anim-related callback fn
+    void *unk_210; // some sort of anim-related callback fn
     int8_t unk_214;
     int8_t unk_215; // flags related to anim
     int8_t pad_216[2];

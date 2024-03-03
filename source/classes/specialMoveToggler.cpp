@@ -10,8 +10,10 @@
 
 #include <cstdint>
 
+// Help text for the special move toggler window.
 static const char *gHelpText = "Press A to turn on/off\nPress B to cancel";
 
+// Special moves to choose from.
 static const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
     "Sweet Treat",
     "Earth Tremor",
@@ -53,7 +55,7 @@ void SpecialMoveToggler::init(const Window *parentWindow, uint8_t windowAlpha)
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
 
-    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 30.f);
 
     // Increase the height of the window to account for the icon and item texts
     const float spaceUsedByIcons = SPACE_USED_PER_ICON(scale) * (TOTAL_SPECIAL_MOVES_FLOAT - 1.f);

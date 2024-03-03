@@ -40,7 +40,7 @@ void OptionSelector::init(const char *helpText,
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 20.f);
 
     // Get the height used by the options
     const uint32_t totalOptionsPerColumn = intCeil(totalOptions, totalColumns);

@@ -324,7 +324,7 @@ static void drawBattleActorStatuses(BattleWorkUnit *actorPtr)
             const float windowPosX = rootWindowPtr->getPosX();
             const float windowPosY = valuesPosYBase + (lineAdjustment * 1.5f) - (counter * lineDecrement);
             constexpr float windowHeight = lineDecrement + LINE_HEIGHT_ADJUSTMENT_5(scale);
-            const uint32_t windowColor = SPECIAL_WINDOW_COLOR | 0xFF;
+            const uint32_t windowColor = getSpecialWindowColor(0xFF);
 
             windowDispGX_Waku_col(0,
                                   reinterpret_cast<const uint8_t *>(&windowColor),

@@ -18,10 +18,9 @@ const char *gFollowersOptions[TOTAL_FOLLOWERS] = {
     "Flavio",
     "Punio",
     "Frankly",
-    "Gus",
+    "Craw",
 };
 
-// Intended to be used alongside gFollowersOptions
 const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kGoombellaFollower,
     PartyMembers::kKoopsFollower,
@@ -34,9 +33,11 @@ const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kFlavio,
     PartyMembers::kPunio,
     PartyMembers::kFrankly,
-    PartyMembers::kGus,
+    PartyMembers::kCraw,
 };
 
+// Global variable for the current follower selector being used, as a non-class helper function must be used for handling the
+// follower that was selected.
 static FollowerSelector *gFollowerSelector = nullptr;
 
 void FollowerSelector::init(const Window *parentWindow)
@@ -55,6 +56,14 @@ void FollowerSelector::stopDrawing()
     this->OptionSelector::stopDrawing();
 }
 
+/**
+ * Callback function for when an option is selected. Calls the `selectFunc` variable function from the follower selector, based
+ * on the `gFollowerSelector` global variable.
+ *
+ * @param currentIndex The index of the option that was selected.
+ *
+ * @relatesalso FollowerSelector
+ */
 static void followerSelectorSelectedFollower(uint32_t currentIndex)
 {
     // Make sure gFollowerSelector is set

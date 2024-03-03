@@ -33,7 +33,7 @@ enum class PartyMembers : uint8_t
     kFlavio,
     kPunio,
     kFrankly,
-    kGus,
+    kCraw,
     kGoombellaFollower,
     kKoopsFollower,
     kBobberyFollower,

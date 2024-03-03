@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+// Help text for the position editor window.
 static const char *gHelpText =
     "Press/Hold the D-Pad directions\nto adjust the position\n\nHold Y to hide this window\n\nPress A to confirm\n\nPress B to "
     "cancel";
@@ -31,7 +32,7 @@ void PositionEditor::init(const Window *parentWindow, float *posXSource, float *
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 20.f);
 
     // Place the window inside of the parent window
     windowPtr->placeInWindow(parentWindow, WindowAlignment::TOP_CENTER, scale);

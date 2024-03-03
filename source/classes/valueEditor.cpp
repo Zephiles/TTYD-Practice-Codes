@@ -16,12 +16,19 @@
 #include <cinttypes>
 
 // Helper functions
+
 static uint32_t getMaxDigits(uint32_t value, bool handleAsHex);
+
 static uint32_t getMaxDigits(int32_t value, bool handleAsHex);
+
 static uint32_t getMaxDigits(uint64_t value, bool handleAsHex);
+
 static uint32_t getMaxDigits(int64_t value, bool handleAsHex);
+
 // static uint32_t getMaxDigits(float value, bool handleAsHex);
+
 static uint32_t getMaxDigits(float value);
+
 static uint32_t getMaxDigits(double value);
 
 static uint32_t handleAdjustValue(uint32_t value,
@@ -50,6 +57,7 @@ static float handleAdjustValue(float value,
 */
 
 static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
+
 static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment);
 
 // static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment);
@@ -69,6 +77,7 @@ static int32_t doubleToString(char *bufOut,
                               double value);
 
 // Main functions
+
 void ValueEditor::init(const void *valuePtr,
                        const void *minValuePtr,
                        const void *maxValuePtr,
@@ -837,7 +846,7 @@ void ValueEditor::init(const void *valuePtr,
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 20.f);
+    windowPtr->setWidthHeightFromTextAndInit(helpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 20.f);
 
     // Increase the height to account for the value
     constexpr float valueScale = scale + 0.3f;
@@ -1166,6 +1175,15 @@ bool ValueEditor::handleCheckMinMax(const ValueType *valuePtr, bool valueIsPosit
     return false;
 }
 
+/**
+ * Used for the `Battles Stats` menu, in which the values for items that do not normally appear when held by NPCs in battles
+ * will be skipped.
+ *
+ * @param value The current item value.
+ * @param increment Whether the value was incremented or decremented. If `true`, then the value was incremented.
+ *
+ * @returns The updated `value` parameter value.
+ */
 uint32_t cheatsChangeDroppedItemSkipValues(uint32_t value, bool increment)
 {
     // Skip everything after Fresh Juice and before Power Jump
@@ -1187,6 +1205,15 @@ uint32_t cheatsChangeDroppedItemSkipValues(uint32_t value, bool increment)
     return value;
 }
 
+/**
+ * Used for the `Force NPC Item Drop` cheat, in which the values for damaging items that can be thrown from the audience (such
+ * as rocks) will be skipped.
+ *
+ * @param value The current item value.
+ * @param increment Whether the value was incremented or decremented. If `true`, then the value was incremented.
+ *
+ * @returns The updated `value` parameter value.
+ */
 uint32_t battlesChangeHeldItemSkipValues(uint32_t value, bool increment)
 {
     // Skip Trade Off
@@ -2216,6 +2243,15 @@ void ValueEditor::draw()
     }
 }
 
+/**
+ * Gets the amount of digits that are used to represent a `uint32_t` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ */
 static uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
 {
     uint32_t divideAmount;
@@ -2238,6 +2274,17 @@ static uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
     return count;
 }
 
+/**
+ * Gets the amount of digits that are used to represent an `int32_t` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 static uint32_t getMaxDigits(int32_t value, bool handleAsHex)
 {
     int32_t divideAmount;
@@ -2260,6 +2307,17 @@ static uint32_t getMaxDigits(int32_t value, bool handleAsHex)
     return count;
 }
 
+/**
+ * Gets the amount of digits that are used to represent a `uint64_t` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 static uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
 {
     uint32_t divideAmount;
@@ -2282,6 +2340,17 @@ static uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
     return count;
 }
 
+/**
+ * Gets the amount of digits that are used to represent an `int64_t` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 static uint32_t getMaxDigits(int64_t value, bool handleAsHex)
 {
     int32_t divideAmount;
@@ -2304,6 +2373,17 @@ static uint32_t getMaxDigits(int64_t value, bool handleAsHex)
     return count;
 }
 
+/**
+ * Gets the amount of digits that are used to represent a `float` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 /*
 static uint32_t getMaxDigits(float value, bool handleAsHex)
 {
@@ -2347,6 +2427,15 @@ static uint32_t getMaxDigits(float value, bool handleAsHex)
 }
 */
 
+/**
+ * Gets the amount of digits that are used to represent a `float` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 static uint32_t getMaxDigits(float value)
 {
     // For simplicity, convert the value to a string, and then count the characters in it
@@ -2376,6 +2465,15 @@ static uint32_t getMaxDigits(float value)
     return static_cast<uint32_t>(len);
 }
 
+/**
+ * Gets the amount of digits that are used to represent a `double` value in the value editor.
+ *
+ * @param value The value to get the amount of digits for.
+ *
+ * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @overload
+ */
 static uint32_t getMaxDigits(double value)
 {
     // For simplicity, convert the value to a string, and then count the characters in it
@@ -2405,6 +2503,18 @@ static uint32_t getMaxDigits(double value)
     return static_cast<uint32_t>(len);
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `uint32_t` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ */
 static uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
@@ -2441,6 +2551,20 @@ static uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `int32_t` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 static int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
@@ -2480,6 +2604,20 @@ static int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t 
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `uint64_t` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 static uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
@@ -2516,6 +2654,20 @@ static uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `int64_t` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 static int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
     // Get the amount to increment/decrement by
@@ -2555,6 +2707,22 @@ static int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t 
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `float` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param valueIsSigned Whether the value is considered signed or unsigned. If `true`, then the value is considered to be
+ * signed.
+ * @param handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 /*
 static float handleAdjustValue(float value,
                                uint32_t currentIndex,
@@ -2611,6 +2779,20 @@ static float handleAdjustValue(float value,
 }
 */
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `float` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param valueIsSigned Whether the value is considered signed or unsigned. If `true`, then the value is considered to be
+ * signed.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
     constexpr float base = 10.f;
@@ -2643,6 +2825,20 @@ static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t tota
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `double` format.
+ *
+ * @param value The current value to be adjusted.
+ * @param currentIndex The index for the digit of the current value being adjusted.
+ * @param totalDigits The total amount of digits being used to represent the value.
+ * @param valueIsSigned Whether the value is considered signed or unsigned. If `true`, then the value is considered to be
+ * signed.
+ * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @returns The updated `value` parameter value.
+ *
+ * @overload
+ */
 static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
 {
     constexpr double base = 10.0;
@@ -2675,6 +2871,15 @@ static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t to
     return value += adjustmentValue;
 }
 
+/**
+ * Handles adjusting the current value in the value editor, assuming the value is in `double` format.
+ *
+ * @param[out] valueString Pointer to the current value to be adjusted in string format.
+ * @param[in] currentIndex The index for the digit of the current value being adjusted.
+ * @param[in] handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
+ * handled as a hexadecimal value.
+ * @param[in] increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ */
 /*
 static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment)
 {
@@ -2785,6 +2990,19 @@ static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bo
 }
 */
 
+/**
+ * Handles converting a `float` value to a string.
+ *
+ * @param[out] bufOut Pointer to where the string should be written to.
+ * @param[in] bufSize The total size of the `bufOut` parameter.
+ * @param[out] formatOut Pointer to where the format string used to convert the `float` value to a string should be written to.
+ * @param[in] formatSize The total size of the `formatOut` parameter.
+ * @param[in] totalLength The total amount of digits in the value, limited to `MAX_DOUBLE_LENGTH`.
+ * @param[in] value The value being converted to a string.
+ *
+ * @returns The value returned from `snprintf` creating the string to be written to `bufOut`. If the `value` parameter is not
+ * one that can be edited easily (specified by `floatCanBeWorkedWith`), then `-1` will be returned instead.
+ */
 static int32_t floatToString(char *bufOut,
                              uint32_t bufSize,
                              char *formatOut,
@@ -2811,6 +3029,19 @@ static int32_t floatToString(char *bufOut,
     return snprintf(bufOut, bufSize, formatOut, value);
 }
 
+/**
+ * Handles converting a `double` value to a string.
+ *
+ * @param[out] bufOut Pointer to where the string should be written to.
+ * @param[in] bufSize The total size of the `bufOut` parameter.
+ * @param[out] formatOut Pointer to where the format string used to convert the `double` value to a string should be written to.
+ * @param[in] formatSize The total size of the `formatOut` parameter.
+ * @param[in] totalLength The total amount of digits in the value, limited to `MAX_DOUBLE_LENGTH`.
+ * @param[in] value The value being converted to a string.
+ *
+ * @returns The value returned from `snprintf` creating the string to be written to `bufOut`. If the `value` parameter is not
+ * one that can be edited easily (specified by `doubleCanBeWorkedWith`), then `-1` will be returned instead.
+ */
 static int32_t doubleToString(char *bufOut,
                               uint32_t bufSize,
                               char *formatOut,

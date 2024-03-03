@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cinttypes>
 
+// Help text for the button combo editor window.
 static const char *gHelpText =
     "Hold the button(s) for 3 seconds to set the\nnew button combo\n\nPress B three times in succession to cancel";
 
@@ -32,7 +33,7 @@ void ButtonComboEditor::init(const Window *parentWindow, uint8_t windowAlpha)
     // Initialize it based on the help text
     Window *windowPtr = &this->window;
     constexpr float scale = MENU_SCALE;
-    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, SPECIAL_WINDOW_COLOR | windowAlpha, 20.f, 30.f);
+    windowPtr->setWidthHeightFromTextAndInit(gHelpText, scale, getSpecialWindowColor(windowAlpha), 20.f, 30.f);
 
     // Increase the height of the window to account for the rest of the text, which is assumed to use six more lines
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;

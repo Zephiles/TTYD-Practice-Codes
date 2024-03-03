@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+// Help text for the item icon selector window.
 static const char *gOptions = "Press A to confirm\nPress B to cancel";
 
 void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, ItemId endingItem)
@@ -30,7 +31,7 @@ void ItemIconSelector::init(const Window *parentWindow, ItemId startingItem, Ite
     // Initialize the main window
     Window *windowPtr = &this->window;
     windowPtr->copyWindow(parentWindow);
-    windowPtr->setColor(SPECIAL_WINDOW_COLOR | windowAlpha);
+    windowPtr->setColor(getSpecialWindowColor(windowAlpha));
 
     constexpr float scale = MENU_SCALE;
     const float textHeight = getTextHeight(gOptions, scale);

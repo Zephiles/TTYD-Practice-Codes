@@ -248,7 +248,7 @@ static void changeYoshiColor(uint32_t selectedColorId)
 
     // The Partners menu in the pause menu will not visually update when Yoshi's color is changed, so manually reset the
     // Partners menu
-    resetPauseMenuPartners();
+    resetPauseMenuPartnersMenu();
 
     // Close the color selector
     cancelChangeYoshiColor();
@@ -419,7 +419,7 @@ static void selectedPartnerControls(Menu *menuPtr, MenuButtonInput button)
 
                         // The Partners menu in the pause menu will not visually update when a partner is added/removed, so
                         // manually reset the Partners menu
-                        resetPauseMenuPartners();
+                        resetPauseMenuPartnersMenu();
                         break;
                     }
                     case StatsPartnersCurrentPartnerOption::STATS_PARTNER_BRING_OUT_OR_REMOVE:

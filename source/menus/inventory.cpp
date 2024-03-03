@@ -101,7 +101,7 @@ static void addItemFromId(const ValueType *valuePtr)
 
     // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // If the inventory is now full, then stop adding items
     if (inventoryMenuPtr->inventoryIsFull())
@@ -167,7 +167,7 @@ static void addItemFromIcon(ItemId item)
 
     // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // If the inventory is now full, then stop adding items
     if (inventoryMenuPtr->inventoryIsFull())
@@ -252,7 +252,7 @@ static void selectedOptionDuplicate(Menu *menuPtr)
 
     // The Important Items in the pause menu will not visually update when an important item is added, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // If the inventory is now full, then stop duplicating items
     if (inventoryMenuPtr->inventoryIsFull())
@@ -420,7 +420,7 @@ static void changeItemFromId(const ValueType *valuePtr)
 
     // The Important Items in the pause menu will not visually update when an important item is changed, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // Close the value editor
     cancelAddItemFromId();
@@ -502,7 +502,7 @@ static void changeItemFromIcon(ItemId item)
 
     // The Important Items in the pause menu will not visually update when an important item is changed, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // Close the item icon selector
     cancelAddItemFromIcon();
@@ -621,7 +621,7 @@ static void selectedOptionDelete(Menu *menuPtr)
 
     // The Important Items in the pause menu will not visually update when an important item is removed, so manually reset the
     // Important Items menu
-    resetPauseMenuImportantItems();
+    resetPauseMenuItemsMenu();
 
     // If the inventory is now empty, then stop deleting items
     if (totalItems == 0)

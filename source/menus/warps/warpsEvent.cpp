@@ -694,9 +694,9 @@ static const char *getPartyName(PartyMembers id)
         {
             return "Frankly";
         }
-        case PartyMembers::kGus:
+        case PartyMembers::kCraw:
         {
-            return "Gus";
+            return "Craw";
         }
         case PartyMembers::kGoombellaFollower:
         {
