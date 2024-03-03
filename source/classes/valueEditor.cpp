@@ -2251,6 +2251,8 @@ void ValueEditor::draw()
  * handled as a hexadecimal value.
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @relatesalso ValueEditor
  */
 static uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
 {
@@ -2282,6 +2284,8 @@ static uint32_t getMaxDigits(uint32_t value, bool handleAsHex)
  * handled as a hexadecimal value.
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2316,6 +2320,8 @@ static uint32_t getMaxDigits(int32_t value, bool handleAsHex)
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
@@ -2349,6 +2355,8 @@ static uint32_t getMaxDigits(uint64_t value, bool handleAsHex)
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static uint32_t getMaxDigits(int64_t value, bool handleAsHex)
@@ -2381,6 +2389,8 @@ static uint32_t getMaxDigits(int64_t value, bool handleAsHex)
  * handled as a hexadecimal value.
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2434,6 +2444,8 @@ static uint32_t getMaxDigits(float value, bool handleAsHex)
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static uint32_t getMaxDigits(float value)
@@ -2471,6 +2483,8 @@ static uint32_t getMaxDigits(float value)
  * @param value The value to get the amount of digits for.
  *
  * @returns The amount of digits that are used to represent the value of the `value` parameter.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2514,6 +2528,8 @@ static uint32_t getMaxDigits(double value)
  * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
  *
  * @returns The updated `value` parameter value.
+ *
+ * @relatesalso ValueEditor
  */
 static uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
 {
@@ -2562,6 +2578,8 @@ static uint32_t handleAdjustValue(uint32_t value, uint32_t currentIndex, uint32_
  * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
  *
  * @returns The updated `value` parameter value.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2616,6 +2634,8 @@ static int32_t handleAdjustValue(int32_t value, uint32_t currentIndex, uint32_t 
  *
  * @returns The updated `value` parameter value.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_t totalDigits, bool handleAsHex, bool increment)
@@ -2665,6 +2685,8 @@ static uint64_t handleAdjustValue(uint64_t value, uint32_t currentIndex, uint32_
  * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
  *
  * @returns The updated `value` parameter value.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2720,6 +2742,8 @@ static int64_t handleAdjustValue(int64_t value, uint32_t currentIndex, uint32_t 
  * @param increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
  *
  * @returns The updated `value` parameter value.
+ *
+ * @relatesalso ValueEditor
  *
  * @overload
  */
@@ -2791,6 +2815,8 @@ static float handleAdjustValue(float value,
  *
  * @returns The updated `value` parameter value.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
@@ -2837,6 +2863,8 @@ static float handleAdjustValue(float value, uint32_t currentIndex, uint32_t tota
  *
  * @returns The updated `value` parameter value.
  *
+ * @relatesalso ValueEditor
+ *
  * @overload
  */
 static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t totalDigits, bool valueIsSigned, bool increment)
@@ -2879,6 +2907,8 @@ static double handleAdjustValue(double value, uint32_t currentIndex, uint32_t to
  * @param[in] handleAsHex Whether the value is being handled as a hexadecimal value or not. If `true`, then the value is being
  * handled as a hexadecimal value.
  * @param[in] increment Whether the value should be incremented or decremented. If `true`, then the value should be incremented.
+ *
+ * @relatesalso ValueEditor
  */
 /*
 static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bool handleAsHex, bool increment)
@@ -3002,6 +3032,8 @@ static void handleAdjustValueDouble(char *valueString, uint32_t currentIndex, bo
  *
  * @returns The value returned from `snprintf` creating the string to be written to `bufOut`. If the `value` parameter is not
  * one that can be edited easily (specified by `floatCanBeWorkedWith`), then `-1` will be returned instead.
+ *
+ * @relatesalso ValueEditor
  */
 static int32_t floatToString(char *bufOut,
                              uint32_t bufSize,
@@ -3041,6 +3073,8 @@ static int32_t floatToString(char *bufOut,
  *
  * @returns The value returned from `snprintf` creating the string to be written to `bufOut`. If the `value` parameter is not
  * one that can be edited easily (specified by `doubleCanBeWorkedWith`), then `-1` will be returned instead.
+ *
+ * @relatesalso ValueEditor
  */
 static int32_t doubleToString(char *bufOut,
                               uint32_t bufSize,
