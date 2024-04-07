@@ -727,8 +727,10 @@ static void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
             speedUpMarioPtr->setChangedState(SpeedUpMarioChangedState::SPEED_UP_MARIO_CHANGED_STATE_NO_CHANGES);
             playerPtr->unk_184 = current_unk_184;
             playerPtr->unk_188 = current_unk_188;
-            return;
         }
+
+        // Don't allow any other code from this function to run
+        return;
     }
 
     constexpr float speedValueToSet = 16.f;
