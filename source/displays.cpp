@@ -2817,7 +2817,18 @@ static void handlePalaceSkip(Displays *displaysPtr)
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED);
     }
 
-    if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP))
+    // Get the button combo enum for the current Palace Skip being used
+    uint32_t buttonComboEnum;
+    if (enabledFlag == DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP)
+    {
+        buttonComboEnum = DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP;
+    }
+    else
+    {
+        buttonComboEnum = DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP_MINIMAL;
+    }
+
+    if (displaysPtr->checkDisplayButtonComboEveryFrame(buttonComboEnum))
     {
         // Hold the button combo to increment the reset counter
         uint32_t counter = palaceSkipPtr->getCounter();
