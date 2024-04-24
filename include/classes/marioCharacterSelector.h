@@ -12,10 +12,10 @@
 // Ids for each possible character to select from.
 enum MarioCharacterSelectorIndex
 {
-    MARIO_CHARACTER_SELECTOR_ID_MARIO = 0, // Mario
-    MARIO_CHARACTER_SELECTOR_ID_BOWSER,    // Bowser
-    MARIO_CHARACTER_SELECTOR_ID_PEACH,     // Peach
-    MARIO_CHARACTER_SELECTOR_ID_X_NAUT,    // X-Naut
+    MARIO_CHARACTER_SELECTOR_INDEX_MARIO = 0, // Mario
+    MARIO_CHARACTER_SELECTOR_INDEX_BOWSER,    // Bowser
+    MARIO_CHARACTER_SELECTOR_INDEX_PEACH,     // Peach
+    MARIO_CHARACTER_SELECTOR_INDEX_X_NAUT,    // X-Naut
 };
 
 /**

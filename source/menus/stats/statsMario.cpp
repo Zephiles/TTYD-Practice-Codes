@@ -594,23 +594,23 @@ static void changeMarioCharacter(uint32_t selectedCharacterIndex)
     // Transform Mario into the selected character
     switch (selectedCharacterIndex)
     {
-        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_MARIO:
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_MARIO:
         default:
         {
             marioSetCharMode(MarioCharacters::kMario);
             break;
         }
-        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_BOWSER:
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_BOWSER:
         {
             marioSetCharMode(MarioCharacters::kBowser);
             break;
         }
-        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_PEACH:
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_PEACH:
         {
             peachTransformOff();
             break;
         }
-        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_X_NAUT:
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_X_NAUT:
         {
             peachTransformOn();
             break;

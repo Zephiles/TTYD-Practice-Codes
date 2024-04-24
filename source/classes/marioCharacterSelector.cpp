@@ -21,24 +21,24 @@ int32_t marioCharacterIdToIndex()
     {
         case MarioCharacters::kMario:
         {
-            return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_MARIO;
+            return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_MARIO;
         }
         case MarioCharacters::kPeach:
         {
             if (!peachInXNautForm(marioPtr))
             {
                 // Currently Peach
-                return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_PEACH;
+                return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_PEACH;
             }
             else
             {
                 // Currently X-Naut
-                return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_X_NAUT;
+                return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_X_NAUT;
             }
         }
         case MarioCharacters::kBowser:
         {
-            return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_BOWSER;
+            return MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_INDEX_BOWSER;
         }
         default:
         {
