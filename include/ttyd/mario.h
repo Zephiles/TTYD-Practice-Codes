@@ -9,6 +9,13 @@
 
 enum class PartyMembers : uint8_t;
 
+enum class MarioCharacters : int8_t
+{
+    kMario = 0,
+    kPeach,
+    kBowser,
+};
+
 // The Player struct was defined using the US version, but has been adjusted to work with the JP version as well
 // The Player struct is also 100% identical between US and EU
 struct Player
@@ -17,7 +24,8 @@ struct Player
     uint32_t flags2;
     uint32_t unk_8;
     uint32_t flags3;
-    uint8_t gap_10[8];
+    uint32_t flags4;
+    uint8_t gap_14[4];
     const char *animName;
     uint32_t unk_1c;
     uint32_t unk_20;
@@ -32,7 +40,7 @@ struct Player
     uint8_t unk_38;
     int8_t wKey;
     uint16_t unk_3a;
-    int8_t characterId;
+    MarioCharacters characterId;
     int8_t colorId;
     uint8_t unk_3e;
     int8_t wWallTimer;
@@ -150,6 +158,11 @@ static_assert(sizeof(Player) == 0x2E0);
 static_assert(sizeof(Player) == 0x2F8);
 #endif
 
+inline bool peachInXNautForm(const Player *marioPtr)
+{
+    return (marioPtr->flags4 >> 13) & 1U;
+}
+
 extern "C"
 {
     // toFrontPose
@@ -211,7 +224,7 @@ extern "C"
     // marioEntry
     void marioSetSpec();
     // marioSetFamicomMode
-    void marioSetCharMode(uint32_t mode);
+    void marioSetCharMode(MarioCharacters mode);
     int32_t marioGetColor();
     Player *marioGetPtr();
 }

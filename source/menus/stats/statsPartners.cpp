@@ -278,7 +278,7 @@ static void bringOutOrRemoveFromOverworld(Menu *menuPtr)
         else
         {
             // Initialize the error window
-            statsMenuPtr->initErrorWindow(true);
+            statsMenuPtr->initPartnerFollowerErrorWindow(true);
         }
     }
 }

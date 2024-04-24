@@ -58,7 +58,7 @@ void statsMenuCancelChangingValue()
     gStatsMenu->getValueEditorPtr()->stopDrawing();
 }
 
-void StatsMenu::initErrorWindow(bool drawForPartner)
+void StatsMenu::initPartnerFollowerErrorWindow(bool drawForPartner)
 {
     // Get the text for either a partner or a follower
     const char *partnerOrFollowerText;
@@ -72,12 +72,23 @@ void StatsMenu::initErrorWindow(bool drawForPartner)
     }
 
     // Set up the main text
-    char *errorMessagePtr = this->errorMessage;
+    char buf[sizeof(this->errorMessage)];
 
-    snprintf(errorMessagePtr,
-             sizeof(this->errorMessage),
+    snprintf(buf,
+             sizeof(buf),
              "To spawn a %s, you must have a\nfile loaded and not be in a battle nor\na screen transition.",
              partnerOrFollowerText);
+
+    // Initialize the error window
+    this->initErrorWindow(buf);
+}
+
+void StatsMenu::initErrorWindow(const char *message)
+{
+    // Set up the main text
+    // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
+    char *errorMessagePtr = this->errorMessage;
+    snprintf(errorMessagePtr, sizeof(this->errorMessage), message);
 
     // Initialize the error window
     ErrorWindow *errorWindowPtr = &this->errorWindow;

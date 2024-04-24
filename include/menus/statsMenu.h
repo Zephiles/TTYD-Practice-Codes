@@ -4,6 +4,7 @@
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
 #include "classes/specialMoveToggler.h"
+#include "classes/marioCharacterSelector.h"
 #include "classes/followerSelector.h"
 #include "classes/yoshiColorSelector.h"
 #include "classes/nameEditor.h"
@@ -12,7 +13,7 @@
 
 #include <cstdint>
 
-#define STATS_MARIO_TOTAL_ENTRIES 17
+#define STATS_MARIO_TOTAL_ENTRIES 18
 #define STATS_MARIO_ENTRIES_PER_COLUMN 9
 #define STATS_MARIO_ENTRIES_PER_ROW intCeil(STATS_MARIO_TOTAL_ENTRIES, STATS_MARIO_ENTRIES_PER_COLUMN)
 
@@ -37,6 +38,7 @@ enum StatsMarioOptions
     STATS_MARIO_SHOP_POINTS,
     STATS_MARIO_PIANTAS_STORED,
     STATS_MARIO_CURRENT_PIANTAS,
+    STATS_MARIO_CURRENT_CHARACTER,
 };
 
 enum StatsPartnersCurrentPartnerOption
@@ -72,6 +74,7 @@ class StatsMenu
 
     ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
     SpecialMoveToggler *getSpecialMoveTogglerPtr() { return &this->specialMoveToggler; }
+    MarioCharacterSelector *getMarioCharacterSelectorPtr() { return &this->marioCharacterSelector; }
     FollowerSelector *getFollowerSelectorPtr() { return &this->followerSelector; }
     YoshiColorSelector *getYoshiColorSelectorPtr() { return &this->yoshiColorSelector; }
     NameEditor *getNameEditorPtr() { return &this->nameEditor; }
@@ -83,11 +86,13 @@ class StatsMenu
     uint8_t *getCurrentIndexPtr() { return &this->currentIndex; }
     void setCurrentIndex(uint32_t index) { this->currentIndex = static_cast<uint8_t>(index); }
 
-    void initErrorWindow(bool drawForPartner);
+    void initPartnerFollowerErrorWindow(bool drawForPartner);
+    void initErrorWindow(const char *message);
 
    private:
     ValueEditor valueEditor;
     SpecialMoveToggler specialMoveToggler;
+    MarioCharacterSelector marioCharacterSelector;
     FollowerSelector followerSelector;
     YoshiColorSelector yoshiColorSelector;
     NameEditor nameEditor;

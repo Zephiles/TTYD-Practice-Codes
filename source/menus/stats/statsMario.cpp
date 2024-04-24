@@ -9,6 +9,7 @@
 #include "ttyd/icondrv.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/evt_yuugijou.h"
+#include "ttyd/peach.h"
 #include "ttyd/camdrv.h"
 
 #include <cstddef>
@@ -20,6 +21,10 @@ static void controls(Menu *menuPtr, MenuButtonInput button);
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionChangeValue(Menu *menuPtr);
 static void selectedOptionToggleSpecialMoves(Menu *menuPtr);
+static void selectedOptionChangeMarioCharacter(Menu *menuPtr);
+
+static const char *gCannotChangeMarioCharacter =
+    "To change characters, you must have a\nfile loaded and not be in a battle nor a\nscreen transition.";
 
 static const IconId gOptionsIcons[] = {
     IconId::ICON_BATTLE_DROP_COIN,                      // Coins
@@ -39,6 +44,7 @@ static const IconId gOptionsIcons[] = {
     IconId::ICON_KOOPA_CURSE,                           // Shop Points
     IconId::ICON_PIANTA,                                // Piantas Stored
     IconId::ICON_PIANTA,                                // Current Piantas
+    IconId::ICON_PAUSE_MENU_MARIO_HEAD,                 // Current Character
 };
 
 static const MenuOption gOptions[] = {
@@ -92,6 +98,9 @@ static const MenuOption gOptions[] = {
 
     "Current Piantas",
     selectedOptionChangeValue,
+
+    "Character",
+    selectedOptionChangeMarioCharacter,
 };
 
 static const MenuFunctions gFuncs = {
@@ -140,6 +149,14 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     if (specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->controls(button);
+        return;
+    }
+
+    // If the window for selecting a character to change Mario into is open, then handle the controls for that
+    MarioCharacterSelector *marioCharacterSelector = statsMenuPtr->getMarioCharacterSelectorPtr();
+    if (marioCharacterSelector->shouldDraw())
+    {
+        marioCharacterSelector->controls(button);
         return;
     }
 
@@ -407,7 +424,7 @@ static void changeValue(const ValueType *valuePtr)
         }
     }
 
-    // Depending on whicb option was selected, the cache for it will need to be cleared before a battle starts
+    // Depending on which option was selected, the cache for it will need to be cleared before a battle starts
     switch (index)
     {
         case StatsMarioOptions::STATS_MARIO_CURRENT_HP:
@@ -542,12 +559,98 @@ static void selectedOptionToggleSpecialMoves(Menu *menuPtr)
     (void)menuPtr;
 
     // Initialize the special move toggler
-    StatsMenu *statsMenuPtr = gStatsMenu;
-    SpecialMoveToggler *specialMoveTogglerPtr = statsMenuPtr->getSpecialMoveTogglerPtr();
-
+    SpecialMoveToggler *specialMoveTogglerPtr = gStatsMenu->getSpecialMoveTogglerPtr();
     const Window *rootWindowPtr = gRootWindow;
+
     specialMoveTogglerPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     specialMoveTogglerPtr->startDrawing(nullptr, cancelToggleSpecialMoves);
+}
+
+static void cancelChangeMarioCharacter()
+{
+    gStatsMenu->getMarioCharacterSelectorPtr()->stopDrawing();
+}
+
+static void changeMarioCharacter(uint32_t selectedCharacterIndex)
+{
+    // If Mario cannot be changed right now, then show an error message
+    if (!checkIfInGame())
+    {
+        gStatsMenu->initErrorWindow(gCannotChangeMarioCharacter);
+
+        // Close the Mario character selector
+        cancelChangeMarioCharacter();
+        return;
+    }
+
+    // If Mario is already the selected character, then do nothing
+    if (marioCharacterIdToIndex() == static_cast<int32_t>(selectedCharacterIndex))
+    {
+        // Close the Mario character selector
+        cancelChangeMarioCharacter();
+        return;
+    }
+
+    // Transform Mario into the selected character
+    switch (selectedCharacterIndex)
+    {
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_MARIO:
+        default:
+        {
+            marioSetCharMode(MarioCharacters::kMario);
+            break;
+        }
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_BOWSER:
+        {
+            marioSetCharMode(MarioCharacters::kBowser);
+            break;
+        }
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_PEACH:
+        {
+            peachTransformOff();
+            break;
+        }
+        case MarioCharacterSelectorIndex::MARIO_CHARACTER_SELECTOR_ID_X_NAUT:
+        {
+            peachTransformOn();
+            break;
+        }
+    }
+
+    // Close the Mario character selector
+    cancelChangeMarioCharacter();
+}
+
+static void selectedOptionChangeMarioCharacter(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    // If Mario cannot be changed right now, then show an error message
+    StatsMenu *statsMenuPtr = gStatsMenu;
+    if (!checkIfInGame())
+    {
+        statsMenuPtr->initErrorWindow(gCannotChangeMarioCharacter);
+        return;
+    }
+
+    // Initialize the Mario character selector
+    MarioCharacterSelector *marioCharacterSelectorPtr = statsMenuPtr->getMarioCharacterSelectorPtr();
+    const Window *rootWindowPtr = gRootWindow;
+
+    marioCharacterSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
+
+    // Get the index for the current character
+    int32_t marioCharacterIndex = marioCharacterIdToIndex();
+
+    // Make sure the index is valid
+    if (marioCharacterIndex < 0)
+    {
+        // Index is invalid somehow
+        marioCharacterIndex = 0;
+    }
+
+    marioCharacterSelectorPtr->setCurrentIndex(static_cast<uint32_t>(marioCharacterIndex));
+    marioCharacterSelectorPtr->startDrawing(changeMarioCharacter, cancelChangeMarioCharacter);
 }
 
 static void drawMarioStats()
@@ -677,10 +780,32 @@ static void drawMarioStats()
         // Draw the value
         if (i != StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
-            // Get the value for the current option
-            value = getStat(pouchPtr, i);
+            if (i == StatsMarioOptions::STATS_MARIO_CURRENT_CHARACTER)
+            {
+                // Get the index for the current character
+                const char *currentCharacterString;
 
-            snprintf(buf, sizeof(buf), "%" PRId32, value);
+                const int32_t marioCharacterIndex = marioCharacterIdToIndex();
+                if (marioCharacterIndex < 0)
+                {
+                    // Index is invalid somehow
+                    currentCharacterString = "Invalid";
+                }
+                else
+                {
+                    currentCharacterString = gMarioCharactersStrings[marioCharacterIndex];
+                }
+
+                // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
+                snprintf(buf, sizeof(buf), currentCharacterString);
+            }
+            else
+            {
+                // Get the value for the current option
+                value = getStat(pouchPtr, i);
+                snprintf(buf, sizeof(buf), "%" PRId32, value);
+            }
+
             drawText(buf, valuePosX, textPosY, scale, maxWidth, getColorWhite(0xFF), TextAlignment::RIGHT);
         }
 
@@ -712,5 +837,19 @@ static void draw(CameraId cameraId, void *user)
     if (specialMoveTogglerPtr->shouldDraw())
     {
         specialMoveTogglerPtr->draw();
+    }
+
+    // Draw the Mario character selector if applicable
+    MarioCharacterSelector *marioCharacterSelectorPtr = statsMenuPtr->getMarioCharacterSelectorPtr();
+    if (marioCharacterSelectorPtr->shouldDraw())
+    {
+        marioCharacterSelectorPtr->draw();
+    }
+
+    // Draw the error message if applicable
+    ErrorWindow *errorWindowPtr = statsMenuPtr->getErrorWindowPtr();
+    if (errorWindowPtr->shouldDraw())
+    {
+        errorWindowPtr->draw();
     }
 }

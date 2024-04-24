@@ -47,7 +47,7 @@ static void bringOutFollower(PartyMembers followerSelected)
     else
     {
         // A follower cannot be spawned right now, so initialize the error window
-        gStatsMenu->initErrorWindow(false);
+        gStatsMenu->initPartnerFollowerErrorWindow(false);
     }
 
     // Close the follower selector
@@ -62,7 +62,7 @@ static void selectedOptionBringFollowerOut(Menu *menuPtr)
     StatsMenu *statsMenuPtr = gStatsMenu;
     if (!checkIfInGame())
     {
-        statsMenuPtr->initErrorWindow(false);
+        statsMenuPtr->initPartnerFollowerErrorWindow(false);
         return;
     }
 

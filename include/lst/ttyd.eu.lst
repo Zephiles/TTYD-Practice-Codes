@@ -2408,6 +2408,25 @@
 // 801AB220:marioResetCamShiftRate
 // 801AB284:marioResetCamShift
 
+// peach.o
+// 801FF520:peach_talk
+// 801FF5E0:peach_dash
+// 801FF830:peach_walk
+// 801FF9C0:peach_stay
+// 801FFBB0:peachMain
+// 801FFD68:peachPreInit
+801FFD6C:peachTransformOff
+801FFE00:peachTransformOn
+// 801FFE90:peachChgPose
+// 802003C4:peachSetStsCarry
+// 80200404:peachSetStsOrdinary
+// 80200444:peachSetStsAngry
+// 80200484:peachSetStsUneasy
+// 802004C4:peachSetStsHappy
+// 80200504:peachSetStsInvisible
+// 80200544:peachSetStsAftershower
+// 80200584:peachSetStsNormal
+
 // evt_yuugijou.o
 // text
 // 8022CFE4:evtYuuWindowEndChk

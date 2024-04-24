@@ -33,7 +33,7 @@ class YoshiColorSelector: private OptionSelector
     /**
      * Initializes the Yoshi color selector.
      *
-     * @param parentWindow The window to place the color selector's window in.
+     * @param parentWindow The window to place the Yoshi color selector's window in.
      *
      * @note This function calls the `init` function that takes `windowAlpha` as a parameter, in which `0xFF` is passed in for
      * that value.
