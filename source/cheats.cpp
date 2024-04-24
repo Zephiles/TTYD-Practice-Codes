@@ -1034,6 +1034,9 @@ static void setOSTime(OSTime time)
     // Interrupts should be disabled for safety
     const bool enable = OSDisableInterrupts();
 
+    // Adjust the system time to account for the changed time
+    OSSystemTime += OSGetTime() - time;
+
     // Set the new time
     asmSetTime(time);
 

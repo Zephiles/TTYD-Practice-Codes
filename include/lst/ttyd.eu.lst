@@ -2,6 +2,7 @@
 // data
 800000F8:OSBusClock
 800030C0:EXIProbeStartTime
+800030D8:OSSystemTime
 
 // __mem.c
 800050B4:memset
