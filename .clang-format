@@ -6,6 +6,7 @@ AlignTrailingComments: 'true'
 AllowAllArgumentsOnNextLine: 'false'
 AllowAllParametersOfDeclarationOnNextLine: 'false'
 AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: 'true'
 AlwaysBreakTemplateDeclarations: 'Yes'
 BinPackArguments: 'false'
 BinPackParameters: 'false'

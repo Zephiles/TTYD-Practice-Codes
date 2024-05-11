@@ -28,7 +28,7 @@ enum PointerVerificationType
  *
  * @returns The ceiling of the value aligned to the specified alignment.
  */
-#define intCeil(value, alignment) (((value) + ((alignment)-1)) / (alignment))
+#define intCeil(value, alignment) (((value) + ((alignment) - 1)) / (alignment))
 
 /**
  * Rounds a size up to a specified alignment.
@@ -38,7 +38,7 @@ enum PointerVerificationType
  *
  * @returns The size rounded up to the specified alignment.
  */
-#define roundUp(size, alignment) (((size) + ((alignment)-1)) & ~((alignment)-1))
+#define roundUp(size, alignment) (((size) + ((alignment) - 1)) & ~((alignment) - 1))
 
 /**
  * Rounds a size down to a specified alignment.

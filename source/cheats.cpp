@@ -1035,7 +1035,7 @@ static void setOSTime(OSTime time)
     const bool enable = OSDisableInterrupts();
 
     // Adjust the system time to account for the changed time
-    OSSystemTime += OSGetTime() - time;
+    // OSSystemTime += OSGetTime() - time;
 
     // Set the new time
     asmSetTime(time);
@@ -1250,13 +1250,7 @@ static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
     }
 
     const OSTime endingTime = OSGetTime() + static_cast<OSTime>(duration * ((OSBusClock / 4) / 1000));
-    while (1)
-    {
-        if (OSGetTime() >= endingTime)
-        {
-            break;
-        }
-    }
+    while (OSGetTime() < endingTime);
 }
 
 static void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
