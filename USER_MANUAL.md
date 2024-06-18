@@ -28,20 +28,19 @@ As of **v4.0**, the internal filename of the **settings** file has been changed 
 * Use one of the following:
   1. Use a hacked save file to execute arbitrary code, which can then be used to load the practice codes. This is the most ideal way to load them, as it does not require any additional loaders/cheats. If you don't have any important files that you want to back up, then you can use a premade file, which can be found [here](https://github.com/magcius/TTYDSaveHacker/releases). Otherwise, you can manually hack a file [here](https://magcius.github.io/TTYDSaveHacker/). Once you have a hacked file from one of these, you can simply load the hacked file in-game, which will cause a soft reset to occur, and will also load the practice codes at boot. Furthermore, the practice codes will be loaded at boot for all future resets, and can only be disabled by powering off the console.
   
-  2. Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Practice Codes GCI.
+  2. Use the Gecko loader cheat code in the "relloader" directory to make the game load the Practice Codes GCI.
       * For **Dolphin** users:
-          * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/Gecko)).
+          * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/rewrite/relloader/build/Gecko), in which **v2** is the recommended version to use with this project).
         
         * (For older revisions of Dolphin v5, instead go to **Properties > Edit Config**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
         
         * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
       * For **Nintendont** users:
-        * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/ttyd-tools/relloader-ttyd/REL_Loader/GCT)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO. 
+        * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/rewrite/relloader/build/GCT/V2)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO. 
         
           * Note: It is important that you **do not** right click to save the GCT, or it will be saved incorrectly. You must download it via the **Download** button.
         
         * Enable cheats in Nintendont's settings before booting the game.
-      * Alternatively, you can use the Action Replay loader code (e.g., if you have a physical Action Replay disc).
 
 ## Menus
 ### Inventory
