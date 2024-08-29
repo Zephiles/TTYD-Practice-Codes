@@ -7,15 +7,14 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-include $(DEVKITPPC)/gamecube_rules
-
-ifeq ($(shell uname), Linux)
-	export ELF2REL	:= $(realpath ../bin/elf2rel)
-else
-	export ELF2REL	:= $(realpath ../bin/elf2rel.exe)
+ifeq ($(shell which elf2rel),)
+$(error "Please install pyelf2rel. pip install pyelf2rel")
 endif
 
+include $(DEVKITPPC)/gamecube_rules
+
 export GCIPACK	:=	python3 $(realpath ../bin/gcipack.py)
+export ELF2REL	:=	elf2rel
 
 ifeq ($(VERSION),)
 all: us jp eu
@@ -190,7 +189,7 @@ $(OFILES_SOURCES) : $(HFILES)
 # REL linking
 %.rel: %.elf
 	@echo output ... $(notdir $@)
-	@$(ELF2REL) $< -s $(MAPFILE)
+	@$(ELF2REL) $< $(MAPFILE) $@
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
