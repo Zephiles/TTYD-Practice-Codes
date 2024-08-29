@@ -12,7 +12,7 @@ The latest release can be found on the [releases page](https://github.com/Zephil
 See the [user manual](https://github.com/Zephiles/TTYD-Practice-Codes/blob/master/USER_MANUAL.md).
 
 ## Prerequisites
-To build this, you need to have **devkitPPC** and **Python 3** installed. Instructions for installing **devkitPPC** can be found [here](https://devkitpro.org/wiki/Getting_Started), and **Python 3** can be downloaded from [here](https://www.python.org/downloads/). You also need to place **elf2rel.exe** in the **bin** folder. This file can either be compiled manually, or downloaded from [here](https://github.com/PistonMiner/ttyd-tools/releases/download/v2.7/elf2rel.exe).
+To build this, you need to have **devkitPPC** and **Python 3** installed. Instructions for installing **devkitPPC** can be found [here](https://devkitpro.org/wiki/Getting_Started), and **Python 3** can be downloaded from [here](https://www.python.org/downloads/). You also need to install **pyelf2rel** in Python, which can be found [here](https://pypi.org/project/pyelf2rel/).
 
 ## Building
 To build, you must first add **DEVKITPPC** to your environment, in which it should be set to the `devkitPPC` folder. You can then run `make` to build the GCI files. Any combination of rules can be applied to this. You should also run `make clean` after making any changes, as files built with a previous build could cause issues.  
