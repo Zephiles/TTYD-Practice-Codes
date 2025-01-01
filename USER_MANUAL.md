@@ -308,7 +308,7 @@ There are several other changes that have been made outside of the menu:
    
    * If the Endless Room has been completed, and you enter it when the **Sequence** is at 385, then the room will be set to an incomplete state.
    
-   * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn Gus.
+   * In some instances where the game tries to apply light effects to partners and/or followers, but one or neither of them are actually spawned, then they will be spawned automatically. When the game needs to spawn a partner for this, it will spawn Goombella. When it needs to spawn a follower for this, it will spawn the Craw follower.
    
    * When defeating Blooper with an attack that causes both the body and the left tentacle to be defeated at roughly the same time.
    
