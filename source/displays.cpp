@@ -1016,7 +1016,7 @@ void Displays::handleMapHeapChunkResults(const void *addressWithError,
 
         for (const MapAllocEntry *tempChunk = chunk; tempChunk; tempChunk = tempChunk->next)
         {
-            if (chunk->inUse) // Don't draw the free portion
+            if (tempChunk->inUse) // Don't draw the free portion
             {
                 usage += static_cast<int32_t>(tempChunk->size);
                 chunks++;
