@@ -97,7 +97,7 @@ extern "C"
 
     // local: _hitEnt
     // local: hitEntrySub
-    HitEntry *hitEntry(void *pJoint, mtx34 *mat, int supgroupIndex);
+    HitEntry *hitEntry(void *pJoint, mtx34 *mat, int32_t supgroupIndex);
     HitEntry *hitEntryMOBJ(void *pJoint, mtx34 *mat);
     void hitDelete(const char *mapobjName);
 
@@ -138,7 +138,7 @@ extern "C"
                              float nz);
 
     // local: checkTriVec_xz
-    int hitCheckVecHitObjXZ(HitCheckQuery *pQuery, HitEntry *hit);
+    int32_t hitCheckVecHitObjXZ(HitCheckQuery *pQuery, HitEntry *hit);
 
     // local: chkFilterAttr
     HitEntry *hitCheckAttr(uint32_t bitMask,

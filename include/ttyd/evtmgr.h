@@ -113,7 +113,7 @@ extern "C"
 
 // clang-format off
 #define EVT_DECLARE_USER_FUNC(name, parameter_count) \
-    constexpr int name##_parameter_count = (parameter_count); \
+    constexpr int32_t name##_parameter_count = (parameter_count); \
     int32_t name(EvtEntry *evtPtr, bool isFirstCall);
 
 #define EVT_DEFINE_USER_FUNC(name) \

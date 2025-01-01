@@ -12,7 +12,7 @@ extern "C"
     // lect_cam_load
     // lect_cam_save
     // lect_test_systemlevel
-    // lect_set_systemlevel(int level)
+    // lect_set_systemlevel(int32_t level)
     EVT_DECLARE_USER_FUNC(lect_set_systemlevel, 1);
 }
 
