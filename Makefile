@@ -56,7 +56,7 @@ INCLUDES	:=	include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -g -Oz -Wall -Werror -Wextra -Wformat-overflow=0 -Wno-class-memaccess -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -g -Oz -Wall -Werror -Wextra -Wformat-overflow=0 -Wno-class-memaccess -Wno-uninitialized -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++23 $(CFLAGS)
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
