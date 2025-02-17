@@ -11,6 +11,7 @@
 #include "menuUtils.h"
 #include "jpBattleHeap.h"
 #include "classes/window.h"
+#include "gc/types.h"
 #include "gc/card.h"
 #include "gc/OSModule.h"
 #include "gc/DEMOPad.h"
@@ -64,7 +65,7 @@ void init()
 
     gMod = new (true, true) Mod;
     gCheats = new (true, true) Cheats;
-    gDisplays = new (true, true) Displays;
+    gDisplays = new (true, true, sizeof(OSTime)) Displays;
     gMemoryEditor = new (true, true) MemoryEditor;
 
 #ifdef TTYD_JP
