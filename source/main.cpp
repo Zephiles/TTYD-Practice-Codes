@@ -191,6 +191,7 @@ static void checkHeaps()
 {
     // Check the standard heaps
     uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
+    const OSHeapHandle *heapHandlePtr = &heapHandle[0];
     const HeapInfo *heapArrayPtr = HeapArray;
     Displays *displaysPtr = gDisplays;
     uint32_t memoryUsageCounter = 0;
@@ -198,7 +199,7 @@ static void checkHeaps()
 
     for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag++)
     {
-        const HeapInfo *heapPtr = &heapArrayPtr[i];
+        const HeapInfo *heapPtr = &heapArrayPtr[heapHandlePtr[i]];
 
         // Check the used entries
         const ChunkInfo *tempChunk = heapPtr->firstUsed;

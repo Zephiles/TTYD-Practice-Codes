@@ -79,10 +79,15 @@ void memFreeHook(int32_t heap, void *ptr)
 
 OSHeapHandle OSCreateHeapHook(void *start, void *end)
 {
-    // If start and/or end are nullptr, then assume the game was trying to create the battle heap, so exit immediately
+    // If start and/or end are nullptr, then assume the game was trying to create the battle heap, so exit immediately and
+    // return HeapType::HEAP_SMART, as the smart heap will end up being placed where the battle heap would normally be placed,
+    // so HeapType::HEAP_SMART will end up pointing to an unused heap entry
+
+    // Note that this value is only stored in the heapHandle global variable, so no issues will occur when creating other heaps
+    // after where the battle heap would be placed
     if (!start || !end)
     {
-        return HeapType::HEAP_BATTLE;
+        return HeapType::HEAP_SMART;
     }
 
     // Call the original function
