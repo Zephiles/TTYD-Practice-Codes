@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstring>
 
-void *clearCacheAndReturnPtr(void *ptr, std::size_t size)
+void *clearMemoryAndCacheAndReturnPtr(void *ptr, std::size_t size)
 {
     if (ptr)
     {
@@ -26,13 +26,13 @@ void *allocMemoryFromHead(std::size_t size)
 void *allocateMemoryFromTail(std::size_t size)
 {
     void *ptr = allocFromHeapTail(heapHandle[0], size);
-    return clearCacheAndReturnPtr(ptr, size);
+    return clearMemoryAndCacheAndReturnPtr(ptr, size);
 }
 
 void *allocMemoryFromArenaHead(std::size_t size, uint32_t alignment)
 {
     void *ptr = OSAllocFromArenaLo(size, alignment);
-    return clearCacheAndReturnPtr(ptr, size);
+    return clearMemoryAndCacheAndReturnPtr(ptr, size);
 }
 
 void *allocMemoryFromArenaHead(std::size_t size)
@@ -51,7 +51,7 @@ void *allocMemoryFromArenaTail(std::size_t size, uint32_t alignment)
     void *arenaHi = reinterpret_cast<void *>(arenaHiRaw);
     __OSArenaHi = arenaHi;
 
-    return clearCacheAndReturnPtr(arenaHi, size);
+    return clearMemoryAndCacheAndReturnPtr(arenaHi, size);
 }
 
 void *allocMemoryFromArenaTail(std::size_t size)

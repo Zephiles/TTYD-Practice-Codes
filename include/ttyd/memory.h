@@ -126,7 +126,13 @@ extern "C"
     // memClear
     void *__memAlloc(int32_t heap, uint32_t size);
     void __memFree(int32_t heap, void *ptr);
+
+#ifdef TTYD_JP
     void *_mapAlloc(uint32_t size);
+#else
+    void *_mapAlloc(MapAllocEntry *mapAllocBasePtr, uint32_t size);
+#endif
+
     // _mapAllocTail
     void _mapFree(void *ptr);
     // smartInit

@@ -7,20 +7,16 @@
 
 #include <cstdint>
 
-#define BATTLE_HEAP_CUSTOM_HANDLE 0xFF
 #define BATTLE_HEAP_ORIGINAL_SIZE 0x40000
 #define REL_TOTAL_USED_SIZE_ADDRESS 0x80004148
 
 extern "C"
 {
-    void asmOSAllocFromHeapGetHeapArrayPtrStart();
-    void asmOSAllocFromHeapGetHeapArrayPtrBranchBack();
-    void asmOSFreeToHeapGetHeapArrayPtr();
+    extern HeapInfo *gBattleHeapInfo;
 
-    HeapInfo *OS_getHeapArrayPtr(uint32_t heapArrayPtrRaw, OSHeapHandle handle);
+    void *asmAllocFromBattleHeap(uint32_t size);
+    void asmFreeToBattleHeap(void *ptr);
 }
-
-extern HeapInfo *gBattleHeapInfo;
 
 void battleHeapVarsInit();
 

@@ -1,47 +1,27 @@
-.global asmOSAllocFromHeapGetHeapArrayPtrStart
-.global asmOSAllocFromHeapGetHeapArrayPtrBranchBack
-.global asmOSFreeToHeapGetHeapArrayPtr
+.global asmAllocFromBattleHeap
+.global asmFreeToBattleHeap
 
-asmOSAllocFromHeapGetHeapArrayPtrStart:
-stwu %sp,-0x10(%sp)
-mflr %r6
-stw %r6,0x14(%sp)
+asmAllocFromBattleHeap:
+# The code that is being jumped to requires the size to be in r4
+mr %r4,%r3
 
-# Backup important register values
-stw %r4,0xC(%sp)
+# The code that is being jumped to requires the heap array to be in r5
+lis %r5,gBattleHeapInfo@ha
+lwz %r5,gBattleHeapInfo@l(%r5)
+b (OSAllocFromHeap + 0xC)
 
-# r3 already contains heapArrayPtr
-mr %r4,%r0 # handle
-bl OS_getHeapArrayPtr
-mr %r5,%r3 # New heapArrayPtr
+asmFreeToBattleHeap:
+# Push stack
+mflr %r0
+stw %r0,0x4(%sp)
+stwu %sp,-0x18(%sp)
+stw %r31,0x14(%sp)
 
-# Restore important register values
-lwz %r4,0xC(%sp)
+# Restore skipped instructions
+subi %r6,%r3,32
+lwz %r3,0x4(%r6)
 
-lwz %r6,0x14(%sp)
-mtlr %r6
-addi %sp,%sp,0x10
-
-asmOSAllocFromHeapGetHeapArrayPtrBranchBack:
-b 0
-
-asmOSFreeToHeapGetHeapArrayPtr:
-stwu %sp,-0x10(%sp)
-mflr %r5
-stw %r5,0x14(%sp)
-
-# Backup important register values
-stw %r3,0xC(%sp)
-
-mr %r3,%r4 # heapArrayPtr
-mr %r4,%r0 # handle
-bl OS_getHeapArrayPtr
-mr %r31,%r3 # New heapArrayPtr
-
-# Restore important register values
-lwz %r3,0xC(%sp)
-
-lwz %r5,0x14(%sp)
-mtlr %r5
-addi %sp,%sp,0x10
-blr
+# The code that is being jumped to requires the heap array to be in r31
+lis %r31,gBattleHeapInfo@ha
+lwz %r31,gBattleHeapInfo@l(%r31)
+b (OSFreeToHeap + 0x24)
