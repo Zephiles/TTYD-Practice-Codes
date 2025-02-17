@@ -104,6 +104,42 @@ Func hookFunction(Func function, Dest destination)
 }
 
 /**
+ * Writes a `b` branch at the start of a function that goes to a different function.
+ *
+ * @tparam function The function that the `b` branch will go to.
+ * @tparam destination The function where the `b` branch will be placed, in which the first instruction will be overwritten.
+ *
+ * @returns A pointer to the dynamic memory that contains the backed-up original instruction and the `b` branch that goes to
+ * just after the start of the original function.
+ *
+ * @note This function effectively allows one function to be overwritten with another.
+ *
+ * @note The first instruction of the original function will be stored in dynamic memory, and a `b` branch that goes to just
+ * after the start of the original function will be placed in dynamic memory directly after the backed-up first instruction.
+ *
+ * @note The returned pointer is intended to be used as a function pointer, which allows for calling the original function.
+ * @note The memory allocated for the instructions will be allocated from the `Arena Lo`.
+ */
+template<typename Func, typename Dest>
+Func hookFunctionArena(Func function, Dest destination)
+{
+    uint32_t *instructions = reinterpret_cast<uint32_t *>(function);
+    uint32_t *trampoline = new (true, true) uint32_t[2];
+
+    // Original instruction
+    trampoline[0] = instructions[0];
+    clear_DC_IC_Cache(&trampoline[0], sizeof(uint32_t));
+
+    // Branch to original function past hook
+    writeBranch(&trampoline[1], &instructions[1]);
+
+    // Write actual hook
+    writeBranch(&instructions[0], reinterpret_cast<void *>(static_cast<Func>(destination)));
+
+    return reinterpret_cast<Func>(trampoline);
+}
+
+/**
  * Undos the work done via `hookFunction`: Restores the first instruction from the dynamic memory, and then frees the dynamic
  * memory.
  *

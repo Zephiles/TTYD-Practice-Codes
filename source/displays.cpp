@@ -829,6 +829,9 @@ void Displays::handleStandardHeapChunkResults(const void *addressWithError,
                                               int32_t heapIndex,
                                               uint32_t memoryUsageBufferIndex,
                                               uint32_t enabledFlag,
+#ifdef TTYD_JP
+                                              bool isBattleHeap,
+#endif
                                               bool isUsedPortion)
 {
     // Get the used or free text
@@ -853,13 +856,27 @@ void Displays::handleStandardHeapChunkResults(const void *addressWithError,
         {
             int32_t index = memoryUsagePtr->getHeapCorruptionBufferIndex();
 
-            index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
-                              MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
-                              "Main Heap %" PRId32 " (%s) corrupt at 0x%08" PRIX32 "\n",
-                              heapIndex,
-                              usedOrFreeString,
-                              reinterpret_cast<uint32_t>(addressWithError));
-
+#ifdef TTYD_JP
+            if (!isBattleHeap)
+            {
+#endif
+                index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
+                                  MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
+                                  "Main Heap %" PRId32 " (%s) corrupt at 0x%08" PRIX32 "\n",
+                                  heapIndex,
+                                  usedOrFreeString,
+                                  reinterpret_cast<uint32_t>(addressWithError));
+#ifdef TTYD_JP
+            }
+            else
+            {
+                index += snprintf(memoryUsagePtr->initHeapCorruptionBufferEntry(index),
+                                  MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE - index,
+                                  "Battle Heap (%s) corrupt at 0x%08" PRIX32 "\n",
+                                  usedOrFreeString,
+                                  reinterpret_cast<uint32_t>(addressWithError));
+            }
+#endif
             // Update the index
             memoryUsagePtr->setHeapCorruptionBufferIndex(index);
         }
@@ -876,14 +893,35 @@ void Displays::handleStandardHeapChunkResults(const void *addressWithError,
             chunks++;
         }
 
-        snprintf(memoryUsagePtr->initMemoryUsageBufferEntry(memoryUsageBufferIndex),
-                 MEMORY_USAGE_BUFFER_SINGLE_LINE,
-                 "Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks",
-                 heapIndex,
-                 usedOrFreeString,
-                 intToFloat(usage) / 1024.f,
-                 intToFloat(static_cast<int32_t>(heap->capacity)) / 1024.f,
-                 chunks);
+        char *memoryUsageBufferPtr = memoryUsagePtr->initMemoryUsageBufferEntry(memoryUsageBufferIndex);
+        const float memoryUsage = intToFloat(usage) / 1024.f;
+        const float memoryCapacity = intToFloat(static_cast<int32_t>(heap->capacity)) / 1024.f;
+
+#ifdef TTYD_JP
+        if (!isBattleHeap)
+        {
+#endif
+            snprintf(memoryUsageBufferPtr,
+                     MEMORY_USAGE_BUFFER_SINGLE_LINE,
+                     "Main Heap %" PRId32 " (%s): %.2f/%.2fkb, %" PRId32 " cks",
+                     heapIndex,
+                     usedOrFreeString,
+                     memoryUsage,
+                     memoryCapacity,
+                     chunks);
+#ifdef TTYD_JP
+        }
+        else
+        {
+            snprintf(memoryUsageBufferPtr,
+                     MEMORY_USAGE_BUFFER_SINGLE_LINE,
+                     "Battle Heap (%s): %.2f/%.2fkb, %" PRId32 " cks",
+                     usedOrFreeString,
+                     memoryUsage,
+                     memoryCapacity,
+                     chunks);
+        }
+#endif
     }
 }
 
@@ -949,18 +987,13 @@ void Displays::handleSmartHeapChunkResults(const void *addressWithError,
     }
 }
 
-#ifdef TTYD_JP
 void Displays::handleMapHeapChunkResults(const void *addressWithError,
                                          const MapAllocEntry *chunk,
                                          uint32_t memoryUsageBufferIndex,
-                                         uint32_t enabledFlag)
-#else
-void Displays::handleMapHeapChunkResults(const void *addressWithError,
-                                         const MapAllocEntry *chunk,
-                                         uint32_t memoryUsageBufferIndex,
-                                         uint32_t enabledFlag,
-                                         bool battleHeap)
+#ifndef TTYD_JP
+                                         bool isBattleHeap,
 #endif
+                                         uint32_t enabledFlag)
 {
     MemoryUsageDisplay *memoryUsagePtr = &this->memoryUsage;
 
@@ -986,7 +1019,7 @@ void Displays::handleMapHeapChunkResults(const void *addressWithError,
             // Get the battle text if checking the battle heap
             const char *currentHeap = nullptr;
 
-            if (battleHeap)
+            if (isBattleHeap)
             {
                 currentHeap = "Battle ";
             }
@@ -1033,7 +1066,7 @@ void Displays::handleMapHeapChunkResults(const void *addressWithError,
         const char *currentHeap = nullptr;
         const char *format = "%sMap Heap (used): %.2f/%.2fkb, %" PRId32 " cks";
 
-        if (!battleHeap)
+        if (!isBattleHeap)
         {
             heapSize = mapalloc_size;
         }
@@ -1703,7 +1736,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
             }
         }
 
-        // Draw the text for the smart heap and map heap(s)
+        // Draw the text for the smart heap, map heap, and battle heap
         for (uint32_t i = 0; i < DISPLAYS_TOTAL_EXTRA_HEAPS; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
         {
             if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
@@ -1715,6 +1748,20 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
                     drawText(text, posX, posY, scale, getColorWhite(0xFF));
                     decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
                 }
+
+#ifdef TTYD_JP
+                // If the index is at the battle heap, then the free text must be manually drawn
+                if ((i + DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP) ==
+                    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP)
+                {
+                    text += MEMORY_USAGE_BUFFER_SINGLE_LINE;
+                    if (text[0])
+                    {
+                        drawText(text, posX, posY, scale, getColorWhite(0xFF));
+                        decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
+                    }
+                }
+#endif
             }
         }
     }

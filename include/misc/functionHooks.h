@@ -49,6 +49,7 @@ extern bool (
 extern bool (*g_psndENVOn_f_d_trampoline)(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
 
 // Functions used for hooks
+uint32_t initAfterHeapsCreated();
 void runOncePerFrame();
 void displayTitleScreenInfo(SeqWork *seqWork);
 void displayFileSelectScreenInfo(SeqWork *seqWork);

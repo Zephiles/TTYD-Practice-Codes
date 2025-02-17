@@ -608,6 +608,17 @@ void applyVariousGamePatches()
     applyAssemblyPatch(crashScreenEndBranchAddress, 0x4BFFFDD4);     // b -0x22C
 #endif
 
+    // Allow for running various init code that requires the game's heaps to already be created
+#ifdef TTYD_US
+    constexpr uint32_t marioStInitAddress = 0x8006FE38;
+#elif defined TTYD_JP
+    constexpr uint32_t marioStInitAddress = 0x8006EBD8;
+#elif defined TTYD_EU
+    constexpr uint32_t marioStInitAddress = 0x800710F4;
+#endif
+
+    writeBranchBL(marioStInitAddress, initAfterHeapsCreated);
+
     // Prevent upgrade item cutscenes from occuring, and instead just give them like standard items. This is needed because the
     // upgrades could potentially be obtained in maps other than where they are intended to be obtained, which will cause a
     // crash since the data for their cutscenes will not be available.

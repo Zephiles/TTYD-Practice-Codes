@@ -1,6 +1,8 @@
 #ifndef GC_OSALLOC_H
 #define GC_OSALLOC_H
 
+#include "gc/types.h"
+
 #include <cstdint>
 
 struct ChunkInfo
@@ -26,11 +28,11 @@ extern "C"
     extern int32_t NumHeaps;
 
     ChunkInfo *DLInsert(ChunkInfo *list, ChunkInfo *chunk);
-    // OSAllocFromHeap
-    // OSFreeToHeap
+    void *OSAllocFromHeap(OSHeapHandle handle, uint32_t size);
+    void OSFreeToHeap(OSHeapHandle handle, void *ptr);
     // OSSetCurrentHeap
     // OSInitAlloc
-    // OSCreateHeap
+    OSHeapHandle OSCreateHeap(void *start, void *end);
     // OSDestroyHeap
 }
 

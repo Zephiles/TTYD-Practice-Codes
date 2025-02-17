@@ -395,6 +395,7 @@
 80030154:memClear
 80030218:memInit
 // data
+804151B8:size_table
 804151E0:_smartWorkPtr
 8041E808:mapalloc_base_ptr
 8041E80C:R_battlemapalloc_base_ptr
@@ -1677,7 +1678,7 @@
 // 800F8A08:BattleSetSeq
 // 800F8A68:BattleSetMarioParamToFieldBattle
 // 800F8AAC:Btl_UnitSetup
-// 800F8DA4:BattleEnd
+800F8DA4:BattleEnd
 // 800F8E28:BattleMain
 // 800F8F04:BattleInit
 // 800F903C:battleSeqEndCheck
@@ -2598,15 +2599,26 @@
 // OSAlloc.c
 // text
 80296400:DLInsert
-// 802964AC:OSAllocFromHeap
-// 802965A8:OSFreeToHeap
+802964AC:OSAllocFromHeap
+802965A8:OSFreeToHeap
 // 80296624:OSSetCurrentHeap
 // 80296634:OSInitAlloc
-// 802966A4:OSCreateHeap
+802966A4:OSCreateHeap
 // 80296710:OSDestroyHeap
 // data
 8041F070:HeapArray
 8041F074:NumHeaps
+
+// OSArena.c
+// text
+// 80296734:OSGetArenaHi
+// 8029673C:OSGetArenaLo
+// 80296744:OSSetArenaHi
+// 8029674C:OSSetArenaLo
+80296754:OSAllocFromArenaLo
+// data
+8041E430:__OSArenaLo
+8041F080:__OSArenaHi
 
 // OSCache.c
 // 80296A14:DCEnable

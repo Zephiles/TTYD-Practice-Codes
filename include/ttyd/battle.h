@@ -353,7 +353,7 @@ extern "C"
     // BattleSetSeq
     // BattleSetMarioParamToFieldBattle
     // Btl_UnitSetup
-    // BattleEnd
+    void BattleEnd();
     // BattleMain
     // BattleInit
     // battleSeqEndCheck

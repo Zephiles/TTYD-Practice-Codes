@@ -48,6 +48,18 @@ struct MapAllocEntry
     uint8_t unk[0x14];
 } __attribute__((__packed__));
 
+enum HeapType : OSHeapHandle
+{
+    HEAP_DEFAULT = 0,
+    HEAP_MAP,
+    HEAP_EXT,
+    HEAP_EFFECT,
+#ifdef TTYD_JP
+    HEAP_BATTLE,
+#endif
+    HEAP_SMART,
+};
+
 struct HeapEnd
 {
     void *pHeapDefault;
@@ -86,6 +98,12 @@ static_assert(sizeof(HeapStart) == 0x14);
 
 extern "C"
 {
+#ifdef TTYD_JP
+    extern int32_t size_table[6][2];
+#else
+    extern int32_t size_table[5][2];
+#endif
+
     extern SmartWork *_smartWorkPtr; // wp
     extern uint32_t mapalloc_size;
     extern MapAllocEntry *mapalloc_base_ptr;
@@ -108,9 +126,9 @@ extern "C"
     // memClear
     void *__memAlloc(int32_t heap, uint32_t size);
     void __memFree(int32_t heap, void *ptr);
-    // _mapAlloc
+    void *_mapAlloc(uint32_t size);
     // _mapAllocTail
-    // _mapFree
+    void _mapFree(void *ptr);
     // smartInit
     void L_smartReInit();
     void smartAutoFree(uint32_t group);
