@@ -88,9 +88,9 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5, // Memory Usage
 #endif
 
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP,      // Memory Usage
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP,        // Memory Usage
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP,  // Memory Usage
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP,    // Memory Usage
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_HEAP, // Memory Usage
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -108,8 +108,8 @@ enum DisplaysEnabledFlag
      DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + 1)
 #endif
 
-#define DISPLAYS_TOTAL_EXTRA_HEAPS                                             \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP - \
+#define DISPLAYS_TOTAL_EXTRA_HEAPS                                         \
+    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_HEAP - \
      DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + 1)
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)

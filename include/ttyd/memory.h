@@ -129,12 +129,13 @@ extern "C"
 
 #ifdef TTYD_JP
     void *_mapAlloc(uint32_t size);
+    void _mapFree(void *ptr);
 #else
     void *_mapAlloc(MapAllocEntry *mapAllocBasePtr, uint32_t size);
+    void _mapFree(MapAllocEntry *mapAllocBasePtr, void *ptr);
 #endif
 
     // _mapAllocTail
-    void _mapFree(void *ptr);
     // smartInit
     void L_smartReInit();
     void smartAutoFree(uint32_t group);

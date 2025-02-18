@@ -1737,9 +1737,23 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
         }
 
         // Draw the text for the smart heap, map heap, and battle heap
-        for (uint32_t i = 0; i < DISPLAYS_TOTAL_EXTRA_HEAPS; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
+#ifdef TTYD_JP
+        // Add one to the loop count to account for drawing the free portion of the battle heap
+        constexpr uint32_t loopCount = DISPLAYS_TOTAL_EXTRA_HEAPS + 1;
+#else
+        constexpr uint32_t loopCount = DISPLAYS_TOTAL_EXTRA_HEAP;
+#endif
+        for (uint32_t i = 0; i < loopCount; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
         {
+#ifdef TTYD_JP
+            // Check if at the last index of the loop, as if it is then the free portion of the battle heap should be drawn if
+            // the enabled flag for the battle heap is set
+            if (((i == (loopCount - 1)) &&
+                 displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_HEAP)) ||
+                displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
+#else
             if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
+#endif
             {
                 drawnText = true;
 
@@ -1748,20 +1762,6 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
                     drawText(text, posX, posY, scale, getColorWhite(0xFF));
                     decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
                 }
-
-#ifdef TTYD_JP
-                // If the index is at the battle heap, then the free text must be manually drawn
-                if ((i + DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP) ==
-                    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP)
-                {
-                    text += MEMORY_USAGE_BUFFER_SINGLE_LINE;
-                    if (text[0])
-                    {
-                        drawText(text, posX, posY, scale, getColorWhite(0xFF));
-                        decrementPosY(customPos, displaysPtr, &posY, lineDecrement);
-                    }
-                }
-#endif
             }
         }
     }
