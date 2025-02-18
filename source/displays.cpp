@@ -1741,7 +1741,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
         // Add one to the loop count to account for drawing the free portion of the battle heap
         constexpr uint32_t loopCount = DISPLAYS_TOTAL_EXTRA_HEAPS + 1;
 #else
-        constexpr uint32_t loopCount = DISPLAYS_TOTAL_EXTRA_HEAP;
+        constexpr uint32_t loopCount = DISPLAYS_TOTAL_EXTRA_HEAPS;
 #endif
         for (uint32_t i = 0; i < loopCount; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
         {
