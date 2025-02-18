@@ -1,21 +1,16 @@
 #ifdef TTYD_JP
 #include "jpBattleHeap.h"
-#include "cxx.h"
 #include "patch.h"
 #include "gc/OSAlloc.h"
 #include "gc/types.h"
-#include "misc/functionHooks.h"
 #include "ttyd/memory.h"
 #include "ttyd/battle.h"
 
 #include <cstdint>
 
-HeapInfo *gBattleHeapInfo = nullptr;
 static ChunkInfo *gBattleHeap = nullptr;
 
 static void (*g_BattleEnd_trampoline)() = nullptr;
-static void *(*g___memAlloc_trampoline)(int32_t heap, uint32_t size) = nullptr;
-static void (*g___memFree_trampoline)(int32_t heap, void *ptr) = nullptr;
 static OSHeapHandle (*g_OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
 
 void battleHeapInit()
@@ -31,8 +26,8 @@ void battleHeapInit()
     chunkPtr->next = nullptr;
     chunkPtr->size = BATTLE_HEAP_ORIGINAL_SIZE;
 
-    // Init gBattleHeapInfo variables
-    HeapInfo *heapInfoPtr = gBattleHeapInfo;
+    // Init heap info variables
+    HeapInfo *heapInfoPtr = &HeapArray[heapHandle[HeapType::HEAP_BATTLE]];
     heapInfoPtr->capacity = BATTLE_HEAP_ORIGINAL_SIZE;
     heapInfoPtr->firstFree = chunkPtr;
     heapInfoPtr->firstUsed = nullptr;
@@ -47,34 +42,11 @@ void battleEndHook()
     _mapFree(gBattleHeap);
     gBattleHeap = nullptr;
 
-    // Reset the variables in gBattleHeapInfo since the battle heap is no longer allocated
-    HeapInfo *heapInfoPtr = gBattleHeapInfo;
+    // Reset the heap info variables since the battle heap is no longer allocated
+    HeapInfo *heapInfoPtr = &HeapArray[heapHandle[HeapType::HEAP_BATTLE]];
     heapInfoPtr->capacity = 0;
     heapInfoPtr->firstFree = nullptr;
     heapInfoPtr->firstUsed = nullptr;
-}
-
-void *memAllocHook(int32_t heap, uint32_t size)
-{
-    if (heap != HeapType::HEAP_BATTLE)
-    {
-        // Not allocating from the battle heap, so call the original function
-        return g___memAlloc_trampoline(heap, size);
-    }
-
-    void *ptr = asmAllocFromBattleHeap(size);
-    return clearMemoryAndCacheAndReturnPtr(ptr, size);
-}
-
-void memFreeHook(int32_t heap, void *ptr)
-{
-    if (heap != HeapType::HEAP_BATTLE)
-    {
-        // Not freeing from the battle heap, so call the original function
-        return g___memFree_trampoline(heap, ptr);
-    }
-
-    return asmFreeToBattleHeap(ptr);
 }
 
 OSHeapHandle OSCreateHeapHook(void *start, void *end)
@@ -96,8 +68,6 @@ OSHeapHandle OSCreateHeapHook(void *start, void *end)
 
 void battleHeapVarsInit()
 {
-    gBattleHeapInfo = new (true, true) HeapInfo;
-
     // For preventing the battle heap portion of the size table from being read when the game is creating its heaps
     applyAssemblyPatch(&size_table[HeapType::HEAP_BATTLE][0], 2);
 
@@ -114,12 +84,6 @@ void battleHeapVarsInit()
 
     // For freeing the battle heap back to the map heap upon exiting a battle
     g_BattleEnd_trampoline = hookFunctionArena(BattleEnd, battleEndHook);
-
-    // For handling allocating memory from the battle heap
-    g___memAlloc_trampoline = hookFunctionArena(__memAlloc, memAllocHook);
-
-    // For handling freeing memory to the battle heap
-    g___memFree_trampoline = hookFunctionArena(__memFree, memFreeHook);
 
     // For preventing OSCreateHeap from running if either the start or end parameters are nullptr, as this would occur when
     // trying to create the battle heap

@@ -88,9 +88,12 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5, // Memory Usage
 #endif
 
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP,  // Memory Usage
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP,    // Memory Usage
-    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_HEAP, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP,   // Memory Usage
+
+#ifndef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP, // Memory Usage
+#endif
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -102,15 +105,19 @@ enum DisplaysEnabledFlag
 #define DISPLAYS_TOTAL_MAIN_HEAPS                                     \
     (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5 - \
      DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + 1)
+
+#define DISPLAYS_TOTAL_EXTRA_HEAPS                                      \
+    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP - \
+     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + 1)
 #else
 #define DISPLAYS_TOTAL_MAIN_HEAPS                                     \
     (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_4 - \
      DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + 1)
-#endif
 
-#define DISPLAYS_TOTAL_EXTRA_HEAPS                                         \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_HEAP - \
+#define DISPLAYS_TOTAL_EXTRA_HEAPS                                             \
+    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP - \
      DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + 1)
+#endif
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)
 
@@ -296,13 +303,7 @@ class FrameCounterDisplay
 
 #define MEMORY_USAGE_BUFFER_SINGLE_LINE 64
 #define MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE (MEMORY_USAGE_BUFFER_SINGLE_LINE * DISPLAYS_TOTAL_HEAPS)
-
-#ifdef TTYD_JP
-// Add an extra 1 at the end to account for the battle heap displaying both used and free portions
-#define MEMORY_USAGE_TOTAL_MEMORY_USAGE_ENTRIES ((DISPLAYS_TOTAL_MAIN_HEAPS * 2) + DISPLAYS_TOTAL_EXTRA_HEAPS + 1)
-#else
 #define MEMORY_USAGE_TOTAL_MEMORY_USAGE_ENTRIES ((DISPLAYS_TOTAL_MAIN_HEAPS * 2) + DISPLAYS_TOTAL_EXTRA_HEAPS)
-#endif
 
 class MemoryUsageDisplay
 {
@@ -759,9 +760,6 @@ class Displays
                                         int32_t heapIndex,
                                         uint32_t memoryUsageBufferIndex,
                                         uint32_t enabledFlag,
-#ifdef TTYD_JP
-                                        bool isBattleHeap,
-#endif
                                         bool isUsedPortion);
 
     void handleSmartHeapChunkResults(const void *addressWithError,
@@ -770,13 +768,18 @@ class Displays
                                      uint32_t enabledFlag,
                                      bool isUsedPortion);
 
+#ifdef TTYD_JP
     void handleMapHeapChunkResults(const void *addressWithError,
                                    const MapAllocEntry *chunk,
                                    uint32_t memoryUsageBufferIndex,
-#ifndef TTYD_JP
-                                   bool isBattleHeap,
-#endif
                                    uint32_t enabledFlag);
+#else
+    void handleMapHeapChunkResults(const void *addressWithError,
+                                   const MapAllocEntry *chunk,
+                                   uint32_t memoryUsageBufferIndex,
+                                   uint32_t enabledFlag,
+                                   bool isBattleHeap);
+#endif
 
     bool displayShouldBeHandled(uint32_t enabledFlag) const;
     DisplayManuallyPosition *getDisplayManuallyPositionPtr(uint32_t manuallyPositionFlag);

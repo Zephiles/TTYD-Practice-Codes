@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstring>
 
-void *clearMemoryAndCacheAndReturnPtr(void *ptr, std::size_t size)
+static void *clearMemoryAndCacheAndReturnPtr(void *ptr, std::size_t size)
 {
     if (ptr)
     {

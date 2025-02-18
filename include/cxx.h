@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <new>
 
-void *clearMemoryAndCacheAndReturnPtr(void *ptr, std::size_t size);
 void *allocMemoryFromHead(std::size_t size);
 void *allocateMemoryFromTail(std::size_t size);
 void *allocMemoryFromArenaHead(std::size_t size, uint32_t alignment);

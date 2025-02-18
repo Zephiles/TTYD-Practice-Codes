@@ -37,12 +37,10 @@ static const MenuOption gOptions[] = {
     "Map Heap",
     selectedOptionToggleFlag,
 
-#ifdef TTYD_JP
-    "Battle Heap",
-#else
+#ifndef TTYD_JP
     "Battle Map Heap",
-#endif
     selectedOptionToggleFlag,
+#endif
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
@@ -115,6 +113,7 @@ static void selectedOptionToggleFlag(Menu *menuPtr)
 {
     const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() +
                                                    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);
+
     if (!ret)
     {
         // If none of the flags are enabled, then free the memory used by the memory usage buffer
