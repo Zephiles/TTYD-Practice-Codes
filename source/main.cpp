@@ -183,15 +183,6 @@ uint32_t initAfterHeapsCreated()
     windowTexSetup();
     applyAssemblyPatch(windowTexSetup, 0x4E800020); // blr; prevent windowTexSetup from running again
 
-#ifdef TTYD_JP
-    // Initialize the heap array info variable for battles, so that the sizes will properly display as 0kb when using the memory
-    // usage display
-    HeapInfo *heapInfoPtr = &HeapArray[heapHandle[HeapType::HEAP_BATTLE]];
-    heapInfoPtr->capacity = 0;
-    heapInfoPtr->firstFree = nullptr;
-    heapInfoPtr->firstUsed = nullptr;
-#endif
-
     // The original instruction set r3 to 0, so returning 0 will give the same result
     return 0;
 }
@@ -200,7 +191,6 @@ static void checkHeaps()
 {
     // Check the standard heaps
     uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
-    const OSHeapHandle *heapHandlePtr = &heapHandle[0];
     const HeapInfo *heapArrayPtr = HeapArray;
     Displays *displaysPtr = gDisplays;
     uint32_t memoryUsageCounter = 0;
@@ -208,7 +198,7 @@ static void checkHeaps()
 
     for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag++)
     {
-        const HeapInfo *heapPtr = &heapArrayPtr[heapHandlePtr[i]];
+        const HeapInfo *heapPtr = &heapArrayPtr[i];
 
         // Check the used entries
         const ChunkInfo *tempChunk = heapPtr->firstUsed;
