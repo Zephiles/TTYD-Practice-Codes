@@ -77,6 +77,7 @@ extern "C"
 #endif
 
     // Misc assembly functions
+    void asmClearDCICCache(void *ptr, uint32_t size);
     void asmSetTime(OSTime time);
 }
 
