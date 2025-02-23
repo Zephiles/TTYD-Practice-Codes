@@ -17,20 +17,15 @@ void battleHeapInit()
 {
     // Allocate the memory from the map heap
     // Turn the allocated memory into a standard heap
-    // Cannot use OSCreateHeap since this heap needs to be handled separately from the other game heaps
     ChunkInfo *chunkPtr = reinterpret_cast<ChunkInfo *>(_mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE));
     gBattleHeap = chunkPtr;
 
-    // Init chunk variables
-    chunkPtr->prev = nullptr;
-    chunkPtr->next = nullptr;
-    chunkPtr->size = BATTLE_HEAP_ORIGINAL_SIZE;
+    // The heap info capacity for the battle heap needs to be -1 for OSCreateHeap to use it
+    HeapArray[HeapType::HEAP_BATTLE].capacity = static_cast<uint32_t>(-1);
 
-    // Init heap info variables
-    HeapInfo *heapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
-    heapInfoPtr->capacity = BATTLE_HEAP_ORIGINAL_SIZE;
-    heapInfoPtr->firstFree = chunkPtr;
-    heapInfoPtr->firstUsed = nullptr;
+    // Initialize the battle heap
+    const uint32_t chunkPtrRaw = reinterpret_cast<uint32_t>(chunkPtr);
+    OSCreateHeap(chunkPtr, reinterpret_cast<void *>(chunkPtrRaw + BATTLE_HEAP_ORIGINAL_SIZE));
 }
 
 void battleEndHook()
