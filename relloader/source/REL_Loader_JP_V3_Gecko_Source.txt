@@ -23,9 +23,8 @@
 # Hook the following code at 8002FC3C
 # This code is running in a loop, so make sure the main heap is being used right now
 # Size table is in r3, so make sure its at the start of it
-lis r8,size_table@h
-ori r8,r8,size_table@l
-cmplw r3,r8
+xoris r8,r3,size_table@h
+cmplwi r8,size_table@l
 bne+ exitResizeMainHeap
 
 # The current size is in r7, so subtract the REL's used size from it
