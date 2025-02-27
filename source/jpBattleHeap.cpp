@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-static ChunkInfo *gBattleHeap = nullptr;
+static void *gBattleHeap = nullptr;
 
 static void (*g_BattleEnd_trampoline)() = nullptr;
 static OSHeapHandle (*g_OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
@@ -17,15 +17,15 @@ void battleHeapInit()
 {
     // Allocate the memory from the map heap
     // Turn the allocated memory into a standard heap
-    ChunkInfo *chunkPtr = reinterpret_cast<ChunkInfo *>(_mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE));
-    gBattleHeap = chunkPtr;
+    void *battleHeapPtr = _mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE);
+    gBattleHeap = battleHeapPtr;
 
     // The heap info capacity for the battle heap needs to be -1 for OSCreateHeap to use it
     HeapArray[HeapType::HEAP_BATTLE].capacity = static_cast<uint32_t>(-1);
 
     // Initialize the battle heap
-    const uint32_t chunkPtrRaw = reinterpret_cast<uint32_t>(chunkPtr);
-    OSCreateHeap(chunkPtr, reinterpret_cast<void *>(chunkPtrRaw + BATTLE_HEAP_ORIGINAL_SIZE));
+    const uint32_t battleHeapPtrRaw = reinterpret_cast<uint32_t>(battleHeapPtr);
+    OSCreateHeap(battleHeapPtr, reinterpret_cast<void *>(battleHeapPtrRaw + BATTLE_HEAP_ORIGINAL_SIZE));
 }
 
 void battleEndHook()
@@ -37,7 +37,7 @@ void battleEndHook()
     _mapFree(gBattleHeap);
     gBattleHeap = nullptr;
 
-    // Reset the heap info variables since the battle heap is no longer allocated
+    // Clear the heap info variables since the battle heap is no longer allocated
     HeapInfo *heapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
     heapInfoPtr->capacity = 0;
     heapInfoPtr->firstFree = nullptr;
