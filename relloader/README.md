@@ -5,6 +5,7 @@
 * Does not used fixed linking, so the REL can be easily unloaded/unlinked from memory if linked against other RELs later on.
 * Can use **__memAlloc** and **__memFree** for allocating/freeing memory allocations.
 * Is not compatible with mods set up to use **V3** (unless they are updated to support all **REL Loader** versions).
+* Is included mainly for legacy purposes, and generally won't be used since most project won't ever be unloaded/unlinked.
 
 ### V2:
 * Loads the REL in **marioStInit** after various other things have been initialized.
