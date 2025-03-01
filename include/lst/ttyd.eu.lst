@@ -1,0 +1,3141 @@
+// os
+// data
+800000F8:OSBusClock
+800030C0:EXIProbeStartTime
+800030D8:OSSystemTime
+
+// __mem.c
+800050B4:memset
+// 800050E4:__fill_mem
+8000519C:memcpy
+
+// system.o
+// unused:memcmp_as4
+// unused:memset_as4
+80005634:memcpy_as4
+// unused:LZ77Decode
+// unused:mtxGetScaleElement
+80005654:mtxGetRotationElement
+// unused:mtx_set_col_vec
+// unused:mtx_set_row_vec
+// unused:mtx_col_vec
+// unused:mtx_row_vec
+8000598C:sysOSReport
+// unused:sysFrame2MsecFloat
+// unused:sysFrame2Msec
+80005A54:sysMsec2FrameFloat
+80005A94:sysMsec2Frame
+80005ABC:sysFrame2SecFloat
+// unused:sysFrame2Sec
+// unused:sysSec2FrameFloat
+// unused:sysSec2Frame
+80005AC8:getV60FPS
+80005BA0:sysDummyDraw
+80005DAC:sysWaitDrawSync
+80005E58:sysGetToken
+80005E68:irand
+// unused:movePos3
+// unused:movePos2
+80005EAC:movePos
+80005F54:sincosf
+80005FCC:padGetRumbleStatus
+80005FDC:padRumbleHardOff
+80005FF0:padRumbleOff
+80006004:padRumbleOn
+// unused:keyGetTriggerR
+// unused:keyGetTriggerL
+80006018:keyGetSubStickY
+// unused:keyGetSubStickX
+80006028:keyGetStickY
+80006038:keyGetStickX
+80006048:keyGetButtonTrg
+8000605C:keyGetDirTrg
+80006070:keyGetButtonRep
+80006084:keyGetDirRep
+80006098:keyGetButton
+800060AC:keyGetDir
+800060C0:makeKey
+800065C4:qqsort
+// 80006748:fsort
+// unused:intplStringToEnum
+80006D54:intplGetValue
+80007104:angleABf
+800072B8:compAngle
+800072F4:distABf
+800073F0:reviseAngle
+// unused:roundi
+80007450:__assert2
+8000752C:__assert
+80007308:getMarioStDvdRoot
+
+// seq_mapchange.o
+// text
+// 80007740:_relUnLoad
+// 800077AC:_load
+80007C80:_unload
+// 80007DF8:seq_mapChangeMain
+// 800088F0:seq_mapChangeExit
+// 80008918:seq_mapChangeInit
+// data
+8042AEC8:_next_bero
+8042AEE8:_next_map
+8042AF08:_next_area
+
+// seq_title.o
+// text
+// 80008A54:pressStartGX
+// 80008EFC:disp2
+// 80009264:disp1
+800093F0:titleMain
+// 80009CAC:L_titleInit
+// 80009E90:N_getDebugMode
+// 80009E9C:seq_titleMain
+// 80009EBC:seq_titleExit
+// 80009EF4:seq_titleInit
+// 80009F54:DbgBtlSel_GetMsgDataPtr
+// data
+804217E0:seqTitleWorkPtr2
+
+// camdrv.o
+// 8000E54C:camLetterBox
+// 8000E728:camLetterBoxDraw
+// 8000E9AC:getScreenPoint
+// 8000EA68:camSetTypeOrtho
+// 8000EA84:camSetTypePersp
+// 8000EAA0:camCtrlOff
+// 8000EAC0:camCtrlOn
+// 8000EAE0:L_camDispOff
+8000EB00:L_camDispOn
+// 8000EB20:camSetMode
+// 8000EB38:camEffMain
+// 8000EBF4:cam3dImgMain
+// 8000EC2C:cam3dMain
+// 8000F498:camSetCurNo
+// 8000F4A0:camGetCurNo
+// 8000F4A8:camGetCurPtr
+8000F4C0:camGetPtr
+// 8000F4D4:camUnLoadRoad
+// 8000F530:camLoadRoad
+// 8000F618:camDraw
+// 8000F70C:camEvalNearFar
+// 8000F8C8:camMain
+// 8000FC8C:camEntryPersp
+// 8000FF60:camInit
+
+// dispdrv.o
+// unused:dispGetEntNum
+80010A28:dispGetCurWork
+80010A30:dispCalcZ
+80010AC4:dispDraw
+80010D20:dispSort
+// 80010B90:_sort
+80010D88:dispEntry
+80010E28:dispReInit
+80010E34:dispInit
+
+// fadedrv.o
+// text
+// 80010E98:fadeSetNarrowFast
+// 80010EAC:fadeGetTpl
+// 80010EB8:fadeReset
+// 80010F58:fadeIsFinish
+// 80010F84:disp_dummy_black
+// 8001117C:disp_tec
+// 80011580:disp_maku
+// 800118B8:zFill
+// 80011B50:z
+// 80011C40:disp_texture
+// 8001221C:fadeMain
+// 800133E4:fadeSetOffscreenCallback
+// 800133F4:fadeSetAnimVirtualPos
+// 80013454:fadeSetAnimOfsPos
+// 80013464:fadeSetSpotPos
+// 80013474:fadeWhiteOutOff
+// 80013488:fadeWhiteOutOn
+// 8001349C:fadeSoftFocusOff
+// 800134B0:fadeSoftFocusOn
+// 800134C4:fadeTecSoftOff
+// 800134E4:fadeTecSoftOn
+// 80013504:fadeTecOff
+// 80013518:fadeTecOn
+8001352C:fadeEntry
+// 80013C68:fadeTexSetup
+// 80013D54:fadeInit
+// 80013E68:_callback
+// data
+8042AF40:_fadeWorkPtr
+
+// hitdrv.o
+80013EB0:hitBindUpdate
+80013FBC:hitBindMapObj
+800140B4:hitGetDamageReturnPos
+800140C0:hitGrpDamageReturnSet
+80014188:hitDamageReturnSet
+800144D4:hitGetAttr
+800144EC:hitGetName
+80014588:hitObjGetNormal
+80014660:hitObjGetPos
+800147B0:hitObjGetPosSub
+80014D1C:hitNameToPtr
+80014DCC:hitCheckSphereFilter
+80015364:hitCheckAttr
+80015498:chkFilterAttr
+800154B0:hitCheckVecHitObjXZ
+80015594:checkTriVec_xz
+80015940:hitCheckFilter
+80015A68:hitCheckVecFilter
+8001676C:hitCalcVtxPosition
+80016C20:hitReCalcMatrix2
+800170CC:hitReCalcMatrix
+8001712C:hitGrpAttrOff
+80017204:hitGrpAttrOn
+800172DC:hitAtrOff
+800175F0:hitAtrOn
+80017900:hitObjAttrOff
+800179D4:hitObjAttrOn
+80017AA8:hitGrpFlagOff
+80017B80:hitGrpFlagOn
+80017C58:hitFlgOff
+80017F70:hitFlgOn
+80018280:hitObjFlagOff
+80018354:hitObjFlagOn
+80018428:hitMain
+80018674:hitDelete
+800187AC:hitEntryMOBJ
+8001881C:hitEntry
+800188B8:hitEntrySub
+80018B30:_hitEnt
+80018FBC:hitReInit
+8001905C:hitInit
+
+// icondrv.o
+// 80019060:iconNumberDispGx3D
+800192E4:iconNumberDispGx
+// 80019568:iconSetAlpha
+// 80019610:iconSetScale
+// 800196C8:iconFlagOff
+// 80019768:iconFlagOn
+// 80019808:iconSetPos
+// 80019918:iconNameToPtr
+// 800199BC:iconGX
+8001A360:iconGetWidthHight
+// 8001A460:iconGetTexObj
+8001A680:iconDispGxCol
+// 8001A8A4:iconDispGx2
+8001AADC:iconDispGx
+8001AB00:iconDispGxAlpha
+// 8001ADB4:iconDisp
+// 8001AE6C:iconChange
+// 8001AFCC:iconDelete
+// 8001B074:iconEntry2D
+// 8001B258:iconEntry
+// 8001B49C:iconMain
+// 8001B810:iconReInit
+// 8001B858:iconTexSetup
+// 8001B85C:iconInit
+// 8001B9D4:_callback_bin
+// 8001BA00:_callback_tpl
+
+// mapdrv.o
+// 8001C614:mapObjGetFlushColor
+// 8001C748:mapGrpSetFlushColor
+// 8001C7A4:mapObjSetFlushColor
+// 8001C968:mapGrpFlushOff
+// 8001C98C:mapGrpFlushOn
+// 8001C9B0:mapObjFlushOff
+// 8001CAC0:mapObjFlushOn
+// 8001CBD0:mapSetTevCallback
+// 8001CBF0:mapTestXLU
+// 8001CC98:spline_getvalue
+// 8001CE10:spline_maketable
+// 8001D478:mapSetProjMtx
+// 8001D49C:mapSetProjTexObj
+// 8001D4E4:mapGrpSetColor
+// 8001D5A0:setColor
+// 8001D9F4:mapObjSetColor
+// 8001DAB8:mapBlendOff2
+// 8001DAD8:mapBlendOff
+// 8001DAF8:mapGetBlend2
+// 8001DB2C:mapGetBlend
+// 8001DB60:mapSetBlend2
+// 8001DB88:mapSetBlend
+// 8001DBB0:mapFogOff
+// 8001DBD0:mapFogOn
+// 8001DBF0:mapGetFog
+// 8001DC24:mapSetFog
+// 8001DC4C:mapObjGetPos
+// 8001DD8C:mapObjGetPosSub
+// 8001E2F8:mapObjScale
+// 8001E418:mapObjTranslate
+// 8001E554:mapObjRotate
+// 8001E6D4:mapGrpClearOffScreen
+// 8001E788:mapObjClearOffScreen
+// 8001E840:mapGrpSetOffScreen
+// 8001E904:mapObjSetOffScreen
+// 8001E9C4:_setOffScrnId
+// 8001EE7C:mapGrpFlagOff
+// 8001EF94:mapGrpFlagOn
+// 8001F0AC:mapFlgOff
+// 8001F3C0:mapFlgOn
+// 8001F800:mapObjFlagOff
+// 8001F914:mapObjFlagOn
+// 8001FA3C:mapGetMapObj
+// 8001FAE4:mapSearchDmdJoint
+// 8001FB1C:mapSearchDmdJointSub2
+// 8001FF0C:mapSearchDmdJointSub
+// 8002048C:mapSetPolygonVtxDesc
+// 80020650:mapSetPolygon
+// 80020A84:mapSetMaterialLight
+// 80021000:mapResetPaperAmbColor
+// 8002100C:mapSetPaperAmbColor
+// 80021018:mapSetMaterial
+// 8002162C:mapSetTextureMatrix
+// 8002198C:mapSetMaterialFog
+// 80021A24:mapSetMaterialLastStageBlend
+// 80021D44:mapSetMaterialTev
+// 80024B00:mapSetLight
+// 80024CCC:mapDisp
+// 800254F0:mapDispMapGrp_bbox
+// 80025550:mapDispMapObj_bbox
+// 80025698:_mapDispMapGrp_NoMaterial
+// 80025AF0:_mapDispMapObj_NoMaterial
+// 80025C10:test_kururing_mapdisp
+// 80025CAC:mapDispMapGrp_off
+// 80025D24:mapDispMapObj_off
+// 80025D9C:mapDispMapGrp
+// 80025DBC:mapDispMapObj
+// 80025DDC:_mapDispMapGrp
+// 80026150:_mapDispMapObj
+// 80026D7C:mapMain
+// 80028264:mapReCalcMatrix
+// 80028684:mapCalcAnimMatrix
+// 80028A60:bmapLoad
+// 80028BDC:bmapUnLoad
+// 80028E3C:mapLoad
+// 80028EA4:mapPreLoad
+// 80028EAC:mapUnLoad
+// 8002904C:_mapLoad
+// 80029C2C:mapSetPlayRate
+// 80029CE8:mapReStartAnimationAll
+// 80029D48:mapPauseAnimationAll
+// 80029DA8:mapReStartAnimation
+// 80029E60:mapPauseAnimation
+// 80029F18:mapPlayAnimationLv
+// 8002A160:mapCheckAnimation
+// 8002A268:mapSearchAnmObj
+// 8002A310:makeDisplayList
+// 8002A554:mapEntry
+// 8002A5F0:mapEntrySub
+// 8002A868:_mapEnt
+// 8002ADF0:mapBuildTexture
+// 8002B000:mapInit
+// 8002B044:mapGetBoundingBox
+// 8002B208:mapGetJoints
+// 8002B254:mapGetJointsSub
+// 8002B518:mapGetActiveGroup
+8002B520:mapGetWork
+// 8002B534:N_mapDispOn
+// 8002B540:N_mapDispOff
+// 8002B54C:getMapDataDvdRoot
+// 8002B554:mapErrorEntry
+
+// seqdrv.o
+// text
+8002E2CC:seqCheckSeq
+8002E2E8:seqGetNextSeq
+8002E2F0:seqGetPrevSeq
+8002E2F8:seqGetSeq
+8002E300:seqSetSeq
+8002E310:seqMain
+8002E3EC:seqInit_MARIOSTORY
+// data
+8042B0A0:seqWork
+
+// DEMOInit.o
+// text
+// 8002E428:__DEMODiagnoseHang
+// 8002E640:__NoHangDoneRender
+// 8002EA8C:__NoHangRetraceCallback
+// 8002EB28:DEMOEnableGPHangWorkaround
+8002EC10:L_DEMOGetCurrentBuffer
+// 8002EC18:DEMOGetRenderModeObj
+// 8002EC20:DEMODoneRender
+// 8002ED04:DEMOBeforeRender
+// 8002EDF0:DEMOInit
+// data
+8042B0E0:DemoCurrentBuffer
+8042B0E4:DemoFrameBuffer2
+8042B0E8:DemoFrameBuffer1
+
+// DEMOPad.o
+// text
+8002F124:DEMOPadInit
+8002F1AC:DEMOPadRead
+// 8002F26C:DEMOPadCopy
+// data
+803D63F8:DemoPad
+8042B0F0:Pad
+
+// memory.o
+// text
+// unused:smartGetWorkPtr
+8002F424:smartTexObj
+8002F460:smartGarbage
+8002F628:smartAlloc
+8002F960:smartFree
+8002FAB4:smartAutoFree
+8002FB58:L_smartReInit
+8002FCC8:smartInit
+// unused:_mapAllocDump
+8002FEAC:_mapFree
+8002FF48:_mapAllocTail
+80030040:_mapAlloc
+800301AC:__memFree
+800301D8:__memAlloc
+8003023C:memClear
+80030300:memInit
+// data
+804219F8:size_table
+80421A20:_smartWorkPtr
+8042B128:mapalloc_base_ptr
+8042B12C:R_battlemapalloc_base_ptr
+8042B134:R_battlemapalloc_size
+8042B138:mapalloc_size
+8042B13C:heapEnd
+8042B150:heapStart
+8042B164:heapHandle
+
+// evtmgr.o
+80035B10:evtGetPtrID
+80035B70:evtGetPtr
+80035BAC:evtStartOther
+80035C34:evtStopOther
+80035CBC:evtStartAll
+80035D50:evtStopAll
+80035DE4:evtStartID
+80035E84:evtStopID
+80035F24:evtStart
+800362F8:evtStop
+800366CC:evtSetType
+800366D4:evtSetSpeed
+800366E4:evtSetPri
+800366EC:evtCheckID
+8003674C:evtDeleteID
+800367E8:evtDelete
+800369B8:evtmgrMain
+80036BA4:evtRestart
+80036CEC:evtBrotherEntry
+80036FD4:evtChildEntry
+80037308:evtEntryType
+80037594:evtEntry
+// 80037820:evtEntryRunCheck
+80037898:evtmgrReInit
+80037904:evtmgrInit
+// 80037A1C:make_pri_table
+80037B48:evtGetWork
+
+// evt_map.o
+80037D74:N_evt_mapdisp_onoff
+80037DB4:evt_map_replace_mapobj
+80037E8C:evt_map_entry_airport_harbor
+80038028:check2
+800380B4:check
+80038140:evt_map_get_flush_color
+800381D4:evt_map_set_flush_color
+8003829C:evt_map_set_flush_onoff
+80038338:evt_map_set_tevcallback
+80038398:evt_mapobj_get_position
+80038464:evt_mapobj_clear_offscreen
+800384C8:evt_mapobj_set_offscreen
+80038550:evt_mapobj_flag_onoff
+800385F8:evt_map_set_playrate
+80038650:evt_map_replayanim
+800386B4:evt_map_pauseanim
+80038718:evt_map_checkanim
+80038790:evt_map_playanim
+8003880C:evt_mapobj_color
+800388FC:evt_map_blend_set_mobj_flag
+80038998:evt_map_blend_set_flag
+80038B70:evt_map_blend_off
+80038BB0:evt_map_set_blend
+80038C84:evt_map_fog_onoff
+80038CC4:evt_map_get_fog
+80038D70:evt_map_set_fog
+80038E50:evt_mapobj_scale
+80038F20:evt_mapobj_rotate
+80038FF0:evt_mapobj_trans
+
+// mapdata.o
+// text
+800390C0:relSetBtlAddr
+80039170:relSetEvtAddr
+800392C8:areaDataPtr
+80039360:mapDataPtr
+// data
+80311524:worldData
+
+// animdrv.o
+// 800394AC:animPoseGetGroupName
+// 800394E8:animPoseGetGroupIdx
+// 80039594:animPoseGetShapeIdx
+// 80039640:animPoseDrawShape
+// 800398D8:animPoseSetDispCallBack
+// 800398F4:animPoseGetVivianType
+// 8003990C:animPoseVivianMain
+// 80039944:animPoseWorldMatrixEvalOn
+// 800399FC:L_animPoseWorldPositionEvalOff
+// 80039A54:animPoseWorldPositionEvalOn
+// 80039B0C:evalProc
+// 80039CF4:animPoseTestXLU
+// 80039D2C:animPoseGetCurrentAnim
+// 80039D6C:animPoseGetAnimBaseDataPtr
+// 80039D9C:animPoseGetAnimDataPtr
+// 80039DE0:animPoseGetAnimPosePtr
+// 80039DF4:animGroupBaseAsync
+// 80039F28:animSetPaperTexMtx
+// 80039FF4:animPoseDisp_MakeExtTexture
+// 8003A778:animPaperPoseDispSub
+// 8003B098:animPaperPoseDisp
+// 8003B110:animPoseAutoRelease
+// 8003B2DC:animPaperPoseRelease
+// 8003B3B8:animPoseRelease
+// 8003B54C:animSetPaperTexObj
+// 8003B5C0:animPoseDrawMtx
+// 8003BD50:_animPoseDrawMtx
+// 8003C538:animPoseDraw
+// 8003C5A4:dispProc
+// 8003C96C:renderProc
+// 8003D6F4:materialProc
+// 8003DDE4:animSetMaterial_Texture
+// 8003E390:pushGXModelMtx_JointNode__
+// 8003E8D4:pushGXModelMtx_TransformNode__
+8003EE14:animPoseMain
+// 80040754:animPoseGetMaterialEvtColor
+// 8004076C:animPoseGetMaterialLightFlag
+// 80040784:animPoseGetMaterialFlag
+// 8004079C:animPoseSetMaterialEvtColor
+// 800407B8:animPoseSetMaterialLightFlagOff
+// 800407D8:animPoseSetMaterialLightFlagOn
+// 800407F8:animPoseSetMaterialFlagOff
+// 80040818:animPoseSetMaterialFlagOn
+// 80040838:animPoseGetPeraEnd
+// 80040884:animPoseGetLoopTimes
+// 8004089C:animPoseGetHeight
+// 80040900:animPoseGetRadius
+// 80040964:animPoseSetGXFunc
+// 80040980:animPoseSetEffectAnim
+// 80040B10:animPoseSetEffect
+// 80040D8C:animPoseSetPaperAnim
+// 80040EEC:animPoseSetPaperAnimGroup
+// 80041174:animPaperPoseGetId
+// 80041258:animPoseSetAnim
+// 800413D4:animPoseSetStartTime
+// 800413F4:animPoseSetLocalTime
+// 80041514:animPoseSetLocalTimeRate
+// 8004152C:animPosePaperPeraOff
+// 80041554:animPosePaperPeraOn
+// 80041598:animPosePeraOff
+// 800415B4:animPosePeraOn
+// 800415D0:animEffectAsync
+// 80041708:animPaperPoseEntry
+// 80041854:animPoseEntry
+// 80041D40:animPoseBattleInit
+// 80041D6C:animPoseRefresh
+// 80041FC8:animPose_AllocBuffer
+// 80042904:animMain
+// 8004293C:animInit
+// 80042BB0:testAlloc
+// 80042F44:initTestHeap
+// 80042F90:animTimeGetTime
+// 80043018:animGetPtr
+
+// npcdrv.o
+// text
+80043020:N_fbatPreventMarioEventChk
+80043054:npcCheckBlow
+80043194:npcCalcScore
+8004329C:fbatSandersBombTriggerOn
+800432B0:npcKoopaModeMobjBoundDeadCheck
+80043378:npcKoopaModeEncountCheck
+800434F4:npcClearDeadInfo
+80043528:npcGetBackItemEntry
+// 800435C4:_majinai_effect
+// 8004367C:_check
+800436EC:npcExecAllReglEvt
+800437AC:npcWaitAllInitEvtEnd
+80043880:npcExecAllInitEvt
+8004394C:dbGetDefData
+800439BC:npcSetLink
+800439C8:npcSetSlave
+800439DC:npcSetBtlSetupWork
+800439EC:npcGetBtlSetupWork
+800439FC:npcBlurOff
+80043AA0:npcBlurOn
+80043BBC:npcSetColor
+80043C48:npcStartForOneEvent
+80043CB0:npcStartForEvent
+80043D60:npcStopForOneEvent
+80043DC0:npcStopForEvent
+80043E68:npcSetBattleInfo
+80043F60:npcSetupBattleInfo
+800441E0:npcCheckInterrupt
+// 80044414:_npcHitCheckHammerAllMotion
+// 8004479C:_npcHitCheckSphere
+80044914:fbatHitCheck
+800466EC:fbatHitCheckAll
+80046714:fbatNpcTalkCheck
+80046774:npcGroupDead
+// 800467B8:_npcGroupDead
+// 80046B14:_npcDead
+80046B60:fbatBattleMode
+800471C4:fbatTalkMode
+80047364:fbatEncountCheck
+// 80047EE4:_fbatFirstAttackAnnouceDisp
+80048268:fbatSetAttackAnnounceEnable
+8004827C:fbatSetAttackAnnounce
+80048374:fbatChangeMode
+80048384:fbatGetPointer
+80048390:npcNearDistCheck
+80048500:npcHitCheckSide
+80048E18:npcTransRytoFaceDir
+80048E54:npcTuningRy
+// 80048E84:npcMoveG
+// 800491B4:npcCheckHitMarioSide
+8004972C:npcSetStayPose
+80049884:npcSetTalkPose
+800499DC:npcSetMarioAutoTalkPose
+80049A1C:npcNameToPtr_NoAssert
+80049AC8:npcNameToPtr
+80049B64:npcMain
+8004B508:npcDeleteGroup
+// 8004B54C:_npcDeleteGroup
+8004B7F0:npcDelete
+8004B910:npcGetTribe
+8004B97C:npcEntry
+8004BBCC:npcGetReactionOfLivingBody
+8004BBE4:npcReset
+8004BC58:npcInit
+// 8004BD24:npcDisp_blur
+// 8004C010:npcDisp_offscreen
+// 8004C31C:npcDisp_offscreen_xlu
+// 8004C5F4:npcDisp
+// 8004C8C8:npcDisp_xlu
+// 8004CB68:mtx_setup
+8004CE20:npcRecoveryFiledNpc
+8004CF40:npcReleaseFiledNpc
+8004D054:npcGetWorkPtr
+// data
+8042B1D4:npcWork
+
+// mario.o
+800562B8:toFrontPose
+800567E8:toRearPose
+80056D18:marioDisp
+80057244:marioDispBlur
+800573C8:marioDispBlurSub
+800579B0:marioPreDisp
+80057E34:marioRearAnime
+800584E0:marioMakeDispDir
+80058A40:marioGetScale
+80058A60:marioChkInScreen
+80058A98:marioGetScreenPos
+80058B1C:marioPaperLightOff
+// unused:marioPaperLightOn
+80058B48:marioPaperOff
+80058BC8:marioPaperOn
+80058CE0:marioSetPaperAnimeLocalTime
+80058DA0:marioChgPaper
+80058E28:marioChgPoseTime
+80058EBC:marioChgPose
+800590D4:toDotMarioPose
+8005925C:marioChgEvtPose
+80059534:marioAnimeId
+80059564:marioChkPushAnime
+800595E0:marioMoveMain
+80059BB0:marioMove
+8005A76C:marioCtrlOff2Main
+8005A918:marioMain
+8005B310:marioReInit
+8005B700:marioInit
+8005BB88:marioPoseInit
+8005BC20:marioSoundInit
+8005BC40:marioOfsRotReset
+8005BCB0:marioReset
+8005BED8:marioResetHitObj
+8005C074:marioChkSts
+8005C114:marioBgmodeOff
+8005C1D8:marioBgmodeOn
+8005C29C:marioBgmodeChk
+8005C2AC:marioSetMutekiTime
+8005C2F8:marioKeyOn
+8005C32C:marioKeyOff
+8005C354:marioCtrlOn2
+8005C394:marioCtrlOff2
+8005C3C8:marioCtrlOn
+8005C3FC:marioCtrlOff
+8005C424:marioKeyOffChk
+8005C434:marioCtrlOffChk
+8005C444:marioFBattlePost
+8005C504:marioFBattlePrepare
+8005C570:N_marioChkUseParty
+8005C59C:marioChkCtrl
+8005C5B4:marioChkKey
+8005C6F0:marioCheckMenuDisable
+8005CB90:marioCaseEventValidChk
+8005CBD0:marioItemGetOk
+8005CBE4:marioItemGetChk
+8005CC20:marioItemGetDisable
+8005CC3C:marioEntry
+8005CEE0:marioSetSpec
+8005CF78:marioSetFamicomMode
+8005D878:marioSetCharMode
+8005E1E8:marioGetColor
+8005E1F8:marioGetPtr
+
+// effdrv.o
+// text
+// 8005E200:effDrawMayaPoly
+// 8005E3C0:effCalcMayaAnim
+// 8005E514:effPlayMayaAnim
+// 8005E5A0:effDeleteMayaAnim
+// 8005E5C8:effMayaAnimAlloc
+// 8005E62C:effCalcMayaAnimMatrix
+// 8005E9D8:effGetSet
+// 8005EA60:effNameToPtr
+// 8005EAF8:effSoftDelete
+// 8005EB68:effDelete
+// 8005EBB4:effMain
+// 8005ED24:effSetName
+// 8005EDA0:effEntry
+// 8005EE08:effAutoRelease
+// 8005EE90:effGetTexObj
+// 8005EF44:effTexSetup
+// 8005F058:effInit
+// 8005F0E0:_callback_tpl
+// data
+80422720:_effWorkPtr
+
+// mariost.o
+// text
+// unused:gcResetDone
+// unused:gcResetCheck
+8006FF98:L_gcResetCheck
+800700B4:gcRumbleCheck
+// unused:gcDvdCheckCancel
+// unused:gcDvdCheckInit
+800703BC:gcDvdCheckThread
+800705E0:viPostCallback
+80070998:marioStGetSystemLevel
+800709A4:marioStSystemLevel
+80070AB8:marioStDisp
+80070AE0:marioStMain
+80070D18:marioStInit
+80261A48:N_systemErrorHandler
+// 80262084:N_setupErrorHandler
+// data
+80422810:_globalWorkPtr
+8042B260:_mariostSystemLevel
+
+// seq_battle.o
+// 800749A8:battle_exit
+80074B68:battle_init
+// 80074DE0:seq_battleMain
+// 800751BC:seq_battleExit
+// 800751DC:seq_battleInit
+
+// fontmgr.o
+// unused:JUTFont_Draw
+// unused:JUTFont_DrawPos
+800759DC:_JUTFont_DrawPos
+80075EB8:JUTFont_DrawStart
+// unused:JUTFont_GetWidth
+// unused:JUTFont_GetWidthEntry
+8007614C:JUTFont_CodeToGlyph
+// unused:JUTFont_Free
+800762C0:JUTFontSetup
+// unused:JUTFont_SetWidth
+800765B8:HSV2RGB
+800767E4:FontGetMessageWidth
+80076808:FontGetMessageWidthLine
+80076B28:kanjiGetWidth
+80076BA0:kanjiSearch
+80076BC0:hankakuSearch
+80076BE4:FontDrawMessageMtx
+80077288:FontDrawMessage
+8007799C:FontDrawStringShake
+80077CCC:FontDrawStringCenterMtx
+// unused:FontDrawStringCenter
+80077F98:FontDrawStringMtx
+800782F0:FontDrawStringVecPitch
+80078624:FontDrawStringPitch
+// unused:FontDrawStringVec
+8007868C:FontDrawString
+800786F4:FontDrawCodeMtx
+80078850:FontDrawCode
+800789F8:FontDrawScaleVec
+80078A14:FontDrawScale
+80078A28:FontGetDrawColor
+80078A30:FontDrawColor_
+80078A9C:FontDrawColor
+80078B00:FontDrawColorIDX
+80078B70:FontDrawNoiseOff
+80078B9C:FontDrawNoise
+80078CA0:FontDrawRainbowColorOff
+80078CC4:FontDrawRainbowColor
+80078D64:FontDrawEdgeOff
+80078D70:FontDrawEdge
+80078D7C:FontDrawStart_alpha
+80078E08:FontDrawStart
+80078E98:fontmgrTexSetup
+80078EC4:fontmgrInit
+
+// evt_bero.o
+// 80079D30:evt_camera_change_event_from_road
+// 80079ED8:evt_bero_1stcheck
+// 80079F4C:evt_bero_mario_go_wait
+// 80079F68:evt_bero_mario_go
+// 80079F78:evt_bero_mario_go_init
+// 80079F88:evt_bero_cam_shift_init
+// 80079FB0:evt_bero_cam3d_change
+// 8007A0C4:evt_bero_overwrite
+// 8007A1A4:evt_bero_move_mario_speed
+// 8007A454:evt_bero_disppos_load
+// 8007A4A8:evt_bero_disppos_save
+// 8007A4EC:evt_bero_case_id_load
+// 8007A548:evt_bero_case_id_save
+// 8007A5A8:evt_bero_get_number
+// 8007A668:evt_bero_switch_off
+// 8007A76C:evt_bero_switch_on
+// 8007A870:bero_set_disp_position_pipe
+// 8007A940:bero_get_position_pipe2
+// 8007AA8C:bero_get_position_pipe_pure
+// 8007AB74:bero_get_position_pipe_sub
+// 8007AE30:bero_get_position_normal
+// 8007B140:evt_bero_get_info_num
+// 8007B344:evt_bero_id_filter
+// 8007B410:evt_bero_read_mario_pera
+// 8007B4D0:evt_bero_get_into_info
+8007B7C8:evt_bero_get_info
+// 8007B8C8:evt_bero_get_now_number
+// 8007B8F8:evt_bero_set_now_number
+// 8007B928:evt_bero_get_info_nextarea
+// 8007B9A0:evt_bero_get_info_kinddir
+// 8007BA28:evt_bero_get_info_length
+// 8007BB1C:evt_bero_get_info_anime
+// 8007BBB4:evt_bero_get_end_position
+// 8007BC18:evt_bero_get_start_position
+// 8007BC7C:evt_bero_exec_wait
+// 8007BCC0:evt_bero_exec_get
+// 8007BCF0:evt_bero_exec_onoff
+// 8007BD58:evt_bero_get_entername
+// 8007BD8C:evt_bero_mapchange
+// 8007BE00:bero_id_filter
+// 8007BEA4:bero_clear_Offset
+// 8007BEB8:bero_get_ptr
+// 8007BEC4:bero_get_BeroEZ
+// 8007BECC:bero_get_BeroEY
+// 8007BED4:bero_get_BeroEX
+// 8007BEDC:bero_get_BeroSZ
+// 8007BEE4:bero_get_BeroSY
+// 8007BEEC:bero_get_BeroSX
+// 8007BEF4:bero_get_BeroNUM
+// 8007BEFC:bero_get_BeroEXEC
+// 8007BF04:N_evt_bero_set_mario_bottomless_respawn_pos_to_current_mario_pos
+// 8007BF38:N_evt_bero_set_mario_bottomless_respawn_pos_on_bero_entry
+
+// windowdrv.o
+// 8007BFEC:getWakuTexObj
+// 8007BFFC:windowGetPointer
+// 8007C00C:windowCheckID
+// 8007C024:windowDispGX2_Waku_col
+8007C708:windowDispGX_Waku_col
+// 8007CD94:windowDispGX_Message
+// 8007D064:_windowDispGX_Message
+// 8007EC50:windowDispGX_System
+// 8007FCAC:windowDispGX_Kanban
+// 80080CA8:windowMain
+// 80080D10:windowDeleteID
+// 80080D7C:windowDelete
+// 80080DC8:windowEntry
+// 80080E50:windowReInit
+80080E94:windowTexSetup
+// 80081040:windowInit
+
+// msgdrv.o
+// 800810B0:selectWindow_Disp
+// 800811F8:selectWindow_Main
+// 8008151C:msgWindow_Disp
+// 80081BF8:msgWindow_Clear_Main
+// 80081EDC:msgWindow_Main
+// 800826E0:msgWindow_ForceClose
+// 800827B0:msgWindow_Repeat
+// 80082828:msgWindow_Continue
+// 80082878:msgWindow_Add
+// 800828EC:msgWindow_Delete
+// 80082944:msgWindow_Entry
+// 80082CD8:msgIconStr2ID
+// 80082D5C:msgGetCommand
+80082DFC:_ismbblead
+80082E48:msgSearch
+// 80082F28:msg_compare
+// 80082F70:L_msgGetWork
+// 80082F78:msgAnalize
+// 800846B4:msgDispKeyWait_render
+// 80084734:msgDisp
+// 80085288:msgMain
+// 800859B0:msgLoad
+// 80085C8C:msgInit
+
+// database.o
+80086278:setupDataBase
+800868E0:setupDataCheck
+8008699C:setupDataLoad
+
+// swdrv.o
+80086A98:_swByteGet
+80086AA8:_swByteSet
+80086AB8:_swClear
+80086AF8:_swGet
+80086B40:_swSet
+80086B80:swByteGet
+80086BA4:swByteSet
+80086BC8:swClear
+80086C08:swGet
+80086C50:swSet
+// 80086C90:swReInit
+80086CD4:swInit
+
+// seq_logo.o
+// 80086D4C:progDisp
+// unused:arcLoad
+// unused:arcPreLoad
+// 8008726C:dummy_draw
+// 80087324:logoDisp
+80088118:seq_logoMain
+80088818:seq_logoExit
+8008885C:seq_logoInit
+
+// mario_motion.o
+// 80092AFC:mot_forceReset
+// 80092C60:mot_bottomless
+// 80093180:mot_dummy
+// 800931A0:mot_partyUse
+// 800931C0:mot_shadow
+// 80093304:mot_kaze
+// 80093548:marioChgMotJump2
+// 80093620:marioRollChgChk
+// 800937AC:L_marioChkRub
+// 800937B4:marioChkItemMotion
+// 80093980:marioChkTransform
+// 80093B70:marioChkJump
+// 80093DB8:mot_getItem
+// 80093E10:mot_talk
+// 80094010:marioLandOn
+// 80094C8C:marioFall
+// 800950B4:marioJump
+// 8009539C:marioMakeJumpPara
+// 80095414:marioGetFallSpd
+// 800954A8:marioSetFallPara
+// 80095538:marioSetJumpPara
+// 80095724:marioClearJumpPara
+// 80095758:marioChgMot2
+// 800957D0:marioChgMotSub
+800958D8:marioChgMot
+// 80095998:marioMotion
+// 800959FC:marioBoots
+// 80095BB8:marioChkTalkable
+// 80095C74:marioChkItemGetMotion
+// 80095D04:marioChgSmallJumpMotion
+// 80095E10:marioChgJumpStandMotion
+// 80095FC8:marioChgRollMotion
+80095FF8:marioChgShipMotion
+// 80096018:marioChgGetItemMotion
+// 80096118:marioChgTalkMotion
+800961D0:marioChgStayMotion
+// 800962B0:marioChgMoveMotion
+
+// itemdrv.o
+// text
+// 800AB8CC:itemPickUp
+// 800AB900:itemStatus
+// 800AB90C:itemStatusOn
+// 800AB91C:itemFlag
+// 800AB92C:itemFlagOff
+// 800AB93C:itemFlagOn
+// 800AB94C:itemNokoForceGet
+// 800AB9FC:itemForceGet
+// 800ABA30:itemHitCheckSide
+// 800ABEF4:itemSetPosition
+// 800ABF04:itemseq_Bound
+// 800ACD00:itemseq_GetItem
+// 800AE024:winFullDisp
+// 800AE12C:winHelpDisp
+// 800AE198:winHelpMain
+// 800AE1B8:winNameDisp2
+// 800AE304:winNameDisp
+// 800AE4B8:itemNearDistCheck
+// 800AE67C:itemHitCheck
+// 800AEA28:itemNameToPtr
+// 800AEAC4:itemDelete
+800AEBC0:itemEntry
+// 800AF3A0:itemModeChange
+// 800AF3B0:itemMain
+// 800AFA4C:N_itemPickUpFromFieldCheck
+// 800AFAAC:itemGetNokoCheck
+// 800AFC40:itemGetCheck
+// 800AFE7C:itemCoinDrop
+// 800AFEF0:itemReInit
+// 800AFFE8:itemInit
+// data
+803E82F0:itemDrvWork
+
+// cardmgr.o
+// text
+// 800B0080:memcard_open
+// 800B03D4:statusCallback
+// 800B03F0:readCallback
+// 800B040C:writeCallback
+// 800B0428:createCallback
+// 800B0444:formatCallback
+// 800B0460:checkCallback
+// 800B047C:mountAttachCallback
+// 800B04B4:mountDetachCallback
+// 800B077C:cardFormat
+// 800B07DC:create_main
+// 800B0ECC:cardCreate
+// 800B0F3C:read_all_main
+// 800B1840:cardReadAll
+// 800B18A8:read_main
+// 800B2140:write_header_main
+// 800B24F8:cardWriteHeader
+// 800B257C:write_main
+// 800B2ECC:cardWrite
+// 800B31B8:cardCopy
+// 800B3258:cardErase
+// 800B33D8:cardCopy2Main
+// 800B3564:cardMain
+// 800B3BDC:cardGetCode
+800B3BE8:cardIsExec
+// 800B3CB4:cardInit
+// 800B3F28:cardBufReset
+// 800B4118:cardGetFilePtr
+// data
+8042B3D8:_cardMgrWorkPtr
+
+// party.o
+// 800B7E70:partySetFamicomMode
+// 800B8264:partyShadowOff
+// 800B827C:partyUpdateKeyData
+// 800B8384:L_partyClearCont
+// 800B83BC:partyKeyOff
+// 800B83C0:partyKeyOn
+// 800B83C4:partyDisp
+// 800B87CC:partyPreDisp
+// 800B8AE4:partyMakeDispDir
+// 800B8E24:partySetCamId
+// 800B8E2C:partyInitCamId
+// 800B8E5C:party_damage_return
+// 800B9390:partyRideYoshiMain
+// 800B984C:party_ride_yoshi_force_move
+// 800B98D4:party_force_ride_yoshi
+// 800B9A6C:partyRideMain
+// 800BA620:partyRideChk
+// 800BA65C:allPartyRideOff2
+// 800BA720:allPartyRideOff
+// 800BA7E4:L_allPartyRideOn
+// 800BA860:allPartyForceRideOn
+// 800BA934:getRidePos
+// 800BABB4:allPartyRideShip
+// 800BAC40:allPartyRidePlane
+// 800BACCC:partyDokanEnd
+// 800BAD90:partyDokanMain
+// 800BB2A0:partyDokanInit
+// 800BBC90:partyGoodbyeMain
+// 800BC1AC:partyGoodbyeInit
+// 800BC278:partyHelloMain
+// 800BC97C:partyHello
+// 800BCB10:partyDoWork
+// 800BCBB8:driveParty
+// 800BD2A8:partyMain
+// 800BD7E4:N_partyForceChgRunMode
+// 800BD860:partyChgRunMode
+// 800BD8CC:N__partyChgRunMode
+// 800BDC68:partyUsePost
+// 800BDCC4:partyReInit
+// 800BE3E0:partyInit
+// 800BE40C:partyEntry2Pos
+800BE7DC:partyEntry2Hello
+// 800BEB04:partyEntry2
+// 800BEE78:partyEntryMain
+// 800BF1F8:partyGetHeight
+// 800BF228:yoshiSetColor
+800BF2C8:partyKill2
+// 800BF3D0:partyKill
+// 800BF530:partyGoodbye
+// 800BF580:partyEntryPos
+// 800BF79C:partyEntry
+// 800BF954:partyEntryHello
+// 800BF9A4:partySetForceMove
+// 800BF9EC:partyStop
+800BFA10:partyRun
+// 800BFA40:partyCtrlOn
+// 800BFA78:partyCtrlOff
+// 800BFAB0:partyChgPaper
+// 800BFB20:partyChgPose
+// 800BFB9C:partyChgPoseId
+// 800BFD00:partyPaperLightOff
+// 800BFD28:partyPaperOff
+// 800BFDA4:partyPaperOn
+// 800BFEC4:anotherPartyGetPtr
+800BFEE8:partyGetPtr
+
+// mario_pouch.o
+800D3BAC:pouchGetYoshiName
+800D3BF4:pouchSetYoshiName
+800D3C20:pouchSetPartyColor
+800D3C3C:pouchGetPartyColor
+// 800D3C50:pouchCheckMail
+// 800D3CAC:pouchOpenMail
+// 800D3CEC:pouchReceiveMail
+// 800D3E04:pouchReceiveMailCount
+800D3ED8:pouchGetStarStone
+// 800D3F4C:pouchAddKpaScore
+// 800D3F7C:pouchGetKpaScore
+// 800D3F88:pouchAddKpaCoin
+// 800D3FC0:pouchGetKpaCoin
+// 800D3FCC:pouchMajinaiInit
+// 800D3FFC:pouchArriveBadge
+800D402C:N_pouchUnEquipBadgeID
+800D4084:pouchEquipBadgeID
+// 800D40D8:pouchEquipCheckBadgeIndex
+800D40F8:pouchEquipCheckBadge
+// 800D41C0:pouchUnEquipBadgeIndex
+// 800D41F0:pouchEquipBadgeIndex
+// 800D421C:pouchGetStarPoint
+800D4228:pouchRevisePartyParam
+800D43A0:pouchReviseMarioParam
+// 800D4628:pouchRemoveKeepItem
+// 800D475C:pouchAddKeepItem
+800D4884:pouchGetPartyAttackLv
+800D4898:pouchGetHammerLv
+800D4918:pouchGetJumpLv
+// 800D4998:pouchSetAudienceNum
+// 800D49A4:pouchGetAudienceNum
+800D49B0:pouchGetMaxAP
+800D49BC:pouchSetAP
+// 800D49F8:pouchAddAP
+800D4A3C:pouchGetAP
+// 800D4A48:pouchSetMaxFP
+// 800D4A60:pouchSetFP
+// 800D4A84:pouchGetMaxFP
+// 800D4A90:pouchGetFP
+// 800D4A9C:pouchSetPartyHP
+// 800D4ACC:pouchGetPartyHP
+// 800D4AE0:pouchSetMaxHP
+// 800D4AF8:pouchSetHP
+// 800D4B1C:pouchGetMaxHP
+// 800D4B28:pouchGetHP
+// 800D4B34:pouchAddHP
+// 800D4B84:pouchAddStarPiece
+800D4BA0:pouchGetStarPiece
+// 800D4BAC:pouchSetSuperCoin
+// 800D4BC0:pouchGetSuperCoin
+// 800D4BCC:pouchSetCoin
+// 800D4C10:pouchAddCoin
+800D4C5C:pouchGetCoin
+// 800D4C68:pouchSortItem
+// 800D532C:comp_kind_r
+// 800D5374:comp_aiueo_r
+// 800D53E8:comp_kind
+// 800D5430:comp_aiueo
+800D577C:pouchRemoveItemIndex
+// 800D5A40:pouchRemoveItem
+800D5CDC:pouchCheckItem
+800D5ED4:pouchGetItem
+// 800D6378:pouchGetEmptyKeepItemCnt
+// 800D641C:pouchGetEmptyHaveItemCnt
+// 800D647C:pouchGetEquipBadgeCnt
+800D6540:pouchGetHaveBadgeCnt
+// 800D6604:pouchGetKeepItemCnt
+// 800D66A8:pouchGetHaveItemCnt
+// 800D676C:pouchEquipBadge
+// 800D6780:pouchHaveBadge
+// 800D6794:pouchKeepItem
+// 800D67A8:pouchHaveItem
+// 800D67BC:pouchKeyItem
+// 800D67D0:pouchInit
+800D6CAC:pouchGetPtr
+
+// pmario_sound.o
+// 800D8224:psndENV_LPF
+800D826C:psndENVOff_f_d
+800D84B4:psndENVOff
+800D84DC:psndENVOn_f_d
+// 800D8938:psndENVOn
+// 800D8960:psndENVMain
+// 800D9FE4:psndENV_stop
+// 800DA354:psndSFX_get_vol
+// 800DA39C:psndSFXChk
+// 800DA3F4:psndSFXOff
+// 800DA4BC:psndSFX_dist
+// 800DA4F4:psndSFX_pos
+// 800DA540:psndSFX_pit
+// 800DA5CC:psndSFX_vol
+// 800DA604:psndSFXOnEx_3D
+// 800DA644:psndSFXOn_3D
+// 800DA680:psndSFXOnVol
+// 800DA6B8:psndSFXOn
+// 800DA6F4:psndSFXOn_
+// 800DA730:__psndSFXOn
+// 800DAC70:psndSFXMain
+// 800DB804:psndBGMPlayTime
+// 800DB894:psndBGMStartCheck
+// 800DB8E8:psndBGMScope
+// 800DB940:psndBGMChkSilent
+// 800DB980:psndBGMChk
+800DB9A8:psndBGMOff_f_d
+800DBCF8:psndBGMOff
+800DBD20:psndBGMOn_f_d
+// 800DC59C:psndBGMOn
+// 800DC5C8:psndBGMMain
+// 800DCA5C:psndBGM_rate
+// 800DCAC0:L_psndBGM_stop
+// 800DCBEC:psndSFXAllOff
+// 800DCD34:psndMapChange
+// 800DCEE4:psndGetFlag
+800DCEF4:psndClearFlag
+// 800DCF0C:psndSetFlag
+// 800DCF98:psndSetReverb
+// 800DD010:psndStopAllFadeOut
+// 800DD17C:psndSetPosDirListener
+// 800DD1A4:psndPushGroup
+800DD22C:psndExit
+800DD25C:psndMainInt
+// 800DD288:psndMain
+// 800DD2DC:psndInit
+// 800DD44C:searchPSSFXList
+// 800DD4D0:calc3D
+// 800DD9C4:angleABf
+
+// sound.o
+// 800DDB78:SoundAIDMACallback
+// 800DDC8C:SoundSSMainInt
+// 800DE0DC:SoundSSMain
+// 800DE714:SoundSSMuteOff
+// 800DE73C:SoundSSMuteOn
+// 800DE764:SoundSSCheck
+// 800DE77C:SoundSSSetPlayFreqCh
+// 800DE850:SoundSSSetSrndPanCh
+// 800DE9D4:SoundSSGetVolCh
+// 800DEA18:SoundSSSetVolCh
+// 800DEBB0:SoundSSSetPanCh
+// 800DED10:SoundSSContinueCh
+// 800DED50:SoundSSFadeoutCh
+// 800DEDF4:SoundSSStopCh
+// 800DEF00:SoundSSPlayChEx_main
+// 800DF8CC:SoundSSPlayChEx
+// 800DFB78:SoundSSPlayCh
+// 800DFB9C:_sscallback
+// 800E03C0:ssDecodeDPCM
+// 800E05D0:_ssDVDReadAsync_cache_next
+// 800E06DC:_ssDVDReadAsync_cache_aram
+// 800E0A60:cache_flush
+// 800E0A94:_ssDVDReadAsync_activeChk
+// 800E0EAC:SoundDVDMain
+// 800E1278:SoundEfxMain
+// 800E15BC:SoundEfxCheck
+// 800E1658:SoundEfxSetLPF
+// 800E1700:SoundEfxSetSrndPan
+// 800E17D8:SoundEfxSetPan
+// 800E1860:SoundEfxSetAux1
+// 800E18D8:SoundEfxGetVolume
+// 800E18F8:SoundEfxSetVolume
+// 800E19B8:SoundEfxSetPitch
+// 800E1A34:SoundEfxStop
+800E1A9C:SoundEfxPlayEx
+// 800E1D90:SoundSongCheck
+// 800E1DD0:SoundSongGetVolCh
+// 800E1E28:SoundSongSetVolCh
+// 800E1EAC:SoundSongFadeinCh
+// 800E1F14:SoundSongFadeoutCh
+// 800E1F84:SoundSongStopCh
+// 800E1FE0:SoundSongContinueCh
+// 800E2048:SoundSongPlayCh
+// 800E2150:SoundCloseCover
+// 800E2270:SoundOpenCover
+// 800E2290:SoundSetOutputMode
+// 800E22C8:SoundDropData
+// 800E27F4:SoundSLibLoadDVD
+// 800E2B84:SoundLoadDVD2Free
+// 800E2BCC:SoundLoadDVD2PushGroup
+// 800E2CE8:SoundLoadDVD2
+// 800E3028:loadDVD_callback
+// 800E30BC:SoundSetFadeTime
+// 800E30D0:SoundMainInt
+// 800E30F0:SoundMain
+// 800E3198:SoundInit
+// 800E36CC:sndFree
+// 800E36F4:sndMalloc
+
+// evt_mario.o
+// 800E371C:evt_mario_paper_plane
+// 800E37D4:L_evt_mario_keyon_wait
+// 800E380C:evt_mario_get_name_hitobj_push
+// 800E387C:evt_mario_get_name_hitobj_front
+// 800E38EC:evt_mario_get_name_hitobj_under
+// 800E395C:evt_mario_get_name_hitobj_ride
+// 800E39CC:evt_mario_get_name_hitobj_head
+// 800E3A3C:evt_mario_dump_item
+// 800E3A6C:evt_mario_check_key_item
+// 800E3AE0:evt_mario_sleep_off
+// 800E3B40:evt_mario_sleep_on
+// 800E3B6C:evt_mario_push
+// 800E3B9C:evt_mario_clear_party
+// 800E3C08:evt_mario_kill_party
+// 800E3C74:evt_mario_goodbye_party
+// 800E3CFC:evt_mario_set_prev_party_pos
+// 800E3E54:evt_mario_set_prev_party
+// 800E3F1C:evt_mario_set_party_pos
+// 800E4074:evt_mario_set_party
+// 800E4128:evt_mario_hello_exparty_pos
+// 800E4228:evt_mario_hello_party
+// 800E4310:evt_mario_set_prev_party_dokan
+// 800E43EC:evt_mario_party_use_check
+// 800E4468:evt_mario_chk_join_party
+// 800E44C0:evt_mario_get_exparty
+// 800E4528:evt_mario_get_party
+// 800E4590:evt_peach_set_condition
+// 800E4618:evt_peach_transform_gundan_off
+// 800E463C:evt_peach_transform_gundan_on
+// 800E4660:evt_koopa_set_level
+// 800E4690:evt_koopa_get_level
+// 800E46DC:evt_mario_set_mode
+// 800E470C:evt_mario_get_mode
+// 800E4760:evt_mario_get_state
+// 800E47F0:evt_mario_wait_movable
+// 800E4824:evt_mario_wait_move_end
+// 800E485C:evt_koopa_weary
+// 800E48BC:evt_koopa_chk_dead
+// 800E4910:evt_koopa_fire
+// 800E49F8:evt_koopa_hip_attack
+// 800E4DD4:evt_mario_check_landon
+// 800E4ED4:evt_mario_wait_rideon
+// 800E4F9C:evt_mario_wait_landon
+// 800E5064:evt_mario_jump_jumpstand
+// 800E5A50:evt_mario_jump_pos
+// 800E5F50:evt_mario_party_bero_move
+// 800E65B4:evt_mario_party_door_move
+// 800E6CF4:N_evt_mario_party_door_halve_hitbox
+// 800E6D4C:evt_mario_mov_pos2
+// 800E6ECC:evt_mario_mov_pos
+// 800E702C:evt_mario_set_force_dir
+// 800E70BC:evt_mario_get_pose
+// 800E7108:evt_mario_cancel_roll_motion
+// 800E714C:evt_mario_set_talk_motion
+// 800E7170:evt_mario_chk_hipbump
+// 800E71EC:evt_mario_set_motion
+// 800E721C:evt_mario_get_motion
+// 800E7294:evt_mario_normalize
+// 800E763C:evt_mario_set_pose
+// 800E77A8:evt_mario_set_normal_pose
+// 800E790C:evt_mario_adjust_dir
+// 800E7A3C:evt_mario_set_dir_npc
+// 800E7B0C:evt_mario_set_dispdir
+// 800E7B68:evt_mario_get_dispdir
+// 800E7BBC:evt_mario_set_reardir
+// 800E7BFC:evt_mario_set_dir
+// 800E7DDC:evt_mario_get_dir
+// 800E7E30:evt_mario_get_mov_spd
+// 800E7EAC:evt_mario_set_mov_spd
+// 800E7F1C:evt_mario_set_hosei_xyz
+// 800E7F94:evt_mario_set_pos
+// 800E800C:evt_mario_get_pos
+// 800E80D4:evt_mario_set_camid
+// 800E8104:evt_mario_init_camid
+// 800E8128:evt_mario_cam_y_off
+// 800E814C:evt_mario_cam_y_on
+// 800E8170:evt_mario_cam_keep_off
+// 800E8194:evt_mario_cam_keep_on
+// 800E81B8:evt_mario_cam_off
+// 800E81DC:evt_mario_cam_on
+// 800E8200:evt_mario_bgmode_off
+// 800E8224:evt_mario_bgmode_on
+// 800E8248:evt_mario_set_enable_key
+800E8288:evt_mario_key_onoff
+// 800E82EC:evt_mario_cont_onoff
+// 800E832C:evt_mario_trigflag_onoff
+// 800E83BC:evt_mario_dispflag_onoff
+// 800E844C:evt_mario_flag_onoff
+// 800E84DC:evt_mario_balloon_off
+// 800E8528:evt_mario_balloon_tenten
+// 800E8578:evt_mario_balloon_bikkuri
+// 800E85C8:evt_mario_paper_pose_off
+// 800E85EC:evt_mario_dokan_end
+// 800E8654:evt_mario_paper_pose_dokan
+// 800E8C18:evt_mario_dokan_prepare
+
+// event.o
+800ECA24:eventStgNum
+800ECA2C:eventStgDtPtr
+// 800ECA40:N_stg9_02_init
+// 800ECA6C:stg8_15_init
+// 800ECA98:stg8_14_init
+// 800ECAC4:stg8_13_init
+// 800ECAF8:stg8_11_init
+// 800ECB24:stg8_10_init
+// 800ECB48:stg8_06_init
+// 800ECC8C:stg8_05_init
+// 800ECCE0:stg8_02_init
+// 800ECD04:stg8_01_02_init
+// 800ECD28:stg7_52_init
+// 800ECD2C:stg7_51_init
+// 800ECD70:stg7_50_init
+// 800ECD94:stg7_25_00_init
+// 800ECDC0:stg7_20_init
+// 800ECDE4:stg7_19_init
+// 800ECE10:stg7_17_init
+// 800ECE5C:stg7_16_init
+// 800ECE90:stg7_15_room_C_init
+// 800ECEBC:stg7_15_room_B_init
+// 800ECEE8:stg7_15_room_A_init
+// 800ECF0C:stg7_15_init
+// 800ECF30:stg7_11_init
+// 800ECF54:stg7_10_init
+// 800ECF78:stg7_06_init
+// 800ECF9C:stg7_04_init
+// 800ECFC0:stg7_03_white_5
+// 800ECFF4:stg7_03_white_4
+// 800ED018:stg7_03_white_3
+// 800ED03C:stg7_03_white_2
+// 800ED060:stg7_03_white_1
+// 800ED084:stg7_03_white_0
+// 800ED0C0:stg7_01_init
+// 800ED0E4:stg6_end_init02
+// 800ED108:stg6_end_init01
+// 800ED134:stg6_72_init
+// 800ED138:stg6_71_01_init
+// 800ED1A4:stg6_70_init
+// 800ED1D0:stg6_56_init
+// 800ED1F4:stg6_54_init
+// 800ED220:stg6_47_00_init
+// 800ED24C:stg6_44_init
+// 800ED278:stg6_39_init
+// 800ED29C:stg6_38_init
+// 800ED2C0:stg6_37_init
+// 800ED2E4:stg6_34_init
+// 800ED358:stg6_33_init
+// 800ED37C:stg6_32_init
+// 800ED3A0:stg6_30_init
+// 800ED3C4:stg6_29_init
+// 800ED3E8:stg6_27_init
+// 800ED41C:stg6_24_init
+// 800ED440:stg6_22_init
+// 800ED46C:stg6_20_init
+// 800ED490:stg6_19_init
+// 800ED4BC:stg6_18_init
+// 800ED4E0:stg6_13_init
+// 800ED504:stg6_12_init
+// 800ED528:stg6_06_init
+// 800ED54C:stg6_00_init
+// 800ED578:stg5_66_init
+// 800ED5A4:stg5_65_init
+// 800ED5D0:stg5_64_03_init
+// 800ED5F4:stg5_64_02_init
+// 800ED618:stg5_64_01_init
+// 800ED644:stg5_64_init
+// 800ED668:stg5_63_init
+// 800ED68C:stg5_62_init
+// 800ED6B0:stg5_60_init
+// 800ED6F4:stg5_59_01_init
+// 800ED718:stg5_58_init
+// 800ED73C:stg5_47_init
+// 800ED770:stg5_43_init
+// 800ED79C:stg5_30_init02
+// 800ED7D0:stg5_30_init01
+// 800ED7F4:stg5_29_init
+// 800ED818:stg5_22_init01
+// 800ED83C:stg5_22_init00
+// 800ED868:stg5_21_01_init00
+// 800ED88C:stg5_21_init03
+// 800ED8B0:stg5_21_init01
+// 800ED8DC:stg5_21_init00
+// 800ED900:stg5_19_01_init
+// 800ED904:stg5_19_init02
+// 800ED938:stg5_19_init01
+// 800ED95C:stg5_19_init00
+// 800ED960:stg5_18_init_02
+// 800ED98C:stg5_18_init
+// 800ED9B8:stg5_17_init
+// 800ED9DC:stg5_15_init02
+// 800EDA00:stg5_15_init01
+// 800EDA24:stg5_12_init01
+// 800EDA48:stg4_end_init
+// 800EDA74:stg4_37_init
+// 800EDA98:stg4_36_init
+// 800EDABC:stg4_35_init
+// 800EDAE8:stg4_30_init
+// 800EDB14:stg4_16_init
+// 800EDB38:stg4_15_03_init
+// 800EDB84:stg4_15_init
+// 800EDBA8:stg4_14_init
+// 800EDBE4:stg4_13_03_init
+// 800EDC08:stg4_13_02_init
+// 800EDC34:stg4_13_init
+// 800EDC58:stg4_11_init
+// 800EDC94:stage4_10_init
+// 800EDCB8:stage4_09_05_init
+// 800EDCDC:stage4_05_init
+// 800EDD18:stage4_04_01_init
+// 800EDD4C:stage4_04_init
+// 800EDD70:stage4_00_init
+// 800EDD74:stg3_end_init
+// 800EDD78:stg3_52_init
+// 800EDDAC:stg3_50_init
+// 800EDDD8:stg3_35_init
+// 800EDDFC:stg3_34_init
+// 800EDE90:stg3_33_04_init
+// 800EDEB4:stg3_33_03_init
+// 800EDEE0:stg3_33_init
+// 800EDF0C:stg3_32_init
+// 800EDF30:stg3_31_init
+// 800EDF54:stg3_31_00_init
+// 800EDF90:stg3_30_init
+// 800EE034:stg3_21_init
+// 800EE090:stg3_20_15_init
+// 800EE0B4:stg3_20_14_init
+// 800EE0E8:stg3_20_13_init
+// 800EE10C:stg3_20_init_1
+// 800EE17C:stg3_20_init_2
+// 800EE1DC:stg3_20_init_3
+// 800EE23C:stg3_20_12_init
+// 800EE2A0:stg3_20_09_init
+// 800EE2CC:stg3_20_08_init
+// 800EE2F8:stg3_20_07_00_init
+// 800EE31C:stg3_20_06_init
+// 800EE350:stg3_20_init_4
+// 800EE3A8:stg3_20_init_5
+// 800EE3F8:stg3_20_init_6
+// 800EE450:stg3_20_init_7
+// 800EE4C0:stg3_20_02_init
+// 800EE4F4:stg3_20_01_init
+// 800EE520:stg3_20_init_8
+// 800EE570:stg3_20_init_9
+// 800EE5C0:stg3_20_init_10
+// 800EE628:stg3_12_2_init
+// 800EE668:stg3_12_init__1
+// 800EE6B8:stg3_12_init__2
+// 800EE708:stg3_12_init__3
+// 800EE758:stg3_12_init__4
+// 800EE800:stg3_10_init__5
+// 800EE850:stg3_07_init__6
+// 800EE8A0:stg3_07_init__7
+// 800EE8F0:stg3_07_init__8
+// 800EE948:stg3_07_init__9
+// 800EE9B0:stg3_06_init
+// 800EEA04:stg2_end_init
+// 800EEA30:stg2_47_init
+// 800EEA54:stg2_44_init
+// 800EEA78:stg2_40_init
+// 800EEAAC:stg2_26_init
+// 800EEAD0:stg2_25_02_init
+// 800EEAF4:stg2_25_init
+// 800EEB28:stg2_23_01_init
+// 800EEB54:stg2_23_init
+// 800EEB78:stg2_21_06_init01
+// 800EEB9C:stg2_21_06_init00
+// 800EEC54:stg2_21_04_init
+// 800EEC78:stg2_21_03_init
+// 800EEC9C:stg2_21_02_init
+// 800EECC0:stg2_21_01_init
+// 800EED78:stg2_21_init02
+// 800EEDA4:stg2_21_init00
+// 800EEDF4:stg2_20_init
+// 800EEE18:stg2_19_init
+// 800EEE44:stg2_18_init02
+// 800EEE70:stg2_18_init01
+// 800EEE94:stg2_16_init01
+// 800EEEB8:stg2_16_init00
+// 800EEEF0:stg2_15_init
+// 800EEF24:stg2_14_init
+// 800EEF50:stg2_12_01_init
+// 800EEF80:stg2_11_init
+// 800EEFA4:stg2_10_init
+// 800EEFE0:stg2_09_init
+// 800EF004:stg2_03_03_init
+// 800EF008:stg2_00_init
+// 800EF058:stg1_35_init01
+// 800EF07C:stg1_30_init01
+// 800EF0A8:stg1_30_init
+// 800EF0D4:stg1_20_init
+// 800EF0F8:stg1_19_init
+// 800EF12C:stg1_17_init
+// 800EF158:stg1_16_init01
+// 800EF17C:stg1_16_init00
+// 800EF1CC:stg1_15_04_init
+// 800EF1F0:stg1_15_03_init
+// 800EF214:stg1_15_02_init
+// 800EF238:stg1_14_init
+// 800EF25C:stg1_13_03_init
+// 800EF280:stg1_13_02_init
+// 800EF2AC:stg1_13_01_init
+// 800EF2D0:stg1_13_init
+// 800EF2F4:stg1_12_02_init
+// 800EF318:stg1_10_init
+// 800EF31C:stg1_09_02_init
+// 800EF320:stg1_09_init
+// 800EF34C:stg1_08_init
+// 800EF380:stg1_06_01_init
+// 800EF3BC:stg1_03_init
+// 800EF3F0:stg1_01a_init
+// 800EF414:stg0_16_init
+// 800EF438:stg0_13_init00
+// 800EF464:stg0_12_02_init
+// 800EF488:stg0_11_init
+// 800EF4AC:stg0_08_init
+// 800EF4D0:stg0_05_init
+// 800EF4F4:stg0_00_init
+
+// evt_pouch.o
+// 800F163C:evt_pouch_get_yoshiname
+// 800F1688:evt_pouch_set_yoshiname
+// 800F16B8:evt_pouch_open_mail
+// 800F16E8:evt_pouch_receive_mail
+// 800F1718:evt_pouch_majinai_set
+// 800F1748:evt_pouch_get_equipbadgecnt
+// 800F1794:evt_pouch_get_havebadgecnt
+// 800F17E0:evt_pouch_get_haveitemcnt
+800F182C:evt_pouch_all_party_recovery
+800F1890:evt_pouch_mario_recovery
+// 800F18C8:evt_pouch_party_left
+// 800F18F8:evt_pouch_party_join
+// 800F1928:evt_pouch_set_ap
+// 800F1958:evt_pouch_get_max_ap
+// 800F19A4:L_evt_pouch_set_hp
+// 800F19D4:L_evt_pouch_get_hp
+// 800F1A20:evt_pouch_check_item
+// 800F1A74:evt_pouch_remove_keepitem
+// 800F1B08:evt_pouch_add_keepitem
+// 800F1B78:N_evt_pouch_remove_item_index
+// 800F1C14:evt_pouch_remove_item
+// 800F1C8C:evt_pouch_add_item
+// 800F1CFC:evt_pouch_get_starstone
+// 800F1D2C:evt_pouch_add_starpiece
+// 800F1D5C:evt_pouch_get_starpiece
+// 800F1DA8:evt_pouch_set_supercoin
+// 800F1DD8:evt_pouch_get_supercoin
+// 800F1E24:evt_pouch_set_coin
+// 800F1E54:evt_pouch_add_coin
+// 800F1E84:evt_pouch_get_coin
+
+// seq_load.o
+// 800F4848:continueGame
+// 800F4D98:loadDraw
+// 800F6940:loadMain
+800F7DD4:seq_loadMain
+// 800F80E8:seq_loadExit
+// 800F8124:seq_loadInit
+
+// battle.o
+// text
+// 800F8320:BattleConsumeReserveItem
+// 800F8380:BattleStatusWindowCheck
+// 800F8438:BattleStatusWindowSystemOff
+// 800F8464:BattleStatusWindowEventOff
+// 800F8490:BattleStatusWindowSystemOn
+// 800F84BC:BattleStatusWindowEventOn
+// 800F84E8:BattleStatusWindowAPRecoveryOff
+// 800F8514:BattleStatusWindowAPRecoveryOn
+// 800F8540:BattleMajinaiEndCheck
+// 800F8584:BattleMajinaiDone
+// 800F85E0:BattleMajinaiCheck
+// 800F8730:battleDisableHResetCheck
+// 800F8768:BattleAfterReactionMain
+// 800F8850:BattleAfterReactionRelease
+// 800F88E4:BattleAfterReactionEntry
+// 800F895C:BattleAfterReactionQueueInit
+// 800F8994:BattleCheckUnitBroken
+// 800F89F0:BattleGetFloorHeight
+// 800F8A40:BattleGetStockExp
+// 800F8A68:BattleStoreExp
+// 800F8A78:BattleStoreCoin
+// 800F8A8C:BattlePartyInfoWorkInit
+800F8B10:_EquipItem
+// 800F9188:BtlUnit_EquipItem
+// 800F9250:BattleTransPartyIdToUnitKind
+// 800F92B0:BattleTransPartyId
+// 800F93A4:BattleChangeParty
+// 800F9520:BattlePartyAnimeLoad
+800F9560:BattleGetPartnerPtr
+800F9594:BattleGetPartyPtr
+800F9614:BattleGetMarioPtr
+// 800F9680:BattleGetSystemPtr
+// 800F96E0:BattleGetUnitPartsPtr
+// 800F9720:BattleSetUnitPtr
+800F9738:BattleGetUnitPtr
+// 800F9774:BattleFree
+// 800F97A0:BattleAlloc
+// 800F97C8:BattleIncSeq
+// 800F980C:BattleGetSeq
+// 800F9874:BattleSetSeq
+// 800F98D4:BattleSetMarioParamToFieldBattle
+// 800F9918:Btl_UnitSetup
+800F9C10:BattleEnd
+// 800F9C94:BattleMain
+// 800F9D70:BattleInit
+// 800F9EA8:battleSeqEndCheck
+// 800F9EB8:battleMain
+// data
+8042B4B0:_battleWorkPtr
+
+// battle_ac.o
+// text
+// 800F9F00:BattleAcGaugeSeDelete
+// 800F9F44:BattleAcGaugeSeUpdate
+// 800F9FBC:BattleAcGaugeSeInit
+// 800F9FFC:BattleAcDrawGauge
+// 800FAD10:BattleACGetButtonIcon
+// 800FAF54:BattleActionCommandGetPrizeLv
+// 800FAF98:BattleActionCommandSetDifficulty
+800FAFC8:BattleActionCommandGetDifficulty
+// 800FAFD0:BattleActionCommandResetDefenceResult
+// 800FB000:BattleActionCommandGetDefenceResult
+800FB00C:BattleACPadCheckRecordTrigger
+800FB024:BattleActionCommandCheckDefence
+// 800FB28C:BattleActionCommandStop
+// 800FB2BC:BattleActionCommandStart
+// 800FB2C8:BattleActionCommandSetup
+// 800FB35C:BattleActionCommandDeclareACResult
+// 800FB3E0:BattleActionCommandResult
+// 800FB41C:BattleActionCommandManager
+// 800FB498:BattleActionCommandManagerInit
+// data
+802F9C78:_guardFrames
+802F9C80:_superguardFrames
+
+// battle_disp.o
+// 801010C4:_btlStockExpDisp
+// 801012C8:BattleStockExpDisp
+// 80101344:_btlDispTex4
+// 801014B0:btlDispTex4
+80101820:btlGetScreenPoint
+// 801018B8:btlDispAnimeSpeed
+// 801018EC:_pose_two_pattern
+// 80101B94:_pose_one_pattern
+// 80101C6C:_pose_def
+// 80101CD8:statusPoseControl
+// 80101D3C:getFloatDispOffset
+// 80101DA0:floatOffsetControl
+// 80101E68:getGravityDispOffset
+// 80101ECC:gravityOffsetControl
+// 80101F60:btlDispPoseAnime
+// 80101F98:btlDispChangePeraAnime
+// 80101FD4:btlDispChangeAnime
+// 80102068:btlDispEntAnime
+// 801020F8:btlUnitPartsBlurDisp
+// 80102294:_partsBlurControl
+// 80102360:btlUnitPartsBlurControl
+// 801023B4:btlUnitStolenItemDisp
+// 80102458:btlUnitItemDisp2
+// 801024E4:btlUnitItemDisp
+// 801025E0:btlUnitPartsDisp
+// 8010335C:btlDispMain
+// 80103EF0:_GetStatusPoseType
+// 80103F64:btlDispInit
+// 80103FA0:btlDispGetTexSize
+// 80104004:btlDispTexPlane3
+// 801040A8:btlDispTexPlane2
+// 80104134:btlDispTexPlane
+// 80104250:btlDispTexPlainGX
+// 80104550:btlDispTexPlaneInit
+// 80104630:btlDispGXQuads2D
+// 80104754:btlDispGXPoint2D
+// 80104784:btlDispGXQuads2DRasta
+// 80104858:btlDispGXPoint2DRasta
+// 80104880:btlDispGXInit2D
+// 801049B4:btlDispGXInit2DRasta
+// 80104AA8:btlDispGXInit2DSub
+// 80104B3C:searchPoseTbl
+
+// battle_event_cmd.o
+// 80104B80:btlevtcmd_ftof
+// 80104C2C:btlevtcmd_ftomsec
+// 80104C7C:btlevtcmd_StageDispellFog
+80104CA0:btlevtcmd_StatusWindowOnOff
+// 80104D1C:btlevtcmd_BtlStageObjGetRotate
+// 80104E08:btlevtcmd_BtlStageObjSetRotate
+// 80104F60:btlevtcmd_BtlStageObjFlagOnOff
+// 80105024:btlevtcmd_SacBgsetMove
+// 801051D8:btlevtcmd_SetCounterAcCallBack
+80105244:btlevtcmd_InviteApInfoReport
+// 80105290:btlevtcmd_PadCheckNow
+// 80105300:btlevtcmd_PadCheckTrigger
+// 80105370:btlevtcmd_EnemyItemUseCheck
+// 801053E0:btlevtcmd_snd_voice
+// 801054B8:btlevtcmd_snd_se_offset
+801055D8:btlevtcmd_snd_se
+// 80105694:_MoveSoundControlEndCore
+// 801056D8:_PartsMoveSoundControlEnd
+// 80105704:_UnitMoveSoundControlEnd
+// 80105728:_MoveSoundControlCore
+// 801058A8:_PartsMoveSoundControl
+// 801058FC:_UnitMoveSoundControl
+// 80105950:btlevtcmd_SetPartsJumpSound
+// 801059E0:btlevtcmd_SetJumpSound
+// 80105A60:btlevtcmd_SetPartsDiveSound
+// 80105B2C:btlevtcmd_SetDiveSound
+// 80105BE8:btlevtcmd_SetPartsWalkSound
+// 80105CB4:btlevtcmd_SetWalkSound
+// 80105D70:btlevtcmd_SetPartsRunSound
+// 80105E3C:btlevtcmd_SetRunSound
+// 80105EF8:btlevtcmd_SetMoveSoundDataWork
+// 80105FE4:btlevtcmd_TransStageFloorPosition
+// 801060A4:btlevtcmd_GetStageAudienceAreaSize
+8010615C:btlevtcmd_GetStageSize
+// 80106214:btlevtcmd_SortPhaseMoveTable
+// 80106240:btlevtcmd_InterruptStop
+// 801062B8:btlevtcmd_GetGuardKouraId
+// 80106344:btlevtcmd_SetGuard
+801063C0:btlevtcmd_WeaponAftereffect
+801065CC:btlevtcmd_GetItemRecoverParam
+// 80106670:btlevtcmd_CommandGetWeaponItemId
+// 801066C0:btlevtcmd_CommandGetWeaponAddress
+// 80106768:btlevtcmd_CommandGetWeaponActionLv
+// 801067B8:btlevtcmd_GetWeaponActionLv
+// 80106800:btlevtcmd_CommandPayWeaponCost
+// 80106878:btlevtcmd_PayWeaponCost
+// 801068EC:btlevtcmd_CheckWeaponPluralTarget
+// 80106950:btlevtcmd_AfterReactionEntry
+// 801069B8:btlevtcmd_OffUnitFlag
+// 80106A18:btlevtcmd_OnUnitFlag
+// 80106A78:btlevtcmd_CheckUnitFlag
+// 80106B08:btlevtcmd_GetACPossibility
+// 80106B8C:btlevtcmd_CheckActStatus
+// 80106C10:btlevtcmd_OffStatusFlag
+// 80106C70:btlevtcmd_OnStatusFlag
+// 80106CD0:btlevtcmd_ClearAllStatus
+// 80106D28:btlevtcmd_OnOffStatus
+// 80106DE4:btlevtcmd_CheckStatus
+// 80106E78:btlevtcmd_CheckGuardMotionEnable
+// 80106F78:btlevtcmd_AnimeFlagOnOff
+// 80107018:btlevtcmd_AnimeChangePaperAnime
+// 801070A0:btlevtcmd_AnimeChangePaperGroup
+// 8010713C:btlevtcmd_AnimeSetMotionSpeed
+// 801071B8:btlevtcmd_CheckDefinePosetype
+// 801072CC:btlevtcmd_AnimeSetPoseSoundTable
+// 80107340:btlevtcmd_AnimeSetPoseTable
+// 801073B0:btlevtcmd_AnimeChangePoseFromTable
+// 8010741C:btlevtcmd_AnimeCmpPoseType
+// 801074F0:btlevtcmd_SetStayPoseType
+// 80107580:btlevtcmd_SetTalkPoseType
+// 80107610:btlevtcmd_SetStayPose
+// 80107668:btlevtcmd_SetTalkPose
+// 801076C0:btlevtcmd_SetTalkBodyId
+// 8010772C:btlevtcmd_AnimeWaitPlayLoopTiming
+// 80107858:btlevtcmd_AnimeWaitPlayComplete
+// 8010790C:btlevtcmd_AnimeChangePoseDirect
+// 801079F8:btlevtcmd_AnimeChangePoseType
+80107A90:btlevtcmd_AnimeChangePose
+// 80107B18:btlevtcmd_AnimeChangeGroup
+// 80107BF0:btlevtcmd_AudienceAppeal
+// 80107C54:btlevtcmd_ACRGetResult
+// 80107CD4:btlevtcmd_ACRStart
+// 80107D8C:btlevtcmd_ACHelpSet
+// 80107DC8:btlevtcmd_ac_timing_get_success_frame
+// 80107E18:btlevtcmd_ac_timing_flag_onoff
+// 80107E78:btlevtcmd_ACSuccessEffect
+// 801081BC:btlevtcmd_AudienceDeclareAcrobatResult
+80108374:btlevtcmd_AudienceDeclareACResult
+// 80108420:btlevtcmd_GetResultCountAC
+// 80108454:btlevtcmd_GetResultACDefence
+// 8010849C:btlevtcmd_GetResultPrizeLv
+// 80108538:btlevtcmd_GetResultAC
+8010856C:btlevtcmd_ResultACDefence
+// 801085E0:btlevtcmd_ResultAC
+// 80108630:btlevtcmd_StopAC
+// 80108660:btlevtcmd_StartAC
+// 801086C4:btlevtcmd_SetupAC
+// 8010875C:btlevtcmd_AcSetOutputParam
+// 801087B4:btlevtcmd_AcGetOutputParam
+// 80108814:btlevtcmd_AcSetGaugeParam
+// 80108884:btlevtcmd_AcGetParam
+// 801088E4:btlevtcmd_AcSetParam
+// 8010893C:btlevtcmd_AcSetParamAll
+// 801089AC:btlevtcmd_AcSetFlag
+// 801089C4:btlevtcmd_AcGetDifficulty
+// 80108A10:btlevtcmd_AcSetDifficulty
+// 80108A90:btlevtcmd_DivePartsPosition
+// 801093DC:btlevtcmd_FallPartsPosition
+// 8010973C:btlevtcmd_JumpPartsContinue
+// 80109874:btlevtcmd_JumpPartsSetting
+// 80109930:btlevtcmd_JumpPartsPosition
+// 80109E0C:btlevtcmd_SetPartsFallAccel
+// 80109E9C:btlevtcmd_SetPartsMoveSpeed
+// 80109F2C:btlevtcmd_GetTakeoffPosition
+// 8010A280:btlevtcmd_MarioJumpPosition
+// 8010AB40:btlevtcmd_MarioJumpParam
+// 8010ACDC:btlevtcmd_GetConfuseActEvent
+// 8010AD80:btlevtcmd_PhaseEventStartDeclare
+// 8010ADD8:btlevtcmd_GetDataFromDataTable
+// 8010AE60:btlevtcmd_CheckDataOfDataTable
+// 8010AEE8:btlevtcmd_RunDataEventChild
+// 8010AF88:btlevtcmd_WaitAttackEndCheck
+// 8010B02C:btlevtcmd_WaitAttackEnd
+// 8010B0A0:btlevtcmd_WaitGuardMove
+// 8010B0BC:btlevtcmd_GuardMoveEnd
+// 8010B0D4:btlevtcmd_StopWaitEvent
+8010B144:btlevtcmd_StartWaitEvent
+// 8010B1A8:btlevtcmd_SetEventCeilFall
+// 8010B204:btlevtcmd_SetEventConfusion
+// 8010B260:btlevtcmd_SetEventAttack
+// 8010B2C4:btlevtcmd_SetEventUnisonPhase
+// 8010B320:btlevtcmd_SetEventPhase
+// 8010B37C:btlevtcmd_SetEventEntry
+// 8010B3D8:btlevtcmd_SetEventWait
+// 8010B434:btlevtcmd_SetEventDamage
+// 8010B490:btlevtcmd_DamageDirect
+// 8010B560:btlevtcmd_CommandCheckDamage
+8010B664:btlevtcmd_CheckDamage
+// 8010B764:btlevtcmd_CommandPreCheckCounter
+// 8010B870:btlevtcmd_PreCheckCounter
+// 8010B980:btlevtcmd_CommandPreCheckDamage
+8010BA84:btlevtcmd_PreCheckDamage
+// 8010BB84:btlevtcmd_AttackDeclareAll
+// 8010BBD8:btlevtcmd_AttackDeclare
+// 8010BC84:btlevtcmd_ConsumeItemReserve
+8010BE30:btlevtcmd_ConsumeItem
+// 8010BF9C:btlevtcmd_CommandFlyItem
+// 8010C190:btlevtcmd_DispItemIcon
+8010C2AC:btlevtcmd_GetConsumeItem
+// 8010C2F0:btlevtcmd_GetFirstAttackTarget
+8010C368:btlevtcmd_GetSelectNextEnemy
+8010C418:btlevtcmd_GetSelectEnemy
+// 8010C4BC:btlevtcmd_ChoiceSamplingEnemy
+// 8010C53C:btlevtcmd_SamplingEnemy
+// 8010C5EC:btlevtcmd_PartsFaceDirectionSub
+// 8010C69C:btlevtcmd_FaceDirectionSub
+// 8010C734:btlevtcmd_FaceDirectionAdd
+// 8010C7CC:btlevtcmd_MoveDirectionAdd
+// 8010C87C:btlevtcmd_EllipseMovePosition
+// 8010CE64:btlevtcmd_DivePosition
+// 8010D798:btlevtcmd_GetMoveFrame
+8010D94C:btlevtcmd_MovePosition
+// 8010DC80:btlevtcmd_FallPosition
+// 8010DFC8:btlevtcmd_JumpContinue
+8010E0E0:btlevtcmd_JumpPosition
+// 8010E5A4:btlevtcmd_JumpSetting
+8010E648:btlevtcmd_SetFallAccel
+// 8010E6C0:btlevtcmd_SetJumpSpeed
+8010E738:btlevtcmd_SetMoveSpeed
+// 8010E7B0:btlevtcmd_StoreCoin
+// 8010E7EC:btlevtcmd_GetCoin
+// 8010E858:btlevtcmd_StoreExp
+// 8010E894:btlevtcmd_GetExp
+// 8010E900:btlevtcmd_GetBackItem
+// 8010E9B8:btlevtcmd_ChangeDataTable
+// 8010EA14:btlevtcmd_SetPartsDefenceAttrTable
+// 8010EA98:btlevtcmd_SetPartsDefenceTable
+// 8010EB1C:btlevtcmd_ChangeKind
+// 8010EB88:btlevtcmd_CheckCommandUnit
+// 8010EC18:btlevtcmd_SetRegistStatus
+8010EC84:btlevtcmd_CheckToken
+// 8010ED08:btlevtcmd_OffToken
+// 8010ED6C:btlevtcmd_OnToken
+// 8010EDD0:btlevtcmd_SetPartsBlur
+// 8010EEE0:btlevtcmd_OffPartsCounterAttribute
+// 8010EF64:btlevtcmd_OnPartsCounterAttribute
+// 8010EFE8:btlevtcmd_CheckPartsCounterAttribute
+// 8010F090:btlevtcmd_OffPartsAttribute
+// 8010F114:btlevtcmd_OnPartsAttribute
+// 8010F198:btlevtcmd_CheckPartsAttribute
+// 8010F240:btlevtcmd_OffAttribute
+// 8010F2A4:btlevtcmd_OnAttribute
+// 8010F308:btlevtcmd_CheckAttribute
+8010F394:btlevtcmd_ResetFaceDirection
+// 8010F404:btlevtcmd_ChangePartsFaceDirection
+// 8010F480:btlevtcmd_ChangeFaceDirection
+// 8010F4EC:btlevtcmd_GetFaceDirection
+// 8010F55C:btlevtcmd_CalculateFaceDirection
+// 8010F874:btlevtcmd_GetPartyTechLv
+// 8010F90C:btlevtcmd_GetUnitId
+// 8010F9B0:btlevtcmd_GetBodyId
+// 8010FA24:btlevtcmd_GetPartyId
+// 8010FAFC:btlevtcmd_GetMarioId
+// 8010FBCC:btlevtcmd_GetPartnerId
+// 8010FC64:btlevtcmd_GetUnitKind
+// 8010FCD0:btlevtcmd_GetProtectId
+// 8010FD3C:btlevtcmd_GetFriendBelong
+// 8010FDAC:btlevtcmd_GetEnemyBelong
+8010FE1C:btlevtcmd_CheckSpace
+// 8010FFC0:btlevtcmd_CheckDamagePattern
+// 8011004C:btlevtcmd_RunHitEventDirect
+801100D8:btlevtcmd_StartAvoid
+// 801101C0:btlevtcmd_CheckDamageCode
+// 8011024C:btlevtcmd_GetDamageCode
+// 801102BC:btlevtcmd_GetTotalDamage
+// 80110330:btlevtcmd_GetDamage
+// 801103A4:btlevtcmd_SetPartsWork
+// 80110440:btlevtcmd_GetPartsWork
+// 801104DC:btlevtcmd_SetUnitWorkFloat
+// 80110568:btlevtcmd_GetUnitWorkFloat
+// 801105F0:btlevtcmd_AddUnitWork
+// 8011067C:btlevtcmd_SetUnitWork
+80110700:btlevtcmd_GetUnitWork
+// 80110784:btlevtcmd_SetOverTurnCount
+// 801107F0:btlevtcmd_GetOverTurnCount
+// 80110860:btlevtcmd_RecoverFp
+// 801108F4:btlevtcmd_RecoverHp
+// 801109C8:btlevtcmd_GetHpDamageCount
+// 80110A40:btlevtcmd_GetFpDamage
+// 80110ABC:btlevtcmd_GetHpDamage
+// 80110B38:btlevtcmd_GetDamagePartsId
+// 80110BB8:btlevtcmd_SetMaxMoveCount
+// 80110C50:btlevtcmd_SetSwallowAttribute
+// 80110CC8:btlevtcmd_SetSwallowParam
+// 80110D3C:btlevtcmd_SetMaxFp
+// 80110DC4:btlevtcmd_SetFp
+80110E4C:btlevtcmd_SetHp
+// 80110F24:btlevtcmd_GetMaxFp
+// 80110FA4:btlevtcmd_GetMaxHp
+// 8011101C:btlevtcmd_GetFp
+// 8011109C:btlevtcmd_GetHp
+// 80111114:btlevtcmd_AddPartsScale
+// 801111E4:btlevtcmd_SetPartsScale
+// 801112B4:btlevtcmd_AddScale
+// 80111374:btlevtcmd_SetScale
+// 80111434:btlevtcmd_GetScale
+// 8011150C:btlevtcmd_SetPartsBaseScale
+// 801115DC:btlevtcmd_SetBaseScale
+// 801116A0:btlevtcmd_SetPossessionItemOffset
+// 801117C4:btlevtcmd_SetCutHeight
+// 80111850:btlevtcmd_SetCutWidth
+// 801118DC:btlevtcmd_SetKissHitOffset
+// 80111A00:btlevtcmd_SetBintaHitOffset
+// 80111B24:btlevtcmd_SetCutBaseOffset
+// 80111C48:btlevtcmd_SetRotateOffsetFromCenterOffset
+// 80111CAC:btlevtcmd_AddPartsRotateOffset
+// 80111D90:btlevtcmd_SetPartsRotateOffset
+// 80111E74:btlevtcmd_SetRotateOffset
+// 80111F9C:btlevtcmd_SetPartsBaseRotate
+// 801120BC:btlevtcmd_SetBaseRotate
+// 80112230:btlevtcmd_AddPartsRotate
+// 80112314:btlevtcmd_SetPartsRotate
+// 801123F8:btlevtcmd_GetPartsRotate
+// 801124D0:btlevtcmd_AddRotate
+// 801125F8:btlevtcmd_SetRotate
+// 8011276C:btlevtcmd_GetRotate
+// 80112854:btlevtcmd_SetRGB
+// 801128F0:btlevtcmd_GetRGB
+// 80112990:btlevtcmd_SetAlpha
+// 80112A04:btlevtcmd_GetHpGaugeOffset
+// 80112A9C:btlevtcmd_SetHpGaugeOffset
+// 80112B34:btlevtcmd_SetStatusIconOffset
+// 80112BCC:btlevtcmd_GetStatusMg
+// 80112C38:btlevtcmd_SetHeight
+// 80112CA8:btlevtcmd_GetHeight
+// 80112D18:btlevtcmd_GetWidth
+// 80112D88:btlevtcmd_SetHitCursorOffset
+// 80112E84:btlevtcmd_SetHitOffset
+// 80112F80:btlevtcmd_GetHitPos
+// 8011309C:btlevtcmd_SetPartsHomePos
+// 80113180:btlevtcmd_AddHomePos
+// 801132A8:btlevtcmd_SetHomePos
+801133D0:btlevtcmd_GetHomePos
+// 80113494:btlevtcmd_SetTogeOffset
+// 801135C8:btlevtcmd_AddPartsDispOffset
+// 8011370C:btlevtcmd_SetPartsDispOffset
+// 80113850:btlevtcmd_SetDispOffset
+// 80113978:btlevtcmd_AddPartsPos
+// 80113AD0:btlevtcmd_SetPartsPos
+// 80113C70:btlevtcmd_GetPartsPos
+// 80113D7C:btlevtcmd_AddPos
+80113EA4:btlevtcmd_SetPos
+// 80114018:btlevtcmd_ChangeParty
+// 80114074:btlevtcmd_ReplaceParts
+801141DC:btlevtcmd_KillUnit
+// 80114294:btlevtcmd_SpawnUnit
+// 80114308:btlevtcmd_DrawLots
+// 801143E4:btlevtcmd_GetRandomValue
+// 80114434:btlevtcmd_GetPosFloat
+801144F8:btlevtcmd_GetPos
+// 801145E0:btlevtcmd_CheckPhase
+// 80114650:btlevtcmd_reset_move_color_lv_all
+// 80114678:btlevtcmd_reset_turn
+// 80114690:btlevtcmd_get_turn
+// 801146C4:btlevtcmd_onoff_battleflag
+// 80114724:btlevtcmd_check_battleflag
+// 80114774:btlevtcmd_WaitEventEnd
+
+// battle_pad.o
+// 8011AE3C:BattlePadMultiCheckRepeat
+// 8011AE54:BattlePadCheckRepeat
+// 8011AE7C:BattlePadMultiCheckUp
+// 8011AE94:BattlePadCheckUp
+// 8011AEBC:BattlePadMultiCheckNow
+// 8011AED4:BattlePadCheckNow
+// 8011AEFC:BattlePadMultiCheckRecordTrigger
+// 8011AF1C:BattlePadCheckRecordTrigger
+// 8011AF48:BattlePadMultiCheckTrigger
+// 8011AF60:BattlePadCheckTrigger
+// 8011AF88:BattlePadGetNow
+// 8011AF94:BattlePadGetTrigger
+// 8011AFA0:BtlPad_WorkUpdate
+// 8011B280:BtlPad_WorkInit
+8011B330:BattlePadManager
+// 8011B380:BattlePadInit
+
+// battle_unit.o
+// 801277F0:BtlUnit_CheckShadowGuard
+// 8012782C:BtlUnit_EnemyItemCanUseCheck
+// 80127870:BtlUnit_HpGaugeMain
+// 80127AC0:BtlUnit_HpGaugeInit
+// 80127B70:BtlUnit_snd_se_pos
+// 80127C84:BtlUnit_snd_se
+// 80127CE0:BtlUnit_ControlPoseSoundMain
+// 80127F9C:BtlUnit_PoseSoundInit
+// 80127FB4:BtlUnit_SetCommandAnimPose
+// 80128040:BtlUnit_SetSeMode
+// 80128070:BtlUnit_LoadSeMode
+// 801281BC:BtlUnit_ResetMoveStatus
+// 801282B4:BtlUnit_GetGuardKouraPtr
+// 80128328:BtlUnit_PayWeaponCost
+// 801283E4:BtlUnit_CheckWeaponCost
+// 80128450:BtlUnit_GetWeaponCost
+// 801285A8:BtlUnit_SetMaxFp
+// 801285FC:BtlUnit_GetMaxFp
+// 80128640:BtlUnit_RecoverFp
+// 801286D4:BtlUnit_RecoverHp
+// 801286F8:BtlUnit_SetFp
+// 8012874C:BtlUnit_GetFp
+// 80128790:BtlUnit_GetCoin
+// 80128808:BtlUnit_GetExp
+// 801288E8:BtlUnit_CheckPinchStatus
+// 801289E8:BtlUnit_SetParamToPouch
+// 80128AD0:BtlUnit_ReviseHpFp
+// 80128C1C:BtlUnit_SetParamFromPouch
+// 80128D34:BtlUnit_CanActStatus
+// 80128DC4:BtlUnit_CanGuardStatus
+// 80128DE4:BtlUnit_CheckData
+// 80128E24:BtlUnit_GetData
+// 80128E64:BtlUnit_GetACPossibility
+// 80128F1C:BtlUnit_SetTotalHitDamage
+// 80128F28:BtlUnit_GetTotalHitDamage
+// 80128F30:BtlUnit_GetHitDamage
+// 80128F3C:BtlUnit_GetEnemyBelong
+// 80128F68:BtlUnit_GetTalkTogePos
+// 8012904C:BtlUnit_ChangeStayAnim
+// 80129094:BtlUnit_ChangeTalkAnim
+// 801290DC:BtlUnit_SetBodyAnim
+// 80129128:BtlUnit_SetBodyAnimType
+// 80129170:BtlUnit_SetAnim
+// 80129194:BtlUnit_SetAnimType
+// 80129214:BtlUnit_GetPoseNameFromType
+// 80129294:BtlUnit_OffUnitFlag
+// 801292A4:BtlUnit_OnUnitFlag
+// 801292B4:BtlUnit_CheckUnitFlag
+// 801292C0:BtlUnit_OffStatusFlag
+// 801292D0:BtlUnit_OnStatusFlag
+// 801292E0:BtlUnit_CheckStatusFlag
+801292FC:BtlUnit_CheckStatus
+// 80129378:BtlUnit_CheckRecoveryStatus
+// 80129640:BtlUnit_ClearStatus
+// 80129694:BtlUnit_SetStatus
+// 80129A1C:BtlUnit_GetStatus
+// 80129BE0:_CheckMoveCount
+80129C2C:BtlUnit_GetBelong
+// 80129C34:BtlUnit_SetJumpSpeed
+// 80129C3C:BtlUnit_SetPartsMoveSpeed
+// 80129C44:BtlUnit_SetMoveSpeed
+// 80129C4C:BtlUnit_SetPartsFallAccel
+// 80129C54:BtlUnit_SetFallAccel
+// 80129C5C:BtlUnit_SetPartsMoveTargetPos
+// 80129C90:BtlUnit_SetMoveTargetPos
+// 80129CC4:BtlUnit_SetPartsMoveCurrentPos
+// 80129CF8:BtlUnit_SetMoveCurrentPos
+// 80129D2C:BtlUnit_SetPartsMoveStartPos
+// 80129D60:BtlUnit_SetMoveStartPos
+// 80129D94:BtlUnit_AddPartsDispOffset
+// 80129DE0:BtlUnit_SetPartsDispOffset
+// 80129E14:BtlUnit_SetDispOffset
+// 80129E48:BtlUnit_AddPartsOffsetPos
+// 80129E70:BtlUnit_SetPartsOffsetPos
+// 80129EA4:BtlUnit_GetPartsOffsetPos
+// 80129EC0:BtlUnit_SetOffsetPos
+// 80129EF4:BtlUnit_SetHeight
+// 80129EFC:BtlUnit_GetHeight
+// 80129F04:BtlUnit_GetWidth
+// 80129F0C:BtlUnit_AddPartsScale
+// 80129F58:BtlUnit_SetPartsScale
+// 80129F8C:BtlUnit_SetPartsBaseScale
+// 80129FC0:BtlUnit_AddScale
+// 8012A00C:BtlUnit_SetScale
+// 8012A040:BtlUnit_GetScale
+// 8012A05C:BtlUnit_SetBaseScale
+// 8012A090:BtlUnit_AddPartsRotateOffset
+// 8012A0B8:BtlUnit_SetPartsRotateOffset
+// 8012A0EC:BtlUnit_SetRotateOffset
+// 8012A120:BtlUnit_GetPartsBaseRotate
+// 8012A13C:BtlUnit_SetPartsBaseRotate
+// 8012A14C:BtlUnit_GetBaseRotate
+// 8012A168:BtlUnit_SetBaseRotate
+// 8012A1C8:BtlUnit_AddPartsRotate
+// 8012A280:BtlUnit_GetPartsRotate
+// 8012A29C:BtlUnit_SetPartsRotate
+// 8012A2AC:BtlUnit_AddRotate
+// 8012A380:BtlUnit_GetRotate
+// 8012A39C:BtlUnit_SetRotate
+// 8012A450:BtlUnit_SetPartsHomePos
+// 8012A460:BtlUnit_AddHomePos
+// 8012A488:BtlUnit_SetHomePos
+// 8012A498:BtlUnit_GetHomePos
+// 8012A4B4:BtlUnit_SetHitCursorOffset
+// 8012A4C4:BtlUnit_SetHitOffset
+// 8012A4D4:BtlUnit_GetHitPos
+// 8012A5F8:BtlUnit_GetPartsWorldPos
+// 8012A6D8:BtlUnit_AddPartsPos
+// 8012A700:BtlUnit_SetPartsPos
+// 8012A710:BtlUnit_GetPartsPos
+// 8012A72C:BtlUnit_AddPos
+// 8012A754:BtlUnit_SetPos
+8012A764:BtlUnit_GetPos
+8012A780:BtlUnit_GetBodyPartsId
+8012A7C0:BtlUnit_GetPartsPtr
+// 8012A800:BtlUnit_GetUnitId
+// 8012A808:BtlUnit_Spawn
+// 8012A8F0:BtlUnit_Delete
+// 8012AAC8:BtlUnit_Entry
+// 8012B17C:BtlUnit_Init
+
+// statuswindow.o
+// text
+// 8013DAAC:statusPartyHPBlink
+// 8013DAC8:statusMarioHPBlink
+// 8013DAE4:statusFPBlink
+// 8013DB00:N_statusClearBlink
+// 8013DB10:statusAPBlink
+// 8013DB38:statusGetApPos
+// 8013DBC8:statusWinForceUpdateCoin
+// 8013DBF8:statusWinForceUpdate
+// 8013DCAC:statusWinCheckUpdate
+// 8013DCD8:statusWinCheck
+// 8013DCF4:statusWinDispOff
+// 8013DD08:statusWinDispOn
+// 8013DD1C:statusWinForceOff
+// 8013DDE8:statusWinForceCloseClear
+// 8013DE00:statusWinForceClose
+// 8013DE3C:statusWinForceOpen
+// 8013DE78:statusWinClose
+// 8013DEA0:statusWinOpen
+// 8013DEC8:valueUpdate
+// 8013E2E8:valueCheck
+// 8013E494:statusGetValue
+8013E60C:statusWinDisp
+// 8013EF28:gaugeDisp
+// 8013F13C:statusWinMain
+// 8013F720:statusWinReInit
+// 8013F800:statusWinInit
+// data
+8042B50C:_statusWindowWorkPtr
+
+// mario_party.o
+// 80142948:partyGetTechLv
+// 8014298C:partyGetHp
+801429D0:partyChkJoin
+80142A18:partyLeft
+80142A5C:partyJoin
+80142AA0:marioGetExtraPartyId
+80142B38:marioGetPartyId
+// 80142BD0:marioGetParty
+80142C80:marioPartyKill
+80142CEC:marioPartyGoodbye
+80142D34:marioPartyHello
+80142DE4:marioPartyEntry
+// 80142F88:marioUseParty
+
+// win_root.o
+// 801549E4:winMailDisp
+// 801558B8:winZClear
+// 80155A68:winKageGX
+// 80155E88:winSortWait
+// 80155E9C:winSortEntry
+// 80155EF8:winSortGX
+// 80156EC8:winSortMain
+// 80157154:sort_8_2_func
+// 801571F0:compare_func5_r
+// 80157214:compare_func5
+// 80157238:sort_8_1_func
+// 801572D4:compare_func4_r
+// 8015733C:compare_func4
+// 801573AC:sort_7_3_func
+// 80157468:compare_func3_r
+// 801575A0:compare_func3
+// 801576D8:sort_7_2_func
+// 80157794:compare_func2_r
+// 801578A8:compare_func2
+// 801579BC:sort_7_1_func
+// 80157A48:compare_func1_r
+// 80157A6C:compare_func1
+// 80157A90:sort_6_2_func
+// 80157B30:sort_6_1_func
+// 80157BD0:compare_func6_2_r
+// 80157C28:compare_func6_2
+// 80157C80:compare_func6_1_r
+// 80157D04:compare_func6_1
+// 80157D88:sort_5_3_func
+// 80157F74:sort_5_2_func
+// 80158014:sort_5_1_func
+// 801580B4:compare_func5_2_r
+// 8015810C:compare_func5_2
+// 80158164:compare_func5_1_r
+// 801581E8:compare_func5_1
+// 8015826C:sort_4_3_func
+// 8015848C:sort_4_2_func
+// 80158518:sort_4_1_func
+// 801585A4:N_compare_func4_2_r
+// 801585F4:N_compare_func4_2
+// 80158644:N_compare_func4_1_r
+// 801586C0:N_compare_func4_1
+// 8015873C:sort_3_3_func
+// 801587D8:sort_3_2_func
+// 8015885C:sort_3_1_func
+// 801588E0:sort_2_2_func
+// 8015895C:sort_2_1_func
+// 801589D8:sort_1_2_func
+// 80158A6C:sort_1_1_func
+// 80158B00:winWazaGX
+// 80159EE4:winHakoGX
+// 8015BEBC:winMailGX
+// 8015E00C:winHalfBookGX
+// 8015FB70:winBookGX
+// 80161860:winNameGX
+// 80162430:winKirinukiGX
+// 801649C0:winMsgEntry
+// 80164A7C:winMsgDisp
+// 801652B8:winMsgMain
+// 80165500:winBgGX
+// 80165CA8:winBgMain
+// 801660C0:winRootDisp
+801663D8:winRootMain
+
+// win_party.o
+// 80167660:winPartyDisp
+// 80168D1C:winPartyMain2
+// 80168D38:winPartyMain
+80169224:winPartyExit
+// 8016928C:winPartyInit2
+80169338:winPartyInit
+
+// win_item.o
+// 8016B7E0:itemUseDisp2
+// 8016B9B0:itemUseDisp
+// 8016CEF0:item_disp
+// 8016D6C0:winItemDisp
+// 8016D9E4:winItemMain2
+// 8016DB04:winItemMain
+8016ED78:winItemExit
+// 8016EDB0:winItemInit2
+8016EEDC:winItemInit
+// 8016F140:winMakeSkipList
+
+// win_mario.o
+8016F264:winMarioDisp
+// 8017131C:fukidashi
+// 80171EE8:winZenkakuStr
+// 80171F24:winMarioMain2
+// 80171F28:winMarioMain
+// 8017270C:winMarioExit
+// 80172730:winMarioInit2
+// 80172860:winMarioInit
+
+// win_main.o
+// text
+// 8017D050:winLectureCheck
+// 8017D0AC:winLectureOn
+// 8017D110:winLectureKeyMask
+// 8017D378:winIconSet
+// 8017D66C:winIconGrayInit
+// 8017DA7C:winIconInit
+// 8017DBF8:winTexSet_x2
+// 8017DE98:winTexInit_x2
+// 8017E170:winTexSetRot
+// 8017E6CC:winTexSet
+// 8017E990:winTexInit
+// unused:winFontSetPitch
+8017EB08:winFontSetLabel
+8017EBAC:winFontSetEdgeWidth
+8017ED2C:winFontSetEdge
+8017EE58:winFontSetCenter
+8017F0CC:winFontSetR
+8017F240:winFontSetWidth
+8017F3C0:winFontSet
+// 8017F4E4:winFontInit
+// 8017F504:winGhostDiaryChk
+// 8017F548:cam_r
+// 8017F630:party_color
+// 8017F680:famicom_check
+// 8017F6D0:itemUseFunc2
+// 8017F6F4:itemUseFunc
+// 8017FA28:winDispKoopa
+// 8017FC14:winDisp
+// 8017FC38:winMain
+801807BC:winOpenDisable
+801807D8:winOpenEnable
+// 801807F4:winCheck
+// 80180840:winReInit
+// 8018086C:winInit
+801808A4:winGetPtr
+// data
+80303000:str_999_jpn_winMain
+80430B00:str_999_winMain
+
+// mario_cam.o
+// 801AA3CC:marioCamZoomUpLevelMain
+// 801AA67C:marioCamZoomUp
+// 801AAA14:marioCamZoomOff
+// 801AAAE0:marioCamZoomOffReq2
+// 801AAB44:marioCamZoomOffReq
+// 801AAB90:camFollowYOff
+// 801AABD0:camFollowYOn
+// 801AAC10:marioNoUpdateCamPos
+// 801AAC3C:marioUpdateCamPos
+// 801AAC68:marioUpdateCam
+// 801AAED8:marioUpdateCamCollision
+// 801AAF28:marioCamMain
+// 801AB068:marioPreCamera
+// 801AB110:marioGetCamFollowRate
+// 801AB134:marioSetCamFollowRate
+// 801AB164:marioResetCamFollowRate
+801AB19C:marioSetCamId
+// 801AB1CC:marioGetCamId
+// 801AB1F0:marioInitCamId
+// 801AB220:marioResetCamShiftRate
+// 801AB284:marioResetCamShift
+
+// peach.o
+// 801FF520:peach_talk
+// 801FF5E0:peach_dash
+// 801FF830:peach_walk
+// 801FF9C0:peach_stay
+// 801FFBB0:peachMain
+// 801FFD68:peachPreInit
+801FFD6C:peachTransformOff
+801FFE00:peachTransformOn
+// 801FFE90:peachChgPose
+// 802003C4:peachSetStsCarry
+// 80200404:peachSetStsOrdinary
+// 80200444:peachSetStsAngry
+// 80200484:peachSetStsUneasy
+// 802004C4:peachSetStsHappy
+// 80200504:peachSetStsInvisible
+// 80200544:peachSetStsAftershower
+// 80200584:peachSetStsNormal
+
+// evt_yuugijou.o
+// text
+// 8022CFE4:evtYuuWindowEndChk
+// 8022CFF4:evtYuuWindow
+// 8022D070:yuuminigame_end
+// 8022D0A8:yuuminigame_window_end
+// 8022D0C0:yuugijou_set_yupflag
+// 8022D118:yuugijou_get_takeoutflag
+// 8022D168:yuugijou_montemedal_return
+// 8022D1B0:yuugijou_montemedal_keep
+// 8022D204:yuugijou_montemedal_wait
+// 8022D228:yuugijou_montemedal_disp_onoff
+// 8022D28C:yuugijou_add_montemedal_moto
+// 8022D2F8:yuugijou_get_montemedal_keep
+// 8022D348:yuugijou_get_montemedal
+// 8022D37C:yuugijou_add_montemedal
+// 8022D408:monteCountDisp
+// 8022D65C:yuugijou_init
+// data
+8042B698:_yuugijouWorkPtr
+
+// sac_scissor.o
+// 80234D0C:wait_star_standby
+// 80234D44:star_stone_appear
+// 80234D70:scissor_end
+// 80234DE0:scissor_init
+// 80234E54:scissor_disp_region
+// 80235154:scissor_offscreen
+80235194:scissor_disp_control
+// 802353CC:scissor_capture
+// 80235434:scissor_ofscreen_ok
+// 80235498:scissor_damage_sub2
+// 802355B4:scissor_damage_sub
+// 8023581C:scissor_damage
+// 80235AA8:scissor_control
+80235EC4:scissor_timer_main
+// 8023602C:scissor_timer_get
+// 80236088:star_disp2D_sub
+// 80236230:star_disp2D
+// 802362A0:star_control
+// 8023673C:weaponGetPower_Scissor
+// 802367C8:tess
+// 80236A14:scissor_tess
+// 80236A84:scissor_cross
+// 80236EB0:scissor_intersection4
+// 80236F50:scissor_intersection3
+// 80236FEC:scissor_intersection2
+// 8023706C:scissor_intersection
+802376C4:GetScissorPtr
+
+// evt_lecture.o
+// 8025B13C:lect_juyoitem_rel_get
+// 8025B16C:lect_juyoitem_rel_set
+// 8025B19C:lect_cam_load
+// 8025B37C:lect_cam_save
+// 8025B4C4:lect_test_systemlevel
+8025B4E8:lect_set_systemlevel
+
+// evt_memcard.o
+// text
+// 8025FC80:memcard_write
+// 8025FCC8:memcard_file_existance
+// 8025FD50:memcard_ipl
+// 8025FD64:memcard_header_write
+// 8025FDA4:memcard_copy
+// 8025FE28:memcard_delete
+// 8025FE84:memcard_create
+// 8025FEC4:memcard_format
+// 8025FF04:memcard_load
+// 8026001C:memcard_code
+// data
+803C6454:evt_memcard_save
+
+// runtime.c
+8026849C:_savefpr_14
+802684A0:_savefpr_15
+802684A4:_savefpr_16
+802684A8:_savefpr_17
+802684AC:_savefpr_18
+802684B0:_savefpr_19
+802684B4:_savefpr_20
+802684B8:_savefpr_21
+802684BC:_savefpr_22
+802684C0:_savefpr_23
+802684C4:_savefpr_24
+802684C8:_savefpr_25
+802684CC:_savefpr_26
+802684D0:_savefpr_27
+802684D4:_savefpr_28
+802684D8:_savefpr_29
+802684DC:_savefpr_30
+802684E0:_savefpr_31
+80268534:_savegpr_14
+80268538:_savegpr_15
+8026853C:_savegpr_16
+80268540:_savegpr_17
+80268544:_savegpr_18
+80268548:_savegpr_19
+8026854C:_savegpr_20
+80268550:_savegpr_21
+80268554:_savegpr_22
+80268558:_savegpr_23
+8026855C:_savegpr_24
+80268560:_savegpr_25
+80268564:_savegpr_26
+80268568:_savegpr_27
+8026856C:_savegpr_28
+80268570:_savegpr_29
+80268574:_savegpr_30
+80268578:_savegpr_31
+802685CC:__udivdi3
+802686B8:__divdi3
+802687F0:__umoddi3
+802688D4:__moddi3
+802689E0:__ashldi3
+80268A04:__lshrdi3
+80268A28:__ashrdi3
+80268A50:__floatdisf
+80268B04:__floatundisf
+80268BA4:__fixsfdi
+80268BA4:__fixdfdi
+80268BA4:__fixunssfdi
+80268BA4:__fixunsdfdi
+
+// mem.c
+8026DA5C:memcmp
+// 8026DAA8:__memrchr
+// 8026DAD4:memchr
+8026DB00:memmove
+
+// printf.c
+8026DEAC:sprintf
+// unused:snprintf
+8026DF8C:vsprintf
+// unused:vsnprintf
+// unused:vfprintf
+8026E004:vprintf
+// unused:fprintf
+8026E09C:printf
+8026E184:__StringWrite
+8026E1F0:__FileWrite
+8026E248:__pformatter
+// 8026E9BC:float2str
+// 8026F0D8:round_decimal
+// 8026F204:double2hex
+// 8026F53C:longlong2str
+// 8026F850:long2str
+// 8026FAA8:parse_format
+
+// scanf.c
+80270138:sscanf
+// 802701FC:__StringRead
+// 8027028C:__sformatter
+// 80270C38:parse_format
+
+// string.c
+// 80271180:strstr
+802711E8:strchr
+80271218:strncmp
+80271258:strcmp
+80271380:strcat
+802713AC:strncpy
+802713F0:strcpy
+802714A8:strlen
+
+// w_atan2.c
+80276394:atan2
+
+// OSAlloc.c
+// text
+8029A238:DLInsert
+8029A2E4:OSAllocFromHeap
+8029A3E0:OSFreeToHeap
+// 8029A45C:OSSetCurrentHeap
+// 8029A46C:OSInitAlloc
+8029A4DC:OSCreateHeap
+8029A548:OSDestroyHeap
+// data
+8042B9E0:HeapArray
+8042B9E4:NumHeaps
+
+// OSArena.c
+// text
+// 8029A56C:OSGetArenaHi
+// 8029A574:OSGetArenaLo
+// 8029A57C:OSSetArenaHi
+// 8029A584:OSSetArenaLo
+8029A58C:OSAllocFromArenaLo
+// data
+8042AD50:__OSArenaLo
+8042B9F0:__OSArenaHi
+
+// OSCache.c
+// 8029A84C:DCEnable
+// 8029A860:DCInvalidateRange
+8029A88C:DCFlushRange
+// 8029A8BC:DCStoreRange
+// 8029A8EC:DCFlushRangeNoSync
+// 8029A918:DCStoreRangeNoSync
+// 8029A944:DCZeroRange
+8029A970:ICInvalidateRange
+// 8029A9A4:ICFlashInvalidate
+// 8029A9B4:ICEnable
+// 8029A9C8:__LCEnable
+// 8029AA94:LCEnable
+// 8029AACC:LCDisable
+// 8029AAF4:LCStoreBlocks
+// 8029AB18:LCStoreData
+// 8029ABC4:LCQueueWait
+// 8029ABD8:L2GlobalInvalidate
+// 8029AC70:DMAErrorHandler
+// 8029ADD0:__OSCacheInit
+
+// OSContext.c
+// 8029AEC4:__OSLoadFPUContext
+// 8029AFE8:__OSSaveFPUContext
+// 8029B110:OSSaveFPUContext
+// 8029B118:OSSetCurrentContext
+// 8029B174:OSGetCurrentContext
+// 8029B180:OSSaveContext
+// 8029B200:OSLoadContext
+// 8029B2D8:OSGetStackPointer
+// 8029B2E0:OSClearContext
+// 8029B304:OSInitContext
+// 8029B3C0:OSDumpContext
+// 8029B668:OSSwitchFPUContext
+// 8029B6EC:__OSContextInit
+8029B734:L_OSFillFPUContext
+
+// OSError.c
+8029B860:OSReport
+// 8029B8E0:OSPanic
+// 8029BA0C:OSSetErrorHandler
+// 8029BC24:__OSUnhandledException
+
+// OSFont.c
+// 8029C86C:GetFontCode
+// 8029C9E0:Decode
+8029CB54:OSGetFontEncode
+// 8029CBB8:ReadFont
+// 8029CEDC:OSLoadFont
+// 8029D01C:ParseStringS
+// 8029D158:OSGetFontTexel
+// 8029D3F8:L_ExpandFontSheet
+8029D7A4:L_OSInitFont
+8029D9B0:L_OSGetFontTexture
+
+// OSInterrupt.c
+8029DB20:OSDisableInterrupts
+// 8029DB34:OSEnableInterrupts
+8029DB48:OSRestoreInterrupts
+// 8029DB6C:__OSSetInterruptHandler
+// 8029DB88:__OSGetInterruptHandler
+// 8029DB9C:__OSInterruptInit
+// 8029DC10:SetInterruptMask
+// 8029DEE8:__OSMaskInterrupts
+// 8029DF70:__OSUnmaskInterrupts
+// 8029DFF8:__OSDispatchInterrupt
+// 8029E33C:ExternalInterruptHandler
+
+// OSLink.c
+// 8029E38C:OSNotifyLink
+// 8029E390:OSNotifyUnlink
+// 8029E394:Relocate
+// 8029E650:Link
+8029E930:OSLink
+// 8029E954:Undo
+// 8029EB8C:OSUnlink
+// 8029ED60:__OSModuleInit
+
+// OSTime.c
+802A1904:OSGetTime
+802A191C:OSGetTick
+// 802A1924:__OSGetSystemTime
+// 802A1988:GetDates
+// 802A1B24:OSTicksToCalendarTime
+
+// mtx.a
+// 802A1DBC:PSMTXIdentity
+// 802A1DE8:PSMTXCopy
+802A1E1C:PSMTXConcat
+// 802A1EE8:PSMTXInverse
+// 802A1FE0:PSMTXInvXpose
+// 802A20A8:PSMTXRotRad
+// 802A2118:PSMTXRotTrig
+// 802A21C8:__PSMTXRotAxisRadInternal
+// 802A2278:PSMTXRotAxisRad
+802A22E8:PSMTXTrans
+802A231C:PSMTXTransApply
+802A2368:PSMTXScale
+// 802A2390:PSMTXScaleApply
+// 802A23E8:C_MTXLookAt
+// 802A2574:C_MTXLightFrustum
+// 802A2608:C_MTXLightPerspective
+// 802A26D4:C_MTXLightOrtho
+// 802A275C:PSMTXMultVec
+// 802A27B0:PSMTXMultVecSR
+// 802A2804:C_MTXFrustum
+// 802A28A0:C_MTXPerspective
+802A2970:C_MTXOrtho
+// 802A2A08:PSMTX44Copy
+// 802A2A4C:PSMTX44Concat
+// 802A2B50:PSMTX44Trans
+// 802A2B8C:PSMTX44Scale
+// 802A2BC0:PSMTX44MultVec
+802A2C38:PSVECAdd
+// 802A2C5C:PSVECSubtract
+802A2C80:PSVECScale
+// 802A2C9C:PSVECNormalize
+// 802A2CE0:PSVECSquareMag
+// 802A2CF8:PSVECMag
+// 802A2D3C:PSVECDotProduct
+// 802A2D5C:PSVECCrossProduct
+// 802A2D98:C_VECHalfAngle
+// 802A2E70:C_VECReflect
+// 802A2F44:PSVECSquareDistance
+// 802A2F6C:PSVECDistance
+
+// vi.c
+// 802A75B8:__VIRetraceHandler
+// 802A782C:VISetPreRetraceCallback
+// 802A7870:VISetPostRetraceCallback
+// 802A78B4:getTiming
+// 802A795C:__VIInit
+// 802A7B60:VIInit
+802A8010:VIWaitForRetrace
+// 802A8064:setFbbRegs
+// 802A8338:setVerticalRegs
+// 802A84D8:VIConfigure
+802A8CE0:VIFlush
+802A8E10:VISetNextFrameBuffer
+802A8E7C:VISetBlack
+802A8EF8:VIGetRetraceCount
+// 802A8F00:GetCurrentDisplayPosition
+// 802A8F3C:getCurrentFieldEvenOdd
+// 802A8FA4:VIGetNextField
+// 802A9040:VIGetCurrentLine
+// 802A90D8:VIGetTvFormat
+// 802A9140:__VIDisplayPositionToXY
+// 802A935C:__VIGetCurrentPosition
+
+// DEMOPuts.c
+802A93BC:DEMOInitCaption
+802A9618:DEMOPuts
+802A9928:DEMOPrintf
+
+// pad.a
+// 802AA744:ClampStick
+// 802AA874:PADClamp
+// 802AA988:UpdateOrigin
+// 802AAB2C:PADOriginCallback
+// 802AABF0:PADOriginUpdateCallback
+// 802AACBC:PADProbeCallback
+// 802AAD94:PADTypeAndStatusCallback
+// 802AB0C0:PADReceiveCheckCallback
+// 802AB200:PADReset
+// 802AB310:PADRecalibrate
+// 802AB424:PADInit
+// 802AB574:PADRead
+// 802AB874:U_PADControlMotor
+// 802AB92C:PADSetSpec
+// 802AB98C:SPEC0_MakeStatus
+// 802ABB00:SPEC1_MakeStatus
+// 802ABC74:SPEC2_MakeStatus
+// 802AC0E4:OnReset
+// 802AC1A0:SamplingHandler
+// 802AC200:PADSetSamplingCallback
+// 802AC254:__PADDisableRecalibration
+
+// card.a
+// 802AF520:__CARDDefaultApiCallback
+// 802AF524:__CARDSyncCallback
+// 802AF558:__CARDExtHandler
+// 802AF630:__CARDExiHandler
+// 802AF748:__CARDTxHandler
+// 802AF7F0:__CARDUnlockedHandler
+// 802AF874:__CARDEnableInterrupt
+// 802AF934:__CARDReadStatus
+// 802AFA24:__CARDReadVendorID
+// 802AFB14:__CARDClearStatus
+// 802AFBC0:TimeoutHandler
+// 802AFC64:Retry
+// 802AFF04:UnlockedCallback
+// 802B0014:__CARDStart
+// 802B0238:__CARDReadSegment
+// 802B036C:__CARDWritePage
+// 802B04A8:__CARDEraseSector
+// 802B05B8:CARDInit
+// 802B0664:__CARDGetFontEncode
+// 802B066C:__CARDSetDiskID
+802B06A4:__CARDGetControlBlock
+802B075C:__CARDPutControlBlock
+802B07C0:CARDGetResultCode
+// 802B07F0:CARDFreeBlocks
+// 802B0940:__CARDSync
+// 802B09D8:OnReset
+// 802B0A28:CARDSetFastMode
+// 802B0A5C:CARDGetFastMode
+// 802B0A78:bitrev
+// 802B0BE4:ReadArrayUnlock
+// 802B0D28:DummyLen
+// 802B0DEC:__CARDUnlock
+// 802B1944:InitCallback
+// 802B19B4:DoneCallback
+// 802B1CD8:BlockReadCallback
+// 802B1DB4:__CARDRead
+// 802B1E18:BlockWriteCallback
+// 802B1F00:__CARDWrite
+// 802B1F68:__CARDGetFatBlock
+// 802B1F70:WriteCallback
+// 802B2044:EraseCallback
+// 802B210C:__CARDAllocBlock
+// 802B2224:__CARDFreeBlock
+// 802B22C0:__CARDUpdateFatBlock
+802B236C:__CARDGetDirBlock
+// 802B2374:WriteCallback
+// 802B2444:EraseCallback
+802B250C:__CARDUpdateDir
+// 802B25D0:__CARDCheckSum
+// 802B2780:VerifyID
+// 802B2A04:VerifyDir
+// 802B2C44:VerifyFAT
+// 802B2EC8:__CARDVerify
+// 802B2F54:CARDCheckExAsync
+802B34E4:CARDCheckAsync
+// 802B350C:IsCard
+// 802B35D8:CARDProbe
+802B3610:CARDProbeEx
+// 802B378C:DoMount
+// 802B3BE0:__CARDMountCallback
+802B3D18:CARDMountAsync
+// 802B3EB8:DoUnmount
+802B3F54:CARDUnmount
+// 802B4000:FormatCallback
+// 802B4144:__CARDFormatRegionAsync
+// 802B479C:CARDFormatAsync
+802B47E4:__CARDCompareFileName
+802B484C:__CARDAccess
+802B48E0:__CARDIsWritable
+// 802B4A14:__CARDIsReadable
+// 802B4B08:__CARDGetFileNo
+802B4C58:CARDOpen
+802B4D74:CARDClose
+// 802B4DC8:__CARDIsOpened
+// 802B4DD0:CreateCallbackFat
+802B4F00:CARDCreateAsync
+// 802B5120:__CARDSeek
+// 802B52D8:ReadCallback
+802B5408:CARDReadAsync
+// 802B554C:CARDCancel
+// 802B55D8:WriteCallback
+// 802B5748:EraseCallback
+802B57F8:CARDWriteAsync
+// 802B590C:DeleteCallback
+// 802B59B0:CARDDeleteAsync
+802B5AC0:CARDDelete
+// 802B5B08:UpdateIconOffsets
+802B5D00:CARDGetStatus
+802B5E14:CARDSetStatusAsync
+// 802B5F88:CARDGetSerialNo
+
+// gx.a
+// 802B604C:__GXDefaultTexRegionCallback
+// 802B6148:__GXDefaultTlutRegionCallback
+// 802B616C:__GXShutdown
+// 802B62FC:__GXInitRevisionBits
+// 802B64A0:GXInit
+// 802B6AA0:__GXInitGX
+// 802B73D8:GXCPInterruptHandler
+// 802B750C:GXInitFifoBase
+// 802B7578:GXInitFifoPtrs
+// 802B75E8:GXInitFifoLimits
+// 802B75F4:GXSetCPUFifo
+// 802B771C:GXSetGPFifo
+// 802B7894:GXSaveCPUFifo
+// 802B78C8:__GXSaveCPUFifoAux
+// 802B7990:GXGetGPStatus
+// 802B79E0:GXGetFifoBase
+// 802B79E8:GXGetFifoSize
+// 802B79F0:GXSetBreakPtCallback
+// 802B7A34:__GXFifoInit
+// 802B7A80:__GXFifoReadEnable
+// 802B7AA4:__GXFifoReadDisable
+// 802B7AC8:__GXFifoLink
+// 802B7AFC:__GXWriteFifoIntEnable
+// 802B7B2C:__GXWriteFifoIntReset
+// 802B7B5C:__GXCleanGPFifo
+// 802B7C5C:GXGetCPUFifo
+// 802B7C64:GXGetGPFifo
+// 802B7C6C:GXGetOverflowCount
+// 802B7C74:GXResetOverflowCount
+802B7C84:GXSetVtxDesc
+// 802B7EF0:GXSetVtxDescv
+// 802B8178:__GXSetVCD
+// 802B8234:__GXCalculateVLim
+// 802B8358:GXGetVtxDesc
+// 802B850C:GXGetVtxDescv
+802B859C:GXClearVtxDesc
+802B85D4:GXSetVtxAttrFmt
+// 802B8830:GXSetVtxAttrFmtv
+// 802B8AB0:__GXSetVAT
+// 802B8B38:GXGetVtxAttrFmt
+// 802B8DB8:GXGetVtxAttrFmtv
+// 802B8E2C:GXSetArray
+// 802B8E70:GXInvalidateVtxCache
+802B8E80:GXSetTexCoordGen2
+802B9100:GXSetNumTexGens
+// 802B913C:GXSetMisc
+// 802B91D0:GXFlush
+// 802B922C:GXResetWriteGatherPipe
+// 802B9260:__GXAbort
+// 802B93CC:GXAbortFrame
+// 802B9594:GXSetDrawSync
+// 802B9648:GXReadDrawSync
+// 802B9654:GXDrawDone
+// 802B96D4:GXPixModeSync
+// 802B96F8:GXTexModeSync
+// 802B971C:GXPokeAlphaMode
+// 802B9730:GXPokeAlphaRead
+// 802B9750:GXPokeAlphaUpdate
+// 802B9768:GXPokeBlendMode
+// 802B97CC:GXPokeColorUpdate
+// 802B97E4:GXPokeDstAlpha
+// 802B9808:GXPokeDither
+// 802B9820:GXPokeZMode
+// 802B9840:GXPeekARGB
+// 802B9864:GXSetDrawSyncCallback
+// 802B98A8:GXTokenInterruptHandler
+// 802B9930:GXSetDrawDoneCallback
+// 802B9974:GXFinishInterruptHandler
+// 802B99F4:__GXPEInit
+// 802B9A68:__GXSetDirtyState
+802B9AE8:GXBegin
+// 802B9BB8:__GXSendFlushPrim
+802B9C40:GXSetLineWidth
+// 802B9C80:GXSetPointSize
+// 802B9CC0:GXEnableTexOffsets
+802B9D08:GXSetCullMode
+// 802B9D30:GXGetCullMode
+// 802B9D4C:GXSetCoPlanar
+// 802B9D80:__GXSetGenMode
+// 802B9DA4:GXAdjustForOverscan
+// 802B9EE8:GXSetDispCopySrc
+// 802B9F64:GXSetTexCopySrc
+// 802B9FE0:GXSetDispCopyDst
+// 802BA014:GXSetTexCopyDst
+// 802BA144:GXSetDispCopyFrame2Field
+// 802BA168:GXSetCopyClamp
+// 802BA1C0:GXGetYScaleFactor
+// 802BA3F8:GXSetDispCopyYScale
+802BA4C4:GXSetCopyClear
+// 802BA53C:GXSetCopyFilter
+// 802BA744:GXSetDispCopyGamma
+802BA758:GXCopyDisp
+// 802BA8C0:GXCopyTex
+// 802BAA4C:GXClearBoundingBox
+// 802BAA84:GXReadBoundingBox
+// 802BAAB8:GXInitLightAttn
+// 802BAAD4:GXInitLightSpot
+// 802BAC64:GXInitLightDistAttn
+// 802BAD34:GXInitLightPos
+// 802BAD44:GXInitLightDir
+// 802BAD60:GXInitLightColor
+// 802BAD6C:GXLoadLightObjImm
+// 802BADE8:GXSetChanAmbColor
+802BAED0:GXSetChanMatColor
+802BAFB8:GXSetNumChans
+802BAFF4:GXSetChanCtrl
+// 802BB0A4:__GXGetTexTileShift
+// 802BB108:GXGetTexBufferSize
+// 802BB264:__GetImageTileCount
+802BB32C:GXInitTexObj
+// 802BB578:GXInitTexObjCI
+// 802BB5C0:GXInitTexObjLOD
+// 802BB724:GXInitTexObjData
+// 802BB734:GXGetTexObjData
+// 802BB740:GXGetTexObjWidth
+// 802BB750:GXGetTexObjHeight
+// 802BB760:GXGetTexObjFmt
+// 802BB768:GXGetTexObjMipMap
+// 802BB780:GXLoadTexObjPreLoaded
+802BB8FC:GXLoadTexObj
+// 802BB950:GXInitTlutObj
+// 802BB988:GXLoadTlut
+// 802BBA20:GXInitTexCacheRegion
+// 802BBB14:GXInitTexPreLoadRegion
+// 802BBB98:GXInitTlutRegion
+// 802BBBD0:GXInvalidateTexAll
+// 802BBC18:GXSetTexRegionCallback
+// 802BBC2C:GXSetTlutRegionCallback
+// 802BBC40:GXPreLoadEntireTexture
+// 802BBEA4:__SetSURegs
+// 802BBF44:__GXSetSUTexRegs
+// 802BC0C0:__GXSetTmemConfig
+// 802BC414:GXSetTevIndirect
+// 802BC480:GXSetIndTexMtx
+// 802BC5F8:GXSetIndTexCoordScale
+// 802BC73C:GXSetIndTexOrder
+// 802BC828:GXSetNumIndStages
+// 802BC84C:GXSetTevDirect
+// 802BC894:GXSetTevIndWarp
+// 802BC8F8:__GXUpdateBPMask
+// 802BC8FC:__GXSetIndirectMask
+// 802BC92C:__GXFlushTextureState
+802BC950:GXSetTevOp
+// 802BC9DC:GXSetTevColorIn
+// 802BCA20:GXSetTevAlphaIn
+// 802BCA64:GXSetTevColorOp
+// 802BCACC:GXSetTevAlphaOp
+// 802BCB34:GXSetTevColor
+// 802BCB94:GXSetTevColorS10
+// 802BCBF8:GXSetTevKColor
+// 802BCC5C:GXSetTevKColorSel
+// 802BCCB8:GXSetTevKAlphaSel
+// 802BCD14:GXSetTevSwapMode
+// 802BCD5C:GXSetTevSwapModeTable
+802BCDDC:GXSetAlphaCompare
+// 802BCE20:GXSetZTexture
+802BCEAC:GXSetTevOrder
+802BD048:GXSetNumTevStages
+// 802BD070:GXSetFog
+// 802BD284:GXSetFogRangeAdj
+802BD3A8:GXSetBlendMode
+802BD3FC:GXSetColorUpdate
+802BD428:GXSetAlphaUpdate
+802BD454:GXSetZMode
+// 802BD488:GXSetZCompLoc
+// 802BD4BC:GXSetPixelFmt
+// 802BD590:GXSetDither
+// 802BD5BC:GXSetDstAlpha
+// 802BD5F8:GXSetFieldMask
+// 802BD630:GXSetFieldMode
+// 802BD6A8:GXDrawSphere
+// 802BDA24:GXDrawCubeFace
+// 802BDC3C:GXDrawCube
+// 802BDE8C:GXBeginDisplayList
+// 802BDF58:GXEndDisplayList
+// 802BE01C:GXCallDisplayList
+// 802BE08C:GXProject
+802BE200:GXSetProjection
+// 802BE2A4:GXSetProjectionv
+// 802BE330:GXGetProjectionv
+802BE378:GXLoadPosMtxImm
+// 802BE3C8:GXLoadNrmMtxImm
+802BE418:GXSetCurrentMtx
+802BE44C:GXLoadTexMtxImm
+// 802BE500:__GXSetViewport
+// 802BE590:GXSetViewportJitter
+802BE5E8:GXSetViewport
+// 802BE630:GXGetViewportv
+// 802BE654:GXSetZScaleOffset
+802BE6C0:GXSetScissor
+// 802BE738:GXGetScissor
+// 802BE780:GXSetScissorBoxOffset
+// 802BE7C0:GXSetClipMode
+// 802BE7E8:__GXSetMatrixIndex
+// 802BE86C:GXSetGPMetric
+// 802BF0B4:GXReadGPMetric
+// 802BF25C:GXClearGPMetric
+// 802BF26C:GXReadGP0Metric
+// 802BF298:GXReadGP1Metric
+// 802BF2C4:GXReadMemMetric
+// 802BF4D8:GXClearMemMetric
+// 802BF580:GXReadPixMetric
+// 802BF6B8:GXClearPixMetric
+// 802BF6E8:GXSetVCacheMetric
+// 802BF72C:GXReadVCacheMetric
+// 802BF7C0:GXClearVCacheMetric
+// 802BF7DC:GXReadXfRasMetric
+
+// exi.a
+// text
+// 802BF8A0:SetExiInterruptMask
+// 802BF994:EXIImm
+// 802BFBF0:EXIImmEx
+// 802BFC90:EXIDma
+// 802BFD7C:EXISync
+// 802BFFC8:EXIClearInterrupts
+// 802C0010:EXISetExiCallback
+802C008C:__EXIProbe
+// 802C0200:EXIProbe
+// 802C0280:EXIProbeEx
+// 802C0334:EXIAttach
+// 802C0440:EXIDetach
+// 802C04FC:EXISelect
+// 802C0628:EXIDeselect
+// 802C0738:EXIIntrruptHandler
+// 802C0800:TCIntrruptHandler
+// 802C0A18:EXTIntrruptHandler
+// 802C0AE8:EXIInit
+// 802C0CBC:EXILock
+// 802C0DB0:EXIUnlock
+// 802C0E8C:EXIGetState
+// 802C0EA4:UnlockedHandler
+// 802C0ECC:EXIGetID
+// 802C127C:EXIGetType
+// 802C1394:ProbeBarnacle
+// 802C1520:__OSEnableBarnacle
+// 802C16DC:InitializeUART
+// 802C174C:WriteUARTN
+// data
+80421350:Ecb
+
+// item_data.o
+// data
+8031C638:itemDataTable
+
+// ppc
+// data
+CC008000:writeGatherPipe

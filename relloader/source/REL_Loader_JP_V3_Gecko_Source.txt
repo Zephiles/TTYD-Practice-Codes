@@ -1,0 +1,412 @@
+# Code created by PistonMiner and Zephiles
+
+# Set global function/variable/offset locations/values
+.set ARENA_LO_OFFSET,0xFB0
+.set ARENA_HI_OFFSET,0x1C50
+.set INTERNAL_FILENAME_LOCATION,0x800040DC
+.set REL_TOTAL_USED_SIZE_ADDRESS,0x80004148
+.set memset,0x800050B4
+.set OSAllocFromArenaLo,0x8029073C
+.set Link,0x80294800
+.set OSUnlink,0x80294D3C
+.set CARDInit,0x802A6738
+.set CARDCheckAsync,0x802A9664
+.set CARDProbeEx,0x802A9790
+.set CARDMountAsync,0x802A9E98
+.set CARDUnmount,0x802AA0D4
+.set CARDOpen,0x802AADD8
+.set CARDClose,0x802AAEF4
+.set CARDReadAsync,0x802AB588
+.set __CARDBlock,0x8040DD80
+.set size_table,0x8040F4D8
+
+# Hook the following code at 8002FC3C
+# This code is running in a loop, so make sure the main heap is being used right now
+# Size table is in r3, so make sure its at the start of it
+xoris r8,r3,size_table@h
+cmplwi r8,size_table@l
+bne+ exitResizeMainHeap
+
+# The current size is in r7, so subtract the REL's used size from it
+lis r8,REL_TOTAL_USED_SIZE_ADDRESS@ha
+lwz r8,REL_TOTAL_USED_SIZE_ADDRESS@l(r8)
+sub r7,r7,r8
+
+exitResizeMainHeap:
+# Restore the overwritten instruction
+add r0,r22,r7
+
+
+
+
+
+# Hook the following code at 800055E0
+# Push stack
+stwu sp,-0x58(sp)
+mflr r0
+stw r0,0x5C(sp)
+stmw r20,0x28(sp)
+
+# Backup function parameters
+stw r3,0x8(sp)
+stw r4,0xC(sp)
+
+# Make a backup of the arenas
+lwz r31,ARENA_LO_OFFSET(r13)
+lwz r30,ARENA_HI_OFFSET(r13)
+
+# Initialize static values used for addresses
+lis r29,0x8000
+lis r28,0x8029
+lis r27,0x802A
+li r26,0 # Used to check if a REL file is loaded or not
+
+# Initialize the value at REL_TOTAL_USED_SIZE_ADDRESS to 0, as the REL
+# may modify it later before this loader adjusts it
+stw r26,REL_TOTAL_USED_SIZE_ADDRESS@l(r29)
+
+# Initialize memory card stuff
+ori r3,r27,CARDInit@l
+mtlr r3
+blrl
+
+# Check if a Memory Card is present
+# To avoid an infinite loop, only check for a memory card a set amount of times
+lis r25,0x000F
+ori r25,r25,0x4240 # Check 1,000,000 times
+ori r24,r27,CARDProbeEx@l
+
+checkForMemoryCardLoop:
+mtlr r24 # CARDProbeEx
+li r3,0 # Memory Card Slot A
+li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
+li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
+blrl
+cmpwi r3,-1 # CARD_RESULT_BUSY
+bne- exitCheckForMemoryCardLoop
+
+# Exit if the limit has been reached
+subic. r25,r25,1
+bgt+ checkForMemoryCardLoop
+
+exitCheckForMemoryCardLoop:
+cmpwi r3,0 # Check if something went wrong
+bne- exit
+
+# Allocate memory for the Work Area
+# Allocate from Arena Hi
+ori r3,r26,0xA000 # Work Area size
+li r4,-0x20 # Align to 0x20 to be safe
+and r5,r30,r4
+subf r5,r3,r5
+and r4,r5,r4
+stw r4,ARENA_HI_OFFSET(r13)
+
+# Mount the Memory Card
+ori r3,r27,CARDMountAsync@l
+mtlr r3
+li r3,0 # Memory Card Slot A
+# r4 already contains the pointer to the Work Area
+li r5,0 # Detach Callback function (Want to avoid using, so NULL)
+li r6,0 # Attach Callback function (Want to avoid using, so NULL)
+blrl
+bl finishAsyncMemoryCardFunc
+cmpwi r3,0 # Ready
+beq+ checkForErrors
+cmpwi r3,-6 # Broken
+beq- checkForErrors
+b freeWorkArea
+
+checkForErrors:
+# Check for and attempt to repair memory card errors
+ori r3,r27,CARDCheckAsync@l
+mtlr r3
+li r3,0 # Memory Card Slot A
+li r4,0 # Callback function (Want to avoid using, so NULL)
+blrl
+bl finishAsyncMemoryCardFunc
+cmpwi r3,0 # Check if something went wrong
+bne- freeWorkArea
+
+# Set up CardFileInfo on the stack
+addi r25,sp,0x14
+
+# Open the file
+ori r3,r27,CARDOpen@l
+mtlr r3
+li r3,0 # Memory Card Slot A
+ori r4,r29,INTERNAL_FILENAME_LOCATION@l
+mr r5,r25 # Pointer to CardFileInfo
+blrl
+cmpwi r3,0 # Check if something went wrong
+bne- unmountMemoryCard
+
+# Allocate 0x400 bytes of memory, as the read size must be in multiples of 0x200 bytes,
+# and the BSS Area size, the fixed REL size, and the BSS Align are needed later
+ori r3,r28,OSAllocFromArenaLo@l
+mtlr r3
+li r3,0x400 # Bytes to allocate
+li r4,0x20 # The buffer used by CARDRead must be aligned to 0x20 bytes
+blrl
+
+# Backup the returned address to be used for later
+mr r24,r3
+
+# Read from the Card
+ori r3,r27,CARDReadAsync@l
+mtlr r3
+mr r3,r25 # Pointer to CardFileInfo
+mr r4,r24 # Pointer to the File Buffer
+li r5,0x400 # Amount of bytes to read
+li r6,0x2000 # Offset in the file to start reading from
+li r7,0 # Read Callback function (Want to avoid using, so NULL)
+blrl
+bl finishAsyncMemoryCardFunc
+cmpwi r3,0 # Check if something went wrong
+li r5,0x400 # Size used
+bne- freeCurrentMemoryArea
+
+# Get the File Size, as it will be used later
+lwz r6,0x40(r24) # File Size
+
+# Adjust the File Size to be in multiples of 0x200 bytes
+addi r23,r6,511
+rlwinm r23,r23,0,0,22
+
+# Increase the fixed REL size to account for the BSS's alignment requirement
+lwz r22,0x248(r24) # fixSize; 0x200 + 0x48
+lwz r3,0x244(r24) # bssAlign; 0x200 + 0x44
+divwu r0,r22,r3
+mullw r0,r0,r3
+sub. r0,r22,r0
+beq+ fixedRelSizeAligned
+
+# Align the fixed REL size
+mr r4,r22
+neg r5,r3
+and r5,r22,r5
+add r22,r5,r3 # fixSize
+
+# Get the difference between the new size and the old size
+sub r4,r22,r4
+
+# Add the difference to the File Size to account for the increased size
+add r6,r6,r4
+
+fixedRelSizeAligned:
+# Add the BSS Area size to the File Size
+lwz r21,0x220(r24) # BSS Area size; 0x200 + 0x20
+add r20,r6,r21
+
+# If the File Size + the BSS Area Size is less than the adjusted File Size,
+# then use the adjusted File Size as the size for the allocated memory
+cmplw r20,r23
+bge+ fileSizeIsValid
+mr r20,r23
+
+fileSizeIsValid:
+# Restore the original arena lo address, effectively freeing the 0x400 bytes from earlier
+stw r31,ARENA_LO_OFFSET(r13)
+
+# Allocate memory for the File and BSS
+ori r3,r28,OSAllocFromArenaLo@l
+mtlr r3
+mr r3,r20 # File Size + BSS Area Size
+li r4,0x20 # REL files require an alignment of 0x20
+blrl
+
+# Backup the returned address to be used for later
+mr r24,r3
+
+# Make sure no possible cache issues occur from reusing this memory
+# r3 already contains the pointer to the File Buffer
+li r4,0x400 # Should only matter for the first 0x400 bytes that were used before
+bl makeCodeChangesVisible
+
+# Read the REL Area of the file
+ori r3,r27,CARDReadAsync@l
+mtlr r3
+mr r3,r25 # Pointer to CardFileInfo
+mr r4,r24 # Pointer to the File Buffer
+mr r5,r23 # Adjusted File Size
+li r6,0x2200 # Offset in the file to start reading from
+li r7,0 # Read Callback Function (Want to avoid using, so NULL)
+blrl
+bl finishAsyncMemoryCardFunc
+cmpwi r3,0 # Check if something went wrong
+mr r5,r23 # Size used
+bne- freeCurrentMemoryArea
+
+# Get the address of the BSS Area
+add r23,r24,r22
+
+# Link the functions in the REL
+ori r3,r28,Link@l
+mtlr r3
+mr r3,r24 # Pointer to the Module
+mr r4,r23 # Pointer to the BSS Area
+li r5,1 # True
+blrl
+cmpwi r3,1 # Check if something went wrong
+bne- unlinkRel
+
+# Add the BSS Area Size to the adjusted fixed REL size
+add r3,r22,r21
+
+# Add the size to the original arena lo, effectively resizing the allocated
+# memory to remove the space used by the unnecessary relocation data
+add r3,r31,r3
+stw r3,ARENA_LO_OFFSET(r13)
+
+# Make sure the rest of the arena is cleared to insure no issues occur
+# from some memory potentially being uninitialized
+ori r4,r29,memset@l
+mtlr r4
+# r3 already contains the start of the arena
+li r4,0
+sub r5,r20,r22 # Has the extra size from the BSS Area size, but this shouldn't cause any issues
+blrl
+
+# Make sure no possible cache issues occur from this memory being reused later on
+# r3 already contains the start of the arena
+sub r4,r20,r22 # Has the extra size from the BSS Area size, but this shouldn't cause any issues
+bl makeCodeChangesVisible
+
+# Store the BSS Area and the Module
+stw r23,0x414C(r29) # Pointer to the BSS Area
+stw r24,0x4150(r29) # Pointer to the Module
+
+# Get the REL Prolog Pointer
+lwz r26,0x34(r24)
+
+# Done, so close and unmount the card
+b closeCard
+
+finishAsyncMemoryCardFunc:
+cmpwi r3,0 # Check if something went wrong
+bnelr-
+
+# Assume we're using Memory Card Slot A
+lis r4,__CARDBlock@ha
+
+finishAsyncMemoryCardFuncLoop:
+lwz r3,__CARDBlock@l + 0x4(r4)
+cmpwi r3,-1 # CARD_RESULT_BUSY
+beq+ finishAsyncMemoryCardFuncLoop
+blr
+
+makeCodeChangesVisible:
+# Make sure the size is valid
+cmplwi r4,0
+blelr-
+
+# Get the loop count
+rlwinm r5,r3,0,27,31
+add r4,r4,r5
+addi r4,r4,31
+rlwinm r4,r4,27,5,31
+mtctr r4
+
+makeCodeChangesVisibleLoopStart:
+# Flush the data cache and invalidate the instruction cache
+dcbf r0,r3
+icbi r0,r3
+addi r3,r3,32
+bdnz+ makeCodeChangesVisibleLoopStart
+
+# Done, so sync the caches and exit
+sync
+isync
+blr
+
+unlinkRel:
+ori r3,r28,OSUnlink@l
+mtlr r3
+mr r3,r24 # Pointer to the Module
+blrl
+mr r5,r20 # Size used
+
+freeCurrentMemoryArea:
+# Make a backup of the size to use for later
+mr r23,r5 # Size used
+
+# Clear the memory used by the REL to insure no issues occur from some
+# memory potentially being uninitialized
+ori r3,r29,memset@l
+mtlr r3
+mr r3,r24 # Pointer to the File Buffer or the 0x400 Bytes Buffer
+li r4,0
+# r5 already contains the size
+blrl
+
+# Make sure no possible cache issues occur from this memory being reused later on
+# r3 already contains the pointer the File Buffer or the 0x400 Bytes Buffer
+mr r4,r23 # Size used
+bl makeCodeChangesVisible
+
+# Restore the original arena lo address, effectively freeing the current memory area
+stw r31,ARENA_LO_OFFSET(r13)
+
+closeCard:
+ori r3,r27,CARDClose@l
+mtlr r3
+mr r3,r25 # Pointer to CardFileInfo
+blrl
+
+unmountMemoryCard:
+ori r3,r27,CARDUnmount@l
+mtlr r3
+li r3,0 # Memory Card Slot A
+blrl
+
+freeWorkArea:
+# Clear the memory used by the Work Area to insure no issues occur from some memory
+# potentially being uninitialized
+ori r3,r29,memset@l
+mtlr r3
+lwz r3,ARENA_HI_OFFSET(r13)
+li r4,0
+ori r5,r4,0xA000 # Work Area size
+blrl
+
+# Make sure no possible cache issues occur from this memory being reused later on
+# r3 already contains the Arena Hi address
+li r4,0
+ori r4,r4,0xA000 # Work Area size
+bl makeCodeChangesVisible
+
+# Restore the original Arena Hi address, effectively freeing the Work Area
+stw r30,ARENA_HI_OFFSET(r13)
+
+# Run the REL Prolog if the load was successful
+cmpwi r26,0
+beq- exit
+mtlr r26
+blrl
+
+exit:
+# Calculate how much memory is used by the REL, and store the result
+lwz r3,ARENA_LO_OFFSET(r13)
+sub r3,r3,r31
+
+# Adjust the new size to be in multiples of 0x20 bytes
+addi r3,r3,31
+rlwinm r3,r3,0,0,26
+
+# Add the new size to the current size
+lwz r4,REL_TOTAL_USED_SIZE_ADDRESS@l(r29)
+add r3,r4,r3
+stw r3,REL_TOTAL_USED_SIZE_ADDRESS@l(r29)
+
+# Restore function parameters
+lwz r3,0x8(sp)
+lwz r4,0xC(sp)
+
+# Pop stack
+lmw r20,0x28(sp)
+lwz r0,0x5C(sp)
+mtlr r0
+addi sp,sp,0x58
+
+# Add back in the overwritten instruction
+stwu sp,-0x10(sp)
