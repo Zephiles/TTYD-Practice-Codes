@@ -1,6 +1,8 @@
 # User manual
 # Important Notice
-As of **v4.0**, the internal filename of the **settings** file has been changed from `Practice_Codes_Settings` to `Practice_Codes_Data`. Because of this, the **settings** file used by **v4.0** will not be usable with older versions of the **Practice Codes**, and older **settings** files can still be present on the memory card alongside the new one from **v4.0**.
+As of **v4.0**, the following has changed:
+* **V3** of the **REL Loader** is now required to load this project. Instructions for getting this version will be listed in the [Setup](#setup) section below.
+* The internal filename of the **settings** file has been changed from `Practice_Codes_Settings` to `Practice_Codes_Data`. Because of this, the **settings** file used by **v4.0** will not be usable with older versions of the **Practice Codes**, and older **settings** files can still be present on the memory card alongside the new one from **v4.0**.
 
 ## Table of contents
 -   [Setup](#setup)
@@ -30,13 +32,13 @@ As of **v4.0**, the internal filename of the **settings** file has been changed 
   
   2. Use the Gecko loader cheat code in the "relloader" directory to make the game load the Practice Codes GCI.
       * For **Dolphin** users:
-          * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/rewrite/relloader/build/Gecko), in which **v2** is the recommended version to use with this project).
+          * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the appropriate Gecko loader code for the region of the game you are using (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/relloader/build/Gecko)).
         
         * (For older revisions of Dolphin v5, instead go to **Properties > Edit Config**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
         
         * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
       * For **Nintendont** users:
-        * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/rewrite/relloader/build/GCT/V2)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO. 
+        * Copy the loader GCT (found [here](https://github.com/Zephiles/TTYD-Practice-Codes/tree/master/relloader/build/GCT/V3)) onto your SD card, either to **/codes/** or into the folder with your TTYD ISO.
         
           * Note: It is important that you **do not** right click to save the GCT, or it will be saved incorrectly. You must download it via the **Download** button.
         
