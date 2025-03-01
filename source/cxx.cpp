@@ -20,12 +20,12 @@ static void *clearMemoryAndCacheAndReturnPtr(void *ptr, std::size_t size)
 
 void *allocMemoryFromHead(std::size_t size)
 {
-    return __memAlloc(0, size);
+    return __memAlloc(HeapType::HEAP_DEFAULT, size);
 }
 
 void *allocateMemoryFromTail(std::size_t size)
 {
-    void *ptr = allocFromHeapTail(heapHandle[0], size);
+    void *ptr = allocFromHeapTail(HeapType::HEAP_DEFAULT, size);
     return clearMemoryAndCacheAndReturnPtr(ptr, size);
 }
 
@@ -61,5 +61,5 @@ void *allocMemoryFromArenaTail(std::size_t size)
 
 void freeMemory(void *ptr)
 {
-    return __memFree(0, ptr);
+    return __memFree(HeapType::HEAP_DEFAULT, ptr);
 }

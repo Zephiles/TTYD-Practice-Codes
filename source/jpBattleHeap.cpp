@@ -13,22 +13,22 @@ static void *gBattleHeap = nullptr;
 static void (*g_BattleEnd_trampoline)() = nullptr;
 static OSHeapHandle (*g_OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
 
-void battleHeapInit()
+static void battleHeapInit()
 {
-    // Allocate the memory from the map heap
-    // Turn the allocated memory into a standard heap
+    // The heap info capacity for the battle heap needs to be -1 for OSCreateHeap to use it. Calling OSDestroyHeap to do this
+    // before allocating memory uses less instructions than manually setting the capacity to -1.
+    OSDestroyHeap(HeapType::HEAP_BATTLE);
+
+    // Allocate the memory from the map heap to use for the battle heap
     void *battleHeapPtr = _mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE);
     gBattleHeap = battleHeapPtr;
-
-    // The heap info capacity for the battle heap needs to be -1 for OSCreateHeap to use it
-    HeapArray[HeapType::HEAP_BATTLE].capacity = static_cast<uint32_t>(-1);
 
     // Initialize the battle heap
     const uint32_t battleHeapPtrRaw = reinterpret_cast<uint32_t>(battleHeapPtr);
     OSCreateHeap(battleHeapPtr, reinterpret_cast<void *>(battleHeapPtrRaw + BATTLE_HEAP_ORIGINAL_SIZE));
 }
 
-void battleEndHook()
+static void battleEndHook()
 {
     // Call the original function immediately, as various code needs to run before the battle heap is freed
     g_BattleEnd_trampoline();
@@ -37,14 +37,16 @@ void battleEndHook()
     _mapFree(gBattleHeap);
     gBattleHeap = nullptr;
 
-    // Clear the heap info variables since the battle heap is no longer allocated
+    // Clear the heap info variables since the battle heap is no longer allocated. Not using OSDestroyHeap to clear the
+    // variables since that sets the capacity to -1, which would allow it to be modified by OSCreateHeap, and would also cause
+    // the Memory Usage display to display its total size as negative.
     HeapInfo *heapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
     heapInfoPtr->capacity = 0;
     heapInfoPtr->firstFree = nullptr;
     heapInfoPtr->firstUsed = nullptr;
 }
 
-OSHeapHandle OSCreateHeapHook(void *start, void *end)
+static OSHeapHandle OSCreateHeapHook(void *start, void *end)
 {
     // If start and/or end are nullptr, then the game is trying to create the battle heap in memInit. To prevent this, set the
     // capacity for it to 0 to prevent it from being written to, and return HeapType::HEAP_BATTLE to make sure the proper handle

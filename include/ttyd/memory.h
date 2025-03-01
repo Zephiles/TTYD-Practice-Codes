@@ -48,7 +48,7 @@ struct MapAllocEntry
     uint8_t unk[0x14];
 } __attribute__((__packed__));
 
-enum HeapType : OSHeapHandle
+enum HeapType : int32_t
 {
     HEAP_DEFAULT = 0,
     HEAP_MAP,
@@ -100,27 +100,21 @@ extern "C"
 {
 #ifdef TTYD_JP
     extern int32_t size_table[6][2];
+    extern OSHeapHandle heapHandle[6];
 #else
     extern int32_t size_table[5][2];
+    extern OSHeapHandle heapHandle[5];
+
+    extern MapAllocEntry *R_battlemapalloc_base_ptr;
+    extern uint32_t R_battlemapalloc_size;
 #endif
 
     extern SmartWork *_smartWorkPtr; // wp
     extern uint32_t mapalloc_size;
     extern MapAllocEntry *mapalloc_base_ptr;
 
-#ifndef TTYD_JP
-    extern MapAllocEntry *R_battlemapalloc_base_ptr;
-    extern uint32_t R_battlemapalloc_size;
-#endif
-
     extern HeapEnd heapEnd;
     extern HeapStart heapStart;
-
-#ifdef TTYD_JP
-    extern OSHeapHandle heapHandle[6];
-#else
-    extern OSHeapHandle heapHandle[5];
-#endif
 
     // memInit
     // memClear

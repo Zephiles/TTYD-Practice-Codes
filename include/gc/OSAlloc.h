@@ -33,7 +33,7 @@ extern "C"
     // OSSetCurrentHeap
     // OSInitAlloc
     OSHeapHandle OSCreateHeap(void *start, void *end);
-    // OSDestroyHeap
+    void OSDestroyHeap(OSHeapHandle handle);
 }
 
 #endif

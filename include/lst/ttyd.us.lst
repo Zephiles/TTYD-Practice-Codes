@@ -2604,7 +2604,7 @@
 // 80296624:OSSetCurrentHeap
 // 80296634:OSInitAlloc
 802966A4:OSCreateHeap
-// 80296710:OSDestroyHeap
+80296710:OSDestroyHeap
 // data
 8041F070:HeapArray
 8041F074:NumHeaps
