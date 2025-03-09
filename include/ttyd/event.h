@@ -15,24 +15,24 @@ struct EventStageEventDescription
     uint8_t pad_3;
     uint16_t sequencePosition;
     uint16_t pad_6;
-    char *textId;
-    char *nameJp;
+    const char *textId;
+    const char *nameJp;
 
 #ifndef TTYD_JP
-    char *nameEn;
+    const char *nameEn;
 #endif
 
-    char *map;
-    char *bero;
+    const char *map;
+    const char *bero;
     EventStageEventDescriptionInitFunc pfnInit;
 } __attribute__((__packed__));
 
 struct EventStageDescription
 {
-    char *nameJp;
+    const char *nameJp;
 
 #ifndef TTYD_JP
-    char *nameEn;
+    const char *nameEn;
 #endif
 
     EventStageEventDescription *pEvents;

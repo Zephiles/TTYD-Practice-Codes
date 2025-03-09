@@ -453,7 +453,7 @@ void handleWarpByEvent()
 
                 addItemToInventory(standardInventoryPtr, totalSlots, ItemId::ITEM_COCONUT);
             }
-        };
+        }
     }
 
     // Set specific flags if desired
