@@ -168,6 +168,11 @@ void exit() {}
 
 uint32_t initAfterHeapsCreated()
 {
+#ifdef TTYD_JP
+    // The code for hooking OSCreateHeap only needs to run at boot, so it can be unhooked
+    // unhookFunctionArena(g_OSCreateHeap_trampoline);
+#endif
+
     // Load the custom settings from the settings file if it exists
     // Try both memory card slots
     if (loadSettings(CARD_SLOT_A) != CARD_RESULT_READY)

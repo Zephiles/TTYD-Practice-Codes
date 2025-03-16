@@ -1,17 +1,17 @@
 #ifdef TTYD_JP
 #include "jpBattleHeap.h"
 #include "patch.h"
-#include "gc/OSAlloc.h"
 #include "gc/types.h"
+#include "gc/OSAlloc.h"
 #include "ttyd/memory.h"
 #include "ttyd/battle.h"
 
 #include <cstdint>
 
-static void *gBattleHeap = nullptr;
+OSHeapHandle (*g_OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
 
+static void *gBattleHeap = nullptr;
 static void (*g_BattleEnd_trampoline)() = nullptr;
-static OSHeapHandle (*g_OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
 
 static void battleHeapInit()
 {

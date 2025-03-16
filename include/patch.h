@@ -164,12 +164,12 @@ Func unhookFunction(Func trampoline)
     // Check if this is a negative branch
     if (branchLength > 0x01FFFFFC)
     {
-        const int32_t Width = 26;
-        const int32_t Mask = (1 << (Width - 1));
-        branchLength = (branchLength ^ Mask) - Mask - 0x4;
+        const int32_t width = 26;
+        const int32_t mask = (1 << (width - 1));
+        branchLength = (branchLength ^ mask) - mask;
     }
 
-    uint32_t instructionAddress = reinterpret_cast<uint32_t>(&instructions[1]);
+    uint32_t instructionAddress = reinterpret_cast<uint32_t>(&instructions[0]);
     uint32_t *address = reinterpret_cast<uint32_t *>(instructionAddress + branchLength);
     *address = instructions[0];
 
@@ -179,6 +179,47 @@ Func unhookFunction(Func trampoline)
 
     // Free the memory used by the trampoline
     delete[] instructions;
+    return nullptr;
+}
+
+/**
+ * Undos the work done via `hookFunctionArena`: Restores the first instruction from the dynamic memory.
+ *
+ * @tparam trampoline The pointer to the dynamic memory that contains the backed-up original instruction and the `b` branch that
+ * goes to just after the start of the original function.
+ *
+ * @returns `nullptr`.
+ *
+ *  @note This function does not free the dynamic memory used by the trampoline, as it was allocated from the arena, which does
+ * not support freeing memory.
+ */
+template<typename Func>
+Func unhookFunctionArena(Func trampoline)
+{
+    if (!trampoline)
+    {
+        return nullptr;
+    }
+
+    uint32_t *instructions = reinterpret_cast<uint32_t *>(trampoline);
+
+    // Restore the original instruction
+    int32_t branchLength = instructions[1] & 0x03FFFFFC;
+
+    // Check if this is a negative branch
+    if (branchLength > 0x01FFFFFC)
+    {
+        const int32_t width = 26;
+        const int32_t mask = (1 << (width - 1));
+        branchLength = (branchLength ^ mask) - mask;
+    }
+
+    uint32_t instructionAddress = reinterpret_cast<uint32_t>(&instructions[0]);
+    uint32_t *address = reinterpret_cast<uint32_t *>(instructionAddress + branchLength);
+    *address = instructions[0];
+
+    // Clear the cache for the address
+    clear_DC_IC_Cache(address, sizeof(uint32_t));
     return nullptr;
 }
 
