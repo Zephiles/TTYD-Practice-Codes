@@ -3,6 +3,7 @@
 #include "gc/OSModule.h"
 #include "gc/types.h"
 #include "gc/os.h"
+#include "gc/OSCache.h"
 #include "ttyd/system.h"
 #include "ttyd/swdrv.h"
 #include "ttyd/mariost.h"
@@ -495,4 +496,10 @@ uint32_t ptrIsValid(void *ptr)
 void *clearMemory(void *ptr, uint32_t size)
 {
     return memset(ptr, 0, size);
+}
+
+void clear_DC_IC_Cache(void *ptr, uint32_t size)
+{
+    DCFlushRange(ptr, size);
+    ICInvalidateRange(ptr, size);
 }

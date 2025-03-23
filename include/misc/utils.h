@@ -1,7 +1,6 @@
 #ifndef MISC_MISC_H
 #define MISC_MISC_H
 
-#include "assembly.h"
 #include "gc/types.h"
 #include "ttyd/seqdrv.h"
 #include "ttyd/party.h"
@@ -415,10 +414,7 @@ Ptr clearMemory(Ptr ptr, uint32_t size)
  * @param ptr The pointer to the memory that will have its cache cleared.
  * @param size The amount of bytes that will have their cache cleared.
  */
-inline void clear_DC_IC_Cache(void *ptr, uint32_t size)
-{
-    return asmClearDCICCache(ptr, size);
-}
+void clear_DC_IC_Cache(void *ptr, uint32_t size);
 
 /**
  * Clears the data cache and instruction cache of memory starting at a specified address.
