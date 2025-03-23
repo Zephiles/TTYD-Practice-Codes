@@ -413,7 +413,8 @@ static void fixMapProblems() // Gets called in initStageEvents
     if (compareStringToNextMap("nok_00"))
     {
         // Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past
-        // slot 10 Check if the cutscene is going to play
+        // slot 10
+        // Check if the cutscene is going to play
         if (sequencePosition < 26)
         {
             // Clear the pointer used to check which animation Mario should use when greeting the Koopa
