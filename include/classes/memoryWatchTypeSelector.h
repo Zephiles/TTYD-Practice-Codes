@@ -98,6 +98,18 @@ class MemoryWatchTypeSelector: private OptionSelector
     MemoryWatchTypeSelectorSetTypeFunc setTypeFunc;
 };
 
+/**
+ * Helper function to convert a void pointer to a `MemoryWatchTypeSelector` pointer.
+ *
+ * @param ptr Pointer to convert to a `MemoryWatchTypeSelector` pointer.
+ *
+ * @returns A pointer to the `MemoryWatchTypeSelector` class.
+ */
+inline MemoryWatchTypeSelector *convertToMemoryWatchTypeSelectorPtr(void *ptr)
+{
+    return reinterpret_cast<MemoryWatchTypeSelector *>(ptr);
+}
+
 // Array of available memory watch types to select from.
 extern const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES];
 

@@ -176,7 +176,7 @@ void OptionSelector::controls(MenuButtonInput button)
             const OptionSelectorSelectOptionFunc func = this->selectOptionFunc;
             if (func)
             {
-                return func(currentIndex);
+                return func(currentIndex, this->classPtr);
             }
             break;
         }
@@ -186,7 +186,7 @@ void OptionSelector::controls(MenuButtonInput button)
             const OptionSelectorCancelFunc func = this->cancelFunc;
             if (func)
             {
-                return func();
+                return func(this->classPtr);
             }
             break;
         }

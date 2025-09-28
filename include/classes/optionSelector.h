@@ -12,11 +12,30 @@
  * Callback function pointer for when the player selects an option.
  *
  * @param currentIndex The index of the option that was selected.
+ * @param classPtr Pointer to whichever class is currently using the option selector.
+ *
+ * @note `classPtr` needs to be the last parameter to allow other classes to cast to this typedef, as some of them will not
+ * require `classPtr` to function, and thus excluding it will save a bit of memory.
  */
-typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex);
+typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *classPtr);
 
-// Callback function pointer for when the player presses `B` to cancel selecting an option.
-typedef void (*OptionSelectorCancelFunc)();
+/**
+ * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `classPtr` parameter.
+ *
+ * @param currentIndex The index of the option that was selected.
+ *
+ */
+typedef void (*OptionSelectorSelectOptionFuncNoClassPtr)(uint32_t currentIndex);
+
+/**
+ * // Callback function pointer for when the player presses `B` to cancel selecting an option.
+ *
+ * @param classPtr Pointer to whichever class is currently using the option selector.
+ */
+typedef void (*OptionSelectorCancelFunc)(void *classPtr);
+
+// Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `classPtr` parameter.
+typedef void (*OptionSelectorCancelFuncNoClassPtr)();
 
 // Handles selecting an arbitrary option from an arbitrary list of options, with an arbitrary amount of columns for the options.
 // A help window with text is displayed to assist in this process.
@@ -73,6 +92,20 @@ class OptionSelector
               float spaceBetweenHelpTextAndOptions);
 
     /**
+     * Gets the pointer to whichever class is currently using the option selector.
+     *
+     * @returns Pointer to whichever class is currently using the option selector.
+     */
+    void *getClassPtr() { return this->classPtr; }
+
+    /**
+     * Updates `classPtr` to whichever class is currently using the option selector.
+     *
+     * @param ptr Pointer to whichever class is currently using the option selector.
+     */
+    void setClassPtr(void *ptr) { this->classPtr = ptr; }
+
+    /**
      * Updates the current value of the `currentIndex` variable.
      *
      * @param index The value to set the `currentIndex` variable to.
@@ -120,6 +153,10 @@ class OptionSelector
      */
     void dpadControls(MenuButtonInput button);
 
+    // Pointer for whichever class is currently using the option selector, so that they do not need to have separate global
+    // variables.
+    void *classPtr;
+
     // The window to place all of the option selector's text in.
     Window window;
 
@@ -153,5 +190,32 @@ class OptionSelector
     // Whether the option selector is enabled/drawn or not.
     bool enabled;
 };
+
+/**
+ * Helper function to convert an `OptionSelectorSelectOptionFuncNoClassPtr` pointer to an `OptionSelectorSelectOptionFunc`
+ * pointer, to make it easier for classes to use the `OptionSelector` class without the need to pass a `classPtr` variable to
+ * it.
+ *
+ * @param ptr Pointer to a `OptionSelectorSelectOptionFuncNoClassPtr` function.
+ *
+ * @returns Pointer to a `OptionSelectorSelectOptionFunc` function.
+ */
+inline OptionSelectorSelectOptionFunc convertToSelectOptionFunc(OptionSelectorSelectOptionFuncNoClassPtr ptr)
+{
+    return reinterpret_cast<OptionSelectorSelectOptionFunc>(ptr);
+}
+
+/**
+ * Helper function to convert an `OptionSelectorCancelFuncNoClassPtr` pointer to an `OptionSelectorCancelFunc` pointer, to make
+ * it easier for classes to use the `OptionSelector` class without the need to pass a `classPtr` variable to it.
+ *
+ * @param ptr Pointer to a `OptionSelectorCancelFuncNoClassPtr` function.
+ *
+ * @returns Pointer to a `OptionSelectorCancelFunc` function.
+ */
+inline OptionSelectorCancelFunc convertToCancelFunc(OptionSelectorCancelFuncNoClassPtr ptr)
+{
+    return reinterpret_cast<OptionSelectorCancelFunc>(ptr);
+}
 
 #endif

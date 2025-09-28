@@ -89,6 +89,18 @@ class FollowerSelector: private OptionSelector
     FollowerSelectorSelectFunc selectFunc;
 };
 
+/**
+ * Helper function to convert a void pointer to a `FollowerSelector` pointer.
+ *
+ * @param ptr Pointer to convert to a `FollowerSelector` pointer.
+ *
+ * @returns A pointer to the `FollowerSelector` class.
+ */
+inline FollowerSelector *convertToFollowerSelectorPtr(void *ptr)
+{
+    return reinterpret_cast<FollowerSelector *>(ptr);
+}
+
 // Array of available followers to select from.
 extern const char *gFollowersOptions[TOTAL_FOLLOWERS];
 

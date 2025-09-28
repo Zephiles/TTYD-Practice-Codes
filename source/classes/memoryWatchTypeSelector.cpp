@@ -1,5 +1,6 @@
 #include "mod.h"
 #include "classes/memoryWatchTypeSelector.h"
+#include "classes/optionSelector.h"
 #include "classes/window.h"
 #include "classes/menu.h"
 
@@ -20,10 +21,6 @@ const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES] = {
     "time",
 };
 
-// Global variable for the current memory watch type selector being used, as a non-class helper function must be used for
-// handling the memory watch type that was selected.
-static MemoryWatchTypeSelector *gMemoryWatchTypeSelector = nullptr;
-
 void MemoryWatchTypeSelector::init(const Window *parentWindow)
 {
     this->init(parentWindow, 0xFF);
@@ -42,22 +39,23 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlp
 
 void MemoryWatchTypeSelector::stopDrawing()
 {
-    gMemoryWatchTypeSelector = nullptr;
+    this->OptionSelector::setClassPtr(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
 /**
- * Callback function for when an option is selected. Calls the `setTypeFunc` variable function from the follower selector, based
- * on the `gMemoryWatchTypeSelector` global variable.
+ * Callback function for when an option is selected. Calls the `setTypeFunc` variable function from the follower selector.
  *
  * @param currentIndex The index of the option that was selected.
+ * @param classPtr Pointer to the current memory watch type selector.
  *
  * @relatesalso MemoryWatchTypeSelector
  */
-static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
+static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex, void *classPtr)
 {
-    // Make sure MemoryWatchTypeSelector is set
-    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = gMemoryWatchTypeSelector;
+    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = convertToMemoryWatchTypeSelectorPtr(classPtr);
+
+    // Make sure memoryWatchTypeSelectorPtr is set
     if (!memoryWatchTypeSelectorPtr)
     {
         return;
@@ -74,8 +72,10 @@ static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex)
 void MemoryWatchTypeSelector::startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc,
                                            MemoryWatchTypeSelectorCancelFunc cancelFunc)
 {
-    gMemoryWatchTypeSelector = this;
+    this->OptionSelector::setClassPtr(this);
     this->setTypeFunc = setTypeFunc;
 
-    this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);
+    // The `classPtr` param is not needed for `cancelFunc`, so it can just converted to the necessary type to save a bit of
+    // memory.
+    this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, convertToCancelFunc(cancelFunc));
 }

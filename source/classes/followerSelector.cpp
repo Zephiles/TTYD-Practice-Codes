@@ -1,5 +1,6 @@
 #include "mod.h"
 #include "classes/followerSelector.h"
+#include "classes/optionSelector.h"
 #include "classes/window.h"
 #include "classes/menu.h"
 #include "ttyd/party.h"
@@ -36,10 +37,6 @@ const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
     PartyMembers::kCraw,
 };
 
-// Global variable for the current follower selector being used, as a non-class helper function must be used for handling the
-// follower that was selected.
-static FollowerSelector *gFollowerSelector = nullptr;
-
 void FollowerSelector::init(const Window *parentWindow)
 {
     this->init(parentWindow, 0xFF);
@@ -52,22 +49,23 @@ void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 
 void FollowerSelector::stopDrawing()
 {
-    gFollowerSelector = nullptr;
+    this->OptionSelector::setClassPtr(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
 /**
- * Callback function for when an option is selected. Calls the `selectFunc` variable function from the follower selector, based
- * on the `gFollowerSelector` global variable.
+ * Callback function for when an option is selected. Calls the `selectFunc` variable function from the follower selector.
  *
+ * @param classPtr Pointer to the current follower selector.
  * @param currentIndex The index of the option that was selected.
  *
  * @relatesalso FollowerSelector
  */
-static void followerSelectorSelectedFollower(uint32_t currentIndex)
+static void followerSelectorSelectedFollower(uint32_t currentIndex, void *classPtr)
 {
-    // Make sure gFollowerSelector is set
-    const FollowerSelector *followerSelectorPtr = gFollowerSelector;
+    const FollowerSelector *followerSelectorPtr = convertToFollowerSelectorPtr(classPtr);
+
+    // Make sure followerSelectorPtr is set
     if (!followerSelectorPtr)
     {
         return;
@@ -83,8 +81,10 @@ static void followerSelectorSelectedFollower(uint32_t currentIndex)
 
 void FollowerSelector::startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc)
 {
-    gFollowerSelector = this;
+    this->OptionSelector::setClassPtr(this);
     this->selectFunc = selectedFunc;
 
-    this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
+    // The `classPtr` param is not needed for `cancelFunc`, so it can just converted to the necessary type to save a bit of
+    // memory.
+    this->OptionSelector::startDrawing(followerSelectorSelectedFollower, convertToCancelFunc(cancelFunc));
 }

@@ -10,10 +10,6 @@ static const char *gYesNoStrings[] = {
     "No",
 };
 
-// Global variable for the current confirmation window being used, as non-class helper functions must be used for handling the
-// option that was selected.
-static ConfirmationWindow *gConfirmationWindow = nullptr;
-
 void ConfirmationWindow::init(const Window *parentWindow, const char *helpText)
 {
     this->init(parentWindow, helpText, 0xFF);
@@ -30,22 +26,24 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
 
 void ConfirmationWindow::stopDrawing()
 {
-    gConfirmationWindow = nullptr;
+    this->OptionSelector::setClassPtr(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
 /**
  * Callback function for when an option is selected. Calls the `selectedOptionFunc` variable function from the confirmation
- * window, based on the `gConfirmationWindow` global variable.
+ * window.
  *
+ * @param classPtr Pointer to the current confirmation window.
  * @param currentIndex The index of the option that was selected.
  *
  * @relatesalso ConfirmationWindow
  */
-static void confirmationWindowSelectedOption(uint32_t currentIndex)
+static void confirmationWindowSelectedOption(uint32_t currentIndex, void *classPtr)
 {
-    // Make sure gConfirmationWindow is set
-    const ConfirmationWindow *confirmationWindowPtr = gConfirmationWindow;
+    ConfirmationWindow *confirmationWindowPtr = convertToConfirmationWindowPtr(classPtr);
+
+    // Make sure confirmationWindowPtr is set
     if (!confirmationWindowPtr)
     {
         return;
@@ -67,19 +65,20 @@ static void confirmationWindowSelectedOption(uint32_t currentIndex)
 
 /**
  * Callback function for when `B` is pressed to cancel selecting an option. Calls the `selectedOptionFunc` variable function
- * from the confirmation window (with the `currentIndex` parameter set to `CONFIRMATION_WINDOW_OPTION_NO`), based on the
- * `gConfirmationWindow` global variable.
+ * from the confirmation window (with the `currentIndex` parameter set to `CONFIRMATION_WINDOW_OPTION_NO`).
+ *
+ * @param classPtr Pointer to the current confirmation window.
  *
  * @relatesalso ConfirmationWindow
  */
-static void confirmationWindowSelectedNo()
+static void confirmationWindowSelectedNo(void *classPtr)
 {
-    confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO);
+    confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO, classPtr);
 }
 
 void ConfirmationWindow::startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
 {
-    gConfirmationWindow = this;
+    this->OptionSelector::setClassPtr(this);
     this->selectedOptionFunc = selectedOptionFunc;
 
     this->OptionSelector::startDrawing(confirmationWindowSelectedOption, confirmationWindowSelectedNo);
