@@ -75,7 +75,5 @@ void MemoryWatchTypeSelector::startDrawing(MemoryWatchTypeSelectorSetTypeFunc se
     this->OptionSelector::setClassPtr(this);
     this->setTypeFunc = setTypeFunc;
 
-    // The `classPtr` param is not needed for `cancelFunc`, so it can just converted to the necessary type to save a bit of
-    // memory.
-    this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, convertToCancelFunc(cancelFunc));
+    this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);
 }

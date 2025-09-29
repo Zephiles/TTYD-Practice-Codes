@@ -56,8 +56,8 @@ void FollowerSelector::stopDrawing()
 /**
  * Callback function for when an option is selected. Calls the `selectFunc` variable function from the follower selector.
  *
- * @param classPtr Pointer to the current follower selector.
  * @param currentIndex The index of the option that was selected.
+ * @param classPtr Pointer to the current follower selector.
  *
  * @relatesalso FollowerSelector
  */
@@ -84,7 +84,5 @@ void FollowerSelector::startDrawing(FollowerSelectorSelectFunc selectedFunc, Fol
     this->OptionSelector::setClassPtr(this);
     this->selectFunc = selectedFunc;
 
-    // The `classPtr` param is not needed for `cancelFunc`, so it can just converted to the necessary type to save a bit of
-    // memory.
-    this->OptionSelector::startDrawing(followerSelectorSelectedFollower, convertToCancelFunc(cancelFunc));
+    this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
 }

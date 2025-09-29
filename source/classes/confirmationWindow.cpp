@@ -34,8 +34,8 @@ void ConfirmationWindow::stopDrawing()
  * Callback function for when an option is selected. Calls the `selectedOptionFunc` variable function from the confirmation
  * window.
  *
- * @param classPtr Pointer to the current confirmation window.
  * @param currentIndex The index of the option that was selected.
+ * @param classPtr Pointer to the current confirmation window.
  *
  * @relatesalso ConfirmationWindow
  */

@@ -14,28 +14,17 @@
  * @param currentIndex The index of the option that was selected.
  * @param classPtr Pointer to whichever class is currently using the option selector.
  *
- * @note `classPtr` needs to be the last parameter to allow other classes to cast to this typedef, as some of them will not
- * require `classPtr` to function, and thus excluding it will save a bit of memory.
+ * @note `classPtr` needs to be the last parameter to allow other classes to be able to discard it, as some of them will not
+ * require it to function, and thus excluding it will save a bit of memory.
  */
 typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *classPtr);
 
 /**
- * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `classPtr` parameter.
- *
- * @param currentIndex The index of the option that was selected.
- *
- */
-typedef void (*OptionSelectorSelectOptionFuncNoClassPtr)(uint32_t currentIndex);
-
-/**
- * // Callback function pointer for when the player presses `B` to cancel selecting an option.
+ * Callback function pointer for when the player presses `B` to cancel selecting an option.
  *
  * @param classPtr Pointer to whichever class is currently using the option selector.
  */
 typedef void (*OptionSelectorCancelFunc)(void *classPtr);
-
-// Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `classPtr` parameter.
-typedef void (*OptionSelectorCancelFuncNoClassPtr)();
 
 // Handles selecting an arbitrary option from an arbitrary list of options, with an arbitrary amount of columns for the options.
 // A help window with text is displayed to assist in this process.
@@ -122,13 +111,18 @@ class OptionSelector
     /**
      * Sets the option selector to be drawn.
      *
-     * @param selectOptionFunc Callback function for when the player selects an option.
-     * @param cancelFunc Callback function for when the player presses `B` to cancel selecting an option.
+     * @tparam selectOptionFunc Callback function for when the player selects an option.
+     * @tparam cancelFunc Callback function for when the player presses `B` to cancel selecting an option.
+     *
+     * @note `selectOptionFunc` and `cancelFunc` both need to be of types `OptionSelectorSelectOptionFunc` and
+     * `OptionSelectorCancelFunc` respectively to function properly, with the exception that the `classPtr` parameter can be
+     * excluded from either of them if they are not needed.
      */
-    void startDrawing(OptionSelectorSelectOptionFunc selectOptionFunc, OptionSelectorCancelFunc cancelFunc)
+    template<typename SelectOptionFunc, typename CancelFunc>
+    void startDrawing(SelectOptionFunc selectOptionFunc, CancelFunc cancelFunc)
     {
-        this->selectOptionFunc = selectOptionFunc;
-        this->cancelFunc = cancelFunc;
+        this->selectOptionFunc = reinterpret_cast<OptionSelectorSelectOptionFunc>(selectOptionFunc);
+        this->cancelFunc = reinterpret_cast<OptionSelectorCancelFunc>(cancelFunc);
         this->enabled = true;
     }
 
@@ -190,32 +184,5 @@ class OptionSelector
     // Whether the option selector is enabled/drawn or not.
     bool enabled;
 };
-
-/**
- * Helper function to convert an `OptionSelectorSelectOptionFuncNoClassPtr` pointer to an `OptionSelectorSelectOptionFunc`
- * pointer, to make it easier for classes to use the `OptionSelector` class without the need to pass a `classPtr` variable to
- * it.
- *
- * @param ptr Pointer to a `OptionSelectorSelectOptionFuncNoClassPtr` function.
- *
- * @returns Pointer to a `OptionSelectorSelectOptionFunc` function.
- */
-inline OptionSelectorSelectOptionFunc convertToSelectOptionFunc(OptionSelectorSelectOptionFuncNoClassPtr ptr)
-{
-    return reinterpret_cast<OptionSelectorSelectOptionFunc>(ptr);
-}
-
-/**
- * Helper function to convert an `OptionSelectorCancelFuncNoClassPtr` pointer to an `OptionSelectorCancelFunc` pointer, to make
- * it easier for classes to use the `OptionSelector` class without the need to pass a `classPtr` variable to it.
- *
- * @param ptr Pointer to a `OptionSelectorCancelFuncNoClassPtr` function.
- *
- * @returns Pointer to a `OptionSelectorCancelFunc` function.
- */
-inline OptionSelectorCancelFunc convertToCancelFunc(OptionSelectorCancelFuncNoClassPtr ptr)
-{
-    return reinterpret_cast<OptionSelectorCancelFunc>(ptr);
-}
 
 #endif

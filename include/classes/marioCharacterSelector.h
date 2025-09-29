@@ -75,9 +75,7 @@ class MarioCharacterSelector: private OptionSelector
     void startDrawing(MarioCharacterSelectorChangeCharacterFunc changeCharacterFunc,
                       MarioCharacterSelectorCancelFunc cancelFunc)
     {
-        // The `classPtr` param is not needed for `changeCharacterFunc` nor `cancelFunc`, so they can just be converted to the
-        // necessary type to save a bit of memory.
-        this->OptionSelector::startDrawing(convertToSelectOptionFunc(changeCharacterFunc), convertToCancelFunc(cancelFunc));
+        this->OptionSelector::startDrawing(changeCharacterFunc, cancelFunc);
     }
 
     // Sets the Mario character selector to not be drawn.

@@ -65,9 +65,7 @@ class YoshiColorSelector: private OptionSelector
      */
     void startDrawing(YoshiColorSelectorSetColorFunc setColorFunc, YoshiColorSelectorCancelFunc cancelFunc)
     {
-        // The `classPtr` param is not needed for `changeCharacterFunc` nor `cancelFunc`, so they can just be converted to the
-        // necessary type to save a bit of memory.
-        this->OptionSelector::startDrawing(convertToSelectOptionFunc(setColorFunc), convertToCancelFunc(cancelFunc));
+        this->OptionSelector::startDrawing(setColorFunc, cancelFunc);
     }
 
     // Sets the Yoshi color selector to not be drawn.
