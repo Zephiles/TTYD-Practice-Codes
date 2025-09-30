@@ -53,7 +53,7 @@ void MemoryWatchTypeSelector::stopDrawing()
  */
 static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex, void *classPtr)
 {
-    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = convertToMemoryWatchTypeSelectorPtr(classPtr);
+    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = reinterpret_cast<MemoryWatchTypeSelector *>(classPtr);
 
     // Make sure memoryWatchTypeSelectorPtr is set
     if (!memoryWatchTypeSelectorPtr)

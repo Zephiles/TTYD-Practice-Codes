@@ -41,7 +41,7 @@ void ConfirmationWindow::stopDrawing()
  */
 static void confirmationWindowSelectedOption(uint32_t currentIndex, void *classPtr)
 {
-    ConfirmationWindow *confirmationWindowPtr = convertToConfirmationWindowPtr(classPtr);
+    ConfirmationWindow *confirmationWindowPtr = reinterpret_cast<ConfirmationWindow *>(classPtr);
 
     // Make sure confirmationWindowPtr is set
     if (!confirmationWindowPtr)

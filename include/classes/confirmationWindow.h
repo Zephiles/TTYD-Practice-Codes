@@ -89,16 +89,4 @@ class ConfirmationWindow: private OptionSelector
     ConfirmationWindowSelectedOptionFunc selectedOptionFunc;
 };
 
-/**
- * Helper function to convert a void pointer to a `ConfirmationWindow` pointer.
- *
- * @param ptr Pointer to convert to a `ConfirmationWindow` pointer.
- *
- * @returns A pointer to the `ConfirmationWindow` class.
- */
-inline ConfirmationWindow *convertToConfirmationWindowPtr(void *ptr)
-{
-    return reinterpret_cast<ConfirmationWindow *>(ptr);
-}
-
 #endif

@@ -63,7 +63,7 @@ void FollowerSelector::stopDrawing()
  */
 static void followerSelectorSelectedFollower(uint32_t currentIndex, void *classPtr)
 {
-    const FollowerSelector *followerSelectorPtr = convertToFollowerSelectorPtr(classPtr);
+    const FollowerSelector *followerSelectorPtr = reinterpret_cast<FollowerSelector *>(classPtr);
 
     // Make sure followerSelectorPtr is set
     if (!followerSelectorPtr)

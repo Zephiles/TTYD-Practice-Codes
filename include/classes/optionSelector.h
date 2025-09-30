@@ -5,6 +5,7 @@
 #include "classes/menu.h"
 
 #include <cstdint>
+#include <type_traits>
 
 #define OPTION_SELECTOR_COLUMN_PADDING(scale) (30.f * (scale)) // Padding between each column of options
 
@@ -20,11 +21,22 @@
 typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *classPtr);
 
 /**
+ * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `classPtr` parameter.
+ *
+ * @param currentIndex The index of the option that was selected.
+ *
+ */
+typedef void (*OptionSelectorSelectOptionFuncNoClassPtr)(uint32_t currentIndex);
+
+/**
  * Callback function pointer for when the player presses `B` to cancel selecting an option.
  *
  * @param classPtr Pointer to whichever class is currently using the option selector.
  */
 typedef void (*OptionSelectorCancelFunc)(void *classPtr);
+
+// Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `classPtr` parameter.
+typedef void (*OptionSelectorCancelFuncNoClassPtr)();
 
 // Handles selecting an arbitrary option from an arbitrary list of options, with an arbitrary amount of columns for the options.
 // A help window with text is displayed to assist in this process.
@@ -114,15 +126,42 @@ class OptionSelector
      * @tparam selectOptionFunc Callback function for when the player selects an option.
      * @tparam cancelFunc Callback function for when the player presses `B` to cancel selecting an option.
      *
-     * @note `selectOptionFunc` and `cancelFunc` both need to be of types `OptionSelectorSelectOptionFunc` and
-     * `OptionSelectorCancelFunc` respectively to function properly, with the exception that the `classPtr` parameter can be
-     * excluded from either of them if they are not needed.
+     * @note The type of `selectOptionFunc` needs to be either `OptionSelectorSelectOptionFunc` or
+     * `OptionSelectorSelectOptionFuncNoClassPtr`, and the type of `cancelFunc` needs to be either `OptionSelectorCancelFunc` or
+     * `OptionSelectorCancelFuncNoClassPtr`. These two variants are allowed so that other classes are able to discard the
+     * `classPtr` parameter when it is not needed, which saves a bit of memory.
      */
     template<typename SelectOptionFunc, typename CancelFunc>
     void startDrawing(SelectOptionFunc selectOptionFunc, CancelFunc cancelFunc)
     {
-        this->selectOptionFunc = reinterpret_cast<OptionSelectorSelectOptionFunc>(selectOptionFunc);
-        this->cancelFunc = reinterpret_cast<OptionSelectorCancelFunc>(cancelFunc);
+        OptionSelectorSelectOptionFunc tempSelectOptionFunc;
+        OptionSelectorCancelFunc tempCancelFunc;
+
+        // Make sure the type of `selectOptionFunc` is either `OptionSelectorSelectOptionFunc` or
+        // `OptionSelectorSelectOptionFuncNoClassPtr`
+        if constexpr (std::is_same<SelectOptionFunc, OptionSelectorSelectOptionFuncNoClassPtr>::value)
+        {
+            tempSelectOptionFunc = reinterpret_cast<OptionSelectorSelectOptionFunc>(selectOptionFunc);
+        }
+        else
+        {
+            // Will error if any other type is used, so don't need to do anything else
+            tempSelectOptionFunc = selectOptionFunc;
+        }
+
+        // Make sure the type of `cancelFunc` is either `OptionSelectorCancelFunc` or `OptionSelectorCancelFuncNoClassPtr`
+        if constexpr (std::is_same<CancelFunc, OptionSelectorCancelFuncNoClassPtr>::value)
+        {
+            tempCancelFunc = reinterpret_cast<OptionSelectorCancelFunc>(cancelFunc);
+        }
+        else
+        {
+            // Will error if any other type is used, so don't need to do anything else
+            tempCancelFunc = cancelFunc;
+        }
+
+        this->selectOptionFunc = tempSelectOptionFunc;
+        this->cancelFunc = tempCancelFunc;
         this->enabled = true;
     }
 
