@@ -30,10 +30,10 @@ Menu *enterPrevMenu(Menu *menuPtr);
 // Closes all menus, calls each of their exit functions, and sets gMenu to nullptr
 void closeAllMenus();
 
-// Handles auto-incrementing in menus via D-Pad inputs
+// Handles auto-incrementing in menus via D-Pad and/or analog stick inputs
 bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement);
 
-// Converts the standard button inputs into the simplified inputs
+// Converts the standard button and/or analog stick inputs into the simplified inputs
 MenuButtonInput getMenuButtonInput(bool singleFrame);
 
 // Handles basic controls for the current menu
