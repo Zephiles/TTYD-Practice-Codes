@@ -71,11 +71,11 @@ static void
 
     // Get the width of the text if it is needed
     const bool hasWidthLimit = width > 0.f;
-    float textLengthScaled;
+    float textWidthScaled;
 
     if ((alignment == TextAlignment::CENTER) || (alignment == TextAlignment::RIGHT) || hasWidthLimit)
     {
-        textLengthScaled = getTextWidth(text, scale);
+        textWidthScaled = getTextWidth(text, scale);
     }
 
     // Handle aligning the text
@@ -84,15 +84,15 @@ static void
         case TextAlignment::CENTER:
         {
             // Make sure a width limit was provided, and that the text's width does not reach/exceed the width limit
-            if (hasWidthLimit && (textLengthScaled < width))
+            if (hasWidthLimit && (textWidthScaled < width))
             {
-                posX += (width / 2.f) - (textLengthScaled / 2.f);
+                posX += (width / 2.f) - (textWidthScaled / 2.f);
             }
             break;
         }
         case TextAlignment::RIGHT:
         {
-            posX -= textLengthScaled;
+            posX -= textWidthScaled;
             break;
         }
         default:
@@ -104,14 +104,14 @@ static void
     // Handle the width limit if one was provided
     float scaleX = scale;
 
-    if (hasWidthLimit && (textLengthScaled > width))
+    if (hasWidthLimit && (textWidthScaled > width))
     {
-        scaleX = (width / textLengthScaled) * scale;
+        scaleX = (width / textWidthScaled) * scale;
 
         // If aligning the text to the right, account for the new X scale
         if (alignment == TextAlignment::RIGHT)
         {
-            posX += textLengthScaled - width;
+            posX += textWidthScaled - width;
         }
     }
 
