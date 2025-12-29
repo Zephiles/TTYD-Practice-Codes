@@ -120,9 +120,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
 {
     // Check the analog stick first since its values must be converted to button inputs
     // Only check the analog stick if the flag for using it is set
-    const bool useAnalogStick = gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS);
-
-    if (useAnalogStick)
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS))
     {
         uint32_t stickInput;
 
