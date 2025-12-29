@@ -74,16 +74,22 @@ void closeAllMenus()
 
 bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement)
 {
-    // Check to see if any of the D-Pad buttons are held
+    // Check to see if any of the D-Pad buttons or the analog stick are held
     constexpr uint32_t buttons =
         PadInput::PAD_DPAD_LEFT | PadInput::PAD_DPAD_RIGHT | PadInput::PAD_DPAD_DOWN | PadInput::PAD_DPAD_UP;
 
     if (!(keyGetButton(PadId::CONTROLLER_ONE) & buttons))
     {
-        // Reset the counters
-        autoIncrement->waitFramesToBegin = 0;
-        autoIncrement->framesBeforeIncrement = 0;
-        return false;
+        // Only check the analog stick if the flag for using it is set
+        const bool useAnalogStick = gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS);
+
+        if (!useAnalogStick || (useAnalogStick && (keyGetDir(PadId::CONTROLLER_ONE) < StickInput::ANALOG_STICK_INPUT_UP)))
+        {
+            // Reset the counters
+            autoIncrement->waitFramesToBegin = 0;
+            autoIncrement->framesBeforeIncrement = 0;
+            return false;
+        }
     }
 
     // Check to see if the value should begin to auto-increment
@@ -112,21 +118,57 @@ bool handleMenuAutoIncrement(MenuAutoIncrement *autoIncrement)
 MenuButtonInput getMenuButtonInput(bool singleFrame)
 {
     uint32_t buttonInput;
+    uint32_t stickInput;
+
     if (singleFrame)
     {
         buttonInput = keyGetButtonTrg(PadId::CONTROLLER_ONE);
+        stickInput = keyGetDirTrg(PadId::CONTROLLER_ONE);
     }
     else
     {
         buttonInput = keyGetButton(PadId::CONTROLLER_ONE);
+        stickInput = keyGetDir(PadId::CONTROLLER_ONE);
     }
 
-    // If no buttons were pressed, then return immediately
-    if (!buttonInput)
+    // Only check the analog stick if the flag for using it is set
+    const bool useAnalogStick = gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS);
+
+    // If neither any buttons nor the analog stick were pressed, then return immediately
+    if (!buttonInput && (!useAnalogStick || (useAnalogStick && (stickInput < StickInput::ANALOG_STICK_INPUT_UP))))
     {
         return MenuButtonInput::BUTTON_NONE;
     }
 
+    if (useAnalogStick)
+    {
+        // Check the analog stick first since its values must be converted to button inputs
+        switch (stickInput)
+        {
+            case StickInput::ANALOG_STICK_INPUT_UP:
+            {
+                return MenuButtonInput::DPAD_UP;
+            }
+            case StickInput::ANALOG_STICK_INPUT_DOWN:
+            {
+                return MenuButtonInput::DPAD_DOWN;
+            }
+            case StickInput::ANALOG_STICK_INPUT_LEFT:
+            {
+                return MenuButtonInput::DPAD_LEFT;
+            }
+            case StickInput::ANALOG_STICK_INPUT_RIGHT:
+            {
+                return MenuButtonInput::DPAD_RIGHT;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Check buttons
     for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
     {
         if (i == 7)

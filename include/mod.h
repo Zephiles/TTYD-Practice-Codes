@@ -63,6 +63,9 @@ enum ModFlag
     // Warp By Index
     MOD_FLAG_WARP_BY_INDEX_INIT,
 
+    // Other
+    MOD_FLAG_USE_ANALOG_STICK_IN_MENUS,
+
     MOD_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
 
@@ -136,89 +139,14 @@ class Mod
 
     ~Mod() {}
 
-    bool flagIsSet(uint32_t flag) const
-    {
-        // Make sure the flag is valid
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-        if (flag >= maxFlags)
-        {
-            return false;
-        }
-
-        // Make sure the flag does not exceed TOTAL_MOD_FLAGS
-        if (flag >= TOTAL_MOD_FLAGS)
-        {
-            return false;
-        }
-
-        return (this->flags[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
-    }
-
-    void setFlag(uint32_t flag)
-    {
-        // Make sure the flag is valid
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-        if (flag >= maxFlags)
-        {
-            return;
-        }
-
-        // Make sure the flag does not exceed TOTAL_MOD_FLAGS
-        if (flag >= TOTAL_MOD_FLAGS)
-        {
-            return;
-        }
-
-        this->flags[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
-    }
-
-    void clearFlag(uint32_t flag)
-    {
-        // Make sure the flag is valid
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-        if (flag >= maxFlags)
-        {
-            return;
-        }
-
-        // Make sure the flag does not exceed TOTAL_MOD_FLAGS
-        if (flag >= TOTAL_MOD_FLAGS)
-        {
-            return;
-        }
-
-        this->flags[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
-    }
-
-    bool toggleFlag(uint32_t flag)
-    {
-        // Make sure the flag is valid
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
-
-        if (flag >= maxFlags)
-        {
-            return false;
-        }
-
-        // Make sure the flag does not exceed TOTAL_MOD_FLAGS
-        if (flag >= TOTAL_MOD_FLAGS)
-        {
-            return false;
-        }
-
-        this->flags[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
-        return this->flagIsSet(flag);
-    }
-
+    const uint32_t *getFlagsPtr() const { return this->flags; }
     WarpByIndex *getWarpByIndexPtr() { return &this->warpByIndex; }
     WarpByEvent *getWarpByEventPtr() { return &this->warpByEvent; }
+
+    bool flagIsSet(uint32_t flag) const;
+    void setFlag(uint32_t flag);
+    void clearFlag(uint32_t flag);
+    bool toggleFlag(uint32_t flag);
 
    private:
     uint32_t flags[MOD_FLAGS_ARRAY_SIZE];

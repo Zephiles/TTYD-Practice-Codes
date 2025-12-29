@@ -171,7 +171,7 @@ int32_t loadSettings(int32_t channel)
         if (miscDataOffset > 0)
         {
             const MiscSettingsData *miscSettingsDataPtr = getMiscSettingsDataPtr(fileData, miscDataOffset);
-            miscSettingsDataPtr->getData();
+            miscSettingsDataPtr->getData(settingsHeaderPtr->getVersion(), miscSettingsHeaderPtr->getTotalFlags());
         }
     }
 
@@ -544,7 +544,7 @@ int32_t saveSettings(int32_t channel)
 
     // Write the misc data
     MiscSettingsData *miscSettingsDataPtr = getMiscSettingsDataPtr(fileData, offset);
-    offset += miscSettingsDataPtr->setData();
+    offset += miscSettingsDataPtr->setData(gMod);
 
     // Write the cheats header data
     CheatsSettingsHeader *cheatsSettingsHeaderPtr = getCheatsSettingsHeaderPtr(fileData, offset);

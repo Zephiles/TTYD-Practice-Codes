@@ -17,6 +17,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button);
 static void draw(CameraId cameraId, void *user);
 static void exit();
 
+static void selectedOptionUseAnalogStickInMenus(Menu *menuPtr);
 static void selectedOptionChangeMemoryCardSlot(Menu *menuPtr);
 static void selectedOptionChangeWindowColor(Menu *menuPtr);
 static void selectedOptionDeleteSettingsFile(Menu *menuPtr);
@@ -30,6 +31,9 @@ static const char *gInvalidVersionText = "The Settings file's version does not s
 SettingsMenu *gSettingsMenu = nullptr;
 
 static const MenuOption gOptions[] = {
+    "Use Analog Stick In Menus",
+    selectedOptionUseAnalogStickInMenus,
+
     "Change Memory Card Slot",
     selectedOptionChangeMemoryCardSlot,
 
@@ -109,6 +113,29 @@ static void drawSettingsMenuInfo()
     float tempPosY;
     gRootWindow->getTextPosXYUnderMainText(nullptr, WindowAlignment::TOP_LEFT, totalOptions, 2, scale, &tempPosX, &tempPosY);
 
+    // Draw whether or not the analog stick is being used in the menus
+    const char *yesNoText;
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS))
+    {
+        yesNoText = "Yes";
+    }
+    else
+    {
+        yesNoText = "No";
+    }
+
+    char buf[32];
+    constexpr uint32_t bufSize = sizeof(buf);
+    snprintf(buf, bufSize, "Use Analog Stick In Menus\n%s", yesNoText);
+
+    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
+    float posX = tempPosX;
+    float posY = tempPosY;
+    drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+
+    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
+    posY -= (lineDecrement * 3.f);
+
     // Draw the memory card slot being used
     const SettingsMenu *settingsMenuPtr = gSettingsMenu;
     char cardSlot;
@@ -122,20 +149,12 @@ static void drawSettingsMenuInfo()
         cardSlot = 'B';
     }
 
-    char buf[32];
-    constexpr uint32_t butSize = sizeof(buf);
-    snprintf(buf, butSize, "Memory Card Slot\nSlot %c", cardSlot);
-
-    // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
-    float posX = tempPosX;
-    float posY = tempPosY;
+    snprintf(buf, bufSize, "Memory Card Slot\nSlot %c", cardSlot);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
-
-    constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= (lineDecrement * 3.f);
 
     // Draw the current window color
-    snprintf(buf, butSize, "Window Color\n0x%08" PRIX32, settingsMenuPtr->getRootWindowBackupColor());
+    snprintf(buf, bufSize, "Window Color\n0x%08" PRIX32, settingsMenuPtr->getRootWindowBackupColor());
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 
@@ -188,6 +207,13 @@ static void exit()
 
     delete settingsMenuPtr;
     gSettingsMenu = nullptr;
+}
+
+static void selectedOptionUseAnalogStickInMenus(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    gMod->toggleFlag(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS);
 }
 
 static void selectedOptionChangeMemoryCardSlot(Menu *menuPtr)

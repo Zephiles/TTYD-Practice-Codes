@@ -6,6 +6,18 @@
 
 #include <cstdint>
 
+enum StickInput
+{
+    C_STICK_INPUT_UP = 0x100,
+    C_STICK_INPUT_DOWN = 0x200,
+    C_STICK_INPUT_LEFT = 0x400,
+    C_STICK_INPUT_RIGHT = 0x800,
+    ANALOG_STICK_INPUT_UP = 0x1000,
+    ANALOG_STICK_INPUT_DOWN = 0x2000,
+    ANALOG_STICK_INPUT_LEFT = 0x4000,
+    ANALOG_STICK_INPUT_RIGHT = 0x8000,
+};
+
 extern "C"
 {
     void *memcpy_as4(void *dst, void *src, uint32_t size);

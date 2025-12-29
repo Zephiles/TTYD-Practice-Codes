@@ -17,7 +17,7 @@
 #include <cstdio>
 #include <cinttypes>
 
-#define SETTINGS_VERSION 1
+#define SETTINGS_VERSION 2
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -103,6 +103,7 @@ class MiscSettingsHeader
     ~MiscSettingsHeader() {}
 
     uint32_t getDataOffset() const { return this->dataOffset; }
+    uint32_t getTotalFlags() const { return this->totalFlags; }
 
     uint32_t setData(SettingsHeader *settingsHeaderPtr, uint32_t offset)
     {
@@ -111,6 +112,7 @@ class MiscSettingsHeader
 
         constexpr uint32_t headerSize = sizeof(MiscSettingsHeader);
         this->dataOffset = offset + headerSize;
+        this->totalFlags = TOTAL_MOD_FLAGS;
 
         return headerSize;
     }
@@ -118,6 +120,7 @@ class MiscSettingsHeader
    private:
     // Starts at the start of SettingsHeader. If the value is 0, then the code will assume that the section is not included.
     uint32_t dataOffset;
+    uint16_t totalFlags; // TOTAL_MOD_FLAGS
 } __attribute__((aligned(sizeof(uint32_t)), packed));
 
 class MiscSettingsData
@@ -126,21 +129,57 @@ class MiscSettingsData
     MiscSettingsData() {}
     ~MiscSettingsData() {}
 
-    void getData() const
+    void getData(const uint32_t version, const uint32_t totalFlags) const
     {
         const uint32_t *colorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
         gRootWindow->setColor(*colorPtr);
+
+        if (version >= SETTINGS_VERSION)
+        {
+            // Get all of the enabled flags
+            const uint32_t *enabledFlagsPtr = this->enabledFlags;
+            constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+            Mod *modPtr = gMod;
+
+            // Make sure totalFlags does not exceed the current max
+            // Cannot change totalFlags, as doing so will give incorrect offsets for later data
+            uint32_t maxFlags = totalFlags;
+            if (maxFlags > TOTAL_MOD_FLAGS)
+            {
+                maxFlags = TOTAL_MOD_FLAGS;
+            }
+
+            for (uint32_t i = 0; i < maxFlags; i++)
+            {
+                // Do not adjust the flag for changing button combos
+                if (i == ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO)
+                {
+                    continue;
+                }
+
+                if ((enabledFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
+                {
+                    modPtr->setFlag(i);
+                }
+                else
+                {
+                    modPtr->clearFlag(i);
+                }
+            }
+        }
     }
 
-    uint32_t setData()
+    uint32_t setData(Mod *modPtr)
     {
         this->rootWindowColor = gRootWindow->getColor();
+        memcpy(this->enabledFlags, modPtr->getFlagsPtr(), MOD_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
         return sizeof(MiscSettingsData);
     }
 
    private:
     uint32_t rootWindowColor;
+    uint32_t enabledFlags[MOD_FLAGS_ARRAY_SIZE];
 } __attribute__((aligned(sizeof(uint32_t)), packed));
 
 class CheatsSettingsHeader
@@ -1176,8 +1215,8 @@ class CustomStatesSettingsData
 
 static_assert(sizeof(PracticeCodesDataHeader) == 0x40);
 static_assert(sizeof(SettingsHeader) == 0x20);
-static_assert(sizeof(MiscSettingsHeader) == 0x4);
-static_assert(sizeof(MiscSettingsData) == 0x4);
+static_assert(sizeof(MiscSettingsHeader) == 0x8);
+static_assert(sizeof(MiscSettingsData) == 0x8);
 static_assert(sizeof(CheatsSettingsHeader) == 0x8);
 static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
