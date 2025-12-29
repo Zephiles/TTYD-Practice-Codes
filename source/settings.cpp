@@ -544,7 +544,7 @@ int32_t saveSettings(int32_t channel)
 
     // Write the misc data
     MiscSettingsData *miscSettingsDataPtr = getMiscSettingsDataPtr(fileData, offset);
-    offset += miscSettingsDataPtr->setData(gMod);
+    offset += miscSettingsDataPtr->setData();
 
     // Write the cheats header data
     CheatsSettingsHeader *cheatsSettingsHeaderPtr = getCheatsSettingsHeaderPtr(fileData, offset);

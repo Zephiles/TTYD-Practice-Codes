@@ -169,10 +169,10 @@ class MiscSettingsData
         }
     }
 
-    uint32_t setData(Mod *modPtr)
+    uint32_t setData()
     {
         this->rootWindowColor = gRootWindow->getColor();
-        memcpy(this->enabledFlags, modPtr->getFlagsPtr(), MOD_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
+        memcpy(this->enabledFlags, gMod->getFlagsPtr(), MOD_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
         return sizeof(MiscSettingsData);
     }
