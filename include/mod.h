@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#define VERSION_STRING "v4.0.1-dev1"
+#define VERSION_STRING "v4.0.1-dev2"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
