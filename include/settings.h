@@ -17,7 +17,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-#define SETTINGS_VERSION 2
+#define SETTINGS_VERSION 3
+
+// Based on SETTINGS_VERSION
+#define SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS 2
+#define SETTINGS_ADDED_MARIO_ZERO_HITBOX_CHEAT 3
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -134,7 +138,7 @@ class MiscSettingsData
         const uint32_t *colorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
         gRootWindow->setColor(*colorPtr);
 
-        if (version >= SETTINGS_VERSION)
+        if (version >= SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS)
         {
             // Get all of the enabled flags
             const uint32_t *enabledFlagsPtr = this->enabledFlags;
@@ -220,8 +224,11 @@ class CheatsSettingsData
     CheatsSettingsData() {}
     ~CheatsSettingsData() {}
 
-    void getData(const uint32_t totalCheats, const uint32_t totalButtonCombos) const
+    void getData(const uint32_t totalCheats, const uint32_t totalButtonCombos, const uint32_t version) const
     {
+#ifndef TTYD_JP
+        (void)version;
+#endif
         // Get all of the enabled flags
         const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -282,6 +289,15 @@ class CheatsSettingsData
         }
 
         memcpy(cheatsPtr->getButtonCombosPtr(), buttonCombosPtr, maxButtonCombos * sizeof(uint16_t));
+
+#ifdef TTYD_JP
+        if (version >= SETTINGS_ADDED_MARIO_ZERO_HITBOX_CHEAT)
+        {
+            // Adjust the floats modified from the Mario Zero Hitbox Glitch cheat
+            adjustMarioZeroHitboxGlitchFloats(
+                cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_MARIO_ZERO_HITBOX_GLITCH));
+        }
+#endif
     }
 
     uint32_t setData(Cheats *cheatsPtr)

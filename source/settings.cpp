@@ -159,6 +159,7 @@ int32_t loadSettings(int32_t channel)
 
     // Reinitialize settingsHeaderPtr
     settingsHeaderPtr = getSettingsHeaderPtr(fileData, 0);
+    const uint32_t version = settingsHeaderPtr->getVersion();
 
     // Get the misc header data if it is included
     const uint32_t miscHeaderOffset = settingsHeaderPtr->getMiscHeaderOffset();
@@ -171,7 +172,7 @@ int32_t loadSettings(int32_t channel)
         if (miscDataOffset > 0)
         {
             const MiscSettingsData *miscSettingsDataPtr = getMiscSettingsDataPtr(fileData, miscDataOffset);
-            miscSettingsDataPtr->getData(settingsHeaderPtr->getVersion(), miscSettingsHeaderPtr->getTotalFlags());
+            miscSettingsDataPtr->getData(version, miscSettingsHeaderPtr->getTotalFlags());
         }
     }
 
@@ -188,7 +189,8 @@ int32_t loadSettings(int32_t channel)
             const CheatsSettingsData *cheatsSettingsDataPtr = getCheatsSettingsDataPtr(fileData, cheatsDataOffset);
 
             cheatsSettingsDataPtr->getData(cheatsSettingsHeaderPtr->getTotalCheats(),
-                                           cheatsSettingsHeaderPtr->getTotalButtonCombos());
+                                           cheatsSettingsHeaderPtr->getTotalButtonCombos(),
+                                           version);
         }
     }
 

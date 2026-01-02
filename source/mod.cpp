@@ -1,4 +1,5 @@
 #include "mod.h"
+#include "gc/OSCache.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -90,3 +91,25 @@ bool Mod::toggleFlag(uint32_t flag)
     this->flags[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
     return this->flagIsSet(flag);
 }
+
+#ifdef TTYD_JP
+void adjustMarioZeroHitboxGlitchFloats(bool enabled)
+{
+    float *motSlitValues = reinterpret_cast<float *>(0x8041AED8);
+    if (enabled)
+    {
+        // Cheat should be enabled, so clear the values
+        motSlitValues[0] = 0.f;
+        motSlitValues[1] = 0.f;
+    }
+    else
+    {
+        // Cheat should be disabled, so re-set the proper values
+        motSlitValues[0] = 11.f;
+        motSlitValues[1] = 20.f;
+    }
+
+    // Clear the cache for the addresses since this is modifying cached memory
+    DCFlushRange(motSlitValues, sizeof(float) * 2);
+}
+#endif

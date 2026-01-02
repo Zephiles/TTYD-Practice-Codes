@@ -49,6 +49,10 @@ enum CheatsEnabledFlag
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC,   // Disable Certain Sounds
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS, // Disable Certain Sounds
 
+#ifdef TTYD_JP
+    CHEATS_ENABLED_FLAG_SIMULATE_MARIO_ZERO_HITBOX_GLITCH,
+#endif
+
     CHEATS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
 

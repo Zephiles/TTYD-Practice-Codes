@@ -81,6 +81,11 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
+#ifdef TTYD_JP
+    "Simulate Mario 0 Hitbox Glitch",
+    cheatsMenuSimulateMarioZeroHitboxGlitchInit,
+#endif
+
     "Bobbery Early",
     cheatsMenuGenericNoButtonComboInit,
 
