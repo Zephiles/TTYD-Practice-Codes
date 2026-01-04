@@ -227,6 +227,70 @@ extern "C"
     void marioSetCharMode(MarioCharacters mode);
     int32_t marioGetColor();
     Player *marioGetPtr();
+
+    // mario_str_Z_1
+    // mario_str_S_1
+    // mario_str_W_1
+    // mario_str_R_1
+    // mario_str_U_1
+    // mario_str_J_1
+    // mario_str_S_2
+    // mario_str_U_2
+    // mario_str_J_2
+    // mario_str_S_3
+    // mario_str_U_3
+    // mario_str_J_3
+    // mario_str_S_4
+    // mario_str_U_4
+    // mario_str_J_4
+    // mario_dat
+    // mario_float_1p2
+    // mario_float_2
+    // mario_float_1
+    // mario_float_neg1
+    // mario_float_90
+    // mario_float_270
+    // mario_float_deg2rad
+    // mario_float_180
+    // mario_float_0
+    // mario_float_0p75
+    // mario_float_6p2832
+    // mario_float_360
+    // mario_float_3p1416
+    // mario_float_1p5708
+    // mario_float_4p7124
+    // mario_float_5000
+    // mario_float_10000
+    // mario_float_13p333
+    // mario_float_30
+    // mario_float_14
+    // mario_float_6
+    // mario_float_0p6
+    // mario_float_neg2
+    // mario_float_0p1
+    // mario_float_290
+    // mario_float_70
+    // mario_float_0p5
+    // mario_float_250
+    // mario_float_190
+    // mario_float_350
+    // mario_float_10
+    // mario_float_170
+    // mario_float_0p3
+    extern float mario_float_0p125;
+    extern float mario_float_20;
+    // mario_float_210
+    // mario_float_200
+    // mario_float_0p015
+    // mario_float_0p01
+    // mario_float_0p25
+    // mario_float_0p4
+    // mario_float_400
+    // mario_float_2p25
+    // mario_float_47
+    // mario_float_37
+    // mario_float_25p9
+    // mario_str_T_1
 }
 
 #endif

@@ -1,0 +1,108 @@
+#ifndef TTYD_MARIO_HIT_H
+#define TTYD_MARIO_HIT_H
+
+#include <cstdint>
+
+extern "C"
+{
+    // marioCheckWallShip
+    // marioSlitChkWallAround
+    // marioChkWallAround
+    // marioChkFrontStep
+    // N_dou10_yoko_yari3
+    // dou10_yoko_yari2
+    // dou10_yoko_yari
+    // searchFrontWall
+    // marioChkFront
+    // marioCheckWall_roll
+    // marioSearchFrontWall_staying
+    // marioCheckWall
+    // marioSearchHead_jabara
+    // marioSearchHead_roll
+    // marioSearchHead
+    // marioChkOverheadJabara
+    // marioChkOverhead
+    // marioChkLandon2
+    // marioLandonChk_old
+    // marioChkLandon
+    // marioChkToge
+    // marioSearchGroundRoll
+    // marioSearchGround
+    // marioChkGnd2
+    // marioChkGnd
+    // searchUnder2
+    // marioSearchUnder
+    // marioChkBero
+    // clear_hitobj_ride
+    // marioHitCheck2
+    // marioHitCheck
+    // marioHitCheckVec
+    // chkfilterVecVivian
+    // chkfilterVecRoll
+    // chkfilterVec
+    // chkFilterAttr2
+    // marioHitCheckWidth
+
+    // mario_hit_float_1000
+    // mario_hit_float_0
+    // mario_hit_float_4
+    // mario_hit_float_11
+    // mario_hit_float_13
+    // mario_hit_float_45
+    // mario_hit_float_5
+    // mario_hit_float_1
+    // mario_hit_float_360
+    // mario_hit_float_0p5
+    // mario_hit_float_neg0p5
+    // mario_hit_float_180
+    // mario_hit_float_0p125
+    // mario_hit_float_0p25
+    extern float mario_hit_float_0p75;
+    extern float mario_hit_float_neg1;
+    // mario_hit_float_3p1416
+    // mario_hit_float_0p1
+    // mario_hit_float_2
+    // mario_hit_float_18p5
+    // mario_hit_float_3
+    // mario_hit_float_0p265
+    // mario_hit_float_100
+    // mario_hit_float_10
+    // mario_hit_float_40
+    // mario_hit_float_neg10
+    // mario_hit_float_60
+    // mario_hit_float_0p8
+    // mario_hit_float_20
+    // mario_hit_float_8
+    // mario_hit_float_270
+    // mario_hit_float_90
+    // mario_hit_float_30
+    // mario_hit_float_26p64
+    // mario_hit_float_12
+    // mario_hit_float_7
+    // mario_hit_float_16p8
+    // mario_hit_float_neg23p7
+    // mario_hit_float_5p8
+    // mario_hit_float_9
+    // mario_hit_float_75
+    // mario_hit_float_50
+    // mario_hit_float_0p05
+    // mario_hit_float_47
+    // mario_hit_float_18
+    // mario_hit_float_0p01
+    // mario_hit_float_neg10000
+    // mario_hit_float_8p64
+    // mario_hit_float_105
+    // mario_hit_float_0p425
+    // mario_hit_float_0p375
+    // mario_hit_float_37
+    // mario_hit_float_neg3000
+    // mario_hit_float_5000
+    // mario_hit_float_neg0p4
+    // mario_hit_float_neg0p06
+    // mario_hit_float_neg0p04
+    // mario_hit_float_neg0p02
+    // mario_hit_float_1037
+    // mario_hit_float_6
+}
+
+#endif

@@ -40,11 +40,9 @@ enum CheatsMenuOptions
     CHEATS_MENU_LOCK_MARIO_HP_TO_MAX,
     CHEATS_MENU_LOCK_PARTNER_HP_TO_MAX,
     CHEATS_MENU_RUN_FROM_BATTLES,
-
-#ifdef TTYD_JP
-    CHEATS_MENU_SIMULATE_MARIO_ZERO_HITBOX_GLITCH,
-#endif
-
+    CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE,
+    CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION,
+    CHEATS_MENU_SIMULATE_WALK_ON_AIR_GLITCH,
     CHEATS_MENU_BOBBERY_EARLY,
     CHEATS_MENU_DISABLE_MENU_SOUNDS,
     CHEATS_MENU_FORCE_NPC_ITEM_DROP,
@@ -201,6 +199,7 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index);
 // cheatsGeneric
 void cheatsMenuGenericNoButtonComboInit(Menu *menuPtr);
 void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr);
+void drawGenericCheatInfo();
 
 // cheatsChangeSequence
 void cheatsMenuChangeSequenceInit(Menu *menuPtr);
@@ -220,10 +219,8 @@ void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
 // cheatsGenerateLagSpike
 void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
 
-#ifdef TTYD_JP
-// cheatsSimulateMarioZeroHitboxGlitch
-void cheatsMenuSimulateMarioZeroHitboxGlitchInit(Menu *menuPtr);
-#endif
+// cheatsSimulateSoundOverwriteGlitch
+void cheatsMenuSimulateSoundOverwriteGlitchInit(Menu *menuPtr);
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);

@@ -626,6 +626,7 @@
 8041869C:npcWork
 
 // mario.o
+// text
 800553AC:toFrontPose
 800558C0:toRearPose
 80055DD4:marioDisp
@@ -689,6 +690,70 @@
 8005C894:marioSetCharMode
 8005D204:marioGetColor
 8005D214:marioGetPtr
+// data
+// 80419DB0:mario_str_Z_1
+// 80419DB4:mario_str_S_1
+// 80419DB8:mario_str_W_1
+// 80419DBC:mario_str_R_1
+// 80419DC0:mario_str_U_1
+// 80419DC4:mario_str_J_1
+// 80419DD0:mario_str_S_2
+// 80419DE4:mario_str_U_2
+// 80419DE8:mario_str_J_2
+// 80419DF4:mario_str_S_3
+// 80419E08:mario_str_U_3
+// 80419E0C:mario_str_J_3
+// 80419E18:mario_str_S_4
+// 80419E2C:mario_str_U_4
+// 80419E30:mario_str_J_4
+// 80419E34:mario_dat
+// 80419F28:mario_float_1p2
+// 80419F2C:mario_float_2
+// 80419F30:mario_float_1
+// 80419F34:mario_float_neg1
+// 80419F38:mario_float_90
+// 80419F3C:mario_float_270
+// 80419F40:mario_float_deg2rad
+// 80419F44:mario_float_180
+// 80419F48:mario_float_0
+// 80419F4C:mario_float_0p75
+// 80419F50:mario_float_6p2832
+// 80419F54:mario_float_360
+// 80419F58:mario_float_3p1416
+// 80419F5C:mario_float_1p5708
+// 80419F60:mario_float_4p7124
+// 80419F64:mario_float_5000
+// 80419F68:mario_float_10000
+// 80419F6C:mario_float_13p333
+// 80419F70:mario_float_30
+// 80419F74:mario_float_14
+// unused:mario_float_6
+// 80419F78:mario_float_0p6
+// 80419F7C:mario_float_neg2
+// 80419F80:mario_float_0p1
+// 80419F84:mario_float_290
+// 80419F88:mario_float_70
+// 80419F8C:mario_float_0p5
+// 80419F90:mario_float_250
+// 80419F94:mario_float_190
+// 80419F98:mario_float_350
+// 80419F9C:mario_float_10
+// 80419FA0:mario_float_170
+// 80419FA4:mario_float_0p3
+80419FA8:mario_float_0p125
+80419FAC:mario_float_20
+// 80419FB0:mario_float_210
+// 80419FB4:mario_float_200
+// 80419FC8:mario_float_0p015
+// 80419FCC:mario_float_0p01
+// 80419FD0:mario_float_0p25
+// 80419FD4:mario_float_0p4
+// 80419FD8:mario_float_400
+// 80419FDC:mario_float_2p25
+// 80419FE0:mario_float_47
+// 80419FE4:mario_float_37
+// 80419FE8:mario_float_25p9
+// 80419FF4:mario_str_T_1
 
 // effdrv.o
 // text
@@ -913,6 +978,107 @@
 80085F50:seq_logoExit
 80085F94:seq_logoInit
 
+// mario_hit.o
+// text
+// 80086AE0:marioCheckWallShip
+// 80086DDC:marioSlitChkWallAround
+// 800873B8:marioChkWallAround
+// 80087D54:marioChkFrontStep
+// 80088354:N_dou10_yoko_yari3
+// 80088594:dou10_yoko_yari2
+// 8008897C:dou10_yoko_yari
+// 80088DD8:searchFrontWall
+// 80089724:marioChkFront
+// 80089A48:marioCheckWall_roll
+// 80089FA8:marioSearchFrontWall_staying
+// 8008A260:marioCheckWall
+// 8008A4EC:marioSearchHead_jabara
+// 8008A720:marioSearchHead_roll
+// 8008AC58:marioSearchHead
+// 8008B21C:marioChkOverheadJabara
+// 8008B38C:marioChkOverhead
+// 8008B80C:marioChkLandon2
+// 8008BF04:marioLandonChk_old
+// 8008C6D4:marioChkLandon
+// 8008C768:marioChkToge
+// 8008C870:marioSearchGroundRoll
+// 8008D0F8:marioSearchGround
+// 8008DB30:marioChkGnd2
+// 8008DC94:marioChkGnd
+// 8008EA08:searchUnder2
+// 8008EC88:marioSearchUnder
+// 8008EEF4:marioChkBero
+// 8008EF60:clear_hitobj_ride
+// 8008EF98:marioHitCheck2
+// 8008F8CC:marioHitCheck
+// 8008FBF0:marioHitCheckVec
+// 8008FE80:chkfilterVecVivian
+// 8008FF50:chkfilterVecRoll
+// 80090030:chkfilterVec
+// 80090110:chkFilterAttr2
+// 8009013C:marioHitCheckWidth
+// data
+// 8041A7A0:mario_hit_float_1000
+// 8041A7A4:mario_hit_float_0
+// 8041A7A8:mario_hit_float_4
+// 8041A7AC:mario_hit_float_11
+// 8041A7B0:mario_hit_float_13
+// 8041A7B4:mario_hit_float_45
+// 8041A7B8:mario_hit_float_5
+// 8041A7BC:mario_hit_float_1
+// 8041A7C0:mario_hit_float_360
+// 8041A7C4:mario_hit_float_0p5
+// 8041A7C8:mario_hit_float_neg0p5
+// 8041A7CC:mario_hit_float_180
+// 8041A7D0:mario_hit_float_0p125
+// 8041A7D4:mario_hit_float_0p25
+8041A7D8:mario_hit_float_0p75
+8041A7DC:mario_hit_float_neg1
+// 8041A7E0:mario_hit_float_3p1416
+// 8041A7E4:mario_hit_float_0p1
+// 8041A7E8:mario_hit_float_2
+// 8041A7EC:mario_hit_float_18p5
+// 8041A7F0:mario_hit_float_3
+// 8041A7F4:mario_hit_float_0p265
+// 8041A7F8:mario_hit_float_100
+// 8041A7FC:mario_hit_float_10
+// 8041A800:mario_hit_float_40
+// 8041A804:mario_hit_float_neg10
+// 8041A808:mario_hit_float_60
+// 8041A80C:mario_hit_float_0p8
+// 8041A810:mario_hit_float_20
+// 8041A814:mario_hit_float_8
+// 8041A818:mario_hit_float_270
+// 8041A81C:mario_hit_float_90
+// 8041A820:mario_hit_float_27p75
+// 8041A824:mario_hit_float_12
+// 8041A828:mario_hit_float_7
+// 8041A82C:mario_hit_float_30
+// 8041A830:mario_hit_float_16p8
+// 8041A834:mario_hit_float_neg23p7
+// 8041A838:mario_hit_float_5p8
+// 8041A83C:mario_hit_float_9
+// 8041A840:mario_hit_float_75
+// 8041A844:mario_hit_float_50
+// 8041A848:mario_hit_float_0p05
+// 8041A84C:mario_hit_float_47
+// 8041A850:mario_hit_float_18
+// 8041A854:mario_hit_float_0p01
+// 8041A858:mario_hit_float_neg10000
+// 8041A85C:mario_hit_float_8p64
+// 8041A860:mario_hit_float_105
+// 8041A864:mario_hit_float_0p425
+// 8041A868:mario_hit_float_0p375
+// 8041A86C:mario_hit_float_37
+// 8041A870:mario_hit_float_neg3000
+// 8041A874:mario_hit_float_5000
+// 8041A878:mario_hit_float_neg0p4
+// 8041A87C:mario_hit_float_neg0p06
+// 8041A880:mario_hit_float_neg0p04
+// 8041A884:mario_hit_float_neg0p02
+// 8041A888:mario_hit_float_1037
+// 8041A88C:mario_hit_float_6
+
 // mario_motion.o
 // 800901EC:mot_forceReset
 // 80090350:mot_bottomless
@@ -951,6 +1117,51 @@
 // 80093648:marioChgTalkMotion
 80093700:marioChgStayMotion
 // 800937E0:marioChgMoveMotion
+
+// mot_slit.o
+// text
+// 800A286C:mot_slit
+// 800A3F40:marioReInit_slit
+// 800A40A4:marioForceSlitAnime
+// 800A4108:mot_slit_post
+// 800A42B0:marioSlitForceCancel
+// 800A4394:marioGetMotSlitCancel3
+// 800A43F8:motSlitCancel3
+// 800A442C:motSlitCancel2
+// 800A4470:motSlitCancel
+// 800A44A4:marioChkSlitEnd
+// 800A44F0:motSlitContinue
+// 800A4528:marioChkSlitThrouhEnd
+// 800A457C:marioChkSlitThrouh
+// 800A45D0:marioGetSlitFloorPos
+// 800A462C:marioClearSlitFloor
+// 800A4654:marioCreviceWallChk
+// 800A4B4C:U_marioSlitContinueChk
+// 800A4C60:marioSlitKeyDisable
+// 800A4CCC:marioSlitButton
+// 800A4D80:marioSlitAbilityChk
+// 800A4E00:N_marioSlitSetAfterLand
+// data
+// 8041AE80:mot_slit_dat
+// 8041AE84:mot_slit_float_0
+// 8041AE90:mot_slit_float_180
+// 8041AE9C:mot_slit_float_6
+// 8041AEA0:mot_slit_float_270
+// 8041AEA4:mot_slit_float_0p004
+// 8041AEB0:mot_slit_float_260
+// 8041AEB4:mot_slit_float_280
+// 8041AEC0:mot_slit_float_0p5
+// 8041AEC4:mot_slit_float_315
+// 8041AEC8:mot_slit_float_45
+// 8041AECC:mot_slit_float_135
+// 8041AED0:mot_slit_float_225
+// 8041AED4:mot_slit_float_90
+8041AED8:mot_slit_float_11
+8041AEDC:mot_slit_float_20
+// 8041AEE0:mot_slit_float_1
+// 8041AEE4:mot_slit_float_2
+// 8041AEE8:mot_slit_float_10
+
 
 // itemdrv.o
 // text

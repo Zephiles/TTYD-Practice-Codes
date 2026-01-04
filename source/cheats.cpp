@@ -16,6 +16,7 @@
 #include "gc/OSTime.h"
 #include "gc/vi.h"
 #include "gc/os.h"
+#include "gc/OSCache.h"
 #include "menus/battlesMenu.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
@@ -43,6 +44,8 @@
 #include "ttyd/swdrv.h"
 #include "ttyd/win_main.h"
 #include "ttyd/itemdrv.h"
+#include "ttyd/mot_slit.h"
+#include "ttyd/mario_hit.h"
 
 #include <cstdint>
 #include <cstring>
@@ -1223,6 +1226,76 @@ bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, boo
 
     // Call the original function
     return g_psndENVOn_f_d_trampoline(flags, envName, wFadeTime, unused);
+}
+
+void adjustSoundOverwriteGlitchValues(uint32_t cheatEnabledFlag)
+{
+    // Get the addresses to modify
+    float *valuesToModify;
+
+    switch (cheatEnabledFlag)
+    {
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+        {
+            valuesToModify = &mot_slit_float_11;
+            break;
+        }
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+        {
+            valuesToModify = &mario_float_0p125;
+            break;
+        }
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH:
+        {
+            valuesToModify = &mario_hit_float_0p75;
+            break;
+        }
+        default:
+        {
+            // Invalid flag, so do nothing
+            return;
+        }
+    }
+
+    // Set/Reset the values based on if the flag is set or not
+    if (gCheats->enabledFlagIsSet(cheatEnabledFlag))
+    {
+        // Set the values to 0 to simulate activating the cheat
+        valuesToModify[0] = 0.f;
+        valuesToModify[1] = 0.f;
+    }
+    else
+    {
+        // Set the default values
+        switch (cheatEnabledFlag)
+        {
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+            {
+                valuesToModify[0] = 11.f;
+                valuesToModify[1] = 20.f;
+                break;
+            }
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+            {
+                valuesToModify[0] = 0.125f;
+                valuesToModify[1] = 20.f;
+                break;
+            }
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH:
+            {
+                valuesToModify[0] = 0.75f;
+                valuesToModify[1] = -1.f;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // Clear the cache for the addresses since this is modifying cached memory
+    DCFlushRange(valuesToModify, sizeof(float) * 2);
 }
 
 static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)

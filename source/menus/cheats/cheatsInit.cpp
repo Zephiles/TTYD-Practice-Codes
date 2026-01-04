@@ -81,10 +81,14 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
-#ifdef TTYD_JP
-    "Simulate Mario 0 Hitbox Glitch",
-    cheatsMenuSimulateMarioZeroHitboxGlitchInit,
-#endif
+    "Simulate 0 Hitbox Glitch - Paper Mode",
+    cheatsMenuSimulateSoundOverwriteGlitchInit,
+
+    "Simulate 0 Hitbox Glitch - Room Transition",
+    cheatsMenuSimulateSoundOverwriteGlitchInit,
+
+    "Simulate Walk On Air Glitch",
+    cheatsMenuSimulateSoundOverwriteGlitchInit,
 
     "Bobbery Early",
     cheatsMenuGenericNoButtonComboInit,
@@ -340,6 +344,18 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         case CheatsMenuOptions::CHEATS_MENU_RUN_FROM_BATTLES:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RUN_FROM_BATTLES;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_WALK_ON_AIR_GLITCH:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH;
         }
         case CheatsMenuOptions::CHEATS_MENU_BOBBERY_EARLY:
         {

@@ -59,7 +59,7 @@ void cheatsMenuGenericHasButtonComboInit(Menu *menuPtr)
     enterCheatsMenuGeneric(menuPtr, true);
 }
 
-static void drawCheatInfo()
+void drawGenericCheatInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;
@@ -113,7 +113,7 @@ static void draw(CameraId cameraId, void *user)
     basicMenuLayoutDraw(cameraId, user);
 
     // Draw the info for the current cheat
-    drawCheatInfo();
+    drawGenericCheatInfo();
 
     // Draw the button combo editor if applicable
     ButtonComboEditor *buttonComboEditorPtr = gCheatsMenu->getButtonComboEditorPtr();

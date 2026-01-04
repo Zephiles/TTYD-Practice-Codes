@@ -17,11 +17,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-#define SETTINGS_VERSION 3
+#define SETTINGS_VERSION 4
 
 // Based on SETTINGS_VERSION
 #define SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS 2
-#define SETTINGS_ADDED_MARIO_ZERO_HITBOX_CHEAT 3
+#define SETTINGS_ADDED_SOUND_OVERWRITE_GLITCH_VALUES 4
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -226,9 +226,6 @@ class CheatsSettingsData
 
     void getData(const uint32_t totalCheats, const uint32_t totalButtonCombos, const uint32_t version) const
     {
-#ifndef TTYD_JP
-        (void)version;
-#endif
         // Get all of the enabled flags
         const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -290,14 +287,16 @@ class CheatsSettingsData
 
         memcpy(cheatsPtr->getButtonCombosPtr(), buttonCombosPtr, maxButtonCombos * sizeof(uint16_t));
 
-#ifdef TTYD_JP
-        if (version >= SETTINGS_ADDED_MARIO_ZERO_HITBOX_CHEAT)
+        if (version >= SETTINGS_ADDED_SOUND_OVERWRITE_GLITCH_VALUES)
         {
-            // Adjust the floats modified from the Mario Zero Hitbox Glitch cheat
-            adjustMarioZeroHitboxGlitchFloats(
-                cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_MARIO_ZERO_HITBOX_GLITCH));
+            // Adjust the values modified by the `psndSFXOff` glitch
+            adjustSoundOverwriteGlitchValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE);
+
+            adjustSoundOverwriteGlitchValues(
+                CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION);
+
+            adjustSoundOverwriteGlitchValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH);
         }
-#endif
     }
 
     uint32_t setData(Cheats *cheatsPtr)
