@@ -126,10 +126,40 @@ static void drawMemoryWatchModifyInfo()
     posY -= lineDecrement;
 
     // Draw the address
+    const uint32_t totalAddressOffsets = currentEntry->getTotalAddressOffsets();
+    uint8_t *baseAddressPtr = currentEntry->getAddressPtr();
+
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
 
-    snprintf(buf, bufSize, "0x%08" PRIX32, reinterpret_cast<uint32_t>(currentEntry->getAddressPtr()));
+    if (totalAddressOffsets > 0)
+    {
+        // At least one pointer level is being used, so display how many are being used, and draw the final address
+        uint8_t *finalAddressPtr =
+            getFinalAddressFromPointerPath(baseAddressPtr, currentEntry->getAddressOffsetsPtr(), totalAddressOffsets);
+
+        // If the final address is invalid, then draw ??? in place of the address
+        const char *addressStringPtr;
+
+        if (finalAddressPtr)
+        {
+            char addressBuf[16];
+            snprintf(addressBuf, sizeof(addressBuf), "0x%08" PRIX32, reinterpret_cast<uint32_t>(finalAddressPtr));
+            addressStringPtr = addressBuf;
+        }
+        else
+        {
+            addressStringPtr = "???";
+        }
+
+        snprintf(buf, bufSize, "(%" PRIu32 "*) %s", totalAddressOffsets, addressStringPtr);
+    }
+    else
+    {
+        // No pointer levels are being used, so just draw the address
+        snprintf(buf, bufSize, "0x%08" PRIX32, reinterpret_cast<uint32_t>(baseAddressPtr));
+    }
+
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
 
