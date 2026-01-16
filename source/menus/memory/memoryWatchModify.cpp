@@ -131,6 +131,7 @@ static void drawMemoryWatchModifyInfo()
 
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
+    constexpr const char *addressFormatString = "0x%08" PRIX32;
 
     if (totalAddressOffsets > 0)
     {
@@ -144,7 +145,7 @@ static void drawMemoryWatchModifyInfo()
         if (finalAddressPtr)
         {
             char addressBuf[16];
-            snprintf(addressBuf, sizeof(addressBuf), "0x%08" PRIX32, reinterpret_cast<uint32_t>(finalAddressPtr));
+            snprintf(addressBuf, sizeof(addressBuf), addressFormatString, reinterpret_cast<uint32_t>(finalAddressPtr));
             addressStringPtr = addressBuf;
         }
         else
@@ -157,7 +158,7 @@ static void drawMemoryWatchModifyInfo()
     else
     {
         // No pointer levels are being used, so just draw the address
-        snprintf(buf, bufSize, "0x%08" PRIX32, reinterpret_cast<uint32_t>(baseAddressPtr));
+        snprintf(buf, bufSize, addressFormatString, reinterpret_cast<uint32_t>(baseAddressPtr));
     }
 
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));

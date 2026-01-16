@@ -49,9 +49,9 @@ enum CheatsEnabledFlag
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC,   // Disable Certain Sounds
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS, // Disable Certain Sounds
 
-    CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE,
-    CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION,
-    CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH,
+    CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE,
+    CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION,
+    CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR,
 
     CHEATS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -476,7 +476,7 @@ void preventViPostCallBackOnFramePause(uint32_t retraceCount);
 int32_t disableMenuSounds(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
 bool disableBgm(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
 bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
-void adjustSoundOverwriteGlitchValues(uint32_t cheatEnabledFlag);
+void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag);
 void lockFlags(Cheats *cheatsPtr, Mod *modPtr);
 void runCheatFuncsEveryFrame();
 

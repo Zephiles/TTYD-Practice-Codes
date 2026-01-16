@@ -81,14 +81,14 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
-    "Simulate 0 Hitbox Glitch - Paper Mode",
-    cheatsMenuSimulateSoundOverwriteGlitchInit,
+    "Simulate AMW - Mario Zero Hitbox - Paper Mode",
+    cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate 0 Hitbox Glitch - Room Transition",
-    cheatsMenuSimulateSoundOverwriteGlitchInit,
+    "Simulate AMW - Mario Zero Hitbox - Room Transition",
+    cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate Walk On Air Glitch",
-    cheatsMenuSimulateSoundOverwriteGlitchInit,
+    "Simulate AMW - Mario Walk On Air",
+    cheatsMenuSimulateArbitraryMemoryWriteInit,
 
     "Bobbery Early",
     cheatsMenuGenericNoButtonComboInit,
@@ -345,17 +345,17 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RUN_FROM_BATTLES;
         }
-        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE:
         {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE;
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE;
         }
-        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
         {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION;
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION;
         }
-        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_WALK_ON_AIR_GLITCH:
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_AMW_MARIO_WALK_ON_AIR:
         {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH;
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR;
         }
         case CheatsMenuOptions::CHEATS_MENU_BOBBERY_EARLY:
         {

@@ -21,7 +21,7 @@
 
 // Based on SETTINGS_VERSION
 #define SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS 2
-#define SETTINGS_ADDED_SOUND_OVERWRITE_GLITCH_VALUES 4
+#define SETTINGS_ADDED_AMW_GLITCH_VALUES 4
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -287,15 +287,15 @@ class CheatsSettingsData
 
         memcpy(cheatsPtr->getButtonCombosPtr(), buttonCombosPtr, maxButtonCombos * sizeof(uint16_t));
 
-        if (version >= SETTINGS_ADDED_SOUND_OVERWRITE_GLITCH_VALUES)
+        if (version >= SETTINGS_ADDED_AMW_GLITCH_VALUES)
         {
-            // Adjust the values modified by the `psndSFXOff` glitch
-            adjustSoundOverwriteGlitchValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE);
+            // Adjust the values modified by the Arbitrary Memory Write glitch
+            adjustArbitraryMemoryWriteValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE);
 
-            adjustSoundOverwriteGlitchValues(
-                CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION);
+            adjustArbitraryMemoryWriteValues(
+                CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION);
 
-            adjustSoundOverwriteGlitchValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH);
+            adjustArbitraryMemoryWriteValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR);
         }
     }
 

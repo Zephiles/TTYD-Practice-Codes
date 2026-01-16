@@ -18,7 +18,7 @@ static const MenuFunctions gFuncs = {
     nullptr, // Exit function not needed
 };
 
-void cheatsMenuSimulateSoundOverwriteGlitchInit(Menu *menuPtr)
+void cheatsMenuSimulateArbitraryMemoryWriteInit(Menu *menuPtr)
 {
     // Backup the selected cheat
     gCheatsMenu->setSelectedCheat(menuPtr->getCurrentIndex());
@@ -42,5 +42,5 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
 
     const uint32_t cheatEnabledFlag = indexToCheatEnabledFlag(gCheatsMenu->getSelectedCheat());
     cheatsMenuToggleEnabledFlag(cheatEnabledFlag);
-    adjustSoundOverwriteGlitchValues(cheatEnabledFlag);
+    adjustArbitraryMemoryWriteValues(cheatEnabledFlag);
 }

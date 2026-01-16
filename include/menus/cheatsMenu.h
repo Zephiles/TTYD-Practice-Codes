@@ -40,9 +40,9 @@ enum CheatsMenuOptions
     CHEATS_MENU_LOCK_MARIO_HP_TO_MAX,
     CHEATS_MENU_LOCK_PARTNER_HP_TO_MAX,
     CHEATS_MENU_RUN_FROM_BATTLES,
-    CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE,
-    CHEATS_MENU_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION,
-    CHEATS_MENU_SIMULATE_WALK_ON_AIR_GLITCH,
+    CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE,
+    CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION,
+    CHEATS_MENU_SIMULATE_AMW_MARIO_WALK_ON_AIR,
     CHEATS_MENU_BOBBERY_EARLY,
     CHEATS_MENU_DISABLE_MENU_SOUNDS,
     CHEATS_MENU_FORCE_NPC_ITEM_DROP,
@@ -219,8 +219,8 @@ void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
 // cheatsGenerateLagSpike
 void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
 
-// cheatsSimulateSoundOverwriteGlitch
-void cheatsMenuSimulateSoundOverwriteGlitchInit(Menu *menuPtr);
+// cheatsSimulateArbitraryMemoryWrite
+void cheatsMenuSimulateArbitraryMemoryWriteInit(Menu *menuPtr);
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);

@@ -1228,24 +1228,24 @@ bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, boo
     return g_psndENVOn_f_d_trampoline(flags, envName, wFadeTime, unused);
 }
 
-void adjustSoundOverwriteGlitchValues(uint32_t cheatEnabledFlag)
+void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
 {
     // Get the addresses to modify
     float *valuesToModify;
 
     switch (cheatEnabledFlag)
     {
-        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE:
         {
             valuesToModify = &mot_slit_float_11;
             break;
         }
-        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
         {
             valuesToModify = &mario_float_0p125;
             break;
         }
-        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH:
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
         {
             valuesToModify = &mario_hit_float_0p75;
             break;
@@ -1269,19 +1269,19 @@ void adjustSoundOverwriteGlitchValues(uint32_t cheatEnabledFlag)
         // Set the default values
         switch (cheatEnabledFlag)
         {
-            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_PAPER_MODE:
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE:
             {
                 valuesToModify[0] = 11.f;
                 valuesToModify[1] = 20.f;
                 break;
             }
-            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_ZERO_HITBOX_GLITCH_ROOM_TRANSITION:
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
             {
                 valuesToModify[0] = 0.125f;
                 valuesToModify[1] = 20.f;
                 break;
             }
-            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_WALK_ON_AIR_GLITCH:
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
             {
                 valuesToModify[0] = 0.75f;
                 valuesToModify[1] = -1.f;
