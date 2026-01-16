@@ -12,6 +12,7 @@
 #include "gc/OSCache.h"
 #include "misc/utils.h"
 #include "misc/functionHooks.h"
+#include "ttyd/mariost.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/party.h"
@@ -22,9 +23,12 @@
 #include "ttyd/seq_title.h"
 #include "ttyd/npcdrv.h"
 #include "ttyd/swdrv.h"
-#include "ttyd/mariost.h"
 #include "menus/cheatsMenu.h"
 #include "menus/warpsMenu.h"
+
+#ifdef TTYD_EU
+#include "gc/OSReset.h"
+#endif
 
 #include <cstdint>
 #include <cstring>
@@ -161,6 +165,56 @@ int32_t cCrashScreenDecrementYPos()
     }
 }
 #endif
+
+uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags)
+{
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    {
+        return flags;
+    }
+
+    // Return 0 to force the branch to always be taken, thus disabling the random chance for the glitch to fail
+    return 0;
+}
+
+uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw)
+{
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    {
+        return pointerRaw;
+    }
+
+    // Return the pointer value that would be used under vanilla scenarios
+#ifdef TTYD_JP
+    constexpr uint32_t vanillaPointerRaw = 0x806E0640;
+#elif defined TTYD_US
+    constexpr uint32_t vanillaPointerRaw = 0x806EED40;
+#elif defined TTYD_EU
+    // One of two pointer values is used depending on different circumstances
+    constexpr uint32_t firstPointerValue = 0x8072FC60;
+    uint32_t vanillaPointerRaw;
+
+    // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
+    // OSGetResetCode does not return 0. Need to look into how to get around this.
+    if (OSGetResetCode() == 0) // First boot
+    {
+        // First boot should always use the same pointer value
+        vanillaPointerRaw = firstPointerValue;
+    }
+    else if (_globalWorkPtr->framerate == 60)
+    {
+        // A different pointer value is used when the game was reset at least once and 60Hz was chosen
+        vanillaPointerRaw = 0x806FB860;
+    }
+    else
+    {
+        // Assume 50Hz is being used, in which the first pointer value will still be used
+        vanillaPointerRaw = firstPointerValue;
+    }
+#endif
+
+    return vanillaPointerRaw;
+}
 
 static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
 {
@@ -480,6 +534,28 @@ static GlobalWork *initStageEvents()
     return _globalWorkPtr;
 }
 
+void psndSFXOff_Work(int32_t flags)
+{
+    // Check if the AMW glitch is being performed
+    // If the last byte of `flags` is 0xD8, then assume the glitch is being performed
+    const bool glitchBeingPerformed = (flags & 0xFF) == 0xD8;
+
+    if (glitchBeingPerformed)
+    {
+        // Set the flag to indicate that the glitch is being performed
+        gMod->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    }
+
+    // Call the original function
+    g_psndSFXOff_trampoline(flags);
+
+    if (glitchBeingPerformed)
+    {
+        // Clear the flag now that the glitch has been performed
+        gMod->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    }
+}
+
 void applyGameFixes()
 {
     // Fix a memory leak from occuring when starting a new file. The leak is that memory for the inventory is re-allocated
@@ -701,6 +777,28 @@ void applyVariousGamePatches()
 #endif
 
     writeBranchBL(initStageEventsAddress, initStageEvents);
+
+    // Allow disabling the random fail chance for the Arbitrary Memory Write glitch
+#ifdef TTYD_US
+    constexpr uint32_t psndSFXOffAddress = 0x800D963C;
+#elif defined TTYD_JP
+    constexpr uint32_t psndSFXOffAddress = 0x800D5240;
+#elif defined TTYD_EU
+    constexpr uint32_t psndSFXOffAddress = 0x800DA438;
+#endif
+
+    writeBranchBL(psndSFXOffAddress, asmArbitraryMemoryWriteDisableRandomFail);
+
+    // Get the proper pointer value that the vanilla game would use for the Arbitrary Memory Write glitch
+#ifdef TTYD_US
+    constexpr uint32_t SoundEfxStopAddress = 0x800E0C58;
+#elif defined TTYD_JP
+    constexpr uint32_t SoundEfxStopAddress = 0x800DC560;
+#elif defined TTYD_EU
+    constexpr uint32_t SoundEfxStopAddress = 0x800E1A54;
+#endif
+
+    writeBranchBL(SoundEfxStopAddress, asmArbitraryMemoryWriteGetProperPointer);
 }
 
 void applyCheatAndDisplayInjects()

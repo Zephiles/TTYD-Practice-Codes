@@ -28,6 +28,7 @@ extern bool (*g_pouchRemoveItemIndex_trampoline)(ItemId item, uint32_t index);
 extern void (*g_DEMOPadRead_trampoline)();
 extern void (*g_viPostCallback_trampoline)(uint32_t retraceCount);
 extern NpcEntry *(*g_fbatHitCheck_trampoline)(uint32_t flags, void *unk);
+extern void (*g_psndSFXOff_trampoline)(int32_t flags);
 extern void (*g_seqSetSeq_trampoline)(SeqIndex seq, const char *map, const char *bero);
 extern void (*g_statusWinDisp_trampoline)();
 extern int32_t (*g_BattleActionCommandCheckDefence_trampoline)(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);

@@ -14,7 +14,7 @@ extern "C"
     // psndENV_stop
     // psndSFX_get_vol
     // psndSFXChk
-    // psndSFXOff
+    void psndSFXOff(int32_t flags);
     // psndSFX_dist
     // psndSFX_pos
     // psndSFX_pit

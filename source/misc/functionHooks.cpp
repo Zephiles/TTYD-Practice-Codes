@@ -25,6 +25,7 @@ bool (*g_pouchRemoveItemIndex_trampoline)(ItemId item, uint32_t index) = nullptr
 void (*g_DEMOPadRead_trampoline)() = nullptr;
 void (*g_viPostCallback_trampoline)(uint32_t retraceCount) = nullptr;
 NpcEntry *(*g_fbatHitCheck_trampoline)(uint32_t flags, void *unk) = nullptr;
+void (*g_psndSFXOff_trampoline)(int32_t flags) = nullptr;
 void (*g_seqSetSeq_trampoline)(SeqIndex seq, const char *map, const char *bero) = nullptr;
 void (*g_statusWinDisp_trampoline)() = nullptr;
 int32_t (*g_BattleActionCommandCheckDefence_trampoline)(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon) = nullptr;

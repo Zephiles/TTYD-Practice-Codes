@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#define VERSION_STRING "v4.0.1-dev5"
+#define VERSION_STRING "v4.0.1-dev6"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -47,24 +47,20 @@ union ValueType
 
 enum ModFlag
 {
-    // Misc flags
     MOD_FLAG_MENU_IS_HIDDEN = 0,
     MOD_FLAG_CHANGING_BUTTON_COMBO,
     MOD_FLAG_SYSTEM_LEVEL,
     MOD_FLAG_CLEAR_MARIO_STATS,
     MOD_FLAG_CLEAR_PARTNER_STATS,
 
-    // Warp By Event
     MOD_FLAG_WARP_BY_EVENT_INIT,
     MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY,
     MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES,
     MOD_FLAG_WARP_BY_EVENT_SET_FLAGS,
 
-    // Warp By Index
     MOD_FLAG_WARP_BY_INDEX_INIT,
-
-    // Other
     MOD_FLAG_USE_ANALOG_STICK_IN_MENUS,
+    MOD_FLAG_PERFORMING_AMW_GLITCH,
 
     MOD_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };

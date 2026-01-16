@@ -13,6 +13,7 @@ bool applyRelPatches(OSModuleInfo *module, void *bss);
 bool performPreBattleActions();
 void performBattleChecks();
 NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk);
+void psndSFXOff_Work(int32_t flags);
 
 void applyGameFixes();
 void applyVariousGamePatches();

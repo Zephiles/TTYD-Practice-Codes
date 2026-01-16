@@ -30,6 +30,7 @@
 #include "ttyd/battle_pad.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/pmario_sound.h"
 #include "ttyd/statuswindow.h"
 #include "ttyd/battle_ac.h"
 #include "ttyd/sac_scissor.h"
@@ -40,7 +41,6 @@
 #include "ttyd/evt_bero.h"
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/sound.h"
-#include "ttyd/pmario_sound.h"
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
 #include "ttyd/memory.h"
@@ -111,6 +111,10 @@ void init()
 
     // For handling certain checks when making contact with enemies
     g_fbatHitCheck_trampoline = hookFunctionArena(fbatHitCheck, fbatHitCheck_Work);
+
+    // For allowing the Arbitrary Memory Write glitch to work with current builds of the Practice Codes, as well as for
+    // disabling the random chance for it to fail
+    g_psndSFXOff_trampoline = hookFunctionArena(psndSFXOff, psndSFXOff_Work);
 
     // For preventing being able to reload the current room and starting a battle at the same time, as this will cause the game
     // to softlock

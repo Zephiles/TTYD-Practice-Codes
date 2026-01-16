@@ -1386,7 +1386,7 @@
 // 800D9FE4:psndENV_stop
 // 800DA354:psndSFX_get_vol
 // 800DA39C:psndSFXChk
-// 800DA3F4:psndSFXOff
+800DA3F4:psndSFXOff
 // 800DA4BC:psndSFX_dist
 // 800DA4F4:psndSFX_pos
 // 800DA540:psndSFX_pit
@@ -2908,6 +2908,15 @@
 // 8029E954:Undo
 // 8029EB8C:OSUnlink
 // 8029ED60:__OSModuleInit
+
+// OSReset.c
+// 8029F144:OSRegisterResetFunction
+// 8029F1C8:__OSCallResetFunctions
+// 8029F270:Reset
+// 8029F2E0:KillThreads
+// 8029F348:__OSDoHotReset
+// 8029F390:OSResetSystem
+8029F590:OSGetResetCode
 
 // OSTime.c
 802A1904:OSGetTime

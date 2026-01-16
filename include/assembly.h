@@ -42,6 +42,9 @@ extern "C"
 
     void asmDisableDPadOptionsDisplay();
 
+    void asmArbitraryMemoryWriteDisableRandomFail();
+    void asmArbitraryMemoryWriteGetProperPointer();
+
 #ifdef TTYD_EU
     void asmJumpOnWaterStart();
     void asmJumpOnWaterBranchBack();
@@ -75,6 +78,9 @@ extern "C"
 #ifdef TTYD_EU
     void *cJumpOnWater(void *ptr);
 #endif
+
+    uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags);
+    uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw);
 
     // Misc assembly functions
     void asmSetTime(OSTime time);
