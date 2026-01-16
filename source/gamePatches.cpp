@@ -538,22 +538,20 @@ void psndSFXOff_Work(int32_t flags)
 {
     // Check if the AMW glitch is being performed
     // If the last byte of `flags` is 0xD8, then assume the glitch is being performed
-    const bool glitchBeingPerformed = (flags & 0xFF) == 0xD8;
-
-    if (glitchBeingPerformed)
+    if ((flags & 0xFF) != 0xD8)
     {
-        // Set the flag to indicate that the glitch is being performed
-        gMod->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+        // Call the original function
+        return g_psndSFXOff_trampoline(flags);
     }
+
+    // Set the flag to indicate that the glitch is being performed
+    gMod->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
 
     // Call the original function
     g_psndSFXOff_trampoline(flags);
 
-    if (glitchBeingPerformed)
-    {
-        // Clear the flag now that the glitch has been performed
-        gMod->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
-    }
+    // Clear the flag now that the glitch has been performed
+    gMod->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
 }
 
 void applyGameFixes()
