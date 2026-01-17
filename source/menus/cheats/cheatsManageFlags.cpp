@@ -577,13 +577,13 @@ void setGW(uint32_t gw, uint32_t value)
 bool getGF(uint32_t gf)
 {
     constexpr uint32_t totalFlags = sizeof(EvtWork::gfData) * 8;
-    return _flagIsSet(evtGetWork()->gfData, gf, totalFlags, totalFlags);
+    return _flagIsSet(evtGetWork()->gfData, gf, totalFlags);
 }
 
 void toggleGF(uint32_t gf)
 {
     constexpr uint32_t totalFlags = sizeof(EvtWork::gfData) * 8;
-    _toggleFlag(evtGetWork()->gfData, gf, totalFlags, totalFlags);
+    _toggleFlag(evtGetWork()->gfData, gf, totalFlags);
 }
 
 uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag)

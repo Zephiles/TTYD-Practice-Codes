@@ -196,7 +196,8 @@ uint32_t initAfterHeapsCreated()
     return 0;
 }
 
-static void checkHeaps()
+// Avoid inlining `checkHeaps`, as it makes debugging `runOncePerFrame` harder
+__attribute__((noinline)) static void checkHeaps()
 {
     // Check the standard heaps
     uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;

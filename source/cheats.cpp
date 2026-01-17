@@ -122,7 +122,7 @@ bool Cheats::enabledFlagIsSet(uint32_t flag) const
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    return _flagIsSet(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
+    return _flagIsSet(this->enabledFlags, flag, maxFlags);
 }
 
 void Cheats::setEnabledFlag(uint32_t flag)
@@ -130,7 +130,7 @@ void Cheats::setEnabledFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    _setFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
+    _setFlag(this->enabledFlags, flag, maxFlags);
 }
 
 void Cheats::clearEnabledFlag(uint32_t flag)
@@ -138,7 +138,7 @@ void Cheats::clearEnabledFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    _clearFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
+    _clearFlag(this->enabledFlags, flag, maxFlags);
 }
 
 bool Cheats::toggleEnabledFlag(uint32_t flag)
@@ -146,7 +146,7 @@ bool Cheats::toggleEnabledFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    return _toggleFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
+    return _toggleFlag(this->enabledFlags, flag, maxFlags);
 }
 
 bool Cheats::miscFlagIsSet(uint32_t flag) const
@@ -154,7 +154,7 @@ bool Cheats::miscFlagIsSet(uint32_t flag) const
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    return _flagIsSet(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
+    return _flagIsSet(this->miscFlags, flag, maxFlags);
 }
 
 void Cheats::setMiscFlag(uint32_t flag)
@@ -162,7 +162,7 @@ void Cheats::setMiscFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    _setFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
+    _setFlag(this->miscFlags, flag, maxFlags);
 }
 
 void Cheats::clearMiscFlag(uint32_t flag)
@@ -170,7 +170,7 @@ void Cheats::clearMiscFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    _clearFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
+    _clearFlag(this->miscFlags, flag, maxFlags);
 }
 
 bool Cheats::toggleMiscFlag(uint32_t flag)
@@ -178,7 +178,7 @@ bool Cheats::toggleMiscFlag(uint32_t flag)
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    return _toggleFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
+    return _toggleFlag(this->miscFlags, flag, maxFlags);
 }
 
 Cheats::Cheats()

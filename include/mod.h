@@ -174,9 +174,9 @@ extern const char *gHelpTextButtonCombo;
 extern const char *gHelpTextAConfirmBCancel;
 extern const char *gTimeStringFormat;
 
-bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags, uint32_t totalFlags);
-void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags, uint32_t totalFlags);
-void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags, uint32_t totalFlags);
-bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags, uint32_t totalFlags);
+bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 
 #endif
