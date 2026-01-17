@@ -120,7 +120,7 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
 {
     // Check the analog stick first since its values must be converted to button inputs
     // Only check the analog stick if the flag for using it is set
-    if (gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS))
+    if (gMod->saveFlagIsSet(ModSaveFlag::MOD_SAVE_FLAG_USE_ANALOG_STICK_IN_MENUS))
     {
         uint32_t stickInput;
 
@@ -137,27 +137,32 @@ MenuButtonInput getMenuButtonInput(bool singleFrame)
         constexpr uint32_t stickDirections = StickInput::ANALOG_STICK_INPUT_UP | StickInput::ANALOG_STICK_INPUT_DOWN |
                                              StickInput::ANALOG_STICK_INPUT_LEFT | StickInput::ANALOG_STICK_INPUT_RIGHT;
 
-        switch (stickInput & stickDirections)
+        // Don't check if no stick directions were pressed
+        stickInput &= stickDirections;
+        if (stickInput)
         {
-            case StickInput::ANALOG_STICK_INPUT_UP:
+            switch (stickInput)
             {
-                return MenuButtonInput::DPAD_UP;
-            }
-            case StickInput::ANALOG_STICK_INPUT_DOWN:
-            {
-                return MenuButtonInput::DPAD_DOWN;
-            }
-            case StickInput::ANALOG_STICK_INPUT_LEFT:
-            {
-                return MenuButtonInput::DPAD_LEFT;
-            }
-            case StickInput::ANALOG_STICK_INPUT_RIGHT:
-            {
-                return MenuButtonInput::DPAD_RIGHT;
-            }
-            default:
-            {
-                break;
+                case StickInput::ANALOG_STICK_INPUT_UP:
+                {
+                    return MenuButtonInput::DPAD_UP;
+                }
+                case StickInput::ANALOG_STICK_INPUT_DOWN:
+                {
+                    return MenuButtonInput::DPAD_DOWN;
+                }
+                case StickInput::ANALOG_STICK_INPUT_LEFT:
+                {
+                    return MenuButtonInput::DPAD_LEFT;
+                }
+                case StickInput::ANALOG_STICK_INPUT_RIGHT:
+                {
+                    return MenuButtonInput::DPAD_RIGHT;
+                }
+                default:
+                {
+                    break;
+                }
             }
         }
     }

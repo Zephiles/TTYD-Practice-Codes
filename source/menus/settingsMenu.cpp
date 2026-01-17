@@ -115,7 +115,7 @@ static void drawSettingsMenuInfo()
 
     // Draw whether or not the analog stick is being used in the menus
     const char *yesNoText;
-    if (gMod->flagIsSet(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS))
+    if (gMod->saveFlagIsSet(ModSaveFlag::MOD_SAVE_FLAG_USE_ANALOG_STICK_IN_MENUS))
     {
         yesNoText = "Yes";
     }
@@ -213,7 +213,7 @@ static void selectedOptionUseAnalogStickInMenus(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    gMod->toggleFlag(ModFlag::MOD_FLAG_USE_ANALOG_STICK_IN_MENUS);
+    gMod->toggleSaveFlag(ModSaveFlag::MOD_SAVE_FLAG_USE_ANALOG_STICK_IN_MENUS);
 }
 
 static void selectedOptionChangeMemoryCardSlot(Menu *menuPtr)

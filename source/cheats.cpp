@@ -119,164 +119,66 @@ void Cheats::setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo)
 
 bool Cheats::enabledFlagIsSet(uint32_t flag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_ENABLED_FLAGS
-    if (flag >= TOTAL_CHEATS_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->enabledFlags[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
 }
 
 void Cheats::setEnabledFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_ENABLED_FLAGS
-    if (flag >= TOTAL_CHEATS_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
+    _setFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
 }
 
 void Cheats::clearEnabledFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_ENABLED_FLAGS
-    if (flag >= TOTAL_CHEATS_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
+    _clearFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
 }
 
 bool Cheats::toggleEnabledFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_ENABLED_FLAGS
-    if (flag >= TOTAL_CHEATS_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    this->enabledFlags[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
-    return this->enabledFlagIsSet(flag);
+    return _toggleFlag(this->enabledFlags, flag, maxFlags, TOTAL_CHEATS_ENABLED_FLAGS);
 }
 
 bool Cheats::miscFlagIsSet(uint32_t flag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_MISC_FLAGS
-    if (flag >= TOTAL_CHEATS_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->miscFlags[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
 }
 
 void Cheats::setMiscFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_MISC_FLAGS
-    if (flag >= TOTAL_CHEATS_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
+    _setFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
 }
 
 void Cheats::clearMiscFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_MISC_FLAGS
-    if (flag >= TOTAL_CHEATS_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
+    _clearFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
 }
 
 bool Cheats::toggleMiscFlag(uint32_t flag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_CHEATS_MISC_FLAGS
-    if (flag >= TOTAL_CHEATS_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    this->miscFlags[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
-    return this->miscFlagIsSet(flag);
+    return _toggleFlag(this->miscFlags, flag, maxFlags, TOTAL_CHEATS_MISC_FLAGS);
 }
 
 Cheats::Cheats()

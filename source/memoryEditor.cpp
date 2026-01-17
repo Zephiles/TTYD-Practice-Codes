@@ -21,83 +21,34 @@ MemoryEditor *gMemoryEditor = nullptr;
 
 bool MemoryEditor::enabledFlagIsSet(uint32_t enabledFlag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_MEMORY_EDITOR_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->enabledFlags[enabledFlag / bitsPerWord] >> (enabledFlag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->enabledFlags, enabledFlag, maxFlags, TOTAL_MEMORY_EDITOR_ENABLED_FLAGS);
 }
 
 void MemoryEditor::setEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_MEMORY_EDITOR_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] |= (1UL << (enabledFlag % bitsPerWord));
+    _setFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_MEMORY_EDITOR_ENABLED_FLAGS);
 }
 
 void MemoryEditor::clearEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_MEMORY_EDITOR_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] &= ~(1UL << (enabledFlag % bitsPerWord));
+    _clearFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_MEMORY_EDITOR_ENABLED_FLAGS);
 }
 
 bool MemoryEditor::toggleEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_MEMORY_EDITOR_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_MEMORY_EDITOR_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] ^= (1UL << (enabledFlag % bitsPerWord));
-    return this->enabledFlagIsSet(enabledFlag);
+    return _toggleFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_MEMORY_EDITOR_ENABLED_FLAGS);
 }
 
 static bool verifyNumBytesAndCurrentDigit(uint32_t numBytes, uint32_t currentDigit)

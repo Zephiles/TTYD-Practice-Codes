@@ -93,83 +93,34 @@ void Displays::setDisplayButtonCombo(uint32_t displayWithCombo, uint32_t buttonC
 
 bool Displays::enabledFlagIsSet(uint32_t enabledFlag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_DISPLAYS_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->enabledFlags[enabledFlag / bitsPerWord] >> (enabledFlag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->enabledFlags, enabledFlag, maxFlags, TOTAL_DISPLAYS_ENABLED_FLAGS);
 }
 
 void Displays::setEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_DISPLAYS_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] |= (1UL << (enabledFlag % bitsPerWord));
+    _setFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_DISPLAYS_ENABLED_FLAGS);
 }
 
 void Displays::clearEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_DISPLAYS_ENABLED_FLAGS)
-    {
-        return;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] &= ~(1UL << (enabledFlag % bitsPerWord));
+    _clearFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_DISPLAYS_ENABLED_FLAGS);
 }
 
 bool Displays::toggleEnabledFlag(uint32_t enabledFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (enabledFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_ENABLED_FLAGS
-    if (enabledFlag >= TOTAL_DISPLAYS_ENABLED_FLAGS)
-    {
-        return false;
-    }
-
-    this->enabledFlags[enabledFlag / bitsPerWord] ^= (1UL << (enabledFlag % bitsPerWord));
-    return this->enabledFlagIsSet(enabledFlag);
+    return _toggleFlag(this->enabledFlags, enabledFlag, maxFlags, TOTAL_DISPLAYS_ENABLED_FLAGS);
 }
 
 void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
@@ -218,224 +169,90 @@ bool Displays::anyHeapDisplayIsEnabled()
 
 bool Displays::manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (manuallyPositionFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS
-    if (manuallyPositionFlag >= TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->manuallyPositionFlags[manuallyPositionFlag / bitsPerWord] >> (manuallyPositionFlag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags, TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS);
 }
 
 void Displays::setManuallyPositionFlag(uint32_t manuallyPositionFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (manuallyPositionFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS
-    if (manuallyPositionFlag >= TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS)
-    {
-        return;
-    }
-
-    this->manuallyPositionFlags[manuallyPositionFlag / bitsPerWord] |= (1UL << (manuallyPositionFlag % bitsPerWord));
+    _setFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags, TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS);
 }
 
 void Displays::clearManuallyPositionFlag(uint32_t manuallyPositionFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (manuallyPositionFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS
-    if (manuallyPositionFlag >= TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS)
-    {
-        return;
-    }
-
-    this->manuallyPositionFlags[manuallyPositionFlag / bitsPerWord] &= ~(1UL << (manuallyPositionFlag % bitsPerWord));
+    _clearFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags, TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS);
 }
 
 bool Displays::toggleManuallyPositionFlag(uint32_t manuallyPositionFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (manuallyPositionFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS
-    if (manuallyPositionFlag >= TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS)
-    {
-        return false;
-    }
-
-    this->manuallyPositionFlags[manuallyPositionFlag / bitsPerWord] ^= (1UL << (manuallyPositionFlag % bitsPerWord));
-    return this->manuallyPositionFlagIsSet(manuallyPositionFlag);
+    return _toggleFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags, TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS);
 }
 
 bool Displays::miscFlagIsSet(uint32_t miscFlag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (miscFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MISC_FLAGS
-    if (miscFlag >= TOTAL_DISPLAYS_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->miscFlags[miscFlag / bitsPerWord] >> (miscFlag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->miscFlags, miscFlag, maxFlags, TOTAL_DISPLAYS_MISC_FLAGS);
 }
 
 void Displays::setMiscFlag(uint32_t miscFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (miscFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MISC_FLAGS
-    if (miscFlag >= TOTAL_DISPLAYS_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] |= (1UL << (miscFlag % bitsPerWord));
+    _setFlag(this->miscFlags, miscFlag, maxFlags, TOTAL_DISPLAYS_MISC_FLAGS);
 }
 
 void Displays::clearMiscFlag(uint32_t miscFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (miscFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MISC_FLAGS
-    if (miscFlag >= TOTAL_DISPLAYS_MISC_FLAGS)
-    {
-        return;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] &= ~(1UL << (miscFlag % bitsPerWord));
+    _clearFlag(this->miscFlags, miscFlag, maxFlags, TOTAL_DISPLAYS_MISC_FLAGS);
 }
 
 bool Displays::toggleMiscFlag(uint32_t miscFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    if (miscFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_MISC_FLAGS
-    if (miscFlag >= TOTAL_DISPLAYS_MISC_FLAGS)
-    {
-        return false;
-    }
-
-    this->miscFlags[miscFlag / bitsPerWord] ^= (1UL << (miscFlag % bitsPerWord));
-    return this->miscFlagIsSet(miscFlag);
+    return _toggleFlag(this->miscFlags, miscFlag, maxFlags, TOTAL_DISPLAYS_MISC_FLAGS);
 }
 
 bool Displays::shouldDrawFlagIsSet(uint32_t shouldDrawFlag) const
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-    if (shouldDrawFlag >= maxFlags)
-    {
-        return false;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS
-    if (shouldDrawFlag >= TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS)
-    {
-        return false;
-    }
-
-    return (this->shouldDrawFlags[shouldDrawFlag / bitsPerWord] >> (shouldDrawFlag % bitsPerWord)) & 1U;
+    return _flagIsSet(this->shouldDrawFlags, shouldDrawFlag, maxFlags, TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS);
 }
 
 void Displays::setShouldDrawFlag(uint32_t shouldDrawFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-    if (shouldDrawFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS
-    if (shouldDrawFlag >= TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS)
-    {
-        return;
-    }
-
-    this->shouldDrawFlags[shouldDrawFlag / bitsPerWord] |= (1UL << (shouldDrawFlag % bitsPerWord));
+    _setFlag(this->shouldDrawFlags, shouldDrawFlag, maxFlags, TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS);
 }
 
 void Displays::clearShouldDrawFlag(uint32_t shouldDrawFlag)
 {
-    // Make sure the flag is valid
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
     constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-    if (shouldDrawFlag >= maxFlags)
-    {
-        return;
-    }
-
-    // Make sure the flag does not exceed TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS
-    if (shouldDrawFlag >= TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS)
-    {
-        return;
-    }
-
-    this->shouldDrawFlags[shouldDrawFlag / bitsPerWord] &= ~(1UL << (shouldDrawFlag % bitsPerWord));
+    _clearFlag(this->shouldDrawFlags, shouldDrawFlag, maxFlags, TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS);
 }
 
 bool Displays::anyShouldDrawFlagIsSet() const

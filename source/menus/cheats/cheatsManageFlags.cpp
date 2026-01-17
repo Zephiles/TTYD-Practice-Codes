@@ -566,28 +566,24 @@ static void draw(CameraId cameraId, void *user)
 
 uint32_t getGW(uint32_t gw)
 {
-    EvtWork *eventWork = evtGetWork();
-    return eventWork->gwData[gw];
+    return evtGetWork()->gwData[gw];
 }
 
 void setGW(uint32_t gw, uint32_t value)
 {
-    EvtWork *eventWork = evtGetWork();
-    eventWork->gwData[gw] = value;
+    evtGetWork()->gwData[gw] = value;
 }
 
 bool getGF(uint32_t gf)
 {
-    EvtWork *eventWork = evtGetWork();
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    return (eventWork->gfData[gf / bitsPerWord] >> (gf % bitsPerWord)) & 1U;
+    constexpr uint32_t totalFlags = sizeof(EvtWork::gfData) * 8;
+    return _flagIsSet(evtGetWork()->gfData, gf, totalFlags, totalFlags);
 }
 
 void toggleGF(uint32_t gf)
 {
-    EvtWork *eventWork = evtGetWork();
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    eventWork->gfData[gf / bitsPerWord] ^= (1UL << (gf % bitsPerWord));
+    constexpr uint32_t totalFlags = sizeof(EvtWork::gfData) * 8;
+    _toggleFlag(evtGetWork()->gfData, gf, totalFlags, totalFlags);
 }
 
 uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag)

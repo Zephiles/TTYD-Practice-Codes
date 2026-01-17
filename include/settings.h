@@ -17,11 +17,11 @@
 #include <cstdio>
 #include <cinttypes>
 
-#define SETTINGS_VERSION 4
+#define SETTINGS_VERSION 5
 
 // Based on SETTINGS_VERSION
-#define SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS 2
 #define SETTINGS_ADDED_AMW_GLITCH_VALUES 4
+#define SETTINGS_MOVED_MISC_SAVED_FLAGS 5
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -116,7 +116,7 @@ class MiscSettingsHeader
 
         constexpr uint32_t headerSize = sizeof(MiscSettingsHeader);
         this->dataOffset = offset + headerSize;
-        this->totalFlags = TOTAL_MOD_FLAGS;
+        this->totalFlags = TOTAL_MOD_SAVE_FLAGS;
 
         return headerSize;
     }
@@ -124,7 +124,7 @@ class MiscSettingsHeader
    private:
     // Starts at the start of SettingsHeader. If the value is 0, then the code will assume that the section is not included.
     uint32_t dataOffset;
-    uint16_t totalFlags; // TOTAL_MOD_FLAGS
+    uint16_t totalFlags; // TOTAL_MOD_SAVE_FLAGS
 } __attribute__((aligned(sizeof(uint32_t)), packed));
 
 class MiscSettingsData
@@ -138,36 +138,29 @@ class MiscSettingsData
         const uint32_t *colorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
         gRootWindow->setColor(*colorPtr);
 
-        if (version >= SETTINGS_ADDED_ANALOG_STICK_MENU_INPUTS)
+        if (version >= SETTINGS_MOVED_MISC_SAVED_FLAGS)
         {
             // Get all of the enabled flags
             const uint32_t *enabledFlagsPtr = this->enabledFlags;
-            constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
             Mod *modPtr = gMod;
 
             // Make sure totalFlags does not exceed the current max
             // Cannot change totalFlags, as doing so will give incorrect offsets for later data
             uint32_t maxFlags = totalFlags;
-            if (maxFlags > TOTAL_MOD_FLAGS)
+            if (maxFlags > TOTAL_MOD_SAVE_FLAGS)
             {
-                maxFlags = TOTAL_MOD_FLAGS;
+                maxFlags = TOTAL_MOD_SAVE_FLAGS;
             }
 
             for (uint32_t i = 0; i < maxFlags; i++)
             {
-                // Do not adjust the flag for changing button combos
-                if (i == ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO)
+                if (_flagIsSet(enabledFlagsPtr, i, maxFlags, totalFlags))
                 {
-                    continue;
-                }
-
-                if ((enabledFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
-                {
-                    modPtr->setFlag(i);
+                    modPtr->setSaveFlag(i);
                 }
                 else
                 {
-                    modPtr->clearFlag(i);
+                    modPtr->clearSaveFlag(i);
                 }
             }
         }
@@ -176,14 +169,14 @@ class MiscSettingsData
     uint32_t setData()
     {
         this->rootWindowColor = gRootWindow->getColor();
-        memcpy(this->enabledFlags, gMod->getFlagsPtr(), MOD_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
+        memcpy(this->enabledFlags, gMod->getSaveFlagsPtr(), MOD_SAVE_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
         return sizeof(MiscSettingsData);
     }
 
    private:
     uint32_t rootWindowColor;
-    uint32_t enabledFlags[MOD_FLAGS_ARRAY_SIZE];
+    uint32_t enabledFlags[MOD_SAVE_FLAGS_ARRAY_SIZE];
 } __attribute__((aligned(sizeof(uint32_t)), packed));
 
 class CheatsSettingsHeader
@@ -228,7 +221,6 @@ class CheatsSettingsData
     {
         // Get all of the enabled flags
         const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         Cheats *cheatsPtr = gCheats;
 
         // Make sure totalCheats does not exceed the current max
@@ -241,7 +233,7 @@ class CheatsSettingsData
 
         for (uint32_t i = 0; i < maxCheats; i++)
         {
-            if ((enabledFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
+            if (_flagIsSet(enabledFlagsPtr, i, maxCheats, totalCheats))
             {
                 cheatsPtr->setEnabledFlag(i);
             }
@@ -274,6 +266,7 @@ class CheatsSettingsData
         }
 
         // Get all of the button combos
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         const uint32_t buttonCombosOffset = intCeil(totalCheats, bitsPerWord) * sizeof(uint32_t);
         const uint16_t *buttonCombosPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint16_t *, this, buttonCombosOffset);
 
@@ -360,7 +353,6 @@ class DisplaysSettingsData
     {
         // Get all of the enabled flags
         const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         Displays *displaysPtr = gDisplays;
 
         // Make sure totalDisplays does not exceed the current max
@@ -373,7 +365,7 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxDisplays; i++)
         {
-            if ((enabledFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
+            if (_flagIsSet(enabledFlagsPtr, i, maxDisplays, totalDisplays))
             {
                 displaysPtr->setEnabledFlag(i);
             }
@@ -414,6 +406,7 @@ class DisplaysSettingsData
         }
 
         // Get all of the manually position flags
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         uint32_t offset = intCeil(totalDisplays, bitsPerWord) * sizeof(uint32_t);
         const uint32_t *manuallyPositionFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
 
@@ -791,7 +784,6 @@ class MemoryEditorSettingsData
     {
         // Get all of the enabled flags
         const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
-        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         MemoryEditor *memoryEditorPtr = gMemoryEditor;
 
         // Make sure totalFlags does not exceed the current max
@@ -804,7 +796,7 @@ class MemoryEditorSettingsData
 
         for (uint32_t i = 0; i < maxFlags; i++)
         {
-            if ((enabledFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
+            if (_flagIsSet(enabledFlagsPtr, i, maxFlags, totalFlags))
             {
                 memoryEditorPtr->setEnabledFlag(i);
             }
@@ -815,7 +807,9 @@ class MemoryEditorSettingsData
         }
 
         // Get the current address
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         uint32_t offset = intCeil(totalFlags, bitsPerWord) * sizeof(uint32_t);
+
         uint8_t **currentAddressPtr = PTR_CAST_TYPE_ADD_OFFSET(uint8_t **, this, offset);
         memoryEditorPtr->setCurrentAddress(*currentAddressPtr);
         offset += sizeof(uint8_t *);
