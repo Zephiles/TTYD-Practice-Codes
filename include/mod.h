@@ -6,7 +6,57 @@
 
 #include <cstdint>
 
-#define VERSION_STRING "v4.0.1-dev8"
+__attribute__((always_inline)) inline bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return false;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    return (flagsPtr[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
+}
+
+__attribute__((always_inline)) inline void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
+}
+
+__attribute__((always_inline)) inline void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
+}
+
+__attribute__((always_inline)) inline bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return false;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
+
+    return _flagIsSet(flagsPtr, flag, maxFlags);
+}
+
+#define VERSION_STRING "v4.0.1-dev9"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -152,15 +202,69 @@ class Mod
     WarpByIndex *getWarpByIndexPtr() { return &this->warpByIndex; }
     WarpByEvent *getWarpByEventPtr() { return &this->warpByEvent; }
 
-    bool flagIsSet(uint32_t flag) const;
-    void setFlag(uint32_t flag);
-    void clearFlag(uint32_t flag);
-    bool toggleFlag(uint32_t flag);
+    __attribute__((always_inline)) bool flagIsSet(uint32_t flag) const
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-    bool saveFlagIsSet(uint32_t flag) const;
-    void setSaveFlag(uint32_t flag);
-    void clearSaveFlag(uint32_t flag);
-    bool toggleSaveFlag(uint32_t flag);
+        return _flagIsSet(this->flags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void setFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _setFlag(this->flags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void clearFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _clearFlag(this->flags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool toggleFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _toggleFlag(this->flags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool saveFlagIsSet(uint32_t flag) const
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_SAVE_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _flagIsSet(this->saveFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void setSaveFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_SAVE_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _setFlag(this->saveFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void clearSaveFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_SAVE_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _clearFlag(this->saveFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool toggleSaveFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MOD_SAVE_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _toggleFlag(this->saveFlags, flag, maxFlags);
+    }
 
    private:
     uint32_t flags[MOD_FLAGS_ARRAY_SIZE];
@@ -173,10 +277,5 @@ extern Mod *gMod;
 extern const char *gHelpTextButtonCombo;
 extern const char *gHelpTextAConfirmBCancel;
 extern const char *gTimeStringFormat;
-
-bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
-void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
-void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
-bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 
 #endif

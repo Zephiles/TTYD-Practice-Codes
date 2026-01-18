@@ -57,12 +57,7 @@ class MemoryEditor
     MemoryEditor();
     ~MemoryEditor() {}
 
-    bool enabledFlagIsSet(uint32_t enabledFlag) const;
-    void setEnabledFlag(uint32_t enabledFlag);
-    void clearEnabledFlag(uint32_t enabledFlag);
-    bool toggleEnabledFlag(uint32_t enabledFlag);
     const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
-
     uint8_t *getCurrentAddressPtr() const { return this->currentAddress; }
     void setCurrentAddress(uint32_t addressRaw) { this->currentAddress = reinterpret_cast<uint8_t *>(addressRaw); }
     void setCurrentAddress(uint8_t *address) { this->currentAddress = address; }
@@ -105,6 +100,38 @@ class MemoryEditor
 
     void controls(MenuButtonInput button);
     void draw() const;
+
+    __attribute__((always_inline)) bool enabledFlagIsSet(uint32_t enabledFlag) const
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _flagIsSet(this->enabledFlags, enabledFlag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void setEnabledFlag(uint32_t enabledFlag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _setFlag(this->enabledFlags, enabledFlag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void clearEnabledFlag(uint32_t enabledFlag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _clearFlag(this->enabledFlags, enabledFlag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool toggleEnabledFlag(uint32_t enabledFlag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _toggleFlag(this->enabledFlags, enabledFlag, maxFlags);
+    }
 
    private:
     bool checkIfAddressInHoverRange(const uint8_t *address, uint32_t currentDigit) const;

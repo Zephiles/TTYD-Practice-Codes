@@ -462,18 +462,8 @@ class Cheats
     bool checkCheatButtonComboDemo(uint32_t cheatWithCombo) const;
     uint32_t getCheatButtonCombo(uint32_t cheatWithCombo);
     void setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
+    inline const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
     uint16_t *getButtonCombosPtr() { return this->buttonCombos; }
-
-    bool enabledFlagIsSet(uint32_t flag) const;
-    void setEnabledFlag(uint32_t flag);
-    void clearEnabledFlag(uint32_t flag);
-    bool toggleEnabledFlag(uint32_t flag);
-    const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
-
-    bool miscFlagIsSet(uint32_t flag) const;
-    void setMiscFlag(uint32_t flag);
-    void clearMiscFlag(uint32_t flag);
-    bool toggleMiscFlag(uint32_t flag);
 
     SaveLoadCoordinatesCheats *getSaveLoadCoordinatesCheatsPtr() { return &this->saveLoadCoordinates; }
     SaveAnywhereCheat *getSaveAnywhereCheatPtr() { return &this->saveAnywhere; }
@@ -485,6 +475,70 @@ class Cheats
     FrameAdvanceCheat *getFrameAdvanceCheatPtr() { return &this->frameAdvance; }
     ClearAreaFlagsCheat *getClearAreaFlagsCheat() { return &this->clearAreaFlags; }
     LockFlagsCheat *getLockFlagsCheatPtr() { return &this->lockFlags; }
+
+    __attribute__((always_inline)) bool enabledFlagIsSet(uint32_t flag) const
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _flagIsSet(this->enabledFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void setEnabledFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _setFlag(this->enabledFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void clearEnabledFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _clearFlag(this->enabledFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool toggleEnabledFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _toggleFlag(this->enabledFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool miscFlagIsSet(uint32_t flag) const
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _flagIsSet(this->miscFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void setMiscFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _setFlag(this->miscFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) void clearMiscFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        _clearFlag(this->miscFlags, flag, maxFlags);
+    }
+
+    __attribute__((always_inline)) bool toggleMiscFlag(uint32_t flag)
+    {
+        constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+        constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
+
+        return _toggleFlag(this->miscFlags, flag, maxFlags);
+    }
 
    private:
     uint32_t enabledFlags[CHEATS_ENABLED_FLAGS_ARRAY_SIZE];
