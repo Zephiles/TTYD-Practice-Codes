@@ -100,7 +100,11 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
+
+#ifdef TTYD_JP
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP:
+#endif
+
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
@@ -292,7 +296,10 @@ Displays::Displays()
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP, PadInput::PAD_B);
+
+#ifdef TTYD_JP
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP, PadInput::PAD_Y);
+#endif
 
     // Set default positions and scales for certain displays when drawing them manually
     DisplayManuallyPosition *manuallyPositionPtrBase = this->getDisplayManuallyPositionPtr(0);
