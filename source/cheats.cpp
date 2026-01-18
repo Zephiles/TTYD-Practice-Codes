@@ -1650,3 +1650,130 @@ void runCheatFuncsEveryFrame()
         }
     }
 }
+
+uint32_t convertCheatsEnabledFlagOrder(uint32_t flagOrder)
+{
+    switch (flagOrder)
+    {
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_WALK_THROUGH_WALLS:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_WALK_THROUGH_WALLS;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_FALL_THROUGH_FLOORS:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FALL_THROUGH_FLOORS;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SAVE_COORDINATES:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SAVE_COORDINATES;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_LOAD_COORDINATES:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOAD_COORDINATES;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SPAWN_ITEM:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPAWN_ITEM;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SAVE_ANYWHERE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SAVE_ANYWHERE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_TEXT_STORAGE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TEXT_STORAGE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_TIME_STOP_TEXT_STORAGE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TIME_STOP_TEXT_STORAGE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SPEED_UP_MARIO:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_DISABLE_BATTLES:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_BATTLES;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_AUTO_ACTION_COMMANDS:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_AUTO_ACTION_COMMANDS;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_INFINITE_ITEM_USAGE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_INFINITE_ITEM_USAGE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_RELOAD_ROOM:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_LEVITATE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LEVITATE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_AUTO_MASH_TEXT:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_AUTO_MASH_TEXT;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_FRAME_ADVANCE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FRAME_ADVANCE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_GENERATE_LAG_SPIKE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_GENERATE_LAG_SPIKE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_LOCK_MARIO_HP_TO_MAX:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_MARIO_HP_TO_MAX;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_LOCK_PARTNER_HP_TO_MAX:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_LOCK_PARTNER_HP_TO_MAX;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_RUN_FROM_BATTLES:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RUN_FROM_BATTLES;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_BOBBERY_EARLY:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_BOBBERY_EARLY;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_FORCE_NPC_ITEM_DROP:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_MARIO_COORDINATES_MODIFY_AS_HEX:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_DISABLE_SOUNDS_BACKGROUND_MUSIC:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION;
+        }
+        case CheatsEnabledFlagOrder::CHEATS_ENABLED_FLAG_ORDER_SIMULATE_AMW_MARIO_WALK_ON_AIR:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR;
+        }
+        default:
+        {
+            return static_cast<uint32_t>(-1);
+        }
+    }
+}

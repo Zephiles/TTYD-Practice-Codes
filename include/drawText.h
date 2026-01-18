@@ -24,6 +24,7 @@ enum class TextAlignment
 #define COLOR_BLUE 0x5B59DE00
 #define COLOR_GREEN 0x1BBE2300
 #define COLOR_RED 0xFF141400
+#define COLOR_LIGHT_ORANGE 0xE6B22D00
 
 inline uint32_t getColorWhite(uint8_t alpha)
 {
@@ -53,6 +54,11 @@ inline uint32_t getColorGreen(uint8_t alpha)
 inline uint32_t getColorRed(uint8_t alpha)
 {
     return COLOR_RED | alpha;
+}
+
+inline uint32_t getColorLightOrange(uint8_t alpha)
+{
+    return COLOR_LIGHT_ORANGE | alpha;
 }
 
 inline void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut, uint8_t alpha)

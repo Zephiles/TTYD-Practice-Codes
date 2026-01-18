@@ -72,6 +72,11 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_YOSHI_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL,
+
+#ifdef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP,
+#endif
+
     DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP,
     DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP,
@@ -121,6 +126,59 @@ enum DisplaysEnabledFlag
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)
 
+// The proper order that the enabled flags appear in the settings file. Needed to properly restore them from the memory card.
+enum DisplaysEnabledFlagOrder
+{
+    DISPLAYS_ENABLED_FLAG_ORDER_ONSCREEN_TIMER = 0,
+    DISPLAYS_ENABLED_FLAG_ORDER_FRAME_COUNTER,
+    DISPLAYS_ENABLED_FLAG_ORDER_MARIO_COORDINATES,
+    DISPLAYS_ENABLED_FLAG_ORDER_MARIO_SPEED_X_Z,
+    DISPLAYS_ENABLED_FLAG_ORDER_JUMP_STORAGE,
+    DISPLAYS_ENABLED_FLAG_ORDER_BUTTON_INPUTS,
+    DISPLAYS_ENABLED_FLAG_ORDER_STICK_ANGLE,
+    DISPLAYS_ENABLED_FLAG_ORDER_STAR_POWER_VALUE,
+    DISPLAYS_ENABLED_FLAG_ORDER_DPAD_OPTIONS,
+    DISPLAYS_ENABLED_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS,
+    DISPLAYS_ENABLED_FLAG_ORDER_ART_ATTACK_HITBOXES,
+    DISPLAYS_ENABLED_FLAG_ORDER_EFFS_ACTIVE,
+    DISPLAYS_ENABLED_FLAG_ORDER_EVTS_ACTIVE,
+    DISPLAYS_ENABLED_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER,
+    DISPLAYS_ENABLED_FLAG_ORDER_HIT_CHECK_VISUALIZATION,
+
+    DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_HITS,   // Hit Check Visualization
+    DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_MISSES, // Hit Check Visualization
+
+    DISPLAYS_ENABLED_FLAG_ORDER_YOSHI_SKIP,
+    DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP,
+    DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP_MINIMAL,
+    DISPLAYS_ENABLED_FLAG_ORDER_JABBI_HIVE_SKIP,
+    DISPLAYS_ENABLED_FLAG_ORDER_BRIDGE_SKIP,
+    DISPLAYS_ENABLED_FLAG_ORDER_BLIMP_TICKET_SKIP,
+
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_0, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_1, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_2, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_3, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_4, // Memory Usage
+
+#ifdef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_5, // Memory Usage
+#endif
+
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_SMART_HEAP, // Memory Usage
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_MAP_HEAP,   // Memory Usage
+
+#ifndef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_BATTLE_MAP_HEAP, // Memory Usage
+#endif
+
+#ifdef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_ORDER_AMW_SPIN_JUMP,
+#endif
+
+    DISPLAYS_ENABLED_FLAG_ORDER_MAX_VALUE, // Don't use this directly other than for defines
+};
+
 // Manually position flags are for whether the display will be de drawn with the player's chosen position and scale or not
 enum DisplaysManuallyPositionFlag
 {
@@ -142,6 +200,11 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL,
+
+#ifdef TTYD_JP
+    DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP,
+#endif
+
     DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP,
@@ -151,6 +214,37 @@ enum DisplaysManuallyPositionFlag
 
 #define TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE
 #define DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE intCeil(TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS, sizeof(uint32_t) * 8)
+
+// The proper order that the manually position flags appear in the settings file. Needed to properly restore them from the
+// memory card.
+enum DisplaysManuallyPositionFlagOrder
+{
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ONSCREEN_TIMER = 0,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_FRAME_COUNTER,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_COORDINATES,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_SPEED_X_Z,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JUMP_STORAGE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BUTTON_INPUTS,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_STICK_ANGLE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MEMORY_USAGE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EFFS_ACTIVE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EVTS_ACTIVE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER,
+
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_YOSHI_SKIP,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP_MINIMAL,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JABBI_HIVE_SKIP,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BRIDGE_SKIP,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BLIMP_TICKET_SKIP,
+
+#ifdef TTYD_JP
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_AMW_SPIN_JUMP,
+#endif
+
+    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MAX_VALUE, // Don't use this directly other than for defines
+};
 
 // Misc flags are mainly for things that will not be saved to the settings file
 enum DisplaysMiscFlag
@@ -164,6 +258,14 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_PALACE_SKIP_SHOULD_DRAW_MINIMAL, // Palace Skip, Palace Skip Minimal
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED,       // Palace Skip, Palace Skip Minimal
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_PAUSED,        // Palace Skip, Palace Skip Minimal
+
+#ifdef TTYD_JP
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED, // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED,  // AMW - Spin Jump method
+
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED, // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_PAUSED,  // AMW - Spin Jump method
+#endif
 
     DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED, // Jabbi Hive Skip; either D-Pad Left or A was
                                                                                // pressed for opening the pause menu
@@ -214,6 +316,11 @@ enum DisplaysShouldDrawFlag
     // All of the tricks should be handled last, as they may clear other draw flags
     DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
+
+#ifdef TTYD_JP
+    DISPLAYS_SHOULD_DRAW_FLAG_AMW_SPIN_JUMP,
+#endif
+
     DISPLAYS_SHOULD_DRAW_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_BRIDGE_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_BLIMP_TICKET_SKIP,
@@ -235,9 +342,14 @@ enum DisplaysWithButtonCombo
     DISPLAYS_BUTTON_COMBO_YOSHI_SKIP,
     DISPLAYS_BUTTON_COMBO_PALACE_SKIP,
     DISPLAYS_BUTTON_COMBO_PALACE_SKIP_MINIMAL,
+
     DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP,
     DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP,
     DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP,
+
+#ifdef TTYD_JP
+    DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP,
+#endif
 
     DISPLAYS_BUTTON_COMBO_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -601,6 +713,38 @@ class PalaceSkipDisplay
     uint16_t counter;
 };
 
+#ifdef TTYD_JP
+class AMWSpinJumpDisplay
+{
+   public:
+    AMWSpinJumpDisplay() {}
+    ~AMWSpinJumpDisplay() {}
+
+    uint32_t getPauseTimer() const { return this->pauseTimer; }
+    void setPauseTimer(uint32_t time) { this->pauseTimer = static_cast<uint16_t>(time); }
+    void resetPauseTimer() { this->pauseTimer = 0; }
+
+    uint32_t getSpinJumpTimer() const { return this->spinJumpTimer; }
+    void setSpinJumpTimer(uint32_t time) { this->spinJumpTimer = static_cast<uint16_t>(time); }
+    void resetSpinJumpTimer() { this->spinJumpTimer = 0; }
+
+    uint32_t getCounter() const { return this->counter; }
+    void setCounter(uint32_t count) { this->counter = static_cast<uint16_t>(count); }
+    void resetCounter() { this->counter = 0; }
+
+    void resetTimers()
+    {
+        this->resetPauseTimer();
+        this->resetSpinJumpTimer();
+    }
+
+   private:
+    uint16_t pauseTimer;
+    uint16_t spinJumpTimer;
+    uint16_t counter;
+};
+#endif
+
 class JabbiHiveSkipDisplay
 {
    public:
@@ -814,6 +958,11 @@ class Displays
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
     YoshiSkipDisplay *getYoshiSkipDisplayPtr() { return &this->yoshiSkip; }
     PalaceSkipDisplay *getPalaceSkipDisplayPtr() { return &this->palaceSkip; }
+
+#ifdef TTYD_JP
+    AMWSpinJumpDisplay *getAMWSpinJumpDisplay() { return &this->amwSpinJumpDisplay; }
+#endif
+
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
     BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
@@ -844,6 +993,11 @@ class Displays
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
+
+#ifdef TTYD_JP
+    AMWSpinJumpDisplay amwSpinJumpDisplay;
+#endif
+
     JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
     BlimpTicketSkipDisplay blimpTicketSkip;
@@ -867,5 +1021,8 @@ uint32_t pauseArtAttackTimer();
 HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index);
 void runDisplayFuncsEveryFrame();
+
+uint32_t convertDisplaysEnabledFlagOrder(uint32_t flagOrder);
+uint32_t convertDisplaysManuallyPositionFlagOrder(uint32_t flagOrder);
 
 #endif

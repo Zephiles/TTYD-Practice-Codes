@@ -233,13 +233,15 @@ class CheatsSettingsData
 
         for (uint32_t i = 0; i < maxCheats; i++)
         {
-            if (_flagIsSet(enabledFlagsPtr, i, maxCheats))
+            const uint32_t flag = convertCheatsEnabledFlagOrder(i);
+
+            if (_flagIsSet(enabledFlagsPtr, flag, maxCheats))
             {
-                cheatsPtr->setEnabledFlag(i);
+                cheatsPtr->setEnabledFlag(flag);
             }
             else
             {
-                cheatsPtr->clearEnabledFlag(i);
+                cheatsPtr->clearEnabledFlag(flag);
             }
         }
 
@@ -365,13 +367,15 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxDisplays; i++)
         {
-            if (_flagIsSet(enabledFlagsPtr, i, maxDisplays))
+            const uint32_t flag = convertDisplaysEnabledFlagOrder(i);
+
+            if (_flagIsSet(enabledFlagsPtr, flag, maxDisplays))
             {
-                displaysPtr->setEnabledFlag(i);
+                displaysPtr->setEnabledFlag(flag);
             }
             else
             {
-                displaysPtr->clearEnabledFlag(i);
+                displaysPtr->clearEnabledFlag(flag);
             }
         }
 
@@ -420,13 +424,15 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxManuallyPositionEntries; i++)
         {
-            if ((manuallyPositionFlagsPtr[i / bitsPerWord] >> (i % bitsPerWord)) & 1U)
+            const uint32_t flag = convertDisplaysManuallyPositionFlagOrder(i);
+
+            if (_flagIsSet(manuallyPositionFlagsPtr, flag, maxManuallyPositionEntries))
             {
-                displaysPtr->setManuallyPositionFlag(i);
+                displaysPtr->setManuallyPositionFlag(flag);
             }
             else
             {
-                displaysPtr->clearManuallyPositionFlag(i);
+                displaysPtr->clearManuallyPositionFlag(flag);
             }
         }
 
@@ -1229,7 +1235,7 @@ static_assert(sizeof(MiscSettingsData) == 0x8);
 static_assert(sizeof(CheatsSettingsHeader) == 0x8);
 static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
-static_assert(sizeof(DisplaysSettingsData) == 0x100);
+static_assert(sizeof(DisplaysSettingsData) == 0x110);
 static_assert(sizeof(MemoryWatchesSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryWatchesSettingsData) == 0x24); // Excludes addressOffsets
 static_assert(sizeof(MemoryEditorSettingsHeader) == 0x8);
