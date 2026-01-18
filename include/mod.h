@@ -6,55 +6,11 @@
 
 #include <cstdint>
 
-__attribute__((always_inline)) inline bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
-{
-    // Make sure the flag is valid
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    return (flagsPtr[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
-}
-
-__attribute__((always_inline)) inline void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
-{
-    // Make sure the flag is valid
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    flagsPtr[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
-}
-
-__attribute__((always_inline)) inline void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
-{
-    // Make sure the flag is valid
-    if (flag >= maxFlags)
-    {
-        return;
-    }
-
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    flagsPtr[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
-}
-
-__attribute__((always_inline)) inline bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
-{
-    // Make sure the flag is valid
-    if (flag >= maxFlags)
-    {
-        return false;
-    }
-
-    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
-    flagsPtr[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
-
-    return _flagIsSet(flagsPtr, flag, maxFlags);
-}
+// Need to declare these here, since they are defined at the end of the file but are needed beforehand
+bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
+bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 
 #define VERSION_STRING "v4.0.1-dev9"
 
@@ -277,5 +233,55 @@ extern Mod *gMod;
 extern const char *gHelpTextButtonCombo;
 extern const char *gHelpTextAConfirmBCancel;
 extern const char *gTimeStringFormat;
+
+__attribute__((always_inline)) inline bool _flagIsSet(const uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return false;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    return (flagsPtr[flag / bitsPerWord] >> (flag % bitsPerWord)) & 1U;
+}
+
+__attribute__((always_inline)) inline void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] |= (1UL << (flag % bitsPerWord));
+}
+
+__attribute__((always_inline)) inline void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] &= ~(1UL << (flag % bitsPerWord));
+}
+
+__attribute__((always_inline)) inline bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags)
+{
+    // Make sure the flag is valid
+    if (flag >= maxFlags)
+    {
+        return false;
+    }
+
+    constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
+    flagsPtr[flag / bitsPerWord] ^= (1UL << (flag % bitsPerWord));
+
+    return _flagIsSet(flagsPtr, flag, maxFlags);
+}
 
 #endif

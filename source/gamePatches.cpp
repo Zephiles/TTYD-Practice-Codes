@@ -545,13 +545,14 @@ void psndSFXOff_Work(int32_t flags)
     }
 
     // Set the flag to indicate that the glitch is being performed
-    gMod->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    Mod *modPtr = gMod;
+    modPtr->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
 
     // Call the original function
     g_psndSFXOff_trampoline(flags);
 
     // Clear the flag now that the glitch has been performed
-    gMod->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    modPtr->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
 }
 
 void applyGameFixes()
