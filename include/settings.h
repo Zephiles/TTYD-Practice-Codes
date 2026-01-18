@@ -233,15 +233,13 @@ class CheatsSettingsData
 
         for (uint32_t i = 0; i < maxCheats; i++)
         {
-            const uint32_t flag = convertCheatsEnabledFlagOrder(i);
-
-            if (_flagIsSet(enabledFlagsPtr, flag, maxCheats))
+            if (_flagIsSet(enabledFlagsPtr, i, maxCheats))
             {
-                cheatsPtr->setEnabledFlag(flag);
+                cheatsPtr->setEnabledFlag(i);
             }
             else
             {
-                cheatsPtr->clearEnabledFlag(flag);
+                cheatsPtr->clearEnabledFlag(i);
             }
         }
 
@@ -367,15 +365,13 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxDisplays; i++)
         {
-            const uint32_t flag = convertDisplaysEnabledFlagOrder(i);
-
-            if (_flagIsSet(enabledFlagsPtr, flag, maxDisplays))
+            if (_flagIsSet(enabledFlagsPtr, i, maxDisplays))
             {
-                displaysPtr->setEnabledFlag(flag);
+                displaysPtr->setEnabledFlag(i);
             }
             else
             {
-                displaysPtr->clearEnabledFlag(flag);
+                displaysPtr->clearEnabledFlag(i);
             }
         }
 
@@ -424,15 +420,13 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxManuallyPositionEntries; i++)
         {
-            const uint32_t flag = convertDisplaysManuallyPositionFlagOrder(i);
-
-            if (_flagIsSet(manuallyPositionFlagsPtr, flag, maxManuallyPositionEntries))
+            if (_flagIsSet(manuallyPositionFlagsPtr, i, maxManuallyPositionEntries))
             {
-                displaysPtr->setManuallyPositionFlag(flag);
+                displaysPtr->setManuallyPositionFlag(i);
             }
             else
             {
-                displaysPtr->clearManuallyPositionFlag(flag);
+                displaysPtr->clearManuallyPositionFlag(i);
             }
         }
 

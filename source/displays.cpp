@@ -100,23 +100,25 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
 
 #ifdef TTYD_JP
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP:
 #endif
-
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
         {
             // Disable all of the trick display flags
-            for (uint32_t i = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP;
-                 i <= DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP;
-                 i++)
-            {
-                this->clearEnabledFlag(i);
-            }
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
+#ifdef TTYD_JP
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
+#endif
             // Enable the current trick display flag
             this->setEnabledFlag(enabledFlag);
         }
@@ -427,6 +429,13 @@ Displays::Displays()
     // Palace Skip (Minimal)
     manuallyPositionPtr =
         &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL];
+
+    manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
+    manuallyPositionPtr->setPosY(posY);
+    manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+
+    // AMW - Spin Jump
+    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP];
 
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
@@ -3862,249 +3871,5 @@ void runDisplayFuncsEveryFrame()
 
         // Run the main drawing function that handles calling the individual drawing functions
         drawOnDebugLayer(runDisplayDrawFuncs, DRAW_ORDER_DISPLAYS);
-    }
-}
-
-uint32_t convertDisplaysEnabledFlagOrder(uint32_t flagOrder)
-{
-    switch (flagOrder)
-    {
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_ONSCREEN_TIMER:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ONSCREEN_TIMER;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_FRAME_COUNTER:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_FRAME_COUNTER;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MARIO_COORDINATES:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MARIO_SPEED_X_Z:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_SPEED_X_Z;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_JUMP_STORAGE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JUMP_STORAGE;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_BUTTON_INPUTS:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BUTTON_INPUTS;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_STICK_ANGLE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_STICK_ANGLE;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_STAR_POWER_VALUE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_STAR_POWER_VALUE;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_DPAD_OPTIONS:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_DPAD_OPTIONS;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_GUARD_SUPERGUARD_TIMINGS;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_ART_ATTACK_HITBOXES:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ART_ATTACK_HITBOXES;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_EFFS_ACTIVE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EFFS_ACTIVE;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_EVTS_ACTIVE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_HIT_CHECK_VISUALIZATION:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_HITS:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_MISSES:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_YOSHI_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP_MINIMAL:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_JABBI_HIVE_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_BRIDGE_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_BLIMP_TICKET_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_0:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_1:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_1;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_2:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_2;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_3:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_3;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_4:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_4;
-        }
-
-#ifdef TTYD_JP
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_5:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5;
-        }
-#endif
-
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_SMART_HEAP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP;
-        }
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_MAP_HEAP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP;
-        }
-
-#ifndef TTYD_JP
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_BATTLE_MAP_HEAP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP;
-        }
-#endif
-
-#ifdef TTYD_JP
-        case DisplaysEnabledFlagOrder::DISPLAYS_ENABLED_FLAG_ORDER_AMW_SPIN_JUMP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP;
-        }
-#endif
-        default:
-        {
-            return static_cast<uint32_t>(-1);
-        }
-    }
-}
-
-uint32_t convertDisplaysManuallyPositionFlagOrder(uint32_t flagOrder)
-{
-    switch (flagOrder)
-    {
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ONSCREEN_TIMER:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ONSCREEN_TIMER;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_FRAME_COUNTER:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_FRAME_COUNTER;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_COORDINATES:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MARIO_COORDINATES;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_SPEED_X_Z:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MARIO_SPEED_X_Z;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JUMP_STORAGE:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_JUMP_STORAGE;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BUTTON_INPUTS:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BUTTON_INPUTS;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_STICK_ANGLE:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_STICK_ANGLE;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_GUARD_SUPERGUARD_TIMINGS;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MEMORY_USAGE:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EFFS_ACTIVE:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EFFS_ACTIVE;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EVTS_ACTIVE:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVTS_ACTIVE;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_YOSHI_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP_MINIMAL:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JABBI_HIVE_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BRIDGE_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP;
-        }
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BLIMP_TICKET_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP;
-        }
-
-#ifdef TTYD_JP
-        case DisplaysManuallyPositionFlagOrder::DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_AMW_SPIN_JUMP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP;
-        }
-#endif
-
-        default:
-        {
-            return static_cast<uint32_t>(-1);
-        }
     }
 }

@@ -64,26 +64,21 @@ enum DisplaysEnabledFlag
 
     // All of the flags for the Hit Check Visualization display need to be next to each other in order to work correctly
     // The code assumes that DRAW_HITS comes first
+    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS,   // Hit Check Visualization
     DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES, // Hit Check Visualization
 
-    // All of the flags for the trick displays need to be next to each other in order to work correctly
-    // The code assumes that YOSHI_SKIP is first
-    // The code assumes that BLIMP_TICKET_SKIP is last
+    // TODO: Confirm that the trick displays still work correctly when the flags are no longer directly next to each other
     DISPLAYS_ENABLED_FLAG_YOSHI_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL,
-
-#ifdef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP,
-#endif
-
     DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP,
     DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP,
 
     // All of the flags for the Memory Usage display need to be next to each other in order to work correctly
     // The code assumes that HEAP_0 is first
+    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0, // Memory Usage
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_1, // Memory Usage
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_2, // Memory Usage
@@ -99,6 +94,10 @@ enum DisplaysEnabledFlag
 
 #ifndef TTYD_JP
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP, // Memory Usage
+#endif
+
+#ifdef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP,
 #endif
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
@@ -127,59 +126,6 @@ enum DisplaysEnabledFlag
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)
 
-// The proper order that the enabled flags appear in the settings file. Needed to properly restore them from the memory card.
-enum DisplaysEnabledFlagOrder
-{
-    DISPLAYS_ENABLED_FLAG_ORDER_ONSCREEN_TIMER = 0,
-    DISPLAYS_ENABLED_FLAG_ORDER_FRAME_COUNTER,
-    DISPLAYS_ENABLED_FLAG_ORDER_MARIO_COORDINATES,
-    DISPLAYS_ENABLED_FLAG_ORDER_MARIO_SPEED_X_Z,
-    DISPLAYS_ENABLED_FLAG_ORDER_JUMP_STORAGE,
-    DISPLAYS_ENABLED_FLAG_ORDER_BUTTON_INPUTS,
-    DISPLAYS_ENABLED_FLAG_ORDER_STICK_ANGLE,
-    DISPLAYS_ENABLED_FLAG_ORDER_STAR_POWER_VALUE,
-    DISPLAYS_ENABLED_FLAG_ORDER_DPAD_OPTIONS,
-    DISPLAYS_ENABLED_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS,
-    DISPLAYS_ENABLED_FLAG_ORDER_ART_ATTACK_HITBOXES,
-    DISPLAYS_ENABLED_FLAG_ORDER_EFFS_ACTIVE,
-    DISPLAYS_ENABLED_FLAG_ORDER_EVTS_ACTIVE,
-    DISPLAYS_ENABLED_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER,
-    DISPLAYS_ENABLED_FLAG_ORDER_HIT_CHECK_VISUALIZATION,
-
-    DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_HITS,   // Hit Check Visualization
-    DISPLAYS_ENABLED_FLAG_ORDER_SHOULD_DRAW_MISSES, // Hit Check Visualization
-
-    DISPLAYS_ENABLED_FLAG_ORDER_YOSHI_SKIP,
-    DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP,
-    DISPLAYS_ENABLED_FLAG_ORDER_PALACE_SKIP_MINIMAL,
-    DISPLAYS_ENABLED_FLAG_ORDER_JABBI_HIVE_SKIP,
-    DISPLAYS_ENABLED_FLAG_ORDER_BRIDGE_SKIP,
-    DISPLAYS_ENABLED_FLAG_ORDER_BLIMP_TICKET_SKIP,
-
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_0, // Memory Usage
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_1, // Memory Usage
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_2, // Memory Usage
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_3, // Memory Usage
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_4, // Memory Usage
-
-#ifdef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_HEAP_5, // Memory Usage
-#endif
-
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_SMART_HEAP, // Memory Usage
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_MAP_HEAP,   // Memory Usage
-
-#ifndef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_ORDER_MEMORY_USAGE_BATTLE_MAP_HEAP, // Memory Usage
-#endif
-
-#ifdef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_ORDER_AMW_SPIN_JUMP,
-#endif
-
-    DISPLAYS_ENABLED_FLAG_ORDER_MAX_VALUE, // Don't use this directly other than for defines
-};
-
 // Manually position flags are for whether the display will be de drawn with the player's chosen position and scale or not
 enum DisplaysManuallyPositionFlag
 {
@@ -198,54 +144,24 @@ enum DisplaysManuallyPositionFlag
 
     // All of the flags for the trick displays need to be next to each other in order to work correctly
     // The code assumes that YOSHI_SKIP is first
+    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL,
 
-#ifdef TTYD_JP
-    DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP,
-#endif
-
     DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP,
+
+#ifdef TTYD_JP
+    DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP,
+#endif
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
 
 #define TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE
 #define DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE intCeil(TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS, sizeof(uint32_t) * 8)
-
-// The proper order that the manually position flags appear in the settings file. Needed to properly restore them from the
-// memory card.
-enum DisplaysManuallyPositionFlagOrder
-{
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ONSCREEN_TIMER = 0,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_FRAME_COUNTER,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_COORDINATES,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MARIO_SPEED_X_Z,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JUMP_STORAGE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BUTTON_INPUTS,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_STICK_ANGLE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_GUARD_SUPERGUARD_TIMINGS,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MEMORY_USAGE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EFFS_ACTIVE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_EVTS_ACTIVE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_ENEMY_ENCOUNTER_NOTIFIER,
-
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_YOSHI_SKIP,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_PALACE_SKIP_MINIMAL,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_JABBI_HIVE_SKIP,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BRIDGE_SKIP,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_BLIMP_TICKET_SKIP,
-
-#ifdef TTYD_JP
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_AMW_SPIN_JUMP,
-#endif
-
-    DISPLAYS_MANUALLY_POSITION_FLAG_ORDER_MAX_VALUE, // Don't use this directly other than for defines
-};
 
 // Misc flags are mainly for things that will not be saved to the settings file
 enum DisplaysMiscFlag
@@ -1125,8 +1041,5 @@ uint32_t pauseArtAttackTimer();
 HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index);
 void runDisplayFuncsEveryFrame();
-
-uint32_t convertDisplaysEnabledFlagOrder(uint32_t flagOrder);
-uint32_t convertDisplaysManuallyPositionFlagOrder(uint32_t flagOrder);
 
 #endif
