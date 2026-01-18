@@ -131,21 +131,14 @@ static void draw(CameraId cameraId, void *user)
     float posY = tempPosY;
 
     // Draw the on/off text for each flag
+    const uint8_t *memoryEditorSpecialFlagsArrayPtr = memoryEditorSpecialFlagsArray;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     const char *onOffText;
     uint32_t color;
 
-    constexpr uint32_t loopCount = MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_ENABLE_HORIZONTAL_LINES -
-                                   MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE + 1;
-
-    for (uint32_t i = 0; i < loopCount; i++)
+    for (uint32_t i = 0; i < MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS; i++)
     {
-        getOnOffTextAndColor(
-            memoryEditorPtr->enabledFlagIsSet(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE + i),
-            &onOffText,
-            &color,
-            0xFF);
-
+        getOnOffTextAndColor(memoryEditorPtr->enabledFlagIsSet(memoryEditorSpecialFlagsArrayPtr[i]), &onOffText, &color, 0xFF);
         drawText(onOffText, posX, posY, scale, color);
         posY -= lineDecrement;
     }
@@ -153,10 +146,16 @@ static void draw(CameraId cameraId, void *user)
 
 static void selectedOptionToggleFlag(Menu *menuPtr)
 {
+    // Make sure the current index does not exceed the max index of `memoryEditorSpecialFlagsArray`
+    constexpr uint32_t memoryEditorSpecialFlagsArrayMaxIndex = sizeof(memoryEditorSpecialFlagsArray) - 1;
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
 
-    const bool flagSet =
-        gMemoryEditor->toggleEnabledFlag(MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE + currentIndex);
+    if (currentIndex > memoryEditorSpecialFlagsArrayMaxIndex)
+    {
+        return;
+    }
+
+    const bool flagSet = gMemoryEditor->toggleEnabledFlag(memoryEditorSpecialFlagsArray[currentIndex]);
 
     // Certain things must be done if the memory editor is currently open
     if (gMenu)

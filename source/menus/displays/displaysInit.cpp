@@ -227,6 +227,8 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_MEMORY_USAGE:
         {
+            // This is used for all of the memory usage displays, specifically when manually positioning them, since they all
+            // are positioned one on top of the other
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_EFFS_ACTIVE:

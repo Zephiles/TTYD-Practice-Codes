@@ -62,13 +62,9 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER,
     DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION,
 
-    // All of the flags for the Hit Check Visualization display need to be next to each other in order to work correctly
-    // The code assumes that DRAW_HITS comes first
-    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS,   // Hit Check Visualization
     DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES, // Hit Check Visualization
 
-    // TODO: Confirm that the trick displays still work correctly when the flags are no longer directly next to each other
     DISPLAYS_ENABLED_FLAG_YOSHI_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP,
     DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL,
@@ -76,9 +72,6 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP,
     DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP,
 
-    // All of the flags for the Memory Usage display need to be next to each other in order to work correctly
-    // The code assumes that HEAP_0 is first
-    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0, // Memory Usage
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_1, // Memory Usage
     DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_2, // Memory Usage
@@ -107,24 +100,20 @@ enum DisplaysEnabledFlag
 #define DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE intCeil(TOTAL_DISPLAYS_ENABLED_FLAGS, sizeof(uint32_t) * 8)
 
 #ifdef TTYD_JP
-#define DISPLAYS_TOTAL_MAIN_HEAPS                                     \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5 - \
-     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + 1)
-
-#define DISPLAYS_TOTAL_EXTRA_HEAPS                                      \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP - \
-     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + 1)
+#define DISPLAYS_TOTAL_MAIN_HEAPS 6  // HEAP_0 through HEAP_5
+#define DISPLAYS_TOTAL_EXTRA_HEAPS 2 // SMART_HEAP and MAP_HEAP
 #else
-#define DISPLAYS_TOTAL_MAIN_HEAPS                                     \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_4 - \
-     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + 1)
-
-#define DISPLAYS_TOTAL_EXTRA_HEAPS                                             \
-    (DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP - \
-     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + 1)
+#define DISPLAYS_TOTAL_MAIN_HEAPS 5  // HEAP_0 through HEAP_4
+#define DISPLAYS_TOTAL_EXTRA_HEAPS 3 // SMART_HEAP, MAP_HEAP, BATTLE_MAP_HEAP
 #endif
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)
+
+// Make sure `memoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
+extern const uint8_t memoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS];
+
+// Intended to be used for accessing `memoryUsageFlagsArray`
+#define MEMORY_USAGE_FLAGS_ARRAY_SMART_HEAP_INDEX DISPLAYS_TOTAL_MAIN_HEAPS
 
 // Manually position flags are for whether the display will be de drawn with the player's chosen position and scale or not
 enum DisplaysManuallyPositionFlag
@@ -142,13 +131,9 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_EVTS_ACTIVE,
     DISPLAYS_MANUALLY_POSITION_FLAG_ENEMY_ENCOUNTER_NOTIFIER,
 
-    // All of the flags for the trick displays need to be next to each other in order to work correctly
-    // The code assumes that YOSHI_SKIP is first
-    // TODO: Adjust code to no longer require these to be next to each other
     DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL,
-
     DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP,

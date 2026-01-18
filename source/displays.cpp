@@ -47,6 +47,26 @@
 
 Displays *gDisplays = nullptr;
 
+// Make sure `memoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
+const uint8_t memoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0,
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_1,
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_2,
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_3,
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_4,
+
+#ifdef TTYD_JP
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_5,
+#endif
+
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP,
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_MAP_HEAP,
+
+#ifndef TTYD_JP
+    DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP,
+#endif
+};
+
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
 {
     // Make sure displayWithCombo is valid
@@ -121,19 +141,22 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
 #endif
             // Enable the current trick display flag
             this->setEnabledFlag(enabledFlag);
+            break;
         }
         default:
         {
-            break;
+            // Invalid flag, so do nothing
+            return;
         }
     }
 }
 
 bool Displays::anyHeapDisplayIsEnabled()
 {
+    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
     for (uint32_t i = 0; i < DISPLAYS_TOTAL_HEAPS; i++)
     {
-        if (this->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i))
+        if (this->enabledFlagIsSet(memoryUsageFlagsArrayPtr[i]))
         {
             return true;
         }
@@ -253,14 +276,13 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
 #ifdef TTYD_JP
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
 #endif
-
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
     // Set default displays misc flags enabled
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED);
@@ -1396,6 +1418,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
     // Draw the text for the main heaps
     Displays *displaysPtr = gDisplays;
     MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
+    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
     const char *text = memoryUsagePtr->getMemoryUsageBufferPtr();
     bool drawnText = false;
 
@@ -1410,7 +1433,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
         for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, text += (MEMORY_USAGE_BUFFER_SINGLE_LINE * 2))
         {
             // Only draw if the current option is enabled
-            if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i))
+            if (displaysPtr->enabledFlagIsSet(memoryUsageFlagsArrayPtr[i]))
             {
                 drawnText = true;
 
@@ -1434,7 +1457,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
         // Draw the text for the smart heap and map heap(s)
         for (uint32_t i = 0; i < DISPLAYS_TOTAL_EXTRA_HEAPS; i++, text += MEMORY_USAGE_BUFFER_SINGLE_LINE)
         {
-            if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_SMART_HEAP + i))
+            if (displaysPtr->enabledFlagIsSet(memoryUsageFlagsArrayPtr[MEMORY_USAGE_FLAGS_ARRAY_SMART_HEAP_INDEX + i]))
             {
                 drawnText = true;
 

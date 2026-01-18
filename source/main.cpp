@@ -200,13 +200,15 @@ uint32_t initAfterHeapsCreated()
 __attribute__((noinline)) static void checkHeaps()
 {
     // Check the standard heaps
-    uint32_t enabledFlag = DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0;
+    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
+    uint32_t enabledFlag = memoryUsageFlagsArrayPtr[0];
     const HeapInfo *heapArrayPtr = HeapArray;
     Displays *displaysPtr = gDisplays;
     uint32_t memoryUsageCounter = 0;
     const void *addressWithError;
+    uint32_t i = 0;
 
-    for (int32_t i = 0; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag++)
+    for (; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag = memoryUsageFlagsArrayPtr[i])
     {
         const HeapInfo *heapPtr = &heapArrayPtr[i];
 
@@ -237,19 +239,22 @@ __attribute__((noinline)) static void checkHeaps()
     // Don't incrememt MemoryUsageCounter since free entries are not drawn
     tempChunk = smartWorkPtr->pFirstFree;
     addressWithError = checkIndividualSmartHeap(tempChunk);
-    displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, enabledFlag++, false);
+    displaysPtr->handleSmartHeapChunkResults(addressWithError, tempChunk, memoryUsageCounter, enabledFlag, false);
 
     // Check the map heap
     const MapAllocEntry *mapHeapPtr = mapalloc_base_ptr;
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
 
 #ifdef TTYD_JP
-    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag++);
+    enabledFlag = memoryUsageFlagsArrayPtr[++i];
+    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag);
 #else
-    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag++, false);
+    enabledFlag = memoryUsageFlagsArrayPtr[++i];
+    displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, memoryUsageCounter, enabledFlag, false);
 
     // Check the battle map heap
     mapHeapPtr = R_battlemapalloc_base_ptr;
+    enabledFlag = memoryUsageFlagsArrayPtr[i];
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
     displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, enabledFlag, true);
 #endif

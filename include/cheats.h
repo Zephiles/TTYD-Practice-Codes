@@ -43,9 +43,6 @@ enum CheatsEnabledFlag
 
     CHEATS_ENABLED_FLAG_MARIO_COORDINATES_MODIFY_AS_HEX, // Modify Mario's Coordinates
 
-    // All of the flags for the Disable Certain Sounds cheat need to be next to each other in order to work correctly
-    // The code assumes that PAUSE_MENU_Z_MENU is first
-    // TODO: Adjust code to no longer require these to be next to each other
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU,  // Disable Certain Sounds
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC,   // Disable Certain Sounds
     CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS, // Disable Certain Sounds

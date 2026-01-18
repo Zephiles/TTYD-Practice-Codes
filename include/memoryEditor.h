@@ -37,8 +37,6 @@ enum MemoryEditorOptions
 enum MemoryEditorEnabledFlag
 {
     MEMORY_EDITOR_ENABLED_FLAG_MEMORY_EDITOR_ENABLED = 0,
-
-    // The code assumes that the next five flags are all in this exact order
     MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE,
     MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL,
     MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU,
@@ -50,6 +48,12 @@ enum MemoryEditorEnabledFlag
 
 #define TOTAL_MEMORY_EDITOR_ENABLED_FLAGS MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_MAX_VALUE
 #define MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE intCeil(TOTAL_MEMORY_EDITOR_ENABLED_FLAGS, sizeof(uint32_t) * 8)
+
+// Subtract one to exclude EDITOR_ENABLED
+#define MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS (TOTAL_MEMORY_EDITOR_ENABLED_FLAGS - 1)
+
+// Make sure `memoryEditorSpecialFlagsArray` has the same amount of entries as `MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS`
+extern const uint8_t memoryEditorSpecialFlagsArray[MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS];
 
 class MemoryEditor
 {

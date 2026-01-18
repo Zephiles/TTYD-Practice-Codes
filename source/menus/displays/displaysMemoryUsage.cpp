@@ -82,19 +82,16 @@ static void drawMemoryUsageInfo()
     float posY = tempPosY;
 
     // Draw the on/off text for each flag
+    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
-    const uint32_t totalOptions = DISPLAYS_TOTAL_HEAPS;
+    constexpr uint32_t totalOptions = DISPLAYS_TOTAL_HEAPS;
     const Displays *displaysPtr = gDisplays;
     const char *string;
     uint32_t color;
 
     for (uint32_t i = 0; i < totalOptions; i++)
     {
-        getOnOffTextAndColor(displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0 + i),
-                             &string,
-                             &color,
-                             0xFF);
-
+        getOnOffTextAndColor(displaysPtr->enabledFlagIsSet(memoryUsageFlagsArrayPtr[i]), &string, &color, 0xFF);
         drawText(string, posX, posY, scale, color);
         posY -= lineDecrement;
     }
@@ -111,9 +108,16 @@ static void draw(CameraId cameraId, void *user)
 
 static void selectedOptionToggleFlag(Menu *menuPtr)
 {
-    const bool ret = displaysMenuToggleEnabledFlag(menuPtr->getCurrentIndex() +
-                                                   DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0);
+    // Make sure the current index does not exceed the max index of `memoryUsageFlagsArray`
+    constexpr uint32_t memoryUsageFlagsArrayMaxIndex = sizeof(memoryUsageFlagsArray) - 1;
+    const uint32_t currentIndex = menuPtr->getCurrentIndex();
 
+    if (currentIndex > memoryUsageFlagsArrayMaxIndex)
+    {
+        return;
+    }
+
+    const bool ret = displaysMenuToggleEnabledFlag(memoryUsageFlagsArray[currentIndex]);
     if (!ret)
     {
         // If none of the flags are enabled, then free the memory used by the memory usage buffer

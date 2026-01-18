@@ -43,7 +43,7 @@ void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr)
 static void drawDisableCertainSoundsInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
-    const uint32_t totalOptions = gMenu->getTotalOptions();
+    uint32_t totalOptions = gMenu->getTotalOptions();
     constexpr float scale = MENU_SCALE;
 
     float tempPosX;
@@ -54,11 +54,21 @@ static void drawDisableCertainSoundsInfo()
     const float posX = tempPosX;
     float posY = tempPosY;
 
+    static const uint8_t disableSoundsFlagsArray[] = {CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU,
+                                                      CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_BACKGROUND_MUSIC,
+                                                      CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_ENVIRONMENT_SOUNDS};
+
+    // Ensure that the loop does not read past the size of `disableSoundsFlagsArray`
+    constexpr uint32_t disableSoundsFlagsArraySize = sizeof(disableSoundsFlagsArray);
+    if (totalOptions > disableSoundsFlagsArraySize)
+    {
+        totalOptions = disableSoundsFlagsArraySize;
+    }
+
     // Draw each option with its flag
     const MenuOption *optionsPtr = gOptions;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     Cheats *cheatsPtr = gCheats;
-
     const char *string;
     uint32_t color;
 
@@ -67,11 +77,7 @@ static void drawDisableCertainSoundsInfo()
         drawText(optionsPtr[i].name, posX, posY, scale, getColorWhite(0xFF));
         posY -= lineDecrement;
 
-        getOnOffTextAndColor(
-            cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_DISABLE_SOUNDS_PAUSE_MENU_Z_MENU + i),
-            &string,
-            &color,
-            0xFF);
+        getOnOffTextAndColor(cheatsPtr->enabledFlagIsSet(disableSoundsFlagsArray[i]), &string, &color, 0xFF);
 
         drawText(string, posX, posY, scale, color);
         posY -= (lineDecrement * 2.f);
