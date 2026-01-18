@@ -2690,9 +2690,10 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_PAUSED);
     }
 
-    if (seqGetNextSeq() == SeqIndex::kBattle) // Battle is initialized
+    // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
+    if ((marioCurrentMotion == MarioMotion::kJumpNPC) || (seqGetNextSeq() == SeqIndex::kBattle))
     {
-        // Stop the timers when a battle has been initialized
+        // Stop the timers when Mario lands a jump/ or spin jump on an enemy, or when a battle has been initialized
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
     }
