@@ -2649,13 +2649,26 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
         posZColor = getColorWhite(0xFF);
     }
 
+    // Get the color for the Spin Jump timer
+    uint32_t spinJumpTimerColor;
+
+    if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK))
+    {
+        spinJumpTimerColor = getColorGreen(0xFF);
+    }
+    else
+    {
+        spinJumpTimerColor = getColorWhite(0xFF);
+    }
+
     // Get the text
-    char buf[64];
+    char buf[96];
 
     snprintf(buf,
              sizeof(buf),
-             "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32,
+             "PT: %" PRIu32 "\nSJT: <col %" PRIx32 ">%" PRIu32 "\n<col ffffffff>Pos Z: <col %" PRIx32 ">0x%08" PRIX32,
              pauseTimer,
+             spinJumpTimerColor,
              spinJumpTimer,
              posZColor,
              marioPosZ);
@@ -2716,10 +2729,12 @@ static void handleAMWSpinJump(Displays *displaysPtr)
     }
     else if (marioCurrentMotion == MarioMotion::kJump)
     {
-        // Just started another jump, so reset and stop the Spin Jump timer
+        // Just started another jump, so reset and stop the Spin Jump timer, as well as clear the flag for successfully
+        // performing the trick
         amwSpinJumpPtr->resetSpinJumpTimer();
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
     }
 
     // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
@@ -2743,6 +2758,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
+            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
             amwSpinJumpPtr->resetTimers();
             amwSpinJumpPtr->resetCounter();
         }

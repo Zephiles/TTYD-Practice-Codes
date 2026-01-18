@@ -544,6 +544,15 @@ void psndSFXOff_Work(int32_t flags)
         return g_psndSFXOff_trampoline(flags);
     }
 
+#ifdef TTYD_JP
+    Displays *displaysPtr = gDisplays;
+    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+    {
+        // Successfully performed the trick, so set the misc flag for it
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
+    }
+#endif
+
     // Set the flag to indicate that the glitch is being performed
     Mod *modPtr = gMod;
     modPtr->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
