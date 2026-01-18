@@ -434,14 +434,6 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
-#ifdef TTYD_JP
-    // AMW - Spin Jump
-    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP];
-    manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
-    manuallyPositionPtr->setPosY(posY);
-    manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
-#endif
-
     // Jabbi Hive Skip
     manuallyPositionPtr =
         &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP];
@@ -463,6 +455,14 @@ Displays::Displays()
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+
+#ifdef TTYD_JP
+    // AMW - Spin Jump
+    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP];
+    manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
+    manuallyPositionPtr->setPosY(posY);
+    manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+#endif
 
     // Initialize the default Y positions and error text draw order
     this->defaultPosYBottomLeft = DISPLAYS_DEFAULT_POS_Y_BOTTOM;
