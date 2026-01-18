@@ -2655,39 +2655,38 @@ static void handleAMWSpinJump(Displays *displaysPtr)
 
     if ((marioStGetSystemLevel() & 15) == 15)
     {
-        // Stop both timers upon pausing
+        // Stop the pause timer upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED);
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
     }
     else if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED) &&
              systemLevelIsZero())
     {
-        // Reset the pause timer and Start/Unpause both timers when unpausing
+        // Reset and start the pause timer when unpausing
         amwSpinJumpPtr->resetPauseTimer();
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED);
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
     }
 
     const MarioMotion marioCurrentMotion = marioGetPtr()->currentMotionId;
 
-    if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_PAUSED))
+    // Check if the Spin Jump timer should be started
+    if (marioCurrentMotion == MarioMotion::kHip)
     {
-        // Check if the Spin Jump timer should be started
-        if (marioCurrentMotion == MarioMotion::kHip)
+        if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER))
         {
             // Reset and start the Spin Jump timer
             amwSpinJumpPtr->resetSpinJumpTimer();
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_PAUSED);
+            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
         }
     }
     else if (marioCurrentMotion == MarioMotion::kJump)
     {
-        // Just started another jump, so pause the Spin Jump timer
+        // Just started another jump, so reset and stop the Spin Jump timer
+        amwSpinJumpPtr->resetSpinJumpTimer();
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_PAUSED);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
     }
 
     // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
@@ -2696,6 +2695,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         // Stop the timers when Mario lands a jump/ or spin jump on an enemy, or when a battle has been initialized
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
     }
 
     if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP))
@@ -2709,6 +2709,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
             // Reset the timers when the button combo is held for 2 seconds
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
+            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
             amwSpinJumpPtr->resetTimers();
             amwSpinJumpPtr->resetCounter();
         }
