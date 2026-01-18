@@ -434,12 +434,13 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
+#ifdef TTYD_JP
     // AMW - Spin Jump
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP];
-
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+#endif
 
     // Jabbi Hive Skip
     manuallyPositionPtr =
