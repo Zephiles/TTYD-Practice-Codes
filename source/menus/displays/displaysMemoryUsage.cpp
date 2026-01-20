@@ -82,7 +82,7 @@ static void drawMemoryUsageInfo()
     float posY = tempPosY;
 
     // Draw the on/off text for each flag
-    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
+    const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     constexpr uint32_t totalOptions = DISPLAYS_TOTAL_HEAPS;
     const Displays *displaysPtr = gDisplays;
@@ -108,8 +108,8 @@ static void draw(CameraId cameraId, void *user)
 
 static void selectedOptionToggleFlag(Menu *menuPtr)
 {
-    // Make sure the current index does not exceed the max index of `memoryUsageFlagsArray`
-    constexpr uint32_t memoryUsageFlagsArrayMaxIndex = sizeof(memoryUsageFlagsArray) - 1;
+    // Make sure the current index does not exceed the max index of `gMemoryUsageFlagsArray`
+    constexpr uint32_t memoryUsageFlagsArrayMaxIndex = sizeof(gMemoryUsageFlagsArray) - 1;
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
 
     if (currentIndex > memoryUsageFlagsArrayMaxIndex)
@@ -117,7 +117,7 @@ static void selectedOptionToggleFlag(Menu *menuPtr)
         return;
     }
 
-    const bool ret = displaysMenuToggleEnabledFlag(memoryUsageFlagsArray[currentIndex]);
+    const bool ret = displaysMenuToggleEnabledFlag(gMemoryUsageFlagsArray[currentIndex]);
     if (!ret)
     {
         // If none of the flags are enabled, then free the memory used by the memory usage buffer

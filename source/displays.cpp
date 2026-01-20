@@ -47,8 +47,8 @@
 
 Displays *gDisplays = nullptr;
 
-// Make sure `memoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
-const uint8_t memoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
+// Make sure `gMemoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
+const uint8_t gMemoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_0,
     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_1,
     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_HEAP_2,
@@ -153,7 +153,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
 
 bool Displays::anyHeapDisplayIsEnabled()
 {
-    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
+    const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     for (uint32_t i = 0; i < DISPLAYS_TOTAL_HEAPS; i++)
     {
         if (this->enabledFlagIsSet(memoryUsageFlagsArrayPtr[i]))
@@ -1418,7 +1418,7 @@ static void drawMemoryUsage(CameraId cameraId, void *user)
     // Draw the text for the main heaps
     Displays *displaysPtr = gDisplays;
     MemoryUsageDisplay *memoryUsagePtr = displaysPtr->getMemoryUsageDisplayPtr();
-    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
+    const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     const char *text = memoryUsagePtr->getMemoryUsageBufferPtr();
     bool drawnText = false;
 

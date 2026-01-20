@@ -52,8 +52,8 @@ enum MemoryEditorEnabledFlag
 // Subtract one to exclude EDITOR_ENABLED
 #define MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS (TOTAL_MEMORY_EDITOR_ENABLED_FLAGS - 1)
 
-// Make sure `memoryEditorSpecialFlagsArray` has the same amount of entries as `MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS`
-extern const uint8_t memoryEditorSpecialFlagsArray[MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS];
+// Make sure `gMemoryEditorSpecialFlagsArray` has the same amount of entries as `MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS`
+extern const uint8_t gMemoryEditorSpecialFlagsArray[MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS];
 
 class MemoryEditor
 {

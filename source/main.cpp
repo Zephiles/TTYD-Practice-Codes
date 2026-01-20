@@ -200,7 +200,7 @@ uint32_t initAfterHeapsCreated()
 __attribute__((noinline)) static void checkHeaps()
 {
     // Check the standard heaps
-    const uint8_t *memoryUsageFlagsArrayPtr = memoryUsageFlagsArray;
+    const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     uint32_t enabledFlag = memoryUsageFlagsArrayPtr[0];
     const HeapInfo *heapArrayPtr = HeapArray;
     Displays *displaysPtr = gDisplays;

@@ -109,10 +109,10 @@ enum DisplaysEnabledFlag
 
 #define DISPLAYS_TOTAL_HEAPS (DISPLAYS_TOTAL_MAIN_HEAPS + DISPLAYS_TOTAL_EXTRA_HEAPS)
 
-// Make sure `memoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
-extern const uint8_t memoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS];
+// Make sure `gMemoryUsageFlagsArray` has the same amount of entries as `DISPLAYS_TOTAL_HEAPS`
+extern const uint8_t gMemoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS];
 
-// Intended to be used for accessing `memoryUsageFlagsArray`
+// Intended to be used for accessing `gMemoryUsageFlagsArray`
 #define MEMORY_USAGE_FLAGS_ARRAY_SMART_HEAP_INDEX DISPLAYS_TOTAL_MAIN_HEAPS
 
 // Manually position flags are for whether the display will be de drawn with the player's chosen position and scale or not

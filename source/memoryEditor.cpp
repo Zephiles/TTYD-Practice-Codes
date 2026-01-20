@@ -19,8 +19,8 @@
 
 MemoryEditor *gMemoryEditor = nullptr;
 
-// Make sure `memoryEditorSpecialFlagsArray` has the same amount of entries as `MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS`
-const uint8_t memoryEditorSpecialFlagsArray[MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS] = {
+// Make sure `gMemoryEditorSpecialFlagsArray` has the same amount of entries as `MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS`
+const uint8_t gMemoryEditorSpecialFlagsArray[MEMORY_EDITOR_TOTAL_SPECIAL_FLAGS] = {
     MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_CLEAR_CACHE,
     MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_SET_SYSTEM_LEVEL,
     MemoryEditorEnabledFlag::MEMORY_EDITOR_ENABLED_FLAG_DISABLE_PAUSE_MENU,
