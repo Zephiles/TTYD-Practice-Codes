@@ -36,6 +36,7 @@
 #include "ttyd/itemdrv.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_motion.h"
+#include "ttyd/seq_mapchange.h"
 #include "ttyd/statuswindow.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/battle_disp.h"
@@ -2725,7 +2726,8 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED);
     }
 
-    const MarioMotion marioCurrentMotion = marioGetPtr()->currentMotionId;
+    const Player *marioPtr = marioGetPtr();
+    const MarioMotion marioCurrentMotion = marioPtr->currentMotionId;
 
     // Check if the Spin Jump timer should be started
     if (marioCurrentMotion == MarioMotion::kHip)
@@ -2777,6 +2779,75 @@ static void handleAMWSpinJump(Displays *displaysPtr)
     else
     {
         amwSpinJumpPtr->resetCounter();
+    }
+
+    // If currently in the room where the trick is performed, then position the X-Naut based on if the player is at the correct
+    // Z coordinate to perform the trick. Also need to make sure they player is not currently in a battle when doing this.
+    if ((strcmp(_next_map, "mri_20") == 0) && !getBattleWorkPtr())
+    {
+        NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
+        Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
+        Vec3 *xNautPosPtr = &xNautPtr->position;
+
+        const uint32_t *marioPosRaw = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition);
+        if (marioPosRaw[2] == 0xC25A06E3)
+        {
+            // The player is at the correct Z coordinate, so make sure the X-Naut is within a certain distance from them
+
+            // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate,
+            // in which the base coordinate is 0 with it being up to 100 units forwards or backwards
+            const float xNautPosX = xNautPosPtr->x;
+
+            if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
+            {
+                // Set the X-Naut's new position and reset where it's trying to walk to
+                xNautPosPtr->x = 5.f;
+                xNautDestinationPtr->x = 5.f;
+
+                const int32_t randomPosZ = (static_cast<int32_t>(irand(20000)) / 100) - 100;
+                const float xNautNewZPos = intToFloat(randomPosZ);
+
+                xNautPosPtr->z = xNautNewZPos;
+                xNautDestinationPtr->z = xNautNewZPos;
+            }
+            else
+            {
+                // The X-Naut has been moved already, so make sure they don't wander too far away
+                bool manuallyMoved = false;
+
+                if (xNautPosX < -35.f)
+                {
+                    xNautPosPtr->x = -35.f;
+                    manuallyMoved = true;
+                }
+
+                const float xNautPosZ = xNautPosPtr->z;
+                if (xNautPosZ > 110.f)
+                {
+                    xNautPosPtr->z = 110.f;
+                    manuallyMoved = true;
+                }
+                else if (xNautPosZ < -110.f)
+                {
+                    xNautPosPtr->z = -110.f;
+                    manuallyMoved = true;
+                }
+
+                if (manuallyMoved)
+                {
+                    // Had to manually move the X-Naut, so set their destination to the current position to stop them from
+                    // walking infinitely
+                    xNautDestinationPtr->x = xNautPosPtr->x;
+                    xNautDestinationPtr->z = xNautPosPtr->z;
+                }
+            }
+        }
+        else
+        {
+            // The player is not at the correct Z coordinate, so place the X-Naut in the bottom-left corner of the room
+            xNautPosPtr->x = -295.404053f;
+            xNautPosPtr->z = 169.766129f;
+        }
     }
 }
 #endif
