@@ -155,7 +155,7 @@ void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
     enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
-static void drawGenericDisplayInfo()
+void drawGenericDisplayInfo()
 {
     // Get the text position for the top-left of the window two lines under the main text
     Menu *menuPtr = gMenu;

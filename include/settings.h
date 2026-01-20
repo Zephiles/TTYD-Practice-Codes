@@ -1231,7 +1231,7 @@ static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
 
 #ifdef TTYD_JP
-static_assert(sizeof(DisplaysSettingsData) == 0x110);
+static_assert(sizeof(DisplaysSettingsData) == 0x114);
 #else
 static_assert(sizeof(DisplaysSettingsData) == 0x100);
 #endif

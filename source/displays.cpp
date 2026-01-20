@@ -1088,14 +1088,25 @@ static void drawMarioCoordinates(float posX, float posY, float scale)
 {
     // Set up the text
     const Player *playerPtr = marioGetPtr();
-    char buf[128];
+    const Vec3 *marioPosPtrVec = &playerPtr->playerPosition;
 
-    snprintf(buf,
-             sizeof(buf),
-             "MarPos: %.2f  %.2f  %.2f",
-             playerPtr->playerPosition.x,
-             playerPtr->playerPosition.y,
-             playerPtr->playerPosition.z);
+    char buf[128];
+    constexpr uint32_t bufSize = sizeof(buf);
+
+    if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX))
+    {
+        const uint32_t *marioPosPtrRaw = reinterpret_cast<const uint32_t *>(marioPosPtrVec);
+        snprintf(buf,
+                 bufSize,
+                 "MarPos: %08" PRIX32 " %08" PRIX32 " %08" PRIX32,
+                 marioPosPtrRaw[0],
+                 marioPosPtrRaw[1],
+                 marioPosPtrRaw[2]);
+    }
+    else
+    {
+        snprintf(buf, bufSize, "MarPos: %.2f  %.2f  %.2f", marioPosPtrVec->x, marioPosPtrVec->y, marioPosPtrVec->z);
+    }
 
     // Draw the text
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));

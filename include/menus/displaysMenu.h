@@ -131,10 +131,14 @@ void displaysMenuGenericNoButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
+void drawGenericDisplayInfo();
 
 // displaysOnScreenTimer
 // The Frame Founter display is also handled by these
 void displaysMenuOnScreenTimerInit(Menu *menuPtr);
+
+// displaysMariosCoordinates
+void displaysMenuMariosCoordinatesInit(Menu *menuPtr);
 
 // displaysMemoryUsage
 void displaysMenuMemoryUsageInit(Menu *menuPtr);

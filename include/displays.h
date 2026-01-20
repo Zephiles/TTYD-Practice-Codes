@@ -93,6 +93,8 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP,
 #endif
 
+    DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX,
+
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
 

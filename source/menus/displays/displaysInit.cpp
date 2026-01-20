@@ -21,7 +21,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     displaysMenuOnScreenTimerInit,
 
     "Mario's Coordinates",
-    displaysMenuGenericNoButtonComboInit,
+    displaysMenuMariosCoordinatesInit,
 
     "Mario's Speed XZ",
     displaysMenuGenericNoButtonComboInit,
