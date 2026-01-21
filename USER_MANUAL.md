@@ -97,25 +97,31 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 22. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
 
-23. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+23. **Simulate AMW - Mario Zero Hitbox - Paper Mode** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon leaving `Paper Mode`.
 
-24. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
+24. **Simulate AMW - Mario Zero Hitbox - Room Transition** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon going through a room transition.
+
+25. **Simulate AMW - Mario Walk On Air** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario being able to walk on air upon walking off a non-sloped ledge.
+
+26. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+
+27. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
     * **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
     
     * **Background Music** disables the current background music, and prevents new background music from playing.
     
     * **Environment Sounds** disables any environment sounds, and prevents new environment sounds from playing.
 
-25. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+28. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
 
-26. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+29. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
 
-27. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+30. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
     * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on when not in use.
 
-28. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+31. **Manage Flags** allows you to manually change a lot of the important flags in the game.
 
-29. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+32. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
@@ -123,10 +129,13 @@ This menu allows you to modify Mario's stats, all of your partner's stats, wheth
 
 ### Settings
 This menu allows you to save and load various settings. The settings are stored on a separate save file on the memory card. The menu gives you the option to change the color and alpha (transparency) of the window (in **RGBA** format), save/load the settings to/from either of the memory card slots, and delete the settings file on either of the memory cards. The settings that are currently saved are as follows:
+* The current menu window color
+* Whether or not the analog stick can be used to navigate the menus
 * Which Cheats are active
 * Cheats button combinations
 * Which Displays are active
 * Displays button combinations
+* Displays manual positions
 * Memory Watches (See [Memory](#memory))
 * Memory Editor settings (See [Memory](#memory))
 * Custom States (See [Warps](#warps))
@@ -178,7 +187,7 @@ This menu allows you to change the **HP**, **Max HP**, **FP**, **Max FP**, **hel
 
 2. **Frame Counter** displays a timer at the bottom-right of the screen. This timer is set to run at the current FPS, and therefore will count from 0 to 59 (0 to 49 for EU at 50hz) before reaching one second. Unlike the **On-Screen Timer**, this timer will pause during all loads and frames that are skipped and/or not drawn, as there aren't any actual frames during these times. When this timer is displayed at the same time as the **On-Screen Timer**, then this timer is placed above the **On-Screen Timer**.
 
-3. **Mario's Coordinates** displays Mario's coordinates at the bottom-left of the screen. If the On-Screen Timer is active, then the position of Mario's Coordinates will be shifted upwards.
+3. **Mario's Coordinates** displays Mario's coordinates at the bottom-left of the screen, with the option to display the coordinates in either decimal or hexadecimal. If the On-Screen Timer is active, then the position of Mario's Coordinates will be shifted upwards.
 
 4. **Mario's Speed XZ** displays Mario's speed, based on both the X axis and the Z axis.
 
@@ -214,16 +223,19 @@ This menu allows you to change the **HP**, **Max HP**, **FP**, **Max FP**, **hel
 
 17. **Yoshi Skip** displays various information about performing this skip. The main timer (labeled YST) is set to reset and start running once you leave a battle, and pauses once you press A. You can also manually reset this timer by holding its button combination for two seconds.
 
-18. **Palace Skip** displays various information about performing this skip. The main timer (labeled PST) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding its button combination for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
+18. **Palace Skip** displays various information about performing this skip. The main timer (labeled **PST**) is set to reset and start once you leave the pause menu, and pauses once you press X. You can also manually reset this timer by holding its button combination for two seconds. **PhaEmy** keeps track of the Y coordinate for the phantom ember, **ItemTimer** keeps track of the timer for the current item in the field, and **ParY** keeps track of your partner's Y coordinate.
 
-19. **Palace Skip (Minimal)** displays only the main timer (labeled PST) that the standard **Palace Skip** display shows. You can also manually reset this timer by holding its button combination for two seconds.
+19. **Palace Skip (Minimal)** displays only the main timer (labeled **PST**) that the standard **Palace Skip** display shows. You can also manually reset this timer by holding its button combination for two seconds.
 
-20. **Jabbi Hive Skip** displays various information about performing this skip. The first field in this display tells you how well your pause jump was (pressed **D-Pad Left** first, pressed **A** first, or pressed both buttons at the same time). **FBP** is the amount of frames between pressing **D-Pad Left** and **A** to do the unspin jump, and **FBUP** is the amount of frames between the two **A** presses for closing the menu. All of the information in this display can be reset by pressing its button combination three times consecutively.
+20. **AMW - Spin Jump - The Great Tree** (only available on the **Japanese** version)  displays various information about performing the `Arbitrary Memory Write` glitch in the Great Tree. The pause timer (labeled **PT**) is set to reset and start once you leave the pause menu. The Spin Jump timer (labeled **SJT**) is set to reset upon jumping, start upon starting a Spin Jump, and stop upon first striking or entering a battle. Both the **PT** and **SJT** values can be manually reset by holding its button combination for two seconds. **Pos Z** displays Mario's current Z coordinate in hexadecimal.
+     * Additionally, the color for the value specified by **Pos Z** will change to `orange` upon reaching the first pause location, and then to `green` upon reaching the second pause location. Similarly, the color for the value specified by **SJT** will change to `green` when the Spin Jump has successfully caused the glitch to occur.
 
-21. **Bridge Skip** displays various information about performing this skip. The first field in this display is how many frames early/late you were with pressing A. If you press A on the correct frame, then the counter will remain at 0. You can also manually reset this counter by holding its button combination for two seconds. **HRP** is the pointer to the area of ground in the current room that you will respawn at upon touching a hazard. In order for **Bridge Skip** to work (as well as any other **Hazard Respawn Glitch**), this pointer must not be set, in which the value will be `0x00000000`.
+21. **Jabbi Hive Skip** displays various information about performing this skip. The first field in this display tells you how well your pause jump was (pressed **D-Pad Left** first, pressed **A** first, or pressed both buttons at the same time). **FBP** is the amount of frames between pressing **D-Pad Left** and **A** to do the unspin jump, and **FBUP** is the amount of frames between the two **A** presses for closing the menu. All of the information in this display can be reset by pressing its button combination three times consecutively.
+
+22. **Bridge Skip** displays various information about performing this skip. The first field in this display is how many frames early/late you were with pressing A. If you press A on the correct frame, then the counter will remain at 0. You can also manually reset this counter by holding its button combination for two seconds. **HRP** is the pointer to the area of ground in the current room that you will respawn at upon touching a hazard. In order for **Bridge Skip** to work (as well as any other **Hazard Respawn Glitch**), this pointer must not be set, in which the value will be `0x00000000`.
      * Note: **Bridge Skip** will be possible in the PAL version of the game when this display is active.
 
-22. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding its button combination for two seconds.
+23. **Blimp Ticket Skip** displays various information about performing this skip. The up-right timer (labeled **URT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle reaches 25 or higher on JP, and 27 or higher on US/EU. The straight-up timer (labeled **SUT**) is set to reset and start running once you leave the pause menu, and pauses once the held stick angle is 0.00. Both of these timers can be manually reset by holding its button combination for two seconds.
 
 ### Warps
 This menu allows you to warp to various places around the game. You have three separate options to choose from:
@@ -317,3 +329,5 @@ There are several other changes that have been made outside of the menu:
 9. The cutscene before the final Shadow Queen fight has been adjusted to prevent one of the game's heaps from becoming corrupted, in which less textboxes will appear at the start of the cutscene. Similarly, the cutscenes in Fahr Outpost and The Great Tree before the final Shadow Queen fight have also been adjusted to prevent one of the game's heaps from becoming corrupted, in which the textboxes that appear in those cutscenes will appear less frequently.
 
 10. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
+
+11. When the **Arbitrary Memory Write** glitch is being performed, a patch is applied to allow it to properly overwrite memory that would be overwritten under vanilla circumstances (as loading this mod into memory causes dynamic memory to start at a different memory address), and another patch is applied to remove the chance of the glitch randomly failing at the very end due to a check against a timer.
