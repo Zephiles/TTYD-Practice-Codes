@@ -2781,21 +2781,26 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         amwSpinJumpPtr->resetCounter();
     }
 
-    // If currently in the room where the trick is performed, then position the X-Naut based on if the player is at the correct
-    // Z coordinate to perform the trick. Also need to make sure they player is not currently in a battle when doing this.
-    if ((strcmp(_next_map, "mri_20") == 0) && !getBattleWorkPtr())
+    // If the player is currently in the room where the trick is performed with the flag enabled for adjusting the X-Naut's
+    // position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the trick. Also need
+    // to make sure they player is not currently in a battle when doing this.
+    const bool adjustXNautPosition =
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+
+    if (adjustXNautPosition && (strcmp(_next_map, "mri_20") == 0) && !getBattleWorkPtr())
     {
         NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
-        Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
         Vec3 *xNautPosPtr = &xNautPtr->position;
 
-        const uint32_t *marioPosRaw = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition);
-        if (marioPosRaw[2] == 0xC25A06E3)
-        {
-            // The player is at the correct Z coordinate, so make sure the X-Naut is within a certain distance from them
+        // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates that
+        // they have gotten to the correct position and that they are ready to do the Spin Jump
+        const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition.z);
 
+        if ((marioCurrentMotion != MarioMotion::kSlit) && (*marioPosZPtr == 0xC25A06E3))
+        {
             // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate,
             // in which the base coordinate is 0 with it being up to 100 units forwards or backwards
+            Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
             const float xNautPosX = xNautPosPtr->x;
 
             if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
@@ -2804,7 +2809,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
                 xNautPosPtr->x = 5.f;
                 xNautDestinationPtr->x = 5.f;
 
-                const int32_t randomPosZ = (static_cast<int32_t>(irand(20000)) / 100) - 100;
+                const int32_t randomPosZ = (static_cast<int32_t>(irand(2000)) / 10) - 100;
                 const float xNautNewZPos = intToFloat(randomPosZ);
 
                 xNautPosPtr->z = xNautNewZPos;
@@ -2815,21 +2820,21 @@ static void handleAMWSpinJump(Displays *displaysPtr)
                 // The X-Naut has been moved already, so make sure they don't wander too far away
                 bool manuallyMoved = false;
 
-                if (xNautPosX < -35.f)
+                if (xNautPosX < -5.f)
                 {
-                    xNautPosPtr->x = -35.f;
+                    xNautPosPtr->x = 5.f;
                     manuallyMoved = true;
                 }
 
                 const float xNautPosZ = xNautPosPtr->z;
-                if (xNautPosZ > 110.f)
+                if (xNautPosZ < -110.f)
                 {
-                    xNautPosPtr->z = 110.f;
+                    xNautPosPtr->z = -100.f;
                     manuallyMoved = true;
                 }
-                else if (xNautPosZ < -110.f)
+                else if (xNautPosZ > 110.f)
                 {
-                    xNautPosPtr->z = -110.f;
+                    xNautPosPtr->z = 100.f;
                     manuallyMoved = true;
                 }
 
@@ -2844,7 +2849,8 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         }
         else
         {
-            // The player is not at the correct Z coordinate, so place the X-Naut in the bottom-left corner of the room
+            // The player is not at the correct Z coordinate and/or they are still in Paper Mode, so place the X-Naut in the
+            // bottom-left corner of the room
             xNautPosPtr->x = -295.404053f;
             xNautPosPtr->z = 169.766129f;
         }

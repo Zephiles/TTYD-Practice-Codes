@@ -19,6 +19,9 @@ static const MenuOption gOptions[] {
 
     "Show As Hex",
     selectedOptionShowAsHex,
+
+    "Adjust Manual Positioning",
+    displaysAdjustManualPositionInit,
 };
 
 static const MenuFunctions gFuncs = {
@@ -33,7 +36,6 @@ void displaysMenuMariosCoordinatesInit(Menu *menuPtr)
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
 
-    // Backup the selected display
     constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
     enterNextMenu(&gFuncs, totalOptions);
 }
@@ -66,7 +68,7 @@ static void drawMariosCoordinatesShowAsHexInfo()
 
     uint32_t color;
     const char *onOffText;
-    getOnOffTextAndColor(showAsHex, &onOffText, &color, 0xFF);
+    getYesNoTextAndColor(showAsHex, &onOffText, &color, 0xFF);
     drawText(onOffText, posX, posY, scale, color);
 }
 

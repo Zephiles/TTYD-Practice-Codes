@@ -132,6 +132,7 @@ void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
 void drawGenericDisplayInfo();
+void displaysGenericChangeButtonCombo(Menu *menuPtr);
 
 // displaysOnScreenTimer
 // The Frame Founter display is also handled by these
@@ -148,5 +149,10 @@ void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
 
 // displaysAdjustManualPosition
 void displaysAdjustManualPositionInit(Menu *menuPtr);
+
+#ifdef TTYD_JP
+// displaysAMWSpinJumpGreatTree
+void displaysMenuAMWSpinJumpGreatTreeInit(Menu *menuPtr);
+#endif
 
 #endif

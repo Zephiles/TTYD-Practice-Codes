@@ -11,7 +11,6 @@
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
-static void selectedOptionChangeButtonCombo(Menu *menuPtr);
 
 // For all selection types except displaysMenuGenericNoButtonComboNoManualPositionInit
 static const MenuOption gMainOptions[] {
@@ -22,7 +21,7 @@ static const MenuOption gMainOptions[] {
     displaysAdjustManualPositionInit,
 
     "Change Button Combo",
-    selectedOptionChangeButtonCombo,
+    displaysGenericChangeButtonCombo,
 };
 
 static const MenuFunctions gMainFuncs = {
@@ -38,7 +37,7 @@ static const MenuOption gHasComboNoPositionOptions[] {
     selectedOptionTurnOnOff,
 
     "Change Button Combo",
-    selectedOptionChangeButtonCombo,
+    displaysGenericChangeButtonCombo,
 };
 
 static const MenuFunctions gHasComboNoPositionFuncs = {
@@ -233,7 +232,7 @@ static void setButtonCombo(uint32_t buttonCombo)
     displaysMenuSetNewButtonCombo(displayButtonComboFlag, buttonCombo);
 }
 
-static void selectedOptionChangeButtonCombo(Menu *menuPtr)
+void displaysGenericChangeButtonCombo(Menu *menuPtr)
 {
     (void)menuPtr;
 

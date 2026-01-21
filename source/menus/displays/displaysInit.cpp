@@ -73,7 +73,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
 
 #ifdef TTYD_JP
     "AMW - Spin Jump - The Great Tree",
-    displaysMenuGenericHasButtonComboInit,
+    displaysMenuAMWSpinJumpGreatTreeInit,
 #endif
 
     "Jabbi Hive Skip",
