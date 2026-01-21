@@ -744,7 +744,7 @@
 // 80420080:mario_float_0p3
 80420084:mario_float_0p125
 80420088:mario_float_20
-// 8042008C:mario_float_210
+8042008C:mario_float_210
 // 80420090:mario_float_200
 // 804200A4:mario_float_0p015
 // 804200A8:mario_float_0p01

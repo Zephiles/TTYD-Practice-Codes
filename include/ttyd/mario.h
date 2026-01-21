@@ -279,7 +279,7 @@ extern "C"
     // mario_float_0p3
     extern float mario_float_0p125;
     extern float mario_float_20;
-    // mario_float_210
+    extern float mario_float_210;
     // mario_float_200
     // mario_float_0p015
     // mario_float_0p01

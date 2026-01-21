@@ -12,7 +12,7 @@ void _setFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 void _clearFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 bool _toggleFlag(uint32_t *flagsPtr, uint32_t flag, uint32_t maxFlags);
 
-#define VERSION_STRING "v4.0.1-dev12"
+#define VERSION_STRING "v4.0.1-dev13"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f

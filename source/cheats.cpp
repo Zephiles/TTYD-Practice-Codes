@@ -1080,7 +1080,13 @@ void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
         }
         case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
         {
+#ifdef TTYD_EU
+            // It should also be possible to overwrite `mario_float_20` without overwriting what comes after it, so need to see
+            // if overwriting what comes after it causes any issues anywhere
+            valuesToModify = &mario_float_20;
+#else
             valuesToModify = &mario_float_0p125;
+#endif
             break;
         }
         case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
@@ -1115,8 +1121,13 @@ void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
             }
             case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION:
             {
+#ifdef TTYD_EU
+                valuesToModify[0] = 20.f;
+                valuesToModify[1] = 210.f;
+#else
                 valuesToModify[0] = 0.125f;
                 valuesToModify[1] = 20.f;
+#endif
                 break;
             }
             case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
