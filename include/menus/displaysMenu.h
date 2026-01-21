@@ -1,6 +1,7 @@
 #ifndef MENUS_DISPLAYS_MENU_H
 #define MENUS_DISPLAYS_MENU_H
 
+#include "mod.h"
 #include "classes/valueEditor.h"
 #include "classes/buttonComboEditor.h"
 #include "classes/positionEditor.h"
@@ -73,7 +74,9 @@ inline bool displaysMenuGenericSelectionFlagIsSet(uint32_t flags, uint32_t flag)
         return false;
     }
 
-    return (flags >> flag) & 1U;
+    bool ret;
+    FLAG_IS_SET(&flags, flag, ret);
+    return ret;
 }
 
 inline uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t flag)
@@ -85,7 +88,8 @@ inline uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t fla
         return flags;
     }
 
-    return flags |= (1UL << flag);
+    SET_FLAG(&flags, flag);
+    return flags;
 }
 
 class DisplaysMenu

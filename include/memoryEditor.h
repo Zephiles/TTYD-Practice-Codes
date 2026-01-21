@@ -105,36 +105,63 @@ class MemoryEditor
     void controls(MenuButtonInput button);
     void draw() const;
 
-    __attribute__((always_inline)) bool enabledFlagIsSet(uint32_t enabledFlag) const
+    bool enabledFlagIsSet(uint32_t enabledFlag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->enabledFlags, enabledFlag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setEnabledFlag(uint32_t enabledFlag)
+    void setEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    __attribute__((always_inline)) void clearEnabledFlag(uint32_t enabledFlag)
+    void clearEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    __attribute__((always_inline)) bool toggleEnabledFlag(uint32_t enabledFlag)
+    bool toggleEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = MEMORY_EDITOR_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->enabledFlags, enabledFlag);
+        return this->enabledFlagIsSet(enabledFlag);
     }
 
    private:

@@ -220,7 +220,9 @@ class ValueEditor
             return false;
         }
 
-        return (this->flags >> flag) & 1U;
+        bool ret;
+        FLAG_IS_SET(&this->flags, flag, ret);
+        return ret;
     }
 
     /**
@@ -240,7 +242,8 @@ class ValueEditor
             return flags;
         }
 
-        return flags |= (1UL << flag);
+        SET_FLAG(&flags, flag);
+        return flags;
     }
 
     /**

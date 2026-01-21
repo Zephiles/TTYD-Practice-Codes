@@ -841,124 +841,225 @@ class Displays
     void decrementDefaultPosTopLeft(float value) { this->defaultPosYTopLeft -= value; }
     void decrementDefaultPosErrorText(float value) { this->defaultPosYErrors -= value; }
 
-    __attribute__((always_inline)) bool enabledFlagIsSet(uint32_t enabledFlag) const
+    bool enabledFlagIsSet(uint32_t enabledFlag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->enabledFlags, enabledFlag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setEnabledFlag(uint32_t enabledFlag)
+    void setEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    __attribute__((always_inline)) void clearEnabledFlag(uint32_t enabledFlag)
+    void clearEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    __attribute__((always_inline)) bool toggleEnabledFlag(uint32_t enabledFlag)
+    bool toggleEnabledFlag(uint32_t enabledFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->enabledFlags, enabledFlag, maxFlags);
+        if (enabledFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->enabledFlags, enabledFlag);
+        return this->enabledFlagIsSet(enabledFlag);
     }
 
-    __attribute__((always_inline)) bool manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
+    bool manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags);
+        if (manuallyPositionFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->manuallyPositionFlags, manuallyPositionFlag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    void setManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags);
+        if (manuallyPositionFlag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->manuallyPositionFlags, manuallyPositionFlag);
     }
 
-    __attribute__((always_inline)) void clearManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    void clearManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags);
+        if (manuallyPositionFlag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->manuallyPositionFlags, manuallyPositionFlag);
     }
 
-    __attribute__((always_inline)) bool toggleManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    bool toggleManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->manuallyPositionFlags, manuallyPositionFlag, maxFlags);
+        if (manuallyPositionFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->manuallyPositionFlags, manuallyPositionFlag);
+        return this->manuallyPositionFlagIsSet(manuallyPositionFlag);
     }
 
-    __attribute__((always_inline)) bool miscFlagIsSet(uint32_t miscFlag) const
+    bool miscFlagIsSet(uint32_t miscFlag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->miscFlags, miscFlag, maxFlags);
+        if (miscFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->miscFlags, miscFlag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setMiscFlag(uint32_t miscFlag)
+    void setMiscFlag(uint32_t miscFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->miscFlags, miscFlag, maxFlags);
+        if (miscFlag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->miscFlags, miscFlag);
     }
 
-    __attribute__((always_inline)) void clearMiscFlag(uint32_t miscFlag)
+    void clearMiscFlag(uint32_t miscFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->miscFlags, miscFlag, maxFlags);
+        if (miscFlag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->miscFlags, miscFlag);
     }
 
-    __attribute__((always_inline)) bool toggleMiscFlag(uint32_t miscFlag)
+    bool toggleMiscFlag(uint32_t miscFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->miscFlags, miscFlag, maxFlags);
+        if (miscFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->miscFlags, miscFlag);
+        return this->miscFlagIsSet(miscFlag);
     }
 
-    __attribute__((always_inline)) bool shouldDrawFlagIsSet(uint32_t shouldDrawFlag) const
+    bool shouldDrawFlagIsSet(uint32_t shouldDrawFlag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->shouldDrawFlags, shouldDrawFlag, maxFlags);
+        if (shouldDrawFlag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->shouldDrawFlags, shouldDrawFlag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setShouldDrawFlag(uint32_t shouldDrawFlag)
+    void setShouldDrawFlag(uint32_t shouldDrawFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->shouldDrawFlags, shouldDrawFlag, maxFlags);
+        if (shouldDrawFlag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->shouldDrawFlags, shouldDrawFlag);
     }
 
-    __attribute__((always_inline)) void clearShouldDrawFlag(uint32_t shouldDrawFlag)
+    void clearShouldDrawFlag(uint32_t shouldDrawFlag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = DISPLAYS_SHOULD_DRAW_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->shouldDrawFlags, shouldDrawFlag, maxFlags);
+        if (shouldDrawFlag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->shouldDrawFlags, shouldDrawFlag);
     }
 
     OnScreenTimerDisplay *getOnScreenTimerDisplayPtr() { return &this->onScreenTimer; }

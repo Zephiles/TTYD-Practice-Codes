@@ -154,7 +154,10 @@ class MiscSettingsData
 
             for (uint32_t i = 0; i < maxFlags; i++)
             {
-                if (_flagIsSet(enabledFlagsPtr, i, maxFlags))
+                bool flagIsSet;
+                FLAG_IS_SET(enabledFlagsPtr, i, flagIsSet);
+
+                if (flagIsSet)
                 {
                     modPtr->setSaveFlag(i);
                 }
@@ -233,7 +236,10 @@ class CheatsSettingsData
 
         for (uint32_t i = 0; i < maxCheats; i++)
         {
-            if (_flagIsSet(enabledFlagsPtr, i, maxCheats))
+            bool flagIsSet;
+            FLAG_IS_SET(enabledFlagsPtr, i, flagIsSet);
+
+            if (flagIsSet)
             {
                 cheatsPtr->setEnabledFlag(i);
             }
@@ -365,7 +371,10 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxDisplays; i++)
         {
-            if (_flagIsSet(enabledFlagsPtr, i, maxDisplays))
+            bool flagIsSet;
+            FLAG_IS_SET(enabledFlagsPtr, i, flagIsSet);
+
+            if (flagIsSet)
             {
                 displaysPtr->setEnabledFlag(i);
             }
@@ -420,7 +429,10 @@ class DisplaysSettingsData
 
         for (uint32_t i = 0; i < maxManuallyPositionEntries; i++)
         {
-            if (_flagIsSet(manuallyPositionFlagsPtr, i, maxManuallyPositionEntries))
+            bool flagIsSet;
+            FLAG_IS_SET(manuallyPositionFlagsPtr, i, flagIsSet);
+
+            if (flagIsSet)
             {
                 displaysPtr->setManuallyPositionFlag(i);
             }
@@ -796,7 +808,10 @@ class MemoryEditorSettingsData
 
         for (uint32_t i = 0; i < maxFlags; i++)
         {
-            if (_flagIsSet(enabledFlagsPtr, i, maxFlags))
+            bool flagIsSet;
+            FLAG_IS_SET(enabledFlagsPtr, i, flagIsSet);
+
+            if (flagIsSet)
             {
                 memoryEditorPtr->setEnabledFlag(i);
             }

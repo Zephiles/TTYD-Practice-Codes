@@ -435,68 +435,122 @@ class Cheats
     ClearAreaFlagsCheat *getClearAreaFlagsCheat() { return &this->clearAreaFlags; }
     LockFlagsCheat *getLockFlagsCheatPtr() { return &this->lockFlags; }
 
-    __attribute__((always_inline)) bool enabledFlagIsSet(uint32_t flag) const
+    bool enabledFlagIsSet(uint32_t flag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->enabledFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->enabledFlags, flag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setEnabledFlag(uint32_t flag)
+    void setEnabledFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->enabledFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->enabledFlags, flag);
     }
 
-    __attribute__((always_inline)) void clearEnabledFlag(uint32_t flag)
+    void clearEnabledFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->enabledFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->enabledFlags, flag);
     }
 
-    __attribute__((always_inline)) bool toggleEnabledFlag(uint32_t flag)
+    bool toggleEnabledFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_ENABLED_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->enabledFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->enabledFlags, flag);
+        return this->enabledFlagIsSet(flag);
     }
 
-    __attribute__((always_inline)) bool miscFlagIsSet(uint32_t flag) const
+    bool miscFlagIsSet(uint32_t flag) const
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _flagIsSet(this->miscFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return false;
+        }
+
+        bool ret;
+        FLAG_IS_SET(this->miscFlags, flag, ret);
+        return ret;
     }
 
-    __attribute__((always_inline)) void setMiscFlag(uint32_t flag)
+    void setMiscFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _setFlag(this->miscFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return;
+        }
+
+        SET_FLAG(this->miscFlags, flag);
     }
 
-    __attribute__((always_inline)) void clearMiscFlag(uint32_t flag)
+    void clearMiscFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        _clearFlag(this->miscFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return;
+        }
+
+        CLEAR_FLAG(this->miscFlags, flag);
     }
 
-    __attribute__((always_inline)) bool toggleMiscFlag(uint32_t flag)
+    bool toggleMiscFlag(uint32_t flag)
     {
+        // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
         constexpr uint32_t maxFlags = CHEATS_MISC_FLAGS_ARRAY_SIZE * bitsPerWord;
 
-        return _toggleFlag(this->miscFlags, flag, maxFlags);
+        if (flag >= maxFlags)
+        {
+            return false;
+        }
+
+        TOGGLE_FLAG(this->miscFlags, flag);
+        return this->miscFlagIsSet(flag);
     }
 
    private:

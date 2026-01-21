@@ -1,6 +1,7 @@
 #ifndef CLASSES_MENU_H
 #define CLASSES_MENU_H
 
+#include "mod.h"
 #include "ttyd/dispdrv.h"
 
 #include <cstdint>
@@ -186,7 +187,9 @@ class Menu
             return false;
         }
 
-        return (this->flags >> flag) & 1U;
+        bool ret;
+        FLAG_IS_SET(&this->flags, flag, ret);
+        return ret;
     }
 
     /**
@@ -205,7 +208,7 @@ class Menu
             return;
         }
 
-        this->flags |= (1UL << flag);
+        SET_FLAG(&this->flags, flag);
     }
 
     /**
@@ -224,7 +227,7 @@ class Menu
             return;
         }
 
-        this->flags &= ~(1UL << flag);
+        CLEAR_FLAG(&this->flags, flag);
     }
 
     /**
@@ -246,9 +249,8 @@ class Menu
             return false;
         }
 
-        const uint32_t currentFlags = this->flags ^= (1UL << flag);
-        this->flags = currentFlags;
-        return (currentFlags >> flag) & 1U;
+        TOGGLE_FLAG(&this->flags, flag);
+        return this->flagIsSet(flag);
     }
 
     // Gets the total amount of options to choose from in the menu.
