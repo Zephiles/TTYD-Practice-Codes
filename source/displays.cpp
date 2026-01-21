@@ -2796,7 +2796,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         // they have gotten to the correct position and that they are ready to do the Spin Jump
         const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition.z);
 
-        if ((marioCurrentMotion != MarioMotion::kSlit) && (*marioPosZPtr == 0xC25A06E3))
+        if ((*marioPosZPtr == 0xC25A06E3) && (marioCurrentMotion != MarioMotion::kSlit))
         {
             // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate,
             // in which the base coordinate is 0 with it being up to 100 units forwards or backwards
