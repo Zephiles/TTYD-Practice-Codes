@@ -2809,7 +2809,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
                 xNautPosPtr->x = 5.f;
                 xNautDestinationPtr->x = 5.f;
 
-                const int32_t randomPosZ = (static_cast<int32_t>(irand(2000)) / 10) - 100;
+                const int32_t randomPosZ = (irand(2000) / 10) - 100;
                 const float xNautNewZPos = intToFloat(randomPosZ);
 
                 xNautPosPtr->z = xNautNewZPos;

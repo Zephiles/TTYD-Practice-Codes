@@ -31,7 +31,7 @@ extern "C"
     void sysWaitDrawSync();
     uint16_t sysGetToken();
 
-    uint32_t irand(uint32_t range);
+    int32_t irand(int32_t range);
     void movePos(float magnitude, float direction, float *x, float *y);
     void sincosf(float angle, float *sin, float *cos);
 
