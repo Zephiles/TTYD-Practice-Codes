@@ -26,7 +26,7 @@ void ConfirmationWindow::init(const Window *parentWindow, const char *helpText, 
 
 void ConfirmationWindow::stopDrawing()
 {
-    this->OptionSelector::setClassPtr(nullptr);
+    this->OptionSelector::setUser(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
@@ -35,13 +35,13 @@ void ConfirmationWindow::stopDrawing()
  * window.
  *
  * @param currentIndex The index of the option that was selected.
- * @param classPtr Pointer to the current confirmation window.
+ * @param user Pointer to the current confirmation window.
  *
  * @relatesalso ConfirmationWindow
  */
-static void confirmationWindowSelectedOption(uint32_t currentIndex, void *classPtr)
+static void confirmationWindowSelectedOption(uint32_t currentIndex, void *user)
 {
-    ConfirmationWindow *confirmationWindowPtr = reinterpret_cast<ConfirmationWindow *>(classPtr);
+    ConfirmationWindow *confirmationWindowPtr = reinterpret_cast<ConfirmationWindow *>(user);
 
     // Make sure confirmationWindowPtr is set
     if (!confirmationWindowPtr)
@@ -67,18 +67,18 @@ static void confirmationWindowSelectedOption(uint32_t currentIndex, void *classP
  * Callback function for when `B` is pressed to cancel selecting an option. Calls the `selectedOptionFunc` variable function
  * from the confirmation window (with the `currentIndex` parameter set to `CONFIRMATION_WINDOW_OPTION_NO`).
  *
- * @param classPtr Pointer to the current confirmation window.
+ * @param user Pointer to the current confirmation window.
  *
  * @relatesalso ConfirmationWindow
  */
-static void confirmationWindowSelectedNo(void *classPtr)
+static void confirmationWindowSelectedNo(void *user)
 {
-    confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO, classPtr);
+    confirmationWindowSelectedOption(CONFIRMATION_WINDOW_OPTION_NO, user);
 }
 
 void ConfirmationWindow::startDrawing(ConfirmationWindowSelectedOptionFunc selectedOptionFunc)
 {
-    this->OptionSelector::setClassPtr(this);
+    this->OptionSelector::setUser(this);
     this->selectedOptionFunc = selectedOptionFunc;
 
     this->OptionSelector::startDrawing(confirmationWindowSelectedOption, confirmationWindowSelectedNo);

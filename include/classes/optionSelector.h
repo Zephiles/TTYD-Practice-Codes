@@ -13,30 +13,30 @@
  * Callback function pointer for when the player selects an option.
  *
  * @param currentIndex The index of the option that was selected.
- * @param classPtr Pointer to whichever class is currently using the option selector.
+ * @param user Pointer to whichever class/struct/etc. is currently using the option selector.
  *
- * @note `classPtr` needs to be the last parameter to allow other classes to be able to discard it, as some of them will not
+ * @note `user` needs to be the last parameter to allow other classes to be able to discard it, as some of them will not
  * require it to function, and thus excluding it will save a bit of memory.
  */
-typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *classPtr);
+typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *user);
 
 /**
- * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `classPtr` parameter.
+ * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `user` parameter.
  *
  * @param currentIndex The index of the option that was selected.
  *
  */
-typedef void (*OptionSelectorSelectOptionFuncNoClassPtr)(uint32_t currentIndex);
+typedef void (*OptionSelectorSelectOptionFuncNoUser)(uint32_t currentIndex);
 
 /**
  * Callback function pointer for when the player presses `B` to cancel selecting an option.
  *
- * @param classPtr Pointer to whichever class is currently using the option selector.
+ * @param user Pointer to whichever class/struct/etc. is currently using the option selector.
  */
-typedef void (*OptionSelectorCancelFunc)(void *classPtr);
+typedef void (*OptionSelectorCancelFunc)(void *user);
 
-// Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `classPtr` parameter.
-typedef void (*OptionSelectorCancelFuncNoClassPtr)();
+// Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `user` parameter.
+typedef void (*OptionSelectorCancelFuncNoUser)();
 
 // Handles selecting an arbitrary option from an arbitrary list of options, with an arbitrary amount of columns for the options.
 // A help window with text is displayed to assist in this process.
@@ -93,18 +93,18 @@ class OptionSelector
               float spaceBetweenHelpTextAndOptions);
 
     /**
-     * Gets the pointer to whichever class is currently using the option selector.
+     * Gets the pointer to whichever class/struct/etc. is currently using the option selector.
      *
-     * @returns Pointer to whichever class is currently using the option selector.
+     * @returns Pointer to whichever class/struct/etc. is currently using the option selector.
      */
-    void *getClassPtr() { return this->classPtr; }
+    void *getUserPtr() { return this->user; }
 
     /**
-     * Updates `classPtr` to whichever class is currently using the option selector.
+     * Updates `user` to whichever class/struct/etc. is currently using the option selector.
      *
-     * @param ptr Pointer to whichever class is currently using the option selector.
+     * @param ptr Pointer to whichever class/struct/etc. is currently using the option selector.
      */
-    void setClassPtr(void *ptr) { this->classPtr = ptr; }
+    void setUser(void *ptr) { this->user = ptr; }
 
     /**
      * Updates the current value of the `currentIndex` variable.
@@ -127,9 +127,9 @@ class OptionSelector
      * @tparam cancelFunc Callback function for when the player presses `B` to cancel selecting an option.
      *
      * @note The type of `selectOptionFunc` needs to be either `OptionSelectorSelectOptionFunc` or
-     * `OptionSelectorSelectOptionFuncNoClassPtr`, and the type of `cancelFunc` needs to be either `OptionSelectorCancelFunc` or
-     * `OptionSelectorCancelFuncNoClassPtr`. These two variants are allowed so that other classes are able to discard the
-     * `classPtr` parameter when it is not needed, which saves a bit of memory.
+     * `OptionSelectorSelectOptionFuncNoUser`, and the type of `cancelFunc` needs to be either `OptionSelectorCancelFunc` or
+     * `OptionSelectorCancelFuncNoUser`. These two variants are allowed so that other classes are able to discard the `user`
+     * parameter when it is not needed, which saves a bit of memory.
      */
     template<typename SelectOptionFunc, typename CancelFunc>
     void startDrawing(SelectOptionFunc selectOptionFunc, CancelFunc cancelFunc)
@@ -138,8 +138,8 @@ class OptionSelector
         OptionSelectorCancelFunc tempCancelFunc;
 
         // Make sure the type of `selectOptionFunc` is either `OptionSelectorSelectOptionFunc` or
-        // `OptionSelectorSelectOptionFuncNoClassPtr`
-        if constexpr (std::is_same<SelectOptionFunc, OptionSelectorSelectOptionFuncNoClassPtr>::value)
+        // `OptionSelectorSelectOptionFuncNoUser`
+        if constexpr (std::is_same<SelectOptionFunc, OptionSelectorSelectOptionFuncNoUser>::value)
         {
             tempSelectOptionFunc = reinterpret_cast<OptionSelectorSelectOptionFunc>(selectOptionFunc);
         }
@@ -149,8 +149,8 @@ class OptionSelector
             tempSelectOptionFunc = selectOptionFunc;
         }
 
-        // Make sure the type of `cancelFunc` is either `OptionSelectorCancelFunc` or `OptionSelectorCancelFuncNoClassPtr`
-        if constexpr (std::is_same<CancelFunc, OptionSelectorCancelFuncNoClassPtr>::value)
+        // Make sure the type of `cancelFunc` is either `OptionSelectorCancelFunc` or `OptionSelectorCancelFuncNoUser`
+        if constexpr (std::is_same<CancelFunc, OptionSelectorCancelFuncNoUser>::value)
         {
             tempCancelFunc = reinterpret_cast<OptionSelectorCancelFunc>(cancelFunc);
         }
@@ -186,9 +186,9 @@ class OptionSelector
      */
     void dpadControls(MenuButtonInput button);
 
-    // Pointer for whichever class is currently using the option selector, so that they do not need to have separate global
-    // variables.
-    void *classPtr;
+    // Pointer for whichever class/struct/etc. is currently using the option selector, so that they do not need to have separate
+    // global variables.
+    void *user;
 
     // The window to place all of the option selector's text in.
     Window window;

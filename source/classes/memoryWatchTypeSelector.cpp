@@ -39,7 +39,7 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlp
 
 void MemoryWatchTypeSelector::stopDrawing()
 {
-    this->OptionSelector::setClassPtr(nullptr);
+    this->OptionSelector::setUser(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
@@ -47,13 +47,13 @@ void MemoryWatchTypeSelector::stopDrawing()
  * Callback function for when an option is selected. Calls the `setTypeFunc` variable function from the follower selector.
  *
  * @param currentIndex The index of the option that was selected.
- * @param classPtr Pointer to the current memory watch type selector.
+ * @param user Pointer to the current memory watch type selector.
  *
  * @relatesalso MemoryWatchTypeSelector
  */
-static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex, void *classPtr)
+static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex, void *user)
 {
-    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = reinterpret_cast<MemoryWatchTypeSelector *>(classPtr);
+    const MemoryWatchTypeSelector *memoryWatchTypeSelectorPtr = reinterpret_cast<MemoryWatchTypeSelector *>(user);
 
     // Make sure memoryWatchTypeSelectorPtr is set
     if (!memoryWatchTypeSelectorPtr)
@@ -72,7 +72,7 @@ static void memoryWatchTypeSelectorSelectedType(uint32_t currentIndex, void *cla
 void MemoryWatchTypeSelector::startDrawing(MemoryWatchTypeSelectorSetTypeFunc setTypeFunc,
                                            MemoryWatchTypeSelectorCancelFunc cancelFunc)
 {
-    this->OptionSelector::setClassPtr(this);
+    this->OptionSelector::setUser(this);
     this->setTypeFunc = setTypeFunc;
 
     this->OptionSelector::startDrawing(memoryWatchTypeSelectorSelectedType, cancelFunc);

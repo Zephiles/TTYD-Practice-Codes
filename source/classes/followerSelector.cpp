@@ -49,7 +49,7 @@ void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 
 void FollowerSelector::stopDrawing()
 {
-    this->OptionSelector::setClassPtr(nullptr);
+    this->OptionSelector::setUser(nullptr);
     this->OptionSelector::stopDrawing();
 }
 
@@ -57,13 +57,13 @@ void FollowerSelector::stopDrawing()
  * Callback function for when an option is selected. Calls the `selectFunc` variable function from the follower selector.
  *
  * @param currentIndex The index of the option that was selected.
- * @param classPtr Pointer to the current follower selector.
+ * @param user Pointer to the current follower selector.
  *
  * @relatesalso FollowerSelector
  */
-static void followerSelectorSelectedFollower(uint32_t currentIndex, void *classPtr)
+static void followerSelectorSelectedFollower(uint32_t currentIndex, void *user)
 {
-    const FollowerSelector *followerSelectorPtr = reinterpret_cast<FollowerSelector *>(classPtr);
+    const FollowerSelector *followerSelectorPtr = reinterpret_cast<FollowerSelector *>(user);
 
     // Make sure followerSelectorPtr is set
     if (!followerSelectorPtr)
@@ -81,7 +81,7 @@ static void followerSelectorSelectedFollower(uint32_t currentIndex, void *classP
 
 void FollowerSelector::startDrawing(FollowerSelectorSelectFunc selectedFunc, FollowerSelectorCancelFunc cancelFunc)
 {
-    this->OptionSelector::setClassPtr(this);
+    this->OptionSelector::setUser(this);
     this->selectFunc = selectedFunc;
 
     this->OptionSelector::startDrawing(followerSelectorSelectedFollower, cancelFunc);
