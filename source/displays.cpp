@@ -260,6 +260,7 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ONSCREEN_TIMER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_FRAME_COUNTER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_SPEED_X_Z);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JUMP_STORAGE);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BUTTON_INPUTS);
@@ -283,6 +284,8 @@ Displays::Displays()
 
 #ifdef TTYD_JP
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
 #endif
 
     // Set default displays misc flags enabled
@@ -2646,19 +2649,19 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
     // Get the color to use for the Z coordinate
     const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioGetPtr()->playerPosition.z);
     const uint32_t marioPosZ = *marioPosZPtr;
-    uint32_t posZColor;
+    uint32_t posZColor = getColorWhite(0xFF);
 
-    if (marioPosZ == 0xC25A5307) // 1st pause
+    // If the flag for adjusting the text color is set, then check if it should be changed from white to a different color
+    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR))
     {
-        posZColor = getColorLightOrange(0xFF);
-    }
-    else if (marioPosZ == 0xC25A06E3) // 2nd pause
-    {
-        posZColor = getColorGreen(0xFF);
-    }
-    else
-    {
-        posZColor = getColorWhite(0xFF);
+        if (marioPosZ == 0xC25A5307) // 1st pause
+        {
+            posZColor = getColorLightOrange(0xFF);
+        }
+        else if (marioPosZ == 0xC25A06E3) // 2nd pause
+        {
+            posZColor = getColorGreen(0xFF);
+        }
     }
 
     // Get the color for the Spin Jump timer

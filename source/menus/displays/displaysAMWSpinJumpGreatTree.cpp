@@ -13,11 +13,15 @@
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
+static void selectedOptionAdjustZCoordinateColor(Menu *menuPtr);
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr);
 
 static const MenuOption gOptions[] {
     "Turn On/Off",
     selectedOptionTurnOnOff,
+
+    "Adjust Z Coordinate Text Color",
+    selectedOptionAdjustZCoordinateColor,
 
     "Adjust X-Naut's Position",
     selectedOptionAdjustXNautPosition,
@@ -63,20 +67,33 @@ static void drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo()
     const float posX = tempPosX;
     float posY = tempPosY;
 
-    // Draw the Adjust X-Naut's Position text
-    drawText("Adjust X-Naut's Position", posX, posY, scale, getColorWhite(0xFF));
+    // Draw the Adjust Z Coordinate Color text
+    drawText("Adjust Z Coordinate Text Color", posX, posY, scale, getColorWhite(0xFF));
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
-    // Draw whether the coordinates are shown in hex
+    // Draw whether the Z Coordinate's color should be adjusted
     const Displays *displaysPtr = gDisplays;
 
-    const bool showAsHex =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+    const bool changeZCoordinateColor =
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
 
     uint32_t color;
     const char *onOffText;
-    getYesNoTextAndColor(showAsHex, &onOffText, &color, 0xFF);
+
+    getYesNoTextAndColor(changeZCoordinateColor, &onOffText, &color, 0xFF);
+    drawText(onOffText, posX, posY, scale, color);
+    posY -= (lineDecrement * 2.f);
+
+    // Draw the Adjust X-Naut's Position text
+    drawText("Adjust X-Naut's Position", posX, posY, scale, getColorWhite(0xFF));
+    posY -= lineDecrement;
+
+    // Draw whether the X-Naut's position should be adjusted
+    const bool adjustXNautPosition =
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+
+    getYesNoTextAndColor(adjustXNautPosition, &onOffText, &color, 0xFF);
     drawText(onOffText, posX, posY, scale, color);
 }
 
@@ -104,6 +121,13 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
     (void)menuPtr;
 
     displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
+}
+
+static void selectedOptionAdjustZCoordinateColor(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
 }
 
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr)
