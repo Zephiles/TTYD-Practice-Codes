@@ -36,7 +36,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.1.1-dev1"
+#define VERSION_STRING "v4.1.1"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f

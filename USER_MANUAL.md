@@ -202,13 +202,13 @@ This menu allows you to change the **HP**, **Max HP**, **FP**, **Max FP**, **hel
 9. **D-Pad Options** refers to the display at the bottom-left of the screen that shows which d-pad button opens which submenu in the pause menu. You will still be able to press these buttons to open the submenus if the display is disabled.
 
 10. **Guard/Superguard Timings** displays the following:
-   * The frame that you guarded/superguarded an attack out of the total amount of possible frames.
+     * The frame that you guarded/superguarded an attack out of the total amount of possible frames.
    
-   * How many frames early you pressed A or B. It should be noted that nothing will be displayed if the button was pressed very early (more than 6 or so frames for guards, and more than 12 or so frames for superguards).
+     * How many frames early you pressed A or B. It should be noted that nothing will be displayed if the button was pressed very early (more than 6 or so frames for guards, and more than 12 or so frames for superguards).
    
-   * Whether you pressed too many buttons in a short period of time for the guard/superguard to be accepted.
+     * Whether you pressed too many buttons in a short period of time for the guard/superguard to be accepted.
    
-   * Whether the attack can be superguarded or not (will only be displayed if you tried to superguard it).
+     * Whether the attack can be superguarded or not (will only be displayed if you tried to superguard it).
 11. **Art Attack Hitboxes** displays boxes around enemies in battles when using Art Attack. While this display is active, you can hold its button combination while using Art Attack to pause the timer that is used to check how long you are able to use it for.
 
 12. **Memory Usage** displays various memory information about each heap in the game. Each heap will use two lines: One for the **used** portion of the heap, and one for the **free** portion of the heap. The current amount of chunks for each heap will also be displayed, which is labeled as **cks**. It should also be noted that the information for a heap will not be displayed if the heap is corrupt.
@@ -228,8 +228,11 @@ This menu allows you to change the **HP**, **Max HP**, **FP**, **Max FP**, **hel
 19. **Palace Skip (Minimal)** displays only the main timer (labeled **PST**) that the standard **Palace Skip** display shows. You can also manually reset this timer by holding its button combination for two seconds.
 
 20. **AMW - Spin Jump - The Great Tree** (only available on the **Japanese** version)  displays various information about performing the `Arbitrary Memory Write` glitch in the Great Tree. The pause timer (labeled **PT**) is set to reset and start once you leave the pause menu. The Spin Jump timer (labeled **SJT**) is set to reset upon jumping, start upon starting a Spin Jump, and stop upon first striking or entering a battle. Both the **PT** and **SJT** values can be manually reset by holding its button combination for two seconds. **Pos Z** displays Mario's current Z coordinate in hexadecimal.
-     * Additionally, the color for the value specified by **Pos Z** will change to `orange` upon reaching the first pause location, and then to `green` upon reaching the second pause location. Similarly, the color for the value specified by **SJT** will change to `green` when the Spin Jump has successfully caused the glitch to occur.
+     * When the **Adjust Z Coordinate's Text Color** option is enabled, the color for the value specified by **Pos Z** will change to `orange` upon reaching the first pause location, and then to `green` upon reaching the second pause location.
+
      * When the **Adjust X-Naut's Position** option is enabled, the X-Naut in the room where the glitch is performed will be locked to the bottom-left of the room until Mario is standing at the required position and is not in Paper Mode. Upon this happening, the X-Naut will be placed near Mario, and will be placed at a random Z coordinate.
+     
+     * The color for the value specified by **SJT** will change to `green` when the Spin Jump has successfully caused the glitch to occur.
 
 21. **Jabbi Hive Skip** displays various information about performing this skip. The first field in this display tells you how well your pause jump was (pressed **D-Pad Left** first, pressed **A** first, or pressed both buttons at the same time). **FBP** is the amount of frames between pressing **D-Pad Left** and **A** to do the unspin jump, and **FBUP** is the amount of frames between the two **A** presses for closing the menu. All of the information in this display can be reset by pressing its button combination three times consecutively.
 

@@ -20,7 +20,7 @@ static const MenuOption gOptions[] {
     "Turn On/Off",
     selectedOptionTurnOnOff,
 
-    "Adjust Z Coordinate Text Color",
+    "Adjust Z Coordinate's Text Color",
     selectedOptionAdjustZCoordinateColor,
 
     "Adjust X-Naut's Position",
@@ -67,8 +67,8 @@ static void drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo()
     const float posX = tempPosX;
     float posY = tempPosY;
 
-    // Draw the Adjust Z Coordinate Color text
-    drawText("Adjust Z Coordinate Text Color", posX, posY, scale, getColorWhite(0xFF));
+    // Draw the Adjust Z Coordinate's Color text
+    drawText("Adjust Z Coordinate's Text Color", posX, posY, scale, getColorWhite(0xFF));
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
