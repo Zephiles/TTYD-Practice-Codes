@@ -334,6 +334,6 @@ There are several other changes that have been made outside of the menu:
 
 10. A memory leak that would occur when starting a new file has been fixed. This specific memory leak would occur when allocating memory that would be used for the inventory, as the game doesn't check if the memory has already been allocated or not.
 
-11. **Jumpman** and **Hammerman** are manually unequipped when in the **Action Commands** tutorial, as having either equipped results in a softlock.
+11. **Jumpman** and **Hammerman** are automatically unequipped when in the **Action Commands** tutorial, as having either equipped results in a softlock.
 
 12. When the **Arbitrary Memory Write** glitch is being performed, a patch is applied to allow it to properly overwrite memory that would be overwritten under vanilla circumstances (as loading this mod into memory causes dynamic memory to start at a different memory address), and another patch is applied to remove the chance of the glitch randomly failing at the very end due to a check against a timer.
