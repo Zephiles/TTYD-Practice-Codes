@@ -25,6 +25,7 @@
 #include "ttyd/swdrv.h"
 #include "menus/cheatsMenu.h"
 #include "menus/warpsMenu.h"
+#include "menus/battlesMenu.h"
 
 #ifdef TTYD_EU
 #include "gc/OSReset.h"
@@ -422,10 +423,37 @@ bool performPreBattleActions()
     return g_battle_init_trampoline();
 }
 
+void unequipJumpmanHammermanActionCommandsTutorial()
+{
+    if (strcmp(_next_map, "gor_02") != 0)
+    {
+        return;
+    }
+
+    // Check if the tutorial version of Goombella is in the battle
+    BattleWorkUnit *actorPtr = getActorBattlePtr(2);
+    if (!actorPtr || (actorPtr->current_kind != BattleUnitType::kUnitTutorialGoombella))
+    {
+        return;
+    }
+
+    // Clear the values for Jumpman and Hammerman
+    BattleWorkUnit *marioBattlePtr = getMarioBattlePtr();
+    if (marioBattlePtr)
+    {
+        BadgesEquipped *equippedBadgesPtr = &marioBattlePtr->badges_equipped;
+        equippedBadgesPtr->jumpman = 0;
+        equippedBadgesPtr->hammerman = 0;
+    }
+}
+
 void performBattleChecks()
 {
     // Handle the Auto Action Commands cheat
     handleAutoActionCommands();
+
+    // Prevent Jumpman and Hammerman from being equipped when in the Action Commands tutorial, as this leads to a softlock
+    unequipJumpmanHammermanActionCommandsTutorial();
 
     // Prevent all buttons from being pressed when either the menu is open or the memory editor is open, except for R and X
     if (gMenu || memoryEditorIsOpen())
