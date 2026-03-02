@@ -60,6 +60,11 @@ bool compareStringToNextMap(const char *str)
     return strcmp(str, _next_map) == 0;
 }
 
+bool compareStringToNextArea(const char *str)
+{
+    return strcmp(str, _next_area) == 0;
+}
+
 void setSeqMapChange(const char *map, const char *bero)
 {
     seqSetSeq(SeqIndex::kMapChange, map, bero);

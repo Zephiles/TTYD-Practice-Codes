@@ -1471,6 +1471,7 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
             {
                 // Only restore if currently in the original area where the flag was set
                 const char *area;
+
                 if (i == LockFlagsOptions::LOCK_FLAGS_LSW)
                 {
                     area = lockFlagsPtr->getLswAreaLocked();
@@ -1480,7 +1481,7 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
                     area = lockFlagsPtr->getLswfAreaLocked();
                 }
 
-                if (strcmp(area, _next_area) != 0)
+                if (!compareStringToNextArea(area))
                 {
                     continue;
                 }

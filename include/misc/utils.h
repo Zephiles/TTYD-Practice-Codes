@@ -97,6 +97,15 @@ void setSequencePosition(uint32_t position);
 bool compareStringToNextMap(const char *str);
 
 /**
+ * Compares a string to `_next_area` via `strcmp`.
+ *
+ * @param str The string to compare against `_next_area`.
+ *
+ * @returns `true` if the strings are the same, otherwise `false`.
+ */
+bool compareStringToNextArea(const char *str);
+
+/**
  * Initializes the sequence for transitioning to a new map.
  *
  * @param map The map to transition to.

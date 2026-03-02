@@ -36,7 +36,6 @@
 #include "ttyd/itemdrv.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_motion.h"
-#include "ttyd/seq_mapchange.h"
 #include "ttyd/statuswindow.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/battle_disp.h"
@@ -2790,7 +2789,7 @@ static void handleAMWSpinJump(Displays *displaysPtr)
     const bool adjustXNautPosition =
         displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
 
-    if (adjustXNautPosition && (strcmp(_next_map, "mri_20") == 0) && !getBattleWorkPtr())
+    if (adjustXNautPosition && compareStringToNextMap("mri_20") && !getBattleWorkPtr())
     {
         NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
         Vec3 *xNautPosPtr = &xNautPtr->position;

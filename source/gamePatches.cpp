@@ -81,7 +81,7 @@ void cPreventDiaryTextboxOptionSelection(const char *currentText, int32_t *store
     {
         // Prevent the first option from being selected, so that the game does not crash when reading the diary
         // Only needs to run when not on the train
-        if (strcmp(_next_area, "rsh") != 0)
+        if (!compareStringToNextArea("rsh"))
         {
             if (selectedOption == DiaryTextboxOption::ThirdOption)
             {
@@ -235,13 +235,11 @@ static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
 
 const char *getCustomMessage(const char *key)
 {
-    const char *nextAreaPtr = _next_area;
-
     if (strcmp(key, "stg6_rsh_diary_01") == 0)
     {
         // Change the text asking if you want to read the diary
         // Only needs to change when not on the train
-        if (strcmp(nextAreaPtr, "rsh") != 0)
+        if (!compareStringToNextArea("rsh"))
         {
             return "<system>\nThis is error text.\n<o>";
         }
@@ -250,7 +248,7 @@ const char *getCustomMessage(const char *key)
     {
         // Change the yes/no text answers for the diary
         // Only needs to change when not on the train
-        if (strcmp(nextAreaPtr, "rsh") != 0)
+        if (!compareStringToNextArea("rsh"))
         {
 #ifdef TTYD_JP
             const char *message = "<select 0 0 300 40>Yes\nNo\nChoose this option";
@@ -425,7 +423,7 @@ bool performPreBattleActions()
 
 void unequipJumpmanHammermanActionCommandsTutorial()
 {
-    if (strcmp(_next_map, "gor_02") != 0)
+    if (!compareStringToNextMap("gor_02"))
     {
         return;
     }
