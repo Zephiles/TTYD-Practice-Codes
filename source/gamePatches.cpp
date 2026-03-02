@@ -488,14 +488,12 @@ NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk)
 
 static void fixMapProblems() // Gets called in initStageEvents
 {
-    const uint32_t sequencePosition = getSequencePosition();
-
     if (compareStringToNextMap("nok_00"))
     {
         // Prevent the game from crashing if the player enters the intro cutscene after interacting with an NPC that is past
         // slot 10
         // Check if the cutscene is going to play
-        if (sequencePosition < 26)
+        if (getSequencePosition() < 26)
         {
             // Clear the pointer used to check which animation Mario should use when greeting the Koopa
             fbatGetPointer()->wHitNpc = nullptr; // Mario will do no animation when the pointer is not set
@@ -504,7 +502,7 @@ static void fixMapProblems() // Gets called in initStageEvents
     else if (compareStringToNextMap("rsh_05_a"))
     {
         // Prevent the game from crashing if the player enters rsh_05_a with the sequence past 338
-        if (sequencePosition > 338)
+        if (getSequencePosition() > 338)
         {
             // Set the sequence to 338 to prevent the crash
             setSequencePosition(338);
@@ -514,12 +512,21 @@ static void fixMapProblems() // Gets called in initStageEvents
     {
         // Prevent the game from crashing if the conveyor belt has not been activated
         // Set GW(11) to 0 upon entering the room to prevent the crash
-        setGW(11, 0);
+#ifdef TTYD_JP
+        // Should avoid adjusting GW(11) if the AMW display is enabled, as GW(11) needs to be a specific value for the AMW to
+        // work
+        if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+        {
+#endif
+            setGW(11, 0);
+#ifdef TTYD_JP
+        }
+#endif
     }
     else if (compareStringToNextMap("las_08"))
     {
         // Prevent the game from crashing if the player entered las_08 with the sequence at 385 and GSW(1121) at 7
-        if (sequencePosition == 385)
+        if (getSequencePosition() == 385)
         {
             // Check if GSW(1121) is currently higher than 6
             if (swByteGet(1121) > 6)

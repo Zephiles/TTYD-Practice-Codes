@@ -2650,16 +2650,20 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
     const uint32_t marioPosZ = *marioPosZPtr;
     uint32_t posZColor = getColorWhite(0xFF);
 
-    // If the flag for adjusting the text color is set, then check if it should be changed from white to a different color
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR))
+    // Only use a different color if currently doing the Super Boots method
+    if (compareStringToNextMap("mri_20"))
     {
-        if (marioPosZ == 0xC25A5307) // 1st pause
+        // If the flag for adjusting the text color is set, then check if it should be changed from white to a different color
+        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR))
         {
-            posZColor = getColorLightOrange(0xFF);
-        }
-        else if (marioPosZ == 0xC25A06E3) // 2nd pause
-        {
-            posZColor = getColorGreen(0xFF);
+            if (marioPosZ == 0xC25A5307) // 1st pause
+            {
+                posZColor = getColorLightOrange(0xFF);
+            }
+            else if (marioPosZ == 0xC25A06E3) // 2nd pause
+            {
+                posZColor = getColorGreen(0xFF);
+            }
         }
     }
 
