@@ -2667,26 +2667,13 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
         }
     }
 
-    // Get the color for the Spin Jump timer
-    uint32_t spinJumpTimerColor;
-
-    if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK))
-    {
-        spinJumpTimerColor = getColorGreen(0xFF);
-    }
-    else
-    {
-        spinJumpTimerColor = getColorWhite(0xFF);
-    }
-
     // Get the text
-    char buf[96];
+    char buf[64];
 
     snprintf(buf,
              sizeof(buf),
-             "PT: %" PRIu32 "\nSJT: <col %" PRIx32 ">%" PRIu32 "\n<col ffffffff>Pos Z: <col %" PRIx32 ">0x%08" PRIX32,
+             "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32,
              pauseTimer,
-             spinJumpTimerColor,
              spinJumpTimer,
              posZColor,
              marioPosZ);
@@ -2753,7 +2740,6 @@ static void handleAMWSpinJump(Displays *displaysPtr)
         amwSpinJumpPtr->resetSpinJumpTimer();
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
     }
 
     // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
@@ -2777,7 +2763,6 @@ static void handleAMWSpinJump(Displays *displaysPtr)
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
-            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
             amwSpinJumpPtr->resetTimers();
             amwSpinJumpPtr->resetCounter();
         }
@@ -3449,6 +3434,45 @@ static void handleBlimpTicketSkip(Displays *displaysPtr)
     }
 }
 
+static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    // Initialize text drawing
+    drawTextInit(true);
+
+    // Get the text
+    char buf[64];
+    Displays *displaysPtr = gDisplays;
+    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
+
+    snprintf(buf,
+             sizeof(buf),
+             "Coordinate 0x%08" PRIX32 " writes to 0x%08" PRIX32,
+             amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
+             amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
+
+    // Draw the text
+    drawText(buf,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
+}
+
+static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
+{
+    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = gDisplays->getAMWCoordinateWriteAddressDisplayPtr();
+    uint32_t timer = amwCoordinateWriteAddressPtr->getTimer();
+
+    if (timer > 0)
+    {
+        amwCoordinateWriteAddressPtr->setTimer(--timer);
+        drawOnDebugLayer(drawAMWCoordinateWriteAddress, displaysPtr->getErrorTextOrder());
+    }
+}
+
 static void drawNpcNameToPtrError(CameraId cameraId, void *user)
 {
     (void)cameraId;
@@ -3912,6 +3936,7 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
     handleMemoryUsage,
+    handleAMWCoordinateWriteAddress,
     handleNpcNameToPtrError,
     handleAnimPoseMainError,
 };

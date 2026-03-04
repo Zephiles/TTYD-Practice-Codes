@@ -12,7 +12,6 @@
 #include "gc/OSCache.h"
 #include "misc/utils.h"
 #include "misc/functionHooks.h"
-#include "ttyd/mariost.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/party.h"
@@ -23,13 +22,10 @@
 #include "ttyd/seq_title.h"
 #include "ttyd/npcdrv.h"
 #include "ttyd/swdrv.h"
+#include "ttyd/mariost.h"
 #include "menus/cheatsMenu.h"
 #include "menus/warpsMenu.h"
 #include "menus/battlesMenu.h"
-
-#ifdef TTYD_EU
-#include "gc/OSReset.h"
-#endif
 
 #include <cstdint>
 #include <cstring>
@@ -186,35 +182,7 @@ uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw)
     }
 
     // Return the pointer value that would be used under vanilla scenarios
-#ifdef TTYD_JP
-    constexpr uint32_t vanillaPointerRaw = 0x806E0640;
-#elif defined TTYD_US
-    constexpr uint32_t vanillaPointerRaw = 0x806EED40;
-#elif defined TTYD_EU
-    // One of two pointer values is used depending on different circumstances
-    constexpr uint32_t firstPointerValue = 0x8072FC60;
-    uint32_t vanillaPointerRaw;
-
-    // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
-    // OSGetResetCode does not return 0. Need to look into how to get around this.
-    if (OSGetResetCode() == 0) // First boot
-    {
-        // First boot should always use the same pointer value
-        vanillaPointerRaw = firstPointerValue;
-    }
-    else if (_globalWorkPtr->framerate == 60)
-    {
-        // A different pointer value is used when the game was reset at least once and 60Hz was chosen
-        vanillaPointerRaw = 0x806FB860;
-    }
-    else
-    {
-        // Assume 50Hz is being used, in which the first pointer value will still be used
-        vanillaPointerRaw = firstPointerValue;
-    }
-#endif
-
-    return vanillaPointerRaw;
+    return AMWCoordinateWriteAddressDisplay::getSoundEfxStopPtrRaw();
 }
 
 static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
@@ -577,14 +545,14 @@ void psndSFXOff_Work(int32_t flags)
         return g_psndSFXOff_trampoline(flags);
     }
 
-#ifdef TTYD_JP
-    Displays *displaysPtr = gDisplays;
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+    // Successfully performed the trick, so initialize drawing the text for the coordinate and the address written to
+    const uint32_t addressWrittenToRaw = gDisplays->getAMWCoordinateWriteAddressDisplayPtr()->init();
+
+    // If the address written to is invalid, then don't allow the original code to run, as otherwise it will result in a crash
+    if (!ptrIsValid(reinterpret_cast<uint32_t *>(addressWrittenToRaw)))
     {
-        // Successfully performed the trick, so set the misc flag for it
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK);
+        return;
     }
-#endif
 
     // Set the flag to indicate that the glitch is being performed
     Mod *modPtr = gMod;

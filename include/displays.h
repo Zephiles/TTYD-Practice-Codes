@@ -14,6 +14,13 @@
 #include "ttyd/battle_database_common.h"
 #include "ttyd/hitdrv.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/mario.h"
+#include "ttyd/system.h"
+
+#ifdef TTYD_EU
+#include "gc/OSReset.h"
+#include "ttyd/mariost.h"
+#endif
 
 #include <cstdint>
 #include <cstring>
@@ -172,9 +179,8 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED, // AMW - Spin Jump method
     DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED,  // AMW - Spin Jump method
 
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED,      // AMW - Spin Jump method
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER,      // AMW - Spin Jump method
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SUCCESSFULLY_PERFORMED_TRICK, // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED, // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER, // AMW - Spin Jump method
 #endif
 
     DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED, // Jabbi Hive Skip; either D-Pad Left or A was
@@ -413,6 +419,78 @@ class MemoryUsageDisplay
     char *memoryUsageBuffer;
     char *heapCorruptionBuffer;
     int16_t heapCorruptioBufferIndex;
+};
+
+class AMWCoordinateWriteAddressDisplay
+{
+   public:
+    AMWCoordinateWriteAddressDisplay() {}
+    ~AMWCoordinateWriteAddressDisplay() {}
+
+    static uint32_t getSoundEfxStopPtrRaw()
+    {
+        // Return the pointer value that would be used under vanilla scenarios
+#ifdef TTYD_JP
+        constexpr uint32_t vanillaPointerRaw = 0x806E0640;
+#elif defined TTYD_US
+        constexpr uint32_t vanillaPointerRaw = 0x806EED40;
+#elif defined TTYD_EU
+        // One of two pointer values is used depending on different circumstances
+        constexpr uint32_t firstPointerValue = 0x8072FC60;
+        uint32_t vanillaPointerRaw;
+
+        // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
+        // OSGetResetCode does not return 0. Need to look into how to get around this.
+        if (OSGetResetCode() == 0) // First boot
+        {
+            // First boot should always use the same pointer value
+            vanillaPointerRaw = firstPointerValue;
+        }
+        else if (_globalWorkPtr->framerate == 60)
+        {
+            // A different pointer value is used when the game was reset at least once and 60Hz was chosen
+            vanillaPointerRaw = 0x806FB860;
+        }
+        else
+        {
+            // Assume 50Hz is being used, in which the first pointer value will still be used
+            vanillaPointerRaw = firstPointerValue;
+        }
+#endif
+        return vanillaPointerRaw;
+    }
+
+    uint32_t init()
+    {
+        this->setTimer(sysMsec2Frame(5000));
+
+        float *marioCoordinateZPtr = &marioGetPtr()->playerPosition.z;
+        const uint32_t soundEfxStopPtrRaw = this->getSoundEfxStopPtrRaw();
+
+        const uint32_t addressRaw = soundEfxStopPtrRaw + (*reinterpret_cast<uint32_t *>(marioCoordinateZPtr) * 0x88);
+        this->coordinateZ = *marioCoordinateZPtr;
+        this->addressWrittenToRaw = addressRaw;
+
+        return addressRaw;
+    }
+
+    float getCoordinateZ() const { return this->coordinateZ; }
+
+    uint32_t getCoordinateZRaw() const
+    {
+        const uint32_t *coordinateZRawPtr = reinterpret_cast<const uint32_t *>(&this->coordinateZ);
+        return *coordinateZRawPtr;
+    }
+
+    uint32_t getAddressWrittenToRaw() const { return this->addressWrittenToRaw; }
+
+    uint32_t getTimer() const { return this->timer; }
+    void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
+
+   private:
+    float coordinateZ;
+    uint32_t addressWrittenToRaw;
+    uint16_t timer;
 };
 
 class EnemyEncounterNotifierDisplay
@@ -1067,6 +1145,7 @@ class Displays
     FrameCounterDisplay *getFrameCounterDisplayPtr() { return &this->frameCounter; }
     GuardSuperguardTimingDisplay *getGuardSuperguardTimingDisplayPtr() { return &this->guardSuperguardTiming; }
     MemoryUsageDisplay *getMemoryUsageDisplayPtr() { return &this->memoryUsage; }
+    AMWCoordinateWriteAddressDisplay *getAMWCoordinateWriteAddressDisplayPtr() { return &this->amwCoordinateWriteAddress; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
@@ -1103,6 +1182,7 @@ class Displays
     HitCheckVisualizationDisplay hitCheckVisualization;
     JumpStorageDisplay jumpStorage;
     MemoryUsageDisplay memoryUsage;
+    AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
     GuardSuperguardTimingDisplay guardSuperguardTiming;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
