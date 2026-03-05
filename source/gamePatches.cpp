@@ -565,6 +565,19 @@ void psndSFXOff_Work(int32_t flags)
     modPtr->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
 }
 
+bool sndRemoveEmitter_Work(void *em)
+{
+    // If the AMW glitch is being performed, then don't allow the original function to run, as certain coordinates may cause a
+    // crash in this function that may not necessarily crash in the vanilla game
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    {
+        return false;
+    }
+
+    // Call the original function
+    return g_sndRemoveEmitter_trampoline(em);
+}
+
 void applyGameFixes()
 {
     // Fix a memory leak from occuring when starting a new file. The leak is that memory for the inventory is re-allocated

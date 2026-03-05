@@ -14,6 +14,7 @@ bool performPreBattleActions();
 void performBattleChecks();
 NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk);
 void psndSFXOff_Work(int32_t flags);
+bool sndRemoveEmitter_Work(void *em);
 
 void applyGameFixes();
 void applyVariousGamePatches();

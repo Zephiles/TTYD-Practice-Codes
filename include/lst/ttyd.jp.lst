@@ -2805,6 +2805,20 @@
 // w_atan2.c
 8026C588:atan2
 
+// snd3d.c
+// 80285D6C:CalcEmitter
+// 802863E8:sndUpdateEmitter
+// 802864C0:sndCheckEmitter
+802864E0:sndRemoveEmitter
+// 80286588:sndEmitterVoiceID
+// 802865E4:s3dKillAllEmitter
+// 8028669C:s3dKillEmitterByFXID
+// 80286798:sndUpdateListener
+// 8028690C:AddStartingEmitter
+// 80286A60:StartContinousEmitters
+// 80287354:s3dHandle
+// 80287A7C:s3dInit
+
 // OSAlloc.c
 // text
 802903E8:DLInsert

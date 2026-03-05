@@ -20,6 +20,7 @@
 #include "menus/warpsMenu.h"
 #include "misc/functionHooks.h"
 #include "misc/utils.h"
+#include "musyx/snd3d.h"
 #include "ttyd/mariost.h"
 #include "ttyd/seq_title.h"
 #include "ttyd/seq_load.h"
@@ -115,6 +116,10 @@ void init()
     // For allowing the Arbitrary Memory Write glitch to work with current builds of the Practice Codes, as well as for
     // disabling the random chance for it to fail
     g_psndSFXOff_trampoline = hookFunctionArena(psndSFXOff, psndSFXOff_Work);
+
+    // For preventing the Arbitrary Memory Write glitch from causing a crash with certain coordinates when `sndRemoveEmitter`
+    // runs, as the coordinates may not necessary cause a crash in the vanilla game
+    g_sndRemoveEmitter_trampoline = hookFunctionArena(sndRemoveEmitter, sndRemoveEmitter_Work);
 
     // For preventing being able to reload the current room and starting a battle at the same time, as this will cause the game
     // to softlock
