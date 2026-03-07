@@ -52,7 +52,7 @@ void displaysArbitraryMemoryWriteInit(Menu *menuPtr)
     menuPtr->setFlag(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO);
 }
 
-static void drawArbitraryMemoryWriteAdjustXNautPositionInfo()
+static void drawArbitraryMemoryWriteExtraInfo()
 {
     // Get the text position for the top-left of the window eight lines under the main text to account for the main info already
     // drawn
@@ -106,7 +106,7 @@ static void draw(CameraId cameraId, void *user)
     drawGenericDisplayInfo();
 
     // Draw the extra info for the Arbitrary Memory Write display
-    drawArbitraryMemoryWriteAdjustXNautPositionInfo();
+    drawArbitraryMemoryWriteExtraInfo();
 
     // Draw the button combo editor if applicable
     ButtonComboEditor *buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr();
