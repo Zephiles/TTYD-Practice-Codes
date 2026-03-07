@@ -97,14 +97,14 @@ enum DisplaysEnabledFlag
 #endif
 
 #ifdef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP,
+    DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX,
 
 #ifdef TTYD_JP
-    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION,
-    DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR,
+    DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION,
+    DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR,
 #endif
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
@@ -153,7 +153,7 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP,
 
 #ifdef TTYD_JP
-    DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
@@ -176,15 +176,15 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_PAUSED,        // Palace Skip, Palace Skip Minimal
 
 #ifdef TTYD_JP
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED, // AMW - Spin Jump method
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED,  // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED, // Arbitrary Memory Write
+    DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED,  // Arbitrary Memory Write
 
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED, // AMW - Spin Jump method
-    DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER, // AMW - Spin Jump method
+    DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED, // Arbitrary Memory Write
+    DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER, // Arbitrary Memory Write
 #endif
 
-    DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED, // Jabbi Hive Skip; either D-Pad Left or A was
-                                                                               // pressed for opening the pause menu
+    // Jabbi Hive Skip; either D-Pad Left or A was pressed for opening the pause menu
+    DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_BUTTON_PRESSED,
 
     DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_INITIAL_OPEN_PAUSE_MENU_FRAMES_STOPPED, // Jabbi Hive Skip
     DISPLAYS_MISC_FLAG_JABBI_HIVE_SKIP_PAUSE_MENU_OPEN_FRAMES_STOPPED,         // Jabbi Hive Skip
@@ -234,7 +234,7 @@ enum DisplaysShouldDrawFlag
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
 
 #ifdef TTYD_JP
-    DISPLAYS_SHOULD_DRAW_FLAG_AMW_SPIN_JUMP,
+    DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_SHOULD_DRAW_FLAG_JABBI_HIVE_SKIP,
@@ -264,7 +264,7 @@ enum DisplaysWithButtonCombo
     DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP,
 
 #ifdef TTYD_JP
-    DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP,
+    DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_BUTTON_COMBO_MAX_VALUE, // Don't use this directly other than for defines
@@ -702,11 +702,11 @@ class PalaceSkipDisplay
 };
 
 #ifdef TTYD_JP
-class AMWSpinJumpDisplay
+class ArbitraryMemoryWriteDisplay
 {
    public:
-    AMWSpinJumpDisplay() {}
-    ~AMWSpinJumpDisplay() {}
+    ArbitraryMemoryWriteDisplay() {}
+    ~ArbitraryMemoryWriteDisplay() {}
 
     uint32_t getPauseTimer() const { return this->pauseTimer; }
     void setPauseTimer(uint32_t time) { this->pauseTimer = static_cast<uint16_t>(time); }
@@ -1153,7 +1153,7 @@ class Displays
     PalaceSkipDisplay *getPalaceSkipDisplayPtr() { return &this->palaceSkip; }
 
 #ifdef TTYD_JP
-    AMWSpinJumpDisplay *getAMWSpinJumpDisplay() { return &this->amwSpinJumpDisplay; }
+    ArbitraryMemoryWriteDisplay *getArbitraryMemoryWriteDisplayPtr() { return &this->arbitraryMemoryWriteDisplay; }
 #endif
 
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
@@ -1189,7 +1189,7 @@ class Displays
     PalaceSkipDisplay palaceSkip;
 
 #ifdef TTYD_JP
-    AMWSpinJumpDisplay amwSpinJumpDisplay;
+    ArbitraryMemoryWriteDisplay arbitraryMemoryWriteDisplay;
 #endif
 
     JabbiHiveSkipDisplay jabbiHiveSkip;

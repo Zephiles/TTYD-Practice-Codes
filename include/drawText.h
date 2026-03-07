@@ -22,6 +22,7 @@ enum class TextAlignment
 #define COLOR_BLACK 0x00000000
 #define COLOR_GRAYED_OUT 0x4B4B4B00
 #define COLOR_BLUE 0x5B59DE00
+#define COLOR_LIGHT_BLUE 0x52B2FF00
 #define COLOR_GREEN 0x1BBE2300
 #define COLOR_RED 0xFF141400
 #define COLOR_LIGHT_ORANGE 0xE6B22D00
@@ -44,6 +45,11 @@ inline uint32_t getColorGrayedOut(uint8_t alpha)
 inline uint32_t getColorBlue(uint8_t alpha)
 {
     return COLOR_BLUE | alpha;
+}
+
+inline uint32_t getColorLightBlue(uint8_t alpha)
+{
+    return COLOR_LIGHT_BLUE | alpha;
 }
 
 inline uint32_t getColorGreen(uint8_t alpha)

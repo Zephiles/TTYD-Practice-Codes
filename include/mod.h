@@ -36,7 +36,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.1.3-dev3"
+#define VERSION_STRING "v4.1.3-dev4"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -80,7 +80,7 @@ enum ModFlag
     // Misc flags
     MOD_FLAG_MENU_IS_HIDDEN = 0,
     MOD_FLAG_CHANGING_BUTTON_COMBO,
-    MOD_FLAG_PERFORMING_AMW_GLITCH,
+    MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE,
     MOD_FLAG_SYSTEM_LEVEL,
     MOD_FLAG_CLEAR_MARIO_STATS,
     MOD_FLAG_CLEAR_PARTNER_STATS,

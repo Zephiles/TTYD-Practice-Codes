@@ -13,15 +13,15 @@
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
-static void selectedOptionAdjustZCoordinateColor(Menu *menuPtr);
+static void selectedOptionAdjustXAndZCoordinatesColor(Menu *menuPtr);
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr);
 
 static const MenuOption gOptions[] {
     "Turn On/Off",
     selectedOptionTurnOnOff,
 
-    "Adjust Z Coordinate's Text Color",
-    selectedOptionAdjustZCoordinateColor,
+    "Adjust X and Z Coordinates' Text Color",
+    selectedOptionAdjustXAndZCoordinatesColor,
 
     "Adjust X-Naut's Position",
     selectedOptionAdjustXNautPosition,
@@ -40,7 +40,7 @@ static const MenuFunctions gFuncs = {
     nullptr, // Exit function not needed
 };
 
-void displaysMenuAMWSpinJumpGreatTreeInit(Menu *menuPtr)
+void displaysArbitraryMemoryWriteInit(Menu *menuPtr)
 {
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
@@ -52,7 +52,7 @@ void displaysMenuAMWSpinJumpGreatTreeInit(Menu *menuPtr)
     menuPtr->setFlag(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO);
 }
 
-static void drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo()
+static void drawArbitraryMemoryWriteAdjustXNautPositionInfo()
 {
     // Get the text position for the top-left of the window eight lines under the main text to account for the main info already
     // drawn
@@ -67,16 +67,16 @@ static void drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo()
     const float posX = tempPosX;
     float posY = tempPosY;
 
-    // Draw the Adjust Z Coordinate's Color text
-    drawText("Adjust Z Coordinate's Text Color", posX, posY, scale, getColorWhite(0xFF));
+    // Draw the Adjust X and Z Coordinates' Color text
+    drawText("Adjust X and Z Coordinates' Text Color", posX, posY, scale, getColorWhite(0xFF));
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
-    // Draw whether the Z Coordinate's color should be adjusted
+    // Draw whether the X and Z Coordinates' color should be adjusted
     const Displays *displaysPtr = gDisplays;
 
-    const bool changeZCoordinateColor =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
+    const bool changeZCoordinateColor = displaysPtr->enabledFlagIsSet(
+        DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 
     uint32_t color;
     const char *onOffText;
@@ -91,7 +91,7 @@ static void drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo()
 
     // Draw whether the X-Naut's position should be adjusted
     const bool adjustXNautPosition =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
 
     getYesNoTextAndColor(adjustXNautPosition, &onOffText, &color, 0xFF);
     drawText(onOffText, posX, posY, scale, color);
@@ -102,11 +102,11 @@ static void draw(CameraId cameraId, void *user)
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
 
-    // Draw the main info for the AMW Spin Jump display
+    // Draw the main info for the Arbitrary Memory display
     drawGenericDisplayInfo();
 
-    // Draw whether or not the X-Naut's position should be adjusted
-    drawAMWSpinJumpGreatTreeAdjustXNautPositionInfo();
+    // Draw the extra info for the Arbitrary Memory Write display
+    drawArbitraryMemoryWriteAdjustXNautPositionInfo();
 
     // Draw the button combo editor if applicable
     ButtonComboEditor *buttonComboEditorPtr = gDisplaysMenu->getButtonComboEditorPtr();
@@ -120,21 +120,22 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
 }
 
-static void selectedOptionAdjustZCoordinateColor(Menu *menuPtr)
+static void selectedOptionAdjustXAndZCoordinatesColor(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
+    displaysMenuToggleEnabledFlag(
+        DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 }
 
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
 }
 
 #endif

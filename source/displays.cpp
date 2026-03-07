@@ -125,7 +125,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
 
 #ifdef TTYD_JP
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP:
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
 #endif
         {
             // Disable all of the trick display flags
@@ -137,7 +137,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
 #ifdef TTYD_JP
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
 #endif
             // Enable the current trick display flag
             this->setEnabledFlag(enabledFlag);
@@ -282,9 +282,9 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
 #ifdef TTYD_JP
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP);
-    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
-    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 #endif
 
     // Set default displays misc flags enabled
@@ -295,8 +295,8 @@ Displays::Displays()
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_STOPPED);
 
 #ifdef TTYD_JP
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
+    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
 #endif
 
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_UP_RIGHT_TIMER_STOPPED);
@@ -325,7 +325,7 @@ Displays::Displays()
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP, PadInput::PAD_B);
 
 #ifdef TTYD_JP
-    this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP, PadInput::PAD_Y);
+    this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE, PadInput::PAD_Y);
 #endif
 
     // Set default positions and scales for certain displays when drawing them manually
@@ -482,8 +482,10 @@ Displays::Displays()
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
 #ifdef TTYD_JP
-    // AMW - Spin Jump
-    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP];
+    // Arbitrary Memory Write
+    manuallyPositionPtr =
+        &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE];
+
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
@@ -2614,48 +2616,87 @@ static void handlePalaceSkip(Displays *displaysPtr)
 }
 
 #ifdef TTYD_JP
-static void drawAMWSpinJump(CameraId cameraId, void *user)
+static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
 
     Displays *displaysPtr = gDisplays;
-    AMWSpinJumpDisplay *amwSpinJumpPtr = displaysPtr->getAMWSpinJumpDisplay();
+    ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
 
     // Increment the pause timer if it is not stopped, since it needs to be done sometime in this function anyway, and it
     // doesn't matter when
-    const uint32_t pauseTimer = amwSpinJumpPtr->getPauseTimer();
-    if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED))
+    const uint32_t pauseTimer = amwDisplayPtr->getPauseTimer();
+    if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED))
     {
-        amwSpinJumpPtr->setPauseTimer(pauseTimer + 1);
+        amwDisplayPtr->setPauseTimer(pauseTimer + 1);
     }
 
     // Increment the Spin Jump timer if it is not stopped, since it needs to be done sometime in this function anyway, and it
     // doesn't matter when
-    const uint32_t spinJumpTimer = amwSpinJumpPtr->getSpinJumpTimer();
-    if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED))
+    const uint32_t spinJumpTimer = amwDisplayPtr->getSpinJumpTimer();
+    if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED))
     {
-        amwSpinJumpPtr->setSpinJumpTimer(spinJumpTimer + 1);
+        amwDisplayPtr->setSpinJumpTimer(spinJumpTimer + 1);
     }
 
     // Get the position and scale for the text
     DisplayManuallyPosition data;
 
     getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_BOTTOM_LEFT,
-                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP,
+                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
                           &data);
 
-    // Get the color to use for the Z coordinate
-    const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioGetPtr()->playerPosition.z);
-    const uint32_t marioPosZ = *marioPosZPtr;
+    // If the flag for adjusting the texts' color is set, then get the color to use for the X and Z coordinates
+    const uint32_t *marioPosPtr = reinterpret_cast<const uint32_t *>(&marioGetPtr()->playerPosition);
+    uint32_t posXColor = getColorWhite(0xFF);
     uint32_t posZColor = getColorWhite(0xFF);
 
-    // Only use a different color if currently doing the Super Boots method
-    if (compareStringToNextMap("mri_20"))
+    if (displaysPtr->enabledFlagIsSet(
+            DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR))
     {
-        // If the flag for adjusting the text color is set, then check if it should be changed from white to a different color
-        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_Z_COORDINATE_COLOR))
+        if (compareStringToNextMap("aji_13")) // X-Naut Fortress - Factory Room
         {
+            const uint32_t marioPosX = marioPosPtr[0];
+            const uint32_t marioPosZ = marioPosPtr[2];
+
+            if (marioPosZ == 0x42D8CB70)
+            {
+                // Setting up by the door
+                posZColor = getColorLightBlue(0xFF);
+
+                if (marioPosX == 0xC42E0055)
+                {
+                    // Moved right one frame
+                    posXColor = getColorLightOrange(0xFF);
+                }
+            }
+            else if (marioPosZ == 0x425A06E3)
+            {
+                // At the required postion for the AMW
+                posZColor = getColorBlue(0xFF);
+            }
+            else if (marioPosX == 0xC42C8003)
+            {
+                // At correct X coordinate, going to move against the top wall
+                posXColor = getColorLightBlue(0xFF);
+
+                if (marioPosZ == 0x42414455)
+                {
+                    // Against top wall in Paper Mode
+                    posZColor = getColorLightOrange(0xFF);
+                }
+                else if (marioPosZ == 0x424606E5)
+                {
+                    // Moved two frames down from the top wall
+                    posZColor = getColorGreen(0xFF);
+                }
+            }
+        }
+        else if (compareStringToNextMap("mri_20")) // The Great Tree - AMW Room
+        {
+            const uint32_t marioPosZ = marioPosPtr[2];
+
             if (marioPosZ == 0xC25A5307) // 1st pause
             {
                 posZColor = getColorLightOrange(0xFF);
@@ -2668,15 +2709,17 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
     }
 
     // Get the text
-    char buf[64];
+    char buf[96];
 
     snprintf(buf,
              sizeof(buf),
-             "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32,
+             "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos X: <col %" PRIx32 ">0x%08" PRIX32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32,
              pauseTimer,
              spinJumpTimer,
+             posXColor,
+             marioPosPtr[0],
              posZColor,
-             marioPosZ);
+             marioPosPtr[2]);
 
     // Properly position the text
     float posY = data.getPosY();
@@ -2687,36 +2730,36 @@ static void drawAMWSpinJump(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, getColorWhite(0xFF));
 }
 
-static void handleAMWSpinJump(Displays *displaysPtr)
+static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 {
-    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE))
     {
         return;
     }
 
-    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_AMW_SPIN_JUMP);
+    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE);
 
     // Only allow handling if the enabled flag is set
-    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE))
     {
         return;
     }
 
-    AMWSpinJumpDisplay *amwSpinJumpPtr = displaysPtr->getAMWSpinJumpDisplay();
+    ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
 
     if ((marioStGetSystemLevel() & 15) == 15)
     {
         // Stop the pause timer upon pausing
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED);
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED);
     }
-    else if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED) &&
+    else if (displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED) &&
              systemLevelIsZero())
     {
         // Reset and start the pause timer when unpausing
-        amwSpinJumpPtr->resetPauseTimer();
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_PAUSED);
+        amwDisplayPtr->resetPauseTimer();
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED);
     }
 
     const Player *marioPtr = marioGetPtr();
@@ -2725,125 +2768,128 @@ static void handleAMWSpinJump(Displays *displaysPtr)
     // Check if the Spin Jump timer should be started
     if (marioCurrentMotion == MarioMotion::kHip)
     {
-        if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER))
+        if (!displaysPtr->miscFlagIsSet(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER))
         {
             // Reset and start the Spin Jump timer
-            amwSpinJumpPtr->resetSpinJumpTimer();
-            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
+            amwDisplayPtr->resetSpinJumpTimer();
+            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
+            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
         }
     }
     else if (marioCurrentMotion == MarioMotion::kJump)
     {
         // Just started another jump, so reset and stop the Spin Jump timer, as well as clear the flag for successfully
         // performing the trick
-        amwSpinJumpPtr->resetSpinJumpTimer();
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
+        amwDisplayPtr->resetSpinJumpTimer();
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
     }
 
     // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
     if ((marioCurrentMotion == MarioMotion::kJumpNPC) || (seqGetNextSeq() == SeqIndex::kBattle))
     {
         // Stop the timers when Mario lands a jump/ or spin jump on an enemy, or when a battle has been initialized
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
-        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+        displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
+        displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
     }
 
-    if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP))
+    if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE))
     {
         // Hold the button combo to increment the reset counter
-        uint32_t counter = amwSpinJumpPtr->getCounter();
-        amwSpinJumpPtr->setCounter(++counter);
+        uint32_t counter = amwDisplayPtr->getCounter();
+        amwDisplayPtr->setCounter(++counter);
 
         if (counter > sysMsec2Frame(2000))
         {
             // Reset the timers when the button combo is held for 2 seconds
-            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_PAUSE_TIMER_STOPPED);
-            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_SPIN_JUMP_TIMER_STOPPED);
-            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_AMW_SPIN_JUMP_STARTED_SPIN_JUMP_TIMER);
-            amwSpinJumpPtr->resetTimers();
-            amwSpinJumpPtr->resetCounter();
+            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+            displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
+            displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
+            amwDisplayPtr->resetTimers();
+            amwDisplayPtr->resetCounter();
         }
     }
     else
     {
-        amwSpinJumpPtr->resetCounter();
+        amwDisplayPtr->resetCounter();
     }
 
-    // If the player is currently in the room where the trick is performed with the flag enabled for adjusting the X-Naut's
-    // position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the trick. Also need
-    // to make sure they player is not currently in a battle when doing this.
-    const bool adjustXNautPosition =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP_ADJUST_XNAUT_POSITION);
-
-    if (adjustXNautPosition && compareStringToNextMap("mri_20") && !getBattleWorkPtr())
+    // If the player is currently in the room in the Great Tree where the trick is performed with the flag enabled for adjusting
+    // the X-Naut's position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the
+    // trick. Also need to make sure they player is not currently in a battle when doing this.
+    if (compareStringToNextMap("mri_20"))
     {
-        NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
-        Vec3 *xNautPosPtr = &xNautPtr->position;
+        const bool adjustXNautPosition = displaysPtr->enabledFlagIsSet(
+            DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
 
-        // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates that
-        // they have gotten to the correct position and that they are ready to do the Spin Jump
-        const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition.z);
-
-        if ((*marioPosZPtr == 0xC25A06E3) && (marioCurrentMotion != MarioMotion::kSlit))
+        if (adjustXNautPosition && !getBattleWorkPtr())
         {
-            // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate,
-            // in which the base coordinate is 0 with it being up to 100 units forwards or backwards
-            Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
-            const float xNautPosX = xNautPosPtr->x;
+            NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
+            Vec3 *xNautPosPtr = &xNautPtr->position;
 
-            if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
+            // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates
+            // that they have gotten to the correct position and that they are ready to do the Spin Jump
+            const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition.z);
+
+            if ((*marioPosZPtr == 0xC25A06E3) && (marioCurrentMotion != MarioMotion::kSlit))
             {
-                // Set the X-Naut's new position and reset where it's trying to walk to
-                xNautPosPtr->x = 5.f;
-                xNautDestinationPtr->x = 5.f;
+                // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z
+                // coordinate, in which the base coordinate is 0 with it being up to 100 units forwards or backwards
+                Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
+                const float xNautPosX = xNautPosPtr->x;
 
-                const int32_t randomPosZ = (irand(2000) / 10) - 100;
-                const float xNautNewZPos = intToFloat(randomPosZ);
+                if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
+                {
+                    // Set the X-Naut's new position and reset where it's trying to walk to
+                    xNautPosPtr->x = 5.f;
+                    xNautDestinationPtr->x = 5.f;
 
-                xNautPosPtr->z = xNautNewZPos;
-                xNautDestinationPtr->z = xNautNewZPos;
+                    const int32_t randomPosZ = (irand(2000) / 10) - 100;
+                    const float xNautNewZPos = intToFloat(randomPosZ);
+
+                    xNautPosPtr->z = xNautNewZPos;
+                    xNautDestinationPtr->z = xNautNewZPos;
+                }
+                else
+                {
+                    // The X-Naut has been moved already, so make sure they don't wander too far away
+                    bool manuallyMoved = false;
+
+                    if (xNautPosX < -5.f)
+                    {
+                        xNautPosPtr->x = 5.f;
+                        manuallyMoved = true;
+                    }
+
+                    const float xNautPosZ = xNautPosPtr->z;
+                    if (xNautPosZ < -110.f)
+                    {
+                        xNautPosPtr->z = -100.f;
+                        manuallyMoved = true;
+                    }
+                    else if (xNautPosZ > 110.f)
+                    {
+                        xNautPosPtr->z = 100.f;
+                        manuallyMoved = true;
+                    }
+
+                    if (manuallyMoved)
+                    {
+                        // Had to manually move the X-Naut, so set their destination to the current position to stop them from
+                        // walking infinitely
+                        xNautDestinationPtr->x = xNautPosPtr->x;
+                        xNautDestinationPtr->z = xNautPosPtr->z;
+                    }
+                }
             }
             else
             {
-                // The X-Naut has been moved already, so make sure they don't wander too far away
-                bool manuallyMoved = false;
-
-                if (xNautPosX < -5.f)
-                {
-                    xNautPosPtr->x = 5.f;
-                    manuallyMoved = true;
-                }
-
-                const float xNautPosZ = xNautPosPtr->z;
-                if (xNautPosZ < -110.f)
-                {
-                    xNautPosPtr->z = -100.f;
-                    manuallyMoved = true;
-                }
-                else if (xNautPosZ > 110.f)
-                {
-                    xNautPosPtr->z = 100.f;
-                    manuallyMoved = true;
-                }
-
-                if (manuallyMoved)
-                {
-                    // Had to manually move the X-Naut, so set their destination to the current position to stop them from
-                    // walking infinitely
-                    xNautDestinationPtr->x = xNautPosPtr->x;
-                    xNautDestinationPtr->z = xNautPosPtr->z;
-                }
+                // The player is not at the correct Z coordinate and/or they are still in Paper Mode, so place the X-Naut in the
+                // bottom-left corner of the room
+                xNautPosPtr->x = -295.404053f;
+                xNautPosPtr->z = 169.766129f;
             }
-        }
-        else
-        {
-            // The player is not at the correct Z coordinate and/or they are still in Paper Mode, so place the X-Naut in the
-            // bottom-left corner of the room
-            xNautPosPtr->x = -295.404053f;
-            xNautPosPtr->z = 169.766129f;
         }
     }
 }
@@ -3894,7 +3940,7 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
     drawPalaceSkip,
 
 #ifdef TTYD_JP
-    drawAMWSpinJump,
+    drawArbitraryMemoryWrite,
 #endif
 
     drawJabbiHiveSkip,
@@ -3951,7 +3997,7 @@ static const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
     handlePalaceSkip,
 
 #ifdef TTYD_JP
-    handleAMWSpinJump,
+    handleArbitraryMemoryWrite,
 #endif
 
     handleJabbiHiveSkip,

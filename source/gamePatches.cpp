@@ -165,7 +165,7 @@ int32_t cCrashScreenDecrementYPos()
 
 uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags)
 {
-    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         return flags;
     }
@@ -176,7 +176,7 @@ uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags)
 
 uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw)
 {
-    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         return pointerRaw;
     }
@@ -483,7 +483,7 @@ static void fixMapProblems() // Gets called in initStageEvents
 #ifdef TTYD_JP
         // Should avoid adjusting GW(11) if the AMW display is enabled, as GW(11) needs to be a specific value for the AMW to
         // work
-        if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP))
+        if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE))
         {
 #endif
             setGW(11, 0);
@@ -556,20 +556,20 @@ void psndSFXOff_Work(int32_t flags)
 
     // Set the flag to indicate that the glitch is being performed
     Mod *modPtr = gMod;
-    modPtr->setFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    modPtr->setFlag(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE);
 
     // Call the original function
     g_psndSFXOff_trampoline(flags);
 
     // Clear the flag now that the glitch has been performed
-    modPtr->clearFlag(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH);
+    modPtr->clearFlag(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE);
 }
 
 bool sndRemoveEmitter_Work(void *em)
 {
     // If the AMW glitch is being performed, then don't allow the original function to run, as certain coordinates may cause a
     // crash in this function that may not necessarily crash in the vanilla game
-    if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_AMW_GLITCH))
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         return false;
     }

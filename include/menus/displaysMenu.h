@@ -35,7 +35,7 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
 
 #ifdef TTYD_JP
-    DISPLAYS_MENU_AMW_SPIN_JUMP,
+    DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_MENU_JABBI_HIVE_SKIP,
@@ -155,8 +155,8 @@ void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
 void displaysAdjustManualPositionInit(Menu *menuPtr);
 
 #ifdef TTYD_JP
-// displaysAMWSpinJumpGreatTree
-void displaysMenuAMWSpinJumpGreatTreeInit(Menu *menuPtr);
+// displaysArbitraryMemoryWrite
+void displaysArbitraryMemoryWriteInit(Menu *menuPtr);
 #endif
 
 #endif

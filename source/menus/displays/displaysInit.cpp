@@ -72,8 +72,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     displaysMenuGenericHasButtonComboInit,
 
 #ifdef TTYD_JP
-    "AMW - Spin Jump - The Great Tree",
-    displaysMenuAMWSpinJumpGreatTreeInit,
+    "Arbitrary Memory Write",
+    displaysArbitraryMemoryWriteInit,
 #endif
 
     "Jabbi Hive Skip",
@@ -261,9 +261,9 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         }
 
 #ifdef TTYD_JP
-        case DisplaysMenuOptions::DISPLAYS_MENU_AMW_SPIN_JUMP:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_AMW_SPIN_JUMP;
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE;
         }
 #endif
 
@@ -353,9 +353,9 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         }
 
 #ifdef TTYD_JP
-        case DisplaysMenuOptions::DISPLAYS_MENU_AMW_SPIN_JUMP:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_AMW_SPIN_JUMP;
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE;
         }
 #endif
 
@@ -405,9 +405,9 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
         }
 
 #ifdef TTYD_JP
-        case DisplaysMenuOptions::DISPLAYS_MENU_AMW_SPIN_JUMP:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
-            return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_AMW_SPIN_JUMP;
+            return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE;
         }
 #endif
 
