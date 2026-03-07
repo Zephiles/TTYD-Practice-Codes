@@ -2660,7 +2660,13 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
             const uint32_t marioPosX = marioPosPtr[0];
             const uint32_t marioPosZ = marioPosPtr[2];
 
-            if (marioPosZ == 0x42D8CB70)
+            // Need to do 0x425A06E3 comparison first or it breaks for some reason
+            if (marioPosZ == 0x425A06E3)
+            {
+                // At the required postion for the AMW
+                posZColor = getColorBlue(0xFF);
+            }
+            else if (marioPosZ == 0x42D8CB70)
             {
                 // Setting up by the door
                 posZColor = getColorLightBlue(0xFF);
@@ -2670,11 +2676,6 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
                     // Moved right one frame
                     posXColor = getColorLightOrange(0xFF);
                 }
-            }
-            else if (marioPosZ == 0x425A06E3)
-            {
-                // At the required postion for the AMW
-                posZColor = getColorBlue(0xFF);
             }
             else if (marioPosX == 0xC42C8003)
             {
