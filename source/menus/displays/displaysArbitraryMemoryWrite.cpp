@@ -102,7 +102,7 @@ static void draw(CameraId cameraId, void *user)
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
 
-    // Draw the main info for the Arbitrary Memory display
+    // Draw the main info for the Arbitrary Memory Write display
     drawGenericDisplayInfo();
 
     // Draw the extra info for the Arbitrary Memory Write display
