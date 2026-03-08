@@ -5,23 +5,49 @@
 #include <cstdint>
 #include <cstdarg>
 
-struct WriteFormatterFnData
+struct PrintfWriteData
 {
     char *buffer;
-    std::size_t maxLength;
-    std::size_t charsWritten;
+    size_t maxLength;
+    size_t charsWritten;
 } __attribute__((__packed__));
 
-static_assert(sizeof(WriteFormatterFnData) == 0xC);
+static_assert(sizeof(PrintfWriteData) == 0xC);
 
-// The return type seems to differ depending on which function is used, and currently the function does not need to be called
-// directly, so just set it to void pointer for now
-typedef void *(*WriteFormatterFn)(WriteFormatterFnData *data, const char *string, std::size_t length);
+typedef bool (*PrintfWriteFunc)(PrintfWriteData *data, const char *string, size_t length);
 
 extern "C"
 {
-    void *__StringWrite(WriteFormatterFnData *data, const char *string, std::size_t length);
-    int32_t __pformatter(WriteFormatterFn writeFunc, WriteFormatterFnData *data, const char *format, va_list args);
+    bool __StringWrite(PrintfWriteData *data, const char *string, size_t length);
+    int32_t __pformatter(PrintfWriteFunc writeFunc, PrintfWriteData *data, const char *format, va_list args);
+}
+
+// Set up an inlined copy of `vsnprintf` to be used for both `snprintf` and `vsnprintf`, as if only one of these is being used
+// in the project, then it's more memory-efficient to use the inlined copy rather than having `snprintf` call `vsnprintf`.
+__attribute__((always_inline)) inline int __vsnprintf(char *buffer, size_t maxLength, const char *format, va_list args)
+{
+    // Make sure buffer and maxLength are valid before doing anything
+    if (!buffer || (static_cast<int32_t>(maxLength) <= 0))
+    {
+        return -1;
+    }
+
+    PrintfWriteData data;
+    data.buffer = buffer;
+    data.maxLength = maxLength;
+    data.charsWritten = 0;
+
+    const int32_t ret = __pformatter(__StringWrite, &data, format, args);
+
+    // __pformatter does not write a null terminator, so it must be written manually
+    int32_t maxIndex = maxLength - 1;
+    if (ret < maxIndex)
+    {
+        maxIndex = ret;
+    }
+    buffer[maxIndex] = '\0';
+
+    return ret;
 }
 
 #endif
