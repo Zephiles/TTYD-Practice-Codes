@@ -13,15 +13,15 @@
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
-static void selectedOptionAdjustXAndZCoordinatesColor(Menu *menuPtr);
+static void selectedOptionAdjustXAndZCoordinatesColors(Menu *menuPtr);
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr);
 
 static const MenuOption gOptions[] {
     "Turn On/Off",
     selectedOptionTurnOnOff,
 
-    "Adjust X and Z Coordinates' Text Color",
-    selectedOptionAdjustXAndZCoordinatesColor,
+    "Adjust X and Z Coordinates' Text Colors",
+    selectedOptionAdjustXAndZCoordinatesColors,
 
     "Adjust X-Naut's Position",
     selectedOptionAdjustXNautPosition,
@@ -67,12 +67,12 @@ static void drawArbitraryMemoryWriteExtraInfo()
     const float posX = tempPosX;
     float posY = tempPosY;
 
-    // Draw the Adjust X and Z Coordinates' Color text
-    drawText("Adjust X and Z Coordinates' Text Color", posX, posY, scale, getColorWhite(0xFF));
+    // Draw the Adjust X and Z Coordinates' Colors text
+    drawText("Adjust X and Z Coordinates' Text Colors", posX, posY, scale, getColorWhite(0xFF));
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
     posY -= lineDecrement;
 
-    // Draw whether the X and Z Coordinates' color should be adjusted
+    // Draw whether the X and Z Coordinates' colors should be adjusted
     const Displays *displaysPtr = gDisplays;
 
     const bool changeZCoordinateColor = displaysPtr->enabledFlagIsSet(
@@ -123,7 +123,7 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
     displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
 }
 
-static void selectedOptionAdjustXAndZCoordinatesColor(Menu *menuPtr)
+static void selectedOptionAdjustXAndZCoordinatesColors(Menu *menuPtr)
 {
     (void)menuPtr;
 
