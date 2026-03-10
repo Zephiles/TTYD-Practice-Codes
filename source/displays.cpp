@@ -2666,6 +2666,17 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
                 // At the required postion for the AMW
                 posZColor = getColorBlue(0xFF);
             }
+            else if (marioPosZ == 0x431261E6)
+            {
+                // At the far bottom wall after moving down from the pipe
+                posZColor = getColorLightOrange(0xFF);
+
+                if (marioPosX == 0xC42E2055)
+                {
+                    // At the bottom-left corner after moving left
+                    posXColor = getColorLightOrange(0xFF);
+                }
+            }
             else if (marioPosZ == 0x42D8CB70)
             {
                 // Setting up by the door
@@ -2679,10 +2690,20 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
             }
             else if (marioPosX == 0xC42C8003)
             {
-                // At correct X coordinate, going to move against the top wall
+                // At correct X coordinate, going to adjust Z coordinate, and then going to move against the top wall
                 posXColor = getColorLightBlue(0xFF);
 
-                if (marioPosZ == 0x42414455)
+                if (marioPosZ == 0x42D8D07C)
+                {
+                    // First Z coordinate adjustment, unspun from Paper Mode
+                    posZColor = getColorLightOrange(0xFF);
+                }
+                else if (marioPosZ == 0x42D8D2DB)
+                {
+                    // Second Z coordinate adjustment, unspun from Paper Mode
+                    posZColor = getColorLightBlue(0xFF);
+                }
+                else if (marioPosZ == 0x42414455)
                 {
                     // Against top wall in Paper Mode
                     posZColor = getColorLightOrange(0xFF);
@@ -2698,12 +2719,14 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
         {
             const uint32_t marioPosZ = marioPosPtr[2];
 
-            if (marioPosZ == 0xC25A5307) // 1st pause
+            if (marioPosZ == 0xC25A5307)
             {
+                // At the required postion to start moving left
                 posZColor = getColorLightOrange(0xFF);
             }
-            else if (marioPosZ == 0xC25A06E3) // 2nd pause
+            else if (marioPosZ == 0xC25A06E3)
             {
+                // At the required postion for the AMW
                 posZColor = getColorGreen(0xFF);
             }
         }
