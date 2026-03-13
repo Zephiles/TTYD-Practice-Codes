@@ -2817,7 +2817,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 #ifdef TTYD_JP
     const bool landedJump = marioCurrentMotion == MarioMotion::kJumpNPC;
 #else
-    const bool landedJump = false;
+    constexpr bool landedJump = false;
 #endif
 
     if (landedJump || (seqGetNextSeq() == SeqIndex::kBattle))
