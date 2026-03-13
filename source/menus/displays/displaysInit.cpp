@@ -71,10 +71,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Palace Skip (Minimal)",
     displaysMenuGenericHasButtonComboInit,
 
-#ifdef TTYD_JP
     "Arbitrary Memory Write",
     displaysArbitraryMemoryWriteInit,
-#endif
 
     "Jabbi Hive Skip",
     displaysMenuGenericHasButtonComboInit,
@@ -259,14 +257,10 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL;
         }
-
-#ifdef TTYD_JP
         case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE;
         }
-#endif
-
         case DisplaysMenuOptions::DISPLAYS_MENU_JABBI_HIVE_SKIP:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP;
@@ -351,14 +345,10 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP_MINIMAL;
         }
-
-#ifdef TTYD_JP
         case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE;
         }
-#endif
-
         case DisplaysMenuOptions::DISPLAYS_MENU_JABBI_HIVE_SKIP:
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP;
@@ -403,14 +393,10 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP_MINIMAL;
         }
-
-#ifdef TTYD_JP
         case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE:
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE;
         }
-#endif
-
         case DisplaysMenuOptions::DISPLAYS_MENU_JABBI_HIVE_SKIP:
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP;

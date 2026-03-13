@@ -1244,12 +1244,7 @@ static_assert(sizeof(MiscSettingsData) == 0x8);
 static_assert(sizeof(CheatsSettingsHeader) == 0x8);
 static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
-
-#ifdef TTYD_JP
 static_assert(sizeof(DisplaysSettingsData) == 0x114);
-#else
-static_assert(sizeof(DisplaysSettingsData) == 0x100);
-#endif
 
 static_assert(sizeof(MemoryWatchesSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryWatchesSettingsData) == 0x24); // Excludes addressOffsets

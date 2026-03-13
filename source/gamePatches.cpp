@@ -480,16 +480,13 @@ static void fixMapProblems() // Gets called in initStageEvents
     {
         // Prevent the game from crashing if the conveyor belt has not been activated
         // Set GW(11) to 0 upon entering the room to prevent the crash
-#ifdef TTYD_JP
+
         // Should avoid adjusting GW(11) if the AMW display is enabled, as GW(11) needs to be a specific value for the AMW to
         // work
         if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE))
         {
-#endif
             setGW(11, 0);
-#ifdef TTYD_JP
         }
-#endif
     }
     else if (compareStringToNextMap("las_08"))
     {

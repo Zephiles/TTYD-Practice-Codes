@@ -1,5 +1,3 @@
-#ifdef TTYD_JP
-
 #include "menuUtils.h"
 #include "drawText.h"
 #include "displays.h"
@@ -14,7 +12,10 @@
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
 static void selectedOptionAdjustXAndZCoordinatesColors(Menu *menuPtr);
+
+#ifdef TTYD_JP
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr);
+#endif
 
 static const MenuOption gOptions[] {
     "Turn On/Off",
@@ -23,8 +24,10 @@ static const MenuOption gOptions[] {
     "Adjust X and Z Coordinates' Text Colors",
     selectedOptionAdjustXAndZCoordinatesColors,
 
+#ifdef TTYD_JP
     "Adjust X-Naut's Position",
     selectedOptionAdjustXNautPosition,
+#endif
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
@@ -83,6 +86,8 @@ static void drawArbitraryMemoryWriteExtraInfo()
 
     getYesNoTextAndColor(changeZCoordinateColor, &onOffText, &color, 0xFF);
     drawText(onOffText, posX, posY, scale, color);
+
+#ifdef TTYD_JP
     posY -= (lineDecrement * 2.f);
 
     // Draw the Adjust X-Naut's Position text
@@ -95,6 +100,7 @@ static void drawArbitraryMemoryWriteExtraInfo()
 
     getYesNoTextAndColor(adjustXNautPosition, &onOffText, &color, 0xFF);
     drawText(onOffText, posX, posY, scale, color);
+#endif
 }
 
 static void draw(CameraId cameraId, void *user)
@@ -131,11 +137,11 @@ static void selectedOptionAdjustXAndZCoordinatesColors(Menu *menuPtr)
         DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 }
 
+#ifdef TTYD_JP
 static void selectedOptionAdjustXNautPosition(Menu *menuPtr)
 {
     (void)menuPtr;
 
     displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
 }
-
 #endif

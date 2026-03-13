@@ -104,7 +104,12 @@ enum DisplaysEnabledFlag
 
 #ifdef TTYD_JP
     DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION,
+#endif
+
     DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR,
+
+#ifndef TTYD_JP
+    DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE,
 #endif
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
@@ -151,10 +156,7 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP,
     DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP,
-
-#ifdef TTYD_JP
     DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
-#endif
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -175,10 +177,10 @@ enum DisplaysMiscFlag
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED,       // Palace Skip, Palace Skip Minimal
     DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_PAUSED,        // Palace Skip, Palace Skip Minimal
 
-#ifdef TTYD_JP
     DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED, // Arbitrary Memory Write
     DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED,  // Arbitrary Memory Write
 
+#ifdef TTYD_JP
     DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED, // Arbitrary Memory Write
     DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER, // Arbitrary Memory Write
 #endif
@@ -232,11 +234,7 @@ enum DisplaysShouldDrawFlag
     // All of the tricks should be handled last, as they may clear other draw flags
     DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
-
-#ifdef TTYD_JP
     DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
-#endif
-
     DISPLAYS_SHOULD_DRAW_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_BRIDGE_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_BLIMP_TICKET_SKIP,
@@ -258,14 +256,10 @@ enum DisplaysWithButtonCombo
     DISPLAYS_BUTTON_COMBO_YOSHI_SKIP,
     DISPLAYS_BUTTON_COMBO_PALACE_SKIP,
     DISPLAYS_BUTTON_COMBO_PALACE_SKIP_MINIMAL,
-
     DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP,
     DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP,
     DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP,
-
-#ifdef TTYD_JP
     DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE,
-#endif
 
     DISPLAYS_BUTTON_COMBO_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -701,7 +695,6 @@ class PalaceSkipDisplay
     uint16_t counter;
 };
 
-#ifdef TTYD_JP
 class ArbitraryMemoryWriteDisplay
 {
    public:
@@ -712,26 +705,33 @@ class ArbitraryMemoryWriteDisplay
     void setPauseTimer(uint32_t time) { this->pauseTimer = static_cast<uint16_t>(time); }
     void resetPauseTimer() { this->pauseTimer = 0; }
 
-    uint32_t getSpinJumpTimer() const { return this->spinJumpTimer; }
-    void setSpinJumpTimer(uint32_t time) { this->spinJumpTimer = static_cast<uint16_t>(time); }
-    void resetSpinJumpTimer() { this->spinJumpTimer = 0; }
-
     uint32_t getCounter() const { return this->counter; }
     void setCounter(uint32_t count) { this->counter = static_cast<uint16_t>(count); }
     void resetCounter() { this->counter = 0; }
 
+#ifdef TTYD_JP
+    uint32_t getSpinJumpTimer() const { return this->spinJumpTimer; }
+    void setSpinJumpTimer(uint32_t time) { this->spinJumpTimer = static_cast<uint16_t>(time); }
+    void resetSpinJumpTimer() { this->spinJumpTimer = 0; }
+#endif
+
     void resetTimers()
     {
         this->resetPauseTimer();
+
+#ifdef TTYD_JP
         this->resetSpinJumpTimer();
+#endif
     }
 
    private:
     uint16_t pauseTimer;
-    uint16_t spinJumpTimer;
     uint16_t counter;
-};
+
+#ifdef TTYD_JP
+    uint16_t spinJumpTimer;
 #endif
+};
 
 class JabbiHiveSkipDisplay
 {
@@ -1151,10 +1151,7 @@ class Displays
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
     YoshiSkipDisplay *getYoshiSkipDisplayPtr() { return &this->yoshiSkip; }
     PalaceSkipDisplay *getPalaceSkipDisplayPtr() { return &this->palaceSkip; }
-
-#ifdef TTYD_JP
     ArbitraryMemoryWriteDisplay *getArbitraryMemoryWriteDisplayPtr() { return &this->arbitraryMemoryWriteDisplay; }
-#endif
 
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
@@ -1187,11 +1184,7 @@ class Displays
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
-
-#ifdef TTYD_JP
     ArbitraryMemoryWriteDisplay arbitraryMemoryWriteDisplay;
-#endif
-
     JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
     BlimpTicketSkipDisplay blimpTicketSkip;

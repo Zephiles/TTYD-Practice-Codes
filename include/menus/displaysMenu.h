@@ -33,11 +33,7 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_YOSHI_SKIP,
     DISPLAYS_MENU_PALACE_SKIP,
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
-
-#ifdef TTYD_JP
     DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE,
-#endif
-
     DISPLAYS_MENU_JABBI_HIVE_SKIP,
     DISPLAYS_MENU_BRIDGE_SKIP,
     DISPLAYS_MENU_BLIMP_TICKET_SKIP,
@@ -154,9 +150,7 @@ void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
 // displaysAdjustManualPosition
 void displaysAdjustManualPositionInit(Menu *menuPtr);
 
-#ifdef TTYD_JP
 // displaysArbitraryMemoryWrite
 void displaysArbitraryMemoryWriteInit(Menu *menuPtr);
-#endif
 
 #endif

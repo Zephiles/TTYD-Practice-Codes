@@ -123,10 +123,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
-
-#ifdef TTYD_JP
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
-#endif
         {
             // Disable all of the trick display flags
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
@@ -135,10 +132,8 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
-
-#ifdef TTYD_JP
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
-#endif
+
             // Enable the current trick display flag
             this->setEnabledFlag(enabledFlag);
             break;
@@ -281,11 +276,11 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
 
-#ifdef TTYD_JP
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
+#ifdef TTYD_JP
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
-    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 #endif
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR);
 
     // Set default displays misc flags enabled
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED);
@@ -294,8 +289,8 @@ Displays::Displays()
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_STOPPED);
 
-#ifdef TTYD_JP
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+#ifdef TTYD_JP
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
 #endif
 
@@ -323,10 +318,7 @@ Displays::Displays()
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP, PadInput::PAD_B);
-
-#ifdef TTYD_JP
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE, PadInput::PAD_Y);
-#endif
 
     // Set default positions and scales for certain displays when drawing them manually
     DisplayManuallyPosition *manuallyPositionPtrBase = this->getDisplayManuallyPositionPtr(0);
@@ -481,7 +473,6 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
-#ifdef TTYD_JP
     // Arbitrary Memory Write
     manuallyPositionPtr =
         &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE];
@@ -489,7 +480,6 @@ Displays::Displays()
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
-#endif
 
     // Initialize the default Y positions and error text draw order
     this->defaultPosYBottomLeft = DISPLAYS_DEFAULT_POS_Y_BOTTOM;
@@ -2615,7 +2605,6 @@ static void handlePalaceSkip(Displays *displaysPtr)
     }
 }
 
-#ifdef TTYD_JP
 static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
 {
     (void)cameraId;
@@ -2632,6 +2621,7 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
         amwDisplayPtr->setPauseTimer(pauseTimer + 1);
     }
 
+#ifdef TTYD_JP
     // Increment the Spin Jump timer if it is not stopped, since it needs to be done sometime in this function anyway, and it
     // doesn't matter when
     const uint32_t spinJumpTimer = amwDisplayPtr->getSpinJumpTimer();
@@ -2639,6 +2629,7 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
     {
         amwDisplayPtr->setSpinJumpTimer(spinJumpTimer + 1);
     }
+#endif
 
     // Get the position and scale for the text
     DisplayManuallyPosition data;
@@ -2652,6 +2643,7 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
     uint32_t posXColor = getColorWhite(0xFF);
     uint32_t posZColor = getColorWhite(0xFF);
 
+#ifdef TTYD_JP
     if (displaysPtr->enabledFlagIsSet(
             DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_X_AND_Z_COORDINATES_COLOR))
     {
@@ -2731,15 +2723,25 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
             }
         }
     }
+#endif
 
     // Get the text
     char buf[96];
 
+#ifdef TTYD_JP
+    const char *format =
+        "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos X: <col %" PRIx32 ">0x%08" PRIX32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32;
+#else
+    const char *format = "PT: %" PRIu32 "\nPos X: <col %" PRIx32 ">0x%08" PRIX32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32;
+#endif
+
     snprintf(buf,
              sizeof(buf),
-             "PT: %" PRIu32 "\nSJT: %" PRIu32 "\nPos X: <col %" PRIx32 ">0x%08" PRIX32 "\nPos Z: <col %" PRIx32 ">0x%08" PRIX32,
+             format,
              pauseTimer,
+#ifdef TTYD_JP
              spinJumpTimer,
+#endif
              posXColor,
              marioPosPtr[0],
              posZColor,
@@ -2786,6 +2788,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_PAUSED);
     }
 
+#ifdef TTYD_JP
     const Player *marioPtr = marioGetPtr();
     const MarioMotion marioCurrentMotion = marioPtr->currentMotionId;
 
@@ -2808,14 +2811,23 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
     }
+#endif
 
-    // Check if Mario landed a jump/ or spin jump on an enemy, or if a battle is initialized
-    if ((marioCurrentMotion == MarioMotion::kJumpNPC) || (seqGetNextSeq() == SeqIndex::kBattle))
+// Check if Mario landed a jump/spin jump on an enemy, or if a battle is initialized
+#ifdef TTYD_JP
+    const bool landedJump = marioCurrentMotion == MarioMotion::kJumpNPC;
+#else
+    const bool landedJump = false;
+#endif
+
+    if (landedJump || (seqGetNextSeq() == SeqIndex::kBattle))
     {
-        // Stop the timers when Mario lands a jump/ or spin jump on an enemy, or when a battle has been initialized
+        // Stop the timers when Mario lands a jump/spin jump on an enemy, or when a battle has been initialized
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+#ifdef TTYD_JP
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
         displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
+#endif
     }
 
     if (displaysPtr->checkDisplayButtonComboEveryFrame(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE))
@@ -2828,8 +2840,10 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
         {
             // Reset the timers when the button combo is held for 2 seconds
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
+#ifdef TTYD_JP
             displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
             displaysPtr->clearMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_STARTED_SPIN_JUMP_TIMER);
+#endif
             amwDisplayPtr->resetTimers();
             amwDisplayPtr->resetCounter();
         }
@@ -2839,6 +2853,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
         amwDisplayPtr->resetCounter();
     }
 
+#ifdef TTYD_JP
     // If the player is currently in the room in the Great Tree where the trick is performed with the flag enabled for adjusting
     // the X-Naut's position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the
     // trick. Also need to make sure they player is not currently in a battle when doing this.
@@ -2916,8 +2931,8 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
             }
         }
     }
-}
 #endif
+}
 
 static void drawJabbiHiveSkip(CameraId cameraId, void *user)
 {
@@ -3962,11 +3977,7 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
     // Trick displays
     drawYoshiSkip,
     drawPalaceSkip,
-
-#ifdef TTYD_JP
     drawArbitraryMemoryWrite,
-#endif
-
     drawJabbiHiveSkip,
     drawBridgeSkip,
     drawBlimpTicketSkip,
@@ -4019,11 +4030,7 @@ static const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
     // All of the tricks should be handled last, as they may clear other draw flags
     handleYoshiSkip,
     handlePalaceSkip,
-
-#ifdef TTYD_JP
     handleArbitraryMemoryWrite,
-#endif
-
     handleJabbiHiveSkip,
     handleBridgeSkip,
     handleBlimpTicketSkip,
