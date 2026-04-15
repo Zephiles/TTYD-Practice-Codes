@@ -334,6 +334,13 @@ WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
 
 bool pauseMenuItemWindowExists()
 {
+    // Make sure the pause menu is currently open
+    if ((marioStGetSystemLevel() & 15) != 15)
+    {
+        // The pause menu is not open
+        return false;
+    }
+
     const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
 
     // Both entries should exist for the item window to be considered open
@@ -347,14 +354,8 @@ bool pauseMenuItemWindowExists()
 
 void resetPauseMenuItemsMenu()
 {
-    // Only run if the pause menu is currently open
-    if ((marioStGetSystemLevel() & 15) != 15)
-    {
-        // The pause menu is not open, so do nothing
-        return;
-    }
-
     // Only run if the item window currently exists
+    // `pauseMenuItemWindowExists` checks if the pause menu is open, so don't need to do that here
     if (!pauseMenuItemWindowExists())
     {
         // The item window currently does not exist, so do nothing
@@ -378,14 +379,8 @@ void resetPauseMenuItemsMenu()
 
 void resetPauseMenuPartnersMenu()
 {
-    // Only run if the pause menu is currently open
-    if ((marioStGetSystemLevel() & 15) != 15)
-    {
-        // The pause menu is not open, so do nothing
-        return;
-    }
-
     // Need to make sure that `winPartyInit` has already ran, so just check if the item window has been created
+    // `pauseMenuItemWindowExists` checks if the pause menu is open, so don't need to do that here
     if (!pauseMenuItemWindowExists())
     {
         // The item window currently does not exist, so do nothing
