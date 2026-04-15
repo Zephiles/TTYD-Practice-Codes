@@ -2535,6 +2535,7 @@
 80169338:winPartyInit
 
 // win_item.o
+// text
 // 8016B7E0:itemUseDisp2
 // 8016B9B0:itemUseDisp
 // 8016CEF0:item_disp
@@ -2545,6 +2546,8 @@
 // 8016EDB0:winItemInit2
 8016EEDC:winItemInit
 // 8016F140:winMakeSkipList
+// data
+80383544:win_item_window_desc
 
 // win_mario.o
 8016F264:winMarioDisp
@@ -2688,6 +2691,43 @@
 // 80236FEC:scissor_intersection2
 // 8023706C:scissor_intersection
 802376C4:GetScissorPtr
+
+// winmgr.o
+// text
+// 8023D1FC:select_disp3_mario
+// 8023D310:select_disp3_party
+// 8023D410:select_disp3
+// 8023D490:select_main3
+// 8023D574:select_disp2
+// 8023D89C:select_disp_luigi
+// 8023E07C:select_disp_mario
+// 8023EB74:select_disp_party
+// 8023F700:select_disp
+// 802404F8:select_main
+// 802409D4:winMgrSelectDelete
+// 80240A18:winMgrSelectOther
+// 80240F88:winMgrSelect
+// 8024111C:winMgrSelectEntry
+// 80242034:winMgrHelpDraw
+// 802424CC:winMgrHelpMain
+// 802425B0:winMgrHelpInit
+// 802425C4:winMgrGetPtr
+// 802425D8:winMgrSetPriority
+// 802425FC:winMgrSetSize
+// 8024262C:winMgrAction
+// 80242644:winMgrDelete
+// 80242660:winMgrCloseAutoDelete
+// 8024269C:winMgrClose
+// 802426CC:winMgrOpen
+// 80242708:winMgrSetParam
+// 8024272C:winMgrEntry
+// 802427C8:winMgrSeq
+// 80242CC0:winMgrMain
+// 80242D98:winMgrDisp
+// 8024321C:winMgrReInit
+// 80243250:winMgrInit
+// data
+8042B6AC:winMgrWork
 
 // evt_lecture.o
 // 8025B13C:lect_juyoitem_rel_get

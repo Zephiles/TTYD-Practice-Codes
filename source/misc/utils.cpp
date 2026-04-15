@@ -13,6 +13,7 @@
 #include "ttyd/mario_party.h"
 #include "ttyd/mario.h"
 #include "ttyd/item_data.h"
+#include "ttyd/winmgr.h"
 #include "ttyd/win_main.h"
 #include "ttyd/win_item.h"
 #include "ttyd/win_party.h"
@@ -306,12 +307,45 @@ void recheckBattleUpgrades(ItemId item)
     }
 }
 
+WinMgrEntry *getWinMgrEntryPtr(WinMgrDesc *desc)
+{
+    WinMgrWork *workPtr = &winMgrWork;
+    WinMgrEntry *entriesPtr = &workPtr->mEntries[0];
+    const uint32_t numEntries = workPtr->mNumEntries;
+
+    // Loop through all entry slots for the desired entry
+    for (uint32_t i = 0; i < numEntries; i++)
+    {
+        WinMgrEntry *entryPtr = &entriesPtr[i];
+
+        // Make sure the current entry is active
+        if (entryPtr->flags & 1)
+        {
+            if (entryPtr->description == desc)
+            {
+                return entryPtr;
+            }
+        }
+    }
+
+    // Didn't find the desired entry
+    return nullptr;
+}
+
 void resetPauseMenuItemsMenu()
 {
     // Only run if the pause menu is currently open
     if ((marioStGetSystemLevel() & 15) != 15)
     {
         // The pause menu is not open, so do nothing
+        return;
+    }
+
+    // Only run if the item window currently exists
+    WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
+    if (!getWinMgrEntryPtr(&windowDescPtr[0]) || (!getWinMgrEntryPtr(&windowDescPtr[1])))
+    {
+        // The item window currently does not exist, so do nothing
         return;
     }
 
@@ -336,6 +370,14 @@ void resetPauseMenuPartnersMenu()
     if ((marioStGetSystemLevel() & 15) != 15)
     {
         // The pause menu is not open, so do nothing
+        return;
+    }
+
+    // Need to make sure that `winPartyInit` has already ran, so just check if the item window has been created
+    WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
+    if (!getWinMgrEntryPtr(&windowDescPtr[0]) || (!getWinMgrEntryPtr(&windowDescPtr[1])))
+    {
+        // The item window currently does not exist, so do nothing
         return;
     }
 
