@@ -307,7 +307,7 @@ void recheckBattleUpgrades(ItemId item)
     }
 }
 
-WinMgrEntry *getWinMgrEntryPtr(WinMgrDesc *desc)
+WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
 {
     WinMgrWork *workPtr = &winMgrWork;
     WinMgrEntry *entriesPtr = &workPtr->mEntries[0];
@@ -342,7 +342,7 @@ void resetPauseMenuItemsMenu()
     }
 
     // Only run if the item window currently exists
-    WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
+    const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
     if (!getWinMgrEntryPtr(&windowDescPtr[0]) || (!getWinMgrEntryPtr(&windowDescPtr[1])))
     {
         // The item window currently does not exist, so do nothing
@@ -374,7 +374,7 @@ void resetPauseMenuPartnersMenu()
     }
 
     // Need to make sure that `winPartyInit` has already ran, so just check if the item window has been created
-    WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
+    const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
     if (!getWinMgrEntryPtr(&windowDescPtr[0]) || (!getWinMgrEntryPtr(&windowDescPtr[1])))
     {
         // The item window currently does not exist, so do nothing
