@@ -332,6 +332,19 @@ WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
     return nullptr;
 }
 
+bool pauseMenuItemWindowExists()
+{
+    const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
+
+    // Both entries should exist for the item window to be considered open
+    if (getWinMgrEntryPtr(&windowDescPtr[0]) && getWinMgrEntryPtr(&windowDescPtr[1]))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void resetPauseMenuItemsMenu()
 {
     // Only run if the pause menu is currently open
@@ -342,8 +355,7 @@ void resetPauseMenuItemsMenu()
     }
 
     // Only run if the item window currently exists
-    const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
-    if (!getWinMgrEntryPtr(&windowDescPtr[0]) || !getWinMgrEntryPtr(&windowDescPtr[1]))
+    if (!pauseMenuItemWindowExists())
     {
         // The item window currently does not exist, so do nothing
         return;
@@ -374,8 +386,7 @@ void resetPauseMenuPartnersMenu()
     }
 
     // Need to make sure that `winPartyInit` has already ran, so just check if the item window has been created
-    const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
-    if (!getWinMgrEntryPtr(&windowDescPtr[0]) || !getWinMgrEntryPtr(&windowDescPtr[1]))
+    if (!pauseMenuItemWindowExists())
     {
         // The item window currently does not exist, so do nothing
         return;
