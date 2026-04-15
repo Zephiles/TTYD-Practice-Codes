@@ -8,6 +8,7 @@
 #include "ttyd/dispdrv.h"
 #include "ttyd/mario_party.h"
 #include "ttyd/mario_pouch.h"
+#include "ttyd/mariost.h"
 
 #include <cstdint>
 
@@ -267,6 +268,16 @@ void recheckBattleUpgrades(ItemId item);
 inline bool checkIfBadgeEquipped(ItemId badge)
 {
     return pouchEquipCheckBadge(badge) > 0;
+}
+
+/**
+ * Checks if the pause menu is currently open.
+ *
+ * @returns `true` if the pause menu is currently open, otherwise `false`.
+ */
+inline bool pauseMenuIsOpen()
+{
+    return (marioStGetSystemLevel() & 15) == 15;
 }
 
 /**

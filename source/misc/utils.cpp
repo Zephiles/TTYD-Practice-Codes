@@ -335,7 +335,7 @@ WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
 bool pauseMenuItemWindowExists()
 {
     // Make sure the pause menu is currently open
-    if ((marioStGetSystemLevel() & 15) != 15)
+    if (!pauseMenuIsOpen())
     {
         // The pause menu is not open
         return false;

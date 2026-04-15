@@ -2161,8 +2161,7 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
     // Run if currently repositioning/scaling displays
     // Do not run if the pause menu is open
     // Do not run if the memory editor is currently open
-    if ((gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) || ((marioStGetSystemLevel() & 15) == 15) ||
-        memoryEditorIsOpen())
+    if ((gMenu && !gMod->flagIsSet(ModFlag::MOD_FLAG_MENU_IS_HIDDEN)) || pauseMenuIsOpen() || memoryEditorIsOpen())
     {
         // Since the lines are not being drawn, reset the entry count to avoid drawing lines for outdated data
         displaysPtr->getHitCheckVisualizationDisplayPtr()->setEntryCount(0);
@@ -2554,7 +2553,7 @@ static void handlePalaceSkip(Displays *displaysPtr)
         return;
     }
 
-    if ((marioStGetSystemLevel() & 15) == 15)
+    if (pauseMenuIsOpen())
     {
         // Stop upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED);
@@ -2773,7 +2772,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
     ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
 
-    if ((marioStGetSystemLevel() & 15) == 15)
+    if (pauseMenuIsOpen())
     {
         // Stop the pause timer upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
@@ -3459,7 +3458,7 @@ static void handleBlimpTicketSkip(Displays *displaysPtr)
 
     BlimpTicketSkipDisplay *blimpTicketSkipPtr = displaysPtr->getBlimpSkipDisplayPtr();
 
-    if ((marioStGetSystemLevel() & 15) == 15)
+    if (pauseMenuIsOpen())
     {
         // Stop upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_TIMERS_PAUSED);

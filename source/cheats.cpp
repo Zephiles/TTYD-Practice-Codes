@@ -1371,7 +1371,7 @@ static void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
         }
 
         // Do not run if the pause menu is open
-        if ((marioStGetSystemLevel() & 15) == 15)
+        if (pauseMenuIsOpen())
         {
             return;
         }
