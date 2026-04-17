@@ -318,13 +318,16 @@ WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
     {
         WinMgrEntry *entryPtr = &entriesPtr[i];
 
-        // Make sure the current entry is active
-        if (entryPtr->flags & 1)
+        if (!(entryPtr->flags & 1))
         {
-            if (entryPtr->description == desc)
-            {
-                return entryPtr;
-            }
+            // The current entry is not active
+            continue;
+        }
+
+        if (entryPtr->description == desc)
+        {
+            // Found the desired entry
+            return entryPtr;
         }
     }
 
@@ -337,13 +340,11 @@ bool pauseMenuItemWindowExists()
     // Make sure the pause menu is currently open
     if (!pauseMenuIsOpen())
     {
-        // The pause menu is not open
         return false;
     }
 
+    // Both `window_desc` entries should exist for the item window to be considered open
     const WinMgrDesc *windowDescPtr = &win_item_window_desc[0];
-
-    // Both entries should exist for the item window to be considered open
     if (getWinMgrEntryPtr(&windowDescPtr[0]) && getWinMgrEntryPtr(&windowDescPtr[1]))
     {
         return true;
@@ -358,7 +359,6 @@ void resetPauseMenuItemsMenu()
     // `pauseMenuItemWindowExists` checks if the pause menu is open, so don't need to do that here
     if (!pauseMenuItemWindowExists())
     {
-        // The item window currently does not exist, so do nothing
         return;
     }
 
@@ -383,7 +383,6 @@ void resetPauseMenuPartnersMenu()
     // `pauseMenuItemWindowExists` checks if the pause menu is open, so don't need to do that here
     if (!pauseMenuItemWindowExists())
     {
-        // The item window currently does not exist, so do nothing
         return;
     }
 
