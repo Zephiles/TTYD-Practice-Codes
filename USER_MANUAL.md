@@ -400,7 +400,7 @@ There are several other changes that have been made outside of the menu:
     
     * Excess Express - When going to Poshley Heights - If you enter the western-most train car when the **Sequence** is past 338, then the **Sequence** will be set to 338.
     
-    * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated.
+    * X-Naut Fortress Factory Room - A global variable is cleared, so that leaving the room will not cause issues if the conveyor belt has not been activated. Note that this global variable will not be cleared if the **Arbitrary Memory Write** display is enabled when entering the room, as the global variable needs to be set to a specific value for the glitch to work.
     
     * If the Endless Room has been completed, and you enter it when the **Sequence** is at 385, then the room will be set to an incomplete state.
     
