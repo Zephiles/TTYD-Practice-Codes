@@ -45,6 +45,8 @@ extern "C"
     void asmArbitraryMemoryWriteDisableRandomFail();
     void asmArbitraryMemoryWriteGetProperPointer();
 
+    void asmHandleTubeModeStorage();
+
 #ifdef TTYD_EU
     void asmJumpOnWaterStart();
     void asmJumpOnWaterBranchBack();
@@ -81,6 +83,8 @@ extern "C"
 
     uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags);
     uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw);
+
+    bool cHandleTubeModeStorage();
 
     // Misc assembly functions
     void asmSetTime(OSTime time);

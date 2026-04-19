@@ -57,7 +57,7 @@ extern "C"
     // mot_shadow
     // mot_kaze
     // marioChgMotJump2
-    // marioRollChgChk
+    int32_t marioRollChgChk();
     // L_marioChkRub
     // marioChkItemMotion
     // marioChkTransform

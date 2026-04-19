@@ -1088,7 +1088,7 @@
 // 80091E64:mot_shadow
 // 80091FA8:mot_kaze
 // 800921EC:marioChgMotJump2
-// 800922C4:marioRollChgChk
+800922C4:marioRollChgChk
 // 80092450:L_marioChkRub
 // 80092458:marioChkItemMotion
 // 80092624:marioChkTransform

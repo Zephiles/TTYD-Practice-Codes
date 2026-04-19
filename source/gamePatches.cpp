@@ -18,6 +18,7 @@
 #include "ttyd/seq_mapchange.h"
 #include "ttyd/seqdrv.h"
 #include "ttyd/fontmgr.h"
+#include "ttyd/system.h"
 #include "ttyd/mario.h"
 #include "ttyd/seq_title.h"
 #include "ttyd/npcdrv.h"
@@ -183,6 +184,22 @@ uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw)
 
     // Return the pointer value that would be used under vanilla scenarios
     return AMWCoordinateWriteAddressDisplay::getSoundEfxStopPtrRaw();
+}
+
+bool cHandleTubeModeStorage()
+{
+    if (!gCheats->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TUBE_MODE_STORAGE))
+    {
+        return false;
+    }
+
+    // Check if the analog stick is held in any direction
+    if ((keyGetStickX(PadId::CONTROLLER_ONE) > 0) || (keyGetStickY(PadId::CONTROLLER_ONE) > 0))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
@@ -904,6 +921,17 @@ void applyCheatAndDisplayInjects()
 #endif
 
     writeBranchBL(disableDPadOptionsAddress, asmDisableDPadOptionsDisplay);
+
+    // Tube Mode Storage
+#ifdef TTYD_US
+    constexpr uint32_t tubeModeStorageAddress = 0x80092318;
+#elif defined TTYD_JP
+    constexpr uint32_t tubeModeStorageAddress = 0x80090D64;
+#elif defined TTYD_EU
+    constexpr uint32_t tubeModeStorageAddress = 0x80093674;
+#endif
+
+    writeBranchBL(tubeModeStorageAddress, asmHandleTubeModeStorage);
 
 #ifdef TTYD_EU
     // Allow jumping on water when the Bridge Skip display is enabled

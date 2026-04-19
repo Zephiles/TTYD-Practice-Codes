@@ -45,6 +45,9 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Time Stop Text Storage",
     cheatsMenuGenericHasButtonComboInit,
 
+    "Tube Mode Storage",
+    cheatsMenuGenericNoButtonComboInit,
+
     "Speed Up Mario",
     cheatsMenuGenericHasButtonComboInit,
 
@@ -304,6 +307,10 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TIME_STOP_TEXT_STORAGE;
+        }
+        case CheatsMenuOptions::CHEATS_MENU_TUBE_MODE_STORAGE:
+        {
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TUBE_MODE_STORAGE;
         }
         case CheatsMenuOptions::CHEATS_MENU_SPEED_UP_MARIO:
         {
