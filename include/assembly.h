@@ -81,7 +81,7 @@ extern "C"
     void *cJumpOnWater(void *ptr);
 #endif
 
-    uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags);
+    uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags);
     uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw);
 
     bool cHandleTubeModeStorage();

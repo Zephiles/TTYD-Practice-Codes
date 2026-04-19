@@ -28,6 +28,7 @@
 #include "menus/warpsMenu.h"
 #include "menus/battlesMenu.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <cstdio>
@@ -164,7 +165,7 @@ int32_t cCrashScreenDecrementYPos()
 }
 #endif
 
-uint16_t cArbitraryMemoryWriteDisableRandomFail(uint16_t flags)
+uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags)
 {
     if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
@@ -391,15 +392,15 @@ bool performPreBattleActions()
     {
         modPtr->clearFlag(ModFlag::MOD_FLAG_CLEAR_MARIO_STATS);
 
-        const uint32_t size = (&pouchPtr->starPoints - &pouchPtr->currentHp) * sizeof(int16_t);
-        DCFlushRange(&pouchPtr->currentHp, size + sizeof(int16_t));
+        constexpr uint32_t size = offsetof(PouchData, starPoints) - offsetof(PouchData, currentHp) + sizeof(int16_t);
+        DCFlushRange(&pouchPtr->currentHp, size);
     }
 
     // Clear the cache for the partners' stats if they were changed manually
     if (modPtr->flagIsSet(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS))
     {
         modPtr->clearFlag(ModFlag::MOD_FLAG_CLEAR_PARTNER_STATS);
-        DCFlushRange(pouchPtr->partyData, sizeof(pouchPtr->partyData));
+        DCFlushRange(pouchPtr->partyData, sizeof(PouchData::partyData));
     }
 
     // Call the original function
