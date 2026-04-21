@@ -87,39 +87,41 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 10. **Time Stop Text Storage** sets a specific value that causes Time Stop Text Storage to be active. A partner is required to be out for this code to have an effect.
 
-11. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
+11. **Tube Mode Storage** causes Mario to enter Tube Mode instantly whenever he is in/entering Paper Mode and any direction on the analog stick is pressed/held.
 
-12. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
+12. **Speed Up Mario** applies a large speed boost to Mario. The button combination must be held for this code to work.
 
-13. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
+13. **Disable Non-Cutscene Battles** disables any battles in the field that are not started by a cutscene. The button combination must be held for this code to work.
 
-14. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
+14. **Auto Action Commands** automatically performs action commands for you, the same way that the Debug Badge works. This applies to most guards/superguards as well as for filling the run meter. The button combination must be held for this code to work.
 
-15. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
+15. **Infinite Item Usage** allows you to use any item without it being removed from the menu. You must hold the button combination when using the item for this code to work. The button combination must be held for this code to work.
 
-16. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
+16. **Reload Room** reloads the current room. This cannot be used on the title screen nor on the file select screen. When this code is used, the **Resolve Fades** code (listed below) is also used when not in a screen transition.
 
-17. **Auto Mash Through Text** allows you to automatically mash through all text boxes. Text boxes with questions (Yes, No, etc.) will still require you to manually select an option. The button combination must be held for this code to work. It should be noted that this cheat will not run when the **Palace Skip** display is on, as it would interfere with the textboxes that are used for **Palace Skip**.
+17. **Levitate** allows you to levitate in the air. The button combination must be held for this code to work.
 
-18. **Frame Advance (Experimental)** allows you to advance the game one frame at a time. Note that this cheat is still in an experimental state, and some things do not work properly when using it.
+18. **Auto Mash Through Text** allows you to automatically mash through all text boxes. Text boxes with questions (Yes, No, etc.) will still require you to manually select an option. The button combination must be held for this code to work. It should be noted that this cheat will not run when the **Palace Skip** display is on, as it would interfere with the textboxes that are used for **Palace Skip**.
 
-19. **Generate Lag Spike** allows you to generate a lag spike at any given time.
+19. **Frame Advance (Experimental)** allows you to advance the game one frame at a time. Note that this cheat is still in an experimental state, and some things do not work properly when using it.
 
-20. **Lock Mario's HP To Its Max** locks Mario's current HP to its maximum value.
+20. **Generate Lag Spike** allows you to generate a lag spike at any given time.
 
-21. **Lock Partner's HP To Its Max** locks the current partner's current HP to its maximum value.
+21. **Lock Mario's HP To Its Max** locks Mario's current HP to its maximum value.
 
-22. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
+22. **Lock Partner's HP To Its Max** locks the current partner's current HP to its maximum value.
 
-23. **Simulate AMW - Mario Zero Hitbox - Paper Mode** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon leaving `Paper Mode`.
+23. **Allow Running From Any Battle** allows you to run from any battle, even if the battle would normally not allow this.
 
-24. **Simulate AMW - Mario Zero Hitbox - Room Transition** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon going through a room transition.
+24. **Simulate AMW - Mario Zero Hitbox - Paper Mode** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon leaving `Paper Mode`.
 
-25. **Simulate AMW - Mario Walk On Air** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario being able to walk on air upon walking off a non-sloped ledge.
+25. **Simulate AMW - Mario Zero Hitbox - Room Transition** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon going through a room transition.
 
-26. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+26. **Simulate AMW - Mario Walk On Air** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario being able to walk on air upon walking off a non-sloped ledge.
 
-27. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
+27. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+
+28. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
 
     * **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
 
@@ -127,17 +129,17 @@ This menu allows you to modify your entire inventory, including standard items, 
 
     * **Environment Sounds** disables any environment sounds, and prevents new environment sounds from playing.
 
-28. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+29. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
 
-29. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+30. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
 
-30. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+31. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
 
     * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on when not in use.
 
-31. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+32. **Manage Flags** allows you to manually change a lot of the important flags in the game.
 
-32. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+33. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.
