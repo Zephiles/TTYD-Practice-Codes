@@ -40,9 +40,14 @@ extern "C"
     void padRumbleOff(PadId id);
     void padRumbleOn(PadId id);
 
+    // The following three functions are supposed to return `int8_t`, but the functions themselves do not sign extend the
+    // result, so trying to use the resulting value as `int8_t` generally results in the value not being properly sign extended.
+    // So the solution here is to have them return `uint8_t`, and then manually cast that result by casting to `int8_t` and then
+    // to `int32_t`. Inline functions have been added below to handle this process automatically.
     uint8_t keyGetSubStickY(PadId id);
     uint8_t keyGetStickY(PadId id);
     uint8_t keyGetStickX(PadId id);
+
     uint32_t keyGetButtonTrg(PadId id);
     uint32_t keyGetDirTrg(PadId id);
     uint32_t keyGetButtonRep(PadId id);
@@ -58,6 +63,24 @@ extern "C"
     // distABf
     // reviseAngle
     const char *getMarioStDvdRoot();
+}
+
+// Gets the result of `keyGetSubStickY` and sign extends it to `int32_t`.
+inline int32_t keyGetSubStickYSignExtend(PadId id)
+{
+    return static_cast<int32_t>(static_cast<int8_t>(keyGetSubStickY(id)));
+}
+
+// Gets the result of `keyGetStickY` and sign extends it to `int32_t`.
+inline int32_t keyGetStickYSignExtend(PadId id)
+{
+    return static_cast<int32_t>(static_cast<int8_t>(keyGetStickY(id)));
+}
+
+// Gets the result of `keyGetStickX` and sign extends it to `int32_t`.
+inline int32_t keyGetStickXSignExtend(PadId id)
+{
+    return static_cast<int32_t>(static_cast<int8_t>(keyGetStickX(id)));
 }
 
 #endif

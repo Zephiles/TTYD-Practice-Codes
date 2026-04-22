@@ -450,8 +450,8 @@ void getTimeString(char *stringOut, uint32_t stringSize, OSTime time)
 
 bool getStickAngle(int32_t stickXYAnglesOut[2], double *stickAngleOut)
 {
-    int32_t stickXInt = static_cast<int32_t>(keyGetStickX(PadId::CONTROLLER_ONE));
-    int32_t stickYInt = static_cast<int32_t>(keyGetStickY(PadId::CONTROLLER_ONE));
+    int32_t stickXInt = keyGetStickXSignExtend(PadId::CONTROLLER_ONE);
+    int32_t stickYInt = keyGetStickYSignExtend(PadId::CONTROLLER_ONE);
 
     // Check if the stick is at the neutral position
     if ((stickXInt == 0) && (stickYInt == 0))
@@ -463,16 +463,6 @@ bool getStickAngle(int32_t stickXYAnglesOut[2], double *stickAngleOut)
             stickXYAnglesOut[1] = stickYInt;
         }
         return false;
-    }
-
-    if (stickXInt > 127)
-    {
-        stickXInt -= 256;
-    }
-
-    if (stickYInt > 127)
-    {
-        stickYInt -= 256;
     }
 
     // Store the individual stick values if desired

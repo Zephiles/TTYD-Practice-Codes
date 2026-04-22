@@ -195,7 +195,7 @@ bool cHandleTubeModeStorage()
     }
 
     // Check if the analog stick is held in any direction
-    if ((keyGetStickX(PadId::CONTROLLER_ONE) > 0) || (keyGetStickY(PadId::CONTROLLER_ONE) > 0))
+    if ((keyGetStickX(PadId::CONTROLLER_ONE) != 0) || (keyGetStickY(PadId::CONTROLLER_ONE) != 0))
     {
         return true;
     }
