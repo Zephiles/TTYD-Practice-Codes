@@ -350,20 +350,18 @@ const char *getMapFromIndex(uint32_t index)
 MapData *mapDataPtrHandleUnusedMaps(const char *mapName)
 {
     // Check if the current map is unused
-    WarpByIndex *warpByIndexPtr = gMod->getWarpByIndexPtr();
-    MapData *unusedMapDataPtr = warpByIndexPtr->getUnusedMapDataPtr();
-    const uint32_t unusedMapNameSize = warpByIndexPtr->getUnusedMapNameSize();
-
     const char **unusedMapsPtr = gUnusedMaps;
+
     for (uint32_t i = 0; i < WARPS_INDEX_TOTAL_UNUSED_MAPS; i++)
     {
-        if (strncmp(mapName, unusedMapsPtr[i], unusedMapNameSize) == 0)
+        if (strcmp(mapName, unusedMapsPtr[i]) == 0)
         {
             // Set up the new data
-            strncpy(warpByIndexPtr->getUnusedMapNamePtr(),
-                    mapName,
-                    unusedMapNameSize - 1); // Subtract 1 to make sure the string is properly null terminated
+            // Use snprintf to make sure the map name size is not exceeded, and that a null terminator is properly applied
+            WarpByIndex *warpByIndexPtr = gMod->getWarpByIndexPtr();
+            snprintf(warpByIndexPtr->getUnusedMapNamePtr(), warpByIndexPtr->getUnusedMapNameSize(), mapName);
 
+            MapData *unusedMapDataPtr = warpByIndexPtr->getUnusedMapDataPtr();
             unusedMapDataPtr->pInitEvtCode = warpByIndexPtr->getCurrentMapInitEvtCodePtr();
             return unusedMapDataPtr;
         }

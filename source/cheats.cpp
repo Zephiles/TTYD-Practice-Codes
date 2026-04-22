@@ -699,15 +699,13 @@ void reloadRoomMain()
     Cheats *cheatsPtr = gCheats;
     ReloadRoomCheat *reloadCheatPtr = cheatsPtr->getReloadRoomCheatPtr();
 
+    // Use snprintf to make sure the bero size is not exceeded, and that a null terminator is properly applied
     char *newBeroPtr = reloadCheatPtr->getNewBeroPtr();
-    const uint32_t newBeroSize = reloadCheatPtr->getNewBeroSize() - 1;
-    strncpy(newBeroPtr, _next_bero, newBeroSize);
-    newBeroPtr[newBeroSize] = '\0';
+    snprintf(newBeroPtr, reloadCheatPtr->getNewBeroSize(), _next_bero);
 
+    // Use snprintf to make sure the map size is not exceeded, and that a null terminator is properly applied
     char *newMapPtr = reloadCheatPtr->getNewMapPtr();
-    const uint32_t newMapSize = reloadCheatPtr->getNewMapSize() - 1;
-    strncpy(newMapPtr, _next_map, newMapSize);
-    newMapPtr[newMapSize] = '\0';
+    snprintf(newMapPtr, reloadCheatPtr->getNewMapSize(), _next_map);
 
     setSeqMapChange(newMapPtr, newBeroPtr);
 
