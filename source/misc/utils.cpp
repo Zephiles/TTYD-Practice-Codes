@@ -453,23 +453,18 @@ bool getStickAngle(int32_t stickXYAnglesOut[2], double *stickAngleOut)
     int32_t stickXInt = keyGetStickXSignExtend(PadId::CONTROLLER_ONE);
     int32_t stickYInt = keyGetStickYSignExtend(PadId::CONTROLLER_ONE);
 
-    // Check if the stick is at the neutral position
-    if ((stickXInt == 0) && (stickYInt == 0))
-    {
-        // The stick is currently at the neutral position
-        if (stickXYAnglesOut)
-        {
-            stickXYAnglesOut[0] = stickXInt;
-            stickXYAnglesOut[1] = stickYInt;
-        }
-        return false;
-    }
-
     // Store the individual stick values if desired
     if (stickXYAnglesOut)
     {
         stickXYAnglesOut[0] = stickXInt;
         stickXYAnglesOut[1] = stickYInt;
+    }
+
+    // Check if the stick is at the neutral position, as there is no need to do anything else if it is
+    if ((stickXInt == 0) && (stickYInt == 0))
+    {
+        *stickAngleOut = 0.0;
+        return false;
     }
 
     const double stickX = static_cast<double>(stickXInt);
