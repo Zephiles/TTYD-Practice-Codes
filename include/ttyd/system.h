@@ -42,8 +42,8 @@ extern "C"
 
     // The following three functions are supposed to return `int8_t`, but the functions themselves do not sign extend the
     // result, so trying to use the resulting value as `int8_t` generally results in the value not being properly sign extended.
-    // So the solution here is to have them return `uint8_t`, and then manually cast that result by casting to `int8_t` and then
-    // to `int32_t`. Inline functions have been added below to handle this process automatically.
+    // So the solution here is to have them return `uint8_t`, and then cast that result to `int8_t` and then to `int32_t`.
+    // Inline functions have been added below to handle this process automatically.
     uint8_t keyGetSubStickY(PadId id);
     uint8_t keyGetStickY(PadId id);
     uint8_t keyGetStickX(PadId id);
