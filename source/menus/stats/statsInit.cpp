@@ -86,9 +86,8 @@ void StatsMenu::initPartnerFollowerErrorWindow(bool drawForPartner)
 void StatsMenu::initErrorWindow(const char *message)
 {
     // Set up the main text
-    // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
     char *errorMessagePtr = this->errorMessage;
-    snprintf(errorMessagePtr, sizeof(this->errorMessage), message);
+    copyStringAndNullTerminate(errorMessagePtr, sizeof(this->errorMessage), message);
 
     // Initialize the error window
     ErrorWindow *errorWindowPtr = &this->errorWindow;

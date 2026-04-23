@@ -11,8 +11,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <cstdio>
-#include <cinttypes>
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionLockSeletedFlags(Menu *menuPtr);
@@ -103,8 +101,7 @@ static void drawLockFlagsInfo()
         // Make sure the current area with its flags locked is valid
         if (!flag || (areaLocked[0] == '\0'))
         {
-            // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-            snprintf(stringOut, stringSize, "None");
+            copyStringAndNullTerminate(stringOut, stringSize, "None");
             return getColorGrayedOut(0xFF);
         }
         else
@@ -120,8 +117,7 @@ static void drawLockFlagsInfo()
                 {
                     foundString = true;
 
-                    // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-                    snprintf(stringOut, stringSize, currentArea[1]);
+                    copyStringAndNullTerminate(stringOut, stringSize, currentArea[1]);
                     break;
                 }
             }
@@ -129,8 +125,7 @@ static void drawLockFlagsInfo()
             if (!foundString)
             {
                 // The current area cannot have its flags locked, so set the string to whatever the area string is
-                // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-                snprintf(stringOut, stringSize, areaLocked);
+                copyStringAndNullTerminate(stringOut, stringSize, areaLocked);
             }
         }
 

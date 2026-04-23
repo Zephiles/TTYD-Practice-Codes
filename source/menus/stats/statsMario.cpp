@@ -796,8 +796,7 @@ static void drawMarioStats()
                     currentCharacterString = gMarioCharactersStrings[marioCharacterIndex];
                 }
 
-                // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
-                snprintf(buf, sizeof(buf), currentCharacterString);
+                copyStringAndNullTerminate(buf, sizeof(buf), currentCharacterString);
             }
             else
             {

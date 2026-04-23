@@ -122,8 +122,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
     if (!address)
     {
         // Address is invalid
-        // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stringOut, stringSize, "???");
+        copyStringAndNullTerminate(stringOut, stringSize, "???");
         return;
     }
 
@@ -316,8 +315,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
         default:
         {
             // Type is invalid
-            // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-            snprintf(stringOut, stringSize, "???");
+            copyStringAndNullTerminate(stringOut, stringSize, "???");
             return;
         }
     }

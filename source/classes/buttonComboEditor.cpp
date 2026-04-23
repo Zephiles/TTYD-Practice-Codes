@@ -214,8 +214,7 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
     if (!buttons)
     {
         // No buttons are pressed, so set the default string to None
-        // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stringOut, stringSize, "None");
+        copyStringAndNullTerminate(stringOut, stringSize, "None");
         return;
     }
 
@@ -312,7 +311,7 @@ void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
             firstStringWritten = true;
 
             // Set the initial button pressed
-            textLength = snprintf(stringOut, stringSize, buttonText);
+            textLength = copyStringAndNullTerminate(stringOut, stringSize, buttonText);
         }
         else
         {

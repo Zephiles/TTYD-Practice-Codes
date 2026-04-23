@@ -784,10 +784,8 @@ void ValueEditor::init(const void *valuePtr,
     }
 
     // Set up the help text
-    char *helpText = this->helpText;
-
-    // Use snprintf to make sure a buffer overflow doesn't occur
     constexpr uint32_t helpTextSize = sizeof(this->helpText);
+    char *helpText = this->helpText;
     int32_t len = 0;
 
     /*
@@ -802,7 +800,7 @@ void ValueEditor::init(const void *valuePtr,
     {
         if (this->flagIsSet(ValueEditorFlag::DRAW_DPAD_UP_DOWN + i))
         {
-            len += snprintf(&helpText[len], helpTextSize - len, buttonStrings[i]);
+            len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, buttonStrings[i]);
         }
     }
     */
@@ -810,15 +808,15 @@ void ValueEditor::init(const void *valuePtr,
     /*
     if (this->flagIsSet(ValueEditorFlag::DRAW_DPAD_UP_DOWN))
     {
-        len = snprintf(&helpText[len], helpTextSize - len, "Press D-Pad Up/Down to adjust the value\n");
+        len = copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press D-Pad Up/Down to adjust the value\n");
     }
     */
 
-    len += snprintf(&helpText[len], helpTextSize - len, "Press D-Pad Up/Down to adjust the value\n");
+    len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press D-Pad Up/Down to adjust the value\n");
 
     if (this->flagIsSet(ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT))
     {
-        len += snprintf(&helpText[len], helpTextSize - len, "Press D-Pad Left/Right to change digits\n");
+        len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press D-Pad Left/Right to change digits\n");
     }
 
     // Both a min and a max need to be set to use either of them
@@ -826,21 +824,21 @@ void ValueEditor::init(const void *valuePtr,
     {
         if (this->flagIsSet(ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX))
         {
-            len += snprintf(&helpText[len], helpTextSize - len, "Press Y to set the value to max\n");
+            len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press Y to set the value to max\n");
         }
 
         if (this->flagIsSet(ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN))
         {
-            len += snprintf(&helpText[len], helpTextSize - len, "Press Z to set the value to min\n");
+            len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press Z to set the value to min\n");
         }
     }
 
     if (this->flagIsSet(ValueEditorFlag::DRAW_BUTTON_X_HIDE))
     {
-        len += snprintf(&helpText[len], helpTextSize - len, "Hold X to hide this window\n");
+        len += copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Hold X to hide this window\n");
     }
 
-    snprintf(&helpText[len], helpTextSize - len, "Press A to confirm\nPress B to cancel");
+    copyStringAndNullTerminate(&helpText[len], helpTextSize - len, "Press A to confirm\nPress B to cancel");
 
     // Set up the window
     // Initialize it based on the help text
@@ -1322,8 +1320,9 @@ void ValueEditor::adjustValue(bool increment)
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
     const uint32_t totalDigits = this->maxDigits;
 
-    char *editorValuePtr = editorValue;
     uint32_t editorValueSize = sizeof(this->editorValue);
+    char *editorValuePtr = editorValue;
+    const char *format = this->format;
 
     switch (this->type)
     {

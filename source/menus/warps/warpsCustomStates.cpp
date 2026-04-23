@@ -263,9 +263,7 @@ static void drawCustomStatesInfo()
             size = bufSize;
         }
 
-        // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-        snprintf(buf, size, entriesPtr[i].getStateNamePtr());
-
+        copyStringAndNullTerminate(buf, size, entriesPtr[i].getStateNamePtr());
         drawText(buf, posX, posY, scale, color);
         posY -= lineDecrement;
     }
@@ -348,8 +346,7 @@ static void selectedOptionLoadState(Menu *menuPtr)
         size = bufSize;
     }
 
-    // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-    snprintf(buf, size, currentEntry->getCurrentMapPtr());
+    copyStringAndNullTerminate(buf, size, currentEntry->getCurrentMapPtr());
     setNextMap(buf);
 
     // Failsafe: Make sure the size does not exceed bufSize
@@ -359,8 +356,7 @@ static void selectedOptionLoadState(Menu *menuPtr)
         size = bufSize;
     }
 
-    // Use snprintf to make sure bufSize is not exceeded, and that a null terminator is properly applied
-    snprintf(buf, size, currentEntry->getCurrentBeroPtr());
+    copyStringAndNullTerminate(buf, size, currentEntry->getCurrentBeroPtr());
     setNextBero(buf);
 
     // Start the warping process
@@ -632,9 +628,8 @@ static void selectedOptionRenameState(Menu *menuPtr)
     char *stateNamePtr = entriesPtr[currentIndex].getStateNamePtr();
 
     // The initial string needs to be null terminated, so copy the state name to a temporary buffer
-    // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
     char *stateNameBufferPtr = warpsMenuPtr->getStateNamePtr();
-    snprintf(stateNameBufferPtr, CUSTOM_STATE_NAME_SIZE + 1, stateNamePtr);
+    copyStringAndNullTerminate(stateNameBufferPtr, CUSTOM_STATE_NAME_SIZE + 1, stateNamePtr);
 
     nameEditorPtr
         ->init(rootWindowPtr, stateNameBufferPtr, stateNamePtr, CUSTOM_STATE_NAME_SIZE, false, rootWindowPtr->getAlpha());

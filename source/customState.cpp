@@ -10,8 +10,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <cstdio>
-#include <cinttypes>
 
 // The CustomState class is very small, so making it dynamic would waste a lot of memory
 CustomState gCustomState;
@@ -678,10 +676,9 @@ bool CustomState::overwriteState(uint32_t index)
 
     // Get the name of the selected state
     // The string will be cleared, so copy it to a temporary buffer
-    // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
     char nameBuf[CUSTOM_STATE_NAME_SIZE + 1];
     CustomStateEntry *currentStatePtr = &entriesPtr[index];
-    snprintf(nameBuf, sizeof(nameBuf), currentStatePtr->getStateNamePtr());
+    copyStringAndNullTerminate(nameBuf, sizeof(nameBuf), currentStatePtr->getStateNamePtr());
 
     // Overwrite the selected state
     currentStatePtr->init(nameBuf);

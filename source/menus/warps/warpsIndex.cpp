@@ -357,9 +357,8 @@ MapData *mapDataPtrHandleUnusedMaps(const char *mapName)
         if (strcmp(mapName, unusedMapsPtr[i]) == 0)
         {
             // Set up the new data
-            // Use snprintf to make sure the map name size is not exceeded, and that a null terminator is properly applied
             WarpByIndex *warpByIndexPtr = gMod->getWarpByIndexPtr();
-            snprintf(warpByIndexPtr->getUnusedMapNamePtr(), warpByIndexPtr->getUnusedMapNameSize(), mapName);
+            copyStringAndNullTerminate(warpByIndexPtr->getUnusedMapNamePtr(), warpByIndexPtr->getUnusedMapNameSize(), mapName);
 
             MapData *unusedMapDataPtr = warpByIndexPtr->getUnusedMapDataPtr();
             unusedMapDataPtr->pInitEvtCode = warpByIndexPtr->getCurrentMapInitEvtCodePtr();

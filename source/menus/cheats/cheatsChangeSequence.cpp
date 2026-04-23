@@ -123,15 +123,13 @@ bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequ
 
     if (sequencePosition <= 22)
     {
-        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stageNameBuffer, stageNameSize, "Opening");
+        copyStringAndNullTerminate(stageNameBuffer, stageNameSize, "Opening");
         return true;
     }
 
     if ((sequencePosition >= 403) && (sequencePosition <= 405))
     {
-        // Use snprintf to make sure stageNameSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stageNameBuffer, stageNameSize, "Ending");
+        copyStringAndNullTerminate(stageNameBuffer, stageNameSize, "Ending");
         return true;
     }
 

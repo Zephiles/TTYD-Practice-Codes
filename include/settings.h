@@ -9,13 +9,12 @@
 #include "customState.h"
 #include "gc/card.h"
 #include "menus/rootMenu.h"
+#include "misc/utils.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_pouch.h"
 
 #include <cstdint>
 #include <cstring>
-#include <cstdio>
-#include <cinttypes>
 
 #define SETTINGS_VERSION 5
 
@@ -657,9 +656,8 @@ class MemoryWatchesSettingsData
             offset += sizeof(bool);
 
             // Name
-            // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
             const char *namePtr = PTR_CAST_TYPE_ADD_OFFSET(const char *, this, offset);
-            snprintf(currentEntryPtr->getNamePtr(), nameLength, namePtr);
+            copyStringAndNullTerminate(currentEntryPtr->getNamePtr(), nameLength, namePtr);
             offset += watchNameLength;
 
             // Make sure offset is aligned to 4 bytes, since the class is aligned to 4 bytes
@@ -713,9 +711,7 @@ class MemoryWatchesSettingsData
         this->type = entryPtr->getType();
         this->showAsHex = entryPtr->shouldShowAsHex();
         this->display = entryPtr->shouldDisplay();
-
-        // Use snprintf to make sure the buffer size is not exceeded, and that a null terminator is properly applied
-        snprintf(this->name, MEMORY_WATCH_NAME_SIZE, entryPtr->getNamePtrConst());
+        copyStringAndNullTerminate(this->name, MEMORY_WATCH_NAME_SIZE, entryPtr->getNamePtrConst());
 
         return sizeof(MemoryWatchesSettingsData);
     }

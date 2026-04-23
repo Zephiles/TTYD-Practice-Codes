@@ -52,6 +52,43 @@ enum PointerVerificationType
 #define roundDown(size, alignment) (((size) / (alignment)) * (alignment))
 
 /**
+ * Converts an `int32_t` value to a `float` value.
+ *
+ * @param value The value to convert to a `float` value.
+ *
+ * @returns The value converted to a `float` value.
+ */
+float intToFloat(int32_t value);
+
+/**
+ * Converts a `float` value to an `int32_t` value.
+ *
+ * @param value The value to convert to an `int32_t` value.
+ *
+ * @returns The value converted to an `int32_t` value.
+ *
+ * @note Any decimals contained by the `float` value will be discarded upon being converted. As an example, `3.2` will be
+ * converted to `3`, and `-3.2` will be converted to `-3`.
+ */
+int32_t floatToInt(float value);
+
+/**
+ * Copies a specified amount of characters from `srcString` into `dstString`, indicated by `stringLen`, and then ensures that
+ * the string is null terminated. Effectively works the same as calling `strncpy` and then manually null terminating the
+ * destination string.
+ *
+ * @param dstString Pointer to the destination for where the characters will be copied to.
+ * @param stringLen Maximum number of characters to be copied from `srcString`.
+ * @param srcString Pointer to the string to be copied.
+ *
+ * @returns The same value that is returned by `snprintf`.
+ *
+ * @note This function simply calls `snprintf` to do all of its work, so all of the same concerns/warnings/etc. that apply to
+ * `snprintf` apply to this function as well.
+ */
+int32_t copyStringAndNullTerminate(char *dstString, uint32_t stringLen, const char *srcString);
+
+/**
  * Checks if a button combination was pressed this frame.
  *
  * @param combo The button combination to check for.
@@ -148,27 +185,6 @@ bool systemLevelIsZero();
  * via the function `marioStSystemLevel`.
  */
 void setSystemLevel(int32_t level);
-
-/**
- * Converts an `int32_t` value to a `float` value.
- *
- * @param value The value to convert to a `float` value.
- *
- * @returns The value converted to a `float` value.
- */
-float intToFloat(int32_t value);
-
-/**
- * Converts a `float` value to an `int32_t` value.
- *
- * @param value The value to convert to an `int32_t` value.
- *
- * @returns The value converted to an `int32_t` value.
- *
- * @note Any decimals contained by the `float` value will be discarded upon being converted. As an example, `3.2` will be
- * converted to `3`, and `-3.2` will be converted to `-3`.
- */
-int32_t floatToInt(float value);
 
 /**
  * Gets the pointer to the current partner out.

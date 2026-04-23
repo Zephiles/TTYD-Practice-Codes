@@ -26,6 +26,21 @@
 #include <cinttypes>
 #include <cmath>
 
+__attribute__((noinline)) float intToFloat(int32_t value)
+{
+    return static_cast<float>(value);
+}
+
+__attribute__((noinline)) int32_t floatToInt(float value)
+{
+    return static_cast<int32_t>(value);
+}
+
+int32_t copyStringAndNullTerminate(char *dstString, uint32_t stringLen, const char *srcString)
+{
+    return snprintf(dstString, stringLen, "%s", srcString);
+}
+
 bool checkButtonCombo(uint32_t combo)
 {
     if ((keyGetButton(PadId::CONTROLLER_ONE) & combo) != combo)
@@ -161,16 +176,6 @@ void setSystemLevel(int32_t level)
 
     // Set the new system level
     marioStSystemLevel(level);
-}
-
-__attribute__((noinline)) float intToFloat(int32_t value)
-{
-    return static_cast<float>(value);
-}
-
-__attribute__((noinline)) int32_t floatToInt(float value)
-{
-    return static_cast<int32_t>(value);
 }
 
 PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner)
@@ -490,8 +495,7 @@ void getStickAngleString(char *stringOut, uint32_t stringSize)
     if (!getStickAngle(stickXYAngles, &stickAngle))
     {
         // The stick is currently at the neutral position
-        // Use snprintf to make sure stringSize is not exceeded, and that a null terminator is properly applied
-        snprintf(stringOut, stringSize, "Neutral");
+        copyStringAndNullTerminate(stringOut, stringSize, "Neutral");
         return;
     }
 
