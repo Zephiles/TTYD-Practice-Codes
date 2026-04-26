@@ -87,7 +87,6 @@ extern "C"
     bool cHandleTubeModeStorage();
 
     // Misc assembly functions
-    void asmClearDCICCache(void *startAddr, uint32_t nBytes);
     void asmSetTime(OSTime time);
 }
 
