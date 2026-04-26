@@ -2890,7 +2890,7 @@
 // 8029A860:DCInvalidateRange
 8029A88C:DCFlushRange
 // 8029A8BC:DCStoreRange
-// 8029A8EC:DCFlushRangeNoSync
+8029A8EC:DCFlushRangeNoSync
 // 8029A918:DCStoreRangeNoSync
 // 8029A944:DCZeroRange
 8029A970:ICInvalidateRange

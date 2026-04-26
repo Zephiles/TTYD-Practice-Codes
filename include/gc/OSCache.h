@@ -9,7 +9,7 @@ extern "C"
     // DCInvalidateRange
     void DCFlushRange(void *startAddr, uint32_t nBytes);
     // DCStoreRange
-    // DCFlushRangeNoSync
+    void DCFlushRangeNoSync(void *startAddr, uint32_t nBytes);
     // DCStoreRangeNoSync
     // DCZeroRange
     void ICInvalidateRange(void *startAddr, uint32_t nBytes);

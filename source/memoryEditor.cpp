@@ -6,6 +6,7 @@
 #include "cheats.h"
 #include "classes/window.h"
 #include "gc/pad.h"
+#include "gc/OSInterrupt.h"
 #include "menus/memoryMenu.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
@@ -631,6 +632,9 @@ void MemoryEditor::controls(MenuButtonInput button)
             {
                 case MemoryEditorState::MEMORY_EDITOR_STATE_EDITING_BYTES:
                 {
+                    // Disable interrupts to help protect against other code using the bytes being overwritten here
+                    const bool enable = OSDisableInterrupts();
+
                     // Copy the bytes from the amount of bytes to change into memory
                     // Only copy bytes that are at a valid address
                     uint8_t *tempAddress = currentAddress + editorIndex;
@@ -673,6 +677,9 @@ void MemoryEditor::controls(MenuButtonInput button)
                         const uint32_t size = endAddressRaw - startAddressRaw;
                         clear_DC_IC_Cache(startAddressRaw, size);
                     }
+
+                    // Done, so restore interrupts
+                    OSRestoreInterrupts(enable);
 
                     // Go back to selecting a range of bytes to edit
                     this->state = MemoryEditorState::MEMORY_EDITOR_STATE_ENTERED_EDITOR;
