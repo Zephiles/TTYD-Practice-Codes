@@ -4,15 +4,17 @@ asmReplaceJumpFallAnim:
 stwu %sp,-0x10(%sp)
 mflr %r3
 stw %r3,0x14(%sp)
-stw %r31,0xC(%sp)
-mr %r31,%r0
+
+# Backup important register values
+stw %r0,0x8(%sp)
 
 mr %r3,%r25 # jumpFallString
 bl cReplaceJumpFallAnim
 mr %r4,%r3
 
-mr %r0,%r31
-lwz %r31,0xC(%sp)
+# Restore important register values
+lwz %r0,0x8(%sp)
+
 lwz %r3,0x14(%sp)
 mtlr %r3
 addi %sp,%sp,0x10

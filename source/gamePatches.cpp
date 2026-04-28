@@ -176,15 +176,15 @@ uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags)
     return 0;
 }
 
-uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw)
+uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw, uint32_t multipliedIndex)
 {
-    if (!gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
+    if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
-        return pointerRaw;
+        // Use the pointer value that would be used under vanilla scenarios
+        pointerRaw = AMWCoordinateWriteAddressDisplay::getSoundEfxStopPtrRaw();
     }
 
-    // Return the pointer value that would be used under vanilla scenarios
-    return AMWCoordinateWriteAddressDisplay::getSoundEfxStopPtrRaw();
+    return pointerRaw + multipliedIndex;
 }
 
 bool cHandleTubeModeStorage()
@@ -835,7 +835,9 @@ void applyVariousGamePatches()
     constexpr uint32_t SoundEfxStopAddress = 0x800E1A54;
 #endif
 
-    writeBranchBL(SoundEfxStopAddress, asmArbitraryMemoryWriteGetProperPointer);
+    writeStandardBranches(SoundEfxStopAddress,
+                          asmArbitraryMemoryWriteGetProperPointerStart,
+                          asmArbitraryMemoryWriteGetProperPointerBranchBack);
 }
 
 void applyCheatAndDisplayInjects()

@@ -43,7 +43,9 @@ extern "C"
     void asmDisableDPadOptionsDisplay();
 
     void asmArbitraryMemoryWriteDisableRandomFail();
-    void asmArbitraryMemoryWriteGetProperPointer();
+
+    void asmArbitraryMemoryWriteGetProperPointerStart();
+    void asmArbitraryMemoryWriteGetProperPointerBranchBack();
 
     void asmHandleTubeModeStorage();
 
@@ -82,7 +84,7 @@ extern "C"
 #endif
 
     uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags);
-    uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw);
+    uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw, uint32_t multipliedIndex);
 
     bool cHandleTubeModeStorage();
 

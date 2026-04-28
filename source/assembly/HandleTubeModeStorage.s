@@ -1,7 +1,6 @@
 .global asmHandleTubeModeStorage
 
 asmHandleTubeModeStorage:
-# Push the stack
 stwu %sp,-0x10(%sp)
 mflr %r0
 stw %r0,0x14(%sp)
@@ -15,7 +14,6 @@ cmpwi %r3,0 # False
 # Restore important register values
 lwz %r3,0x8(%sp)
 
-# Pop the stack
 lwz %r0,0x14(%sp)
 mtlr %r0
 addi %sp,%sp,0x10
@@ -27,4 +25,5 @@ cmpwi %r3,1
 blr
 
 tubeModeStorageActive:
+# Go past some additional checks that would check if Mario should enter Tube Mode at this time
 b (marioRollChgChk + 0x78)

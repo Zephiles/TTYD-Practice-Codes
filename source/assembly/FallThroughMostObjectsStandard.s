@@ -1,3 +1,4 @@
+# At least two separate hooks use this assembly, so this assembly must use the link register to return
 .global asmFallThroughMostObjectsStandard
 
 asmFallThroughMostObjectsStandard:
