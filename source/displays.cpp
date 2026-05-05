@@ -2771,8 +2771,9 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
     }
 
     ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
+    const bool pauseMenuOpen = pauseMenuIsOpen();
 
-    if (pauseMenuIsOpen())
+    if (pauseMenuOpen)
     {
         // Stop the pause timer upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
@@ -2855,14 +2856,21 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 #ifdef TTYD_JP
     // If the player is currently in the room in the Great Tree where the trick is performed with the flag enabled for adjusting
     // the X-Naut's position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the
-    // trick. Also need to make sure they player is not currently in a battle when doing this.
+    // trick. Also need to make sure they player is not currently in a battle when doing this, as well as not allowing this to
+    // occur while the pause menu is open.
     if (compareStringToNextMap("mri_20"))
     {
         const bool adjustXNautPosition = displaysPtr->enabledFlagIsSet(
             DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
 
-        if (adjustXNautPosition && !getBattleWorkPtr())
+        if (adjustXNautPosition && !pauseMenuOpen && !getBattleWorkPtr())
         {
+            auto lockXNautPosition = [](Vec3 *xNautPosPtr)
+            {
+                xNautPosPtr->x = -295.404053f;
+                xNautPosPtr->z = 169.766129f;
+            };
+
             NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
             Vec3 *xNautPosPtr = &xNautPtr->position;
 
@@ -2879,15 +2887,27 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
                 if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
                 {
-                    // Set the X-Naut's new position and reset where it's trying to walk to
-                    xNautPosPtr->x = 5.f;
-                    xNautDestinationPtr->x = 5.f;
+                    // Allow about 1 second to pass before moving the x-Naut, to account for people moving left via the slow
+                    // walk rather than in Paper Mode
+                    uint32_t xNautTimer = amwDisplayPtr->getXNautTimer();
+                    if (xNautTimer >= sysMsec2Frame(1000))
+                    {
+                        // Set the X-Naut's new position and reset where it's trying to walk to
+                        xNautPosPtr->x = 5.f;
+                        xNautDestinationPtr->x = 5.f;
 
-                    const int32_t randomPosZ = (irand(2000) / 10) - 100;
-                    const float xNautNewZPos = intToFloat(randomPosZ);
+                        const int32_t randomPosZ = (irand(2000) / 10) - 100;
+                        const float xNautNewZPos = intToFloat(randomPosZ);
 
-                    xNautPosPtr->z = xNautNewZPos;
-                    xNautDestinationPtr->z = xNautNewZPos;
+                        xNautPosPtr->z = xNautNewZPos;
+                        xNautDestinationPtr->z = xNautNewZPos;
+                    }
+                    else
+                    {
+                        // 1 second has not passed, so increment the timer and lock the X-Naut's position
+                        amwDisplayPtr->setXNautTimer(++xNautTimer);
+                        lockXNautPosition(xNautPosPtr);
+                    }
                 }
                 else
                 {
@@ -2914,8 +2934,8 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
                     if (manuallyMoved)
                     {
-                        // Had to manually move the X-Naut, so set their destination to the current position to stop them from
-                        // walking infinitely
+                        // Had to manually move the X-Naut, so set their destination to the current position to stop them
+                        // from walking infinitely
                         xNautDestinationPtr->x = xNautPosPtr->x;
                         xNautDestinationPtr->z = xNautPosPtr->z;
                     }
@@ -2923,10 +2943,11 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
             }
             else
             {
-                // The player is not at the correct Z coordinate and/or they are still in Paper Mode, so place the X-Naut in the
-                // bottom-left corner of the room
-                xNautPosPtr->x = -295.404053f;
-                xNautPosPtr->z = 169.766129f;
+                // The player is either not at the correct Z coordinate, and/or they are still in Paper Mode, so place the
+                // X-Naut in the bottom-left corner of the room and make sure the X-Naut timer is not at 1 second from previous
+                // AMW attempts
+                amwDisplayPtr->setXNautTimer(0);
+                lockXNautPosition(xNautPosPtr);
             }
         }
     }

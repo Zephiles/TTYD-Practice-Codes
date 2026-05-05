@@ -713,6 +713,10 @@ class ArbitraryMemoryWriteDisplay
     uint32_t getSpinJumpTimer() const { return this->spinJumpTimer; }
     void setSpinJumpTimer(uint32_t time) { this->spinJumpTimer = static_cast<uint16_t>(time); }
     void resetSpinJumpTimer() { this->spinJumpTimer = 0; }
+
+    uint32_t getXNautTimer() const { return this->xNautTimer; }
+    void setXNautTimer(uint32_t time) { this->xNautTimer = static_cast<uint16_t>(time); }
+    void resetXNautTimer() { this->xNautTimer = 0; }
 #endif
 
     void resetTimers()
@@ -721,6 +725,7 @@ class ArbitraryMemoryWriteDisplay
 
 #ifdef TTYD_JP
         this->resetSpinJumpTimer();
+        this->resetXNautTimer();
 #endif
     }
 
@@ -730,6 +735,7 @@ class ArbitraryMemoryWriteDisplay
 
 #ifdef TTYD_JP
     uint16_t spinJumpTimer;
+    uint16_t xNautTimer;
 #endif
 };
 
