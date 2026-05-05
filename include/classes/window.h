@@ -1,6 +1,7 @@
 #ifndef CLASSES_WINDOW_H
 #define CLASSES_WINDOW_H
 
+#include "inline.h"
 #include "ttyd/icondrv.h"
 
 #include <cstdint>
@@ -15,7 +16,7 @@
  *
  * @returns The default color for the subwindows that classes are placed in, `OR`ed with the `alpha` parameter.
  */
-inline uint32_t getSpecialWindowColor(uint8_t alpha)
+INLINE_FUNC uint32_t getSpecialWindowColor(uint8_t alpha)
 {
     return SPECIAL_WINDOW_COLOR | alpha;
 }

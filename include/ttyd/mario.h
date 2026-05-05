@@ -1,6 +1,7 @@
 #ifndef TTYD_MARIO_H
 #define TTYD_MARIO_H
 
+#include "inline.h"
 #include "gc/types.h"
 #include "ttyd/mario_motion.h"
 #include "ttyd/party.h"
@@ -158,7 +159,7 @@ static_assert(sizeof(Player) == 0x2E0);
 static_assert(sizeof(Player) == 0x2F8);
 #endif
 
-inline bool peachInXNautForm(const Player *marioPtr)
+INLINE_FUNC bool peachInXNautForm(const Player *marioPtr)
 {
     return (marioPtr->flags4 >> 13) & 1U;
 }

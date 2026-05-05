@@ -1,6 +1,7 @@
 #ifndef DRAWICON_H
 #define DRAWICON_H
 
+#include "inline.h"
 #include "ttyd/icondrv.h"
 #include "ttyd/item_data.h"
 
@@ -54,14 +55,14 @@ void drawIconWithText(float posX,
                       uint8_t alpha);
 
 // textColor alpha is overwritten by the alpha parameter
-inline void drawItemIconWithText(float posX,
-                                 float posY,
-                                 float iconScale,
-                                 float scale,
-                                 float width,
-                                 ItemId item,
-                                 uint32_t textColor,
-                                 uint8_t alpha)
+INLINE_FUNC void drawItemIconWithText(float posX,
+                                      float posY,
+                                      float iconScale,
+                                      float scale,
+                                      float width,
+                                      ItemId item,
+                                      uint32_t textColor,
+                                      uint8_t alpha)
 {
     IconId iconId = getIconFromItem(item);
     const char *text = getItemName(item);
@@ -69,20 +70,20 @@ inline void drawItemIconWithText(float posX,
 }
 
 // Sets the alpha to 0xFF, and textColor alpha is overwritten by 0xFF
-inline void
+INLINE_FUNC void
     drawItemIconWithText(float posX, float posY, float iconScale, float scale, float width, ItemId item, uint32_t textColor)
 {
     drawItemIconWithText(posX, posY, iconScale, scale, width, item, textColor, 0xFF);
 }
 
 // Sets iconScale to scale, alpha to 0xFF, and textColor alpha is overwritten by 0xFF
-inline void drawItemIconWithText(float posX, float posY, float scale, float width, ItemId item, uint32_t textColor)
+INLINE_FUNC void drawItemIconWithText(float posX, float posY, float scale, float width, ItemId item, uint32_t textColor)
 {
     drawItemIconWithText(posX, posY, scale, scale, width, item, textColor, 0xFF);
 }
 
 // Sets iconScale to scale, and textColor alpha is overwritten by the alpha parameter
-inline void
+INLINE_FUNC void
     drawItemIconWithText(float posX, float posY, float scale, float width, ItemId item, uint32_t textColor, uint8_t alpha)
 {
     drawItemIconWithText(posX, posY, scale, scale, width, item, textColor, alpha);

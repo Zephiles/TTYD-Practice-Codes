@@ -4,6 +4,7 @@
 #include "cheats.h"
 #include "displays.h"
 #include "mod.h"
+#include "inline.h"
 #include "memoryWatch.h"
 #include "memoryEditor.h"
 #include "customState.h"
@@ -1296,7 +1297,7 @@ inline uint32_t getWrittenSettingsSize()
 }
 
 // Helper functions for getting the pointers to the headers
-inline PracticeCodesDataHeader *getPracticeCodesDataHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC PracticeCodesDataHeader *getPracticeCodesDataHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     (void)dataOffset;
 
@@ -1304,7 +1305,7 @@ inline PracticeCodesDataHeader *getPracticeCodesDataHeaderPtr(void *dataPtr, uin
     return PTR_CAST_TYPE_ADD_OFFSET(PracticeCodesDataHeader *, dataPtr, 0);
 }
 
-inline SettingsHeader *getSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC SettingsHeader *getSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     (void)dataOffset;
 
@@ -1312,73 +1313,73 @@ inline SettingsHeader *getSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
     return PTR_CAST_TYPE_ADD_OFFSET(SettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader));
 }
 
-inline MiscSettingsHeader *getMiscSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MiscSettingsHeader *getMiscSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MiscSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline MiscSettingsData *getMiscSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MiscSettingsData *getMiscSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MiscSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline CheatsSettingsHeader *getCheatsSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC CheatsSettingsHeader *getCheatsSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(CheatsSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline CheatsSettingsData *getCheatsSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC CheatsSettingsData *getCheatsSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(CheatsSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline DisplaysSettingsHeader *getDisplaysSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC DisplaysSettingsHeader *getDisplaysSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(DisplaysSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline DisplaysSettingsData *getDisplaysSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC DisplaysSettingsData *getDisplaysSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(DisplaysSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline MemoryWatchesSettingsHeader *getMemoryWatchesSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MemoryWatchesSettingsHeader *getMemoryWatchesSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MemoryWatchesSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline MemoryWatchesSettingsData *getMemoryWatchesSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MemoryWatchesSettingsData *getMemoryWatchesSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MemoryWatchesSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline MemoryEditorSettingsHeader *getMemoryEditorSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MemoryEditorSettingsHeader *getMemoryEditorSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MemoryEditorSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline MemoryEditorSettingsData *getMemoryEditorSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC MemoryEditorSettingsData *getMemoryEditorSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(MemoryEditorSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline CustomStatesSettingsHeader *getCustomStatesSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC CustomStatesSettingsHeader *getCustomStatesSettingsHeaderPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(CustomStatesSettingsHeader *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
 }
 
-inline CustomStatesSettingsData *getCustomStatesSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
+INLINE_FUNC CustomStatesSettingsData *getCustomStatesSettingsDataPtr(void *dataPtr, uint32_t dataOffset)
 {
     // Add PracticeCodesDataHeader to start at the settings header
     return PTR_CAST_TYPE_ADD_OFFSET(CustomStatesSettingsData *, dataPtr, sizeof(PracticeCodesDataHeader) + dataOffset);
@@ -1390,44 +1391,33 @@ int32_t loadSettings(int32_t channel);
 int32_t saveSettings(int32_t channel);
 int32_t deleteSettingsFile(int32_t channel);
 
-__attribute__((always_inline)) inline int32_t createFileOnMemoryCard(int32_t channel,
-                                                                     const char *fileNamePtr,
-                                                                     uint32_t size,
-                                                                     CARDFileInfo *fileInfoPtr)
+INLINE_FUNC int32_t createFileOnMemoryCard(int32_t channel, const char *fileNamePtr, uint32_t size, CARDFileInfo *fileInfoPtr)
 {
     const int32_t ret = CARDCreateAsync(channel, fileNamePtr, size, fileInfoPtr, nullptr);
     return finishAsyncMemoryCardFunc(ret, channel);
 }
 
-__attribute__((always_inline)) inline int32_t readFromFileOnMemoryCard(int32_t channel,
-                                                                       CARDFileInfo *fileInfoPtr,
-                                                                       void *bufferPtr,
-                                                                       int32_t length,
-                                                                       int32_t offset)
+INLINE_FUNC int32_t
+    readFromFileOnMemoryCard(int32_t channel, CARDFileInfo *fileInfoPtr, void *bufferPtr, int32_t length, int32_t offset)
 {
     const int32_t ret = CARDReadAsync(fileInfoPtr, bufferPtr, length, offset, nullptr);
     return finishAsyncMemoryCardFunc(ret, channel);
 }
 
-__attribute__((always_inline)) inline int32_t writeToFileOnMemoryCard(int32_t channel,
-                                                                      CARDFileInfo *fileInfoPtr,
-                                                                      void *bufferPtr,
-                                                                      int32_t length,
-                                                                      int32_t offset)
+INLINE_FUNC int32_t
+    writeToFileOnMemoryCard(int32_t channel, CARDFileInfo *fileInfoPtr, void *bufferPtr, int32_t length, int32_t offset)
 {
     const int32_t ret = CARDWriteAsync(fileInfoPtr, bufferPtr, length, offset, nullptr);
     return finishAsyncMemoryCardFunc(ret, channel);
 }
 
-__attribute__((always_inline)) inline int32_t setMemoryCardFileStatus(int32_t channel, int32_t fileNum, CARDStat *statPtr)
+INLINE_FUNC int32_t setMemoryCardFileStatus(int32_t channel, int32_t fileNum, CARDStat *statPtr)
 {
     const int32_t ret = CARDSetStatusAsync(channel, fileNum, statPtr, nullptr);
     return finishAsyncMemoryCardFunc(ret, channel);
 }
 
-__attribute__((always_inline)) inline int32_t renameFileOnMemoryCard(int32_t channel,
-                                                                     const char *oldNamePtr,
-                                                                     const char *newNamePtr)
+INLINE_FUNC int32_t renameFileOnMemoryCard(int32_t channel, const char *oldNamePtr, const char *newNamePtr)
 {
     const int32_t ret = card_rename_async(channel, oldNamePtr, newNamePtr, nullptr);
     return finishAsyncMemoryCardFunc(ret, channel);

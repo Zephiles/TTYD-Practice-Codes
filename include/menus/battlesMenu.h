@@ -2,6 +2,7 @@
 #define MENUS_BATTLES_MENU_H
 
 #include "menuUtils.h"
+#include "inline.h"
 #include "classes/valueEditor.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/battle.h"
@@ -76,7 +77,7 @@ class BattlesMenu
 extern BattlesMenu *gBattlesMenu;
 extern const char *gBattleActors[TOTAL_BATTLE_UNIT_TYPES];
 
-inline uint32_t getbattlesMenuInitMaxIndex()
+INLINE_FUNC uint32_t getbattlesMenuInitMaxIndex()
 {
     constexpr uint32_t maxActors = sizeof(BattleWork::battle_units) / sizeof(BattleWork::battle_units[0]);
 

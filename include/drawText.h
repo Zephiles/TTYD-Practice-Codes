@@ -1,6 +1,7 @@
 #ifndef DRAWTEXT_H
 #define DRAWTEXT_H
 
+#include "inline.h"
 #include "ttyd/fontmgr.h"
 
 #include <cstdint>
@@ -27,47 +28,47 @@ enum class TextAlignment
 #define COLOR_RED 0xFF141400
 #define COLOR_LIGHT_ORANGE 0xE6B22D00
 
-inline uint32_t getColorWhite(uint8_t alpha)
+INLINE_FUNC uint32_t getColorWhite(uint8_t alpha)
 {
     return COLOR_WHITE | alpha;
 }
 
-inline uint32_t getColorBlack(uint8_t alpha)
+INLINE_FUNC uint32_t getColorBlack(uint8_t alpha)
 {
     return COLOR_BLACK | alpha;
 }
 
-inline uint32_t getColorGrayedOut(uint8_t alpha)
+INLINE_FUNC uint32_t getColorGrayedOut(uint8_t alpha)
 {
     return COLOR_GRAYED_OUT | alpha;
 }
 
-inline uint32_t getColorBlue(uint8_t alpha)
+INLINE_FUNC uint32_t getColorBlue(uint8_t alpha)
 {
     return COLOR_BLUE | alpha;
 }
 
-inline uint32_t getColorLightBlue(uint8_t alpha)
+INLINE_FUNC uint32_t getColorLightBlue(uint8_t alpha)
 {
     return COLOR_LIGHT_BLUE | alpha;
 }
 
-inline uint32_t getColorGreen(uint8_t alpha)
+INLINE_FUNC uint32_t getColorGreen(uint8_t alpha)
 {
     return COLOR_GREEN | alpha;
 }
 
-inline uint32_t getColorRed(uint8_t alpha)
+INLINE_FUNC uint32_t getColorRed(uint8_t alpha)
 {
     return COLOR_RED | alpha;
 }
 
-inline uint32_t getColorLightOrange(uint8_t alpha)
+INLINE_FUNC uint32_t getColorLightOrange(uint8_t alpha)
 {
     return COLOR_LIGHT_ORANGE | alpha;
 }
 
-inline void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut, uint8_t alpha)
+INLINE_FUNC void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut, uint8_t alpha)
 {
     if (valueToCheck)
     {
@@ -81,7 +82,7 @@ inline void getOnOffTextAndColor(bool valueToCheck, const char **textOut, uint32
     }
 }
 
-inline void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut, uint8_t alpha)
+INLINE_FUNC void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32_t *colorOut, uint8_t alpha)
 {
     if (valueToCheck)
     {
@@ -95,7 +96,7 @@ inline void getYesNoTextAndColor(bool valueToCheck, const char **textOut, uint32
     }
 }
 
-inline uint32_t getCurrentOptionColor(bool currentOption, uint8_t alpha)
+INLINE_FUNC uint32_t getCurrentOptionColor(bool currentOption, uint8_t alpha)
 {
     if (currentOption)
     {
@@ -124,7 +125,7 @@ void drawText(const char *text, float posX, float posY, float scale, float width
 void drawText(const char *text, float posX, float posY, float scale, float width, uint32_t color, TextAlignment alignment);
 
 // Sets the alpha to 0xFF
-inline void drawTextInit(bool drawFontEdge)
+INLINE_FUNC void drawTextInit(bool drawFontEdge)
 {
     // FontDrawStart sets the alpha to 0xFF
     FontDrawStart();
@@ -137,7 +138,7 @@ inline void drawTextInit(bool drawFontEdge)
     }
 }
 
-inline void drawTextInit(uint8_t alpha, bool drawFontEdge)
+INLINE_FUNC void drawTextInit(uint8_t alpha, bool drawFontEdge)
 {
     FontDrawStart_alpha(alpha);
 

@@ -1,6 +1,8 @@
 #ifndef MISC_PRINTF_H
 #define MISC_PRINTF_H
 
+#include "inline.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <cstdarg>
@@ -24,7 +26,7 @@ extern "C"
 
 // Set up an inlined copy of `vsnprintf` to be used for both `snprintf` and `vsnprintf`, as if only one of these is being used
 // in the project, then it's more memory-efficient to use the inlined copy rather than having `snprintf` call `vsnprintf`.
-__attribute__((always_inline)) inline int __vsnprintf(char *buffer, size_t maxLength, const char *format, va_list args)
+INLINE_FUNC int __vsnprintf(char *buffer, size_t maxLength, const char *format, va_list args)
 {
     // Make sure buffer and maxLength are valid before doing anything
     if (!buffer || (static_cast<int32_t>(maxLength) <= 0))

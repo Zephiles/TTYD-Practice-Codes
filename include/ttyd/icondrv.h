@@ -1,6 +1,7 @@
 #ifndef TTYD_ICONDRV_H
 #define TTYD_ICONDRV_H
 
+#include "inline.h"
 #include "gc/types.h"
 
 #include <cstdint>
@@ -650,7 +651,7 @@ enum class IconId : int16_t
     ICON_MAX_VALUE, // Should never use this value nor higher
 };
 
-inline bool iconIsValid(IconId icon)
+INLINE_FUNC bool iconIsValid(IconId icon)
 {
     return (icon >= IconId::ICON_INVALID_ITEM_ZAP_TAP) && (icon < IconId::ICON_MAX_VALUE);
 }

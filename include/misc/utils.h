@@ -1,6 +1,7 @@
 #ifndef MISC_MISC_H
 #define MISC_MISC_H
 
+#include "inline.h"
 #include "gc/types.h"
 #include "ttyd/seqdrv.h"
 #include "ttyd/party.h"
@@ -191,7 +192,7 @@ void setSystemLevel(int32_t level);
  *
  * @returns The pointer to the current partner out. Will be `nullptr` if no partner is currently out.
  */
-inline PartyEntry *getPartnerPtr()
+INLINE_FUNC PartyEntry *getPartnerPtr()
 {
     return partyGetPtr(marioGetPartyId());
 }
@@ -201,7 +202,7 @@ inline PartyEntry *getPartnerPtr()
  *
  * @returns The pointer to the current follower out. Will be `nullptr` if no follower is currently out.
  */
-inline PartyEntry *getFollowerPtr()
+INLINE_FUNC PartyEntry *getFollowerPtr()
 {
     return partyGetPtr(marioGetExtraPartyId());
 }
@@ -221,7 +222,7 @@ PartyMembers getCurrentPartnerOrFollowerOut(bool getPartner);
  *
  * @note If no partner is currently out, then nothing will happen.
  */
-inline void removePartnerFromOverworld()
+INLINE_FUNC void removePartnerFromOverworld()
 {
     partyKill2(marioGetPartyId());
 }
@@ -231,7 +232,7 @@ inline void removePartnerFromOverworld()
  *
  * @note If no follower is currently out, then nothing will happen.
  */
-inline void removeFollowerFromOverworld()
+INLINE_FUNC void removeFollowerFromOverworld()
 {
     partyKill2(marioGetExtraPartyId());
 }
@@ -258,7 +259,7 @@ PartySlotId spawnPartnerOrFollower(PartyMembers id);
 PartySlotId spawnFailsafePartnerOrFollower(bool shouldSpawnPartner);
 
 // Rechecks Mario's jump and hammer levels.
-inline void recheckJumpAndHammerLevels()
+INLINE_FUNC void recheckJumpAndHammerLevels()
 {
     pouchGetJumpLv();
     pouchGetHammerLv();
@@ -281,7 +282,7 @@ void recheckBattleUpgrades(ItemId item);
  *
  * @returns `true` if at least one of the badge is currently equipped, otherwise `false`.
  */
-inline bool checkIfBadgeEquipped(ItemId badge)
+INLINE_FUNC bool checkIfBadgeEquipped(ItemId badge)
 {
     return pouchEquipCheckBadge(badge) > 0;
 }
@@ -291,7 +292,7 @@ inline bool checkIfBadgeEquipped(ItemId badge)
  *
  * @returns `true` if the pause menu is currently open, otherwise `false`.
  */
-inline bool pauseMenuIsOpen()
+INLINE_FUNC bool pauseMenuIsOpen()
 {
     return (marioStGetSystemLevel() & 15) == 15;
 }

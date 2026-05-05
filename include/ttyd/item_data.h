@@ -1,6 +1,7 @@
 #ifndef TTYD_ITEM_DATA_H
 #define TTYD_ITEM_DATA_H
 
+#include "inline.h"
 #include "ttyd/battle_database_common.h"
 #include "ttyd/icondrv.h"
 
@@ -372,7 +373,7 @@ struct ItemData
 
 static_assert(sizeof(ItemData) == 0x28);
 
-inline bool itemIsValid(ItemId item)
+INLINE_FUNC bool itemIsValid(ItemId item)
 {
     return (item > ItemId::ITEM_NONE) && (item <= ItemId::ITEM_SUPER_CHARGE_P);
 }

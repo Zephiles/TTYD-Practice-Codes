@@ -3,6 +3,7 @@
 
 #include "mod.h"
 #include "cxx.h"
+#include "inline.h"
 #include "classes/valueEditor.h"
 #include "gc/pad.h"
 #include "gc/DEMOPad.h"
@@ -423,7 +424,7 @@ class Cheats
     bool checkCheatButtonComboDemo(uint32_t cheatWithCombo) const;
     uint32_t getCheatButtonCombo(uint32_t cheatWithCombo);
     void setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
-    inline const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
+    INLINE_FUNC const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
     uint16_t *getButtonCombosPtr() { return this->buttonCombos; }
 
     SaveLoadCoordinatesCheats *getSaveLoadCoordinatesCheatsPtr() { return &this->saveLoadCoordinates; }

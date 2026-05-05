@@ -1,6 +1,7 @@
 #ifndef TTYD_SYSTEM_H
 #define TTYD_SYSTEM_H
 
+#include "inline.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 
@@ -43,7 +44,7 @@ extern "C"
     // The following three functions are supposed to return `int8_t`, but the functions themselves do not sign extend the
     // result, so trying to use the resulting value as `int8_t` generally results in the value not being properly sign extended.
     // So the solution here is to have them return `uint8_t`, and then cast that result to `int8_t` and then to `int32_t`.
-    // Inline functions have been added below to handle this process automatically.
+    // Inlined functions have been added below to handle this process automatically.
     uint8_t keyGetSubStickY(PadId id);
     uint8_t keyGetStickY(PadId id);
     uint8_t keyGetStickX(PadId id);
@@ -66,19 +67,19 @@ extern "C"
 }
 
 // Gets the result of `keyGetSubStickY` and sign extends it to `int32_t`.
-inline int32_t keyGetSubStickYSignExtend(PadId id)
+INLINE_FUNC int32_t keyGetSubStickYSignExtend(PadId id)
 {
     return static_cast<int32_t>(static_cast<int8_t>(keyGetSubStickY(id)));
 }
 
 // Gets the result of `keyGetStickY` and sign extends it to `int32_t`.
-inline int32_t keyGetStickYSignExtend(PadId id)
+INLINE_FUNC int32_t keyGetStickYSignExtend(PadId id)
 {
     return static_cast<int32_t>(static_cast<int8_t>(keyGetStickY(id)));
 }
 
 // Gets the result of `keyGetStickX` and sign extends it to `int32_t`.
-inline int32_t keyGetStickXSignExtend(PadId id)
+INLINE_FUNC int32_t keyGetStickXSignExtend(PadId id)
 {
     return static_cast<int32_t>(static_cast<int8_t>(keyGetStickX(id)));
 }

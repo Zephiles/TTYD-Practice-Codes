@@ -1,6 +1,8 @@
 #ifndef CXX_H
 #define CXX_H
 
+#include "inline.h"
+
 #include <cstdint>
 #include <new>
 
@@ -13,7 +15,7 @@ void *allocMemoryFromArenaTail(std::size_t size);
 void freeMemory(void *ptr);
 
 // `alignment` is only used when allocating from the arena
-inline void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
+INLINE_FUNC void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
 {
     if (allocFromArena)
     {
@@ -36,7 +38,7 @@ inline void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromAre
     }
 }
 
-inline void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromArena)
+INLINE_FUNC void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromArena)
 {
     if (allocFromArena)
     {
@@ -59,7 +61,7 @@ inline void *allocateMemory(uint32_t size, bool allocFromHead, bool allocFromAre
     }
 }
 
-inline void *allocateMemory(uint32_t size, bool allocFromHead)
+INLINE_FUNC void *allocateMemory(uint32_t size, bool allocFromHead)
 {
     if (allocFromHead)
     {
@@ -71,64 +73,64 @@ inline void *allocateMemory(uint32_t size, bool allocFromHead)
     }
 }
 
-inline void *operator new(std::size_t size)
+INLINE_FUNC void *operator new(std::size_t size)
 {
     return allocateMemoryFromTail(size);
 }
 
-inline void *operator new[](std::size_t size)
+INLINE_FUNC void *operator new[](std::size_t size)
 {
     return allocateMemoryFromTail(size);
 }
 
-inline void *operator new(std::size_t size, bool allocFromHead)
+INLINE_FUNC void *operator new(std::size_t size, bool allocFromHead)
 {
     return allocateMemory(size, allocFromHead);
 }
 
-inline void *operator new[](std::size_t size, bool allocFromHead)
+INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead)
 {
     return allocateMemory(size, allocFromHead);
 }
 
-inline void *operator new(std::size_t size, bool allocFromHead, bool allocFromArena)
+INLINE_FUNC void *operator new(std::size_t size, bool allocFromHead, bool allocFromArena)
 {
     return allocateMemory(size, allocFromHead, allocFromArena);
 }
 
-inline void *operator new(std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
+INLINE_FUNC void *operator new(std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
 {
     return allocateMemory(size, allocFromHead, allocFromArena, alignment);
 }
 
-inline void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena)
+INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena)
 {
     return allocateMemory(size, allocFromHead, allocFromArena);
 }
 
-inline void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
+INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
 {
     return allocateMemory(size, allocFromHead, allocFromArena, alignment);
 }
 
-inline void operator delete(void *ptr)
+INLINE_FUNC void operator delete(void *ptr)
 {
     return freeMemory(ptr);
 }
 
-inline void operator delete[](void *ptr)
+INLINE_FUNC void operator delete[](void *ptr)
 {
     return freeMemory(ptr);
 }
 
-inline void operator delete(void *ptr, std::size_t size)
+INLINE_FUNC void operator delete(void *ptr, std::size_t size)
 {
     (void)size;
 
     return freeMemory(ptr);
 }
 
-inline void operator delete[](void *ptr, std::size_t size)
+INLINE_FUNC void operator delete[](void *ptr, std::size_t size)
 {
     (void)size;
 

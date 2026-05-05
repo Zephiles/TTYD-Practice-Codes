@@ -1,6 +1,7 @@
 #ifndef GC_GX_H
 #define GC_GX_H
 
+#include "inline.h"
 #include "gc/ppc.h"
 #include "gc/mtx.h"
 
@@ -415,12 +416,12 @@ struct GXTexObj
 static_assert(sizeof(GXTexObj) == 0x20);
 
 // Inlined GX functions
-static inline void GXPosition1x16(const uint16_t x)
+INLINE_FUNC void GXPosition1x16(const uint16_t x)
 {
     writeGatherPipe.u16 = x;
 }
 
-static inline void GXPosition3f32(const float x, const float y, const float z)
+INLINE_FUNC void GXPosition3f32(const float x, const float y, const float z)
 {
     writeGatherPipe.f32 = x;
     writeGatherPipe.f32 = y;

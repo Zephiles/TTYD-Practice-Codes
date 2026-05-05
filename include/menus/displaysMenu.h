@@ -2,6 +2,7 @@
 #define MENUS_DISPLAYS_MENU_H
 
 #include "mod.h"
+#include "inline.h"
 #include "classes/valueEditor.h"
 #include "classes/buttonComboEditor.h"
 #include "classes/positionEditor.h"
@@ -61,7 +62,7 @@ enum DisplaysMenuGenericSelectionFlags
 };
 
 // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
-inline bool displaysMenuGenericSelectionFlagIsSet(uint32_t flags, uint32_t flag)
+INLINE_FUNC bool displaysMenuGenericSelectionFlagIsSet(uint32_t flags, uint32_t flag)
 {
     // Make sure the flag is valid
     constexpr uint32_t maxFlags = sizeof(flags) * 8;
@@ -75,7 +76,7 @@ inline bool displaysMenuGenericSelectionFlagIsSet(uint32_t flags, uint32_t flag)
     return ret;
 }
 
-inline uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t flag)
+INLINE_FUNC uint32_t setDisplaysMenuGenericSelectionFlag(uint32_t flags, uint32_t flag)
 {
     // Make sure the flag is valid
     constexpr uint32_t maxFlags = sizeof(flags) * 8;

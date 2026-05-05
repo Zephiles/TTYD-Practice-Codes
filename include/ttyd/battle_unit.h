@@ -1,6 +1,7 @@
 #ifndef TTYD_BATTLE_UNIT_H
 #define TTYD_BATTLE_UNIT_H
 
+#include "inline.h"
 #include "gc/types.h"
 #include "ttyd/battle_database_common.h"
 
@@ -598,7 +599,7 @@ static_assert(sizeof(BattleWorkUnit) == 0xB34);
 static_assert(sizeof(BattleWorkUnit) == 0xB38);
 #endif
 
-inline bool battleUnitTypeIsValid(BattleUnitType type)
+INLINE_FUNC bool battleUnitTypeIsValid(BattleUnitType type)
 {
     return (type > BattleUnitType::kNullUnitKind) && (type <= BattleUnitType::kUnitMsMowz);
 }
