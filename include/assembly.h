@@ -17,11 +17,6 @@ extern "C"
     void asmFixEvtMapBlendSetFlagFollowerCrashStart();
     void asmFixEvtMapBlendSetFlagFollowerCrashBranchBack();
 
-#ifdef TTYD_JP
-    void asmCrashScreenDecrementYPosStart();
-    void asmCrashScreenDecrementYPosBranchBack();
-#endif
-
     void asmPreventDiaryTextboxSelection();
 
     void asmDisplayMegaJumpBadgeInBattleMenu();
@@ -52,6 +47,11 @@ extern "C"
 #ifdef TTYD_EU
     void asmJumpOnWaterStart();
     void asmJumpOnWaterBranchBack();
+#endif
+
+#ifdef TTYD_JP
+    void asmCrashScreenDecrementYPosStart();
+    void asmCrashScreenDecrementYPosBranchBack();
 #endif
 
     // Functions accessed by assembly overwrites
