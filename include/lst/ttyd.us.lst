@@ -2924,7 +2924,7 @@
 // 80296A14:DCEnable
 // 80296A28:DCInvalidateRange
 80296A54:DCFlushRange
-// 80296A84:DCStoreRange
+80296A84:DCStoreRange
 80296AB4:DCFlushRangeNoSync
 // 80296AE0:DCStoreRangeNoSync
 // unused:DCZeroRange

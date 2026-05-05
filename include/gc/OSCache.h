@@ -8,7 +8,7 @@ extern "C"
     // DCEnable
     // DCInvalidateRange
     void DCFlushRange(void *startAddr, uint32_t nBytes);
-    // DCStoreRange
+    void DCStoreRange(void *startAddr, uint32_t nBytes);
     void DCFlushRangeNoSync(void *startAddr, uint32_t nBytes);
     // DCStoreRangeNoSync
     // DCZeroRange

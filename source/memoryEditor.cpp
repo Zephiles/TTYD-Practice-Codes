@@ -7,6 +7,7 @@
 #include "classes/window.h"
 #include "gc/pad.h"
 #include "gc/OSInterrupt.h"
+#include "gc/OSCache.h"
 #include "menus/memoryMenu.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
@@ -637,7 +638,7 @@ void MemoryEditor::controls(MenuButtonInput button)
 
                     // Copy the bytes from the amount of bytes to change into memory
                     // Only copy bytes that are at a valid address
-                    uint8_t *tempAddress = currentAddress + editorIndex;
+                    uint8_t *tempAddress = &currentAddress[editorIndex];
 
                     for (uint32_t i = 0; i < numBytesBeingEdited; i++)
                     {
@@ -678,7 +679,7 @@ void MemoryEditor::controls(MenuButtonInput button)
                         clear_DC_IC_Cache(startAddressRaw, size);
                     }
 
-                    // Done, so restore interrupts
+                    // Done writing the bytes and clearing the cache, so restore interrupts
                     OSRestoreInterrupts(enable);
 
                     // Go back to selecting a range of bytes to edit
@@ -696,9 +697,13 @@ void MemoryEditor::controls(MenuButtonInput button)
                     // Clear the array for the amount of bytes to change
                     clearMemory(bytesBeingEdited, numBytesBeingEdited);
 
+                    // Disable interrupts to help ensure that the bytes being copied aren't changed by something else during the
+                    // copying process
+                    const bool enable = OSDisableInterrupts();
+
                     // Copy the bytes from memory into the array for the amount of bytes to change
                     // Make sure there's at least one valid byte to copy
-                    uint8_t *tempAddress = currentAddress + editorIndex;
+                    uint8_t *tempAddress = &currentAddress[editorIndex];
                     bool validBytesCopied = false;
 
                     for (uint32_t i = 0; i < numBytesBeingEdited; i++)
@@ -712,9 +717,15 @@ void MemoryEditor::controls(MenuButtonInput button)
                         }
                     }
 
+                    // Done copying the bytes, so restore interrupts
+                    OSRestoreInterrupts(enable);
+
                     // If at least one valid byte was copied, then allow selecting digits to edit
                     if (validBytesCopied)
                     {
+                        // Ensure no cache issues occur with the copied bytes
+                        DCStoreRange(bytesBeingEdited, numBytesBeingEdited);
+
                         this->editorSelectedIndex = 0;
                         this->state = MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT;
                     }
