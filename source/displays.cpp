@@ -2903,7 +2903,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
                     {
                         // Set the X-Naut's new position
                         xNautPosPtr->x = 5.f;
-                        xNautPosPtr->z = randf(-100.f, 100.f);
+                        xNautPosPtr->z = randf(-120.f, 150.f);
 
                         // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other
                         // direction
