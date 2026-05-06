@@ -2872,12 +2872,6 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
                 xNautPosPtr->z = 169.766129f;
             };
 
-            auto makeXNautWalkTowardsMario = [](Vec3 *xNautDestinationPtr, const Vec3 *marioPosPtr)
-            {
-                xNautDestinationPtr->x = marioPosPtr->x;
-                xNautDestinationPtr->z = marioPosPtr->z;
-            };
-
             NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
             Vec3 *xNautPosPtr = &xNautPtr->position;
 
@@ -2907,42 +2901,14 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
                         // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other
                         // direction
-                        makeXNautWalkTowardsMario(xNautDestinationPtr, marioPosPtr);
+                        xNautDestinationPtr->x = marioPosPtr->x;
+                        xNautDestinationPtr->z = marioPosPtr->z;
                     }
                     else
                     {
                         // 1 second has not passed, so increment the timer and lock the X-Naut's position
                         amwDisplayPtr->setXNautTimer(++xNautTimer);
                         lockXNautPosition(xNautPosPtr);
-                    }
-                }
-                else
-                {
-                    // The X-Naut has been moved already, so make sure they don't wander too far away
-                    bool manuallyMoved = false;
-
-                    if (xNautPosX < -5.f)
-                    {
-                        xNautPosPtr->x = 5.f;
-                        manuallyMoved = true;
-                    }
-
-                    const float xNautPosZ = xNautPosPtr->z;
-                    if (xNautPosZ < -110.f)
-                    {
-                        xNautPosPtr->z = -100.f;
-                        manuallyMoved = true;
-                    }
-                    else if (xNautPosZ > 110.f)
-                    {
-                        xNautPosPtr->z = 100.f;
-                        manuallyMoved = true;
-                    }
-
-                    if (manuallyMoved)
-                    {
-                        // Had to manually move the X-Naut, so make them walk towards Mario
-                        makeXNautWalkTowardsMario(xNautDestinationPtr, marioPosPtr);
                     }
                 }
             }
