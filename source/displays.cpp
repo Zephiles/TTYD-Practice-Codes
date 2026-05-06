@@ -2884,10 +2884,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
             {
                 // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z
                 // coordinate, in which the base coordinate is 0 with it being up to 100 units forwards or backwards
-                Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
-                const float xNautPosX = xNautPosPtr->x;
-
-                if (xNautPosX < -290.f) // Can get away with just checking the X-Naut's X coordinate
+                if (xNautPosPtr->x < -290.f) // Can get away with just checking the X-Naut's X coordinate
                 {
                     // Allow about 1 second to pass before moving the x-Naut, to account for people moving left via the slow
                     // walk rather than in Paper Mode
@@ -2901,6 +2898,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
                         // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other
                         // direction
+                        Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
                         xNautDestinationPtr->x = marioPosPtr->x;
                         xNautDestinationPtr->z = marioPosPtr->z;
                     }
