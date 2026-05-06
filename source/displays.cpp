@@ -29,6 +29,7 @@
 #include "ttyd/battle_unit.h"
 #include "ttyd/battle_database_common.h"
 #include "ttyd/battle_ac.h"
+#include "ttyd/battle_stage.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/hitdrv.h"
 #include "ttyd/party.h"
@@ -2871,12 +2872,19 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
                 xNautPosPtr->z = 169.766129f;
             };
 
+            auto makeXNautWalkTowardsMario = [](Vec3 *xNautDestinationPtr, const Vec3 *marioPosPtr)
+            {
+                xNautDestinationPtr->x = marioPosPtr->x;
+                xNautDestinationPtr->z = marioPosPtr->z;
+            };
+
             NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
             Vec3 *xNautPosPtr = &xNautPtr->position;
 
             // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates
             // that they have gotten to the correct position and that they are ready to do the Spin Jump
-            const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPtr->playerPosition.z);
+            const Vec3 *marioPosPtr = &marioPtr->playerPosition;
+            const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPosPtr->z);
 
             if ((*marioPosZPtr == 0xC25A06E3) && (marioCurrentMotion != MarioMotion::kSlit))
             {
@@ -2890,17 +2898,16 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
                     // Allow about 1 second to pass before moving the x-Naut, to account for people moving left via the slow
                     // walk rather than in Paper Mode
                     uint32_t xNautTimer = amwDisplayPtr->getXNautTimer();
+
                     if (xNautTimer >= sysMsec2Frame(1000))
                     {
-                        // Set the X-Naut's new position and reset where it's trying to walk to
+                        // Set the X-Naut's new position
                         xNautPosPtr->x = 5.f;
-                        xNautDestinationPtr->x = 5.f;
+                        xNautPosPtr->z = randf(-100.f, 100.f);
 
-                        const int32_t randomPosZ = (irand(2000) / 10) - 100;
-                        const float xNautNewZPos = intToFloat(randomPosZ);
-
-                        xNautPosPtr->z = xNautNewZPos;
-                        xNautDestinationPtr->z = xNautNewZPos;
+                        // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other
+                        // direction
+                        makeXNautWalkTowardsMario(xNautDestinationPtr, marioPosPtr);
                     }
                     else
                     {
@@ -2934,10 +2941,8 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 
                     if (manuallyMoved)
                     {
-                        // Had to manually move the X-Naut, so set their destination to the current position to stop them
-                        // from walking infinitely
-                        xNautDestinationPtr->x = xNautPosPtr->x;
-                        xNautDestinationPtr->z = xNautPosPtr->z;
+                        // Had to manually move the X-Naut, so make them walk towards Mario
+                        makeXNautWalkTowardsMario(xNautDestinationPtr, marioPosPtr);
                     }
                 }
             }
