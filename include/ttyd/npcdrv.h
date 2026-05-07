@@ -6,6 +6,20 @@
 
 #include <cstdint>
 
+enum NpcEntryFlags
+{
+    NpcEntryFlags_Blur = 0x100,
+    NpcEntryFlags_IsVivian = 0x4000000,
+    NpcEntryFlags_IgnoreCloudBreath = 0x20000000,
+};
+
+enum class NpcTerritoryType : int32_t
+{
+    kNothing = 0x0,
+    kCircle = 0x1,
+    kSquare = 0x2,
+};
+
 struct NpcEntry;
 
 struct NpcWork
@@ -16,8 +30,6 @@ struct NpcWork
     NpcEntry *entries;
     NpcEntry *wTalkCheckRelatedNpc;
 } __attribute__((__packed__));
-
-static_assert(sizeof(NpcWork) == 0x14);
 
 struct NpcTribeDescription
 {
@@ -45,8 +57,6 @@ struct NpcTribeDescription
     char *landingSfxId;
 } __attribute__((__packed__));
 
-static_assert(sizeof(NpcTribeDescription) == 0x54);
-
 struct NpcBattleInfo
 {
     void *wpStageInfo;
@@ -70,22 +80,6 @@ struct NpcBattleInfo
 
     uint8_t pad_c7[0x1];
 } __attribute__((__packed__));
-
-static_assert(sizeof(NpcBattleInfo) == 0xc8);
-
-enum NpcEntryFlags
-{
-    NpcEntryFlags_Blur = 0x100,
-    NpcEntryFlags_IsVivian = 0x4000000,
-    NpcEntryFlags_IgnoreCloudBreath = 0x20000000,
-};
-
-enum class NpcTerritoryType : int32_t
-{
-    kNothing = 0x0,
-    kCircle = 0x1,
-    kSquare = 0x2,
-};
 
 struct NpcEntry
 {
@@ -195,8 +189,6 @@ struct NpcEntry
     NpcEntry *slaves[4];
 } __attribute__((__packed__));
 
-static_assert(sizeof(NpcEntry) == 0x340);
-
 struct FbatHitInfo
 {
     uint32_t wFlags;
@@ -204,8 +196,6 @@ struct FbatHitInfo
     float wDistance;
     uint32_t wUnknownFlags;
 } __attribute__((__packed__));
-
-static_assert(sizeof(FbatHitInfo) == 0x10);
 
 struct FbatBattleInformation
 {
@@ -225,15 +215,11 @@ struct FbatBattleInformation
     uint8_t gap_1a[0x2];
 } __attribute__((__packed__));
 
-static_assert(sizeof(FbatBattleInformation) == 0x1c);
-
 struct FbatDatabaseNpcDeadInfo
 {
     char mapName[16];
     uint32_t deadNpcMask;
 } __attribute__((__packed__));
-
-static_assert(sizeof(FbatDatabaseNpcDeadInfo) == 0x14);
 
 struct FbatAttackAnnounceInfo
 {
@@ -246,8 +232,6 @@ struct FbatAttackAnnounceInfo
     char *wMsg;
     uint8_t wColor[4];
 } __attribute__((__packed__));
-
-static_assert(sizeof(FbatAttackAnnounceInfo) == 0x20);
 
 struct FbatData
 {
@@ -280,6 +264,14 @@ struct FbatData
     int32_t wKpaTotalScore;
 } __attribute__((__packed__));
 
+static_assert(sizeof(NpcWork) == 0x14);
+static_assert(sizeof(NpcTribeDescription) == 0x54);
+static_assert(sizeof(NpcBattleInfo) == 0xC8);
+static_assert(sizeof(NpcEntry) == 0x340);
+static_assert(sizeof(FbatHitInfo) == 0x10);
+static_assert(sizeof(FbatBattleInformation) == 0x1C);
+static_assert(sizeof(FbatDatabaseNpcDeadInfo) == 0x14);
+static_assert(sizeof(FbatAttackAnnounceInfo) == 0x20);
 static_assert(sizeof(FbatData) == 0x580);
 
 extern "C"

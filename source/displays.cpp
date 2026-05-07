@@ -2438,62 +2438,85 @@ static void drawPalaceSkip(CameraId cameraId, void *user)
         partnerPosY = 0.f;
     }
 
-    // Get the Phantom Ember's Y coordinate
-    // Check if NPC 2 is active, followed by NPC 1, and then default to 0.f if neither is active
-    NpcEntry *phantomEmberPtr = &npcWork[0].entries[1]; // NPC 2
+    // Get the Phantom Ember's Y coordinate if it is spawned and has not been defeated, and then loop through each item to find
+    // the one that was dropped by the Phantom Ember and get the current despawn timer value for it
+
+    // Only check for these if currently in the Palace Skip room
     float phantomEmberPosY = 0.f;
-
-    for (uint32_t i = 0; i < 2; i++, phantomEmberPtr--)
-    {
-        if (phantomEmberPtr->flags & 0x1)
-        {
-            phantomEmberPosY = phantomEmberPtr->position.y;
-            break;
-        }
-    }
-
-    // Loop through each item to find the one that was dropped by the Phantom Ember, and get the current despawn timer value for
-    // it
-    const ItemWork *itemWorkPtr = &itemDrvWork[0];
-    const int32_t totalEntries = itemWorkPtr->count;
-    ItemEntry *entryPtr = itemWorkPtr->entries;
     int32_t despawnTimer = 0;
 
-    for (int32_t i = 0; i < totalEntries; i++, entryPtr++)
+    if (compareStringToNextMap("las_25"))
     {
-        switch (static_cast<ItemId>(entryPtr->itemId))
+        // Cannot call `npcNameToPtr_NoAssert` nor `npcGetWorkPtr` since those use the `npcWork` entry for battles when in an
+        // actual battle, and the Phantom Ember's Y coordinate should be retrieved even when in a battle
+        const NpcWork *npcWorkPtr = &npcWork[0];
+        const NpcEntry *npcEntriesPtr = &npcWorkPtr->entries[0];
+        const uint32_t loopCount = npcWorkPtr->npcMaxCount;
+
+        const char *phantomEmberName = "\x83\x74\x83\x40\x83\x93\x83\x67\x83\x80\x82\x51"; // ファントム２
+        for (uint32_t i = 0; i < loopCount; i++)
         {
-            case ItemId::ITEM_NONE:
-            case ItemId::ITEM_COIN:
-            case ItemId::ITEM_BATTLE_DROP_HEART:
-            case ItemId::ITEM_BATTLE_DROP_FLOWER:
+            const NpcEntry *entryPtr = &npcEntriesPtr[i];
+
+            // Make sure the current NPC is active
+            if (!(entryPtr->flags & 1))
             {
-                // Don't want this item, so go to the next one
                 continue;
             }
-            default:
+
+            // Check if the name matches
+            if (strcmp(entryPtr->wUnkAnimation, phantomEmberName) == 0)
             {
+                // Found the entry for the Phantom Ember, so get it's Y coordinate
+                phantomEmberPosY = entryPtr->position.y;
                 break;
             }
         }
 
-        // Check if the item was spawned upon entering the room
-        if (entryPtr->mode == 7)
-        {
-            // The item was already spawned upon entering the room, so go to the next one
-            continue;
-        }
+        // Loop through each item to find the one that was dropped by the Phantom Ember, and get the current despawn timer value
+        // for it
+        const ItemWork *itemWorkPtr = &itemDrvWork[0];
+        const int32_t totalEntries = itemWorkPtr->count;
+        const ItemEntry *itemEntriesPtr = itemWorkPtr->entries;
 
-        // Check if item is currently spawned
-        if (!(entryPtr->flags & 0x1))
+        for (int32_t i = 0; i < totalEntries; i++)
         {
-            // Item is not spawned, so go to the next one
-            continue;
-        }
+            const ItemEntry *entryPtr = &itemEntriesPtr[i];
 
-        // Found the item we want, so assign the timer and exit the loop
-        despawnTimer = entryPtr->wDespawnTimer;
-        break;
+            switch (static_cast<ItemId>(entryPtr->itemId))
+            {
+                case ItemId::ITEM_NONE:
+                case ItemId::ITEM_COIN:
+                case ItemId::ITEM_BATTLE_DROP_HEART:
+                case ItemId::ITEM_BATTLE_DROP_FLOWER:
+                {
+                    // Don't want this item, so go to the next one
+                    continue;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+
+            // Check if the item was spawned upon entering the room
+            if (entryPtr->mode == 7)
+            {
+                // The item was already spawned upon entering the room, so go to the next one
+                continue;
+            }
+
+            // Check if item is currently spawned
+            if (!(entryPtr->flags & 0x1))
+            {
+                // Item is not spawned, so go to the next one
+                continue;
+            }
+
+            // Found the item we want, so assign the timer and exit the loop
+            despawnTimer = entryPtr->wDespawnTimer;
+            break;
+        }
     }
 
     // Get the text
@@ -2756,6 +2779,99 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
     drawText(buf, data.getPosX(), posY, scale, getColorWhite(0xFF));
 }
 
+#ifdef TTYD_JP
+void handleAjustXNautPosition(Displays *displaysPtr)
+{
+    // Only run if the X-Naut's position should be adjusted
+    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION))
+    {
+        return;
+    }
+
+    // Make sure the player is currently in the room in the Great Tree where the AMW is performed
+    if (!compareStringToNextMap("mri_20"))
+    {
+        return;
+    }
+
+    // Do not run if the pause menu is open
+    if (pauseMenuIsOpen())
+    {
+        return;
+    }
+
+    // Do not run if currently in a battle
+    if (getBattleWorkPtr())
+    {
+        return;
+    }
+
+    // Make sure the X-Naut is spawned and has not been defeated
+    const char *xNautName = "\x8C\x52\x92\x63\x83\x55\x83\x52\x82\x51"; // 軍団ザコ２
+    NpcEntry *xNautPtr = npcNameToPtr_NoAssert(xNautName);
+    if (!xNautPtr)
+    {
+        return;
+    }
+
+    auto lockXNautPosition = [](Vec3 *xNautPosPtr)
+    {
+        xNautPosPtr->x = -295.404053f;
+        xNautPosPtr->z = 169.766129f;
+    };
+
+    // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates that they
+    // have gotten to the correct position and that they are ready to do the Spin Jump
+    const Player *marioPtr = marioGetPtr();
+    Vec3 *xNautPosPtr = &xNautPtr->position;
+    const Vec3 *marioPosPtr = &marioPtr->playerPosition;
+    const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPosPtr->z);
+    ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
+
+    if ((*marioPosZPtr == 0xC25A06E3) && (marioPtr->currentMotionId != MarioMotion::kSlit))
+    {
+        // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate, in
+        // which the base coordinate is 0 with it being up to 100 units forwards or backwards
+        if (xNautPosPtr->x < -290.f) // Can get away with just checking the X-Naut's X coordinate
+        {
+            // Allow about 1 second to pass before moving the x-Naut, to account for people moving left via the slow walk rather
+            // than in Paper Mode
+            const uint32_t xNautDelayTime = sysMsec2Frame(1000);
+            uint32_t xNautTimer = amwDisplayPtr->getXNautTimer();
+
+            if (xNautTimer >= xNautDelayTime)
+            {
+                // Set the X-Naut's new position
+                xNautPosPtr->x = 5.f;
+                xNautPosPtr->z = randf(-120.f, 150.f);
+
+                // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other direction
+                Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
+                xNautDestinationPtr->x = marioPosPtr->x;
+                xNautDestinationPtr->z = marioPosPtr->z;
+            }
+            else
+            {
+                // 1 second has not passed, so increment the timer and lock the X-Naut's position
+                amwDisplayPtr->setXNautTimer(++xNautTimer);
+                lockXNautPosition(xNautPosPtr);
+            }
+        }
+        else
+        {
+            // The X-Naut is currently moving towards Mario, so no need to do anything
+        }
+    }
+    else
+    {
+        // The player is either not at the correct Z coordinate, and/or they are still in Paper Mode, so place the X-Naut in the
+        // bottom-left corner of the room and make sure the X-Naut timer is not at 1 second from previous AMW attempts
+        amwDisplayPtr->setXNautTimer(0);
+        lockXNautPosition(xNautPosPtr);
+    }
+}
+#endif
+
 static void handleArbitraryMemoryWrite(Displays *displaysPtr)
 {
     if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE))
@@ -2772,9 +2888,8 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
     }
 
     ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
-    const bool pauseMenuOpen = pauseMenuIsOpen();
 
-    if (pauseMenuOpen)
+    if (pauseMenuIsOpen())
     {
         // Stop the pause timer upon pausing
         displaysPtr->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_PAUSE_TIMER_STOPPED);
@@ -2790,8 +2905,7 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
     }
 
 #ifdef TTYD_JP
-    const Player *marioPtr = marioGetPtr();
-    const MarioMotion marioCurrentMotion = marioPtr->currentMotionId;
+    const MarioMotion marioCurrentMotion = marioGetPtr()->currentMotionId;
 
     // Check if the Spin Jump timer should be started
     if (marioCurrentMotion == MarioMotion::kHip)
@@ -2855,71 +2969,8 @@ static void handleArbitraryMemoryWrite(Displays *displaysPtr)
     }
 
 #ifdef TTYD_JP
-    // If the player is currently in the room in the Great Tree where the trick is performed with the flag enabled for adjusting
-    // the X-Naut's position, then position the X-Naut based on if the player is at the correct Z coordinate to perform the
-    // trick. Also need to make sure they player is not currently in a battle when doing this, as well as not allowing this to
-    // occur while the pause menu is open.
-    if (compareStringToNextMap("mri_20"))
-    {
-        const bool adjustXNautPosition = displaysPtr->enabledFlagIsSet(
-            DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE_ADJUST_XNAUT_POSITION);
-
-        if (adjustXNautPosition && !pauseMenuOpen && !getBattleWorkPtr())
-        {
-            auto lockXNautPosition = [](Vec3 *xNautPosPtr)
-            {
-                xNautPosPtr->x = -295.404053f;
-                xNautPosPtr->z = 169.766129f;
-            };
-
-            NpcEntry *xNautPtr = &npcGetWorkPtr()->entries[0];
-            Vec3 *xNautPosPtr = &xNautPtr->position;
-
-            // Check if the player is at the correct Z coordinate and that they are no longer in Paper Mode, as this indicates
-            // that they have gotten to the correct position and that they are ready to do the Spin Jump
-            const Vec3 *marioPosPtr = &marioPtr->playerPosition;
-            const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPosPtr->z);
-
-            if ((*marioPosZPtr == 0xC25A06E3) && (marioCurrentMotion != MarioMotion::kSlit))
-            {
-                // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z
-                // coordinate, in which the base coordinate is 0 with it being up to 100 units forwards or backwards
-                if (xNautPosPtr->x < -290.f) // Can get away with just checking the X-Naut's X coordinate
-                {
-                    // Allow about 1 second to pass before moving the x-Naut, to account for people moving left via the slow
-                    // walk rather than in Paper Mode
-                    uint32_t xNautTimer = amwDisplayPtr->getXNautTimer();
-
-                    if (xNautTimer >= sysMsec2Frame(1000))
-                    {
-                        // Set the X-Naut's new position
-                        xNautPosPtr->x = 5.f;
-                        xNautPosPtr->z = randf(-120.f, 150.f);
-
-                        // Make the X-Naut walk towards Mario to prevent them from getting stuck trying to walk in some other
-                        // direction
-                        Vec3 *xNautDestinationPtr = &xNautPtr->wJumpTargetPosition;
-                        xNautDestinationPtr->x = marioPosPtr->x;
-                        xNautDestinationPtr->z = marioPosPtr->z;
-                    }
-                    else
-                    {
-                        // 1 second has not passed, so increment the timer and lock the X-Naut's position
-                        amwDisplayPtr->setXNautTimer(++xNautTimer);
-                        lockXNautPosition(xNautPosPtr);
-                    }
-                }
-            }
-            else
-            {
-                // The player is either not at the correct Z coordinate, and/or they are still in Paper Mode, so place the
-                // X-Naut in the bottom-left corner of the room and make sure the X-Naut timer is not at 1 second from previous
-                // AMW attempts
-                amwDisplayPtr->setXNautTimer(0);
-                lockXNautPosition(xNautPosPtr);
-            }
-        }
-    }
+    // Handle adjusting the X-Naut's position if currently doing the AMW in the Great Tree
+    handleAjustXNautPosition(displaysPtr);
 #endif
 }
 

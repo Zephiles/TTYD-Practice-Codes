@@ -1282,9 +1282,19 @@ static void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
         return;
     }
 
-    // Allow the Ember to be refought
-    NpcEntry *npcPtr = &npcWork[0].entries[5]; // NPC 6
-    npcPtr->wJumpFlags &= 0xFFFFFF00;          // Clear byte 0x1D7 in npcPtr
+    if (getBattleWorkPtr())
+    {
+        return;
+    }
+
+    // Allow the Ember to be refought if it is spawned and hasn't been defeated
+    const char *emberName = "\x83\x47\x83\x8B\x83\x82\x83\x58\x82\x50"; // エルモス１
+    NpcEntry *emberPtr = npcNameToPtr_NoAssert(emberName);
+
+    if (emberPtr)
+    {
+        emberPtr->wJumpFlags &= 0xFFFFFF00; // Clear byte 0x1D7 in emberPtr
+    }
 }
 
 static void cancelSpawnSelectedItem()
