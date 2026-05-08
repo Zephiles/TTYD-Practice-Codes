@@ -2447,30 +2447,13 @@ static void drawPalaceSkip(CameraId cameraId, void *user)
 
     if (compareStringToNextMap("las_25"))
     {
-        // Cannot call `npcNameToPtr_NoAssert` nor `npcGetWorkPtr` since those use the `npcWork` entry for battles when in an
-        // actual battle, and the Phantom Ember's Y coordinate should be retrieved even when in a battle
-        const NpcWork *npcWorkPtr = &npcWork[0];
-        const NpcEntry *npcEntriesPtr = &npcWorkPtr->entries[0];
-        const uint32_t loopCount = npcWorkPtr->npcMaxCount;
-
+        // Use `getNpcEntryPtr` so that the pointer can be retrieved even when in a battle
         const char *phantomEmberName = "\x83\x74\x83\x40\x83\x93\x83\x67\x83\x80\x82\x51"; // ファントム２
-        for (uint32_t i = 0; i < loopCount; i++)
+        const NpcEntry *phantomEmberPtr = getNpcEntryPtr(phantomEmberName);
+
+        if (phantomEmberPtr)
         {
-            const NpcEntry *entryPtr = &npcEntriesPtr[i];
-
-            // Make sure the current NPC is active
-            if (!(entryPtr->flags & 1))
-            {
-                continue;
-            }
-
-            // Check if the name matches
-            if (strcmp(entryPtr->wUnkAnimation, phantomEmberName) == 0)
-            {
-                // Found the entry for the Phantom Ember, so get it's Y coordinate
-                phantomEmberPosY = entryPtr->position.y;
-                break;
-            }
+            phantomEmberPosY = phantomEmberPtr->position.y;
         }
 
         // Loop through each item to find the one that was dropped by the Phantom Ember, and get the current despawn timer value

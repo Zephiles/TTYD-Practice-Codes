@@ -1282,14 +1282,10 @@ static void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
         return;
     }
 
-    if (getBattleWorkPtr())
-    {
-        return;
-    }
-
     // Allow the Ember to be refought if it is spawned and hasn't been defeated
+    // Use `getNpcEntryPtr` so that the pointer can be retrieved even when in a battle
     const char *emberName = "\x83\x47\x83\x8B\x83\x82\x83\x58\x82\x50"; // エルモス１
-    NpcEntry *emberPtr = npcNameToPtr_NoAssert(emberName);
+    NpcEntry *emberPtr = getNpcEntryPtr(emberName);
 
     if (emberPtr)
     {

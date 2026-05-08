@@ -6,6 +6,8 @@
 #include "ttyd/seqdrv.h"
 #include "ttyd/party.h"
 #include "ttyd/item_data.h"
+#include "ttyd/npcdrv.h"
+#include "ttyd/winmgr.h"
 #include "ttyd/dispdrv.h"
 #include "ttyd/mario_party.h"
 #include "ttyd/mario_pouch.h"
@@ -274,6 +276,26 @@ INLINE_FUNC void recheckJumpAndHammerLevels()
  * if the item is a boot or hammer upgrade (including the standard boot/hammer).
  */
 void recheckBattleUpgrades(ItemId item);
+
+/**
+ * Searches through all of the NPC entry slots and returns a pointer to the desired one is found. This is intended to be used in
+ * place of `npcNameToPtr`/`npcNameToPtr_NoAssert` when the pointer is wanted even when in a battle, as those functions will
+ * only search through the battle NPCs when in a battle.
+ *
+ * @param npcName The pointer to the name of the NPC to search for.
+ *
+ * @returns The pointer to the desired NPC entry if found, otherwise `nullptr`.
+ */
+NpcEntry *getNpcEntryPtr(const char *npcName);
+
+/**
+ * Searches through all of the window manager entry slots and returns a pointer to the desired one is found.
+ *
+ * @param desc The pointer to the `WinMgrDesc` struct to search for.
+ *
+ * @returns The pointer to the desired window manager entry if found, otherwise `nullptr`.
+ */
+WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc);
 
 /**
  * Checks if at least one of a badge is currently equipped.

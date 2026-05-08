@@ -13,6 +13,7 @@
 #include "ttyd/mario_party.h"
 #include "ttyd/mario.h"
 #include "ttyd/item_data.h"
+#include "ttyd/npcdrv.h"
 #include "ttyd/winmgr.h"
 #include "ttyd/win_main.h"
 #include "ttyd/win_item.h"
@@ -310,6 +311,35 @@ void recheckBattleUpgrades(ItemId item)
             break;
         }
     }
+}
+
+NpcEntry *getNpcEntryPtr(const char *npcName)
+{
+    NpcWork *npcWorkPtr = &npcWork[0];
+    NpcEntry *npcEntriesPtr = &npcWorkPtr->entries[0];
+    const uint32_t maxCount = npcWorkPtr->npcMaxCount;
+
+    // Loop through all entry slots for the desired entry
+    for (uint32_t i = 0; i < maxCount; i++)
+    {
+        NpcEntry *entryPtr = &npcEntriesPtr[i];
+
+        if (!(entryPtr->flags & 1U))
+        {
+            // The current entry is not active
+            continue;
+        }
+
+        // Check if the name matches
+        if (strcmp(entryPtr->wUnkAnimation, npcName) == 0)
+        {
+            // Found the desired entry
+            return entryPtr;
+        }
+    }
+
+    // Didn't find the desired entry
+    return nullptr;
 }
 
 WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
