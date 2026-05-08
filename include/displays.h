@@ -14,6 +14,7 @@
 #include "ttyd/battle_database_common.h"
 #include "ttyd/hitdrv.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/mobjdrv.h"
 #include "ttyd/mario.h"
 #include "ttyd/system.h"
 
@@ -818,11 +819,11 @@ class BlimpTicketSkipDisplay
     uint16_t counter;
 };
 
-class NpcNameToPtrErrorDisplay
+class NameToPtrErrorDisplay
 {
    public:
-    NpcNameToPtrErrorDisplay() {}
-    ~NpcNameToPtrErrorDisplay() {}
+    NameToPtrErrorDisplay() {}
+    ~NameToPtrErrorDisplay() {}
 
     uint32_t getCounter() const { return this->counter; }
     void incrementCounter() { this->counter++; }
@@ -1162,7 +1163,8 @@ class Displays
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
     BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
-    NpcNameToPtrErrorDisplay *getNpcNameToPtrErrorDisplayPtr() { return &this->npcNameToPtrError; }
+    NameToPtrErrorDisplay *getNpcNameToPtrErrorDisplayPtr() { return &this->npcNameToPtrError; }
+    NameToPtrErrorDisplay *getMobjNameToPtrErrorDisplayPtr() { return &this->mobjNameToPtrError; }
     AnimPoseMainErrorDisplay *getAnimPoseMainErrorDisplayPtr() { return &this->animPoseMainError; }
 
    private:
@@ -1194,7 +1196,8 @@ class Displays
     JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
     BlimpTicketSkipDisplay blimpTicketSkip;
-    NpcNameToPtrErrorDisplay npcNameToPtrError;
+    NameToPtrErrorDisplay npcNameToPtrError;
+    NameToPtrErrorDisplay mobjNameToPtrError;
     AnimPoseMainErrorDisplay animPoseMainError;
 };
 
@@ -1207,6 +1210,7 @@ void checkForEnemyEncounters(void *ptr);
 int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
 void handleHitCheckVisualization();
 NpcEntry *checkForNpcNameToPtrError(const char *name);
+MapObjectEntry *checkForMobjNameToPtrError(const char *name);
 void preventAnimPoseMainCrash(int32_t poseId);
 void drawStarPowerValue();
 void drawArtAttackHitboxes(CameraId cameraId, void *user);

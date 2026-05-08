@@ -778,6 +778,33 @@
 // data
 80410220:_effWorkPtr
 
+// mobjdrv.o
+// text
+// 8005E128:mobjNearDistCheck2
+// 8005E3C8:mobjCheckItemboxOpen
+// 8005E46C:mobjCheckExec
+// 8005E4DC:mobjGetHint
+// 8005E4F8:mobjCalcMtx2
+// 8005E610:mobjCalcMtx
+// 8005E87C:mobjRunEvent
+// 8005E8FC:mobjHitObjPtrToPtr
+// 8005E918:mobjNameToPtrNoAssert
+8005E9E4:mobjNameToPtr
+// 8005EAA0:mobjMain
+// 8005FABC:mobjSetPosition
+// 8005FBC4:mobjDelete
+// 8005FCCC:mobjEntry
+// 8005FEA8:mobjHitEntry
+// 80060420:mobjReset
+// 8006046C:mobjInit
+// 800604FC:mobjDisp_OffscreenXLU
+// 80060654:mobjDisp
+// 800607A0:mobjDispXLU
+// 800608C0:mobjKoopaOn
+// data
+803D5D28:mobjWork
+80418708:koopaRunFlag
+
 // mariost.o
 // text
 // unused:gcResetDone

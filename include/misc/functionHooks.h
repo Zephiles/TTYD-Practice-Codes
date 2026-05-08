@@ -5,6 +5,7 @@
 #include "ttyd/seqdrv.h"
 #include "ttyd/item_data.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/mobjdrv.h"
 #include "ttyd/battle_unit.h"
 #include "ttyd/battle_database_common.h"
 #include "ttyd/camdrv.h"
@@ -38,6 +39,7 @@ extern uint32_t (*g_scissor_timer_main_trampoline)();
 extern void (*g_winMarioDisp_trampoline)(CameraId cameraId, void *winWorkPtr, int32_t index);
 extern HitEntry *(*g_hitCheckVecFilter_trampoline)(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
 extern NpcEntry *(*g_npcNameToPtr_trampoline)(const char *name);
+extern MapObjectEntry *(*g_mobjNameToPtr_trampoline)(const char *name);
 extern void (*g_animPoseMain_trampoline)(int32_t poseId);
 extern MapData *(*g_mapDataPtr_trampoline)(const char *mapName);
 extern void (*g__unload_trampoline)(const char *currentMap, const char *nextMap, const char *nextBero);

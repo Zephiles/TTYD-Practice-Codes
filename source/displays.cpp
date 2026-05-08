@@ -3581,28 +3581,23 @@ static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
     }
 }
 
-static void drawNpcNameToPtrError(CameraId cameraId, void *user)
+static void drawNameToPtrError(Displays *displaysPtr, NameToPtrErrorDisplay *nameToPtrErrorPtr, const char *funcName)
 {
-    (void)cameraId;
-    (void)user;
-
-    // Initialize text drawing
-    drawTextInit(true);
-
     // Get the current counter value
-    Displays *displaysPtr = gDisplays;
-    NpcNameToPtrErrorDisplay *npcNameToPtrErrorPtr = displaysPtr->getNpcNameToPtrErrorDisplayPtr();
-    const uint32_t counter = npcNameToPtrErrorPtr->getCounter();
+    const uint32_t counter = nameToPtrErrorPtr->getCounter();
 
     // If the timer is at 0, then reset the counter
-    if (npcNameToPtrErrorPtr->getTimer() == 0)
+    if (nameToPtrErrorPtr->getTimer() == 0)
     {
-        npcNameToPtrErrorPtr->resetCounter();
+        nameToPtrErrorPtr->resetCounter();
     }
 
     // Get the text
     char buf[64];
-    snprintf(buf, sizeof(buf), "npcNameToPtr error occured x%" PRIu32, counter);
+    snprintf(buf, sizeof(buf), "%s error occured x%" PRIu32, funcName, counter);
+
+    // Initialize text drawing
+    drawTextInit(true);
 
     // Draw the text
     drawText(buf,
@@ -3610,6 +3605,16 @@ static void drawNpcNameToPtrError(CameraId cameraId, void *user)
              displaysPtr->getErrorTextPosYDecrement(),
              DISPLAYS_DEFAULT_SCALE_ERRORS,
              getColorWhite(0xFF));
+}
+
+static void drawNpcNameToPtrError(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    Displays *displaysPtr = gDisplays;
+    NameToPtrErrorDisplay *npcNameToPtrErrorPtr = displaysPtr->getNpcNameToPtrErrorDisplayPtr();
+    drawNameToPtrError(displaysPtr, npcNameToPtrErrorPtr, "npcNameToPtr");
 }
 
 NpcEntry *checkForNpcNameToPtrError(const char *name)
@@ -3622,7 +3627,7 @@ NpcEntry *checkForNpcNameToPtrError(const char *name)
     if (ret >= &workPtr->entries[workPtr->npcMaxCount])
     {
         // Didn't find the correct NPC, so print error text
-        NpcNameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
+        NameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
         npcNameToPtrErrorPtr->setTimer(sysMsec2Frame(5000));
         npcNameToPtrErrorPtr->incrementCounter();
     }
@@ -3632,13 +3637,71 @@ NpcEntry *checkForNpcNameToPtrError(const char *name)
 
 static void handleNpcNameToPtrError(Displays *displaysPtr)
 {
-    NpcNameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
+    NameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
     uint32_t timer = npcNameToPtrErrorPtr->getTimer();
 
     if (timer > 0)
     {
         npcNameToPtrErrorPtr->setTimer(--timer);
         drawOnDebugLayer(drawNpcNameToPtrError, displaysPtr->getErrorTextOrder());
+    }
+}
+
+static void drawMobjNameToPtrError(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    Displays *displaysPtr = gDisplays;
+    NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = displaysPtr->getMobjNameToPtrErrorDisplayPtr();
+    drawNameToPtrError(displaysPtr, mobjNameToPtrErrorPtr, "mobjNameToPtr");
+}
+
+MapObjectEntry *checkForMobjNameToPtrError(const char *name)
+{
+    // Call the original function immediately, as its result is needed
+    MapObjectEntry *ret = g_mobjNameToPtr_trampoline(name);
+
+    // Have to manually get the correct work pointer since there is no proper function for doing so
+    const MapObjectWork *workPtr = &mobjWork[0];
+
+    if (koopaRunFlag)
+    {
+        // In a Bowser stage
+        workPtr = &workPtr[2];
+    }
+    else if (_globalWorkPtr->inBattle)
+    {
+        // In a battle
+        workPtr = &workPtr[1];
+    }
+    else
+    {
+        // In the field
+        // workPtr = &workPtr[0];
+    }
+
+    // Check if the returned pointer is valid
+    if (ret >= &workPtr->entries[workPtr->count])
+    {
+        // Didn't find the correct map object, so print error text
+        NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = gDisplays->getMobjNameToPtrErrorDisplayPtr();
+        mobjNameToPtrErrorPtr->setTimer(sysMsec2Frame(5000));
+        mobjNameToPtrErrorPtr->incrementCounter();
+    }
+
+    return ret;
+}
+
+static void handleMobjNameToPtrError(Displays *displaysPtr)
+{
+    NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = gDisplays->getMobjNameToPtrErrorDisplayPtr();
+    uint32_t timer = mobjNameToPtrErrorPtr->getTimer();
+
+    if (timer > 0)
+    {
+        mobjNameToPtrErrorPtr->setTimer(--timer);
+        drawOnDebugLayer(drawMobjNameToPtrError, displaysPtr->getErrorTextOrder());
     }
 }
 
@@ -4042,6 +4105,7 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleMemoryUsage,
     handleAMWCoordinateWriteAddress,
     handleNpcNameToPtrError,
+    handleMobjNameToPtrError,
     handleAnimPoseMainError,
 };
 

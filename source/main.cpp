@@ -31,6 +31,7 @@
 #include "ttyd/battle_pad.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/npcdrv.h"
+#include "ttyd/mobjdrv.h"
 #include "ttyd/pmario_sound.h"
 #include "ttyd/statuswindow.h"
 #include "ttyd/battle_ac.h"
@@ -146,6 +147,9 @@ void init()
 
     // For handling checking for errors in npcNameToPtr
     g_npcNameToPtr_trampoline = hookFunctionArena(npcNameToPtr, checkForNpcNameToPtrError);
+
+    // For handling checking for errors in mobjNameToPtr
+    g_mobjNameToPtr_trampoline = hookFunctionArena(mobjNameToPtr, checkForMobjNameToPtrError);
 
     // For handling checking for errors in animPoseMain
     g_animPoseMain_trampoline = hookFunctionArena(animPoseMain, preventAnimPoseMainCrash);
