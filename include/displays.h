@@ -267,6 +267,17 @@ enum DisplaysWithButtonCombo
 
 #define TOTAL_DISPLAYS_BUTTON_COMBOS DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_MAX_VALUE
 
+enum ErrorTextDisplayEnum
+{
+    ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR = 0,
+    ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR,
+    ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN,
+
+    ERROR_TEXT_DISPLAY_MAX_VALUE, // Don't use this directly other than for defines
+};
+
+#define TOTAL_ERROR_TEXT_DISPLAYS ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MAX_VALUE
+
 // This class needs to be packed in order for it to work properly in the settings
 class DisplayManuallyPosition
 {
@@ -819,29 +830,11 @@ class BlimpTicketSkipDisplay
     uint16_t counter;
 };
 
-class NameToPtrErrorDisplay
+class ErrorTextDisplay
 {
    public:
-    NameToPtrErrorDisplay() {}
-    ~NameToPtrErrorDisplay() {}
-
-    uint32_t getCounter() const { return this->counter; }
-    void incrementCounter() { this->counter++; }
-    void resetCounter() { this->counter = 0; }
-
-    uint32_t getTimer() const { return this->timer; }
-    void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
-
-   private:
-    uint16_t counter;
-    uint16_t timer;
-};
-
-class AnimPoseMainErrorDisplay
-{
-   public:
-    AnimPoseMainErrorDisplay() {}
-    ~AnimPoseMainErrorDisplay() {}
+    ErrorTextDisplay() {}
+    ~ErrorTextDisplay() {}
 
     uint32_t getCounter() const { return this->counter; }
     void incrementCounter() { this->counter++; }
@@ -1163,9 +1156,17 @@ class Displays
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
     BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
-    NameToPtrErrorDisplay *getNpcNameToPtrErrorDisplayPtr() { return &this->npcNameToPtrError; }
-    NameToPtrErrorDisplay *getMobjNameToPtrErrorDisplayPtr() { return &this->mobjNameToPtrError; }
-    AnimPoseMainErrorDisplay *getAnimPoseMainErrorDisplayPtr() { return &this->animPoseMainError; }
+
+    ErrorTextDisplay *getErrorTextDisplayPtr(uint32_t index)
+    {
+        // Make sure the index is valid
+        if (index >= TOTAL_ERROR_TEXT_DISPLAYS)
+        {
+            return nullptr;
+        }
+
+        return &this->errorTextDisplay[index];
+    }
 
    private:
     uint32_t enabledFlags[DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE];
@@ -1196,9 +1197,9 @@ class Displays
     JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
     BlimpTicketSkipDisplay blimpTicketSkip;
-    NameToPtrErrorDisplay npcNameToPtrError;
-    NameToPtrErrorDisplay mobjNameToPtrError;
-    AnimPoseMainErrorDisplay animPoseMainError;
+
+    // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
+    ErrorTextDisplay errorTextDisplay[3];
 };
 
 extern Displays *gDisplays;

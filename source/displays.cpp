@@ -1743,11 +1743,13 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
     // Make sure Mario is in the battle, as this is required to check how many Simplifier/Unsimplifiers are equipped
     // The player could stall the timer by opening the menu while the battle is ending, which makes this check necessary
     const BattleWorkUnit *marioBattlePtr = getMarioBattlePtr();
+    Displays *displaysPtr = gDisplays;
+
     if (!marioBattlePtr && !currentlyAdjusting)
     {
         // Assume that since Mario is no longer in the battle, that the battle has either ended or is about to end, so set the
         // timer to 0 to prevent this display from being drawn again
-        gDisplays->getGuardSuperguardTimingDisplayPtr()->setTimer(0);
+        displaysPtr->getGuardSuperguardTimingDisplayPtr()->setTimer(0);
         return;
     }
 
@@ -1770,7 +1772,7 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
     }
 
     // Check to see which text should be displayed
-    GuardSuperguardTimingDisplay *guardSuperguardTimingPtr = gDisplays->getGuardSuperguardTimingDisplayPtr();
+    GuardSuperguardTimingDisplay *guardSuperguardTimingPtr = displaysPtr->getGuardSuperguardTimingDisplayPtr();
     const int32_t lastAFrame = guardSuperguardTimingPtr->getLastAFrame();
     const int32_t lastBFrame = guardSuperguardTimingPtr->getLastBFrame();
 
@@ -3571,7 +3573,7 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
 
 static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
 {
-    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = gDisplays->getAMWCoordinateWriteAddressDisplayPtr();
+    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
     uint32_t timer = amwCoordinateWriteAddressPtr->getTimer();
 
     if (timer > 0)
@@ -3581,15 +3583,51 @@ static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
     }
 }
 
-static void drawNameToPtrError(Displays *displaysPtr, NameToPtrErrorDisplay *nameToPtrErrorPtr, const char *funcName)
+static void drawErrorTextDisplay(uint32_t errorTextDisplayIndex)
 {
+    // Get the pointer to the current error text display, which will also verify that `errorTextDisplayIndex` is valid
+    Displays *displaysPtr = gDisplays;
+    ErrorTextDisplay *errorTextDisplayPtr = displaysPtr->getErrorTextDisplayPtr(errorTextDisplayIndex);
+
+    if (!errorTextDisplayPtr)
+    {
+        return;
+    }
+
     // Get the current counter value
-    const uint32_t counter = nameToPtrErrorPtr->getCounter();
+    const uint32_t counter = errorTextDisplayPtr->getCounter();
 
     // If the timer is at 0, then reset the counter
-    if (nameToPtrErrorPtr->getTimer() == 0)
+    if (errorTextDisplayPtr->getTimer() == 0)
     {
-        nameToPtrErrorPtr->resetCounter();
+        errorTextDisplayPtr->resetCounter();
+    }
+
+    // Get the function name to use
+    const char *funcName;
+
+    switch (errorTextDisplayIndex)
+    {
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR:
+        {
+            funcName = "npcNameToPtr";
+            break;
+        }
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR:
+        {
+            funcName = "mobjNameToPtr";
+            break;
+        }
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN:
+        {
+            funcName = "animPoseMain";
+            break;
+        }
+        default:
+        {
+            // Shouldn't ever reach this
+            return;
+        }
     }
 
     // Get the text
@@ -3612,9 +3650,83 @@ static void drawNpcNameToPtrError(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
-    Displays *displaysPtr = gDisplays;
-    NameToPtrErrorDisplay *npcNameToPtrErrorPtr = displaysPtr->getNpcNameToPtrErrorDisplayPtr();
-    drawNameToPtrError(displaysPtr, npcNameToPtrErrorPtr, "npcNameToPtr");
+    drawErrorTextDisplay(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR);
+}
+
+static void drawMobjNameToPtrError(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    drawErrorTextDisplay(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR);
+}
+
+static void drawAnimPoseMainError(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    drawErrorTextDisplay(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN);
+}
+
+static void handleErrorTextDisplay(Displays *displaysPtr, uint32_t errorTextDisplayIndex)
+{
+    // Get the pointer to the current error text display, which will also verify that `errorTextDisplayIndex` is valid
+    ErrorTextDisplay *errorTextDisplayPtr = displaysPtr->getErrorTextDisplayPtr(errorTextDisplayIndex);
+    if (!errorTextDisplayPtr)
+    {
+        return;
+    }
+
+    uint32_t timer = errorTextDisplayPtr->getTimer();
+    if (timer > 0)
+    {
+        errorTextDisplayPtr->setTimer(--timer);
+
+        // Get the function to draw
+        DispCallback drawFunc;
+
+        switch (errorTextDisplayIndex)
+        {
+            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR:
+            {
+                drawFunc = drawNpcNameToPtrError;
+                break;
+            }
+            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR:
+            {
+                drawFunc = drawMobjNameToPtrError;
+                break;
+            }
+            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN:
+            {
+                drawFunc = drawAnimPoseMainError;
+                break;
+            }
+            default:
+            {
+                // Shouldn't ever reach this
+                return;
+            }
+        }
+
+        drawOnDebugLayer(drawFunc, displaysPtr->getErrorTextOrder());
+    }
+}
+
+static void handleNpcNameToPtrError(Displays *displaysPtr)
+{
+    handleErrorTextDisplay(displaysPtr, ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR);
+}
+
+static void handleMobjNameToPtrError(Displays *displaysPtr)
+{
+    handleErrorTextDisplay(displaysPtr, ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR);
+}
+
+static void handleAnimPoseMainError(Displays *displaysPtr)
+{
+    handleErrorTextDisplay(displaysPtr, ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN);
 }
 
 NpcEntry *checkForNpcNameToPtrError(const char *name)
@@ -3627,34 +3739,14 @@ NpcEntry *checkForNpcNameToPtrError(const char *name)
     if (ret >= &workPtr->entries[workPtr->npcMaxCount])
     {
         // Didn't find the correct NPC, so print error text
-        NameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
+        ErrorTextDisplay *npcNameToPtrErrorPtr =
+            gDisplays->getErrorTextDisplayPtr(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR);
+
         npcNameToPtrErrorPtr->setTimer(sysMsec2Frame(5000));
         npcNameToPtrErrorPtr->incrementCounter();
     }
 
     return ret;
-}
-
-static void handleNpcNameToPtrError(Displays *displaysPtr)
-{
-    NameToPtrErrorDisplay *npcNameToPtrErrorPtr = gDisplays->getNpcNameToPtrErrorDisplayPtr();
-    uint32_t timer = npcNameToPtrErrorPtr->getTimer();
-
-    if (timer > 0)
-    {
-        npcNameToPtrErrorPtr->setTimer(--timer);
-        drawOnDebugLayer(drawNpcNameToPtrError, displaysPtr->getErrorTextOrder());
-    }
-}
-
-static void drawMobjNameToPtrError(CameraId cameraId, void *user)
-{
-    (void)cameraId;
-    (void)user;
-
-    Displays *displaysPtr = gDisplays;
-    NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = displaysPtr->getMobjNameToPtrErrorDisplayPtr();
-    drawNameToPtrError(displaysPtr, mobjNameToPtrErrorPtr, "mobjNameToPtr");
 }
 
 MapObjectEntry *checkForMobjNameToPtrError(const char *name)
@@ -3685,55 +3777,14 @@ MapObjectEntry *checkForMobjNameToPtrError(const char *name)
     if (ret >= &workPtr->entries[workPtr->count])
     {
         // Didn't find the correct map object, so print error text
-        NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = gDisplays->getMobjNameToPtrErrorDisplayPtr();
+        ErrorTextDisplay *mobjNameToPtrErrorPtr =
+            gDisplays->getErrorTextDisplayPtr(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR);
+
         mobjNameToPtrErrorPtr->setTimer(sysMsec2Frame(5000));
         mobjNameToPtrErrorPtr->incrementCounter();
     }
 
     return ret;
-}
-
-static void handleMobjNameToPtrError(Displays *displaysPtr)
-{
-    NameToPtrErrorDisplay *mobjNameToPtrErrorPtr = gDisplays->getMobjNameToPtrErrorDisplayPtr();
-    uint32_t timer = mobjNameToPtrErrorPtr->getTimer();
-
-    if (timer > 0)
-    {
-        mobjNameToPtrErrorPtr->setTimer(--timer);
-        drawOnDebugLayer(drawMobjNameToPtrError, displaysPtr->getErrorTextOrder());
-    }
-}
-
-static void drawAnimPoseMainError(CameraId cameraId, void *user)
-{
-    (void)cameraId;
-    (void)user;
-
-    // Initialize text drawing
-    drawTextInit(true);
-
-    // Get the current counter value
-    Displays *displaysPtr = gDisplays;
-    AnimPoseMainErrorDisplay *animPoseMainErrorPtr = displaysPtr->getAnimPoseMainErrorDisplayPtr();
-    const uint32_t counter = animPoseMainErrorPtr->getCounter();
-
-    // If the timer is at 0, then reset the counter
-    if (animPoseMainErrorPtr->getTimer() == 0)
-    {
-        animPoseMainErrorPtr->resetCounter();
-    }
-
-    // Get the text
-    char buf[64];
-    snprintf(buf, sizeof(buf), "animPoseMain error occured x%" PRIu32, counter);
-
-    // Draw the text
-    drawText(buf,
-             DISPLAYS_DEFAULT_POS_X_LEFT,
-             displaysPtr->getErrorTextPosYDecrement(),
-             DISPLAYS_DEFAULT_SCALE_ERRORS,
-             getColorWhite(0xFF));
 }
 
 void preventAnimPoseMainCrash(int32_t poseId)
@@ -3742,7 +3793,9 @@ void preventAnimPoseMainCrash(int32_t poseId)
     if (poseId < 0)
     {
         // poseId is invalid, so print error text
-        AnimPoseMainErrorDisplay *animPoseMainErrorPtr = gDisplays->getAnimPoseMainErrorDisplayPtr();
+        ErrorTextDisplay *animPoseMainErrorPtr =
+            gDisplays->getErrorTextDisplayPtr(ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN);
+
         animPoseMainErrorPtr->setTimer(sysMsec2Frame(5000));
         animPoseMainErrorPtr->incrementCounter();
         return;
@@ -3750,18 +3803,6 @@ void preventAnimPoseMainCrash(int32_t poseId)
 
     // Call the original function
     return g_animPoseMain_trampoline(poseId);
-}
-
-static void handleAnimPoseMainError(Displays *displaysPtr)
-{
-    AnimPoseMainErrorDisplay *animPoseMainErrorPtr = gDisplays->getAnimPoseMainErrorDisplayPtr();
-    uint32_t timer = animPoseMainErrorPtr->getTimer();
-
-    if (timer > 0)
-    {
-        animPoseMainErrorPtr->setTimer(--timer);
-        drawOnDebugLayer(drawAnimPoseMainError, displaysPtr->getErrorTextOrder());
-    }
 }
 
 bool cDisableDPadOptionsDisplay(uint32_t unkVar)
