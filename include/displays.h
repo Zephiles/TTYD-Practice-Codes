@@ -634,12 +634,6 @@ class GuardSuperguardTimingDisplay
     GuardSuperguardTimingDisplay() {}
     ~GuardSuperguardTimingDisplay() {}
 
-    int32_t getLastAFrame() const { return this->lastAFrame; }
-    void setLastAFrame(int32_t frame) { this->lastAFrame = frame; }
-
-    int32_t getLastBFrame() const { return this->lastBFrame; }
-    void setLastBFrame(int32_t frame) { this->lastBFrame = frame; }
-
     uint32_t getTimer() const { return this->timer; }
     void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
 
@@ -655,18 +649,24 @@ class GuardSuperguardTimingDisplay
     GuardSuperguardTimingDisplay::DefenceResult getType() const { return this->type; }
     void setType(GuardSuperguardTimingDisplay::DefenceResult type) { this->type = type; }
 
+    uint32_t getLastAFrame() const { return this->lastAFrame; }
+    void setLastAFrame(uint32_t frame) { this->lastAFrame = static_cast<uint8_t>(frame); }
+
+    uint32_t getLastBFrame() const { return this->lastBFrame; }
+    void setLastBFrame(uint32_t frame) { this->lastBFrame = static_cast<uint8_t>(frame); }
+
     void resetValues()
     {
-        this->lastAFrame = -1;
-        this->lastBFrame = -1;
         this->type = GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_NONE;
+        this->lastAFrame = 0xFF;
+        this->lastBFrame = 0xFF;
     }
 
    private:
-    int32_t lastAFrame;
-    int32_t lastBFrame;
     uint16_t timer;
     GuardSuperguardTimingDisplay::DefenceResult type;
+    uint8_t lastAFrame;
+    uint8_t lastBFrame;
 };
 
 class YoshiSkipDisplay
@@ -1185,19 +1185,21 @@ class Displays
     // Class variables ordered specifically to reduce extra padding
     OnScreenTimerDisplay onScreenTimer;
     FrameCounterDisplay frameCounter;
+    HitCheckVisualizationDisplay hitCheckVisualization;
+    JumpStorageDisplay jumpStorage;
+    MemoryUsageDisplay memoryUsage;
+    AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
+    GuardSuperguardTimingDisplay guardSuperguardTiming;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
     ArbitraryMemoryWriteDisplay arbitraryMemoryWriteDisplay;
-    BridgeSkipDisplay bridgeSkip;
-    ErrorTextDisplay errorTextDisplay[3]; // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
     JabbiHiveSkipDisplay jabbiHiveSkip;
-    GuardSuperguardTimingDisplay guardSuperguardTiming;
-    HitCheckVisualizationDisplay hitCheckVisualization;
-    JumpStorageDisplay jumpStorage;
-    MemoryUsageDisplay memoryUsage;
+    BridgeSkipDisplay bridgeSkip;
     BlimpTicketSkipDisplay blimpTicketSkip;
-    AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
+
+    // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
+    ErrorTextDisplay errorTextDisplay[3];
 };
 
 extern Displays *gDisplays;

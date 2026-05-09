@@ -1773,8 +1773,8 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
 
     // Check to see which text should be displayed
     GuardSuperguardTimingDisplay *guardSuperguardTimingPtr = displaysPtr->getGuardSuperguardTimingDisplayPtr();
-    const int32_t lastAFrame = guardSuperguardTimingPtr->getLastAFrame();
-    const int32_t lastBFrame = guardSuperguardTimingPtr->getLastBFrame();
+    const uint32_t lastAFrame = guardSuperguardTimingPtr->getLastAFrame();
+    const uint32_t lastBFrame = guardSuperguardTimingPtr->getLastBFrame();
 
     // Decrement the timer now since it needs to be done sometime in this function anyway, and it doesn't matter when
     guardSuperguardTimingPtr->decrementTimer();
@@ -1791,7 +1791,7 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
             int32_t framePressed;
             char button;
 
-            if (lastAFrame > -1)
+            if (lastAFrame != 0xFF)
             {
                 difficultyFrames = _guardFrames[difficulty];
                 framePressed = difficultyFrames - lastAFrame;
@@ -1818,7 +1818,7 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
             int32_t framesEarly;
             char button;
 
-            if (lastAFrame > -1)
+            if (lastAFrame != 0xFF)
             {
                 difficultyFrames = _guardFrames[difficulty];
                 framesEarly = lastAFrame - difficultyFrames + 1;
@@ -1831,17 +1831,7 @@ static void drawGuardSuperguardTimings(CameraId cameraId, void *user)
                 button = 'B';
             }
 
-            const char *plural;
-            if (framesEarly != 1)
-            {
-                plural = "s";
-            }
-            else
-            {
-                plural = nullptr;
-            }
-
-            snprintf(buf, bufSize, "Pressed %c %" PRId32 " frame%s early", button, framesEarly, plural);
+            snprintf(buf, bufSize, "Pressed %c %" PRId32 " frame(s) early", button, framesEarly);
             break;
         }
         case GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_CANNOT_BE_SUPERGUARD:
@@ -1942,10 +1932,10 @@ int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *
 
     // Loop through the buttons pressed from the previous frame to look for A and B presses
     uint32_t buttonPresses = 0;
-    int32_t lastAFrame = -1;
-    int32_t lastBFrame = -1;
+    uint32_t lastAFrame = 0xFF;
+    uint32_t lastBFrame = 0xFF;
 
-    for (int32_t frame = 0; frame < 15; frame++)
+    for (uint32_t frame = 0; frame < 15; frame++)
     {
         if (BattleACPadCheckRecordTrigger(frame, PadInput::PAD_A))
         {
@@ -1984,14 +1974,14 @@ int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *
         guardSuperguardTimingPtr->setType(GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_PRESSED_TOO_MANY_BUTTONS);
         guardSuperguardTimingPtr->setTimer(sysMsec2Frame(displayTime));
     }
-    else if (lastAFrame > -1)
+    else if (lastAFrame != 0xFF)
     {
         // Print how many frames early the player pressed A
         guardSuperguardTimingPtr->setLastAFrame(lastAFrame);
         guardSuperguardTimingPtr->setType(GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_PRESSED_TOO_EARLY);
         guardSuperguardTimingPtr->setTimer(sysMsec2Frame(displayTime));
     }
-    else if (lastBFrame > -1)
+    else if (lastBFrame != 0xFF)
     {
         // Check if the attack can be superguarded or not
         if (weapon->superguards_allowed > 0)
@@ -3241,26 +3231,9 @@ static void drawBridgeSkip(CameraId cameraId, void *user)
         earlyOrLateText = "Early";
     }
 
-    // Check if the frames text should be plural
-    const char *pluralText;
-    if (mainTimer == 1)
-    {
-        pluralText = nullptr;
-    }
-    else
-    {
-        pluralText = "s";
-    }
-
     // Get the text
     char buf[96];
-    snprintf(buf,
-             sizeof(buf),
-             "%" PRIu32 " Frame%s %s\nHRP: 0x%08" PRIX32,
-             mainTimer,
-             pluralText,
-             earlyOrLateText,
-             respawnAreaPtrRaw);
+    snprintf(buf, sizeof(buf), "%" PRIu32 " Frame(s) %s\nHRP: 0x%08" PRIX32, mainTimer, earlyOrLateText, respawnAreaPtrRaw);
 
     // Properly position the text above Mario's Coordinates
     float posY = data.getPosY();
