@@ -379,7 +379,7 @@ class LockFlagsCheat
 
         if (prevMemoryPtr)
         {
-            delete prevMemoryPtr;
+            delete[] prevMemoryPtr;
             prevMemoryPtr = nullptr;
             *prevMemory = prevMemoryPtr;
         }
