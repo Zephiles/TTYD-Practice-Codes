@@ -335,12 +335,6 @@ class LockFlagsCheat
     LockFlagsCheat() {}
     ~LockFlagsCheat() {}
 
-    uint32_t getLockFlagsSequencePosition() const { return this->sequencePosition; }
-    void setLockFlagsSequencePosition(uint32_t sequence) { this->sequencePosition = static_cast<uint16_t>(sequence); }
-
-    char *getLswAreaLocked() { return &this->lswAreaLocked[0]; }
-    char *getLswfAreaLocked() { return &this->lswfAreaLocked[0]; }
-
     uint8_t *getPrevMemoryPtr(uint32_t region)
     {
         // Make sure the region is valid
@@ -393,11 +387,17 @@ class LockFlagsCheat
         return prevMemoryPtr;
     }
 
+    char *getLswAreaLocked() { return &this->lswAreaLocked[0]; }
+    char *getLswfAreaLocked() { return &this->lswfAreaLocked[0]; }
+
+    uint32_t getLockFlagsSequencePosition() const { return this->sequencePosition; }
+    void setLockFlagsSequencePosition(uint32_t sequence) { this->sequencePosition = static_cast<uint16_t>(sequence); }
+
    private:
-    uint16_t sequencePosition; // The sequence position is handled separately in the GSWs, so need to back it up separately
+    uint8_t *prevMemory[TOTAL_LOCK_FLAGS_OPTIONS];
     char lswAreaLocked[4];     // 3 bytes for the area, 1 byte for null
     char lswfAreaLocked[4];    // 3 bytes for the area, 1 byte for null
-    uint8_t *prevMemory[TOTAL_LOCK_FLAGS_OPTIONS];
+    uint16_t sequencePosition; // The sequence position is handled separately in the GSWs, so need to back it up separately
 };
 
 class ClearAreaFlagsCheat
@@ -561,13 +561,14 @@ class Cheats
     uint32_t miscFlags[CHEATS_MISC_FLAGS_ARRAY_SIZE];
     uint16_t buttonCombos[TOTAL_CHEATS_BUTTON_COMBOS];
 
+    // Class variables ordered specifically to reduce extra padding
     SaveLoadCoordinatesCheats saveLoadCoordinates;
     SaveAnywhereCheat saveAnywhere;
     FrameAdvanceCheat frameAdvance;
     SpawnItemCheat spawnItem;
-    LockFlagsCheat lockFlags;
     ForceNpcItemDropCheat forceNpcItemDrop;
     GenerateLagSpikeCheat generateLagSpike;
+    LockFlagsCheat lockFlags;
     SpeedUpMarioCheat speedUpMario;
     ReloadRoomCheat reloadRoom;
     ClearAreaFlagsCheat clearAreaFlags;

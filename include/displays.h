@@ -634,6 +634,12 @@ class GuardSuperguardTimingDisplay
     GuardSuperguardTimingDisplay() {}
     ~GuardSuperguardTimingDisplay() {}
 
+    int32_t getLastAFrame() const { return this->lastAFrame; }
+    void setLastAFrame(int32_t frame) { this->lastAFrame = frame; }
+
+    int32_t getLastBFrame() const { return this->lastBFrame; }
+    void setLastBFrame(int32_t frame) { this->lastBFrame = frame; }
+
     uint32_t getTimer() const { return this->timer; }
     void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
 
@@ -646,27 +652,21 @@ class GuardSuperguardTimingDisplay
         }
     }
 
-    int32_t getLastAFrame() const { return this->lastAFrame; }
-    void setLastAFrame(int32_t frame) { this->lastAFrame = static_cast<int8_t>(frame); }
-
-    int32_t getLastBFrame() const { return this->lastBFrame; }
-    void setLastBFrame(int32_t frame) { this->lastBFrame = static_cast<int8_t>(frame); }
-
     GuardSuperguardTimingDisplay::DefenceResult getType() const { return this->type; }
     void setType(GuardSuperguardTimingDisplay::DefenceResult type) { this->type = type; }
 
     void resetValues()
     {
-        this->type = GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_NONE;
         this->lastAFrame = -1;
         this->lastBFrame = -1;
+        this->type = GuardSuperguardTimingDisplay::DefenceResult::DEFENCE_RESULT_NONE;
     }
 
    private:
+    int32_t lastAFrame;
+    int32_t lastBFrame;
     uint16_t timer;
     GuardSuperguardTimingDisplay::DefenceResult type;
-    int8_t lastAFrame;
-    int8_t lastBFrame;
 };
 
 class YoshiSkipDisplay
@@ -1152,7 +1152,6 @@ class Displays
     YoshiSkipDisplay *getYoshiSkipDisplayPtr() { return &this->yoshiSkip; }
     PalaceSkipDisplay *getPalaceSkipDisplayPtr() { return &this->palaceSkip; }
     ArbitraryMemoryWriteDisplay *getArbitraryMemoryWriteDisplayPtr() { return &this->arbitraryMemoryWriteDisplay; }
-
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
     BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
@@ -1183,23 +1182,22 @@ class Displays
     float defaultPosYErrors;
     float defaultOrderErrors;
 
+    // Class variables ordered specifically to reduce extra padding
     OnScreenTimerDisplay onScreenTimer;
     FrameCounterDisplay frameCounter;
-    HitCheckVisualizationDisplay hitCheckVisualization;
-    JumpStorageDisplay jumpStorage;
-    MemoryUsageDisplay memoryUsage;
-    AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
-    GuardSuperguardTimingDisplay guardSuperguardTiming;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
     ArbitraryMemoryWriteDisplay arbitraryMemoryWriteDisplay;
-    JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
+    ErrorTextDisplay errorTextDisplay[3]; // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
+    JabbiHiveSkipDisplay jabbiHiveSkip;
+    GuardSuperguardTimingDisplay guardSuperguardTiming;
+    HitCheckVisualizationDisplay hitCheckVisualization;
+    JumpStorageDisplay jumpStorage;
+    MemoryUsageDisplay memoryUsage;
     BlimpTicketSkipDisplay blimpTicketSkip;
-
-    // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
-    ErrorTextDisplay errorTextDisplay[3];
+    AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
 };
 
 extern Displays *gDisplays;
