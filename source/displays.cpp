@@ -3652,39 +3652,41 @@ static void handleErrorTextDisplay(Displays *displaysPtr, uint32_t errorTextDisp
     }
 
     uint32_t timer = errorTextDisplayPtr->getTimer();
-    if (timer > 0)
+    if (timer == 0)
     {
-        errorTextDisplayPtr->setTimer(--timer);
-
-        // Get the function to draw
-        DispCallback drawFunc;
-
-        switch (errorTextDisplayIndex)
-        {
-            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR:
-            {
-                drawFunc = drawNpcNameToPtrError;
-                break;
-            }
-            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR:
-            {
-                drawFunc = drawMobjNameToPtrError;
-                break;
-            }
-            case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN:
-            {
-                drawFunc = drawAnimPoseMainError;
-                break;
-            }
-            default:
-            {
-                // Shouldn't ever reach this
-                return;
-            }
-        }
-
-        drawOnDebugLayer(drawFunc, displaysPtr->getErrorTextOrder());
+        return;
     }
+
+    errorTextDisplayPtr->setTimer(--timer);
+
+    // Get the function to draw
+    DispCallback drawFunc;
+
+    switch (errorTextDisplayIndex)
+    {
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_NPC_NAME_TO_PTR:
+        {
+            drawFunc = drawNpcNameToPtrError;
+            break;
+        }
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_MOBJ_NAME_TO_PTR:
+        {
+            drawFunc = drawMobjNameToPtrError;
+            break;
+        }
+        case ErrorTextDisplayEnum::ERROR_TEXT_DISPLAY_ANIM_POSE_MAIN:
+        {
+            drawFunc = drawAnimPoseMainError;
+            break;
+        }
+        default:
+        {
+            // Shouldn't ever reach this
+            return;
+        }
+    }
+
+    drawOnDebugLayer(drawFunc, displaysPtr->getErrorTextOrder());
 }
 
 static void handleNpcNameToPtrError(Displays *displaysPtr)
