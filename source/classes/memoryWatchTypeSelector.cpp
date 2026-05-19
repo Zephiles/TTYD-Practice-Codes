@@ -31,7 +31,7 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlp
     this->OptionSelector::init(gHelpTextAConfirmBCancel,
                                gMemoryWatchTypeStrings,
                                TOTAL_MEMORY_WATCH_TYPES,
-                               1,
+                               2,
                                parentWindow,
                                windowAlpha,
                                0.f);
