@@ -12,35 +12,15 @@ void *allocFromHeapTail(OSHeapHandle handle, uint32_t size)
     // Increase the size to account for extra alignment padding
     size = roundUp(size + HEADER_SIZE, HEAP_ALIGNMENT);
 
-    // Make sure there is at least one free chunk available
+    // Loop through all of the free chunks and use the one thats closest to the end of the heap
     HeapInfo *heapArrayPtr = &HeapArray[handle];
-    ChunkInfo *chunk = heapArrayPtr->firstFree;
-    if (!chunk)
-    {
-        return nullptr;
-    }
+    ChunkInfo *chunk = nullptr;
 
-    // Get a pointer to the last free entry in the heap
-    while (1)
+    for (ChunkInfo *tempChunk = heapArrayPtr->firstFree; tempChunk; tempChunk = tempChunk->next)
     {
-        ChunkInfo *nextChunk = chunk->next;
-        if (!nextChunk)
+        if ((tempChunk > chunk) && (tempChunk->size >= size))
         {
-            // Reached the end of the chunks, so the current chunk should be the last chunk
-            break;
-        }
-        else
-        {
-            chunk = nextChunk;
-        }
-    }
-
-    // Search for a chunk that has enough space to hold the requested size
-    for (; chunk; chunk = chunk->prev)
-    {
-        if (chunk->size >= size)
-        {
-            break;
+            chunk = tempChunk;
         }
     }
 
