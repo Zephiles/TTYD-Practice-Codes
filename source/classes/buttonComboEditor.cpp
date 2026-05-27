@@ -44,6 +44,124 @@ void ButtonComboEditor::init(const Window *parentWindow, uint8_t windowAlpha)
     windowPtr->placeInWindow(parentWindow, WindowAlignment::MIDDLE_CENTER, scale);
 }
 
+void ButtonComboEditor::buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
+{
+    if (!buttons)
+    {
+        // No buttons are pressed, so set the default string to None
+        copyStringAndNullTerminate(stringOut, stringSize, "None");
+        return;
+    }
+
+    // Get the text for each button
+    const char *buttonText;
+    int32_t textLength = 0;
+    bool firstStringWritten = false;
+
+    for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
+    {
+        if (i == 7)
+        {
+            // Skip unused value
+            i++;
+        }
+
+        if (!((buttons >> i) & 1U))
+        {
+            // The current button is not held
+            continue;
+        }
+
+        switch (static_cast<MenuButtonInput>(counter))
+        {
+            case MenuButtonInput::DPAD_LEFT:
+            {
+                buttonText = "D-Pad Left";
+                break;
+            }
+            case MenuButtonInput::DPAD_RIGHT:
+            {
+                buttonText = "D-Pad Right";
+                break;
+            }
+            case MenuButtonInput::DPAD_DOWN:
+            {
+                buttonText = "D-Pad Down";
+                break;
+            }
+            case MenuButtonInput::DPAD_UP:
+            {
+                buttonText = "D-Pad Up";
+                break;
+            }
+            case MenuButtonInput::Z:
+            {
+                buttonText = "Z";
+                break;
+            }
+            case MenuButtonInput::R:
+            {
+                buttonText = "R";
+                break;
+            }
+            case MenuButtonInput::L:
+            {
+                buttonText = "L";
+                break;
+            }
+            case MenuButtonInput::A:
+            {
+                buttonText = "A";
+                break;
+            }
+            case MenuButtonInput::B:
+            {
+                buttonText = "B";
+                break;
+            }
+            case MenuButtonInput::X:
+            {
+                buttonText = "X";
+                break;
+            }
+            case MenuButtonInput::Y:
+            {
+                buttonText = "Y";
+                break;
+            }
+            case MenuButtonInput::START:
+            {
+                buttonText = "Start";
+                break;
+            }
+            default:
+            {
+                // Unknown button
+                continue;
+            }
+        }
+
+        if (!firstStringWritten)
+        {
+            firstStringWritten = true;
+
+            // Set the initial button pressed
+            textLength = copyStringAndNullTerminate(stringOut, stringSize, buttonText);
+        }
+        else
+        {
+            // Add the next button pressed
+            textLength += snprintf(&stringOut[textLength], stringSize - textLength, " + %s", buttonText);
+
+            // Exit if textLength somehow reaches stringSize
+            if (static_cast<uint32_t>(textLength) >= stringSize)
+            {
+                break;
+            }
+        }
+    }
+}
+
 bool ButtonComboEditor::checkIfBPressedThreeTimes(uint32_t buttonsHeld, MenuButtonInput button)
 {
     uint32_t bButtonCounter = this->bButtonCounter;
@@ -205,124 +323,6 @@ void ButtonComboEditor::draw() const
         heldButtons = keyGetButton(PadId::CONTROLLER_ONE);
     }
 
-    buttonsToString(heldButtons, buf, bufSize);
+    this->buttonsToString(heldButtons, buf, bufSize);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
-}
-
-void buttonsToString(uint32_t buttons, char *stringOut, uint32_t stringSize)
-{
-    if (!buttons)
-    {
-        // No buttons are pressed, so set the default string to None
-        copyStringAndNullTerminate(stringOut, stringSize, "None");
-        return;
-    }
-
-    // Get the text for each button
-    const char *buttonText;
-    int32_t textLength = 0;
-    bool firstStringWritten = false;
-
-    for (uint32_t i = 0, counter = 1; i < TOTAL_MENU_INPUT_BUTTONS; i++, counter++)
-    {
-        if (i == 7)
-        {
-            // Skip unused value
-            i++;
-        }
-
-        if (!((buttons >> i) & 1U))
-        {
-            // The current button is not held
-            continue;
-        }
-
-        switch (static_cast<MenuButtonInput>(counter))
-        {
-            case MenuButtonInput::DPAD_LEFT:
-            {
-                buttonText = "D-Pad Left";
-                break;
-            }
-            case MenuButtonInput::DPAD_RIGHT:
-            {
-                buttonText = "D-Pad Right";
-                break;
-            }
-            case MenuButtonInput::DPAD_DOWN:
-            {
-                buttonText = "D-Pad Down";
-                break;
-            }
-            case MenuButtonInput::DPAD_UP:
-            {
-                buttonText = "D-Pad Up";
-                break;
-            }
-            case MenuButtonInput::Z:
-            {
-                buttonText = "Z";
-                break;
-            }
-            case MenuButtonInput::R:
-            {
-                buttonText = "R";
-                break;
-            }
-            case MenuButtonInput::L:
-            {
-                buttonText = "L";
-                break;
-            }
-            case MenuButtonInput::A:
-            {
-                buttonText = "A";
-                break;
-            }
-            case MenuButtonInput::B:
-            {
-                buttonText = "B";
-                break;
-            }
-            case MenuButtonInput::X:
-            {
-                buttonText = "X";
-                break;
-            }
-            case MenuButtonInput::Y:
-            {
-                buttonText = "Y";
-                break;
-            }
-            case MenuButtonInput::START:
-            {
-                buttonText = "Start";
-                break;
-            }
-            default:
-            {
-                // Unknown button
-                continue;
-            }
-        }
-
-        if (!firstStringWritten)
-        {
-            firstStringWritten = true;
-
-            // Set the initial button pressed
-            textLength = copyStringAndNullTerminate(stringOut, stringSize, buttonText);
-        }
-        else
-        {
-            // Add the next button pressed
-            textLength += snprintf(&stringOut[textLength], stringSize - textLength, " + %s", buttonText);
-
-            // Exit if textLength somehow reaches stringSize
-            if (static_cast<uint32_t>(textLength) >= stringSize)
-            {
-                break;
-            }
-        }
-    }
 }

@@ -95,7 +95,7 @@ static void drawMemoryEditorMenuInfo()
 
     // Draw the button combo
     char buf[128];
-    buttonsToString(memoryEditorPtr->getButtonCombo(), buf, sizeof(buf));
+    ButtonComboEditor::buttonsToString(memoryEditorPtr->getButtonCombo(), buf, sizeof(buf));
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 

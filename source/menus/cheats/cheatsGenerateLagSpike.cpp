@@ -108,9 +108,10 @@ static void drawGenerateLagSpikeInfo()
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
 
-    buttonsToString(cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE),
-                    buf,
-                    bufSize);
+    ButtonComboEditor::buttonsToString(
+        cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE),
+        buf,
+        bufSize);
 
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     posY -= (lineDecrement * 2.f);

@@ -122,12 +122,13 @@ static void drawFollowerOut()
         if ((follower >= PartyMembers::kEgg) && (follower <= PartyMembers::kMsMowzFollower))
         {
             // Get the text for the current follower
-            const PartyMembers *followersOptionsIdPtr = gFollowersOptionsId;
+            const FollowerOptions *followerOptionsPtr = &FollowerSelector::gFollowerOptions;
+
             for (uint32_t i = 0; i < TOTAL_FOLLOWERS; i++)
             {
-                if (followersOptionsIdPtr[i] == follower)
+                if (followerOptionsPtr->ids[i] == follower)
                 {
-                    currentFollower = gFollowersOptions[i];
+                    currentFollower = followerOptionsPtr->options[i];
                     break;
                 }
             }

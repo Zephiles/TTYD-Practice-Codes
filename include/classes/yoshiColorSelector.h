@@ -87,9 +87,9 @@ class YoshiColorSelector: private OptionSelector
 
     // Draws the Yoshi color selector.
     void draw() const { this->OptionSelector::draw(); }
-};
 
-// Array of available Yoshi colors to select from.
-extern const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS];
+    // Array of available Yoshi colors to select from.
+    static const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS];
+};
 
 #endif

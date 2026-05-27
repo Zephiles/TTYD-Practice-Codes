@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES] = {
+const char *MemoryWatchTypeSelector::gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES] = {
     "int8_t",
     "int16_t",
     "int32_t",
@@ -29,7 +29,7 @@ void MemoryWatchTypeSelector::init(const Window *parentWindow)
 void MemoryWatchTypeSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 {
     this->OptionSelector::init(gHelpTextAConfirmBCancel,
-                               gMemoryWatchTypeStrings,
+                               this->gMemoryWatchTypeStrings,
                                TOTAL_MEMORY_WATCH_TYPES,
                                2,
                                parentWindow,

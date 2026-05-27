@@ -7,7 +7,8 @@
 
 #include <cstdint>
 
-const char *gFollowersOptions[TOTAL_FOLLOWERS] = {
+const FollowerOptions FollowerSelector::gFollowerOptions = {
+    // options
     "Goombella",
     "Koops",
     "Flurrie",
@@ -20,9 +21,8 @@ const char *gFollowersOptions[TOTAL_FOLLOWERS] = {
     "Punio",
     "Frankly",
     "Craw",
-};
 
-const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS] = {
+    // ids
     PartyMembers::kGoombellaFollower,
     PartyMembers::kKoopsFollower,
     PartyMembers::kFlurrieFollower,
@@ -44,7 +44,13 @@ void FollowerSelector::init(const Window *parentWindow)
 
 void FollowerSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 {
-    this->OptionSelector::init(gHelpTextAConfirmBCancel, gFollowersOptions, TOTAL_FOLLOWERS, 2, parentWindow, windowAlpha, 0.f);
+    this->OptionSelector::init(gHelpTextAConfirmBCancel,
+                               const_cast<const char **>(this->gFollowerOptions.options),
+                               TOTAL_FOLLOWERS,
+                               2,
+                               parentWindow,
+                               windowAlpha,
+                               0.f);
 }
 
 void FollowerSelector::stopDrawing()
@@ -75,7 +81,7 @@ static void followerSelectorSelectedFollower(uint32_t currentIndex, void *user)
     const FollowerSelectorSelectFunc func = followerSelectorPtr->getSelectFunc();
     if (func)
     {
-        return func(gFollowersOptionsId[currentIndex]);
+        return func(FollowerSelector::gFollowerOptions.ids[currentIndex]);
     }
 }
 

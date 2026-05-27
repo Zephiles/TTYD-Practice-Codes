@@ -47,6 +47,15 @@ class ButtonComboEditor
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
     /**
+     * Converts the current button(s) held to a string.
+     *
+     * @param[in] buttonsHeld The button(s) that are currently held.
+     * @param[out] stringOut The pointer to the buffer to place the string.
+     * @param[in] stringSize The total size of `stringOut`, including the null terminator.
+     */
+    static void buttonsToString(uint32_t buttonsHeld, char *stringOut, uint32_t stringSize);
+
+    /**
      * Checks to see if the button combo editor should be drawn this frame.
      *
      * @returns `true` if the button combo editor should be drawn this frame, otherwise `false`.
@@ -148,14 +157,5 @@ class ButtonComboEditor
     // Whether the button combo editor is enabled/drawn or not.
     bool enabled;
 };
-
-/**
- * Converts the current button(s) held to a string.
- *
- * @param[in] buttonsHeld The button(s) that are currently held.
- * @param[out] stringOut The pointer to the buffer to place the string.
- * @param[in] stringSize The total size of `stringOut`, including the null terminator.
- */
-void buttonsToString(uint32_t buttonsHeld, char *stringOut, uint32_t stringSize);
 
 #endif

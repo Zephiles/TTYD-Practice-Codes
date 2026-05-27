@@ -197,7 +197,7 @@ void drawGenericDisplayInfo()
         const uint32_t displayButtonComboFlag = indexToDisplayButtonComboFlag(selectedDisplay);
         char buf[128];
 
-        buttonsToString(displaysPtr->getDisplayButtonCombo(displayButtonComboFlag), buf, sizeof(buf));
+        ButtonComboEditor::buttonsToString(displaysPtr->getDisplayButtonCombo(displayButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     }
 }

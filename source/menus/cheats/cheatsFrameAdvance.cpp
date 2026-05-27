@@ -79,9 +79,10 @@ static void drawFrameAdvanceInfo()
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
 
-    buttonsToString(cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME),
-                    buf,
-                    bufSize);
+    ButtonComboEditor::buttonsToString(
+        cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME),
+        buf,
+        bufSize);
 
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     posY -= (lineDecrement * 2.f);
@@ -90,9 +91,10 @@ static void drawFrameAdvanceInfo()
     drawText("Pause/Resume Button Combo", posX, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
 
-    buttonsToString(cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME),
-                    buf,
-                    bufSize);
+    ButtonComboEditor::buttonsToString(
+        cheatsPtr->getCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME),
+        buf,
+        bufSize);
 
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }

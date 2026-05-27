@@ -90,7 +90,7 @@ static void drawOnScreenTimerInfo()
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
 
-    buttonsToString(displaysPtr->getDisplayButtonCombo(buttonComboFlag++), buf, bufSize);
+    ButtonComboEditor::buttonsToString(displaysPtr->getDisplayButtonCombo(buttonComboFlag++), buf, bufSize);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     posY -= (lineDecrement * 2.f);
 
@@ -98,7 +98,7 @@ static void drawOnScreenTimerInfo()
     drawText("Reset Button Combo", posX, posY, scale, getColorWhite(0xFF));
     posY -= lineDecrement;
 
-    buttonsToString(displaysPtr->getDisplayButtonCombo(buttonComboFlag), buf, bufSize);
+    ButtonComboEditor::buttonsToString(displaysPtr->getDisplayButtonCombo(buttonComboFlag), buf, bufSize);
     drawText(buf, posX, posY, scale, getColorWhite(0xFF));
 }
 

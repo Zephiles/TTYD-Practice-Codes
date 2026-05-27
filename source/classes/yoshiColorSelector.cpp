@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-const char *gYoshiColorsStrings[TOTAL_YOSHI_COLORS] = {
+const char *YoshiColorSelector::gYoshiColorsStrings[TOTAL_YOSHI_COLORS] = {
     "Green",
     "Red",
     "Blue",
@@ -23,7 +23,7 @@ void YoshiColorSelector::init(const Window *parentWindow)
 void YoshiColorSelector::init(const Window *parentWindow, uint8_t windowAlpha)
 {
     this->OptionSelector::init(gHelpTextAConfirmBCancel,
-                               gYoshiColorsStrings,
+                               this->gYoshiColorsStrings,
                                TOTAL_YOSHI_COLORS,
                                1,
                                parentWindow,

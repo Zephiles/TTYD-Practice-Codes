@@ -102,7 +102,7 @@ void drawGenericCheatInfo()
         const uint32_t cheatButtonComboFlag = indexToCheatButtonComboFlag(selectedCheat);
         char buf[128];
 
-        buttonsToString(cheatsPtr->getCheatButtonCombo(cheatButtonComboFlag), buf, sizeof(buf));
+        ButtonComboEditor::buttonsToString(cheatsPtr->getCheatButtonCombo(cheatButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     }
 }

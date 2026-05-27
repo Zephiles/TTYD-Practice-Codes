@@ -85,6 +85,9 @@ class SpecialMoveToggler
     // Draws the special move toggler.
     void draw();
 
+    // Array of icon ids to be used with the special moves.
+    static const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES];
+
    private:
     // Handles the control for moving `down` once for the special move toggler.
     void controlsMoveDownOnce();
@@ -110,8 +113,5 @@ class SpecialMoveToggler
     // Current cursor position.
     uint8_t currentIndex;
 };
-
-// Array of icon ids to be used with the special moves.
-extern const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES];
 
 #endif

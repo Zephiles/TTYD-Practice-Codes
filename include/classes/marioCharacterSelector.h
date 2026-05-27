@@ -60,6 +60,13 @@ class MarioCharacterSelector: private OptionSelector
     void init(const Window *parentWindow, uint8_t windowAlpha);
 
     /**
+     * Converts Mario's current character id to a value from the `MarioCharacterSelectorIndex` enum.
+     *
+     * @returns A value from `MarioCharacterSelectorIndex` enum if the character id is valid, otherwise `-1`.
+     */
+    static int32_t marioCharacterIdToIndex();
+
+    /**
      * Checks to see if the Mario character selector should be drawn this frame.
      *
      * @returns `true` if the Mario character selector should be drawn this frame, otherwise `false`.
@@ -97,16 +104,9 @@ class MarioCharacterSelector: private OptionSelector
 
     // Draws the Mario character selector.
     void draw() const { this->OptionSelector::draw(); }
+
+    // Array of available characters that Mario can be to select from.
+    static const char *gMarioCharactersStrings[TOTAL_MARIO_CHARACTERS];
 };
-
-// Array of available characters that Mario can be to select from.
-extern const char *gMarioCharactersStrings[TOTAL_MARIO_CHARACTERS];
-
-/**
- * Converts Mario's current character id to a value from the `MarioCharacterSelectorIndex` enum.
- *
- * @returns A value from `MarioCharacterSelectorIndex` enum if the character id is valid, otherwise `-1`.
- */
-int32_t marioCharacterIdToIndex();
 
 #endif

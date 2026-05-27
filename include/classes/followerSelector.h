@@ -18,7 +18,14 @@ typedef void (*FollowerSelectorSelectFunc)(PartyMembers followerSelected);
 // Callback function pointer for when the player presses `B` to cancel selecting a follower.
 typedef void (*FollowerSelectorCancelFunc)();
 
-// Handles selecting a follower from the `gFollowersOptions` variable. A help window with text is displayed to assist in this
+// Array of available followers to select from.
+struct FollowerOptions
+{
+    const char *options[TOTAL_FOLLOWERS];
+    const PartyMembers ids[TOTAL_FOLLOWERS];
+};
+
+// Handles selecting a follower from the `gFollowerOptions` variable. A help window with text is displayed to assist in this
 // process.
 class FollowerSelector: private OptionSelector
 {
@@ -84,15 +91,12 @@ class FollowerSelector: private OptionSelector
      */
     FollowerSelectorSelectFunc getSelectFunc() const { return this->selectFunc; }
 
+    // Struct of available followers to select from.
+    static const FollowerOptions gFollowerOptions;
+
    private:
     // Callback function for when the player selects a follower.
     FollowerSelectorSelectFunc selectFunc;
 };
-
-// Array of available followers to select from.
-extern const char *gFollowersOptions[TOTAL_FOLLOWERS];
-
-// Array of ids of the available followers to select from. Intended to be used alongside `gFollowersOptions`.
-extern const PartyMembers gFollowersOptionsId[TOTAL_FOLLOWERS];
 
 #endif

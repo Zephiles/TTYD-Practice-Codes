@@ -93,12 +93,12 @@ class MemoryWatchTypeSelector: private OptionSelector
      */
     MemoryWatchTypeSelectorSetTypeFunc getSetTypeFunc() const { return this->setTypeFunc; }
 
+    // Array of available memory watch types to select from.
+    static const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES];
+
    private:
     // Callback function for when the player selects a memory watch type.
     MemoryWatchTypeSelectorSetTypeFunc setTypeFunc;
 };
-
-// Array of available memory watch types to select from.
-extern const char *gMemoryWatchTypeStrings[TOTAL_MEMORY_WATCH_TYPES];
 
 #endif

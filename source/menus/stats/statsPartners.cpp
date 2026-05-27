@@ -618,7 +618,7 @@ static void drawPartnerStats()
             yoshiColorIndex = 0;
         }
 
-        const char *yoshiColorText = gYoshiColorsStrings[yoshiColorIndex];
+        const char *yoshiColorText = YoshiColorSelector::gYoshiColorsStrings[yoshiColorIndex];
         const uint32_t yoshiColor = gYoshiColors[yoshiColorIndex];
 
         drawText(yoshiColorText, posX, posY, scale, yoshiColor);

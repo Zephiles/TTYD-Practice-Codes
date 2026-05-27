@@ -171,7 +171,7 @@ static void drawMemoryWatchModifyInfo()
 
     if (typeIndex < TOTAL_MEMORY_WATCH_TYPES)
     {
-        typeString = gMemoryWatchTypeStrings[typeIndex];
+        typeString = MemoryWatchTypeSelector::gMemoryWatchTypeStrings[typeIndex];
     }
     else
     {

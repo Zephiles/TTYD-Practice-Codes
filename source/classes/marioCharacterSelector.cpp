@@ -6,14 +6,30 @@
 
 #include <cstdint>
 
-const char *gMarioCharactersStrings[TOTAL_MARIO_CHARACTERS] = {
+const char *MarioCharacterSelector::gMarioCharactersStrings[TOTAL_MARIO_CHARACTERS] = {
     "Mario",
     "Bowser",
     "Peach",
     "X-Naut",
 };
 
-int32_t marioCharacterIdToIndex()
+void MarioCharacterSelector::init(const Window *parentWindow)
+{
+    this->init(parentWindow, 0xFF);
+}
+
+void MarioCharacterSelector::init(const Window *parentWindow, uint8_t windowAlpha)
+{
+    this->OptionSelector::init(gHelpTextAConfirmBCancel,
+                               this->gMarioCharactersStrings,
+                               TOTAL_MARIO_CHARACTERS,
+                               1,
+                               parentWindow,
+                               windowAlpha,
+                               0.f);
+}
+
+int32_t MarioCharacterSelector::marioCharacterIdToIndex()
 {
     const Player *marioPtr = marioGetPtr();
 
@@ -45,20 +61,4 @@ int32_t marioCharacterIdToIndex()
             return -1;
         }
     }
-}
-
-void MarioCharacterSelector::init(const Window *parentWindow)
-{
-    this->init(parentWindow, 0xFF);
-}
-
-void MarioCharacterSelector::init(const Window *parentWindow, uint8_t windowAlpha)
-{
-    this->OptionSelector::init(gHelpTextAConfirmBCancel,
-                               gMarioCharactersStrings,
-                               TOTAL_MARIO_CHARACTERS,
-                               1,
-                               parentWindow,
-                               windowAlpha,
-                               0.f);
 }

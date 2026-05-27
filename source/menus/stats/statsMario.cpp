@@ -584,7 +584,7 @@ static void changeMarioCharacter(uint32_t selectedCharacterIndex)
     }
 
     // If Mario is already the selected character, then do nothing
-    if (marioCharacterIdToIndex() == static_cast<int32_t>(selectedCharacterIndex))
+    if (MarioCharacterSelector::marioCharacterIdToIndex() == static_cast<int32_t>(selectedCharacterIndex))
     {
         // Close the Mario character selector
         cancelChangeMarioCharacter();
@@ -640,7 +640,7 @@ static void selectedOptionChangeMarioCharacter(Menu *menuPtr)
     marioCharacterSelectorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
 
     // Get the index for the current character
-    int32_t marioCharacterIndex = marioCharacterIdToIndex();
+    int32_t marioCharacterIndex = MarioCharacterSelector::marioCharacterIdToIndex();
 
     // Make sure the index is valid
     if (marioCharacterIndex < 0)
@@ -714,7 +714,7 @@ static void drawMarioStats()
         if (i == StatsMarioOptions::STATS_MARIO_SPECIAL_MOVES)
         {
             constexpr float specialMovesPosXIncrement = 13.f;
-            const IconId *specialMoveIconsPtr = gSpecialMoveIcons;
+            const IconId *specialMoveIconsPtr = SpecialMoveToggler::gSpecialMoveIcons;
             const uint32_t starPowersObtained = pouchPtr->starPowersObtained;
 
             constexpr float specialMovesScale = 0.37f;
@@ -785,7 +785,7 @@ static void drawMarioStats()
                 // Get the index for the current character
                 const char *currentCharacterString;
 
-                const int32_t marioCharacterIndex = marioCharacterIdToIndex();
+                const int32_t marioCharacterIndex = MarioCharacterSelector::marioCharacterIdToIndex();
                 if (marioCharacterIndex < 0)
                 {
                     // Index is invalid somehow
@@ -793,7 +793,7 @@ static void drawMarioStats()
                 }
                 else
                 {
-                    currentCharacterString = gMarioCharactersStrings[marioCharacterIndex];
+                    currentCharacterString = MarioCharacterSelector::gMarioCharactersStrings[marioCharacterIndex];
                 }
 
                 copyStringAndNullTerminate(buf, sizeof(buf), currentCharacterString);

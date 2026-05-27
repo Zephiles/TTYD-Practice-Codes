@@ -25,7 +25,7 @@ static const char *gSpecialMoves[TOTAL_SPECIAL_MOVES] = {
     "Supernova",
 };
 
-const IconId gSpecialMoveIcons[TOTAL_SPECIAL_MOVES] {
+const IconId SpecialMoveToggler::gSpecialMoveIcons[TOTAL_SPECIAL_MOVES] {
     IconId::ICON_MAGICAL_MAP_SMALL,
     IconId::ICON_DIAMOND_STAR,
     IconId::ICON_EMERALD_STAR,
@@ -209,7 +209,7 @@ void SpecialMoveToggler::draw()
 
     float iconPosX = iconPosXBase;
     float iconPosY = iconPosYBase + (3.f * scale); // Move up slightly since the star icons are not quite properly aligned
-    const IconId *icons = gSpecialMoveIcons;
+    const IconId *icons = this->gSpecialMoveIcons;
 
     // Draw the icons
     for (uint32_t i = 0; i < TOTAL_SPECIAL_MOVES; i++)
