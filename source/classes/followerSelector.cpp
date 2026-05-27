@@ -7,7 +7,7 @@
 
 #include <cstdint>
 
-const FollowerOptions FollowerSelector::gFollowerOptions = {
+const FollowerSelector::FollowerOptions FollowerSelector::gFollowerOptions = {
     // options
     "Goombella",
     "Koops",
