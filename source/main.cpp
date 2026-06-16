@@ -209,8 +209,6 @@ uint32_t initAfterHeapsCreated()
 __attribute__((noinline)) static void checkHeaps()
 {
     // Check the standard heaps
-    const uint32_t *heapStartPtr = reinterpret_cast<uint32_t *>(&heapStart.pHeapDefault);
-    const uint32_t *heapEndPtr = reinterpret_cast<uint32_t *>(&heapEnd.pHeapDefault);
     const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     uint32_t enabledFlag = memoryUsageFlagsArrayPtr[0];
     const HeapInfo *heapArrayPtr = HeapArray;
@@ -222,7 +220,7 @@ __attribute__((noinline)) static void checkHeaps()
     for (; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag = memoryUsageFlagsArrayPtr[i])
     {
         const HeapInfo *heapPtr = &heapArrayPtr[i];
-        const uint32_t heapSize = heapEndPtr[i] - heapStartPtr[i];
+        const uint32_t heapSize = heapPtr->capacity;
 
         // Check the used entries
         const ChunkInfo *tempChunk = heapPtr->firstUsed;
@@ -259,8 +257,7 @@ __attribute__((noinline)) static void checkHeaps()
 #ifdef TTYD_JP
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
 #else
-    const uint32_t mapHeapSize = heapEndPtr[HeapType::HEAP_MAP] - heapStartPtr[HeapType::HEAP_MAP];
-    addressWithError = checkIndividualMapHeap(mapHeapPtr, mapHeapSize);
+    addressWithError = checkIndividualMapHeap(mapHeapPtr, heapArrayPtr[HeapType::HEAP_MAP].capacity);
 #endif
 
 #ifdef TTYD_JP

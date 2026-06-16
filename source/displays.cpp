@@ -523,7 +523,7 @@ const void *checkIndividualStandardHeap(const ChunkInfo *start, uint32_t heapSiz
 
 const void *checkIndividualSmartHeap(const SmartAllocationData *start)
 {
-    const uint32_t heapSize = reinterpret_cast<uint32_t>(heapEnd.pHeapSmart) - reinterpret_cast<uint32_t>(heapStart.pHeapSmart);
+    const uint32_t heapSize = HeapArray[HeapType::HEAP_SMART].capacity;
     const SmartAllocationData *prevChunk = nullptr;
 
     for (const SmartAllocationData *currentChunk = start; currentChunk; currentChunk = currentChunk->pNext)
@@ -559,7 +559,7 @@ const void *checkIndividualMapHeap(const MapAllocEntry *start, uint32_t heapSize
 #endif
 {
 #ifdef TTYD_JP
-    const uint32_t heapSize = reinterpret_cast<uint32_t>(heapEnd.pHeapMap) - reinterpret_cast<uint32_t>(heapStart.pHeapMap);
+    const uint32_t heapSize = HeapArray[HeapType::HEAP_MAP].capacity;
 #endif
 
     for (const MapAllocEntry *currentChunk = start; currentChunk; currentChunk = currentChunk->next)

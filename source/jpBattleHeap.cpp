@@ -19,7 +19,7 @@ static void battleHeapInit()
     void *battleHeapPtr = _mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE);
     gBattleHeap = battleHeapPtr;
 
-    // Initialize the battle heap without using `OSCreateHeap` to ensure that it doesn't try to make the heap in a different
+    // Initialize the battle heap without using `OSCreateHeap` to ensure that it doesn't try to create the heap in a different
     // slot
     ChunkInfo *battleFreeChunkPtr = reinterpret_cast<ChunkInfo *>(battleHeapPtr);
     battleFreeChunkPtr->prev = nullptr;
@@ -30,10 +30,6 @@ static void battleHeapInit()
     battleHeapInfoPtr->capacity = BATTLE_HEAP_ORIGINAL_SIZE;
     battleHeapInfoPtr->firstFree = battleFreeChunkPtr;
     battleHeapInfoPtr->firstUsed = nullptr;
-
-    // Initialize the `heapStart` and `heapEnd` variables to ensure that the Memory Usage display doesn't print false errors
-    heapStart.pHeapBattle = battleHeapPtr;
-    heapEnd.pHeapBattle = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(battleHeapPtr) + BATTLE_HEAP_ORIGINAL_SIZE);
 }
 
 static void battleEndHook()
@@ -52,10 +48,6 @@ static void battleEndHook()
     battleHeapInfoPtr->capacity = 0;
     battleHeapInfoPtr->firstFree = nullptr;
     battleHeapInfoPtr->firstUsed = nullptr;
-
-    // Clear the the `heapStart` and `heapEnd` variables to be safe
-    heapStart.pHeapBattle = nullptr;
-    heapEnd.pHeapBattle = nullptr;
 }
 
 static OSHeapHandle OSCreateHeapHook(void *start, void *end)
