@@ -209,6 +209,8 @@ uint32_t initAfterHeapsCreated()
 __attribute__((noinline)) static void checkHeaps()
 {
     // Check the standard heaps
+    const uint32_t *heapStartPtr = reinterpret_cast<uint32_t *>(&heapStart.pHeapDefault);
+    const uint32_t *heapEndPtr = reinterpret_cast<uint32_t *>(&heapEnd.pHeapDefault);
     const uint8_t *memoryUsageFlagsArrayPtr = gMemoryUsageFlagsArray;
     uint32_t enabledFlag = memoryUsageFlagsArrayPtr[0];
     const HeapInfo *heapArrayPtr = HeapArray;
@@ -220,17 +222,18 @@ __attribute__((noinline)) static void checkHeaps()
     for (; i < DISPLAYS_TOTAL_MAIN_HEAPS; i++, enabledFlag = memoryUsageFlagsArrayPtr[i])
     {
         const HeapInfo *heapPtr = &heapArrayPtr[i];
+        const uint32_t heapSize = heapEndPtr[i] - heapStartPtr[i];
 
         // Check the used entries
         const ChunkInfo *tempChunk = heapPtr->firstUsed;
-        addressWithError = checkIndividualStandardHeap(tempChunk);
+        addressWithError = checkIndividualStandardHeap(tempChunk, heapSize);
 
         displaysPtr
             ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, enabledFlag, true);
 
         // Check the free entries
         tempChunk = heapPtr->firstFree;
-        addressWithError = checkIndividualStandardHeap(tempChunk);
+        addressWithError = checkIndividualStandardHeap(tempChunk, heapSize);
 
         displaysPtr
             ->handleStandardHeapChunkResults(addressWithError, tempChunk, heapPtr, i, memoryUsageCounter++, enabledFlag, false);
@@ -252,7 +255,13 @@ __attribute__((noinline)) static void checkHeaps()
 
     // Check the map heap
     const MapAllocEntry *mapHeapPtr = mapalloc_base_ptr;
+
+#ifdef TTYD_JP
     addressWithError = checkIndividualMapHeap(mapHeapPtr);
+#else
+    const uint32_t mapHeapSize = heapEndPtr[HeapType::HEAP_MAP] - heapStartPtr[HeapType::HEAP_MAP];
+    addressWithError = checkIndividualMapHeap(mapHeapPtr, mapHeapSize);
+#endif
 
 #ifdef TTYD_JP
     enabledFlag = memoryUsageFlagsArrayPtr[++i];
@@ -264,7 +273,7 @@ __attribute__((noinline)) static void checkHeaps()
     // Check the battle map heap
     mapHeapPtr = R_battlemapalloc_base_ptr;
     enabledFlag = memoryUsageFlagsArrayPtr[i];
-    addressWithError = checkIndividualMapHeap(mapHeapPtr);
+    addressWithError = checkIndividualMapHeap(mapHeapPtr, R_battlemapalloc_size);
     displaysPtr->handleMapHeapChunkResults(addressWithError, mapHeapPtr, ++memoryUsageCounter, enabledFlag, true);
 #endif
 }

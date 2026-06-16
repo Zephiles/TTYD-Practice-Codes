@@ -491,9 +491,10 @@ Displays::Displays()
     this->defaultOrderErrors = DRAW_ORDER_DISPLAY_ERRORS;
 }
 
-const void *checkIndividualStandardHeap(const ChunkInfo *start)
+const void *checkIndividualStandardHeap(const ChunkInfo *start, uint32_t heapSize)
 {
     const ChunkInfo *prevChunk = nullptr;
+
     for (const ChunkInfo *currentChunk = start; currentChunk; currentChunk = currentChunk->next)
     {
         // Check pointer sanity
@@ -503,7 +504,7 @@ const void *checkIndividualStandardHeap(const ChunkInfo *start)
         }
 
         // Sanity check size
-        if (currentChunk->size >= 0x1800000)
+        if (currentChunk->size > heapSize)
         {
             return currentChunk;
         }
@@ -522,7 +523,9 @@ const void *checkIndividualStandardHeap(const ChunkInfo *start)
 
 const void *checkIndividualSmartHeap(const SmartAllocationData *start)
 {
+    const uint32_t heapSize = reinterpret_cast<uint32_t>(heapEnd.pHeapSmart) - reinterpret_cast<uint32_t>(heapStart.pHeapSmart);
     const SmartAllocationData *prevChunk = nullptr;
+
     for (const SmartAllocationData *currentChunk = start; currentChunk; currentChunk = currentChunk->pNext)
     {
         // Check pointer sanity
@@ -532,7 +535,7 @@ const void *checkIndividualSmartHeap(const SmartAllocationData *start)
         }
 
         // Sanity check size
-        if (currentChunk->usedSize >= 0x1800000)
+        if (currentChunk->usedSize > heapSize)
         {
             return currentChunk;
         }
@@ -549,8 +552,16 @@ const void *checkIndividualSmartHeap(const SmartAllocationData *start)
     return nullptr;
 }
 
+#ifdef TTYD_JP
 const void *checkIndividualMapHeap(const MapAllocEntry *start)
+#else
+const void *checkIndividualMapHeap(const MapAllocEntry *start, uint32_t heapSize)
+#endif
 {
+#ifdef TTYD_JP
+    const uint32_t heapSize = reinterpret_cast<uint32_t>(heapEnd.pHeapMap) - reinterpret_cast<uint32_t>(heapStart.pHeapMap);
+#endif
+
     for (const MapAllocEntry *currentChunk = start; currentChunk; currentChunk = currentChunk->next)
     {
         // Check pointer sanity
@@ -560,7 +571,7 @@ const void *checkIndividualMapHeap(const MapAllocEntry *start)
         }
 
         // Sanity check size
-        if (currentChunk->size >= 0x1800000)
+        if (currentChunk->size > heapSize)
         {
             return currentChunk;
         }

@@ -1204,9 +1204,15 @@ class Displays
 
 extern Displays *gDisplays;
 
-const void *checkIndividualStandardHeap(const ChunkInfo *start);
+const void *checkIndividualStandardHeap(const ChunkInfo *start, uint32_t heapSize);
 const void *checkIndividualSmartHeap(const SmartAllocationData *start);
+
+#ifdef TTYD_JP
 const void *checkIndividualMapHeap(const MapAllocEntry *start);
+#else
+const void *checkIndividualMapHeap(const MapAllocEntry *start, uint32_t heapSize);
+#endif
+
 void checkForEnemyEncounters(void *ptr);
 int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
 void handleHitCheckVisualization();
