@@ -15,17 +15,25 @@ static void (*g_BattleEnd_trampoline)() = nullptr;
 
 static void battleHeapInit()
 {
-    // The heap info capacity for the battle heap needs to be -1 for OSCreateHeap to use it. Calling OSDestroyHeap to do this
-    // before allocating memory uses less instructions than manually setting the capacity to -1.
-    OSDestroyHeap(HeapType::HEAP_BATTLE);
-
     // Allocate the memory from the map heap to use for the battle heap
     void *battleHeapPtr = _mapAlloc(BATTLE_HEAP_ORIGINAL_SIZE);
     gBattleHeap = battleHeapPtr;
 
-    // Initialize the battle heap
-    const uint32_t battleHeapPtrRaw = reinterpret_cast<uint32_t>(battleHeapPtr);
-    OSCreateHeap(battleHeapPtr, reinterpret_cast<void *>(battleHeapPtrRaw + BATTLE_HEAP_ORIGINAL_SIZE));
+    // Initialize the battle heap without using `OSCreateHeap` to ensure that it doesn't try to make the heap in a different
+    // slot
+    ChunkInfo *battleFreeChunkPtr = reinterpret_cast<ChunkInfo *>(battleHeapPtr);
+    battleFreeChunkPtr->prev = nullptr;
+    battleFreeChunkPtr->next = nullptr;
+    battleFreeChunkPtr->size = BATTLE_HEAP_ORIGINAL_SIZE;
+
+    HeapInfo *battleHeapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
+    battleHeapInfoPtr->capacity = BATTLE_HEAP_ORIGINAL_SIZE;
+    battleHeapInfoPtr->firstFree = battleFreeChunkPtr;
+    battleHeapInfoPtr->firstUsed = nullptr;
+
+    // Initialize the `heapStart` and `heapEnd` variables to ensure that the Memory Usage display doesn't print false errors
+    heapStart.pHeapBattle = battleHeapPtr;
+    heapEnd.pHeapBattle = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(battleHeapPtr) + BATTLE_HEAP_ORIGINAL_SIZE);
 }
 
 static void battleEndHook()
@@ -37,20 +45,24 @@ static void battleEndHook()
     _mapFree(gBattleHeap);
     gBattleHeap = nullptr;
 
-    // Clear the heap info variables since the battle heap is no longer allocated. Not using OSDestroyHeap to clear the
-    // variables since that sets the capacity to -1, which would allow it to be modified by OSCreateHeap, and would also cause
+    // Clear the heap info variables since the battle heap is no longer allocated. Not using `OSDestroyHeap` to clear the
+    // variables since that sets the capacity to -1, which would allow it to be modified by `OSCreateHeap`, and would also cause
     // the Memory Usage display to display its total size as negative.
-    HeapInfo *heapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
-    heapInfoPtr->capacity = 0;
-    heapInfoPtr->firstFree = nullptr;
-    heapInfoPtr->firstUsed = nullptr;
+    HeapInfo *battleHeapInfoPtr = &HeapArray[HeapType::HEAP_BATTLE];
+    battleHeapInfoPtr->capacity = 0;
+    battleHeapInfoPtr->firstFree = nullptr;
+    battleHeapInfoPtr->firstUsed = nullptr;
+
+    // Clear the the `heapStart` and `heapEnd` variables to be safe
+    heapStart.pHeapBattle = nullptr;
+    heapEnd.pHeapBattle = nullptr;
 }
 
 static OSHeapHandle OSCreateHeapHook(void *start, void *end)
 {
-    // If start and/or end are nullptr, then the game is trying to create the battle heap in memInit. To prevent this, set the
-    // capacity for it to 0 to prevent it from being written to, and return HeapType::HEAP_BATTLE to make sure the proper handle
-    // is written to the heapHandle global variable.
+    // If start and/or end are nullptr, then the game is trying to create the battle heap in `memInit`. To prevent this, set the
+    // capacity for it to 0 to prevent it from being written to, and return `HeapType::HEAP_BATTLE` to make sure the proper
+    // handle is written to the `heapHandle` global variable.
     if (!start || !end)
     {
         HeapArray[HeapType::HEAP_BATTLE].capacity = 0;
@@ -71,16 +83,16 @@ void battleHeapVarsInit()
     const int32_t relUsedSize = *relUsedSizePtr - BATTLE_HEAP_ORIGINAL_SIZE;
     applyAssemblyPatch(relUsedSizePtr, static_cast<uint32_t>(relUsedSize));
 
-    // For replacing the memClear call in battle_init to create the battle heap
+    // For replacing the `memClear` call in battle_init to create the battle heap
     writeBranchBL(0x800726B4, battleHeapInit);
 
-    // For preventing memClear from being called when exiting a battle
+    // For preventing `memClear` from being called when exiting a battle
     applyAssemblyPatch(0x80072528, 0x60000000); // nop
 
     // For freeing the battle heap back to the map heap upon exiting a battle
     g_BattleEnd_trampoline = hookFunctionArena(BattleEnd, battleEndHook);
 
-    // For preventing OSCreateHeap from running if either the start or end parameters are nullptr, as this would occur when
+    // For preventing `OSCreateHeap` from running if either the start or end parameters are nullptr, as this would occur when
     // trying to create the battle heap
     g_OSCreateHeap_trampoline = hookFunctionArena(OSCreateHeap, OSCreateHeapHook);
 }
