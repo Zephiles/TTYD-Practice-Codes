@@ -228,18 +228,39 @@ static void drawBattlesActors()
     const Window *rootWindowPtr = gRootWindow;
 
     constexpr float scale = MENU_SCALE;
+    constexpr float lineDecrement = MENU_LINE_HEIGHT * scale;
+
+    char buf[16];
+    constexpr uint32_t bufSize = sizeof(buf);
     float tempPosX;
     float tempPosY;
 
-    if (highestIndex > BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE)
+    const bool multiplePages = highestIndex > BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
+    if (multiplePages)
     {
         // Draw the page as an int, to prevent long text if it somehow becomes negative
-        char buf[16];
-        snprintf(buf, sizeof(buf), "Page %" PRId32, currentPage + 1);
+        snprintf(buf, bufSize, "Page %" PRId32, currentPage + 1);
 
         rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
         drawText(buf, tempPosX, tempPosY, scale, getColorWhite(0xFF));
     }
+
+    // Draw the total amount of actors in the battle out of the maximum, excluding the System actor
+    // Draw the amounts as ints, to prevent long text if they somehow becomes negative
+    constexpr int32_t maxActors = sizeof(BattleWork::battle_units) / sizeof(BattleWork::battle_units[0]);
+    snprintf(buf, bufSize, "%" PRId32 "/%" PRId32, highestIndex, maxActors - 1);
+    rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
+
+    // Retrieve posY as a separate variable to avoid unnecessarily updating the temporary value thats stored on the stack
+    float posY = tempPosY;
+
+    if (multiplePages)
+    {
+        // Move the text down to be below the page count
+        posY -= lineDecrement;
+    }
+
+    drawText(buf, tempPosX, posY, scale, getColorWhite(0xFF));
 
     // Draw the actor texts
     // Get the position of the actor texts
@@ -247,12 +268,11 @@ static void drawBattlesActors()
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     float posX = tempPosX;
-    float posY = tempPosY;
+    posY = tempPosY;
 
     uint32_t indexStart = currentPage * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
     const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
     const uint32_t currentIndex = menuPtr->getCurrentIndex();
-    constexpr float lineDecrement = MENU_LINE_HEIGHT * scale;
     const char **battleActorsPtr = gBattleActors;
 
     for (uint32_t i = indexStart; i < (indexStart + BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE); i++)
