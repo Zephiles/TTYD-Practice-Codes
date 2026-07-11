@@ -54,27 +54,33 @@ static void exit()
     gBattlesMenu = nullptr;
 }
 
-static uint32_t getBattleActorsHighestIndex()
+static void getBattleHighestIndexAndTotalActors(BattlesMenuIndexAndActors *indexAndActorsPtr)
 {
     const uint32_t maxIndex = getbattlesMenuInitMaxIndex();
+    uint32_t highestIndex = 0;
+    uint32_t totalActors = 0;
 
-    uint32_t counter = 0;
     for (uint32_t i = 1; i <= maxIndex; i++) // Start at one to skip the System actor
     {
         if (getActorBattlePtr(i))
         {
-            counter++;
+            highestIndex = i;
+            totalActors++;
         }
     }
 
-    return counter;
+    indexAndActorsPtr->highestIndex = static_cast<uint8_t>(highestIndex);
+    indexAndActorsPtr->totalActors = static_cast<uint8_t>(totalActors);
 }
 
 static void dpadControls(Menu *menuPtr, MenuButtonInput button)
 {
-    int32_t highestIndex = static_cast<int32_t>(getBattleActorsHighestIndex());
+    // Get the highest index that is currently being used in the menu
+    BattlesMenuIndexAndActors indexAndActors;
+    getBattleHighestIndexAndTotalActors(&indexAndActors);
 
-    // Failsafe: Make sure highestIndex is valid
+    // Failsafe: Make sure the highest index is valid
+    int32_t highestIndex = static_cast<int32_t>(indexAndActors.highestIndex);
     if (highestIndex <= 0)
     {
         return;
@@ -90,9 +96,9 @@ static void dpadControls(Menu *menuPtr, MenuButtonInput button)
         {
             // Check to see if at the bottom of the current page
             const uint32_t firstIndexNextPage = (currentPage + 1) * BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
-            if (currentIndex == firstIndexNextPage - 1)
+            if (currentIndex == (firstIndexNextPage - 1))
             {
-                // Prevent going to the next page if there are no more free spaces
+                // Prevent going to the next page if there are no more used slots
                 if (highestIndex <= static_cast<int32_t>(firstIndexNextPage))
                 {
                     // Go to the first page
@@ -214,15 +220,12 @@ static void drawBattlesActors()
     // Initialize text drawing
     drawTextInit(false);
 
+    // Get the highest index that is currently being used in the menu as well as the total amount of actors currently in the
+    // battle
+    BattlesMenuIndexAndActors indexAndActors;
+    getBattleHighestIndexAndTotalActors(&indexAndActors);
+
     // Draw the page number at the top-right of the main window if there is more than one page
-    int32_t highestIndex = static_cast<int32_t>(getBattleActorsHighestIndex());
-
-    // Failsafe: Make sure highestIndex is valid
-    if (highestIndex < 0)
-    {
-        highestIndex = 0;
-    }
-
     const Menu *menuPtr = gMenu;
     const uint32_t currentPage = menuPtr->getCurrentPage();
     const Window *rootWindowPtr = gRootWindow;
@@ -235,7 +238,7 @@ static void drawBattlesActors()
     float tempPosX;
     float tempPosY;
 
-    const bool multiplePages = highestIndex > BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
+    const bool multiplePages = indexAndActors.highestIndex > BATTLES_SELECT_ACTOR_TOTAL_ACTORS_PER_PAGE;
     if (multiplePages)
     {
         // Draw the page as an int, to prevent long text if it somehow becomes negative
@@ -248,7 +251,7 @@ static void drawBattlesActors()
     // Draw the total amount of actors in the battle out of the maximum, excluding the System actor
     // Draw the amounts as ints, to prevent long text if they somehow becomes negative
     constexpr int32_t maxActors = sizeof(BattleWork::battle_units) / sizeof(BattleWork::battle_units[0]);
-    snprintf(buf, bufSize, "%" PRId32 "/%" PRId32, highestIndex, maxActors - 1);
+    snprintf(buf, bufSize, "%" PRId32 "/%" PRId32, static_cast<int32_t>(indexAndActors.totalActors), maxActors - 1);
     rootWindowPtr->getTextPosXY(buf, WindowAlignment::TOP_RIGHT, scale, &tempPosX, &tempPosY);
 
     // Retrieve posY as a separate variable to avoid unnecessarily updating the temporary value thats stored on the stack

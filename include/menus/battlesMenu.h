@@ -74,6 +74,12 @@ class BattlesMenu
     uint8_t currentActorIndex; // Index for the selected actor
 };
 
+struct BattlesMenuIndexAndActors
+{
+    uint8_t highestIndex;
+    uint8_t totalActors;
+};
+
 extern BattlesMenu *gBattlesMenu;
 extern const char *gBattleActors[TOTAL_BATTLE_UNIT_TYPES];
 
