@@ -1,9 +1,9 @@
 ## Credits
 * **PistonMiner** for their work on the TTYD scripting disassembly, the initial code for the rel framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
-* **Jdaster64** for their work on the Shufflizer. (GitHub repo for the Shufflizer [here](https://github.com/jdaster64/shufflizer).)
+* **Jdaster64** for their work on various projects, such as the [Shufflizer](https://github.com/jdaster64/shufflizer) and the [Tower of Trials](https://github.com/jdaster64/ttyd-tot).
 
 ## Overview
-These are practice codes that I have made for Paper Mario: The Thousand-Year Door. 
+This is a project that I have made for the GameCube version of Paper Mario: The Thousand-Year Door. It is the equivalent of a practice rom, but is loaded from the memory card rather than being applied to an iso.
 
 ## Download
 The latest release can be found on the [releases page](https://github.com/Zephiles/TTYD-Practice-Codes/releases).
