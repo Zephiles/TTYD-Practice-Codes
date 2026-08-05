@@ -1467,7 +1467,7 @@
 // 800DDDB4:SoundSSSetPanCh
 // 800DDF14:SoundSSContinueCh
 // 800DDF54:SoundSSFadeoutCh
-// 800DDFF8:SoundSSStopCh
+800DDFF8:SoundSSStopCh
 // 800DE104:SoundSSPlayChEx_main
 // 800DEAD0:SoundSSPlayChEx
 // 800DED7C:SoundSSPlayCh
@@ -1487,14 +1487,14 @@
 // 800E0ADC:SoundEfxGetVolume
 // 800E0AFC:SoundEfxSetVolume
 // 800E0BBC:SoundEfxSetPitch
-// 800E0C38:SoundEfxStop
+800E0C38:SoundEfxStop
 800E0CA0:SoundEfxPlayEx
 // 800E0F94:SoundSongCheck
 // 800E0FD4:SoundSongGetVolCh
 // 800E102C:SoundSongSetVolCh
 // 800E10B0:SoundSongFadeinCh
 // 800E1118:SoundSongFadeoutCh
-// 800E1188:SoundSongStopCh
+800E1188:SoundSongStopCh
 // 800E11E4:SoundSongContinueCh
 // 800E124C:SoundSongPlayCh
 // 800E1354:SoundCloseCover

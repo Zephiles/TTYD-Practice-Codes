@@ -430,54 +430,129 @@ class MemoryUsageDisplay
 class AMWCoordinateWriteAddressDisplay
 {
    public:
+    enum class FunctionCaller : uint8_t
+    {
+        SOUND_EFX_STOP = 0, // SoundEfxStop
+        SOUND_SS_STOP_CH,   // SoundSSStopCh
+        SOUND_SONG_STOP_CH, // SoundSongStopCh
+    };
+
     AMWCoordinateWriteAddressDisplay() {}
     ~AMWCoordinateWriteAddressDisplay() {}
 
-    static uint32_t getSoundEfxStopPtrRaw()
+    static uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {
         // Return the pointer value that would be used under vanilla scenarios
+        uint32_t vanillaPointerRaw = 0;
+
+#if (defined TTYD_JP) || (defined TTYD_US)
+        switch (funcCaller)
+        {
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+            {
 #ifdef TTYD_JP
-        constexpr uint32_t vanillaPointerRaw = 0x806E0640;
+                vanillaPointerRaw = 0x806E0640;
 #elif defined TTYD_US
-        constexpr uint32_t vanillaPointerRaw = 0x806EED40;
+                vanillaPointerRaw = 0x806EED40;
+#endif
+                break;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+            {
+#ifdef TTYD_JP
+                vanillaPointerRaw = 0x806E1E80;
+#elif defined TTYD_US
+                vanillaPointerRaw = 0x806F0580;
+#endif
+                break;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+            {
+#ifdef TTYD_JP
+                vanillaPointerRaw = 0x806E05E0;
+#elif defined TTYD_US
+                vanillaPointerRaw = 0x80679260;
+#endif
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
 #elif defined TTYD_EU
-        // One of two pointer values is used depending on different circumstances
-        constexpr uint32_t firstPointerValue = 0x8072FC60;
-        uint32_t vanillaPointerRaw;
+        // One of two pointer values will be used depending on different circumstances
+        auto getVanillaPointerRawFirstValue = [funcCaller]()
+        {
+            switch (funcCaller)
+            {
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+                {
+                    return 0x8072FC60;
+                }
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+                {
+                    return 0x807314A0;
+                }
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+                {
+                    return 0x806BA180;
+                }
+                default:
+                {
+                    return static_cast<uint32_t>(0);
+                }
+            }
+        };
 
         // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
         // OSGetResetCode does not return 0. Need to look into how to get around this.
         if (OSGetResetCode() == 0) // First boot
         {
             // First boot should always use the same pointer value
-            vanillaPointerRaw = firstPointerValue;
+            vanillaPointerRaw = getVanillaPointerRawFirstValue();
         }
         else if (_globalWorkPtr->framerate == 60)
         {
             // A different pointer value is used when the game was reset at least once and 60Hz was chosen
-            vanillaPointerRaw = 0x806FB860;
+            switch (funcCaller)
+            {
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+                {
+                    vanillaPointerRaw = 0x806FB860;
+                    break;
+                }
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+                {
+                    vanillaPointerRaw = 0x806FD0A0;
+                    break;
+                }
+                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+                {
+                    vanillaPointerRaw = 0x80685D80;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
         }
         else
         {
             // Assume 50Hz is being used, in which the first pointer value will still be used
-            vanillaPointerRaw = firstPointerValue;
+            vanillaPointerRaw = getVanillaPointerRawFirstValue();
         }
 #endif
         return vanillaPointerRaw;
     }
 
-    uint32_t init()
+    void init(uint32_t addressRaw, AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {
-        this->setTimer(sysMsec2Frame(5000));
-
-        float *marioCoordinateZPtr = &marioGetPtr()->playerPosition.z;
-        const uint32_t soundEfxStopPtrRaw = this->getSoundEfxStopPtrRaw();
-
-        const uint32_t addressRaw = soundEfxStopPtrRaw + (*reinterpret_cast<uint32_t *>(marioCoordinateZPtr) * 0x88);
-        this->coordinateZ = *marioCoordinateZPtr;
         this->addressWrittenToRaw = addressRaw;
-
-        return addressRaw;
+        this->functionCaller = funcCaller;
+        this->coordinateZ = marioGetPtr()->playerPosition.z;
+        this->setTimer(sysMsec2Frame(5000));
     }
 
     float getCoordinateZ() const { return this->coordinateZ; }
@@ -493,10 +568,13 @@ class AMWCoordinateWriteAddressDisplay
     uint32_t getTimer() const { return this->timer; }
     void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
 
+    AMWCoordinateWriteAddressDisplay::FunctionCaller getFunctionCaller() const { return this->functionCaller; }
+
    private:
     float coordinateZ;
     uint32_t addressWrittenToRaw;
     uint16_t timer;
+    AMWCoordinateWriteAddressDisplay::FunctionCaller functionCaller;
 };
 
 class EnemyEncounterNotifierDisplay

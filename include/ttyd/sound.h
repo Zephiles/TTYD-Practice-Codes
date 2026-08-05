@@ -3,6 +3,9 @@
 
 #include <cstdint>
 
+// Partially taken from the TTYD doldecomp repo:
+// https://github.com/doldecomp/ttyd/blob/main/include/sound.h
+
 extern "C"
 {
     // SoundAIDMACallback
@@ -18,7 +21,7 @@ extern "C"
     // SoundSSSetPanCh
     // SoundSSContinueCh
     // SoundSSFadeoutCh
-    // SoundSSStopCh
+    void SoundSSStopCh(int32_t chan);
     // SoundSSPlayChEx_main
     // SoundSSPlayChEx
     // SoundSSPlayCh
@@ -38,18 +41,14 @@ extern "C"
     // SoundEfxGetVolume
     // SoundEfxSetVolume
     // SoundEfxSetPitch
-    // SoundEfxStop
-
-    // Taken from NWPlayer123's decomp:
-    // https://github.com/NWPlayer123/PaperMario2/blob/master/include/sound.h
+    void SoundEfxStop(int32_t chan);
     int32_t SoundEfxPlayEx(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
-
     // SoundSongCheck
     // SoundSongGetVolCh
     // SoundSongSetVolCh
     // SoundSongFadeinCh
     // SoundSongFadeoutCh
-    // SoundSongStopCh
+    void SoundSongStopCh(int32_t chan);
     // SoundSongContinueCh
     // SoundSongPlayCh
     // SoundCloseCover

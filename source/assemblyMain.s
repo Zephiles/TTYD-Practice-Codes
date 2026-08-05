@@ -1,4 +1,4 @@
-########################################################################################
+################################################################################################################################
 # Fix Blooper crash
 
 .global asmFixBlooperCrash1
@@ -22,11 +22,11 @@ blr
 
 exitFunction:
 b (btlevtcmd_GetUnitWork + 0x6C)
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Fix `evt_map_blend_set_flag` crashes
 
 .global asmFixEvtMapBlendSetFlagPartnerCrashStart
@@ -57,11 +57,11 @@ cmpwi %r31,1
 
 asmFixEvtMapBlendSetFlagFollowerCrashBranchBack:
 b 0
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Prevent diary textbox selection
 
 .global asmPreventDiaryTextboxSelection
@@ -71,11 +71,11 @@ mr %r3,%r30 # currentText
 addi %r4,%r29,0x9C # storeAddress
 mr %r5,%r0 # selectedOption
 b cPreventDiaryTextboxOptionSelection
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Always show the `Mega Jump` and `Mega Hammer` moves in the battle menu
 
 .global asmDisplayMegaJumpBadgeInBattleMenu
@@ -117,11 +117,11 @@ lwz %r0,0x14(%sp)
 mtlr %r0
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Allow additional text commands to be used with `FontDrawMessageMtx`
 
 .global asmFontDrawMessageMtxHandleCommandStart
@@ -148,11 +148,11 @@ b 0
 returnedTrue:
 # Jump past the code that checks for vanilla commands
 b (FontDrawMessageMtx + 0x45C)
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Allow running from any battles
 
 .global asmAllowRunningFromBattlesStart
@@ -165,11 +165,11 @@ mr %r0,%r3
 
 asmAllowRunningFromBattlesBranchBack:
 b 0
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Force an enemy to drop a specific item
 
 .global asmForceNpcItemDrop
@@ -193,11 +193,11 @@ lwz %r0,0x14(%sp)
 mtlr %r0
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Cheat for falling through most objects
 
 .global asmFallThroughMostObjectsStandard
@@ -237,11 +237,11 @@ lwz %r0,0x14(%sp)
 mtlr %r0
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Replace jump fall animation
 
 .global asmReplaceJumpFallAnim
@@ -265,11 +265,11 @@ lwz %r3,0x14(%sp)
 mtlr %r3
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Display for hiding the D-Pad Options at the bottom-left of the screen
 
 .global asmDisableDPadOptionsDisplay
@@ -295,11 +295,11 @@ lwz %r0,0x14(%sp)
 mtlr %r0
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Disable the random fail chance when doing an AMW
 
 .global asmArbitraryMemoryWriteDisableRandomFail
@@ -325,29 +325,89 @@ lwz %r3,0x14(%sp)
 mtlr %r3
 addi %sp,%sp,0x10
 blr
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Get the proper vanilla pointer when doing an AMW
 
-.global asmArbitraryMemoryWriteGetProperPointerStart
-.global asmArbitraryMemoryWriteGetProperPointerBranchBack
+# Values should match the `AMWCoordinateWriteAddressDisplay::FunctionCaller` enum:
+# 0 -> SOUND_EFX_STOP
+# 1 -> SOUND_SS_STOP_CH
+# 2 -> SOUND_SONG_STOP_CH 
 
-asmArbitraryMemoryWriteGetProperPointerStart:
+.global asmAMWGetProperPointerSoundEfxStopStart
+.global asmAMWGetProperPointerSoundEfxStopBranchBack
+.global asmAMWGetProperPointerSoundSSStopChStart
+.global asmAMWGetProperPointerSoundSSStopChBranchBack
+.global asmAMWGetProperPointerSoundSongStopChStart
+.global asmAMWGetProperPointerSoundSongStopChBranchBack
+
+asmAMWGetProperPointerSoundEfxStopStart:
 # r3 already contains pointerRaw
 mr %r4,%r0 # multipliedIndex
+li %r5,0 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP
 bl cArbitraryMemoryWriteGetProperPointer
 mr %r31,%r3
 
-asmArbitraryMemoryWriteGetProperPointerBranchBack:
+# Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
+cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
+beq- SoundEfxStopInvalidPtr
+
+asmAMWGetProperPointerSoundEfxStopBranchBack:
 b 0
-########################################################################################
+
+SoundEfxStopInvalidPtr:
+# The resulting pointer added to the offset is invalid, so branch to the end of the function where the stack is popped
+b (SoundEfxStop + 0x54)
 
 
 
-########################################################################################
+asmAMWGetProperPointerSoundSSStopChStart:
+# r3 already contains pointerRaw
+mr %r4,%r0 # multipliedIndex
+li %r5,1 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH
+bl cArbitraryMemoryWriteGetProperPointer
+mr %r30,%r3
+
+# Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
+cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
+beq- SoundSSStopChInvalidPtr
+
+asmAMWGetProperPointerSoundSSStopChBranchBack:
+b 0
+
+SoundSSStopChInvalidPtr:
+# The resulting pointer added to the offset is invalid, so branch to the end of the function where the stack is popped
+b (SoundSSStopCh + 0xF4)
+
+
+
+asmAMWGetProperPointerSoundSongStopChStart:
+mr %r3,%r30 # pointerRaw
+mr %r4,%r31 # multipliedIndex
+li %r5,2 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH
+bl cArbitraryMemoryWriteGetProperPointer
+
+# r30 is supposed to be set to the vanilla pointer, so subtract the multiplied index from the returned pointer to get that
+sub %r30,%r3,%r31
+
+# Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
+cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
+beq- SoundSongStopChInvalidPtr
+
+asmAMWGetProperPointerSoundSongStopChBranchBack:
+b 0
+
+SoundSongStopChInvalidPtr:
+# The resulting pointer added to the offset is invalid, so branch to the end of the function where the stack is popped
+b (SoundSongStopCh + 0x44)
+################################################################################################################################
+
+
+
+################################################################################################################################
 # Cheat for handling `Tube Mode` storage
 
 .global asmHandleTubeModeStorage
@@ -379,11 +439,11 @@ blr
 tubeModeStorageActive:
 # Go past some additional checks that would check if Mario should enter Tube Mode at this time
 b (marioRollChgChk + 0x78)
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Allow jumping on water when the Bridge Skip display is enabled
 
 #ifdef TTYD_EU
@@ -402,11 +462,11 @@ asmJumpOnWaterBranchBack:
 b 0
 
 #endif
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Make the crash screen to scroll
 
 #ifdef TTYD_JP
@@ -422,11 +482,11 @@ asmCrashScreenDecrementYPosBranchBack:
 b 0
 
 #endif
-########################################################################################
+################################################################################################################################
 
 
 
-########################################################################################
+################################################################################################################################
 # Update the time register with a new time
 
 .global asmSetTime
@@ -440,4 +500,4 @@ mtspr 284,%r0
 mtspr 285,%r3
 mtspr 284,%r4
 blr
-########################################################################################
+################################################################################################################################

@@ -3536,14 +3536,43 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
     // Initialize text drawing
     drawTextInit(true);
 
-    // Get the text
-    char buf[64];
+    // Get the text for which function was called to trigger this display
     Displays *displaysPtr = gDisplays;
     AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
 
+    const char *funcCaller;
+    switch (amwCoordinateWriteAddressPtr->getFunctionCaller())
+    {
+        case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+        {
+            funcCaller = "SoundEfxStop";
+            break;
+        }
+        case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+        {
+            funcCaller = "SoundSSStopCh";
+            break;
+        }
+        case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+        {
+            funcCaller = "SoundSongStopCh";
+            break;
+        }
+        default:
+        {
+            // In case something goes wrong, just use the original Coordinate text
+            funcCaller = "Coordinate";
+            break;
+        }
+    }
+
+    // Get the main text
+    char buf[64];
+
     snprintf(buf,
              sizeof(buf),
-             "Coordinate 0x%08" PRIX32 " writes to 0x%08" PRIX32,
+             "%s: 0x%08" PRIX32 " -- 0x%08" PRIX32,
+             funcCaller,
              amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
              amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
 

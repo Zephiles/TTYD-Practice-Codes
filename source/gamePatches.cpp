@@ -172,19 +172,36 @@ uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags)
         return flags;
     }
 
-    // Return 0 to force the branch to always be taken, thus disabling the random chance for the glitch to fail
+    // Return 0 to force the branch to always be taken, thus disabling the random chance for the trick to fail
     return 0;
 }
 
-uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw, uint32_t multipliedIndex)
+uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw,
+                                               uint32_t multipliedIndex,
+                                               AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
 {
     if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         // Use the pointer value that would be used under vanilla scenarios
-        pointerRaw = AMWCoordinateWriteAddressDisplay::getSoundEfxStopPtrRaw();
+        pointerRaw = multipliedIndex + AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(funcCaller);
+
+        // Successfully performed the trick, so initialize drawing the text for the coordinate and the address written to
+        gDisplays->getAMWCoordinateWriteAddressDisplayPtr()->init(pointerRaw, funcCaller);
+
+        // If the address written to is invalid, then return -1 to not allow the function to run, as otherwise it will result in
+        // a crash
+        if (!ptrIsValid(pointerRaw))
+        {
+            return static_cast<uint32_t>(-1);
+        }
+    }
+    else
+    {
+        // Assume the original functionality is to add the pointer and offset together
+        pointerRaw += multipliedIndex;
     }
 
-    return pointerRaw + multipliedIndex;
+    return pointerRaw;
 }
 
 bool cHandleTubeModeStorage()
@@ -560,15 +577,6 @@ void psndSFXOff_Work(int32_t flags)
         return g_psndSFXOff_trampoline(flags);
     }
 
-    // Successfully performed the trick, so initialize drawing the text for the coordinate and the address written to
-    const uint32_t addressWrittenToRaw = gDisplays->getAMWCoordinateWriteAddressDisplayPtr()->init();
-
-    // If the address written to is invalid, then don't allow the original code to run, as otherwise it will result in a crash
-    if (!ptrIsValid(reinterpret_cast<uint32_t *>(addressWrittenToRaw)))
-    {
-        return;
-    }
-
     // Set the flag to indicate that the glitch is being performed
     Mod *modPtr = gMod;
     modPtr->setFlag(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE);
@@ -815,7 +823,7 @@ void applyVariousGamePatches()
 
     writeBranchBL(initStageEventsAddress, initStageEvents);
 
-    // Allow disabling the random fail chance for the Arbitrary Memory Write glitch
+    // Disable the random fail chance for the Arbitrary Memory Write glitch
 #ifdef TTYD_US
     constexpr uint32_t psndSFXOffAddress = 0x800D963C;
 #elif defined TTYD_JP
@@ -826,18 +834,33 @@ void applyVariousGamePatches()
 
     writeBranchBL(psndSFXOffAddress, asmArbitraryMemoryWriteDisableRandomFail);
 
-    // Get the proper pointer value that the vanilla game would use for the Arbitrary Memory Write glitch
+    // Get the proper pointer value that the vanilla game would use for the Arbitrary Memory Write glitch in the functions
+    // `SoundEfxStop`, `SoundSSStopCh`, and `SoundSongStopCh`
 #ifdef TTYD_US
     constexpr uint32_t SoundEfxStopAddress = 0x800E0C58;
+    constexpr uint32_t SoundSSStopChAddress = 0x800DE01C;
+    constexpr uint32_t SoundSongStopChAddress = 0x800E11AC;
 #elif defined TTYD_JP
     constexpr uint32_t SoundEfxStopAddress = 0x800DC560;
+    constexpr uint32_t SoundSSStopChAddress = 0x800D9954;
+    constexpr uint32_t SoundSongStopChAddress = 0x800DCAB4;
 #elif defined TTYD_EU
     constexpr uint32_t SoundEfxStopAddress = 0x800E1A54;
+    constexpr uint32_t SoundSSStopChAddress = 0x800DEE18;
+    constexpr uint32_t SoundSongStopChAddress = 0x800E1FA8;
 #endif
 
     writeStandardBranches(SoundEfxStopAddress,
-                          asmArbitraryMemoryWriteGetProperPointerStart,
-                          asmArbitraryMemoryWriteGetProperPointerBranchBack);
+                          asmAMWGetProperPointerSoundEfxStopStart,
+                          asmAMWGetProperPointerSoundEfxStopBranchBack);
+
+    writeStandardBranches(SoundSSStopChAddress,
+                          asmAMWGetProperPointerSoundSSStopChStart,
+                          asmAMWGetProperPointerSoundSSStopChBranchBack);
+
+    writeStandardBranches(SoundSongStopChAddress,
+                          asmAMWGetProperPointerSoundSongStopChStart,
+                          asmAMWGetProperPointerSoundSongStopChBranchBack);
 }
 
 void applyCheatAndDisplayInjects()

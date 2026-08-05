@@ -1,6 +1,7 @@
 #ifndef ASSEMBLY_H
 #define ASSEMBLY_H
 
+#include "displays.h"
 #include "gc/types.h"
 #include "ttyd/party.h"
 
@@ -39,8 +40,12 @@ extern "C"
 
     void asmArbitraryMemoryWriteDisableRandomFail();
 
-    void asmArbitraryMemoryWriteGetProperPointerStart();
-    void asmArbitraryMemoryWriteGetProperPointerBranchBack();
+    void asmAMWGetProperPointerSoundEfxStopStart();
+    void asmAMWGetProperPointerSoundEfxStopBranchBack();
+    void asmAMWGetProperPointerSoundSSStopChStart();
+    void asmAMWGetProperPointerSoundSSStopChBranchBack();
+    void asmAMWGetProperPointerSoundSongStopChStart();
+    void asmAMWGetProperPointerSoundSongStopChBranchBack();
 
     void asmHandleTubeModeStorage();
 
@@ -84,7 +89,10 @@ extern "C"
 #endif
 
     uint32_t cArbitraryMemoryWriteDisableRandomFail(uint32_t flags);
-    uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw, uint32_t multipliedIndex);
+
+    uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw,
+                                                   uint32_t multipliedIndex,
+                                                   AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller);
 
     bool cHandleTubeModeStorage();
 
