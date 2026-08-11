@@ -389,7 +389,7 @@ b (SoundSSStopCh + 0xF4)
 
 
 asmAMWGetProperPointerSoundSongStopChStart:
-mr %r3,%r30 # pointerRaw
+lwz %r3,0xF0(%r3) # pointerRaw
 mr %r4,%r31 # multipliedIndex
 li %r5,2 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH
 bl cArbitraryMemoryWriteGetProperPointer
@@ -398,12 +398,9 @@ bl cArbitraryMemoryWriteGetProperPointer
 cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
 beq- SoundSongStopChInvalidPtr
 
-# At this point the pointer is considered valid, so update specific registers:
-# r30 is supposed to be set to the vanilla pointer, so subtract the multiplied index from the returned pointer to get that
+# At this point the pointer is considered valid, so r30 needs to be set to the vanilla pointer, so subtract the
+# multiplied index from the returned pointer to get that
 sub %r30,%r3,%r31
-
-# r3 is supposed to be set to the four bytes that are at the returned pointer
-lwz %r3,0(%r3)
 
 asmAMWGetProperPointerSoundSongStopChBranchBack:
 b 0

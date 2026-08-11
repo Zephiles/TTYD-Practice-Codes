@@ -839,15 +839,15 @@ void applyVariousGamePatches()
 #ifdef TTYD_US
     constexpr uint32_t SoundEfxStopAddress = 0x800E0C58;
     constexpr uint32_t SoundSSStopChAddress = 0x800DE01C;
-    constexpr uint32_t SoundSongStopChAddress = 0x800E11AC;
+    constexpr uint32_t SoundSongStopChAddress = 0x800E11A8;
 #elif defined TTYD_JP
     constexpr uint32_t SoundEfxStopAddress = 0x800DC560;
     constexpr uint32_t SoundSSStopChAddress = 0x800D9954;
-    constexpr uint32_t SoundSongStopChAddress = 0x800DCAB4;
+    constexpr uint32_t SoundSongStopChAddress = 0x800DCAB0;
 #elif defined TTYD_EU
     constexpr uint32_t SoundEfxStopAddress = 0x800E1A54;
     constexpr uint32_t SoundSSStopChAddress = 0x800DEE18;
-    constexpr uint32_t SoundSongStopChAddress = 0x800E1FA8;
+    constexpr uint32_t SoundSongStopChAddress = 0x800E1FA4;
 #endif
 
     writeStandardBranches(SoundEfxStopAddress,
