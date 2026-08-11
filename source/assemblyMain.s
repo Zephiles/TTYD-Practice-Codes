@@ -349,11 +349,13 @@ asmAMWGetProperPointerSoundEfxStopStart:
 mr %r4,%r0 # multipliedIndex
 li %r5,0 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP
 bl cArbitraryMemoryWriteGetProperPointer
-mr %r31,%r3
 
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
 cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
 beq- SoundEfxStopInvalidPtr
+
+# At this point the pointer is considered valid, so r31 needs to be set to the returned pointer
+mr %r31,%r3
 
 asmAMWGetProperPointerSoundEfxStopBranchBack:
 b 0
@@ -369,11 +371,13 @@ asmAMWGetProperPointerSoundSSStopChStart:
 mr %r4,%r0 # multipliedIndex
 li %r5,1 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH
 bl cArbitraryMemoryWriteGetProperPointer
-mr %r30,%r3
 
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
 cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
 beq- SoundSSStopChInvalidPtr
+
+# At this point the pointer is considered valid, so r30 needs to be set to the returned pointer
+mr %r30,%r3
 
 asmAMWGetProperPointerSoundSSStopChBranchBack:
 b 0
@@ -390,12 +394,16 @@ mr %r4,%r31 # multipliedIndex
 li %r5,2 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH
 bl cArbitraryMemoryWriteGetProperPointer
 
-# r30 is supposed to be set to the vanilla pointer, so subtract the multiplied index from the returned pointer to get that
-sub %r30,%r3,%r31
-
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
 cmpwi %r3,-1 # Can only ever be this value if the resulting pointer is invalid
 beq- SoundSongStopChInvalidPtr
+
+# At this point the pointer is considered valid, so update specific registers:
+# r30 is supposed to be set to the vanilla pointer, so subtract the multiplied index from the returned pointer to get that
+sub %r30,%r3,%r31
+
+# Restore the overwritten instruction to properly set r3
+lwzx %r3,%r30,%r31
 
 asmAMWGetProperPointerSoundSongStopChBranchBack:
 b 0
