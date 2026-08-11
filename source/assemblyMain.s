@@ -402,8 +402,8 @@ beq- SoundSongStopChInvalidPtr
 # r30 is supposed to be set to the vanilla pointer, so subtract the multiplied index from the returned pointer to get that
 sub %r30,%r3,%r31
 
-# Restore the overwritten instruction to properly set r3
-lwzx %r3,%r30,%r31
+# r3 is supposed to be set to the four bytes that are at the returned pointer
+lwz %r3,0(%r3)
 
 asmAMWGetProperPointerSoundSongStopChBranchBack:
 b 0
