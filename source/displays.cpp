@@ -45,6 +45,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cinttypes>
+#include <bit>
 
 Displays *gDisplays = nullptr;
 
@@ -1095,24 +1096,23 @@ static void drawMarioCoordinates(float posX, float posY, float scale)
 {
     // Set up the text
     const Player *playerPtr = marioGetPtr();
-    const Vec3 *marioPosPtrVec = &playerPtr->playerPosition;
+    const Vec3 *marioPosPtr = &playerPtr->playerPosition;
 
     char buf[128];
     constexpr uint32_t bufSize = sizeof(buf);
 
     if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX))
     {
-        const uint32_t *marioPosPtrRaw = reinterpret_cast<const uint32_t *>(marioPosPtrVec);
         snprintf(buf,
                  bufSize,
                  "MarPos: %08" PRIX32 " %08" PRIX32 " %08" PRIX32,
-                 marioPosPtrRaw[0],
-                 marioPosPtrRaw[1],
-                 marioPosPtrRaw[2]);
+                 std::bit_cast<uint32_t>(marioPosPtr->x),
+                 std::bit_cast<uint32_t>(marioPosPtr->y),
+                 std::bit_cast<uint32_t>(marioPosPtr->z));
     }
     else
     {
-        snprintf(buf, bufSize, "MarPos: %.2f  %.2f  %.2f", marioPosPtrVec->x, marioPosPtrVec->y, marioPosPtrVec->z);
+        snprintf(buf, bufSize, "MarPos: %.2f  %.2f  %.2f", marioPosPtr->x, marioPosPtr->y, marioPosPtr->z);
     }
 
     // Draw the text
@@ -2648,7 +2648,7 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
                           &data);
 
     // If the flag for adjusting the texts' color is set, then get the color to use for the X and Z coordinates
-    const uint32_t *marioPosPtr = reinterpret_cast<const uint32_t *>(&marioGetPtr()->playerPosition);
+    const Vec3 *marioPosPtr = &marioGetPtr()->playerPosition;
     uint32_t posXColor = getColorWhite(0xFF);
     uint32_t posZColor = getColorWhite(0xFF);
 
@@ -2658,8 +2658,8 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
     {
         if (compareStringToNextMap("aji_13")) // X-Naut Fortress - Factory Room
         {
-            const uint32_t marioPosX = marioPosPtr[0];
-            const uint32_t marioPosZ = marioPosPtr[2];
+            const uint32_t marioPosX = std::bit_cast<uint32_t>(marioPosPtr->x);
+            const uint32_t marioPosZ = std::bit_cast<uint32_t>(marioPosPtr->z);
 
             // Need to do 0x425A06E3 comparison first or it breaks for some reason
             if (marioPosZ == 0x425A06E3)
@@ -2718,7 +2718,7 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
         }
         else if (compareStringToNextMap("mri_20")) // The Great Tree - AMW Room
         {
-            const uint32_t marioPosZ = marioPosPtr[2];
+            const uint32_t marioPosZ = std::bit_cast<uint32_t>(marioPosPtr->z);
 
             if (marioPosZ == 0xC25A5307)
             {
@@ -2752,9 +2752,9 @@ static void drawArbitraryMemoryWrite(CameraId cameraId, void *user)
              spinJumpTimer,
 #endif
              posXColor,
-             marioPosPtr[0],
+             std::bit_cast<uint32_t>(marioPosPtr->x),
              posZColor,
-             marioPosPtr[2]);
+             std::bit_cast<uint32_t>(marioPosPtr->z));
 
     // Properly position the text
     float posY = data.getPosY();
@@ -2811,10 +2811,10 @@ void handleAjustXNautPosition(Displays *displaysPtr)
     const Player *marioPtr = marioGetPtr();
     Vec3 *xNautPosPtr = &xNautPtr->position;
     const Vec3 *marioPosPtr = &marioPtr->playerPosition;
-    const uint32_t *marioPosZPtr = reinterpret_cast<const uint32_t *>(&marioPosPtr->z);
     ArbitraryMemoryWriteDisplay *amwDisplayPtr = displaysPtr->getArbitraryMemoryWriteDisplayPtr();
 
-    if ((*marioPosZPtr == 0xC25A06E3) && (marioPtr->currentMotionId != MarioMotion::kSlit))
+    const uint32_t marioPosZHex = std::bit_cast<uint32_t>(marioPosPtr->z);
+    if ((marioPosZHex == 0xC25A06E3) && (marioPtr->currentMotionId != MarioMotion::kSlit))
     {
         // If the X-Naut is currently in the bottom-left corner, then move them close to the player a random Z coordinate, in
         // which the base coordinate is 0 with it being up to 100 units forwards or backwards

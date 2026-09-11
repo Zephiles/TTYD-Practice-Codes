@@ -33,6 +33,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cinttypes>
+#include <bit>
 
 uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr)
 {
@@ -709,8 +710,7 @@ void applyVariousGamePatches()
 #else
     constexpr float newTextSize = 0.66f;
 #endif
-    const ValueType *newTextSizePtr = reinterpret_cast<const ValueType *>(&newTextSize);
-    applyAssemblyPatch(crasheScreenTextSizeAddress, newTextSizePtr->u32);
+    applyAssemblyPatch(crasheScreenTextSizeAddress, std::bit_cast<uint32_t>(newTextSize));
 
     // Make the crash screen scroll and loop back around once it has gone offscreen
 #ifdef TTYD_US

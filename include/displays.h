@@ -25,6 +25,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <bit>
 
 #define DISPLAYS_DEFAULT_POS_X_LEFT -233.f
 #define DISPLAYS_DEFAULT_POS_X_RIGHT 233.f
@@ -556,12 +557,7 @@ class AMWCoordinateWriteAddressDisplay
     }
 
     float getCoordinateZ() const { return this->coordinateZ; }
-
-    uint32_t getCoordinateZRaw() const
-    {
-        const uint32_t *coordinateZRawPtr = reinterpret_cast<const uint32_t *>(&this->coordinateZ);
-        return *coordinateZRawPtr;
-    }
+    uint32_t getCoordinateZRaw() const { return std::bit_cast<uint32_t>(this->coordinateZ); }
 
     uint32_t getAddressWrittenToRaw() const { return this->addressWrittenToRaw; }
 
