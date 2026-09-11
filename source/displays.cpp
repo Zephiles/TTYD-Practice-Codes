@@ -3571,7 +3571,7 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
 
     snprintf(buf,
              sizeof(buf),
-             "%s: 0x%08" PRIX32 " -- 0x%08" PRIX32,
+             "%s: 0x%08" PRIX32 " writes to 0x%08" PRIX32,
              funcCaller,
              amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
              amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
