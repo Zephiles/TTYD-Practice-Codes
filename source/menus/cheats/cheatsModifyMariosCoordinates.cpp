@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cinttypes>
+#include <bit>
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionModifyAsHex(Menu *menuPtr);
@@ -201,9 +202,11 @@ static void selectedOptionModifyCoordinate(Menu *menuPtr)
         flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
     }
 
-    // Dirty trick to pass in the float as a u32
-    ValueType value;
-    value.f32 = coordinatesPtr[currentIndex];
-
-    cheatsMenuInitValueEditor(value.u32, 0, 0, flags, VariableType::f32, false, setNewCoordinate);
+    cheatsMenuInitValueEditor(std::bit_cast<uint32_t>(coordinatesPtr[currentIndex]),
+                              0,
+                              0,
+                              flags,
+                              VariableType::f32,
+                              false,
+                              setNewCoordinate);
 }

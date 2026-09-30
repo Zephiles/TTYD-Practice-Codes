@@ -137,14 +137,7 @@ static void flagsControls(Menu *menuPtr, MenuButtonInput button)
                 {
                     case ManageFlagsOptions::MANAGE_FLAGS_GSWF:
                     {
-                        if (swGet(flagVariableToSet))
-                        {
-                            swClear(flagVariableToSet);
-                        }
-                        else
-                        {
-                            swSet(flagVariableToSet);
-                        }
+                        toggleGSWF(flagVariableToSet);
                         break;
                     }
                     case ManageFlagsOptions::MANAGE_FLAGS_GF:
@@ -154,14 +147,7 @@ static void flagsControls(Menu *menuPtr, MenuButtonInput button)
                     }
                     case ManageFlagsOptions::MANAGE_FLAGS_LSWF:
                     {
-                        if (_swGet(flagVariableToSet))
-                        {
-                            _swClear(flagVariableToSet);
-                        }
-                        else
-                        {
-                            _swSet(flagVariableToSet);
-                        }
+                        toggleLSWF(flagVariableToSet);
                         break;
                     }
                     default:
@@ -587,6 +573,30 @@ void toggleGF(uint32_t gf)
 {
     EvtWork *evtWorkPtr = evtGetWork();
     TOGGLE_FLAG(evtWorkPtr->gfData, gf);
+}
+
+void toggleGSWF(uint32_t gswf)
+{
+    if (swGet(gswf))
+    {
+        swClear(gswf);
+    }
+    else
+    {
+        swSet(gswf);
+    }
+}
+
+void toggleLSWF(uint32_t lswf)
+{
+    if (_swGet(lswf))
+    {
+        _swClear(lswf);
+    }
+    else
+    {
+        _swSet(lswf);
+    }
 }
 
 uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag)

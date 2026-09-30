@@ -62,7 +62,7 @@ class MarioCharacterSelector: private OptionSelector
     /**
      * Converts Mario's current character id to a value from the `MarioCharacterSelectorIndex` enum.
      *
-     * @returns A value from `MarioCharacterSelectorIndex` enum if the character id is valid, otherwise `-1`.
+     * @returns A value from the `MarioCharacterSelectorIndex` enum if the character id is valid, otherwise `-1`.
      */
     static int32_t marioCharacterIdToIndex();
 

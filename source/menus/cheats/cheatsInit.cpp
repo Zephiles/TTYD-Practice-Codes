@@ -93,6 +93,9 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Simulate AMW - Mario Walk On Air",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
+    "Glitz Pit Manager",
+    cheatsMenuGlitzPitManagerInit,
+
     "Bobbery Early",
     cheatsMenuGenericNoButtonComboInit,
 

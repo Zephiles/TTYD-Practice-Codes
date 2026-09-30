@@ -13,7 +13,7 @@
 /**
  * Callback function pointer for when the player selects a memory watch type.
  *
- * @param type The memory watch type was selected.
+ * @param type The memory watch type that was selected.
  */
 typedef void (*MemoryWatchTypeSelectorSetTypeFunc)(VariableType type);
 

@@ -3521,3 +3521,11 @@
 // ppc
 // data
 CC008000:writeGatherPipe
+
+// tou.o
+0x19,1,0x2050:tou_rankingControll
+0x19,5,0x828:tou_rank_wp
+
+// tou2.o
+0x1A,1,0x41C0:tou2_rankingControll
+0x1A,5,0x16D70:tou2_rank_wp

@@ -3,6 +3,8 @@
 #include "menus/cheatsMenu.h"
 #include "ttyd/camdrv.h"
 
+#include <cstdint>
+
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
 

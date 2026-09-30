@@ -5,6 +5,8 @@
 #include "classes/buttonComboEditor.h"
 #include "classes/confirmationWindow.h"
 #include "classes/errorWindow.h"
+#include "classes/glitzPitOpponentSelector.h"
+#include "classes/glitzPitConditionSelector.h"
 #include "classes/menu.h"
 
 #include <cstdint>
@@ -44,6 +46,7 @@ enum CheatsMenuOptions
     CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE,
     CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION,
     CHEATS_MENU_SIMULATE_AMW_MARIO_WALK_ON_AIR,
+    CHEATS_MENU_GLITZ_PIT_MANAGER,
     CHEATS_MENU_BOBBERY_EARLY,
     CHEATS_MENU_DISABLE_MENU_SOUNDS,
     CHEATS_MENU_FORCE_NPC_ITEM_DROP,
@@ -134,6 +137,8 @@ class CheatsMenu
     ValueEditor *getValueEditorPtr() { return &this->valueEditor; }
     ButtonComboEditor *getButtonComboEditorPtr() { return &this->buttonComboEditor; }
     ConfirmationWindow *getConfirmationWindowPtr() { return &this->confirmationWindow; }
+    GlitzPitOpponentSelector *getGlitzPitOpponentSelectorPtr() { return &this->glitzPitOpponentSelector; }
+    GlitzPitConditionSelector *getGlitzPitConditionSelectorPtr() { return &this->glitzPitConditionSelector; }
     ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     MenuAutoIncrement *getAutoIncrementPtr() { return &this->autoIncrement; }
@@ -155,6 +160,8 @@ class CheatsMenu
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;
     ConfirmationWindow confirmationWindow;
+    GlitzPitOpponentSelector glitzPitOpponentSelector;
+    GlitzPitConditionSelector glitzPitConditionSelector;
     ErrorWindow errorWindow;
 
     MenuAutoIncrement autoIncrement;
@@ -223,6 +230,9 @@ void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
 // cheatsSimulateArbitraryMemoryWrite
 void cheatsMenuSimulateArbitraryMemoryWriteInit(Menu *menuPtr);
 
+// cheatsGlitzPitManager
+void cheatsMenuGlitzPitManagerInit(Menu *menuPtr);
+
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);
 
@@ -231,12 +241,10 @@ void cheatsMenuForceNpcItemDropInit(Menu *menuPtr);
 
 // cheatsResolveFades
 void cheatsMenuResolveFadesInit(Menu *menuPtr);
-
 ResolveFadeReturnValue resolveFade(uint32_t index);
 
 // cheatsLockFlags
 void cheatsMenuLockFlagsInit(Menu *menuPtr);
-
 void getLockFlagsRegionPtrAndSize(uint32_t region, void **ptr, uint32_t *size);
 
 // cheatsManageFlags
@@ -246,6 +254,8 @@ uint32_t getGW(uint32_t gw);
 void setGW(uint32_t gw, uint32_t value);
 bool getGF(uint32_t gf);
 void toggleGF(uint32_t gf);
+void toggleGSWF(uint32_t gswf);
+void toggleLSWF(uint32_t lswf);
 uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag);
 
 // cheatsClearAreaFlags

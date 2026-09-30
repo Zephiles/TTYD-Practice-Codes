@@ -2,6 +2,7 @@
 #define MOD_H
 
 #include "misc/utils.h"
+#include "ttyd/rel/tou.h"
 #include "ttyd/mapdata.h"
 
 #include <cstdint>
@@ -36,7 +37,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.2.4-dev6"
+#define VERSION_STRING "v4.2.4-dev7"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -109,6 +110,28 @@ enum ModSaveFlag
 
 #define TOTAL_MOD_SAVE_FLAGS ModSaveFlag::MOD_SAVE_FLAG_MAX_VALUE
 #define MOD_SAVE_FLAGS_ARRAY_SIZE intCeil(TOTAL_MOD_SAVE_FLAGS, sizeof(uint32_t) * 8)
+
+class GlitzPitVariables
+{
+   public:
+    typedef void (*RankingControllFunc)();
+
+    GlitzPitVariables();
+    ~GlitzPitVariables() {}
+
+    RankingData *getRankWorkPtr() const { return this->rankWorkPtr; }
+    RankingControllFunc getRankingControllFuncPtr() const { return this->rankingControllFuncPtr; }
+    uint32_t getMarioRank() { return this->marioRank; }
+    bool playerIsInGlitzville() const { return this->inGlitzville; }
+    bool playerIsInArenaRoom() const { return this->inArenaRoom; }
+
+   private:
+    RankingData *rankWorkPtr;
+    RankingControllFunc rankingControllFuncPtr;
+    uint8_t marioRank;
+    bool inGlitzville;
+    bool inArenaRoom;
+};
 
 class WarpByEvent
 {
