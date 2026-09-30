@@ -166,19 +166,18 @@ static void selectedOptionSelectEvent(Menu *menuPtr)
     (void)menuPtr;
 
     // Initialize the value editor
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
+    const uint32_t maxValue = getTotalStageEvents() - 1;
 
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_WARP_BY_EVENT_DETAILS);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_WARP_BY_EVENT_DETAILS);
 
-    const uint32_t currentValue = gMod->getWarpByEventPtr()->getIndex();
-    const uint32_t maxValue = getTotalStageEvents() - 1;
     constexpr uint32_t minValue = 0;
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = gWarpsMenu->getValueEditorPtr();
+    const uint32_t currentValue = gMod->getWarpByEventPtr()->getIndex();
 
     valueEditorPtr
         ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::u16, rootWindowPtr->getAlpha());

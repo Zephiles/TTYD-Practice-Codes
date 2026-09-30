@@ -229,16 +229,14 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
                 }
 
                 // Initialize the value editor
-                ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();
-
                 uint32_t flags = 0;
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
                 if (minValue < 0)
                 {
-                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
+                    flags = ValueEditor::setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
                 }
 
                 const Window *rootWindowPtr = gRootWindow;

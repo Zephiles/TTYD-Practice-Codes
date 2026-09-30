@@ -408,15 +408,13 @@ static void selectedOptionChangeWindowColor(Menu *menuPtr)
     (void)menuPtr;
 
     // Initialize the value editor
-    SettingsMenu *settingsMenuPtr = gSettingsMenu;
-    ValueEditor *valueEditorPtr = settingsMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
-    const uint32_t currentValue = gRootWindow->getColor();
     const Window *rootWindowPtr = gRootWindow;
+    const uint32_t currentValue = rootWindowPtr->getColor();
+    ValueEditor *valueEditorPtr = gSettingsMenu->getValueEditorPtr();
 
     valueEditorPtr->init(&currentValue, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(setWindowColor, cancelSetWindowColor);

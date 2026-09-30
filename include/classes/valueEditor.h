@@ -233,7 +233,7 @@ class ValueEditor
      *
      * @returns The updated `flags` parameter value.
      */
-    uint32_t setFlag(uint32_t flags, uint32_t flag)
+    static uint32_t setFlag(uint32_t flags, uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t maxFlags = sizeof(flags) * 8;

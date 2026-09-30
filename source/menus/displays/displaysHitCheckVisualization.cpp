@@ -223,12 +223,9 @@ static void changeColor(const ValueType *valuePtr)
 static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
 {
     // Initialize the value editor
-    DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
-    ValueEditor *valueEditorPtr = displaysMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
     const HitCheckVisualizationDisplay *hitCheckVisualizationDisplayPtr = gDisplays->getHitCheckVisualizationDisplayPtr();
     uint32_t currentColor;
@@ -244,6 +241,8 @@ static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
     }
 
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = gDisplaysMenu->getValueEditorPtr();
+
     valueEditorPtr->init(&currentColor, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(changeColor, cancelChangeColor);
 }

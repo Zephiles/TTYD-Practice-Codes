@@ -233,22 +233,23 @@ static void selectedOptionChangeValue(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();
     VariableType type = VariableType::s16;
 
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     if (index == StatsBattlesStatsOptions::BATTLES_STATS_ACTOR_CHANGE_HELD_ITEM)
     {
         type = VariableType::s32;
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::BATTLES_CHANGE_HELD_ITEM);
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::BATTLES_CHANGE_HELD_ITEM);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
     }
 
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = battlesMenuPtr->getValueEditorPtr();
+
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(changeValue, battlesMenuCancelChangeValue);
 }

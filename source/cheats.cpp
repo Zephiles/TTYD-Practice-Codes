@@ -1391,10 +1391,10 @@ static void spawnItem(Cheats *cheatsPtr, Mod *modPtr)
                 valueEditorPtr = spawnItemCheatPtr->allocMemoryForValueEditor();
 
                 uint32_t flags = 0;
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
                 const Window *rootWindowPtr = gRootWindow;
                 const int32_t minValue = static_cast<int32_t>(ItemId::ITEM_STRANGE_SACK);

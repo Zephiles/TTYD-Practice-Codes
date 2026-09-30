@@ -752,11 +752,11 @@ void MemoryEditor::controls(MenuButtonInput button)
                             VariableType type;
 
                             uint32_t flags = 0;
-                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                            flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
                             if (headerIndex == MemoryEditorOptions::MEMORY_EDITOR_OPTION_CHANGE_ADDRESS)
                             {
-                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+                                flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
 
                                 currentValue = reinterpret_cast<uint32_t>(currentAddress);
                                 minValuePtr = nullptr;
@@ -765,8 +765,8 @@ void MemoryEditor::controls(MenuButtonInput button)
                             }
                             else
                             {
-                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
                                 currentValue = numBytesBeingEdited;
                                 minValuePtr = &minValue;

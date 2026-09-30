@@ -123,15 +123,14 @@ static void selectedOptionAddById(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+    // flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
     const int32_t *minValuePtr = inventoryMenuPtr->getMinValuePtr();
     const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
@@ -466,15 +465,14 @@ static void selectedOptionChangeById(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    // flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+    // flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_UP_DOWN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
+    ValueEditor *valueEditorPtr = inventoryMenuPtr->getValueEditorPtr();
     const int32_t *maxValuePtr = inventoryMenuPtr->getMaxValuePtr();
     const Window *rootWindowPtr = gRootWindow;
 

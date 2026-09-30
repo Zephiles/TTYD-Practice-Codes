@@ -167,13 +167,10 @@ static int32_t getMapIndex()
 static void selectedOptionNewMapOrEntranceId(Menu *menuPtr)
 {
     // Initialize the value editor
-    WarpsMenu *warpsMenuPtr = gWarpsMenu;
-    ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     uint32_t currentValue;
     uint32_t minValue;
@@ -183,7 +180,7 @@ static void selectedOptionNewMapOrEntranceId(Menu *menuPtr)
     const WarpByIndex *warpByIndexPtr = gMod->getWarpByIndexPtr();
     if (menuPtr->getCurrentIndex() == WarpsMenuIndexOptions::WARPS_MENU_INDEX_OPTION_SELECT_NEW_MAP)
     {
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_MAP_STRING);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_MAP_STRING);
 
         // Make sure the current map index is valid
         int32_t mapIndex = getMapIndex();
@@ -206,6 +203,8 @@ static void selectedOptionNewMapOrEntranceId(Menu *menuPtr)
     }
 
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = gWarpsMenu->getValueEditorPtr();
+
     valueEditorPtr->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(selectedNewMapOrEntranceId, warpsMenuCloseValueEditor);
 }

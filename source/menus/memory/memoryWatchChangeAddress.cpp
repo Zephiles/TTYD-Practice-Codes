@@ -364,11 +364,10 @@ static void selectedOptionChangeValues(Menu *menuPtr)
 
     // Initialize the value editor
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
-    ValueEditor *valueEditorPtr = memoryMenuPtr->getValueEditorPtr();
 
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
     uint32_t currentValue;
     VariableType type;
@@ -382,7 +381,7 @@ static void selectedOptionChangeValues(Menu *menuPtr)
     else
     {
         // Changing pointer level
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
 
         const int32_t offset = currentEntry->getAddressOffset(currentIndex - 1); // Subtract one since address is index 0
         currentValue = static_cast<uint32_t>(offset);
@@ -390,6 +389,8 @@ static void selectedOptionChangeValues(Menu *menuPtr)
     }
 
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = memoryMenuPtr->getValueEditorPtr();
+
     valueEditorPtr->init(&currentValue, nullptr, nullptr, rootWindowPtr, flags, type, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(setNewOffset, cancelSetNewOffset);
 }

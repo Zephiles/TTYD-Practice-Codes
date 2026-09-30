@@ -389,19 +389,17 @@ static void selectedOptionChangeScale(Menu *menuPtr)
     // Initialize the value editor
     MemoryWatchEntry *currentEntry = getSelectedMemoryWatchEntryPtr();
 
-    MemoryMenu *memoryMenuPtr = gMemoryMenu;
-    ValueEditor *valueEditorPtr = memoryMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::WINDOW_POSITION_TOP);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_X_HIDE);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::WINDOW_POSITION_TOP);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_X_HIDE);
 
     const float minValue = 0.3f;
     const float maxValue = 1.5f;
     const Window *rootWindowPtr = gRootWindow;
+    ValueEditor *valueEditorPtr = gMemoryMenu->getValueEditorPtr();
 
     valueEditorPtr->init(currentEntry->getScalePtr(),
                          &minValue,

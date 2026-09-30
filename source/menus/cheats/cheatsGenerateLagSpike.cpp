@@ -184,12 +184,10 @@ static void selectedOptionSetDuration(Menu *menuPtr)
     constexpr uint32_t maxValue = LAG_SPIKE_MAX_DURATION;
     const uint32_t currentValue = gCheats->getGenerateLagSpikeCheatPtr()->getDuration();
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u16, true, setNewDuration);
 }

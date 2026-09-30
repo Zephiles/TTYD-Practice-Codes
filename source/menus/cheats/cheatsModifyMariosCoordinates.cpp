@@ -191,15 +191,13 @@ static void selectedOptionModifyCoordinate(Menu *menuPtr)
     }
 
     // Initialize the value editor
-    ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::VALUE_IS_SIGNED);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
     if (modifyAsHex)
     {
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
     }
 
     cheatsMenuInitValueEditor(std::bit_cast<uint32_t>(coordinatesPtr[currentIndex]),

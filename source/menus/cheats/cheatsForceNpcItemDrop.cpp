@@ -126,14 +126,12 @@ static void selectedOptionChangeById(Menu *menuPtr)
     constexpr uint32_t maxValue = static_cast<int32_t>(ItemId::ITEM_SUPER_CHARGE_P);
     const uint32_t currentValue = static_cast<uint32_t>(gCheats->getForceNpcItemDropCheatPtr()->getItemDrop());
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::CHEATS_CHANGE_DROPPED_ITEM);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_ITEM_ICON_AND_TEXT);
 
     cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::s16, true, setNewItem);
 }

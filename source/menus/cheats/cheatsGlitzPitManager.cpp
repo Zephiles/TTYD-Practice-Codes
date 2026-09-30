@@ -405,11 +405,10 @@ static void selectedOptionChangeMarioRank(Menu *menuPtr)
     GlitzPitVariables glitzPitVariables;
     const uint32_t currentRank = glitzPitVariables.getMarioRank();
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
     cheatsMenuInitValueEditor(currentRank, 0, totalActiveFightersMaxIndex, flags, VariableType::u8, true, setMarioRank);
 }

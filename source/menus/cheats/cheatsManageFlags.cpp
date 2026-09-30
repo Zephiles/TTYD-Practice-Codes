@@ -122,12 +122,10 @@ static void flagsControls(Menu *menuPtr, MenuButtonInput button)
                 const uint32_t currentValue = flagVariableToSet;
                 constexpr uint32_t minValue = 0;
 
-                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
-
                 uint32_t flags = 0;
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
                 cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u32, true, flagsSetValue);
             }
@@ -227,10 +225,8 @@ static void variablesControls(Menu *menuPtr, MenuButtonInput button)
                     currentValue = getGlobalVariableFlagValue(selectedOption, flagVariableToSet);
                 }
 
-                ValueEditor *valueEditorPtr = cheatsMenuPtr->getValueEditorPtr();
-
                 uint32_t flags = 0;
-                flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+                flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
 
                 constexpr uint32_t minValue = 0;
                 bool hasMinAndMax = true;
@@ -264,7 +260,7 @@ static void variablesControls(Menu *menuPtr, MenuButtonInput button)
                         else
                         {
                             hasMinAndMax = false;
-                            flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
+                            flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
                         }
                         break;
                     }
@@ -288,8 +284,8 @@ static void variablesControls(Menu *menuPtr, MenuButtonInput button)
 
                 if (hasMinAndMax)
                 {
-                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-                    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+                    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+                    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
                 }
 
                 cheatsMenuInitValueEditor(currentValue,

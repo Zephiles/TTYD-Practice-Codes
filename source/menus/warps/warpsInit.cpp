@@ -441,17 +441,17 @@ static void selectedOptionSelectWarp(Menu *menuPtr)
         }
 
         // Initialize the value editor
-        ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
+        const uint32_t currentValue = getCurrentPitLevel();
 
         uint32_t flags = 0;
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-        flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+        flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-        const uint32_t currentValue = getCurrentPitLevel();
         constexpr uint32_t minValue = 1;
         constexpr uint32_t maxValue = 100;
         const Window *rootWindowPtr = gRootWindow;
+        ValueEditor *valueEditorPtr = warpsMenuPtr->getValueEditorPtr();
 
         valueEditorPtr
             ->init(&currentValue, &minValue, &maxValue, rootWindowPtr, flags, VariableType::u8, rootWindowPtr->getAlpha());

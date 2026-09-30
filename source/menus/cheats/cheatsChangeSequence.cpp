@@ -99,13 +99,11 @@ static void selectedOptionChangeValue(Menu *menuPtr)
         currentValue = 0;
     }
 
-    ValueEditor *valueEditorPtr = gCheatsMenu->getValueEditorPtr();
-
     uint32_t flags = 0;
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
-    flags = valueEditorPtr->setFlag(flags, ValueEditorFlag::DRAW_STAGE_AND_EVENT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_DPAD_LEFT_RIGHT);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
+    flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_STAGE_AND_EVENT);
 
     constexpr uint32_t minValue = 0;
     constexpr uint32_t maxValue = CHEATS_TOTAL_EVENT_NAMES - 1;
