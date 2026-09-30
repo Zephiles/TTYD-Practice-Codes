@@ -117,11 +117,26 @@ This menu allows you to modify your entire inventory, including standard items, 
 
 25. **Simulate AMW - Mario Zero Hitbox - Room Transition** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario's hitbox being set to 0 upon going through a room transition.
 
-26. **Simulate AMW - Mario Walk On Air** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario being able to walk on air upon walking off a non-sloped ledge.
+26. **Simulate AMW - Mario Airwalk** allows you to simulate doing the `Arbitrary Memory Write` glitch, specifically for getting the result of Mario being able to walk on air upon walking off a non-sloped ledge.
 
-27. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+27. **Glitz Pit Manager** allows you to modify various things regarding to the Glitz Pit:
 
-28. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
+    * **Change Mario's Rank** allows you to change Mario's current rank. Note that this takes into account the total amount of fighters currently on the roster, and will not allow you to set Mario's rank to an invalid value.
+    
+    * **Change Current Condition** allows you to change the condition that is currently set. Note that this will not allow selecting **Major League** conditions when those conditions are not currently being used.
+    
+    * **Change Current Opponent** changes the opponent that Mario is set to battle next. Note that this will not allow selecting **Wings of Night** nor **The Destructors** when these fighters are not available (they are only available to battle when the sequence is below **172**, which is before beating the chapter).
+    
+    * **Toggle Match Reserved** toggles the flag that determines whether or not a match has been reserved. The following are examples of how this could be used:
+        * If a match was previously reserved from the terminal and the guard has already entered the room to escort you, you can clear this flag to be able to reserve a match from the terminal again.
+        
+        * You can manually toggle this flag and set up the match you want using the other options, and then enter the arena room to automatically trigger the cutscene for battling your desired opponent.
+    
+    * **Toggle Won Previous Match** toggles the flag that determnines if you won the previous match that you fought.
+
+28. **Bobbery Early** clears some values, which allows you to perform Bobbery Early more than once on a save file without the need to reload.
+
+29. **Disable Certain Sounds** allows you to disable certain sounds in the game. The current options for this are as follows:
 
     * **Disable Pause Menu/Z Menu Sounds** disables the sound effects that play when the pause menu and the Z menu are opened/closed.
 
@@ -129,17 +144,17 @@ This menu allows you to modify your entire inventory, including standard items, 
 
     * **Environment Sounds** disables any environment sounds, and prevents new environment sounds from playing.
 
-29. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
+30. **Force NPC Item Drop** forces any defeared enemy to drop a specified item. The item can be changed at will.
 
-30. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
+31. **Resolve Fades** allows you to resolve any fades that are currently active and linger on-screen. Some examples of these are the Mario heads after each chapter, and when the screen pans to black when transitioning to a new screen.
 
-31. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
+32. **Lock Flags** allows you to lock specific variables/flags. The **LSW**s and **LSWF**s are local variables/flags that change depending on the area that you're in. As such, the cheat will only allow you to lock the flags for one specific area at a time. However, you can lock the **LSW** variables for one area, and then lock the **LSWF** flags for a different area. The **Set New Area** options allow you to set the current area as the area to store the local flags for.
 
     * It is important to note that each **Lock** option allocates memory, so they shouldn't be left on when not in use.
 
-32. **Manage Flags** allows you to manually change a lot of the important flags in the game.
+33. **Manage Flags** allows you to manually change a lot of the important flags in the game.
 
-33. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
+34. **Clear Area Flags** allows you to clear most of the flags for a specified area. A confirmation message is displayed when trying to do so, to prevent accidently clearing flags. The flags will be cleared on the next screen transition.
 
 ### Stats
 This menu allows you to modify Mario's stats, all of your partner's stats, whether or not partners are enabled or not, whether a partner is out or not, and whether or not a follower is out or not.

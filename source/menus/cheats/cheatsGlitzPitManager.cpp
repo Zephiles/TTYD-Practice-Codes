@@ -2,6 +2,7 @@
 #include "drawText.h"
 #include "mod.h"
 #include "classes/glitzPitOpponentSelector.h"
+#include "classes/glitzPitConditionSelector.h"
 #include "menus/cheatsMenu.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
