@@ -122,15 +122,12 @@ class GlitzPitVariables
     RankingData *getRankWorkPtr() const { return this->rankWorkPtr; }
     RankingControllFunc getRankingControllFuncPtr() const { return this->rankingControllFuncPtr; }
     uint32_t getMarioRank() { return this->marioRank; }
-    bool playerIsInGlitzville() const { return this->inGlitzville; }
-    bool playerIsInArenaRoom() const { return this->inArenaRoom; }
+    bool playerIsInGlitzville() const { return this->rankWorkPtr != nullptr; }
 
    private:
     RankingData *rankWorkPtr;
     RankingControllFunc rankingControllFuncPtr;
     uint8_t marioRank;
-    bool inGlitzville;
-    bool inArenaRoom;
 };
 
 class WarpByEvent

@@ -24,8 +24,6 @@ GlitzPitVariables::GlitzPitVariables()
 
     this->rankWorkPtr = nullptr;
     this->rankingControllFuncPtr = nullptr;
-    this->inGlitzville = false;
-    this->inArenaRoom = false;
 
     // Make sure a rel is actually loaded
     const OSModuleInfo *relPtr = _globalWorkPtr->relocationBase;
@@ -44,16 +42,12 @@ GlitzPitVariables::GlitzPitVariables()
         {
             tempRankWorkPtr = tou_rank_wp;
             tempRankingControllFuncPtr = tou_rankingControll;
-            this->inGlitzville = true;
-            // this->inArenaRoom = false;
             break;
         }
         case RelId::TOU2: // Glitzville arena
         {
             tempRankWorkPtr = tou2_rank_wp;
             tempRankingControllFuncPtr = tou2_rankingControll;
-            this->inGlitzville = true;
-            this->inArenaRoom = true;
             break;
         }
         default:
