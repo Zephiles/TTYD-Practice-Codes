@@ -12,6 +12,9 @@
 #include "gc/OSCache.h"
 #include "misc/utils.h"
 #include "misc/functionHooks.h"
+#include "ttyd/rel/bom.h"
+#include "ttyd/rel/las.h"
+#include "ttyd/rel/mri.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/party.h"
@@ -308,84 +311,73 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
 
 #ifdef TTYD_US
     // bom
-    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD2FC;
-    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x674;
+    constexpr uint32_t bom_01_minnnanokoe_evt_WaitMS_Index = 0x674 / sizeof(int32_t);
 
     // las
-    constexpr uint32_t last_evt_3_2_Offset = 0x36FBC;
-    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x64;
-    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0x114;
+    constexpr uint32_t las_last_evt_3_2_Loop_Index = 0x224 / sizeof(int32_t);
+    constexpr uint32_t las_last_evt_3_2_WaitMS_Index = 0x2D4 / sizeof(int32_t);
 
     // mri
-    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BE80;
-    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
+    constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
 #elif defined TTYD_JP
     // bom
-    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD2C4;
-    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x634;
+    constexpr uint32_t bom_01_minnnanokoe_evt_WaitMS_Index = 0x634 / sizeof(int32_t);
 
     // las
-    constexpr uint32_t last_evt_3_2_Offset = 0x36FC0;
-    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x58;
-    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0xD4;
+    constexpr uint32_t las_last_evt_3_2_Loop_Index = 0x218 / sizeof(int32_t);
+    constexpr uint32_t las_last_evt_3_2_WaitMS_Index = 0x294 / sizeof(int32_t);
 
     // mri
-    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BA98;
-    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
+    constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
 #elif defined TTYD_EU
     // bom
-    constexpr uint32_t minnnanokoe_evt_bom_Offset = 0xD35C;
-    constexpr uint32_t minnnanokoe_evt_bom_WaitMS_Offset = 0x634;
+    constexpr uint32_t bom_01_minnnanokoe_evt_WaitMS_Index = 0x634 / sizeof(int32_t);
 
     // las
-    constexpr uint32_t last_evt_3_2_Offset = 0x36FBC;
-    constexpr uint32_t last_evt_3_2_Loop_Offset = 0x64;
-    constexpr uint32_t last_evt_3_2_WaitMS_Offset = 0x114;
+    constexpr uint32_t las_last_evt_3_2_Loop_Index = 0x224 / sizeof(int32_t);
+    constexpr uint32_t las_last_evt_3_2_WaitMS_Index = 0x2D4 / sizeof(int32_t);
 
     // mri
-    constexpr uint32_t minnnanokoe_evt_mri_Offset = 0x2BE80;
-    constexpr uint32_t minnnanokoe_evt_mri_WaitMS_Offset = 0x968;
+    constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
 #endif
 
-    const uint32_t relPtrRaw = reinterpret_cast<uint32_t>(module);
     switch (module->id)
     {
         case RelId::BOM:
         {
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
-            uint32_t waitMsAddress = relPtrRaw + minnnanokoe_evt_bom_Offset + minnnanokoe_evt_bom_WaitMS_Offset;
-
             // Wait 400ms instead of 300ms at the end of the loop
             // Use applyAssemblyPatch to apply the change and clear the cache, all in a single function call
-            applyAssemblyPatch(waitMsAddress, 400);
+            int32_t *scriptAddress = const_cast<int32_t *>(&bom_01_minnnanokoe_evt[bom_01_minnnanokoe_evt_WaitMS_Index]);
+            applyAssemblyPatch(scriptAddress, 400);
             break;
         }
         case RelId::LAS:
         {
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
-            uint32_t loopCountAddress = relPtrRaw + last_evt_3_2_Offset + last_evt_3_2_Loop_Offset;
-            uint32_t waitMsAddress = relPtrRaw + last_evt_3_2_Offset + last_evt_3_2_WaitMS_Offset;
+            int32_t *scriptAddress;
 
             // Change the loop count from 10 to 5
             // Use applyAssemblyPatch to apply the change and clear the cache, all in a single function call
-            applyAssemblyPatch(loopCountAddress, 5);
+            scriptAddress = const_cast<int32_t *>(&las_last_evt_3_2[las_last_evt_3_2_Loop_Index]);
+            applyAssemblyPatch(scriptAddress, 5);
 
             // Wait 400ms instead of 200ms at the end of the loop
             // Use applyAssemblyPatch to apply the change and clear the cache, all in a single function call
-            applyAssemblyPatch(waitMsAddress, 400);
+            scriptAddress = const_cast<int32_t *>(&las_last_evt_3_2[las_last_evt_3_2_WaitMS_Index]);
+            applyAssemblyPatch(scriptAddress, 400);
             break;
         }
         case RelId::MRI:
         {
             // Shadow Queen cutscene fix, just before 2nd fight
             // Make changes to the script that spawns the textboxes, to prevent the standard heap from being corrupted
-            uint32_t waitMsAddress = relPtrRaw + minnnanokoe_evt_mri_Offset + minnnanokoe_evt_mri_WaitMS_Offset;
-
             // Wait 400ms instead of 300ms at the end of the loop
             // Use applyAssemblyPatch to apply the changes and clear the cache, all in a single function call
-            applyAssemblyPatch(waitMsAddress, 400);
+            int32_t *scriptAddress = const_cast<int32_t *>(&mri_minnnanokoe_evt[mri_minnnanokoe_evt_WaitMS_Index]);
+            applyAssemblyPatch(scriptAddress, 400);
             break;
         }
         default:
