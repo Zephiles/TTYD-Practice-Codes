@@ -333,9 +333,9 @@ blr
 # Get the proper vanilla pointer when doing an AMW
 
 # Values should match the `AMWCoordinateWriteAddressDisplay::FunctionCaller` enum:
-# 0 -> SOUND_EFX_STOP
-# 1 -> SOUND_SS_STOP_CH
-# 2 -> SOUND_SONG_STOP_CH 
+.set SOUND_EFX_STOP,0
+.set SOUND_SS_STOP_CH,1
+.set SOUND_SONG_STOP_CH,2
 
 .global asmAMWGetProperPointerSoundEfxStopStart
 .global asmAMWGetProperPointerSoundEfxStopBranchBack
@@ -347,7 +347,7 @@ blr
 asmAMWGetProperPointerSoundEfxStopStart:
 # r3 already contains pointerRaw
 mr %r4,%r0 # multipliedIndex
-li %r5,0 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP
+li %r5,SOUND_EFX_STOP # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP
 bl cArbitraryMemoryWriteGetProperPointer
 
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
@@ -369,7 +369,7 @@ b (SoundEfxStop + 0x54)
 asmAMWGetProperPointerSoundSSStopChStart:
 # r3 already contains pointerRaw
 mr %r4,%r0 # multipliedIndex
-li %r5,1 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH
+li %r5,SOUND_SS_STOP_CH # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH
 bl cArbitraryMemoryWriteGetProperPointer
 
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
@@ -391,7 +391,7 @@ b (SoundSSStopCh + 0xF4)
 asmAMWGetProperPointerSoundSongStopChStart:
 lwz %r3,0xF0(%r3) # pointerRaw
 mr %r4,%r31 # multipliedIndex
-li %r5,2 # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH
+li %r5,SOUND_SONG_STOP_CH # AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH
 bl cArbitraryMemoryWriteGetProperPointer
 
 # Check if the resulting pointer added to the offset is valid, and if not then don't allow the function to run
