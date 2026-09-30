@@ -493,6 +493,12 @@ static void saveAnywhere(Cheats *cheatsPtr, Mod *modPtr)
             return;
         }
 
+        // Make sure vanilla memory card stuff isn't currently happening
+        if (cardIsExec())
+        {
+            return;
+        }
+
         // Start the Save script
         const EvtEntry *saveScriptPtr = evtEntryType(memcardSaveScript, 0, 0, 0);
         saveAnywherePtr->setThreadId(saveScriptPtr->threadId);
@@ -669,6 +675,12 @@ bool infiniteItemUsage(ItemId item, uint32_t index)
 
 void reloadRoomMain()
 {
+    // Only run if vanilla memory card stuff isn't currently happening
+    if (cardIsExec())
+    {
+        return;
+    }
+
     // Only run while a file is loaded
     const SeqIndex nextSeq = seqGetNextSeq();
     if ((nextSeq < SeqIndex::kGame) || (nextSeq > SeqIndex::kMapChange))
@@ -739,10 +751,10 @@ static void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
     if (!modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGING_BUTTON_COMBO) &&
         cheatsPtr->checkCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM))
     {
-        // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, or if the memory
-        // editor is open
+        // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, if the memory editor
+        // is open, or if vanilla memory card stuff is currently happening
         if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM) && !gMenu &&
-            !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr() && !memoryEditorIsOpen())
+            !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr() && !memoryEditorIsOpen() && !cardIsExec())
         {
             reloadRoomMain();
         }
