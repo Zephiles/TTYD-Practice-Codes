@@ -1085,7 +1085,7 @@ void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
 #endif
             break;
         }
-        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
+        case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_AIRWALK:
         {
             valuesToModify = &mario_hit_float_0p75;
             break;
@@ -1126,7 +1126,7 @@ void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
 #endif
                 break;
             }
-            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR:
+            case CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_AIRWALK:
             {
                 valuesToModify[0] = 0.75f;
                 valuesToModify[1] = -1.f;

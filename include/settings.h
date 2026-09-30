@@ -294,7 +294,7 @@ class CheatsSettingsData
             adjustArbitraryMemoryWriteValues(
                 CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION);
 
-            adjustArbitraryMemoryWriteValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR);
+            adjustArbitraryMemoryWriteValues(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_AIRWALK);
         }
     }
 

@@ -90,7 +90,7 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Simulate AMW - Mario Zero Hitbox - Room Transition",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate AMW - Mario Walk On Air",
+    "Simulate AMW - Mario Airwalk",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
     "Glitz Pit Manager",
@@ -363,9 +363,9 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION;
         }
-        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_AMW_MARIO_WALK_ON_AIR:
+        case CheatsMenuOptions::CHEATS_MENU_SIMULATE_AMW_MARIO_AIRWALK:
         {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_WALK_ON_AIR;
+            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_AIRWALK;
         }
         case CheatsMenuOptions::CHEATS_MENU_BOBBERY_EARLY:
         {
