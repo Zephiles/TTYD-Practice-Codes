@@ -44,9 +44,9 @@ void *allocMemoryFromArenaTail(std::size_t size, uint32_t alignment)
 {
     uint32_t arenaHiRaw = reinterpret_cast<uint32_t>(__OSArenaHi);
 
-    arenaHiRaw &= ~((alignment)-1);
+    arenaHiRaw &= ~(alignment - 1);
     arenaHiRaw -= size;
-    arenaHiRaw &= ~((alignment)-1);
+    arenaHiRaw &= ~(alignment - 1);
 
     void *arenaHi = reinterpret_cast<void *>(arenaHiRaw);
     __OSArenaHi = arenaHi;

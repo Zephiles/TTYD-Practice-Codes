@@ -61,14 +61,14 @@ void init()
     applyCheatAndDisplayInjects();
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
-    Window *windowPtr = new (true, true) Window;
+    Window *windowPtr = new (true, true, alignof(Window)) Window;
     windowPtr->init(getColorBlack(0xF4), -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
     gRootWindow = windowPtr;
 
-    gMod = new (true, true) Mod;
-    gCheats = new (true, true) Cheats;
-    gDisplays = new (true, true, sizeof(OSTime)) Displays;
-    gMemoryEditor = new (true, true) MemoryEditor;
+    gMod = new (true, true, alignof(Mod)) Mod;
+    gCheats = new (true, true, alignof(Cheats)) Cheats;
+    gDisplays = new (true, true, alignof(Displays)) Displays;
+    gMemoryEditor = new (true, true, alignof(MemoryEditor)) MemoryEditor;
 
 #ifdef TTYD_JP
     // Various things need to be done for setting up/handling the battle heap

@@ -100,7 +100,16 @@ INLINE_FUNC void *operator new(std::size_t size, bool allocFromHead, bool allocF
 
 INLINE_FUNC void *operator new(std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
 {
-    return allocateMemory(size, allocFromHead, allocFromArena, alignment);
+    // If the alignment is <= 4, then just call the variant of `allocateMemory` that does not take an alignment, as that will
+    // default the alignment to 4, which can allow excluding an extra instruction for specifying the alignment
+    if (alignment <= 4)
+    {
+        return allocateMemory(size, allocFromHead, allocFromArena);
+    }
+    else
+    {
+        return allocateMemory(size, allocFromHead, allocFromArena, alignment);
+    }
 }
 
 INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena)
@@ -110,7 +119,16 @@ INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead, bool allo
 
 INLINE_FUNC void *operator new[](std::size_t size, bool allocFromHead, bool allocFromArena, uint32_t alignment)
 {
-    return allocateMemory(size, allocFromHead, allocFromArena, alignment);
+    // If the alignment is <= 4, then just call the variant of `allocateMemory` that does not take an alignment, as that will
+    // default the alignment to 4, which can allow excluding an extra instruction for specifying the alignment
+    if (alignment <= 4)
+    {
+        return allocateMemory(size, allocFromHead, allocFromArena);
+    }
+    else
+    {
+        return allocateMemory(size, allocFromHead, allocFromArena, alignment);
+    }
 }
 
 INLINE_FUNC void operator delete(void *ptr)
