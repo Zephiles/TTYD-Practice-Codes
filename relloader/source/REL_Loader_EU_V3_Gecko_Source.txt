@@ -36,10 +36,10 @@ add r0,r3,r6
 
 # Hook the following code at 800055E0
 # Push stack
-stwu sp,-0x58(sp)
+stwu sp,-0x60(sp)
 mflr r0
-stw r0,0x5C(sp)
-stmw r20,0x28(sp)
+stw r0,0x64(sp)
+stmw r19,0x28(sp)
 
 # Backup function parameters
 stw r3,0x8(sp)
@@ -136,7 +136,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- unmountMemoryCard
 
 # Allocate 0x400 bytes of memory, as the read size must be in multiples of 0x200 bytes,
-# and the BSS Area size, the fixed REL size, and the BSS Align are needed later
+# and the REL Align, BSS Area size, the fixed REL size, and the BSS Align are needed later
 ori r3,r28,OSAllocFromArenaLo@l
 mtlr r3
 li r3,0x400 # Bytes to allocate
@@ -160,8 +160,9 @@ cmpwi r3,0 # Check if something went wrong
 li r5,0x400 # Size used
 bne- freeCurrentMemoryArea
 
-# Get the File Size, as it will be used later
+# Get the File Size and the REL's alignment requirement, as they will be used later
 lwz r6,0x40(r24) # File Size
+lwz r19,0x240(r24) # align; 0x200 + 0x40
 
 # Adjust the File Size to be in multiples of 0x200 bytes
 addi r23,r6,511
@@ -202,11 +203,19 @@ fileSizeIsValid:
 # Restore the original arena lo address, effectively freeing the 0x400 bytes from earlier
 stw r31,ARENA_LO_OFFSET(r13)
 
+# The REL must be aligned to a specific value that it specifies, while the buffer used by
+# CARDRead must be aligned to 0x20 bytes. The REL's alignmemt will always be a power of 2,
+# so the higher of the two values can just be used for the alignment
+cmplwi r19,0x20 # align
+bge- gotAllocationAlignmentValue
+li r19,0x20
+
+gotAllocationAlignmentValue:
 # Allocate memory for the File and BSS
 ori r3,r28,OSAllocFromArenaLo@l
 mtlr r3
 mr r3,r20 # File Size + BSS Area Size
-li r4,0x20 # REL files require an alignment of 0x20
+mr r4,r19 # alignment
 blrl
 
 # Backup the returned address to be used for later
@@ -398,10 +407,10 @@ lwz r3,0x8(sp)
 lwz r4,0xC(sp)
 
 # Pop stack
-lmw r20,0x28(sp)
-lwz r0,0x5C(sp)
+lmw r19,0x28(sp)
+lwz r0,0x64(sp)
 mtlr r0
-addi sp,sp,0x58
+addi sp,sp,0x60
 
 # Add back in the overwritten instruction
 stwu sp,-0x10(sp)
