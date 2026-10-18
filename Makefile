@@ -56,7 +56,7 @@ INCLUDES	:=	include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -g -Oz -Wall -Werror -Wextra -Wformat=2 -Wno-format-nonliteral -Wno-class-memaccess -Wno-unused-function -Wno-uninitialized -Wno-cast-function-type -Wno-array-bounds -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -fno-jump-tables -fno-caller-saves -g -Oz -Wall -Werror -Wextra -Wformat=2 -Wno-format-nonliteral -Wno-class-memaccess -Wno-unused-function -Wno-uninitialized -Wno-cast-function-type -Wno-array-bounds -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++23 $(CFLAGS)
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
@@ -188,6 +188,8 @@ $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
 %.rel: %.elf
+	@echo stripping elf ... $(notdir $(OUTPUT).elf)
+	@powerpc-eabi-strip --strip-debug --remove-section=.eh_frame* --remove-section=.comment* --remove-section=.gnu.* $(OUTPUT).elf
 	@echo output ... $(notdir $@)
 	@$(ELF2REL) $< $(MAPFILE) $@
 	
