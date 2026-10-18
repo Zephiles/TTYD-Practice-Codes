@@ -19,11 +19,6 @@
 #include "ttyd/mario.h"
 #include "ttyd/system.h"
 
-#ifdef TTYD_EU
-#include "gc/OSReset.h"
-#include "ttyd/mariost.h"
-#endif
-
 #include <cstdint>
 #include <cstring>
 #include <bit>
@@ -442,12 +437,14 @@ class AMWCoordinateWriteAddressDisplay
     AMWCoordinateWriteAddressDisplay() {}
     ~AMWCoordinateWriteAddressDisplay() {}
 
-    static uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
+#ifdef TTYD_EU
+    static uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller);
+#else
+    static INLINE_FUNC uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {
         // Return the pointer value that would be used under vanilla scenarios
         uint32_t vanillaPointerRaw = 0;
 
-#if (defined TTYD_JP) || (defined TTYD_US)
         switch (funcCaller)
         {
             case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
@@ -482,72 +479,10 @@ class AMWCoordinateWriteAddressDisplay
                 break;
             }
         }
-#elif defined TTYD_EU
-        // One of two pointer values will be used depending on different circumstances
-        auto getVanillaPointerRawFirstValue = [funcCaller]()
-        {
-            switch (funcCaller)
-            {
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
-                {
-                    return 0x8072FC60;
-                }
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
-                {
-                    return 0x807314A0;
-                }
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
-                {
-                    return 0x806BA180;
-                }
-                default:
-                {
-                    return static_cast<uint32_t>(0);
-                }
-            }
-        };
 
-        // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
-        // OSGetResetCode does not return 0. Need to look into how to get around this.
-        if (OSGetResetCode() == 0) // First boot
-        {
-            // First boot should always use the same pointer value
-            vanillaPointerRaw = getVanillaPointerRawFirstValue();
-        }
-        else if (_globalWorkPtr->framerate == 60)
-        {
-            // A different pointer value is used when the game was reset at least once and 60Hz was chosen
-            switch (funcCaller)
-            {
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
-                {
-                    vanillaPointerRaw = 0x806FB860;
-                    break;
-                }
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
-                {
-                    vanillaPointerRaw = 0x806FD0A0;
-                    break;
-                }
-                case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
-                {
-                    vanillaPointerRaw = 0x80685D80;
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            // Assume 50Hz is being used, in which the first pointer value will still be used
-            vanillaPointerRaw = getVanillaPointerRawFirstValue();
-        }
-#endif
         return vanillaPointerRaw;
     }
+#endif
 
     INLINE_FUNC void init(uint32_t addressRaw, AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {

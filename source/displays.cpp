@@ -42,6 +42,10 @@
 #include "ttyd/battle_disp.h"
 #include "ttyd/sac_scissor.h"
 
+#ifdef TTYD_EU
+#include "gc/OSReset.h"
+#endif
+
 #include <cstdint>
 #include <cstdio>
 #include <cinttypes>
@@ -68,6 +72,79 @@ const uint8_t gMemoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP,
 #endif
 };
+
+#ifdef TTYD_EU
+uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
+{
+    // Return the pointer value that would be used under vanilla scenarios
+    uint32_t vanillaPointerRaw = 0;
+
+    // One of two pointer values will be used depending on different circumstances
+    auto getVanillaPointerRawFirstValue = [funcCaller]()
+    {
+        switch (funcCaller)
+        {
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+            {
+                return 0x8072FC60;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+            {
+                return 0x807314A0;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+            {
+                return 0x806BA180;
+            }
+            default:
+            {
+                return static_cast<uint32_t>(0);
+            }
+        }
+    };
+
+    // BUG - If the player resets before selecting a Hz setting, then `firstPointerValue` will still be used even if
+    // OSGetResetCode does not return 0. Need to look into how to get around this.
+    if (OSGetResetCode() == 0) // First boot
+    {
+        // First boot should always use the same pointer value
+        vanillaPointerRaw = getVanillaPointerRawFirstValue();
+    }
+    else if (_globalWorkPtr->framerate == 60)
+    {
+        // A different pointer value is used when the game was reset at least once and 60Hz was chosen
+        switch (funcCaller)
+        {
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_EFX_STOP:
+            {
+                vanillaPointerRaw = 0x806FB860;
+                break;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SS_STOP_CH:
+            {
+                vanillaPointerRaw = 0x806FD0A0;
+                break;
+            }
+            case AMWCoordinateWriteAddressDisplay::FunctionCaller::SOUND_SONG_STOP_CH:
+            {
+                vanillaPointerRaw = 0x80685D80;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Assume 50Hz is being used, in which the first pointer value will still be used
+        vanillaPointerRaw = getVanillaPointerRawFirstValue();
+    }
+
+    return vanillaPointerRaw;
+}
+#endif
 
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
 {
