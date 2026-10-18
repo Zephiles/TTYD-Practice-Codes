@@ -11,6 +11,8 @@
 #include "gc/card.h"
 #include "menus/rootMenu.h"
 #include "misc/utils.h"
+#include "ttyd/item_data.h"
+#include "ttyd/mario_pouch.h"
 
 #include <cstdint>
 #include <cstring>
@@ -243,7 +245,26 @@ class DisplaysSettingsData
 
     void getData(uint32_t totalDisplays, uint32_t totalManuallyPositionEntries, uint32_t totalButtonCombos) const;
 
-    uint32_t setData(Displays *displaysPtr);
+    INLINE_FUNC uint32_t setData(Displays *displaysPtr)
+    {
+        const HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
+        this->hitsColor = hitCheckVisualizationPtr->getHitsColor();
+        this->missesColor = hitCheckVisualizationPtr->getMissesColor();
+
+        memcpy(this->enabledFlags, displaysPtr->getEnabledFlagsPtr(), DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
+
+        memcpy(this->manuallyPositionFlags,
+               displaysPtr->getManuallyPositionFlagsPtr(),
+               DISPLAYS_MANUALLY_POSITION_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
+
+        memcpy(this->manuallyPosition,
+               displaysPtr->getManuallyPositionEntriesPtr(),
+               TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS * sizeof(DisplayManuallyPosition));
+
+        memcpy(this->buttonCombos, displaysPtr->getButtonCombosPtr(), TOTAL_DISPLAYS_BUTTON_COMBOS * sizeof(uint16_t));
+
+        return sizeof(DisplaysSettingsData);
+    }
 
    private:
     uint32_t enabledFlags[DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE];
@@ -266,7 +287,27 @@ class MemoryWatchesSettingsHeader
     uint32_t getWatchNameLength() const { return this->watchNameLength; }
 
     // This function returns 0 if there are no watches to write
-    uint32_t setData(SettingsHeader *settingsHeaderPtr, MemoryWatch *memoryWatchPtr, uint32_t offset);
+    INLINE_FUNC uint32_t setData(SettingsHeader *settingsHeaderPtr, MemoryWatch *memoryWatchPtr, uint32_t offset)
+    {
+        // If there are currently no entries, then don't write anything
+        const uint32_t totalEntries = memoryWatchPtr->getTotalEntries();
+        const MemoryWatchEntry *entriesPtr = memoryWatchPtr->getEntriesPtr();
+        if ((totalEntries == 0) || !entriesPtr)
+        {
+            return 0;
+        }
+
+        // Write the offset to the memory watches data
+        settingsHeaderPtr->setMemoryWatchesHeaderOffset(offset);
+
+        constexpr uint32_t headerSize = sizeof(MemoryWatchesSettingsHeader);
+        this->dataOffset = offset + headerSize;
+
+        this->totalWatches = static_cast<uint16_t>(totalEntries);
+        this->watchNameLength = MEMORY_WATCH_NAME_SIZE;
+
+        return headerSize;
+    }
 
    private:
     // Starts at the start of SettingsHeader. If the value is 0, then the code will assume that the section is not included.
@@ -286,10 +327,44 @@ class MemoryWatchesSettingsData
     uint32_t getData(uint32_t totalWatches, uint32_t watchNameLength) const;
     void getAddressOffsetsData(uint32_t offset) const;
 
-    uint32_t setData(const MemoryWatchEntry *entryPtr);
+    INLINE_FUNC uint32_t setData(const MemoryWatchEntry *entryPtr)
+    {
+        this->address = entryPtr->getAddressPtr();
+        this->posX = entryPtr->getPosX();
+        this->posY = entryPtr->getPosY();
+        this->scale = entryPtr->getScale();
+
+        const uint32_t totalOffsets = entryPtr->getTotalAddressOffsets();
+        if ((totalOffsets > 0) && entryPtr->getAddressOffsetsPtr())
+        {
+            this->totalAddressOffsets = static_cast<uint8_t>(totalOffsets);
+        }
+
+        this->type = entryPtr->getType();
+        this->showAsHex = entryPtr->shouldShowAsHex();
+        this->display = entryPtr->shouldDisplay();
+        copyStringAndNullTerminate(this->name, MEMORY_WATCH_NAME_SIZE, entryPtr->getNamePtrConst());
+
+        return sizeof(MemoryWatchesSettingsData);
+    }
 
     // This function returns 0 if there are no offsets to write
-    uint32_t setAddressOffsetsData(const MemoryWatchEntry *entryPtr);
+    INLINE_FUNC uint32_t setAddressOffsetsData(const MemoryWatchEntry *entryPtr)
+    {
+        // Make sure there is at least one offset to write
+        const uint32_t totalOffsets = entryPtr->getTotalAddressOffsets();
+        const int32_t *sourceOffsetsPtr = entryPtr->getAddressOffsetsPtr();
+        if ((totalOffsets == 0) || !sourceOffsetsPtr)
+        {
+            return 0;
+        }
+
+        const uint32_t offsetsSize = totalOffsets * sizeof(int32_t);
+        int32_t *addressOffsetsPtr = PTR_CAST_TYPE_ADD_OFFSET(int32_t *, this, 0);
+        memcpy(addressOffsetsPtr, sourceOffsetsPtr, offsetsSize);
+
+        return offsetsSize;
+    }
 
    private:
     uint8_t *address;
@@ -378,7 +453,27 @@ class CustomStatesSettingsHeader
     uint32_t getStateNameLength() const { return this->stateNameLength; }
 
     // This function returns 0 if there are no states to write
-    uint32_t setData(SettingsHeader *settingsHeaderPtr, CustomState *customStatePtr, uint32_t offset);
+    INLINE_FUNC uint32_t setData(SettingsHeader *settingsHeaderPtr, CustomState *customStatePtr, uint32_t offset)
+    {
+        // If there are currently no states, then don't write anything
+        const uint32_t totalEntries = customStatePtr->getTotalEntries();
+        const CustomStateEntry *entriesPtr = customStatePtr->getEntriesPtr();
+        if ((totalEntries == 0) || !entriesPtr)
+        {
+            return 0;
+        }
+
+        // Write the offset to the memory editor data
+        settingsHeaderPtr->setCustomStatesHeaderOffset(offset);
+
+        constexpr uint32_t headerSize = sizeof(CustomStatesSettingsHeader);
+        this->dataOffset = offset + headerSize;
+
+        this->totalStates = static_cast<uint16_t>(totalEntries);
+        this->stateNameLength = CUSTOM_STATE_NAME_SIZE;
+
+        return headerSize;
+    }
 
    private:
     // Starts at the start of SettingsHeader. If the value is 0, then the code will assume that the section is not included.
@@ -427,7 +522,22 @@ class CustomStatesSettingsData
     uint32_t setData(CustomStateEntry *entryPtr);
 
     // This function returns 0 if there are no items to write
-    uint32_t setItemsData(CustomStateEntry *entryPtr);
+    INLINE_FUNC uint32_t setItemsData(CustomStateEntry *entryPtr)
+    {
+        // Make sure there is at least one item to write
+        const uint32_t totalItems = entryPtr->getTotalInventoryItems();
+        const ItemId *sourceItemsPtr = entryPtr->getItemsPtr();
+        if ((totalItems == 0) || !sourceItemsPtr)
+        {
+            return 0;
+        }
+
+        const uint32_t itemsSize = totalItems * sizeof(ItemId);
+        ItemId *itemsPtr = PTR_CAST_TYPE_ADD_OFFSET(ItemId *, this, 0);
+        memcpy(itemsPtr, sourceItemsPtr, itemsSize);
+
+        return itemsSize;
+    }
 
    private:
     CustomStateSettingsMarioData marioData;
