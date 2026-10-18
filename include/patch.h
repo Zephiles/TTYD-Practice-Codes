@@ -2,6 +2,7 @@
 #define PATCH_H
 
 #include "cxx.h"
+#include "inline.h"
 #include "misc/utils.h"
 
 #include <cstdint>
@@ -85,7 +86,7 @@ void writeStandardBranches(Ptr ptr, FuncStart funcStart, FuncEnd funcEnd)
  * @note The returned pointer is intended to be used as a function pointer, which allows for calling the original function.
  */
 template<typename Func, typename Dest>
-Func hookFunction(Func function, Dest destination)
+INLINE_FUNC Func hookFunction(Func function, Dest destination)
 {
     uint32_t *instructions = reinterpret_cast<uint32_t *>(function);
     uint32_t *trampoline = new (true) uint32_t[2];
@@ -121,7 +122,7 @@ Func hookFunction(Func function, Dest destination)
  * @note The memory allocated for the instructions will be allocated from the `Arena Lo`.
  */
 template<typename Func, typename Dest>
-Func hookFunctionArena(Func function, Dest destination)
+INLINE_FUNC Func hookFunctionArena(Func function, Dest destination)
 {
     uint32_t *instructions = reinterpret_cast<uint32_t *>(function);
     uint32_t *trampoline = new (true, true) uint32_t[2];
@@ -149,7 +150,7 @@ Func hookFunctionArena(Func function, Dest destination)
  * @returns `nullptr`.
  */
 template<typename Func>
-Func unhookFunction(Func trampoline)
+INLINE_FUNC Func unhookFunction(Func trampoline)
 {
     if (!trampoline)
     {
@@ -194,7 +195,7 @@ Func unhookFunction(Func trampoline)
  * not support freeing memory.
  */
 template<typename Func>
-Func unhookFunctionArena(Func trampoline)
+INLINE_FUNC Func unhookFunctionArena(Func trampoline)
 {
     if (!trampoline)
     {

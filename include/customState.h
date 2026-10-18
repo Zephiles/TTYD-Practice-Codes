@@ -1,6 +1,7 @@
 #ifndef CUSTOM_STATE_H
 #define CUSTOM_STATE_H
 
+#include "inline.h"
 #include "ttyd/item_data.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/party.h"
@@ -41,7 +42,7 @@ class CustomStateEntry
     ItemId *getItemsPtr() { return this->items; }
     void setItemsPtr(ItemId *itemsPtr) { this->items = itemsPtr; }
 
-    void freeItems()
+    INLINE_FUNC void freeItems()
     {
         ItemId *itemsPtr = this->items;
         if (itemsPtr)
@@ -51,7 +52,7 @@ class CustomStateEntry
         }
     }
 
-    uint32_t initItemsPtr(uint32_t totalItems)
+    INLINE_FUNC uint32_t initItemsPtr(uint32_t totalItems)
     {
         // Make sure totalItems is valid
         constexpr uint32_t maxStandardItems = sizeof(PouchData::items) / sizeof(ItemId);
@@ -134,7 +135,7 @@ class CustomState
     CustomState() {}
     ~CustomState() {}
 
-    CustomStateEntry *reinitEntries(uint32_t totalStates)
+    INLINE_FUNC CustomStateEntry *reinitEntries(uint32_t totalStates)
     {
         // If memory is already allocated for the entries, then free it
         const uint32_t totalEntries = this->totalEntries;

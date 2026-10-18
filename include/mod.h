@@ -1,6 +1,7 @@
 #ifndef MOD_H
 #define MOD_H
 
+#include "inline.h"
 #include "misc/utils.h"
 #include "ttyd/rel/tou.h"
 #include "ttyd/mapdata.h"
@@ -37,7 +38,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.3.1-dev1"
+#define VERSION_STRING "v4.3.1-dev2"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -188,7 +189,7 @@ class WarpByIndex
 class Mod
 {
    public:
-    Mod()
+    INLINE_FUNC Mod()
     {
         this->setFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_KEEP_INVENTORY);
         this->setFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_EQUIP_BADGES);
@@ -202,7 +203,7 @@ class Mod
     WarpByIndex *getWarpByIndexPtr() { return &this->warpByIndex; }
     WarpByEvent *getWarpByEventPtr() { return &this->warpByEvent; }
 
-    bool flagIsSet(uint32_t flag) const
+    INLINE_FUNC bool flagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -218,7 +219,7 @@ class Mod
         return ret;
     }
 
-    void setFlag(uint32_t flag)
+    INLINE_FUNC void setFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -232,7 +233,7 @@ class Mod
         SET_FLAG(this->flags, flag);
     }
 
-    void clearFlag(uint32_t flag)
+    INLINE_FUNC void clearFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -246,7 +247,7 @@ class Mod
         CLEAR_FLAG(this->flags, flag);
     }
 
-    bool toggleFlag(uint32_t flag)
+    INLINE_FUNC bool toggleFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -261,7 +262,7 @@ class Mod
         return this->flagIsSet(flag);
     }
 
-    bool saveFlagIsSet(uint32_t flag) const
+    INLINE_FUNC bool saveFlagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -277,7 +278,7 @@ class Mod
         return ret;
     }
 
-    void setSaveFlag(uint32_t flag)
+    INLINE_FUNC void setSaveFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -291,7 +292,7 @@ class Mod
         SET_FLAG(this->saveFlags, flag);
     }
 
-    void clearSaveFlag(uint32_t flag)
+    INLINE_FUNC void clearSaveFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -305,7 +306,7 @@ class Mod
         CLEAR_FLAG(this->saveFlags, flag);
     }
 
-    bool toggleSaveFlag(uint32_t flag)
+    INLINE_FUNC bool toggleSaveFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;

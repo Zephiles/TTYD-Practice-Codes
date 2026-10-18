@@ -1,6 +1,7 @@
 #ifndef MENUS_ROOT_MENU_H
 #define MENUS_ROOT_MENU_H
 
+#include "inline.h"
 #include "classes/menu.h"
 #include "classes/window.h"
 #include "classes/errorWindow.h"
@@ -10,7 +11,7 @@ extern Window *gRootWindow;
 class RootMenu
 {
    public:
-    RootMenu(Menu *menuPtr, const char *battlesErrorMessage)
+    INLINE_FUNC RootMenu(Menu *menuPtr, const char *battlesErrorMessage)
     {
         this->rootMenu = menuPtr;
         this->initErrorWindow(battlesErrorMessage);
@@ -18,7 +19,7 @@ class RootMenu
 
     ~RootMenu() {}
 
-    void initErrorWindow(const char *battlesErrorMessage)
+    INLINE_FUNC void initErrorWindow(const char *battlesErrorMessage)
     {
         const Window *rootWindowPtr = gRootWindow;
         ErrorWindow *errorWindowPtr = &this->errorWindow;

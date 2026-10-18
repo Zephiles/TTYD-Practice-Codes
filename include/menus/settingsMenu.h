@@ -1,6 +1,7 @@
 #ifndef MENUS_SETTINGS_MENU_H
 #define MENUS_SETTINGS_MENU_H
 
+#include "inline.h"
 #include "gc/card.h"
 #include "classes/menu.h"
 #include "classes/valueEditor.h"
@@ -24,7 +25,7 @@ class SettingsMenu
 
     int32_t getMemoryCardSlot() const { return static_cast<int32_t>(this->memoryCardSlot); }
 
-    void toggleMemoryCardSlot()
+    INLINE_FUNC void toggleMemoryCardSlot()
     {
         if (this->memoryCardSlot == CARD_SLOT_A)
         {

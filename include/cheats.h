@@ -228,7 +228,7 @@ class SpawnItemCheat
 
     ValueEditor *getValueEditorPtr() const { return this->valueEditor; }
 
-    ValueEditor *allocMemoryForValueEditor()
+    INLINE_FUNC ValueEditor *allocMemoryForValueEditor()
     {
         // Failsafe: Make sure memory is not already allocated for it
         ValueEditor *valueEditorPtr = this->valueEditor;
@@ -242,7 +242,7 @@ class SpawnItemCheat
         return valueEditorPtr;
     }
 
-    ValueEditor *freeValueEditor()
+    INLINE_FUNC ValueEditor *freeValueEditor()
     {
         ValueEditor *valueEditorPtr = this->valueEditor;
         if (valueEditorPtr)
@@ -288,7 +288,7 @@ class FrameAdvanceCheat
     FrameAdvanceCheat() {}
     ~FrameAdvanceCheat() {}
 
-    FrameAdvancePrevInputs *allocMemoryForPrevInputs()
+    INLINE_FUNC FrameAdvancePrevInputs *allocMemoryForPrevInputs()
     {
         // Allocate memory for prevInputs if not already allocated
         FrameAdvancePrevInputs *prevInputs = this->prevInputs;
@@ -302,7 +302,7 @@ class FrameAdvanceCheat
         return prevInputs;
     }
 
-    FrameAdvancePrevInputs *freePrevInputs()
+    INLINE_FUNC FrameAdvancePrevInputs *freePrevInputs()
     {
         FrameAdvancePrevInputs *prevInputsPtr = this->prevInputs;
         if (prevInputsPtr)
@@ -315,7 +315,7 @@ class FrameAdvanceCheat
         return prevInputsPtr;
     }
 
-    void clearAllInputs()
+    INLINE_FUNC void clearAllInputs()
     {
         FrameAdvancePrevInputs *prevInputs = this->prevInputs;
         if (prevInputs)
@@ -335,7 +335,7 @@ class LockFlagsCheat
     LockFlagsCheat() {}
     ~LockFlagsCheat() {}
 
-    uint8_t *getPrevMemoryPtr(uint32_t region)
+    INLINE_FUNC uint8_t *getPrevMemoryPtr(uint32_t region)
     {
         // Make sure the region is valid
         if (region >= TOTAL_LOCK_FLAGS_OPTIONS)
@@ -346,7 +346,7 @@ class LockFlagsCheat
         return this->prevMemory[region];
     }
 
-    uint8_t *allocMemoryForPrevMemory(uint32_t region, uint32_t size)
+    INLINE_FUNC uint8_t *allocMemoryForPrevMemory(uint32_t region, uint32_t size)
     {
         // Make sure the region is valid
         if (region >= TOTAL_LOCK_FLAGS_OPTIONS)
@@ -366,7 +366,7 @@ class LockFlagsCheat
         return prevMemoryPtr;
     }
 
-    uint8_t *freePrevMemory(uint32_t region)
+    INLINE_FUNC uint8_t *freePrevMemory(uint32_t region)
     {
         // Make sure the region is valid
         if (region >= TOTAL_LOCK_FLAGS_OPTIONS)
@@ -424,7 +424,7 @@ class Cheats
     bool checkCheatButtonComboDemo(uint32_t cheatWithCombo) const;
     uint32_t getCheatButtonCombo(uint32_t cheatWithCombo);
     void setCheatButtonCombo(uint32_t cheatWithCombo, uint32_t buttonCombo);
-    INLINE_FUNC const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
+    const uint32_t *getEnabledFlagsPtr() const { return this->enabledFlags; }
     uint16_t *getButtonCombosPtr() { return this->buttonCombos; }
 
     SaveLoadCoordinatesCheats *getSaveLoadCoordinatesCheatsPtr() { return &this->saveLoadCoordinates; }
@@ -438,7 +438,7 @@ class Cheats
     ClearAreaFlagsCheat *getClearAreaFlagsCheat() { return &this->clearAreaFlags; }
     LockFlagsCheat *getLockFlagsCheatPtr() { return &this->lockFlags; }
 
-    bool enabledFlagIsSet(uint32_t flag) const
+    INLINE_FUNC bool enabledFlagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -454,7 +454,7 @@ class Cheats
         return ret;
     }
 
-    void setEnabledFlag(uint32_t flag)
+    INLINE_FUNC void setEnabledFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -468,7 +468,7 @@ class Cheats
         SET_FLAG(this->enabledFlags, flag);
     }
 
-    void clearEnabledFlag(uint32_t flag)
+    INLINE_FUNC void clearEnabledFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -482,7 +482,7 @@ class Cheats
         CLEAR_FLAG(this->enabledFlags, flag);
     }
 
-    bool toggleEnabledFlag(uint32_t flag)
+    INLINE_FUNC bool toggleEnabledFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -497,7 +497,7 @@ class Cheats
         return this->enabledFlagIsSet(flag);
     }
 
-    bool miscFlagIsSet(uint32_t flag) const
+    INLINE_FUNC bool miscFlagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -513,7 +513,7 @@ class Cheats
         return ret;
     }
 
-    void setMiscFlag(uint32_t flag)
+    INLINE_FUNC void setMiscFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -527,7 +527,7 @@ class Cheats
         SET_FLAG(this->miscFlags, flag);
     }
 
-    void clearMiscFlag(uint32_t flag)
+    INLINE_FUNC void clearMiscFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -541,7 +541,7 @@ class Cheats
         CLEAR_FLAG(this->miscFlags, flag);
     }
 
-    bool toggleMiscFlag(uint32_t flag)
+    INLINE_FUNC bool toggleMiscFlag(uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;

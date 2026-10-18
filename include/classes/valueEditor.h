@@ -2,6 +2,7 @@
 #define CLASSES_VALUEEDITOR_H
 
 #include "mod.h"
+#include "inline.h"
 #include "classes/window.h"
 #include "classes/menu.h"
 
@@ -211,7 +212,7 @@ class ValueEditor
      *
      * @returns `true` if the flag is set, otherwise `false`.
      */
-    bool flagIsSet(uint32_t flag) const
+    INLINE_FUNC bool flagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
@@ -233,7 +234,7 @@ class ValueEditor
      *
      * @returns The updated `flags` parameter value.
      */
-    static uint32_t setFlag(uint32_t flags, uint32_t flag)
+    static INLINE_FUNC uint32_t setFlag(uint32_t flags, uint32_t flag)
     {
         // Make sure the flag is valid
         constexpr uint32_t maxFlags = sizeof(flags) * 8;

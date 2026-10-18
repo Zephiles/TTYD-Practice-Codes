@@ -2,6 +2,7 @@
 #define MEMORY_EDITOR_H
 
 #include "cxx.h"
+#include "inline.h"
 #include "classes/valueEditor.h"
 #include "classes/menu.h"
 #include "misc/utils.h"
@@ -68,7 +69,7 @@ class MemoryEditor
 
     ValueEditor *getValueEditorPtr() { return this->valueEditor; }
 
-    void freeValueEditor()
+    INLINE_FUNC void freeValueEditor()
     {
         ValueEditor *valueEditorPtr = this->valueEditor;
         if (valueEditorPtr)
@@ -96,7 +97,7 @@ class MemoryEditor
     void displayMemoryEditor() { this->displayed = true; }
     void hideMemoryEditor() { this->displayed = false; }
 
-    void toggleMemoryEditorDisplayed()
+    INLINE_FUNC void toggleMemoryEditorDisplayed()
     {
         const bool displayed = this->displayed;
         this->displayed = !displayed;
@@ -105,7 +106,7 @@ class MemoryEditor
     void controls(MenuButtonInput button);
     void draw() const;
 
-    bool enabledFlagIsSet(uint32_t enabledFlag) const
+    INLINE_FUNC bool enabledFlagIsSet(uint32_t enabledFlag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -121,7 +122,7 @@ class MemoryEditor
         return ret;
     }
 
-    void setEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC void setEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -135,7 +136,7 @@ class MemoryEditor
         SET_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    void clearEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC void clearEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -149,7 +150,7 @@ class MemoryEditor
         CLEAR_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    bool toggleEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC bool toggleEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;

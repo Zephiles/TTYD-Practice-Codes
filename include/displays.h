@@ -3,6 +3,7 @@
 
 #include "cxx.h"
 #include "mod.h"
+#include "inline.h"
 #include "drawText.h"
 #include "gc/types.h"
 #include "gc/OSAlloc.h"
@@ -345,7 +346,7 @@ class MemoryUsageDisplay
    public:
     MemoryUsageDisplay() {}
 
-    void freeMemoryUsageBuffer()
+    INLINE_FUNC void freeMemoryUsageBuffer()
     {
         char *buf = this->memoryUsageBuffer;
         if (buf)
@@ -355,7 +356,7 @@ class MemoryUsageDisplay
         }
     }
 
-    void freeHeapCorruptionBuffer()
+    INLINE_FUNC void freeHeapCorruptionBuffer()
     {
         char *buf = this->heapCorruptionBuffer;
         if (buf)
@@ -365,7 +366,7 @@ class MemoryUsageDisplay
         }
     }
 
-    ~MemoryUsageDisplay()
+    INLINE_FUNC ~MemoryUsageDisplay()
     {
         this->freeMemoryUsageBuffer();
         this->freeHeapCorruptionBuffer();
@@ -374,7 +375,7 @@ class MemoryUsageDisplay
     char *getMemoryUsageBufferPtr() { return this->memoryUsageBuffer; }
     bool shouldDrawMemoryUsageBuffer() const { return this->memoryUsageBuffer != nullptr; }
 
-    char *initMemoryUsageBuffer()
+    INLINE_FUNC char *initMemoryUsageBuffer()
     {
         char *buf = this->memoryUsageBuffer;
         if (!buf)
@@ -386,7 +387,7 @@ class MemoryUsageDisplay
         return buf;
     }
 
-    char *initMemoryUsageBufferEntry(uint32_t slot)
+    INLINE_FUNC char *initMemoryUsageBufferEntry(uint32_t slot)
     {
         char *buf = this->initMemoryUsageBuffer();
         return &buf[MEMORY_USAGE_BUFFER_SINGLE_LINE * slot];
@@ -395,7 +396,7 @@ class MemoryUsageDisplay
     char *getHeapCorruptionBufferPtr() { return this->heapCorruptionBuffer; }
     bool shouldDrawHeapCorruptionBuffer() const { return this->heapCorruptionBuffer != nullptr; }
 
-    char *initHeapCorruptionBuffer()
+    INLINE_FUNC char *initHeapCorruptionBuffer()
     {
         char *buf = this->heapCorruptionBuffer;
         if (!buf)
@@ -407,7 +408,7 @@ class MemoryUsageDisplay
         return buf;
     }
 
-    char *initHeapCorruptionBufferEntry(uint32_t index)
+    INLINE_FUNC char *initHeapCorruptionBufferEntry(uint32_t index)
     {
         char *buf = this->initHeapCorruptionBuffer();
         return &buf[index];
@@ -416,7 +417,7 @@ class MemoryUsageDisplay
     int32_t getHeapCorruptionBufferIndex() const { return this->heapCorruptioBufferIndex; }
     void setHeapCorruptionBufferIndex(int32_t index) { this->heapCorruptioBufferIndex = static_cast<int16_t>(index); }
 
-    bool verifyHeapCorruptionBufferIndex() const
+    INLINE_FUNC bool verifyHeapCorruptionBufferIndex() const
     {
         const int32_t index = this->heapCorruptioBufferIndex;
         return (index >= 0) && (index < MEMORY_USAGE_HEAP_CORRUPTION_BUFFER_SIZE);
@@ -548,7 +549,7 @@ class AMWCoordinateWriteAddressDisplay
         return vanillaPointerRaw;
     }
 
-    void init(uint32_t addressRaw, AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
+    INLINE_FUNC void init(uint32_t addressRaw, AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {
         this->addressWrittenToRaw = addressRaw;
         this->functionCaller = funcCaller;
@@ -623,7 +624,7 @@ class HitCheckVisualizationDisplay
         this->missesColor = 0x00D000E0; // Green
     }
 
-    void freeBuffer()
+    INLINE_FUNC void freeBuffer()
     {
         HitCheckResult *buf = this->buffer;
         if (buf)
@@ -635,7 +636,7 @@ class HitCheckVisualizationDisplay
 
     ~HitCheckVisualizationDisplay() { this->freeBuffer(); }
 
-    HitCheckResult *initBufferPtr()
+    INLINE_FUNC HitCheckResult *initBufferPtr()
     {
         HitCheckResult *buf = this->buffer;
         if (!buf)
@@ -647,7 +648,7 @@ class HitCheckVisualizationDisplay
         return buf;
     }
 
-    HitCheckResult *getBufferSlotPtr(uint32_t slot)
+    INLINE_FUNC HitCheckResult *getBufferSlotPtr(uint32_t slot)
     {
         // Make sure the slot is valid
         if (slot >= HIT_CHECK_BUFFER_CAPACITY)
@@ -711,7 +712,7 @@ class GuardSuperguardTimingDisplay
     uint32_t getTimer() const { return this->timer; }
     void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
 
-    void decrementTimer()
+    INLINE_FUNC void decrementTimer()
     {
         const uint32_t timer = this->timer;
         if (timer > 0)
@@ -805,7 +806,7 @@ class ArbitraryMemoryWriteDisplay
     void resetXNautTimer() { this->xNautTimer = 0; }
 #endif
 
-    void resetTimers()
+    INLINE_FUNC void resetTimers()
     {
         this->resetPauseTimer();
 
@@ -994,7 +995,7 @@ class Displays
     void decrementDefaultPosTopLeft(float value) { this->defaultPosYTopLeft -= value; }
     void decrementDefaultPosErrorText(float value) { this->defaultPosYErrors -= value; }
 
-    bool enabledFlagIsSet(uint32_t enabledFlag) const
+    INLINE_FUNC bool enabledFlagIsSet(uint32_t enabledFlag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1010,7 +1011,7 @@ class Displays
         return ret;
     }
 
-    void setEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC void setEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1024,7 +1025,7 @@ class Displays
         SET_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    void clearEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC void clearEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1038,7 +1039,7 @@ class Displays
         CLEAR_FLAG(this->enabledFlags, enabledFlag);
     }
 
-    bool toggleEnabledFlag(uint32_t enabledFlag)
+    INLINE_FUNC bool toggleEnabledFlag(uint32_t enabledFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1053,7 +1054,7 @@ class Displays
         return this->enabledFlagIsSet(enabledFlag);
     }
 
-    bool manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
+    INLINE_FUNC bool manuallyPositionFlagIsSet(uint32_t manuallyPositionFlag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1069,7 +1070,7 @@ class Displays
         return ret;
     }
 
-    void setManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    INLINE_FUNC void setManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1083,7 +1084,7 @@ class Displays
         SET_FLAG(this->manuallyPositionFlags, manuallyPositionFlag);
     }
 
-    void clearManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    INLINE_FUNC void clearManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1097,7 +1098,7 @@ class Displays
         CLEAR_FLAG(this->manuallyPositionFlags, manuallyPositionFlag);
     }
 
-    bool toggleManuallyPositionFlag(uint32_t manuallyPositionFlag)
+    INLINE_FUNC bool toggleManuallyPositionFlag(uint32_t manuallyPositionFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1112,7 +1113,7 @@ class Displays
         return this->manuallyPositionFlagIsSet(manuallyPositionFlag);
     }
 
-    bool miscFlagIsSet(uint32_t miscFlag) const
+    INLINE_FUNC bool miscFlagIsSet(uint32_t miscFlag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1128,7 +1129,7 @@ class Displays
         return ret;
     }
 
-    void setMiscFlag(uint32_t miscFlag)
+    INLINE_FUNC void setMiscFlag(uint32_t miscFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1142,7 +1143,7 @@ class Displays
         SET_FLAG(this->miscFlags, miscFlag);
     }
 
-    void clearMiscFlag(uint32_t miscFlag)
+    INLINE_FUNC void clearMiscFlag(uint32_t miscFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1156,7 +1157,7 @@ class Displays
         CLEAR_FLAG(this->miscFlags, miscFlag);
     }
 
-    bool toggleMiscFlag(uint32_t miscFlag)
+    INLINE_FUNC bool toggleMiscFlag(uint32_t miscFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1171,7 +1172,7 @@ class Displays
         return this->miscFlagIsSet(miscFlag);
     }
 
-    bool shouldDrawFlagIsSet(uint32_t shouldDrawFlag) const
+    INLINE_FUNC bool shouldDrawFlagIsSet(uint32_t shouldDrawFlag) const
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1187,7 +1188,7 @@ class Displays
         return ret;
     }
 
-    void setShouldDrawFlag(uint32_t shouldDrawFlag)
+    INLINE_FUNC void setShouldDrawFlag(uint32_t shouldDrawFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1201,7 +1202,7 @@ class Displays
         SET_FLAG(this->shouldDrawFlags, shouldDrawFlag);
     }
 
-    void clearShouldDrawFlag(uint32_t shouldDrawFlag)
+    INLINE_FUNC void clearShouldDrawFlag(uint32_t shouldDrawFlag)
     {
         // Make sure the flag is valid
         constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -1230,7 +1231,7 @@ class Displays
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
     BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
 
-    ErrorTextDisplay *getErrorTextDisplayPtr(uint32_t index)
+    INLINE_FUNC ErrorTextDisplay *getErrorTextDisplayPtr(uint32_t index)
     {
         // Make sure the index is valid
         if (index >= TOTAL_ERROR_TEXT_DISPLAYS)

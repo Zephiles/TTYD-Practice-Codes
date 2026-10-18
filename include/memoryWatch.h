@@ -2,6 +2,7 @@
 #define MEMORY_WATCH_H
 
 #include "mod.h"
+#include "inline.h"
 
 #include <cstdint>
 
@@ -26,7 +27,7 @@ class MemoryWatchEntry
     uint8_t *getAddressPtr() const { return this->address; }
     void setAddress(uint8_t *address) { this->address = address; }
 
-    void freeAddressOffsets()
+    INLINE_FUNC void freeAddressOffsets()
     {
         int32_t *addressOffsetsPtr = this->addressOffsets;
         if (addressOffsetsPtr)
@@ -36,7 +37,7 @@ class MemoryWatchEntry
         }
     }
 
-    uint32_t initAddressOffsetsPtr(uint32_t totalOffsets)
+    INLINE_FUNC uint32_t initAddressOffsetsPtr(uint32_t totalOffsets)
     {
         // Make sure totalOffsets is valid
         if (totalOffsets > MAX_MEMORY_WATCH_ADDRESS_OFFSETS)
@@ -55,7 +56,7 @@ class MemoryWatchEntry
         return totalOffsets;
     }
 
-    int32_t getAddressOffset(uint32_t index)
+    INLINE_FUNC int32_t getAddressOffset(uint32_t index)
     {
         // Make sure the index is valid
         if (index >= MAX_MEMORY_WATCH_ADDRESS_OFFSETS)
@@ -91,7 +92,7 @@ class MemoryWatchEntry
     bool shouldShowAsHex() const { return this->showAsHex; }
     void setShowAsHex(bool showAsHex) { this->showAsHex = showAsHex; }
 
-    bool toggleShowAsHex()
+    INLINE_FUNC bool toggleShowAsHex()
     {
         const bool showAsHex = !this->showAsHex;
         this->showAsHex = showAsHex;
@@ -101,7 +102,7 @@ class MemoryWatchEntry
     bool shouldDisplay() const { return this->display; }
     void setDisplay(bool display) { this->display = display; }
 
-    bool toggleDisplay()
+    INLINE_FUNC bool toggleDisplay()
     {
         const bool display = !this->display;
         this->display = display;
@@ -141,7 +142,7 @@ class MemoryWatch
 
     MemoryWatchEntry *getEntriesPtr() { return this->entries; }
 
-    MemoryWatchEntry *reinitEntries(uint32_t totalWatches)
+    INLINE_FUNC MemoryWatchEntry *reinitEntries(uint32_t totalWatches)
     {
         // If memory is already allocated for the entries, then free it
         const uint32_t totalEntries = this->totalEntries;

@@ -1,6 +1,7 @@
 #ifndef CLASSES_OPTION_SELECTOR_H
 #define CLASSES_OPTION_SELECTOR_H
 
+#include "inline.h"
 #include "classes/window.h"
 #include "classes/menu.h"
 
@@ -132,7 +133,7 @@ class OptionSelector
      * parameter when it is not needed, which saves a bit of memory.
      */
     template<typename SelectOptionFunc, typename CancelFunc>
-    void startDrawing(SelectOptionFunc selectOptionFunc, CancelFunc cancelFunc)
+    INLINE_FUNC void startDrawing(SelectOptionFunc selectOptionFunc, CancelFunc cancelFunc)
     {
         OptionSelectorSelectOptionFunc tempSelectOptionFunc;
         OptionSelectorCancelFunc tempCancelFunc;
