@@ -203,8 +203,8 @@ class ReloadRoomCheat
     ReloadRoomCheat() {}
     ~ReloadRoomCheat() {}
 
-    uint32_t getNewBeroSize() const { return sizeof(this->newBero); }
-    uint32_t getNewMapSize() const { return sizeof(this->newMap); }
+    uint32_t getNewBeroSize() const { return sizeof(ReloadRoomCheat::newBero); }
+    uint32_t getNewMapSize() const { return sizeof(ReloadRoomCheat::newMap); }
 
     char *getNewBeroPtr() { return &this->newBero[0]; }
     char *getNewMapPtr() { return &this->newMap[0]; }

@@ -47,7 +47,7 @@ void NameEditor::init(const Window *parentWindow,
     this->applyNullTerminator = applyNullTerminator;
 
     // Make sure nameSize does not exceed the size of the buffer
-    constexpr uint32_t bufferSize = sizeof(this->buffer);
+    constexpr uint32_t bufferSize = sizeof(NameEditor::buffer);
     if (nameSize > bufferSize)
     {
         nameSize = bufferSize;

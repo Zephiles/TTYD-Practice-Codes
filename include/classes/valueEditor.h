@@ -215,7 +215,7 @@ class ValueEditor
     INLINE_FUNC bool flagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
-        constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
+        constexpr uint32_t maxFlags = sizeof(ValueEditor::flags) * 8;
         if (flag >= maxFlags)
         {
             return false;

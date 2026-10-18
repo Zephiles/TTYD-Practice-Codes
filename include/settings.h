@@ -38,8 +38,8 @@ class PracticeCodesDataHeader
 
     INLINE_FUNC void setData(const char *title, const char *description)
     {
-        strncpy(this->title, title, sizeof(this->title));
-        strncpy(this->description, description, sizeof(this->description));
+        strncpy(this->title, title, sizeof(PracticeCodesDataHeader::title));
+        strncpy(this->description, description, sizeof(PracticeCodesDataHeader::description));
     }
 
    private:

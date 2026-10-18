@@ -36,7 +36,7 @@ void MemoryWatchEntry::init(uint32_t entryId)
     this->type = VariableType::string;
     this->scale = DISPLAYS_DEFAULT_SCALE;
     this->address = reinterpret_cast<uint8_t *>(0x80000000);
-    snprintf(this->name, sizeof(this->name), "Watch %" PRIu32, entryId);
+    snprintf(this->name, sizeof(MemoryWatchEntry::name), "Watch %" PRIu32, entryId);
 }
 
 bool MemoryWatchEntry::addAddressOffset()

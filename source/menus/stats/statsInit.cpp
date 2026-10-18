@@ -72,7 +72,7 @@ void StatsMenu::initPartnerFollowerErrorWindow(bool drawForPartner)
     }
 
     // Set up the main text
-    char buf[sizeof(this->errorMessage)];
+    char buf[sizeof(StatsMenu::errorMessage)];
 
     snprintf(buf,
              sizeof(buf),
@@ -87,7 +87,7 @@ void StatsMenu::initErrorWindow(const char *message)
 {
     // Set up the main text
     char *errorMessagePtr = this->errorMessage;
-    copyStringAndNullTerminate(errorMessagePtr, sizeof(this->errorMessage), message);
+    copyStringAndNullTerminate(errorMessagePtr, sizeof(StatsMenu::errorMessage), message);
 
     // Initialize the error window
     ErrorWindow *errorWindowPtr = &this->errorWindow;

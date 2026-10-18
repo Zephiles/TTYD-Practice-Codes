@@ -98,10 +98,10 @@ class CustomStateEntry
     bool shouldBeInBoatMode() const { return this->inBoatMode; }
 
     char *getCurrentMapPtr() { return this->currentMap; }
-    uint32_t getCurrentMapSize() const { return sizeof(this->currentMap); }
+    uint32_t getCurrentMapSize() const { return sizeof(CustomStateEntry::currentMap); }
 
     char *getCurrentBeroPtr() { return this->currentBero; }
-    uint32_t getCurrentBeroSize() const { return sizeof(this->currentBero); }
+    uint32_t getCurrentBeroSize() const { return sizeof(CustomStateEntry::currentBero); }
 
     char *getStateNamePtr() { return this->stateName; }
     void setNewStateName(const char *newStateNamePtr);

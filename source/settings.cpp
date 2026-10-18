@@ -694,15 +694,15 @@ uint32_t CustomStatesSettingsData::getData(uint32_t totalStates, uint32_t stateN
 
             offset += marioDataPtr->getData(currentEntryPtr->getMarioDataPtr(), totalStates); // Some of Mario's data
 
-            offset += sizeof(this->partyData);   // Pouch data
-            offset += sizeof(uint16_t);          // Total inventory items
-            offset += sizeof(uint16_t);          // Sequence position
-            offset += sizeof(PartyMembers);      // Partner out
-            offset += sizeof(PartyMembers);      // Follower out
-            offset += sizeof(bool);              // In boat mode
-            offset += sizeof(this->currentMap);  // Current map
-            offset += sizeof(this->currentBero); // Current bero
-            offset += stateNameLength;           // State name
+            offset += sizeof(CustomStatesSettingsData::partyData);   // Pouch data
+            offset += sizeof(uint16_t);                              // Total inventory items
+            offset += sizeof(uint16_t);                              // Sequence position
+            offset += sizeof(PartyMembers);                          // Partner out
+            offset += sizeof(PartyMembers);                          // Follower out
+            offset += sizeof(bool);                                  // In boat mode
+            offset += sizeof(CustomStatesSettingsData::currentMap);  // Current map
+            offset += sizeof(CustomStatesSettingsData::currentBero); // Current bero
+            offset += stateNameLength;                               // State name
 
             // Make sure offset is aligned to 4 bytes, since the class is aligned to 4 bytes
             offset = roundUp(offset, sizeof(uint32_t));
@@ -717,7 +717,7 @@ uint32_t CustomStatesSettingsData::getData(uint32_t totalStates, uint32_t stateN
         offset += marioDataPtr->getData(currentEntryPtr->getMarioDataPtr(), totalStates);
 
         // Pouch data
-        constexpr uint32_t pouchDataSize = sizeof(this->partyData);
+        constexpr uint32_t pouchDataSize = sizeof(CustomStatesSettingsData::partyData);
         const PouchData *pouchDataPtr = PTR_CAST_TYPE_ADD_OFFSET(const PouchData *, this, offset);
         memcpy(currentEntryPtr->getPouchPartyDataPtr(), pouchDataPtr, pouchDataSize);
         offset += pouchDataSize;
@@ -748,13 +748,13 @@ uint32_t CustomStatesSettingsData::getData(uint32_t totalStates, uint32_t stateN
         offset += sizeof(bool);
 
         // Current map
-        constexpr uint32_t currentMapSize = sizeof(this->currentMap);
+        constexpr uint32_t currentMapSize = sizeof(CustomStatesSettingsData::currentMap);
         const char *currentMapPtr = PTR_CAST_TYPE_ADD_OFFSET(const char *, this, offset);
         strncpy(currentEntryPtr->getCurrentMapPtr(), currentMapPtr, currentMapSize);
         offset += currentMapSize;
 
         // Current bero
-        constexpr uint32_t currentBeroSize = sizeof(this->currentBero);
+        constexpr uint32_t currentBeroSize = sizeof(CustomStatesSettingsData::currentBero);
         const char *currentBeroPtr = PTR_CAST_TYPE_ADD_OFFSET(const char *, this, offset);
         strncpy(currentEntryPtr->getCurrentBeroPtr(), currentBeroPtr, currentBeroSize);
         offset += currentBeroSize;
@@ -804,7 +804,7 @@ uint32_t CustomStatesSettingsData::setData(CustomStateEntry *entryPtr)
     constexpr uint32_t marioDataSize = sizeof(CustomStateMarioData);
     memcpy(&this->marioData, entryPtr->getMarioDataPtr(), marioDataSize);
 
-    constexpr uint32_t pouchDataSize = sizeof(this->partyData);
+    constexpr uint32_t pouchDataSize = sizeof(CustomStatesSettingsData::partyData);
     memcpy(this->partyData, entryPtr->getPouchPartyDataPtr(), pouchDataSize);
 
     const uint32_t totalItems = entryPtr->getTotalInventoryItems();
@@ -818,10 +818,10 @@ uint32_t CustomStatesSettingsData::setData(CustomStateEntry *entryPtr)
     this->followerOut = entryPtr->getFollowerOut();
     this->inBoatMode = entryPtr->shouldBeInBoatMode();
 
-    constexpr uint32_t currentMapSize = sizeof(this->currentMap);
+    constexpr uint32_t currentMapSize = sizeof(CustomStatesSettingsData::currentMap);
     strncpy(this->currentMap, entryPtr->getCurrentMapPtr(), currentMapSize);
 
-    constexpr uint32_t currentBeroSize = sizeof(this->currentBero);
+    constexpr uint32_t currentBeroSize = sizeof(CustomStatesSettingsData::currentBero);
     strncpy(this->currentBero, entryPtr->getCurrentBeroPtr(), currentBeroSize);
 
     strncpy(this->stateName, entryPtr->getStateNamePtr(), CUSTOM_STATE_NAME_SIZE);

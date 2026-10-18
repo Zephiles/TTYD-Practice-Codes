@@ -181,7 +181,7 @@ class Menu
     bool flagIsSet(uint32_t flag) const
     {
         // Make sure the flag is valid
-        constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
+        constexpr uint32_t maxFlags = sizeof(Menu::flags) * 8;
         if (flag >= maxFlags)
         {
             return false;
@@ -202,7 +202,7 @@ class Menu
     void setFlag(uint32_t flag)
     {
         // Make sure the flag is valid
-        constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
+        constexpr uint32_t maxFlags = sizeof(Menu::flags) * 8;
         if (flag >= maxFlags)
         {
             return;
@@ -221,7 +221,7 @@ class Menu
     void clearFlag(uint32_t flag)
     {
         // Make sure the flag is valid
-        constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
+        constexpr uint32_t maxFlags = sizeof(Menu::flags) * 8;
         if (flag >= maxFlags)
         {
             return;
@@ -243,7 +243,7 @@ class Menu
     bool toggleFlag(uint32_t flag)
     {
         // Make sure the flag is valid
-        constexpr uint32_t maxFlags = sizeof(this->flags) * 8;
+        constexpr uint32_t maxFlags = sizeof(Menu::flags) * 8;
         if (flag >= maxFlags)
         {
             return false;

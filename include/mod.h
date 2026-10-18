@@ -38,7 +38,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.3.1-dev2"
+#define VERSION_STRING "v4.3.1-dev3"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -174,7 +174,7 @@ class WarpByIndex
     void setTotalEntrances(uint32_t entrances) { this->totalEntrances = static_cast<uint8_t>(entrances); }
 
     char *getUnusedMapNamePtr() { return this->unusedMapName; }
-    uint32_t getUnusedMapNameSize() const { return sizeof(this->unusedMapName); }
+    uint32_t getUnusedMapNameSize() const { return sizeof(WarpByIndex::unusedMapName); }
 
    private:
     const char *entranctList[WARP_BY_INDEX_ENTRANCE_LIST_SIZE];

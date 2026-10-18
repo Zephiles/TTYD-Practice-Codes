@@ -380,7 +380,7 @@ void ValueEditor::init(const void *valuePtr,
     const bool minAndMaxSet = minValuePtr && maxValuePtr;
 
     char *editorValuePtr = editorValue;
-    uint32_t editorValueSize = sizeof(this->editorValue);
+    uint32_t editorValueSize = sizeof(ValueEditor::editorValue);
 
     // Handle the values as ValueType
     const ValueType *newValuePtr = reinterpret_cast<const ValueType *>(valuePtr);
@@ -454,7 +454,7 @@ void ValueEditor::init(const void *valuePtr,
             editorValuePtr++;
             editorValueSize--;
 
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+            snprintf(format, sizeof(ValueEditor::format), tempFormat, maxDigits);
             snprintf(editorValuePtr, editorValueSize, format, value);
             break;
         }
@@ -521,7 +521,7 @@ void ValueEditor::init(const void *valuePtr,
             editorValuePtr++;
             editorValueSize--;
 
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+            snprintf(format, sizeof(ValueEditor::format), tempFormat, maxDigits);
             snprintf(editorValuePtr, editorValueSize, format, value);
             break;
         }
@@ -575,8 +575,8 @@ void ValueEditor::init(const void *valuePtr,
                 tempFormat = "%%0%" PRIu32 PRIu32;
             }
 
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
-            snprintf(this->editorValue, sizeof(this->editorValue), format, newValuePtr->u32);
+            snprintf(format, sizeof(ValueEditor::format), tempFormat, maxDigits);
+            snprintf(this->editorValue, sizeof(ValueEditor::editorValue), format, newValuePtr->u32);
             break;
         }
         case VariableType::u64:
@@ -629,7 +629,7 @@ void ValueEditor::init(const void *valuePtr,
                 tempFormat = "%%0%" PRIu32 PRIu64;
             }
 
-            snprintf(format, sizeof(this->format), tempFormat, maxDigits);
+            snprintf(format, sizeof(ValueEditor::format), tempFormat, maxDigits);
             snprintf(editorValuePtr, editorValueSize, format, newValuePtr->u64);
             break;
         }
@@ -697,12 +697,18 @@ void ValueEditor::init(const void *valuePtr,
                 editorValueSize--;
             }
 
-            int32_t len = floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, value);
+            int32_t len =
+                floatToString(editorValuePtr, editorValueSize, format, sizeof(ValueEditor::format), maxDigits + 1, value);
 
             // Make sure an error didn't occur
             if (len <= 0)
             {
-                floatToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, minValue.f32);
+                floatToString(editorValuePtr,
+                              editorValueSize,
+                              format,
+                              sizeof(ValueEditor::format),
+                              maxDigits + 1,
+                              minValue.f32);
             }
             break;
         }
@@ -768,12 +774,18 @@ void ValueEditor::init(const void *valuePtr,
                 editorValueSize--;
             }
 
-            int32_t len = doubleToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, value);
+            int32_t len =
+                doubleToString(editorValuePtr, editorValueSize, format, sizeof(ValueEditor::format), maxDigits + 1, value);
 
             // Make sure an error didn't occur
             if (len <= 0)
             {
-                doubleToString(editorValuePtr, editorValueSize, format, sizeof(this->format), maxDigits + 1, minValue.f64);
+                doubleToString(editorValuePtr,
+                               editorValueSize,
+                               format,
+                               sizeof(ValueEditor::format),
+                               maxDigits + 1,
+                               minValue.f64);
             }
             break;
         }
@@ -784,7 +796,7 @@ void ValueEditor::init(const void *valuePtr,
     }
 
     // Set up the help text
-    constexpr uint32_t helpTextSize = sizeof(this->helpText);
+    constexpr uint32_t helpTextSize = sizeof(ValueEditor::helpText);
     char *helpText = this->helpText;
     int32_t len = 0;
 
@@ -1320,7 +1332,7 @@ void ValueEditor::adjustValue(bool increment)
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
     const uint32_t totalDigits = this->maxDigits;
 
-    uint32_t editorValueSize = sizeof(this->editorValue);
+    uint32_t editorValueSize = sizeof(ValueEditor::editorValue);
     char *editorValuePtr = editorValue;
     const char *format = this->format;
 
@@ -1685,7 +1697,7 @@ void ValueEditor::setValueToMin()
 {
     const char *format = this->format;
     char *editorValue = this->editorValue;
-    uint32_t editorValueSize = sizeof(this->editorValue);
+    uint32_t editorValueSize = sizeof(ValueEditor::editorValue);
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
 
     switch (this->type)
@@ -1735,13 +1747,13 @@ void ValueEditor::setValueToMin()
         case VariableType::u32:
         {
             const uint32_t minValue = this->minValue.u32;
-            snprintf(editorValue, sizeof(this->editorValue), format, minValue);
+            snprintf(editorValue, sizeof(ValueEditor::editorValue), format, minValue);
             break;
         }
         case VariableType::u64:
         {
             const uint64_t minValue = this->minValue.u64;
-            snprintf(editorValue, sizeof(this->editorValue), format, minValue);
+            snprintf(editorValue, sizeof(ValueEditor::editorValue), format, minValue);
             break;
         }
         case VariableType::f32:
@@ -1803,7 +1815,7 @@ void ValueEditor::setValueToMax()
 {
     const char *format = this->format;
     char *editorValue = this->editorValue;
-    uint32_t editorValueSize = sizeof(this->editorValue);
+    uint32_t editorValueSize = sizeof(ValueEditor::editorValue);
     const bool valueIsSigned = this->flagIsSet(ValueEditorFlag::VALUE_IS_SIGNED);
 
     switch (this->type)
@@ -1853,13 +1865,13 @@ void ValueEditor::setValueToMax()
         case VariableType::u32:
         {
             const uint32_t maxValue = this->maxValue.u32;
-            snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
+            snprintf(editorValue, sizeof(ValueEditor::editorValue), format, maxValue);
             break;
         }
         case VariableType::u64:
         {
             const uint64_t maxValue = this->maxValue.u64;
-            snprintf(editorValue, sizeof(this->editorValue), format, maxValue);
+            snprintf(editorValue, sizeof(ValueEditor::editorValue), format, maxValue);
             break;
         }
         case VariableType::f32:
