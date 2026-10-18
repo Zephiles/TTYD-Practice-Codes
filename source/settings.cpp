@@ -7,6 +7,7 @@
 #include "customState.h"
 #include "cxx.h"
 #include "gc/card.h"
+#include "menus/rootMenu.h"
 #include "misc/utils.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/party.h"
