@@ -576,7 +576,7 @@ const void *checkIndividualStandardHeap(const ChunkInfo *start, uint32_t heapSiz
     for (const ChunkInfo *currentChunk = start; currentChunk; currentChunk = currentChunk->next)
     {
         // Check pointer sanity
-        if (!ptrIsValid(const_cast<ChunkInfo *>(currentChunk)))
+        if (!ptrIsValid(currentChunk))
         {
             return currentChunk;
         }
@@ -607,7 +607,7 @@ const void *checkIndividualSmartHeap(const SmartAllocationData *start)
     for (const SmartAllocationData *currentChunk = start; currentChunk; currentChunk = currentChunk->pNext)
     {
         // Check pointer sanity
-        if (!ptrIsValid(const_cast<SmartAllocationData *>(currentChunk)))
+        if (!ptrIsValid(currentChunk))
         {
             return currentChunk;
         }
@@ -643,7 +643,7 @@ const void *checkIndividualMapHeap(const MapAllocEntry *start, uint32_t heapSize
     for (const MapAllocEntry *currentChunk = start; currentChunk; currentChunk = currentChunk->next)
     {
         // Check pointer sanity
-        if (!ptrIsValid(const_cast<MapAllocEntry *>(currentChunk)))
+        if (!ptrIsValid(currentChunk))
         {
             return currentChunk;
         }

@@ -64,7 +64,7 @@ static uint8_t *getDigitAddress(uint8_t *address, uint32_t numBytes, uint32_t cu
 static int32_t getDigitValue(const uint8_t *address, uint32_t numBytes, uint32_t currentDigit)
 {
     // Make sure the address is valid
-    if (!ptrIsValid(const_cast<uint8_t *>(address)))
+    if (!ptrIsValid(address))
     {
         return -1;
     }
@@ -98,7 +98,7 @@ static uint8_t *getAndVerifyDigitAddress(uint8_t *address, uint32_t numBytes, ui
     address = getDigitAddress(address, numBytes, currentDigit);
 
     // Make sure the address is valid
-    if (!ptrIsValid(const_cast<uint8_t *>(address)))
+    if (!ptrIsValid(address))
     {
         return nullptr;
     }
@@ -1081,7 +1081,7 @@ void MemoryEditor::draw() const
             if (this->checkIfAddressInHoverRange(digitAddress, selectedBytesCurrentDigit))
             {
                 // Check if the current digit address is valid
-                const bool digitAddressIsValid = ptrIsValid(const_cast<uint8_t *>(digitAddress));
+                const bool digitAddressIsValid = ptrIsValid(digitAddress);
 
                 // Check to see if an address has been selected
                 if (currentState >= MemoryEditorState::MEMORY_EDITOR_STATE_SELECTED_BYTES_TO_EDIT)

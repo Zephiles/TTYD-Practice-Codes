@@ -14,6 +14,7 @@
 #include "ttyd/mariost.h"
 
 #include <cstdint>
+#include <type_traits>
 
 // Used to specifiy what region of GameCube memory a pointer points to.
 enum PointerVerificationType
@@ -430,15 +431,22 @@ uint32_t ptrIsValid(void *ptr);
  *
  * @returns A value from the `PointerVerificationType` enum.
  *
- * @warning This function will not work correctly if a `const` pointer is passed in, so `const_cast` must be used if a `const`
- * pointer needs to be checked.
- *
  * @overload
  */
 template<typename Ptr>
 uint32_t ptrIsValid(Ptr ptr)
 {
-    return ptrIsValid(reinterpret_cast<void *>(ptr));
+    if constexpr (std::is_pointer_v<Ptr>)
+    {
+        // `ptr` may be a pointer to a const and/or volatile variable, so need to use `std::remove_pointer_t` and
+        // `std::remove_cv_t` to remove the const and/or volatile before casting to `void *`
+        using MainType = std::remove_cv_t<std::remove_pointer_t<Ptr>>;
+        return ptrIsValid(reinterpret_cast<void *>(const_cast<MainType *>(ptr)));
+    }
+    else
+    {
+        return ptrIsValid(reinterpret_cast<void *>(ptr));
+    }
 }
 
 /**
@@ -481,15 +489,22 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size);
  * @tparam ptr The pointer to the memory that will have its cache cleared.
  * @param size The amount of bytes that will have their cache cleared.
  *
- * @warning This function will not work correctly if a `const` pointer is passed in, so `const_cast` must be used if a `const`
- * pointer to some memory needs to have its cache cleared.
- *
  * @overload
  */
 template<typename Ptr>
 void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
 {
-    return clear_DC_IC_Cache(reinterpret_cast<void *>(ptr), size);
+    if constexpr (std::is_pointer_v<Ptr>)
+    {
+        // `ptr` may be a pointer to a const and/or volatile variable, so need to use `std::remove_pointer_t` and
+        // `std::remove_cv_t` to remove the const and/or volatile before casting to `void *`
+        using MainType = std::remove_cv_t<std::remove_pointer_t<Ptr>>;
+        return clear_DC_IC_Cache(reinterpret_cast<void *>(const_cast<MainType *>(ptr)), size);
+    }
+    else
+    {
+        return clear_DC_IC_Cache(reinterpret_cast<void *>(ptr), size);
+    }
 }
 
 #endif

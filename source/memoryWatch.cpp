@@ -287,7 +287,7 @@ void MemoryWatchEntry::getValueString(char *stringOut, uint32_t stringSize) cons
                     return;
                 }
 
-                if (ptrIsValid(const_cast<char *>(string)))
+                if (ptrIsValid(string))
                 {
                     const char currentChar = *string;
                     stringOut[i] = currentChar;
