@@ -438,10 +438,9 @@ INLINE_FUNC uint32_t ptrIsValid(Ptr ptr)
 {
     if constexpr (std::is_pointer_v<Ptr>)
     {
-        // `ptr` may be a pointer to a const and/or volatile variable, so need to use `std::remove_pointer_t` and
-        // `std::remove_cv_t` to remove the const and/or volatile before casting to `void *`
-        using MainType = std::remove_cv_t<std::remove_pointer_t<Ptr>>;
-        return ptrIsValid(reinterpret_cast<void *>(const_cast<MainType *>(ptr)));
+        // `ptr` may be a pointer to a const and/or volatile variable, so need to cast to `uintptr_t` to remove the const and/or
+        // volatile before casting to `void *`
+        return ptrIsValid(reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(ptr)));
     }
     else
     {
@@ -496,10 +495,9 @@ INLINE_FUNC void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
 {
     if constexpr (std::is_pointer_v<Ptr>)
     {
-        // `ptr` may be a pointer to a const and/or volatile variable, so need to use `std::remove_pointer_t` and
-        // `std::remove_cv_t` to remove the const and/or volatile before casting to `void *`
-        using MainType = std::remove_cv_t<std::remove_pointer_t<Ptr>>;
-        return clear_DC_IC_Cache(reinterpret_cast<void *>(const_cast<MainType *>(ptr)), size);
+        // `ptr` may be a pointer to a const and/or volatile variable, so need to cast to `uintptr_t` to remove the const and/or
+        // volatile before casting to `void *`
+        return clear_DC_IC_Cache(reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(ptr)), size);
     }
     else
     {
