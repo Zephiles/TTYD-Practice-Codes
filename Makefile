@@ -170,7 +170,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean_target:
 	@echo clean ... $(VERSION)
-	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
+	@rm -fr $(BUILD) $(OUTPUT).stripped.elf $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
 
 #---------------------------------------------------------------------------------
 else
@@ -188,10 +188,11 @@ $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
 %.rel: %.elf
-	@echo stripping elf ... $(notdir $(OUTPUT).elf)
-	@powerpc-eabi-strip --strip-debug --remove-section=.eh_frame* --remove-section=.comment* --remove-section=.gnu.* $(OUTPUT).elf
+	@# TODO: Move stripping elf to its own section
+	@echo stripping elf ... $(notdir $(basename $<).stripped.elf)
+	@powerpc-eabi-strip --strip-debug --remove-section=.eh_frame* --remove-section=.comment* --remove-section=.gnu.* $< -o $(basename $<).stripped.elf
 	@echo output ... $(notdir $@)
-	@$(ELF2REL) $< $(MAPFILE) $@
+	@$(ELF2REL) $(basename $<).stripped.elf $(MAPFILE) $@
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
