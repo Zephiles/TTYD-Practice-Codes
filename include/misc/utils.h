@@ -436,16 +436,22 @@ uint32_t ptrIsValid(void *ptr);
 template<typename Ptr>
 INLINE_FUNC uint32_t ptrIsValid(Ptr ptr)
 {
-    if constexpr (std::is_pointer_v<Ptr>)
+    // If `ptr` is const and/or volatile, then calling `ptrIsValid` with `ptr` casted to `void *` will not work, so it should be
+    // either casted to or moved into a temporary `uintptr_t` variable to remove the const and/or volatile
+    uintptr_t tempPtr;
+
+    if constexpr (std::is_pointer_v<std::decay_t<Ptr>>)
     {
-        // `ptr` may be a pointer to a const and/or volatile variable, so need to cast to `uintptr_t` to remove the const and/or
-        // volatile before casting to `void *`
-        return ptrIsValid(reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(ptr)));
+        // `ptr` may be a pointer to a const and/or volatile variable, so cast to remove the const and/or volatile
+        tempPtr = reinterpret_cast<uintptr_t>(ptr);
     }
     else
     {
-        return ptrIsValid(reinterpret_cast<void *>(ptr));
+        // Move `ptr` into a temporary `uintptr_t` variable to make sure its not const and/or volatile
+        tempPtr = ptr;
     }
+
+    return ptrIsValid(reinterpret_cast<void *>(tempPtr));
 }
 
 /**
@@ -493,16 +499,22 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size);
 template<typename Ptr>
 INLINE_FUNC void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
 {
-    if constexpr (std::is_pointer_v<Ptr>)
+    // If `ptr` is const and/or volatile, then calling `clear_DC_IC_Cache` with `ptr` casted to `void *` will not work, so it
+    // should be either casted to or moved into a temporary `uintptr_t` variable to remove the const and/or volatile
+    uintptr_t tempPtr;
+
+    if constexpr (std::is_pointer_v<std::decay_t<Ptr>>)
     {
-        // `ptr` may be a pointer to a const and/or volatile variable, so need to cast to `uintptr_t` to remove the const and/or
-        // volatile before casting to `void *`
-        return clear_DC_IC_Cache(reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(ptr)), size);
+        // `ptr` may be a pointer to a const and/or volatile variable, so cast to remove the const and/or volatile
+        tempPtr = reinterpret_cast<uintptr_t>(ptr);
     }
     else
     {
-        return clear_DC_IC_Cache(reinterpret_cast<void *>(ptr), size);
+        // Move `ptr` into a temporary `uintptr_t` variable to make sure its not const and/or volatile
+        tempPtr = ptr;
     }
+
+    return clear_DC_IC_Cache(reinterpret_cast<void *>(tempPtr), size);
 }
 
 #endif
