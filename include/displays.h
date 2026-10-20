@@ -440,7 +440,7 @@ class AMWCoordinateWriteAddressDisplay
 #ifdef TTYD_EU
     static uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller);
 #else
-    static INLINE_FUNC uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
+    INLINE_FUNC static uint32_t getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
     {
         // Return the pointer value that would be used under vanilla scenarios
         uint32_t vanillaPointerRaw = 0;
