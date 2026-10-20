@@ -434,7 +434,7 @@ uint32_t ptrIsValid(void *ptr);
  * @overload
  */
 template<typename Ptr>
-uint32_t ptrIsValid(Ptr ptr)
+INLINE_FUNC uint32_t ptrIsValid(Ptr ptr)
 {
     if constexpr (std::is_pointer_v<Ptr>)
     {
@@ -492,7 +492,7 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size);
  * @overload
  */
 template<typename Ptr>
-void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
+INLINE_FUNC void clear_DC_IC_Cache(Ptr ptr, uint32_t size)
 {
     if constexpr (std::is_pointer_v<Ptr>)
     {
