@@ -25,7 +25,7 @@ enum class CameraId : uint8_t
 // Taken from NWPlayer123's decomp:
 // https://github.com/NWPlayer123/PaperMario2/blob/master/include/drv/camdrv.h
 struct CameraEntry;
-typedef void (*CameraCallback)(CameraEntry *entry);
+using CameraCallback = void (*)(CameraEntry *entry);
 
 struct CameraEntry
 {

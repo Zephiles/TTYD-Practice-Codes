@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-typedef void (*DispCallback)(CameraId cameraId, void *user);
+using DispCallback = void (*)(CameraId cameraId, void *user);
 
 struct DisplayWork
 {

@@ -63,7 +63,7 @@ struct CARDStat
 static_assert(sizeof(CARDFileInfo) == 0x14);
 static_assert(sizeof(CARDStat) == 0x6C);
 
-typedef void (*CARDCallback)(int32_t channel, int32_t result);
+using CARDCallback = void (*)(int32_t channel, int32_t result);
 
 extern "C"
 {

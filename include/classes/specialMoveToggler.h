@@ -17,10 +17,10 @@
  *
  * @returns `true` if the selected special move should be toggled, otherwise `false`.
  */
-typedef bool (*SpecialMoveTogglerToggleFunc)(uint32_t currentIndex);
+using SpecialMoveTogglerToggleFunc = bool (*)(uint32_t currentIndex);
 
 // Callback function pointer for when the player presses `B` to cancel/stop toggling special moves.
-typedef void (*SpecialMoveTogglerCancelFunc)();
+using SpecialMoveTogglerCancelFunc = void (*)();
 
 // Handles toggling Mario's special moves on/off. A help window with text is displayed to assist in this process.
 class SpecialMoveToggler

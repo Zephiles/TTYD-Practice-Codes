@@ -88,7 +88,7 @@ static_assert(sizeof(HitEntryTriangleData) == 0x54);
 static_assert(sizeof(HitDamageReturn) == 0x10);
 static_assert(sizeof(HitEntry) == 0xE4);
 
-typedef int32_t (*PFN_HitFilterFunction)(HitCheckQuery *query, HitEntry *hit);
+using PFN_HitFilterFunction = int32_t (*)(HitCheckQuery *query, HitEntry *hit);
 
 extern "C"
 {

@@ -3,15 +3,15 @@
 
 #include <cstdint>
 
-typedef int32_t BOOL;
-typedef int32_t OSHeapHandle;
+using BOOL = int32_t;
+using OSHeapHandle = int32_t;
 
-typedef int64_t OSTime;
-typedef uint32_t OSTick;
+using OSTime = int64_t;
+using OSTick = uint32_t;
 
-typedef float mtx34[3][4];
-typedef float mtx44[4][4];
-typedef float mtxUnk4[][4];
+using mtx34 = float[3][4];
+using mtx44 = float[4][4];
+using mtxUnk4 = float[][4];
 
 struct Vec3
 {

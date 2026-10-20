@@ -1,6 +1,6 @@
 extern "C"
 {
-    typedef void (*PFN_voidfunc)();
+    using PFN_voidfunc = void (*)();
     __attribute__((section(".ctors"))) extern PFN_voidfunc _ctors_start[];
     __attribute__((section(".ctors"))) extern PFN_voidfunc _ctors_end[];
     __attribute__((section(".dtors"))) extern PFN_voidfunc _dtors_start[];

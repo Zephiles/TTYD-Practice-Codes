@@ -115,7 +115,7 @@ enum ModSaveFlag
 class GlitzPitVariables
 {
    public:
-    typedef void (*RankingControllFunc)();
+    using RankingControllFunc = void (*)();
 
     GlitzPitVariables();
     ~GlitzPitVariables() {}

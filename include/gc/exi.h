@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-typedef void (*EXICallback)(int32_t channel, OSContext *context);
+using EXICallback = void (*)(int32_t channel, OSContext *context);
 
 struct EXIQueue
 {

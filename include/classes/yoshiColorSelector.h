@@ -14,10 +14,10 @@
  *
  * @param selectedColorId Id of the selected color.
  */
-typedef void (*YoshiColorSelectorSetColorFunc)(uint32_t selectedColorId);
+using YoshiColorSelectorSetColorFunc = void (*)(uint32_t selectedColorId);
 
 // Callback function pointer for when the player presses `B` to cancel selecting a color.
-typedef void (*YoshiColorSelectorCancelFunc)();
+using YoshiColorSelectorCancelFunc = void (*)();
 
 // Handles selecting a color from the `gYoshiColorsStrings` variable. A help window with text is displayed to assist in this
 // process.

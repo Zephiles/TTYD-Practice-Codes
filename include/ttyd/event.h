@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-typedef void (*EventStageEventDescriptionInitFunc)();
+using EventStageEventDescriptionInitFunc = void (*)();
 
 struct EventStageEventDescription
 {

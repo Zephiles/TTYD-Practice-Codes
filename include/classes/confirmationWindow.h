@@ -15,7 +15,7 @@
  *
  * @param selectedYes `true` if `Yes` was selected, otherwise `false`. Also `false` if `B` was pressed to cancel.
  */
-typedef void (*ConfirmationWindowSelectedOptionFunc)(bool selectedYes);
+using ConfirmationWindowSelectedOptionFunc = void (*)(bool selectedYes);
 
 // Handles setting up an arbitrary prompt for selecting `Yes`/`No`. A help window with text is displayed to assist in this
 // process.

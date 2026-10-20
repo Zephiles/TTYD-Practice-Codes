@@ -19,7 +19,7 @@
  * @note `user` needs to be the last parameter to allow other classes to be able to discard it, as some of them will not
  * require it to function, and thus excluding it will save a bit of memory.
  */
-typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *user);
+using OptionSelectorSelectOptionFunc = void (*)(uint32_t currentIndex, void *user);
 
 /**
  * Variant of the `OptionSelectorSelectOptionFunc` callback function pointer that does not take the `user` parameter.
@@ -27,17 +27,17 @@ typedef void (*OptionSelectorSelectOptionFunc)(uint32_t currentIndex, void *user
  * @param currentIndex The index of the option that was selected.
  *
  */
-typedef void (*OptionSelectorSelectOptionFuncNoUser)(uint32_t currentIndex);
+using OptionSelectorSelectOptionFuncNoUser = void (*)(uint32_t currentIndex);
 
 /**
  * Callback function pointer for when the player presses `B` to cancel selecting an option.
  *
  * @param user Pointer to whichever class/struct/etc. is currently using the option selector.
  */
-typedef void (*OptionSelectorCancelFunc)(void *user);
+using OptionSelectorCancelFunc = void (*)(void *user);
 
 // Variant of the `OptionSelectorCancelFunc` callback function pointer that does not take the `user` parameter.
-typedef void (*OptionSelectorCancelFuncNoUser)();
+using OptionSelectorCancelFuncNoUser = void (*)();
 
 // Handles selecting an arbitrary option from an arbitrary list of options, with an arbitrary amount of columns for the options.
 // A help window with text is displayed to assist in this process.

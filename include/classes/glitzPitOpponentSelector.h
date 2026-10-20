@@ -41,10 +41,10 @@ enum GlitzPitOpponentSelectorIndex
  *
  * @param opponent The opponent that was selected.
  */
-typedef void (*GlitzPitOpponentSelectorSetOpponentFunc)(uint32_t opponent);
+using GlitzPitOpponentSelectorSetOpponentFunc = void (*)(uint32_t opponent);
 
 // Callback function pointer for when the player presses `B` to cancel selecting an opponent.
-typedef void (*GlitzPitOpponentSelectorCancelFunc)();
+using GlitzPitOpponentSelectorCancelFunc = void (*)();
 
 // Handles selecting an opponent from the `gGlitzPitOpponents` variable. A help window with text is displayed to assist in this
 // process.

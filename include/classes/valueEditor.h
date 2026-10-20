@@ -50,10 +50,10 @@
  * Note that the default minimum/maximum values would still be applied for the original type, even if it would be stored as
  * either 4 or 8 bytes.
  */
-typedef void (*ValueEditorSetValueFunc)(const ValueType *valuePtr);
+using ValueEditorSetValueFunc = void (*)(const ValueType *valuePtr);
 
 // Callback function pointer for when the player presses `B` to cancel adjustimg the value.
-typedef void (*ValueEditorCancelFunc)();
+using ValueEditorCancelFunc = void (*)();
 
 // Flags for handling the value in specific ways.
 enum ValueEditorFlag

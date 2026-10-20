@@ -34,7 +34,7 @@
 #define GET_DISPLAYS_DEFAULT_SCALED_LINE_DECREMENT (LINE_HEIGHT_FLOAT * DISPLAYS_DEFAULT_SCALE)
 
 class Displays;
-typedef void (*DisplaysArrayFunc)(Displays *displaysPtr);
+using DisplaysArrayFunc = void (*)(Displays *displaysPtr);
 
 enum class DisplaysScreenPosition
 {

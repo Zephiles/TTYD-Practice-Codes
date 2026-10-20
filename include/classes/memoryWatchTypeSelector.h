@@ -15,10 +15,10 @@
  *
  * @param type The memory watch type that was selected.
  */
-typedef void (*MemoryWatchTypeSelectorSetTypeFunc)(VariableType type);
+using MemoryWatchTypeSelectorSetTypeFunc = void (*)(VariableType type);
 
 // Callback function pointer for when the player presses `B` to cancel selecting a memory watch type.
-typedef void (*MemoryWatchTypeSelectorCancelFunc)();
+using MemoryWatchTypeSelectorCancelFunc = void (*)();
 
 // Handles selecting a memory watch type from the `gMemoryWatchTypeStrings` variable. A help window with text is displayed to
 // assist in this process.

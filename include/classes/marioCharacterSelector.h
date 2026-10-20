@@ -23,10 +23,10 @@ enum MarioCharacterSelectorIndex
  *
  * @param selectedCharacterId Id of the selected character.
  */
-typedef void (*MarioCharacterSelectorChangeCharacterFunc)(uint32_t selectedCharacterId);
+using MarioCharacterSelectorChangeCharacterFunc = void (*)(uint32_t selectedCharacterId);
 
 // Callback function pointer for when the player presses `B` to cancel selecting a character.
-typedef void (*MarioCharacterSelectorCancelFunc)();
+using MarioCharacterSelectorCancelFunc = void (*)();
 
 // Handles selecting a character from the `gMarioCharactersStrings` variable. A help window with text is displayed to assist in
 // this process.

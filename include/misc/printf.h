@@ -16,7 +16,7 @@ struct PrintfWriteData
 
 static_assert(sizeof(PrintfWriteData) == 0xC);
 
-typedef bool (*PrintfWriteFunc)(PrintfWriteData *data, const char *string, size_t length);
+using PrintfWriteFunc = bool (*)(PrintfWriteData *data, const char *string, size_t length);
 
 extern "C"
 {

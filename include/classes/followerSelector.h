@@ -13,10 +13,10 @@
  *
  * @param followerSelected Id of the selected follower.
  */
-typedef void (*FollowerSelectorSelectFunc)(PartyMembers followerSelected);
+using FollowerSelectorSelectFunc = void (*)(PartyMembers followerSelected);
 
 // Callback function pointer for when the player presses `B` to cancel selecting a follower.
-typedef void (*FollowerSelectorCancelFunc)();
+using FollowerSelectorCancelFunc = void (*)();
 
 // Handles selecting a follower from the `gFollowerOptions` variable. A help window with text is displayed to assist in this
 // process.

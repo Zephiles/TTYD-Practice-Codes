@@ -40,10 +40,10 @@ enum GlitzPitConditionSelectorIndex
  *
  * @param condition The condition that was selected.
  */
-typedef void (*GlitzPitConditionSelectorSetConditionFunc)(uint32_t condition);
+using GlitzPitConditionSelectorSetConditionFunc = void (*)(uint32_t condition);
 
 // Callback function pointer for when the player presses `B` to cancel selecting a condition.
-typedef void (*GlitzPitConditionSelectorCancelFunc)();
+using GlitzPitConditionSelectorCancelFunc = void (*)();
 
 // Handles selecting a condition from the `gGlitzPitConditions` variable. A help window with text is displayed to assist in this
 // process.

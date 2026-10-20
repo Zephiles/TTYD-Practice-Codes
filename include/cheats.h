@@ -13,7 +13,7 @@
 #include <cstdint>
 
 class Cheats;
-typedef void (*CheatsArrayFunc)(Cheats *cheatsPtr, Mod *modPtr);
+using CheatsArrayFunc = void (*)(Cheats *cheatsPtr, Mod *modPtr);
 
 // Enabled flags are mainly used for whether a cheat is enabled or not, but can also be for misc flags that are saved to the
 // settings file

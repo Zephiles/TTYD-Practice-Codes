@@ -21,10 +21,10 @@
  * @note The new name has already been written before this function pointer is called. The only purpose of this function pointer
  * is to allow being able to do additional things once the name has been set.
  */
-typedef void (*NameEditorSetNameFunc)(char *newNamePtr, uint32_t newNameSize);
+using NameEditorSetNameFunc = void (*)(char *newNamePtr, uint32_t newNameSize);
 
 // Callback function pointer for when player presses `B`/`Z` to cancel setting the new name.
-typedef void (*NameEditorCancelFunc)();
+using NameEditorCancelFunc = void (*)();
 
 // Handles selecting characters to set a new name for an arbitrary string. A help window with text is displayed to assist in
 // this process.

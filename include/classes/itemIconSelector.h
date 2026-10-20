@@ -14,10 +14,10 @@
  *
  * @param item Item that was selected.
  */
-typedef void (*SelectedItemFunc)(ItemId item);
+using SelectedItemFunc = void (*)(ItemId item);
 
 // Callback function pointer for when the player presses `B` to cancel selecting an item.
-typedef void (*ItemSelectorCancelFunc)();
+using ItemSelectorCancelFunc = void (*)();
 
 // Handles selecting an item from a range of items, which is provided via a starting and ending item. A help window with text
 // and item icons is displayed to assist in this process.

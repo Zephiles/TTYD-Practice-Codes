@@ -12,10 +12,10 @@
  *
  * @returns `true` if the new position should be set, otherwise `false`.
  */
-typedef bool (*PositionEditorConfirmFunc)();
+using PositionEditorConfirmFunc = bool (*)();
 
 // Callback function pointer for when the player presses `B` to cancel setting the new position.
-typedef void (*PositionEditorCancelFunc)();
+using PositionEditorCancelFunc = void (*)();
 
 // Handles adjusting an arbitrary position for an arbitrary object using `X` and `Y` coordinates. A help window with text is
 // displayed to assist in this process.

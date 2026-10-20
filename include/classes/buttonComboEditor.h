@@ -11,10 +11,10 @@
  *
  * @param buttonCombo The button combination that was held.
  */
-typedef void (*ButtonComboEditorSetComboFunc)(uint32_t buttonCombo);
+using ButtonComboEditorSetComboFunc = void (*)(uint32_t buttonCombo);
 
 // Callback function pointer for when the player presses `B` three times consecutively to cancel setting a button combo.
-typedef void (*ButtonComboEditorCancelFunc)();
+using ButtonComboEditorCancelFunc = void (*)();
 
 // Handles setting/modifying an arbitrary button combo. A help window with text is displayed to assist in this process.
 class ButtonComboEditor

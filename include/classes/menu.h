@@ -49,10 +49,10 @@ class Menu;
  *
  * @param menuPtr The pointer to the current menu.
  */
-typedef void (*MenuSelectedOptionFunc)(Menu *menuPtr);
+using MenuSelectedOptionFunc = void (*)(Menu *menuPtr);
 
 // Callback function pointer for leaving the current menu.
-typedef void (*MenuExitFunc)();
+using MenuExitFunc = void (*)();
 
 /**
  * Callback function pointer for handling the controls for the current menu.
@@ -60,7 +60,7 @@ typedef void (*MenuExitFunc)();
  * @param menuPtr The pointer to the current menu.
  * @param button The button that was pressed this frame.
  */
-typedef void (*MenuControlsFunc)(Menu *menuPtr, MenuButtonInput button);
+using MenuControlsFunc = void (*)(Menu *menuPtr, MenuButtonInput button);
 
 // Used to store the name and `MenuSelectedOptionFunc` function pointer for an option.
 struct MenuOption
