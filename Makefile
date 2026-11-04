@@ -7,14 +7,14 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-ifeq ($(shell which elf2rel),)
+ifeq ($(shell which pyelf2rel),)
 $(error "Please install pyelf2rel. pip install pyelf2rel")
 endif
 
 include $(DEVKITPPC)/gamecube_rules
 
 export GCIPACK	:=	python3 $(realpath ../bin/gcipack.py)
-export ELF2REL	:=	elf2rel
+export ELF2REL	:=	pyelf2rel
 
 ifeq ($(VERSION),)
 all: us jp eu
@@ -56,7 +56,7 @@ INCLUDES	:=	include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -fno-jump-tables -fno-caller-saves -g -Oz -Wall -Werror -Wextra -Wformat=2 -Wno-format-nonliteral -Wno-class-memaccess -Wno-unused-function -Wno-uninitialized -Wno-cast-function-type -Wno-array-bounds -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffunction-sections -fdata-sections -fno-shrink-wrap -fno-jump-tables -fno-caller-saves -fno-unwind-tables -fno-asynchronous-unwind-tables -Oz -Wall -Werror -Wextra -Wformat=2 -Wno-format-nonliteral -Wno-class-memaccess -Wno-unused-function -Wno-uninitialized -Wno-cast-function-type -Wno-array-bounds -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++23 $(CFLAGS)
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
@@ -170,7 +170,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean_target:
 	@echo clean ... $(VERSION)
-	@rm -fr $(BUILD) $(OUTPUT).stripped.elf $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
+	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
 
 #---------------------------------------------------------------------------------
 else
@@ -188,11 +188,8 @@ $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
 %.rel: %.elf
-	@# TODO: Move stripping elf to its own section
-	@echo stripping elf ... $(notdir $(basename $<).stripped.elf)
-	@powerpc-eabi-strip --strip-debug --remove-section=.eh_frame* --remove-section=.comment* --remove-section=.gnu.* $< -o $(basename $<).stripped.elf
 	@echo output ... $(notdir $@)
-	@$(ELF2REL) $(basename $<).stripped.elf $(MAPFILE) $@
+	@$(ELF2REL) $< $(MAPFILE) $@ --strip-empty-sections --ignore-sections .sdata .sbss
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
