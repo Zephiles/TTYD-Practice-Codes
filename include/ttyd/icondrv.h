@@ -48,7 +48,7 @@ enum class IconId : int16_t
     ICON_CHARGE,
     ICON_SUPER_CHARGE,
     ICON_DOUBLE_DIP,
-    ICOn_TRIPLE_DIP,
+    ICON_TRIPLE_DIP,
     ICON_QUICK_CHANGE,
     ICON_JUMPMAN,
     ICON_HAMMERMAN,
@@ -123,7 +123,7 @@ enum class IconId : int16_t
     ICON_MEGA_RUSH_P,
     ICON_ALL_OR_NOTHING_P,
     ICON_DOUBLE_DIP_P,
-    ICOn_TRIPLE_DIP_P,
+    ICON_TRIPLE_DIP_P,
     ICON_PITY_FLOWER_P,
 
 #ifndef TTYD_JP
