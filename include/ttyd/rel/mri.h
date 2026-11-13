@@ -191,7 +191,7 @@ extern "C"
     // mri_puniModeFall
     // mri_puniModePreupdraft
     // mri_puniModeUpdraft
-    // mri_puniModeWonder
+    void mri_puniModeWonder(void *puniDataPtr);
     // mri_puniModeFunbari
     // mri_puniModeWater
     // mri_puniModePrehagure
@@ -211,6 +211,10 @@ extern "C"
     // mri_puni_puni_disp
     // mri_puni_puni_shadow_disp
     // mri_puni_puni_init
+
+    // No official name for this function exists; `puniModeMain` is made up
+    void mri_puniModeMain(void *puniDataPtr);
+
     // mri_puniOption
     // mri_puniSound
     // mri_puni_puni_main

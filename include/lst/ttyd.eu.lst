@@ -3981,7 +3981,7 @@ CC008000:writeGatherPipe
 // 0x13,1,0x100F8:mri_puniModeFall
 // 0x13,1,0x10620:mri_puniModePreupdraft
 // 0x13,1,0x10720:mri_puniModeUpdraft
-// 0x13,1,0x10BF8:mri_puniModeWonder
+0x13,1,0x10BF8:mri_puniModeWonder
 // 0x13,1,0x10D38:mri_puniModeFunbari
 // 0x13,1,0x111D0:mri_puniModeWater
 // 0x13,1,0x11440:mri_puniModePrehagure
@@ -4001,6 +4001,7 @@ CC008000:writeGatherPipe
 // 0x13,1,0x12A6C:mri_puni_puni_disp
 // 0x13,1,0x12B3C:mri_puni_puni_shadow_disp
 // 0x13,1,0x12D84:mri_puni_puni_init
+0x13,1,0x13028:mri_puniModeMain
 // 0x13,1,0x14A68:mri_puniOption
 // 0x13,1,0x150B4:mri_puniSound
 // 0x13,1,0x155B4:mri_puni_puni_main

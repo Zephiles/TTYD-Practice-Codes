@@ -378,6 +378,22 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
             // Use applyAssemblyPatch to apply the changes and clear the cache, all in a single function call
             int32_t *scriptAddress = const_cast<int32_t *>(&mri_minnnanokoe_evt[mri_minnnanokoe_evt_WaitMS_Index]);
             applyAssemblyPatch(scriptAddress, 400);
+
+#ifdef TTYD_JP
+            // Bubble Room crash fix
+
+            // In the function `puniModeWonder`, JP updates `puniDataPtr->effect` when creating the pop burst effect for the
+            // bubbles, but this specific effect deletes itself after 30 frames, so this stale pointer ends up getting passed to
+            // `__memFree` via `effDelete` later on. US changed this to simply not update `puniDataPtr->effect` when creating
+            // this effect, so `nop` out the instruction that does the storing in JP.
+            constexpr uint32_t nopInstructionValue = 0x60000000;
+            const uint32_t puniModeWonderStoreAddress = reinterpret_cast<uint32_t>(mri_puniModeWonder) + 0xB8;
+            applyAssemblyPatch(puniModeWonderStoreAddress, nopInstructionValue);
+
+            // `puniModeWonder` is also inlined in `puniModeMain`, in which the same patch needs to be done
+            const uint32_t puniModeMainStoreAddress = reinterpret_cast<uint32_t>(mri_puniModeMain) + 0x9C4;
+            applyAssemblyPatch(puniModeMainStoreAddress, nopInstructionValue);
+#endif
             break;
         }
         default:
