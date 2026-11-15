@@ -16,6 +16,20 @@
 void writeBranch(void *ptr, void *destination);
 
 /**
+ * Writes a `b` branch at an address that goes to a function.
+ *
+ * @tparam func The function that the `b` branch will go to.
+ * @tparam dst The address where the `b` branch will be placed.
+ *
+ * @overload
+ */
+template<typename Func, typename Dest>
+void writeBranch(Func func, Dest dst)
+{
+    writeBranch(reinterpret_cast<void *>(func), reinterpret_cast<void *>(dst));
+}
+
+/**
  * Writes a `bl` branch at a function/address that goes to a function/address.
  *
  * @param ptr The pointer to the function/address that the `bl` branch will go to.

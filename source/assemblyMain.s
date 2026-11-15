@@ -62,6 +62,38 @@ b 0
 
 
 ################################################################################################################################
+# Fix `_fileAlloc` looping indefinitely if the entry that it is searching for has not finished being read/loaded yet. In US
+# this was fixed by calling `OSYieldThread` in the loop, which allows other threads to run including the dvdmgr thread, which
+# finishes reading/loading the entry. This issue is also likely the cause of the Glitzville block crash/freeze.
+
+#ifdef TTYD_JP
+
+.global asmFixFileAllocLoopBug
+
+asmFixFileAllocLoopBug:
+# The original loop is being replaced here, and a standard branch will be used to go past the original loop once finished
+
+fileAllocLoopStart:
+# Check if the entry has been cleared yet
+lwz %r0,0xAC(%r27)
+cmplwi %r0,0
+bne- fileAllocEntryNotCleared
+
+# Entry is cleared, so branch back to the original function past the original loop
+b (_fileAlloc + 0x50)
+
+fileAllocEntryNotCleared:
+# Entry is not cleared yet, so call `OSYieldThread` to allow other threads to run including the dvdmgr thread, and then go
+# back to the start of the loop
+bl OSYieldThread
+b fileAllocLoopStart
+
+#endif
+################################################################################################################################
+
+
+
+################################################################################################################################
 # Prevent diary textbox selection
 
 .global asmPreventDiaryTextboxSelection

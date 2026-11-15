@@ -2671,6 +2671,21 @@
 802F6AF0:str_999_jpn_winMain
 // unused:str_999_winMain
 
+// filemgr.o
+// 80184034:fileSetCurrentArchiveType
+// 80184040:fileAsync
+// 801843E4:fileAsyncf
+// 8018449C:dvdReadDoneCallBack
+// 8018455C:fileFree
+801845A0:_fileAlloc
+// 801848EC:fileAlloc
+// 80184910:fileAllocf
+// 801849D8:_fileGarbage
+// 80184BC4:fileGarbageMoveMem
+// 80184C8C:fileGarbageDataAdrSet
+// 80185318:fileGarbageDataAdrClear
+// 801859B4:fileInit
+
 // mario_cam.o
 // 801A2724:marioCamZoomUpLevelMain
 // 801A29D4:marioCamZoomUp
@@ -3078,6 +3093,28 @@
 // 802954F8:__OSDoHotReset
 // 80295540:OSResetSystem
 80295740:OSGetResetCode
+
+// OSThread.c
+// 8029683C:DefaultSwitchThreadCallback
+// 80296840:__OSThreadInit
+// 80296998:OSInitThreadQueue
+// 802969A8:OSGetCurrentThread
+// 802969B4:OSDisableScheduler
+// 802969F4:OSEnableScheduler
+// 80296A34:UnsetRun
+// 80296A9C:__OSGetEffectivePriority
+// 80296AD8:SetEffectivePriority
+// 80296C98:SelectThread
+// 80296EC0:__OSReschedule
+80296EF0:OSYieldThread
+// 80296F2C:OSCreateThread
+// 80297114:OSExitThread
+// 802971F8:OSCancelThread
+// 802973B4:OSResumeThread
+// 8029763C:OSSuspendThread
+// 802977AC:OSSleepThread
+// 80297898:OSWakeupThread
+// 8029799C:OSClearStack
 
 // OSTime.c
 80297A48:OSGetTime

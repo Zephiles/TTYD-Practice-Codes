@@ -18,6 +18,10 @@ extern "C"
     void asmFixEvtMapBlendSetFlagFollowerCrashStart();
     void asmFixEvtMapBlendSetFlagFollowerCrashBranchBack();
 
+#ifdef TTYD_JP
+    void asmFixFileAllocLoopBug();
+#endif
+
     void asmPreventDiaryTextboxSelection();
 
     void asmDisplayMegaJumpBadgeInBattleMenu();

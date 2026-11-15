@@ -672,6 +672,14 @@ void applyGameFixes()
     writeStandardBranches(evtMapBlendSetFlagFollowerCrashAddress,
                           asmFixEvtMapBlendSetFlagFollowerCrashStart,
                           asmFixEvtMapBlendSetFlagFollowerCrashBranchBack);
+
+#ifdef TTYD_JP
+    // Fix `_fileAlloc` looping indefinitely if the entry that it is searching for has not finished being read/loaded yet. In US
+    // this was fixed by calling `OSYieldThread` in the loop, which allows other threads to run including the dvdmgr thread,
+    // which finishes reading/loading the entry. This issue is also likely the cause of the Glitzville block crash/freeze.
+    constexpr uint32_t fileAllocLoopAddress = 0x801845E4;
+    writeBranch(fileAllocLoopAddress, asmFixFileAllocLoopBug);
+#endif
 }
 
 void applyVariousGamePatches()

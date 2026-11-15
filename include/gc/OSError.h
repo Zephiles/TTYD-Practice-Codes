@@ -1,5 +1,5 @@
-#ifndef TTYD_OSERROR_H
-#define TTYD_OSERROR_H
+#ifndef GC_OSERROR_H
+#define GC_OSERROR_H
 
 #include <cstdint>
 #include <cstdarg>
