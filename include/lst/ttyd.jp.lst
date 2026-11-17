@@ -403,6 +403,54 @@
 80418610:heapStart
 80418628:heapHandle
 
+// evtmgr_cmd.o
+8002FE28:evtSetFloat
+800301AC:evtGetFloat
+80030668:evtSetValue
+80030A68:evtGetNumber
+80030BCC:evtGetValue
+80031024:evtmgrCmd
+// 800323D4:evt_debug_put_reg
+// 80032B10:evt_brother_evt_id
+// 80032BC0:evt_brother_evt
+// 80032C54:evt_inline_evt_id
+// 80032DD0:evt_inline_evt
+// 80032F2C:evt_run_evt_id
+// 8003304C:evt_run_evt
+// 80033150:evt_case_end
+// 800332D0:evt_case_and
+// 800334C8:evt_case_or
+// 80033630:evt_case_flag
+// 8003375C:evt_case_between
+// 800338D8:evt_case_large_equal
+// 80033A34:evt_case_large
+// 80033B90:evt_case_small_equal
+// 80033CEC:evt_case_small
+// 80033E48:evt_case_not_equal
+// 80033FA4:evt_case_equal
+// 80034100:evt_if_not_flag
+// 800341C0:evt_if_flag
+// 80034280:evt_if_large_equal
+// 8003434C:evt_if_small_equal
+// 80034418:evt_if_large
+// 800344E4:evt_if_small
+// 800345B0:evt_if_not_equal
+// 8003467C:evt_if_equal
+// 80034748:evt_iff_large_equal
+// 8003481C:evt_iff_small_equal
+// 800348F0:evt_iff_large
+// 800349C8:evt_iff_small
+// 80034AA0:evt_iff_not_equal
+// 80034B74:evt_iff_equal
+// 80034C48:evt_if_str_large_equal
+// 80034D38:evt_if_str_small_equal
+// 80034E28:evt_if_str_large
+// 80034F18:evt_if_str_small
+// 80035008:evt_if_str_not_equal
+// 800350F8:evt_if_str_equal
+// 800351E8:evt_wait_msec
+// 800352B8:evt_while
+
 // evtmgr.o
 8003538C:evtGetPtrID
 800353EC:evtGetPtr
@@ -2191,7 +2239,7 @@
 // 80109528:btlevtcmd_GetFaceDirection
 // 80109598:btlevtcmd_CalculateFaceDirection
 // 801098B0:btlevtcmd_GetPartyTechLv
-// 80109948:btlevtcmd_GetUnitId
+80109948:btlevtcmd_GetUnitId
 // 801099EC:btlevtcmd_GetBodyId
 // 80109A60:btlevtcmd_GetPartyId
 // 80109B38:btlevtcmd_GetMarioId
@@ -4190,6 +4238,147 @@ CC008000:writeGatherPipe
 // 0x13,1,0x20220:mri_bgm_start_wait
 // data
 0x13,5,0x3998:mri_minnnanokoe_evt
+
+// tik.o
+// text
+// 0x1A,1,0x0:tik_evt_tik_villager_urouro_check_func
+// 0x1A,1,0x148:tik__unresolved
+// 0x1A,1,0x14C:tik__epilog
+// 0x1A,1,0x198:tik__prolog
+// 0x1A,1,0x3B8:tik_scale_func
+// 0x1A,1,0x498:tik_mario_key_onoff_wait
+// 0x1A,1,0x558:tik_card_camid
+// 0x1A,1,0x5C4:tik_card_xlu
+// 0x1A,1,0x654:tik_uranai_bbox
+// 0x1A,1,0x6DC:tik_card_tev
+// 0x1A,1,0x858:tik_uranai_cap_evt
+// 0x1A,1,0x89C:tik_uranai_cap
+// 0x1A,1,0xDB0:tik_uranai_exit_func
+// 0x1A,1,0xE2C:tik_uranai_init_func
+// 0x1A,1,0xF58:tik_evt_osreport
+// 0x1A,1,0xFC0:tik_evt_uranaisi_msg_set
+// 0x1A,1,0x1060:tik_evt_uranaisi_msg_alloc
+// 0x1A,1,0x10A0:tik_evt_uranaisi_msg_free
+// 0x1A,1,0x10F0:tik_ss_set
+// 0x1A,1,0x1124:tik_ss_check
+// 0x1A,1,0x1180:tik_setmertn
+// 0x1A,1,0x11C0:tik_geso_set_checkpose
+// 0x1A,1,0x1214:tik_hokori_color_func
+// 0x1A,1,0x1264:tik_ripple_scale_func
+// 0x1A,1,0x12C8:tik_mario_hosei_all
+// 0x1A,1,0x13A0:tik_hitIsGroup
+// 0x1A,1,0x13D4:tik__hitIsGroupSub
+// 0x1A,1,0x1904:tik_tik_npc_buruburu
+// 0x1A,1,0x1C20:tik_is_dol_viewer
+// 0x1A,1,0x1D64:tik_stardust_setting
+// 0x1A,1,0x1DEC:tik_pcharge_set_position
+// 0x1A,1,0x1E88:tik_kemuri_set_color
+// 0x1A,1,0x1F68:tik_kemuri_set_position
+// 0x1A,1,0x2004:tik_starstone_setting
+// 0x1A,1,0x209C:tik_cam_mahojin_kaiten_main
+// 0x1A,1,0x226C:tik_map_bgmode_end
+// 0x1A,1,0x22EC:tik_map_bgmode
+// 0x1A,1,0x237C:tik_crystal_bgmode
+// 0x1A,1,0x23F8:tik_evtflash
+// 0x1A,1,0x25B8:tik_tiz_broken
+// 0x1A,1,0x2D18:tik_tiz_broken_draw
+// 0x1A,1,0x3270:tik_tiz_stone
+// 0x1A,1,0x3380:tik_img_alpha
+// 0x1A,1,0x3480:tik_effect_position
+// 0x1A,1,0x36B0:tik_mahojin_effect_alpha
+// 0x1A,1,0x370C:tik_disp_treasure_map_func
+// 0x1A,1,0x3814:tik_disp_lighteffect_func
+// 0x1A,1,0x394C:tik_cam_kaiten_set_para
+// 0x1A,1,0x3A40:tik_cam_kaiten_get_para
+// 0x1A,1,0x3B34:tik_cam_kaiten_set_direct
+// 0x1A,1,0x3CA8:tik_cam_kaiten_init
+// 0x1A,1,0x4058:tik_alpha_set_func
+// 0x1A,1,0x4094:tik_alpha_init_func
+// 0x1A,1,0x40CC:tik_alpha_tev
+// 0x1A,1,0x41F4:tik_eff_starstone_sound_off
+// 0x1A,1,0x4234:tik_starstone_circle_link_func
+// 0x1A,1,0x4400:tik_starstone_set_scale
+// 0x1A,1,0x4464:tik_starstone_set_alpha
+// 0x1A,1,0x44C0:tik_starstone_set_ry
+// 0x1A,1,0x4574:tik_starstone_get_position
+// 0x1A,1,0x460C:tik_starstone_set_position
+// 0x1A,1,0x46A8:tik_bgm_start_wait
+// 0x1A,1,0x46DC:tik_bgScrollControll
+// 0x1A,1,0x471C:tik_enzan_lw_load
+// 0x1A,1,0x474C:tik_enzan_lw_save
+// 0x1A,1,0x477C:tik_enzan_set_f_i
+// 0x1A,1,0x47E8:tik_enzan_set_i_f
+// 0x1A,1,0x483C:tik_enzan_cam_turn_keisan_f
+// 0x1A,1,0x4A20:tik_enzan_cam_turn_keisan
+// 0x1A,1,0x4C10:tik_wariai_enzan_0f
+// 0x1A,1,0x4CDC:tik_wariai_enzan_0
+// 0x1A,1,0x4DB4:tik_wariai_enzan_1f
+// 0x1A,1,0x4E74:tik_wariai_enzan_1
+// 0x1A,1,0x4F40:tik_effect_stardust
+// 0x1A,1,0x501C:tik_setmertn
+// 0x1A,1,0x505C:tik_majinaisi_ryokin_kaisu
+// 0x1A,1,0x50CC:tik_setmertn
+// 0x1A,1,0x510C:tik_effect_stardust
+// 0x1A,1,0x51E8:tik__ikasumi_effect
+// 0x1A,1,0x52F8:tik__test_rtn
+// 0x1A,1,0x558C:tik__wave_offset
+// 0x1A,1,0x5724:tik__check_zenei_kouei
+// 0x1A,1,0x57CC:tik_krb_get_dir
+// 0x1A,1,0x58E4:tik_bgm_start_wait
+// 0x1A,1,0x5918:tik_majin_callback
+// 0x1A,1,0x59C8:tik_krb_get_dir
+// 0x1A,1,0x5AE0:tik_krb_get_dir
+// 0x1A,1,0x5BF8:tik_krb_comp_dir
+// 0x1A,1,0x5D68:tik_get_attacker
+// 0x1A,1,0x5DF8:tik_hammer_bros_get_next_target
+// 0x1A,1,0x5E6C:tik_hammer_bros_get_target
+// 0x1A,1,0x5EB0:tik_hammer_bros_nagemakuri_set_target
+// 0x1A,1,0x600C:tik_eff_magic_get_posX
+// 0x1A,1,0x607C:tik_eff_magic
+// 0x1A,1,0x61F8:tik_eff_staff2
+// 0x1A,1,0x6348:tik_eff_staff1
+// 0x1A,1,0x6498:tik_kamec_copy_status
+// 0x1A,1,0x6588:tik_kamec_shuffle
+// 0x1A,1,0x6684:tik_kamec_get_bunsin
+// 0x1A,1,0x676C:tik_kamec_get_live_num
+// 0x1A,1,0x6800:tik_togenoko_getnum
+// 0x1A,1,0x6880:tik_bgm_start_wait
+// 0x1A,1,0x68B4:tik_evt_nomal_cange
+// 0x1A,1,0x6928:tik_lect_push_r_check
+// 0x1A,1,0x698C:tik_evtflash
+// 0x1A,1,0x6BB8:tik_lect_slit_check
+// 0x1A,1,0x6C1C:tik_dai_moveti_get
+// 0x1A,1,0x6C8C:tik_dai_moveti_set
+// 0x1A,1,0x6D40:tik_lect_mobj_hit_nasi
+// 0x1A,1,0x6DF0:tik_effitemget_busaiku
+// 0x1A,1,0x6F1C:tik_effitemget_open_ptr
+// 0x1A,1,0x6F54:tik_effitemget_open
+// 0x1A,1,0x6F90:tik_effitemgetchange_cam_ptr
+// 0x1A,1,0x6FE0:tik_effitemgetchange_cam
+// 0x1A,1,0x703C:tik_lect_map_cam_chg
+// 0x1A,1,0x70A8:tik_lect_map_cam_chg_sub
+// 0x1A,1,0x7340:tik_lecture_button_set_pos
+// 0x1A,1,0x740C:tik_lecture_button_seq_wait
+// 0x1A,1,0x7478:tik_lecture_button_get_icon_id
+// 0x1A,1,0x74D0:tik_lecture_button_set_seq
+// 0x1A,1,0x752C:tik_lecture_button_flag_on_off
+// 0x1A,1,0x75B4:tik_lecture_button_set_alpha
+// 0x1A,1,0x7610:tik_lecture_button_set_icon_id
+// 0x1A,1,0x766C:tik_lecture_button_rtn
+// 0x1A,1,0x77F0:tik_lecture_button_disp
+// 0x1A,1,0x78C0:tik_x_flag_wait
+// 0x1A,1,0x7928:tik_x_flag_get
+// 0x1A,1,0x797C:tik_x_flag_add
+// 0x1A,1,0x79DC:tik_x_flag_set
+// 0x1A,1,0x7A34:tik_lect_status_on
+// 0x1A,1,0x7A58:tik_lect_status_off
+// 0x1A,1,0x7A7C:tik_lect_mario_ido_sum
+// 0x1A,1,0x7CF4:tik_lect_mario_ido_sub
+// 0x1A,1,0x7D08:tik_lecture_init
+// 0x1A,1,0x7D10:tik__battle_set_lecture_unit_id
+// data
+0x1A,5,0x1BDA0:tik_gesso_arm_dead_event
+0x1A,5,0x1C62C:tik_unit_boss_gesso_left_arm_damage_event
 
 // tou.o
 // text

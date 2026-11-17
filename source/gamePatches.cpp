@@ -7,6 +7,7 @@
 #include "displays.h"
 #include "memoryEditor.h"
 #include "customState.h"
+#include "evt_cmd.h"
 #include "gc/types.h"
 #include "gc/pad.h"
 #include "gc/OSCache.h"
@@ -15,6 +16,7 @@
 #include "ttyd/rel/bom.h"
 #include "ttyd/rel/las.h"
 #include "ttyd/rel/mri.h"
+#include "ttyd/rel/tik.h"
 #include "ttyd/mario_pouch.h"
 #include "ttyd/memory.h"
 #include "ttyd/party.h"
@@ -27,6 +29,7 @@
 #include "ttyd/npcdrv.h"
 #include "ttyd/swdrv.h"
 #include "ttyd/mariost.h"
+#include "ttyd/battle_event_cmd.h"
 #include "menus/cheatsMenu.h"
 #include "menus/warpsMenu.h"
 #include "menus/battlesMenu.h"
@@ -37,24 +40,6 @@
 #include <cstdio>
 #include <cinttypes>
 #include <bit>
-
-uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr)
-{
-    if (ptrIsValid(battleUnitPtr))
-    {
-#ifdef TTYD_US
-        uint32_t offset = 0x218;
-#elif defined TTYD_JP
-        uint32_t offset = 0x214;
-#elif defined TTYD_EU
-        uint32_t offset = 0x218;
-#endif
-        *reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(battleUnitPtr) + offset) = unkValue;
-    }
-
-    // Restore the value that was in r3
-    return 2;
-}
 
 PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner)
 {
@@ -286,10 +271,9 @@ int32_t pauseMenuPreventUnpause(void *pauseMenuPtr)
 int32_t fixMarioKeyOn()
 {
     Player *playerPtr = marioGetPtr();
-    const int32_t key = playerPtr->wKey;
 
-    // Make sure the value is greater than 0
-    if (key < 1)
+    // Make sure the key value is greater than 0
+    if (playerPtr->wKey < 1)
     {
         playerPtr->wKey = 1;
     }
@@ -297,6 +281,30 @@ int32_t fixMarioKeyOn()
     // Call the original function
     return g_marioKeyOn_trampoline();
 }
+
+static EVT_DEFINE_USER_FUNC(blooper_btlevtcmd_GetUnitWork)
+{
+    // The args should already be set up for `btlevtcmd_GetUnitWork`
+    btlevtcmd_GetUnitWork(evtPtr, isFirstCall);
+
+    // Backup the previous args, as they will need to be restored after `btlevtcmd_GetUnitId` runs
+    int32_t *args = evtPtr->currentCommandArguments;
+    int32_t arg1 = args[0];
+    int32_t arg2 = args[1];
+
+    // Set up the args for `btlevtcmd_GetUnitId` and then call it
+    args[0] = LW(3);
+    args[1] = LW(3);
+    DCStoreRange(&args[0], sizeof(int32_t) * 2); // Just to be safe
+    btlevtcmd_GetUnitId(evtPtr, isFirstCall);
+
+    // Restore the previous args
+    args[0] = arg1;
+    args[1] = arg2;
+    DCFlushRange(&args[0], sizeof(int32_t) * 2); // Just to be safe
+
+    return 2;
+};
 
 bool applyRelPatches(OSModuleInfo *module, void *bss)
 {
@@ -319,6 +327,10 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
 
     // mri
     constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
+
+    // tik
+    constexpr uint32_t tik_gesso_arm_dead_event_Replacement_Index = 0x13C / sizeof(int32_t);
+    constexpr uint32_t tik_Left_Damage_Event_Replacement_Index = 0x24 / sizeof(int32_t);
 #elif defined TTYD_JP
     // bom
     constexpr uint32_t bom_01_minnnanokoe_evt_WaitMS_Index = 0x634 / sizeof(int32_t);
@@ -329,6 +341,10 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
 
     // mri
     constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
+
+    // tik
+    constexpr uint32_t tik_gesso_arm_dead_event_Replacement_Index = 0x13C / sizeof(int32_t);
+    constexpr uint32_t tik_Left_Damage_Event_Replacement_Index = 0x24 / sizeof(int32_t);
 #elif defined TTYD_EU
     // bom
     constexpr uint32_t bom_01_minnnanokoe_evt_WaitMS_Index = 0x634 / sizeof(int32_t);
@@ -339,6 +355,10 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
 
     // mri
     constexpr uint32_t mri_minnnanokoe_evt_WaitMS_Index = 0x968 / sizeof(int32_t);
+
+    // tik
+    constexpr uint32_t tik_gesso_arm_dead_event_Replacement_Index = 0x13C / sizeof(int32_t);
+    constexpr uint32_t tik_Left_Damage_Event_Replacement_Index = 0x24 / sizeof(int32_t);
 #endif
 
     switch (module->id)
@@ -394,6 +414,30 @@ bool applyRelPatches(OSModuleInfo *module, void *bss)
             const uint32_t puniModeMainStoreAddress = reinterpret_cast<uint32_t>(mri_puniModeMain) + 0x9C4;
             applyAssemblyPatch(puniModeMainStoreAddress, nopInstructionValue);
 #endif
+            break;
+        }
+        case RelId::TIK:
+        {
+            // Blooper crash fix
+
+            // The game will crash if the left tentacle is defeated at roughly the same time as the body. The proper way to
+            // check for this is to do a `btlevtcmd_GetUnitId` call after specific `btlevtcmd_GetUnitWork` calls in the scripts
+            // `gesso_arm_dead_event` and the `damage_event` script in `unit_boss_gesso_left_arm.c`.)
+            int32_t *scriptAddress;
+
+            // Replace the `btlevtcmd_GetUnitId` call in `gesso_arm_dead_event` that comes just after the `WAIT_FRM(80)` with a
+            // call to `blooper_btlevtcmd_GetUnitWork`, which does the `btlevtcmd_GetUnitWork` call and then the
+            // `btlevtcmd_GetUnitId` call afterwards
+            scriptAddress = const_cast<int32_t *>(&tik_gesso_arm_dead_event[tik_gesso_arm_dead_event_Replacement_Index]);
+            applyAssemblyPatch(scriptAddress, reinterpret_cast<uint32_t>(blooper_btlevtcmd_GetUnitWork));
+
+            // Replace the `btlevtcmd_GetUnitId` call in the `damage_event` script in `unit_boss_gesso_left_arm.c` with a call
+            // to `blooper_btlevtcmd_GetUnitWork`, which does the `btlevtcmd_GetUnitWork` call and then the
+            // `btlevtcmd_GetUnitId` call afterwards
+            scriptAddress =
+                const_cast<int32_t *>(&tik_unit_boss_gesso_left_arm_damage_event[tik_Left_Damage_Event_Replacement_Index]);
+
+            applyAssemblyPatch(scriptAddress, reinterpret_cast<uint32_t>(blooper_btlevtcmd_GetUnitWork));
             break;
         }
         default:
@@ -635,22 +679,6 @@ void applyGameFixes()
 #endif
 
     applyAssemblyPatch(msgWindowMrAddress, 0x38830001); // addi r4,r3,1
-
-    // Fix a crash that can occur when defeating Blooper with an attack that causes both the body and the left tentacle to be
-    // defeated at roughly the same time
-#ifdef TTYD_US
-    constexpr uint32_t blooperCrash1Address = 0x8010F810;
-    constexpr uint32_t blooperCrash2Address = 0x8010F87C;
-#elif defined TTYD_JP
-    constexpr uint32_t blooperCrash1Address = 0x8010A724;
-    constexpr uint32_t blooperCrash2Address = 0x8010A790;
-#elif defined TTYD_EU
-    constexpr uint32_t blooperCrash1Address = 0x801106E8;
-    constexpr uint32_t blooperCrash2Address = 0x80110754;
-#endif
-
-    writeBranchBL(blooperCrash1Address, asmFixBlooperCrash1);
-    writeBranchBL(blooperCrash2Address, asmFixBlooperCrash2);
 
     // Fix crashes that can occur when evt_map_blend_set_flag is trying to apply effects to partners/followers when one is not
     // out

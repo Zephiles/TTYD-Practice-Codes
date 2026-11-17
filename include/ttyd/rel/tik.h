@@ -1,0 +1,152 @@
+#ifndef TTYD_REL_TIK_H
+#define TTYD_REL_TIK_H
+
+#include "ttyd/evtmgr.h"
+
+#include <cstdint>
+
+extern "C"
+{
+    EVT_DECLARE(tik_gesso_arm_dead_event);
+
+    // There are a bunch of `damage_event` scripts in this object, and this specific one is in `unit_boss_gesso_left_arm.c`
+    EVT_DECLARE(tik_unit_boss_gesso_left_arm_damage_event);
+
+    // tik_evt_tik_villager_urouro_check_func
+    // tik__unresolved
+    // tik__epilog
+    // tik__prolog
+    // tik_scale_func
+    // tik_mario_key_onoff_wait
+    // tik_card_camid
+    // tik_card_xlu
+    // tik_uranai_bbox
+    // tik_card_tev
+    // tik_uranai_cap_evt
+    // tik_uranai_cap
+    // tik_uranai_exit_func
+    // tik_uranai_init_func
+    // tik_evt_osreport
+    // tik_evt_uranaisi_msg_set
+    // tik_evt_uranaisi_msg_alloc
+    // tik_evt_uranaisi_msg_free
+    // tik_ss_set
+    // tik_ss_check
+    // tik_setmertn
+    // tik_geso_set_checkpose
+    // tik_hokori_color_func
+    // tik_ripple_scale_func
+    // tik_mario_hosei_all
+    // tik_hitIsGroup
+    // tik__hitIsGroupSub
+    // tik_tik_npc_buruburu
+    // tik_is_dol_viewer
+    // tik_stardust_setting
+    // tik_pcharge_set_position
+    // tik_kemuri_set_color
+    // tik_kemuri_set_position
+    // tik_starstone_setting
+    // tik_cam_mahojin_kaiten_main
+    // tik_map_bgmode_end
+    // tik_map_bgmode
+    // tik_crystal_bgmode
+    // tik_evtflash
+    // tik_tiz_broken
+    // tik_tiz_broken_draw
+    // tik_tiz_stone
+    // tik_img_alpha
+    // tik_effect_position
+    // tik_mahojin_effect_alpha
+    // tik_disp_treasure_map_func
+    // tik_disp_lighteffect_func
+    // tik_cam_kaiten_set_para
+    // tik_cam_kaiten_get_para
+    // tik_cam_kaiten_set_direct
+    // tik_cam_kaiten_init
+    // tik_alpha_set_func
+    // tik_alpha_init_func
+    // tik_alpha_tev
+    // tik_eff_starstone_sound_off
+    // tik_starstone_circle_link_func
+    // tik_starstone_set_scale
+    // tik_starstone_set_alpha
+    // tik_starstone_set_ry
+    // tik_starstone_get_position
+    // tik_starstone_set_position
+    // tik_bgm_start_wait
+    // tik_bgScrollControll
+    // tik_enzan_lw_load
+    // tik_enzan_lw_save
+    // tik_enzan_set_f_i
+    // tik_enzan_set_i_f
+    // tik_enzan_cam_turn_keisan_f
+    // tik_enzan_cam_turn_keisan
+    // tik_wariai_enzan_0f
+    // tik_wariai_enzan_0
+    // tik_wariai_enzan_1f
+    // tik_wariai_enzan_1
+    // tik_effect_stardust
+    // tik_setmertn
+    // tik_majinaisi_ryokin_kaisu
+    // tik_setmertn
+    // tik_effect_stardust
+    // tik__ikasumi_effect
+    // tik__test_rtn
+    // tik__wave_offset
+    // tik__check_zenei_kouei
+    // tik_krb_get_dir
+    // tik_bgm_start_wait
+    // tik_majin_callback
+    // tik_krb_get_dir
+    // tik_krb_get_dir
+    // tik_krb_comp_dir
+    // tik_get_attacker
+    // tik_hammer_bros_get_next_target
+    // tik_hammer_bros_get_target
+    // tik_hammer_bros_nagemakuri_set_target
+    // tik_eff_magic_get_posX
+    // tik_eff_magic
+    // tik_eff_staff2
+    // tik_eff_staff1
+    // tik_kamec_copy_status
+    // tik_kamec_shuffle
+    // tik_kamec_get_bunsin
+    // tik_kamec_get_live_num
+    // tik_togenoko_getnum
+    // tik_bgm_start_wait
+    // tik_evt_nomal_cange
+    // tik_lect_push_r_check
+    // tik_evtflash
+    // tik_lect_slit_check
+    // tik_dai_moveti_get
+    // tik_dai_moveti_set
+    // tik_lect_mobj_hit_nasi
+    // tik_effitemget_busaiku
+    // tik_effitemget_open_ptr
+    // tik_effitemget_open
+    // tik_effitemgetchange_cam_ptr
+    // tik_effitemgetchange_cam
+    // tik_lect_map_cam_chg
+    // tik_lect_map_cam_chg_sub
+    // tik_lecture_button_set_pos
+    // tik_lecture_button_seq_wait
+    // tik_lecture_button_get_icon_id
+    // tik_lecture_button_set_seq
+    // tik_lecture_button_flag_on_off
+    // tik_lecture_button_set_alpha
+    // tik_lecture_button_set_icon_id
+    // tik_lecture_button_rtn
+    // tik_lecture_button_disp
+    // tik_x_flag_wait
+    // tik_x_flag_get
+    // tik_x_flag_add
+    // tik_x_flag_set
+    // tik_lect_status_on
+    // tik_lect_status_off
+    // tik_lect_mario_ido_sum
+    // tik_lect_mario_ido_sub
+    // tik_lecture_init
+    // tik__battle_set_lecture_unit_id
+}
+
+#endif

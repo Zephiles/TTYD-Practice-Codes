@@ -7,6 +7,7 @@
 #define EVT_BEGIN(name) \
     const int32_t name[] = {
 
+// Included because manually using `static` before a script causes formatting issues
 #define EVT_BEGIN_STATIC(name) \
     static const int32_t name[] = {
 

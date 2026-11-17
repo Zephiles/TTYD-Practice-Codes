@@ -16,9 +16,9 @@ extern "C"
     // evt_pouch_get_havebadgecnt
     // evt_pouch_get_haveitemcnt
 
-    EVT_DEFINE_USER_FUNC(evt_pouch_all_party_recovery) // Parameters are unused for this function
+    EVT_DECLARE_USER_FUNC(evt_pouch_all_party_recovery, 0); // Parameters are unused for this function
 
-    EVT_DEFINE_USER_FUNC(evt_pouch_mario_recovery) // Parameters are unused for this function
+    EVT_DECLARE_USER_FUNC(evt_pouch_mario_recovery, 0); // Parameters are unused for this function
 
     // evt_pouch_party_left
     // evt_pouch_party_join

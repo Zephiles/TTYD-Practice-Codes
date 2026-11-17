@@ -17,7 +17,7 @@ struct EvtEntry
     int8_t wNpcEventType;
     uint8_t pad_10[3];
     int32_t nextCommandPtr;
-    void *currentCommandArguments;
+    int32_t *currentCommandArguments;
     int8_t labelIdTable[16];
     void *labelAddressTable[16];
     EvtEntry *waitingEvt;
@@ -114,10 +114,10 @@ extern "C"
 // clang-format off
 #define EVT_DECLARE_USER_FUNC(name, parameter_count) \
     constexpr int32_t name##_parameter_count = (parameter_count); \
-    int32_t name(EvtEntry *evtPtr, bool isFirstCall);
+    int32_t name(EvtEntry *evtPtr, bool isFirstCall)
 
 #define EVT_DEFINE_USER_FUNC(name) \
-    int32_t name(EvtEntry *evtPtr, bool isFirstCall);
+    int32_t name(EvtEntry *evtPtr, bool isFirstCall)
 
 #define EVT_DECLARE(name) \
     extern const int32_t name[];

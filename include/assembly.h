@@ -10,9 +10,6 @@
 extern "C"
 {
     // Assembly overwrite functions
-    void asmFixBlooperCrash1();
-    void asmFixBlooperCrash2();
-
     void asmFixEvtMapBlendSetFlagPartnerCrashStart();
     void asmFixEvtMapBlendSetFlagPartnerCrashBranchBack();
     void asmFixEvtMapBlendSetFlagFollowerCrashStart();
@@ -64,8 +61,6 @@ extern "C"
 #endif
 
     // Functions accessed by assembly overwrites
-    uint32_t cFixBlooperCrash1(uint32_t unkValue, void *battleUnitPtr);
-
     PartyEntry *cFixEvtMapSetFlagCrash(PartyEntry *partyPtr, bool shouldSpawnPartner);
 
 #ifdef TTYD_JP

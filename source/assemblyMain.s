@@ -1,32 +1,4 @@
 ################################################################################################################################
-# Fix Blooper crash
-
-.global asmFixBlooperCrash1
-.global asmFixBlooperCrash2
-
-asmFixBlooperCrash1:
-mr %r3,%r31 # unkValue
-# r4 already contains battleUnitPointer
-b cFixBlooperCrash1
-
-
-
-asmFixBlooperCrash2:
-# Check if BattleGetUnitPtr returned a proper pointer
-cmpwi %r3,0
-beq- exitFunction
-
-# Restore the overwritten instruction
-rlwinm %r0,%r31,2,0,29
-blr
-
-exitFunction:
-b (btlevtcmd_GetUnitWork + 0x6C)
-################################################################################################################################
-
-
-
-################################################################################################################################
 # Fix `evt_map_blend_set_flag` crashes
 
 .global asmFixEvtMapBlendSetFlagPartnerCrashStart

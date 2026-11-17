@@ -33,7 +33,7 @@ extern "C"
     // evt_bero_read_mario_pera
     // evt_bero_get_into_info
 
-    EVT_DEFINE_USER_FUNC(evt_bero_get_info)
+    EVT_DECLARE_USER_FUNC(evt_bero_get_info, 0);
 
     // evt_bero_get_now_number
     // evt_bero_set_now_number

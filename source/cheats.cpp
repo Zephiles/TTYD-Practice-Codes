@@ -444,8 +444,9 @@ EVT_BEGIN_STATIC(memcardSaveScript)
 
     // Call evt_memcard_save synchronously, which handles the main saving code
     // LF(10) and LW(0) need to be set to 0 before evt_memcard_save can be called
-    SET(LF(10), 0)
-    SET(LW(0), 0)
+    // They should already be 0 since this is a brand new evt, in which they are initialized to 0
+    // SET(LF(10), 0)
+    // SET(LW(0), 0)
     RUN_CHILD_EVT(evt_memcard_save)
 
     // Give back control to the player

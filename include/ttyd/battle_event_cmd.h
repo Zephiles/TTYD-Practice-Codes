@@ -208,7 +208,7 @@ extern "C"
     // btlevtcmd_GetFaceDirection
     // btlevtcmd_CalculateFaceDirection
     // btlevtcmd_GetPartyTechLv
-    // btlevtcmd_GetUnitId
+    EVT_DECLARE_USER_FUNC(btlevtcmd_GetUnitId, 2);
     // btlevtcmd_GetBodyId
     // btlevtcmd_GetPartyId
     // btlevtcmd_GetMarioId
