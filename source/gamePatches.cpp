@@ -301,7 +301,7 @@ static EVT_DEFINE_USER_FUNC(blooper_btlevtcmd_GetUnitWork)
     // Restore the previous args
     args[0] = arg1;
     args[1] = arg2;
-    DCFlushRange(&args[0], sizeof(int32_t) * 2); // Just to be safe
+    DCStoreRange(&args[0], sizeof(int32_t) * 2); // Just to be safe
 
     return 2;
 };
