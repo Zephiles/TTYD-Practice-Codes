@@ -17,14 +17,14 @@
 #include <cstdint>
 #include <cstring>
 
-static const char *gSettingsFileName = "Practice_Codes_Data";
+static const char *gSettingsFileName = "(ASE)_Practice_Codes_Data";
 
 #ifdef TTYD_US
-static const char *gSettingsDescription = "Settings (US)";
+static const char *gSettingsDescription = "(ASE Edition) Settings (US)";
 #elif defined TTYD_JP
-static const char *gSettingsDescription = "Settings (JP)";
+static const char *gSettingsDescription = "(ASE Edition) Settings (JP)";
 #elif defined TTYD_EU
-static const char *gSettingsDescription = "Settings (EU)";
+static const char *gSettingsDescription = "(ASE Edition) Settings (EU)";
 #endif
 
 void MiscSettingsData::getData(uint32_t version, uint32_t totalFlags) const
@@ -92,6 +92,7 @@ void CheatsSettingsData::getData(uint32_t totalCheats, uint32_t totalButtonCombo
         }
     }
 
+    /*
     // Certain things need to happen depending on whether the Frame Advance cheat is now enabled/disabled
     FrameAdvanceCheat *frameAdvancePtr = cheatsPtr->getFrameAdvanceCheatPtr();
 
@@ -113,6 +114,7 @@ void CheatsSettingsData::getData(uint32_t totalCheats, uint32_t totalButtonCombo
         // allocMemoryForPrevInputs was called
         frameAdvancePtr->clearAllInputs();
     }
+    */
 
     // Get all of the button combos
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -175,6 +177,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
         displaysPtr->getMemoryUsageDisplayPtr()->freeMemoryUsageBuffer();
     }
 
+    /*
     // Certain things need to happen depending on whether the Hit Check Visualization display is now enabled/disabled
     // Reset the entry count to be safe
     HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
@@ -198,6 +201,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
             hitCheckVisualizationPtr->freeBuffer();
         }
     }
+    */
 
     // Get all of the manually position flags
     constexpr uint32_t bitsPerWord = sizeof(uint32_t) * 8;
@@ -266,6 +270,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
     memcpy(displaysPtr->getButtonCombosPtr(), buttonCombosPtr, maxButtonCombos * sizeof(uint16_t));
     offset += roundUp(totalButtonCombos, sizeof(uint16_t)) * sizeof(uint16_t);
 
+    /*
     // Get the Hit Check Visualization hits and misses colors
     const uint32_t *hitsColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
     hitCheckVisualizationPtr->setHitsColor(*hitsColorPtr);
@@ -273,6 +278,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
 
     const uint32_t *missesColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
     hitCheckVisualizationPtr->setMissesColor(*missesColorPtr);
+    */
 }
 
 uint32_t MemoryWatchesSettingsData::getData(uint32_t totalWatches, uint32_t watchNameLength) const
@@ -449,6 +455,7 @@ void MemoryEditorSettingsData::getData(uint32_t totalFlags) const
     memoryEditorPtr->setNumBytesBeingEdited(*numBytesBeingEditedPtr);
 }
 
+/*
 uint32_t CustomStateSettingsMarioData::getData(CustomStateMarioData *dataPtr, uint32_t totalStates) const
 {
     uint32_t offset = 0;
@@ -723,6 +730,7 @@ uint32_t CustomStatesSettingsData::setData(CustomStateEntry *entryPtr)
 
     return sizeof(CustomStatesSettingsData);
 }
+*/
 
 int32_t finishAsyncMemoryCardFunc(int32_t ret, int32_t channel)
 {
@@ -957,6 +965,7 @@ int32_t loadSettings(int32_t channel)
         }
     }
 
+    /*
     // Get the custom states header data if it is included
     const uint32_t customStatesHeaderOffset = settingsHeaderPtr->getCustomStatesHeaderOffset();
     if (customStatesHeaderOffset > 0)
@@ -980,6 +989,7 @@ int32_t loadSettings(int32_t channel)
             customStatesSettingsDataPtr->getItemsData(itemsOffset);
         }
     }
+    */
 
     // Done
     delete[] fileData;
@@ -1141,11 +1151,13 @@ static uint32_t getWrittenSettingsSize()
     }
 
     // Get the size used by all of the custom states
+    uint32_t customStatesSize = 0;
+
+    /*
     const CustomState *customStatePtr = &gCustomState;
     const uint32_t totalCustomStates = customStatePtr->getTotalEntries();
     const CustomStateEntry *customStatesEntriesPtr = customStatePtr->getEntriesPtr();
 
-    uint32_t customStatesSize = 0;
     if ((totalCustomStates > 0) && customStatesEntriesPtr)
     {
         customStatesSize += sizeof(CustomStatesSettingsHeader);
@@ -1159,6 +1171,7 @@ static uint32_t getWrittenSettingsSize()
         // Make sure the size is aligned to 4 bytes, as a class will be after the items that is aligned to 4 bytes
         customStatesSize = roundUp(customStatesSize, sizeof(uint32_t));
     }
+    */
 
     return sizeof(PracticeCodesDataHeader) + sizeof(SettingsHeader) + sizeof(MiscSettingsHeader) + sizeof(MiscSettingsData) +
            sizeof(CheatsSettingsHeader) + sizeof(CheatsSettingsData) + sizeof(DisplaysSettingsHeader) +
@@ -1353,6 +1366,7 @@ int32_t saveSettings(int32_t channel)
     MemoryEditorSettingsData *memoryEditorSettingsDataPtr = getMemoryEditorSettingsDataPtr(fileData, offset);
     offset += memoryEditorSettingsDataPtr->setData(gMemoryEditor);
 
+    /*
     // Write the custom states header data
     CustomState *customStatePtr = &gCustomState;
     CustomStatesSettingsHeader *customStatesSettingsHeaderPtr = getCustomStatesSettingsHeaderPtr(fileData, offset);
@@ -1388,6 +1402,7 @@ int32_t saveSettings(int32_t channel)
         // Make sure the offset is aligned to 4 bytes, as the classes used here are aligned to 4 bytes
         offset = roundUp(offset, sizeof(uint32_t));
     }
+    */
 
     // Write the data to the file
     ret = writeToFileOnMemoryCard(channel, &fileInfo, fileData, dataSizeAdjusted, 0x2000);

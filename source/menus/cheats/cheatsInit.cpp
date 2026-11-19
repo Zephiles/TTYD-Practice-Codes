@@ -30,8 +30,8 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Load Coordinates",
     cheatsMenuGenericHasButtonComboInit,
 
-    "Modify Mario's Coordinates",
-    cheatsMenuModifyMariosCoordinatesInit,
+    // "Modify Mario's Coordinates",
+    // cheatsMenuModifyMariosCoordinatesInit,
 
     "Spawn Item",
     cheatsMenuGenericHasButtonComboInit,
@@ -42,11 +42,11 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Text Storage",
     cheatsMenuGenericHasButtonComboInit,
 
-    "Time Stop Text Storage",
-    cheatsMenuGenericHasButtonComboInit,
+    // "Time Stop Text Storage",
+    // cheatsMenuGenericHasButtonComboInit,
 
-    "Tube Mode Storage",
-    cheatsMenuGenericNoButtonComboInit,
+    // "Tube Mode Storage",
+    // cheatsMenuGenericNoButtonComboInit,
 
     "Speed Up Mario",
     cheatsMenuGenericHasButtonComboInit,
@@ -57,8 +57,8 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Auto Action Commands",
     cheatsMenuGenericHasButtonComboInit,
 
-    "Infinite Item Usage",
-    cheatsMenuGenericHasButtonComboInit,
+    // "Infinite Item Usage",
+    // cheatsMenuGenericHasButtonComboInit,
 
     "Reload Room",
     cheatsMenuGenericHasButtonComboInit,
@@ -69,11 +69,11 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Auto Mash Through Text",
     cheatsMenuGenericHasButtonComboInit,
 
-    "Frame Advance (Experimental)",
-    cheatsMenuFrameAdvanceInit,
+    // "Frame Advance (Experimental)",
+    // cheatsMenuFrameAdvanceInit,
 
-    "Generate Lag Spike",
-    cheatsMenuGenerateLagSpikeInit,
+    // "Generate Lag Spike",
+    // cheatsMenuGenerateLagSpikeInit,
 
     "Lock Mario's HP To Its Max",
     cheatsMenuGenericNoButtonComboInit,
@@ -84,20 +84,20 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
-    "Simulate AMW - Mario Zero Hitbox - Paper Mode",
+    "Simulate AMW - Zero Hitbox - Paper Mode",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate AMW - Mario Zero Hitbox - Room Transition",
+    "Simulate AMW - Zero Hitbox - Room Transition",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate AMW - Mario Airwalk",
+    "Simulate AMW - Airwalk",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Glitz Pit Manager",
-    cheatsMenuGlitzPitManagerInit,
+    // "Glitz Pit Manager",
+    // cheatsMenuGlitzPitManagerInit,
 
-    "Bobbery Early",
-    cheatsMenuGenericNoButtonComboInit,
+    // "Bobbery Early",
+    // cheatsMenuGenericNoButtonComboInit,
 
     "Disable Certain Sounds",
     cheatsMenuDisableCertainSoundsInit,
@@ -114,8 +114,8 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Manage Flags",
     cheatsMenuManageFlagsInit,
 
-    "Clear Area Flags",
-    cheatsMenuClearAreaFlagsInit,
+    // "Clear Area Flags",
+    // cheatsMenuClearAreaFlagsInit,
 };
 
 static const MenuFunctions gFuncs = {
@@ -307,14 +307,21 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TEXT_STORAGE;
         }
-        case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
-        {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TIME_STOP_TEXT_STORAGE;
-        }
-        case CheatsMenuOptions::CHEATS_MENU_TUBE_MODE_STORAGE:
-        {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TUBE_MODE_STORAGE;
-        }
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
+            {
+                return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TIME_STOP_TEXT_STORAGE;
+            }
+            */
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_TUBE_MODE_STORAGE:
+            {
+                return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TUBE_MODE_STORAGE;
+            }
+            */
+
         case CheatsMenuOptions::CHEATS_MENU_SPEED_UP_MARIO:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SPEED_UP_MARIO;
@@ -327,10 +334,14 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_AUTO_ACTION_COMMANDS;
         }
-        case CheatsMenuOptions::CHEATS_MENU_INFINITE_ITEM_USAGE:
-        {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_INFINITE_ITEM_USAGE;
-        }
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_INFINITE_ITEM_USAGE:
+            {
+                return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_INFINITE_ITEM_USAGE;
+            }
+            */
+
         case CheatsMenuOptions::CHEATS_MENU_RELOAD_ROOM:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM;
@@ -367,10 +378,14 @@ uint32_t indexToCheatEnabledFlag(uint32_t index)
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_SIMULATE_AMW_MARIO_AIRWALK;
         }
-        case CheatsMenuOptions::CHEATS_MENU_BOBBERY_EARLY:
-        {
-            return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_BOBBERY_EARLY;
-        }
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_BOBBERY_EARLY:
+            {
+                return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_BOBBERY_EARLY;
+            }
+            */
+
         case CheatsMenuOptions::CHEATS_MENU_FORCE_NPC_ITEM_DROP:
         {
             return CheatsEnabledFlag::CHEATS_ENABLED_FLAG_FORCE_NPC_ITEM_DROP;
@@ -415,10 +430,14 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index)
         {
             return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TEXT_STORAGE;
         }
-        case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
-        {
-            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE;
-        }
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_TIME_STOP_TEXT_STORAGE:
+            {
+                return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE;
+            }
+            */
+
         case CheatsMenuOptions::CHEATS_MENU_SPEED_UP_MARIO:
         {
             return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPEED_UP_MARIO;
@@ -431,10 +450,14 @@ uint32_t indexToCheatButtonComboFlag(uint32_t index)
         {
             return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS;
         }
-        case CheatsMenuOptions::CHEATS_MENU_INFINITE_ITEM_USAGE:
-        {
-            return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE;
-        }
+
+            /*
+            case CheatsMenuOptions::CHEATS_MENU_INFINITE_ITEM_USAGE:
+            {
+                return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE;
+            }
+            */
+
         case CheatsMenuOptions::CHEATS_MENU_RELOAD_ROOM:
         {
             return CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM;

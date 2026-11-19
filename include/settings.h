@@ -247,9 +247,11 @@ class DisplaysSettingsData
 
     INLINE_FUNC uint32_t setData(Displays *displaysPtr)
     {
+        /*
         const HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
         this->hitsColor = hitCheckVisualizationPtr->getHitsColor();
         this->missesColor = hitCheckVisualizationPtr->getMissesColor();
+        */
 
         memcpy(this->enabledFlags, displaysPtr->getEnabledFlagsPtr(), DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
@@ -448,6 +450,7 @@ class CustomStatesSettingsHeader
     CustomStatesSettingsHeader() {}
     ~CustomStatesSettingsHeader() {}
 
+    /*
     uint32_t getDataOffset() const { return this->dataOffset; }
     uint32_t getTotalStates() const { return this->totalStates; }
     uint32_t getStateNameLength() const { return this->stateNameLength; }
@@ -474,6 +477,7 @@ class CustomStatesSettingsHeader
 
         return headerSize;
     }
+    */
 
    private:
     // Starts at the start of SettingsHeader. If the value is 0, then the code will assume that the section is not included.
@@ -490,7 +494,7 @@ class CustomStateSettingsMarioData
     CustomStateSettingsMarioData() {}
     ~CustomStateSettingsMarioData() {}
 
-    uint32_t getData(CustomStateMarioData *dataPtr, uint32_t totalStates) const;
+    // uint32_t getData(CustomStateMarioData *dataPtr, uint32_t totalStates) const;
 
    private:
     int16_t currentHP;
@@ -516,6 +520,7 @@ class CustomStatesSettingsData
     CustomStatesSettingsData() {}
     ~CustomStatesSettingsData() {}
 
+    /*
     uint32_t getData(uint32_t totalStates, uint32_t stateNameLength) const;
     void getItemsData(uint32_t offset) const;
 
@@ -538,6 +543,7 @@ class CustomStatesSettingsData
 
         return itemsSize;
     }
+    */
 
    private:
     CustomStateSettingsMarioData marioData;

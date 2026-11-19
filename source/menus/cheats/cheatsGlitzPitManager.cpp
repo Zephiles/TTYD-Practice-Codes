@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "mod.h"
@@ -523,3 +525,5 @@ static void selectedOptionToggleWonPreviousMatch(Menu *menuPtr)
 
     toggleGSWF(2443);
 }
+
+#endif

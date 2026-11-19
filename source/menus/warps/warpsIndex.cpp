@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "cheats.h"
@@ -466,3 +468,5 @@ void relSetEvtAddrSetCurrentMapInitScript(const char *mapName, const void *pInit
     // Call the original function
     return g_relSetEvtAddr_trampoline(mapName, pInitEvtCode);
 }
+
+#endif

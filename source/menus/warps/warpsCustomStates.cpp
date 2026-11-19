@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "customState.h"
 #include "drawText.h"
@@ -689,3 +691,5 @@ static void selectedOptionDeleteState(Menu *menuPtr)
         menuPtr->clearFlag(WarpsMenuCustomStatesFlag::WARPS_MENU_CUSTOM_STATES_FLAG_DELETE);
     }
 }
+
+#endif

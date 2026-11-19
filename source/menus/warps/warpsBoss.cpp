@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "cheats.h"
@@ -513,3 +515,5 @@ static void selectedOptionBoss(Menu *menuPtr)
         }
     }
 }
+
+#endif

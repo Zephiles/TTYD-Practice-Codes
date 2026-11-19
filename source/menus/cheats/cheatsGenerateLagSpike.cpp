@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "cheats.h"
@@ -191,3 +193,5 @@ static void selectedOptionSetDuration(Menu *menuPtr)
 
     cheatsMenuInitValueEditor(currentValue, minValue, maxValue, flags, VariableType::u16, true, setNewDuration);
 }
+
+#endif

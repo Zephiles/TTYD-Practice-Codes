@@ -159,22 +159,23 @@ Cheats::Cheats()
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SAVE_ANYWHERE, PadInput::PAD_Y | PadInput::PAD_B);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TEXT_STORAGE, PadInput::PAD_L | PadInput::PAD_X);
 
-    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE,
-                              PadInput::PAD_L | PadInput::PAD_R);
+    // this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_TIME_STOP_TEXT_STORAGE,PadInput::PAD_L |
+    // PadInput::PAD_R);
 
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_SPEED_UP_MARIO, PadInput::PAD_L | PadInput::PAD_Y);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_DISABLE_BATTLES, PadInput::PAD_Y);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_ACTION_COMMANDS, PadInput::PAD_R);
-    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE, PadInput::PAD_Y);
+    // this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_INFINITE_ITEM_USAGE, PadInput::PAD_Y);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_RELOAD_ROOM, PadInput::PAD_L | PadInput::PAD_B);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_LEVITATE, PadInput::PAD_L | PadInput::PAD_A);
     this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_AUTO_MASH_TEXT, PadInput::PAD_Y);
-    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME, PadInput::PAD_Y);
+    // this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_ADVANCE_FRAME, PadInput::PAD_Y);
 
-    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME,
-                              PadInput::PAD_L | PadInput::PAD_A | PadInput::PAD_Z);
+    // this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_FRAME_ADVANCE_PAUSE_RESUME, PadInput::PAD_L |
+    // PadInput::PAD_A | PadInput::PAD_Z);
 
-    this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, PadInput::PAD_Y | PadInput::PAD_Z);
+    // this->setCheatButtonCombo(CheatsWithButtonCombo::CHEATS_BUTTON_COMBO_GENERATE_LAG_SPIKE, PadInput::PAD_Y |
+    // PadInput::PAD_Z);
 }
 
 uint32_t cAllowRunningFromBattles(void *ptr)
@@ -533,6 +534,7 @@ static void setTextStorage(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
+/*
 static void setTimeStopTextStorage(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
@@ -553,6 +555,7 @@ static void setTimeStopTextStorage(Cheats *cheatsPtr, Mod *modPtr)
         partnerPtr->wActionState = 21;
     }
 }
+*/
 
 static void speedUpMario(Cheats *cheatsPtr, Mod *modPtr)
 {
@@ -648,6 +651,7 @@ bool disableBattles()
     return false;
 }
 
+/*
 bool infiniteItemUsage(ItemId item, uint32_t index)
 {
     Cheats *cheatsPtr = gCheats;
@@ -673,6 +677,7 @@ bool infiniteItemUsage(ItemId item, uint32_t index)
     // Prevent the original function from running
     return false;
 }
+*/
 
 void reloadRoomMain()
 {
@@ -897,6 +902,7 @@ static void setOSTime(OSTime time)
     OSRestoreInterrupts(enable);
 }
 
+/*
 void frameAdvance()
 {
     Cheats *cheatsPtr = gCheats;
@@ -1032,6 +1038,7 @@ void preventViPostCallBackOnFramePause(uint32_t retraceCount)
     // Call the original function
     return g_viPostCallback_trampoline(retraceCount);
 }
+*/
 
 int32_t disableMenuSounds(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan)
 {
@@ -1156,6 +1163,7 @@ void adjustArbitraryMemoryWriteValues(uint32_t cheatEnabledFlag)
     DCFlushRange(valuesToModify, sizeof(float) * 2);
 }
 
+/*
 static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
@@ -1183,6 +1191,7 @@ static void generateLagSpike(Cheats *cheatsPtr, Mod *modPtr)
     const OSTime endingTime = OSGetTime() + static_cast<OSTime>(duration * ((OSBusClock / 4) / 1000));
     while (OSGetTime() < endingTime);
 }
+*/
 
 static void lockMarioHpToMax(Cheats *cheatsPtr, Mod *modPtr)
 {
@@ -1282,6 +1291,7 @@ static void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
         }
     }
 
+    /*
     if (!cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_BOBBERY_EARLY))
     {
         return;
@@ -1304,6 +1314,7 @@ static void bobberyEarly(Cheats *cheatsPtr, Mod *modPtr)
     {
         emberPtr->wJumpFlags &= 0xFFFFFF00; // Clear byte 0x1D7 in emberPtr
     }
+    */
 }
 
 static void cancelSpawnSelectedItem()
@@ -1516,6 +1527,7 @@ void lockFlags(Cheats *cheatsPtr, Mod *modPtr)
     }
 }
 
+/*
 static void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
 {
     (void)modPtr;
@@ -1553,17 +1565,18 @@ static void checkIfAreaFlagsShouldBeCleared(Cheats *cheatsPtr, Mod *modPtr)
         }
     }
 }
+*/
 
 // Handle setting up/calling cheats
 static const CheatsArrayFunc gCheatsWithButtonCombos[] = {
     saveMarioAndPartnerPositions,
     loadMarioAndPartnerPositions,
     setTextStorage,
-    setTimeStopTextStorage,
+    // setTimeStopTextStorage,
     lockMarioHpToMax,
     lockPartnerHpToMax,
     levitate,
-    generateLagSpike,
+    // generateLagSpike,
 };
 
 static const CheatsArrayFunc gCheatsNoButtonCombos[] = {
@@ -1573,7 +1586,7 @@ static const CheatsArrayFunc gCheatsNoButtonCombos[] = {
     speedUpMario,           // Needs to always run due to Mario's base speed constantly being set
     reloadRoom,             // Needs to always run due to the extra code that always does some failsafe checking
     bobberyEarly,
-    checkIfAreaFlagsShouldBeCleared,
+    // checkIfAreaFlagsShouldBeCleared,
     checkIfSystemLevelShouldBeLowered,
     lockFlags,
 };

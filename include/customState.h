@@ -195,6 +195,6 @@ class CustomState
 };
 
 // The CustomState class is very small, so making it dynamic would waste a lot of memory
-extern CustomState gCustomState;
+// extern CustomState gCustomState;
 
 #endif

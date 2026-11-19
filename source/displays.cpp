@@ -196,21 +196,21 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
     // Make sure the enabled flag is for one of the tricks
     switch (enabledFlag)
     {
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
+        // case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP:
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
+        // case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
         {
             // Disable all of the trick display flags
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
+            // this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_JABBI_HIVE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP);
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
+            // this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE);
 
             // Enable the current trick display flag
@@ -364,7 +364,7 @@ Displays::Displays()
     // Set default displays misc flags enabled
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ONSCREEN_TIMER_PAUSED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_FRAME_COUNTER_PAUSED);
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_YOSHI_SKIP_TIMER_STOPPED);
+    // this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_YOSHI_SKIP_TIMER_STOPPED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_PALACE_SKIP_TIMER_STOPPED);
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BRIDGE_SKIP_TIMER_STOPPED);
 
@@ -373,8 +373,8 @@ Displays::Displays()
     this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_ARBITRARY_MEMORY_WRITE_SPIN_JUMP_TIMER_STOPPED);
 #endif
 
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_UP_RIGHT_TIMER_STOPPED);
-    this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_STRAIGHT_UP_TIMER_STOPPED);
+    // this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_UP_RIGHT_TIMER_STOPPED);
+    // this->setMiscFlag(DisplaysMiscFlag::DISPLAYS_MISC_FLAG_BLIMP_SKIP_STRAIGHT_UP_TIMER_STOPPED);
 
     // Set default display button combos
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ONSCREEN_TIMER_START_PAUSE_RESUME,
@@ -390,13 +390,13 @@ Displays::Displays()
                                 PadInput::PAD_L | PadInput::PAD_DPAD_RIGHT);
 
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JUMP_STORAGE, PadInput::PAD_Y);
-    this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ART_ATTACK_HITBOXES, PadInput::PAD_Y);
-    this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_YOSHI_SKIP, PadInput::PAD_B);
+    // this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ART_ATTACK_HITBOXES, PadInput::PAD_Y);
+    // this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_YOSHI_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP_MINIMAL, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JABBI_HIVE_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP, PadInput::PAD_B);
-    this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP, PadInput::PAD_B);
+    // this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP, PadInput::PAD_B);
     this->setDisplayButtonCombo(DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ARBITRARY_MEMORY_WRITE, PadInput::PAD_Y);
 
     // Set default positions and scales for certain displays when drawing them manually
@@ -509,12 +509,14 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(-134.f);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE + 0.05f);
 
+    /*
     // Yoshi Skip
     posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP];
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+    */
 
     // Palace Skip
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP];
@@ -544,9 +546,11 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
 
+    /*
     // Blimp Ticket Skip
     manuallyPositionPtr =
         &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP];
+    */
 
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
@@ -2118,6 +2122,7 @@ static void handleGuardSuperguardTimings(Displays *displaysPtr)
     }
 }
 
+/*
 // Credits to PistonMiner for writing the original code for this function
 static void drawHitCheckVisualization(CameraId cameraId, void *user)
 {
@@ -2351,7 +2356,9 @@ void handleHitCheckVisualization()
               drawHitCheckVisualization,
               nullptr);
 }
+*/
 
+/*
 static void drawYoshiSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
@@ -2459,6 +2466,7 @@ static void handleYoshiSkip(Displays *displaysPtr)
         yoshiSkipPtr->resetCounter();
     }
 }
+*/
 
 static void drawPalaceSkip(CameraId cameraId, void *user)
 {
@@ -3469,6 +3477,7 @@ static void handleBridgeSkip(Displays *displaysPtr)
     }
 }
 
+/*
 static void drawBlimpTicketSkip(CameraId cameraId, void *user)
 {
     (void)cameraId;
@@ -3604,6 +3613,7 @@ static void handleBlimpTicketSkip(Displays *displaysPtr)
         blimpTicketSkipPtr->resetCounter();
     }
 }
+*/
 
 static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
 {
@@ -3946,6 +3956,7 @@ void drawStarPowerValue()
     iconNumberDispGx(mtx, currentSP, true, reinterpret_cast<const uint8_t *>(&color));
 }
 
+/*
 void drawArtAttackHitboxes(CameraId cameraId, void *user)
 {
     // Call the original function immediately, as several functions need to run for the lines to be drawn properly
@@ -4131,6 +4142,7 @@ uint32_t pauseArtAttackTimer()
     // Call the original function
     return g_scissor_timer_main_trampoline();
 }
+*/
 
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
 {
@@ -4194,12 +4206,12 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
     drawJumpStorage,
 
     // Trick displays
-    drawYoshiSkip,
+    // drawYoshiSkip,
     drawPalaceSkip,
     drawArbitraryMemoryWrite,
     drawJabbiHiveSkip,
     drawBridgeSkip,
-    drawBlimpTicketSkip,
+    // drawBlimpTicketSkip,
 };
 
 static void runDisplayDrawFuncs(CameraId cameraId, void *user)
@@ -4248,12 +4260,12 @@ static const DisplaysArrayFunc gDisplaysWithButtonCombos[] = {
     handleJumpStorage,
 
     // All of the tricks should be handled last, as they may clear other draw flags
-    handleYoshiSkip,
+    // handleYoshiSkip,
     handlePalaceSkip,
     handleArbitraryMemoryWrite,
     handleJabbiHiveSkip,
     handleBridgeSkip,
-    handleBlimpTicketSkip,
+    // handleBlimpTicketSkip,
 };
 
 void runDisplayFuncsEveryFrame()

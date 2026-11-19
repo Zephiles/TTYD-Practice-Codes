@@ -1,3 +1,5 @@
+#if 0
+
 #include "customState.h"
 #include "cxx.h"
 #include "mod.h"
@@ -764,3 +766,5 @@ bool CustomState::deleteState(uint32_t index)
     delete[] entriesBackupPtr;
     return true;
 }
+
+#endif

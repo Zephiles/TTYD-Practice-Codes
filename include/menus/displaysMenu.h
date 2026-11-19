@@ -25,21 +25,22 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_STAR_POWER_VALUE,
     DISPLAYS_MENU_DPAD_OPTIONS,
     DISPLAYS_MENU_GUARD_SUPERGUARD_TIMINGS,
-    DISPLAYS_MENU_ART_ATTACK_HITBOXES,
+    // DISPLAYS_MENU_ART_ATTACK_HITBOXES,
     DISPLAYS_MENU_MEMORY_USAGE,
     DISPLAYS_MENU_EFFS_ACTIVE,
     DISPLAYS_MENU_EVTS_ACTIVE,
     DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER,
-    DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
-    DISPLAYS_MENU_YOSHI_SKIP,
+    // DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
+    // DISPLAYS_MENU_YOSHI_SKIP,
     DISPLAYS_MENU_PALACE_SKIP,
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
     DISPLAYS_MENU_ARBITRARY_MEMORY_WRITE,
     DISPLAYS_MENU_JABBI_HIVE_SKIP,
     DISPLAYS_MENU_BRIDGE_SKIP,
-    DISPLAYS_MENU_BLIMP_TICKET_SKIP,
+    // DISPLAYS_MENU_BLIMP_TICKET_SKIP,
 };
 
+/*
 enum DisplaysMenuHitCheckVisualizationOptions
 {
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_TURN_ON_OFF = 0,
@@ -48,6 +49,7 @@ enum DisplaysMenuHitCheckVisualizationOptions
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_HITS_COLOR,
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_MISSES_COLOR,
 };
+*/
 
 enum DisplaysMenuGenericFlags
 {
@@ -145,8 +147,10 @@ void displaysMenuMariosCoordinatesInit(Menu *menuPtr);
 // displaysMemoryUsage
 void displaysMenuMemoryUsageInit(Menu *menuPtr);
 
+/*
 // displaysHitCheckVisualization
 void displaysMenuHitCheckVisualizationInit(Menu *menuPtr);
+*/
 
 // displaysAdjustManualPosition
 void displaysAdjustManualPositionInit(Menu *menuPtr);

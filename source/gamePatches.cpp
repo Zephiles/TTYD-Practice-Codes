@@ -169,10 +169,13 @@ uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw,
                                                uint32_t multipliedIndex,
                                                AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
 {
+    // The original functionality is to add the pointer and offset together
+    pointerRaw += multipliedIndex;
+
     if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         // Use the pointer value that would be used under vanilla scenarios
-        pointerRaw = multipliedIndex + AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(funcCaller);
+        // pointerRaw = multipliedIndex + AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(funcCaller);
 
         // Successfully performed the trick, so initialize drawing the text for the coordinate and the address written to
         gDisplays->getAMWCoordinateWriteAddressDisplayPtr()->init(pointerRaw, funcCaller);
@@ -184,15 +187,11 @@ uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw,
             return static_cast<uint32_t>(-1);
         }
     }
-    else
-    {
-        // Assume the original functionality is to add the pointer and offset together
-        pointerRaw += multipliedIndex;
-    }
 
     return pointerRaw;
 }
 
+/*
 bool cHandleTubeModeStorage()
 {
     if (!gCheats->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_TUBE_MODE_STORAGE))
@@ -208,6 +207,7 @@ bool cHandleTubeModeStorage()
 
     return false;
 }
+*/
 
 static void *fixPouchInitMemoryLeak(int32_t heap, uint32_t size)
 {
@@ -593,9 +593,10 @@ static void fixMapProblems() // Gets called in initStageEvents
 
 static GlobalWork *initStageEvents()
 {
-    CustomState *customStatePtr = &gCustomState;
+    // CustomState *customStatePtr = &gCustomState;
     Mod *modPtr = gMod;
 
+    /*
     // TODO: Add if check for custom states
     if (customStatePtr->stateWasSelected())
     {
@@ -603,10 +604,11 @@ static GlobalWork *initStageEvents()
         modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT); // Failsafe
         customStatePtr->loadState(customStatePtr->getSelectedState());
     }
-    else if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT))
+    else */
+    if (modPtr->flagIsSet(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT))
     {
         modPtr->clearFlag(ModFlag::MOD_FLAG_WARP_BY_EVENT_INIT);
-        customStatePtr->clearInit(); // Failsafe
+        // customStatePtr->clearInit(); // Failsafe
         handleWarpByEvent();
     }
 
@@ -774,16 +776,18 @@ void applyVariousGamePatches()
     applyAssemblyPatch(crashScreenEndBranchAddress, 0x4BFFFDD4);     // b -0x22C
 #endif
 
-    // Allow for running various init code that requires the game's heaps to already be created
-#ifdef TTYD_US
-    constexpr uint32_t marioStInitAddress = 0x8006FE38;
-#elif defined TTYD_JP
-    constexpr uint32_t marioStInitAddress = 0x8006EBD8;
-#elif defined TTYD_EU
-    constexpr uint32_t marioStInitAddress = 0x800710F4;
-#endif
+    /*
+        // Allow for running various init code that requires the game's heaps to already be created
+    #ifdef TTYD_US
+        constexpr uint32_t marioStInitAddress = 0x8006FE38;
+    #elif defined TTYD_JP
+        constexpr uint32_t marioStInitAddress = 0x8006EBD8;
+    #elif defined TTYD_EU
+        constexpr uint32_t marioStInitAddress = 0x800710F4;
+    #endif
 
-    writeBranchBL(marioStInitAddress, initAfterHeapsCreated);
+        writeBranchBL(marioStInitAddress, initAfterHeapsCreated);
+    */
 
     // Prevent upgrade item cutscenes from occuring, and instead just give them like standard items. This is needed because the
     // upgrades could potentially be obtained in maps other than where they are intended to be obtained, which will cause a
@@ -992,6 +996,7 @@ void applyCheatAndDisplayInjects()
 
     writeBranchBL(disableDPadOptionsAddress, asmDisableDPadOptionsDisplay);
 
+    /*
     // Tube Mode Storage
 #ifdef TTYD_US
     constexpr uint32_t tubeModeStorageAddress = 0x80092318;
@@ -1002,6 +1007,7 @@ void applyCheatAndDisplayInjects()
 #endif
 
     writeBranchBL(tubeModeStorageAddress, asmHandleTubeModeStorage);
+    */
 
 #ifdef TTYD_EU
     // Allow jumping on water when the Bridge Skip display is enabled

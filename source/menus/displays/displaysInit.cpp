@@ -44,8 +44,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Guard/Superguard Timings",
     displaysMenuGenericNoButtonComboInit,
 
-    "Art Attack Hitboxes",
-    displaysMenuGenericHasButtonComboNoManualPositionInit,
+    // "Art Attack Hitboxes",
+    // displaysMenuGenericHasButtonComboNoManualPositionInit,
 
     "Memory Usage",
     displaysMenuMemoryUsageInit,
@@ -59,11 +59,11 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Enemy Encounter Notifier",
     displaysMenuGenericNoButtonComboInit,
 
-    "Hit Check Visualization",
-    displaysMenuHitCheckVisualizationInit,
+    // "Hit Check Visualization",
+    // displaysMenuHitCheckVisualizationInit,
 
-    "Yoshi Skip",
-    displaysMenuGenericHasButtonComboInit,
+    // "Yoshi Skip",
+    // displaysMenuGenericHasButtonComboInit,
 
     "Palace Skip",
     displaysMenuGenericHasButtonComboInit,
@@ -80,8 +80,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Bridge Skip",
     displaysMenuGenericHasButtonComboInit,
 
-    "Blimp Ticket Skip",
-    displaysMenuGenericHasButtonComboInit,
+    // "Blimp Ticket Skip",
+    // displaysMenuGenericHasButtonComboInit,
 };
 
 static const MenuFunctions gFuncs = {
@@ -219,10 +219,14 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_GUARD_SUPERGUARD_TIMINGS;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_ART_ATTACK_HITBOXES:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ART_ATTACK_HITBOXES;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_ART_ATTACK_HITBOXES:
+            {
+                return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ART_ATTACK_HITBOXES;
+            }
+            */
+
         case DisplaysMenuOptions::DISPLAYS_MENU_MEMORY_USAGE:
         {
             // This is used for all of the memory usage displays, specifically when manually positioning them, since they all
@@ -241,14 +245,21 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION;
-        }
-        case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_HIT_CHECK_VISUALIZATION:
+            {
+                return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION;
+            }
+            */
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
+            {
+                return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP;
+            }
+            */
+
         case DisplaysMenuOptions::DISPLAYS_MENU_PALACE_SKIP:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP;
@@ -269,10 +280,14 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BRIDGE_SKIP;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
+            {
+                return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_BLIMP_TICKET_SKIP;
+            }
+            */
+
         default:
         {
             // Return an arbitrary invalid flag
@@ -333,10 +348,14 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
+            {
+                return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP;
+            }
+            */
+
         case DisplaysMenuOptions::DISPLAYS_MENU_PALACE_SKIP:
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_PALACE_SKIP;
@@ -357,10 +376,14 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BRIDGE_SKIP;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
-        {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
+            {
+                return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_BLIMP_TICKET_SKIP;
+            }
+            */
+
         default:
         {
             // Return an arbitrary invalid flag
@@ -377,14 +400,21 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_JUMP_STORAGE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_ART_ATTACK_HITBOXES:
-        {
-            return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ART_ATTACK_HITBOXES;
-        }
-        case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
-        {
-            return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_YOSHI_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_ART_ATTACK_HITBOXES:
+            {
+                return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_ART_ATTACK_HITBOXES;
+            }
+            */
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
+            {
+                return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_YOSHI_SKIP;
+            }
+            */
+
         case DisplaysMenuOptions::DISPLAYS_MENU_PALACE_SKIP:
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_PALACE_SKIP;
@@ -405,10 +435,14 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BRIDGE_SKIP;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
-        {
-            return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP;
-        }
+
+            /*
+            case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
+            {
+                return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP;
+            }
+            */
+
         default:
         {
             // Return an arbitrary invalid flag

@@ -430,12 +430,12 @@ class Cheats
     SaveLoadCoordinatesCheats *getSaveLoadCoordinatesCheatsPtr() { return &this->saveLoadCoordinates; }
     SaveAnywhereCheat *getSaveAnywhereCheatPtr() { return &this->saveAnywhere; }
     ForceNpcItemDropCheat *getForceNpcItemDropCheatPtr() { return &this->forceNpcItemDrop; }
-    GenerateLagSpikeCheat *getGenerateLagSpikeCheatPtr() { return &this->generateLagSpike; }
+    // GenerateLagSpikeCheat *getGenerateLagSpikeCheatPtr() { return &this->generateLagSpike; }
     SpeedUpMarioCheat *getSpeedUpMarioCheatPtr() { return &this->speedUpMario; }
     ReloadRoomCheat *getReloadRoomCheatPtr() { return &this->reloadRoom; }
     SpawnItemCheat *getSpawnItemCheatPtr() { return &this->spawnItem; }
-    FrameAdvanceCheat *getFrameAdvanceCheatPtr() { return &this->frameAdvance; }
-    ClearAreaFlagsCheat *getClearAreaFlagsCheat() { return &this->clearAreaFlags; }
+    // FrameAdvanceCheat *getFrameAdvanceCheatPtr() { return &this->frameAdvance; }
+    // ClearAreaFlagsCheat *getClearAreaFlagsCheat() { return &this->clearAreaFlags; }
     LockFlagsCheat *getLockFlagsCheatPtr() { return &this->lockFlags; }
 
     INLINE_FUNC bool enabledFlagIsSet(uint32_t flag) const
@@ -564,26 +564,26 @@ class Cheats
     // Class variables ordered specifically to reduce extra padding
     SaveLoadCoordinatesCheats saveLoadCoordinates;
     SaveAnywhereCheat saveAnywhere;
-    FrameAdvanceCheat frameAdvance;
+    // FrameAdvanceCheat frameAdvance;
     SpawnItemCheat spawnItem;
     ForceNpcItemDropCheat forceNpcItemDrop;
-    GenerateLagSpikeCheat generateLagSpike;
+    // GenerateLagSpikeCheat generateLagSpike;
     LockFlagsCheat lockFlags;
     SpeedUpMarioCheat speedUpMario;
     ReloadRoomCheat reloadRoom;
-    ClearAreaFlagsCheat clearAreaFlags;
+    // ClearAreaFlagsCheat clearAreaFlags;
 };
 
 extern Cheats *gCheats;
 
 void handleAutoActionCommands();
 bool disableBattles();
-bool infiniteItemUsage(ItemId item, uint32_t index);
+// bool infiniteItemUsage(ItemId item, uint32_t index);
 void reloadRoomMain();
 void disableBattlesOnReload(SeqIndex seq, const char *map, const char *bero);
 uint32_t autoMashText(PadId controllerId);
-void frameAdvance();
-void preventViPostCallBackOnFramePause(uint32_t retraceCount);
+// void frameAdvance();
+// void preventViPostCallBackOnFramePause(uint32_t retraceCount);
 int32_t disableMenuSounds(int32_t soundId, uint8_t a2, uint8_t vol, uint8_t pan);
 bool disableBgm(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
 bool disableEnvSounds(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);

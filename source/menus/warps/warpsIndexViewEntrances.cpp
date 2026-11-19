@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "mod.h"
 #include "drawText.h"
@@ -228,3 +230,5 @@ static void draw(CameraId cameraId, void *user)
         posY -= lineDecrement;
     }
 }
+
+#endif

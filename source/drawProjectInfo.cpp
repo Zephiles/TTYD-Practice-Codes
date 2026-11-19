@@ -28,9 +28,9 @@ static void drawTitleScreenInfo(CameraId cameraId, void *user)
     windowPosY += 30.f;
 #endif
 
-    window.setPosX(-225.f);
+    window.setPosX(-232.f);
     window.setPosY(windowPosY);
-    window.setWidth(450.f);
+    window.setWidth(463.f);
 
     // Draw the window
     window.draw();

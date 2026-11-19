@@ -61,120 +61,122 @@ void init()
     applyCheatAndDisplayInjects();
 
     // The root window is used for various things outside of the menu, so it can just exist at all times
-    Window *windowPtr = new (true, true, alignof(Window)) Window;
+    Window *windowPtr = new (true) Window;
     windowPtr->init(getColorBlack(0xF4), -245.f, 190.f, 490.f, 375.f, 0.f, 20.f);
     gRootWindow = windowPtr;
 
-    gMod = new (true, true, alignof(Mod)) Mod;
-    gCheats = new (true, true, alignof(Cheats)) Cheats;
-    gDisplays = new (true, true, alignof(Displays)) Displays;
-    gMemoryEditor = new (true, true, alignof(MemoryEditor)) MemoryEditor;
+    gMod = new (true) Mod;
+    gCheats = new (true) Cheats;
+    gDisplays = new (true) Displays;
+    gMemoryEditor = new (true) MemoryEditor;
 
 #ifdef TTYD_JP
     // Various things need to be done for setting up/handling the battle heap
-    battleHeapVarsInit();
+    // battleHeapVarsInit();
 #endif
 
     // Handle function hooks
     // For code that runs once per frame
-    g_marioStMain_trampoline = hookFunctionArena(marioStMain, runOncePerFrame);
+    g_marioStMain_trampoline = hookFunction(marioStMain, runOncePerFrame);
 
     // For stuff that is displayed on the title screen and file select screen
-    g_titleMain_trampoline = hookFunctionArena(titleMain, displayTitleScreenInfo);
-    g_seq_loadMain_trampoline = hookFunctionArena(seq_loadMain, displayFileSelectScreenInfo);
+    g_titleMain_trampoline = hookFunction(titleMain, displayTitleScreenInfo);
+    g_seq_loadMain_trampoline = hookFunction(seq_loadMain, displayFileSelectScreenInfo);
 
     // For custom textbox messages
-    g_msgSearch_trampoline = hookFunctionArena(msgSearch, getCustomMessage);
+    g_msgSearch_trampoline = hookFunction(msgSearch, getCustomMessage);
 
     // For preventing leaving the pause menu if L + Start is pressed
-    g_winRootMain_trampoline = hookFunctionArena(winRootMain, pauseMenuPreventUnpause);
+    g_winRootMain_trampoline = hookFunction(winRootMain, pauseMenuPreventUnpause);
 
     // For preventing marioKeyOn from setting the key value to a negative value
-    g_marioKeyOn_trampoline = hookFunctionArena(marioKeyOn, fixMarioKeyOn);
+    g_marioKeyOn_trampoline = hookFunction(marioKeyOn, fixMarioKeyOn);
 
     // For fixing various issues within rel files
-    g_OSLink_trampoline = hookFunctionArena(OSLink, applyRelPatches);
+    g_OSLink_trampoline = hookFunction(OSLink, applyRelPatches);
 
     // For performing various actions immediately before a battle starts
-    g_battle_init_trampoline = hookFunctionArena(battle_init, performPreBattleActions);
+    g_battle_init_trampoline = hookFunction(battle_init, performPreBattleActions);
 
     // For handling various checks during a battle
-    g_BattlePadManager_trampoline = hookFunctionArena(BattlePadManager, performBattleChecks);
+    g_BattlePadManager_trampoline = hookFunction(BattlePadManager, performBattleChecks);
 
     // For handling the Infinite Item Usage cheat
-    g_pouchRemoveItemIndex_trampoline = hookFunctionArena(pouchRemoveItemIndex, infiniteItemUsage);
+    // g_pouchRemoveItemIndex_trampoline = hookFunction(pouchRemoveItemIndex, infiniteItemUsage);
 
     // For handling the Frame Advance cheat
-    g_DEMOPadRead_trampoline = hookFunctionArena(DEMOPadRead, frameAdvance);
+    // g_DEMOPadRead_trampoline = hookFunction(DEMOPadRead, frameAdvance);
 
     // For preventing most of the code in viPostCallback from running when advancing frames via the Frame Advance cheat, as
     // allowing the code to run wull break various things
-    g_viPostCallback_trampoline = hookFunctionArena(viPostCallback, preventViPostCallBackOnFramePause);
+    // g_viPostCallback_trampoline = hookFunction(viPostCallback, preventViPostCallBackOnFramePause);
 
     // For handling certain checks when making contact with enemies
-    g_fbatHitCheck_trampoline = hookFunctionArena(fbatHitCheck, fbatHitCheck_Work);
+    g_fbatHitCheck_trampoline = hookFunction(fbatHitCheck, fbatHitCheck_Work);
 
     // For allowing the Arbitrary Memory Write glitch to work with current builds of the Practice Codes, as well as for
     // disabling the random chance for it to fail
-    g_psndSFXOff_trampoline = hookFunctionArena(psndSFXOff, psndSFXOff_Work);
+    g_psndSFXOff_trampoline = hookFunction(psndSFXOff, psndSFXOff_Work);
 
     // For preventing the Arbitrary Memory Write glitch from causing a crash with certain coordinates when `sndRemoveEmitter`
     // runs, as the coordinates may not necessary cause a crash in the vanilla game
-    g_sndRemoveEmitter_trampoline = hookFunctionArena(sndRemoveEmitter, sndRemoveEmitter_Work);
+    g_sndRemoveEmitter_trampoline = hookFunction(sndRemoveEmitter, sndRemoveEmitter_Work);
 
     // For preventing being able to reload the current room and starting a battle at the same time, as this will cause the game
     // to softlock
-    g_seqSetSeq_trampoline = hookFunctionArena(seqSetSeq, disableBattlesOnReload);
+    g_seqSetSeq_trampoline = hookFunction(seqSetSeq, disableBattlesOnReload);
 
     // For handling the Star Power Value display
-    g_statusWinDisp_trampoline = hookFunctionArena(statusWinDisp, drawStarPowerValue);
+    g_statusWinDisp_trampoline = hookFunction(statusWinDisp, drawStarPowerValue);
 
     // For handling the Guard/Superguard Timings display
-    g_BattleActionCommandCheckDefence_trampoline =
-        hookFunctionArena(BattleActionCommandCheckDefence, initGuardSuperguardTimings);
+    g_BattleActionCommandCheckDefence_trampoline = hookFunction(BattleActionCommandCheckDefence, initGuardSuperguardTimings);
 
     // For handling the Art Attack Hitboxes display
-    g_scissor_disp_control_trampoline = hookFunctionArena(scissor_disp_control, drawArtAttackHitboxes);
+    // g_scissor_disp_control_trampoline = hookFunction(scissor_disp_control, drawArtAttackHitboxes);
 
     // For handling pausing the Art Attack timer when using the Art Attack Hitboxes display
-    g_scissor_timer_main_trampoline = hookFunctionArena(scissor_timer_main, pauseArtAttackTimer);
+    //  g_scissor_timer_main_trampoline = hookFunction(scissor_timer_main, pauseArtAttackTimer);
 
     // For drawing the current sequence position in the pause menu
-    g_winMarioDisp_trampoline = hookFunctionArena(winMarioDisp, drawSequenceInPauseMenu);
+    g_winMarioDisp_trampoline = hookFunction(winMarioDisp, drawSequenceInPauseMenu);
 
     // For handling the Hit Check Visualization display
-    g_hitCheckVecFilter_trampoline = hookFunctionArena(hitCheckVecFilter, checkForVecHits);
+    // g_hitCheckVecFilter_trampoline = hookFunction(hitCheckVecFilter, checkForVecHits);
 
     // For handling checking for errors in npcNameToPtr
-    g_npcNameToPtr_trampoline = hookFunctionArena(npcNameToPtr, checkForNpcNameToPtrError);
+    g_npcNameToPtr_trampoline = hookFunction(npcNameToPtr, checkForNpcNameToPtrError);
 
     // For handling checking for errors in mobjNameToPtr
-    g_mobjNameToPtr_trampoline = hookFunctionArena(mobjNameToPtr, checkForMobjNameToPtrError);
+    g_mobjNameToPtr_trampoline = hookFunction(mobjNameToPtr, checkForMobjNameToPtrError);
 
     // For handling checking for errors in animPoseMain
-    g_animPoseMain_trampoline = hookFunctionArena(animPoseMain, preventAnimPoseMainCrash);
+    g_animPoseMain_trampoline = hookFunction(animPoseMain, preventAnimPoseMainCrash);
 
     // For allowing mapDataPtr to propaly handle unused maps
-    g_mapDataPtr_trampoline = hookFunctionArena(mapDataPtr, mapDataPtrHandleUnusedMaps);
+    // g_mapDataPtr_trampoline = hookFunction(mapDataPtr, mapDataPtrHandleUnusedMaps);
 
     // For handling setting the loading zone when warping by index
-    g_evt_bero_get_info_trampoline = hookFunctionArena(evt_bero_get_info, setIndexWarpEntrances);
+    // g_evt_bero_get_info_trampoline = hookFunction(evt_bero_get_info, setIndexWarpEntrances);
 
     // For clearing WarpByIndex::currentMapInitScript and WarpByIndex::totalEntrances upon unloading a map, as some maps don't
     // have init scripts
-    g__unload_trampoline = hookFunctionArena(_unload, unloadClearCurrentMapInitScript);
+    // g__unload_trampoline = hookFunction(_unload, unloadClearCurrentMapInitScript);
 
     // For setting WarpByIndex::currentMapInitScript upon a map being loaded
-    g_relSetEvtAddr_trampoline = hookFunctionArena(relSetEvtAddr, relSetEvtAddrSetCurrentMapInitScript);
+    // g_relSetEvtAddr_trampoline = hookFunction(relSetEvtAddr, relSetEvtAddrSetCurrentMapInitScript);
 
     // For handling the Disable Certain Sounds cheat, specifically for disabling the pause menu/Z menu sounds
-    g_SoundEfxPlayEx_trampoline = hookFunctionArena(SoundEfxPlayEx, disableMenuSounds);
+    g_SoundEfxPlayEx_trampoline = hookFunction(SoundEfxPlayEx, disableMenuSounds);
 
     // For handling the Disable Certain Sounds cheat, specifically for disabling background music
-    g_psndBGMOn_f_d_trampoline = hookFunctionArena(psndBGMOn_f_d, disableBgm);
+    g_psndBGMOn_f_d_trampoline = hookFunction(psndBGMOn_f_d, disableBgm);
 
     // For handling the Disable Certain Sounds cheat, specifically for disabling environment sounds
-    g_psndENVOn_f_d_trampoline = hookFunctionArena(psndENVOn_f_d, disableEnvSounds);
+    g_psndENVOn_f_d_trampoline = hookFunction(psndENVOn_f_d, disableEnvSounds);
+
+    // Load the settings file and initialize text and window stuff
+    initAfterHeapsCreated();
 }
 
 void exit() {}
@@ -299,5 +301,5 @@ void runOncePerFrame()
     g_marioStMain_trampoline();
 
     // The Hit Check Visualization code needs to run after the original function has ran
-    handleHitCheckVisualization();
+    // handleHitCheckVisualization();
 }

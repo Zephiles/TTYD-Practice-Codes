@@ -878,11 +878,15 @@ void ValueEditor::init(const void *valuePtr,
         // Account for the stage and event texts
         windowPtr->setHeight(windowPtr->getHeight() + (lineDecrement * 2.f) + valuePaddingScaled);
     }
+
+    /*
     else if (this->flagIsSet(ValueEditorFlag::DRAW_MAP_STRING))
     {
         // Account for the map text
         windowPtr->setHeight(windowPtr->getHeight() + lineDecrement + valuePaddingScaled);
     }
+    */
+
     else if (this->flagIsSet(ValueEditorFlag::DRAW_WARP_BY_EVENT_DETAILS))
     {
         // Account for all of the extra lines of text
@@ -2206,6 +2210,8 @@ void ValueEditor::draw()
             // Draw the stage and event names for the current sequence position
             drawStageAndEvent(value.u32, posX, posY);
         }
+
+        /*
         else if (this->flagIsSet(ValueEditorFlag::DRAW_MAP_STRING))
         {
             // Draw the current map
@@ -2213,6 +2219,8 @@ void ValueEditor::draw()
             snprintf(buf, sizeof(buf), "Map: %s", getMapFromIndex(value.u32));
             drawText(buf, posX, posY, scale, getColorWhite(0xFF));
         }
+        */
+
         else if (this->flagIsSet(ValueEditorFlag::DRAW_WARP_BY_EVENT_DETAILS))
         {
             // Draw the details for the current event

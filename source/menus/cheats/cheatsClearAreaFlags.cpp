@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "cheats.h"
@@ -624,3 +626,5 @@ void clearAreaFlags(uint32_t index)
         }
     }
 }
+
+#endif

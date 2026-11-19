@@ -230,12 +230,12 @@ enum DisplaysShouldDrawFlag
     DISPLAYS_SHOULD_DRAW_FLAG_JUMP_STORAGE,
 
     // All of the tricks should be handled last, as they may clear other draw flags
-    DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
+    // DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
     DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
     DISPLAYS_SHOULD_DRAW_FLAG_JABBI_HIVE_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_BRIDGE_SKIP,
-    DISPLAYS_SHOULD_DRAW_FLAG_BLIMP_TICKET_SKIP,
+    // DISPLAYS_SHOULD_DRAW_FLAG_BLIMP_TICKET_SKIP,
 
     DISPLAYS_SHOULD_DRAW_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -1157,14 +1157,14 @@ class Displays
     MemoryUsageDisplay *getMemoryUsageDisplayPtr() { return &this->memoryUsage; }
     AMWCoordinateWriteAddressDisplay *getAMWCoordinateWriteAddressDisplayPtr() { return &this->amwCoordinateWriteAddress; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
-    HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
+    // HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
-    YoshiSkipDisplay *getYoshiSkipDisplayPtr() { return &this->yoshiSkip; }
+    // YoshiSkipDisplay *getYoshiSkipDisplayPtr() { return &this->yoshiSkip; }
     PalaceSkipDisplay *getPalaceSkipDisplayPtr() { return &this->palaceSkip; }
     ArbitraryMemoryWriteDisplay *getArbitraryMemoryWriteDisplayPtr() { return &this->arbitraryMemoryWriteDisplay; }
     JabbiHiveSkipDisplay *getJabbiHiveSkipDisplayPtr() { return &this->jabbiHiveSkip; }
     BridgeSkipDisplay *getBridgeSkipDisplayPtr() { return &this->bridgeSkip; }
-    BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
+    // BlimpTicketSkipDisplay *getBlimpSkipDisplayPtr() { return &this->blimpTicketSkip; }
 
     INLINE_FUNC ErrorTextDisplay *getErrorTextDisplayPtr(uint32_t index)
     {
@@ -1195,18 +1195,18 @@ class Displays
     // Class variables ordered specifically to reduce extra padding
     OnScreenTimerDisplay onScreenTimer;
     FrameCounterDisplay frameCounter;
-    HitCheckVisualizationDisplay hitCheckVisualization;
+    // HitCheckVisualizationDisplay hitCheckVisualization;
     JumpStorageDisplay jumpStorage;
     MemoryUsageDisplay memoryUsage;
     AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
     GuardSuperguardTimingDisplay guardSuperguardTiming;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
-    YoshiSkipDisplay yoshiSkip;
+    // YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
     ArbitraryMemoryWriteDisplay arbitraryMemoryWriteDisplay;
     JabbiHiveSkipDisplay jabbiHiveSkip;
     BridgeSkipDisplay bridgeSkip;
-    BlimpTicketSkipDisplay blimpTicketSkip;
+    // BlimpTicketSkipDisplay blimpTicketSkip;
 
     // `npcNameToPtr`, `mobjNameToPtr`, `animPoseMain`
     ErrorTextDisplay errorTextDisplay[3];
@@ -1225,14 +1225,14 @@ const void *checkIndividualMapHeap(const MapAllocEntry *start, uint32_t heapSize
 
 void checkForEnemyEncounters(void *ptr);
 int32_t initGuardSuperguardTimings(BattleWorkUnit *battleUnitPtr, BattleWeapon *weapon);
-void handleHitCheckVisualization();
+// void handleHitCheckVisualization();
 NpcEntry *checkForNpcNameToPtrError(const char *name);
 MapObjectEntry *checkForMobjNameToPtrError(const char *name);
 void preventAnimPoseMainCrash(int32_t poseId);
 void drawStarPowerValue();
-void drawArtAttackHitboxes(CameraId cameraId, void *user);
-uint32_t pauseArtAttackTimer();
-HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
+// void drawArtAttackHitboxes(CameraId cameraId, void *user);
+// uint32_t pauseArtAttackTimer();
+// HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index);
 void runDisplayFuncsEveryFrame();
 

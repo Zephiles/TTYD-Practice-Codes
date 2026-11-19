@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "displays.h"
@@ -246,3 +248,5 @@ static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
     valueEditorPtr->init(&currentColor, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
     valueEditorPtr->startDrawing(changeColor, cancelChangeColor);
 }
+
+#endif

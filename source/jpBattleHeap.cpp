@@ -1,3 +1,5 @@
+#if 0
+
 #ifdef TTYD_JP
 #include "jpBattleHeap.h"
 #include "patch.h"
@@ -88,4 +90,6 @@ void battleHeapVarsInit()
     // trying to create the battle heap
     g_OSCreateHeap_trampoline = hookFunctionArena(OSCreateHeap, OSCreateHeapHook);
 }
+#endif
+
 #endif

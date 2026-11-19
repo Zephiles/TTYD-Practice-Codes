@@ -109,7 +109,7 @@ enum ValueEditorFlag
 
     // Used for the `Warp By Index` menu. When this flag is set, the value editor will assume that the value is for indicating
     // a map string, so the string will be drawn above the value.
-    DRAW_MAP_STRING,
+    // DRAW_MAP_STRING,
 
     // Used for the `Warp By Event` menu. When this flag is set, the value editor will assume that the value is for selecting an
     // event, so the details for the event will be drawn above the value.

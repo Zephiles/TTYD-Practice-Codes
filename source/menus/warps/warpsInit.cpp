@@ -63,14 +63,14 @@ static const MenuOption gOptions[] = {
     "Warp By Event",
     warpsMenuEventInit,
 
-    "Warp By Index",
-    warpsMenuIndexInit,
+    // "Warp By Index",
+    // warpsMenuIndexInit,
 
-    "Warp To Boss",
-    warpsMenuBossInit,
+    // "Warp To Boss",
+    // warpsMenuBossInit,
 
-    "Custom States",
-    warpsMenuCustomStatesInit,
+    // "Custom States",
+    // warpsMenuCustomStatesInit,
 };
 
 static const MenuFunctions gFuncs = {

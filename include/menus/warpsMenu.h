@@ -55,6 +55,7 @@ enum WarpsMenuInitOptions
     WARPS_MENU_INIT_OPTION_TITLE_SCREEN,
 };
 
+/*
 enum WarpsMenuIndexOptions
 {
     WARPS_MENU_INDEX_OPTION_SELECT_NEW_MAP = 0,
@@ -62,7 +63,9 @@ enum WarpsMenuIndexOptions
     WARPS_MENU_INDEX_OPTION_VIEW_CURRENT_MAP_ENTRANCES,
     WARPS_MENU_INDEX_OPTION_WARP,
 };
+*/
 
+/*
 enum WarpsMenuBossOptions
 {
     WARPS_MENU_BOSS_OPTION_CRUMP_PROLOGUE = 0,
@@ -90,6 +93,7 @@ enum WarpsMenuBossOptions
     WARPS_MENU_BOSS_OPTION_SHADOW_QUEEN_2,
     WARPS_MENU_BOSS_OPTION_BONETAIL,
 };
+*/
 
 enum WarpsMenuWarpToMapReturnValue
 {
@@ -104,6 +108,7 @@ enum WarpsMenuInitFlag
     WARPS_MENU_INIT_FLAG_SELECTING_WARP_OPTION = 0,
 };
 
+/*
 enum WarpsMenuCustomStatesFlag
 {
     WARPS_MENU_CUSTOM_STATES_FLAG_LOAD = 0,
@@ -114,6 +119,7 @@ enum WarpsMenuCustomStatesFlag
     WARPS_MENU_CUSTOM_STATES_FLAG_RENAME,
     WARPS_MENU_CUSTOM_STATES_FLAG_DELETE,
 };
+*/
 
 struct WarpByEventInventory
 {
@@ -222,6 +228,7 @@ void handleWarpByEvent();
 void getMapAndBeroTextAndColor(const char *mapTextPtr, const char *beroTextPtr, MapAndBeroDetails *mapAndBeroDetailsPtr);
 void drawEventDetails(uint32_t index, float posX, float posY);
 
+/*
 // warpsIndex
 void warpsMenuIndexInit(Menu *menuPtr);
 
@@ -233,11 +240,16 @@ void relSetEvtAddrSetCurrentMapInitScript(const char *mapName, const void *pInit
 
 // warpsIndexViewEntrances
 void warpsMenuIndexViewEntrancesInit(Menu *menuPtr);
+*/
 
+/*
 // warpsBoss
 void warpsMenuBossInit(Menu *menuPtr);
+*/
 
+/*
 // warpsCustomStates
 void warpsMenuCustomStatesInit(Menu *menuPtr);
+*/
 
 #endif

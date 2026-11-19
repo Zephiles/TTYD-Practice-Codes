@@ -25,43 +25,45 @@ enum CheatsMenuOptions
     CHEATS_MENU_FALL_THROUGH_FLOORS,
     CHEATS_MENU_SAVE_COORDINATES,
     CHEATS_MENU_LOAD_COORDINATES,
-    CHEATS_MENU_MODIFY_COORDINATES,
+    // CHEATS_MENU_MODIFY_COORDINATES,
     CHEATS_MENU_SPAWN_ITEM,
     CHEATS_MENU_SAVE_ANYWHERE,
     CHEATS_MENU_TEXT_STORAGE,
-    CHEATS_MENU_TIME_STOP_TEXT_STORAGE,
-    CHEATS_MENU_TUBE_MODE_STORAGE,
+    // CHEATS_MENU_TIME_STOP_TEXT_STORAGE,
+    // CHEATS_MENU_TUBE_MODE_STORAGE,
     CHEATS_MENU_SPEED_UP_MARIO,
     CHEATS_MENU_DISABLE_BATTLES,
     CHEATS_MENU_AUTO_ACTION_COMMANDS,
-    CHEATS_MENU_INFINITE_ITEM_USAGE,
+    // CHEATS_MENU_INFINITE_ITEM_USAGE,
     CHEATS_MENU_RELOAD_ROOM,
     CHEATS_MENU_LEVITATE,
     CHEATS_MENU_AUTO_MASH_TEXT,
-    CHEATS_MENU_FRAME_ADVANCE,
-    CHEATS_MENU_GENERATE_LAG_SPIKE,
+    // CHEATS_MENU_FRAME_ADVANCE,
+    // CHEATS_MENU_GENERATE_LAG_SPIKE,
     CHEATS_MENU_LOCK_MARIO_HP_TO_MAX,
     CHEATS_MENU_LOCK_PARTNER_HP_TO_MAX,
     CHEATS_MENU_RUN_FROM_BATTLES,
     CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_PAPER_MODE,
     CHEATS_MENU_SIMULATE_AMW_MARIO_ZERO_HITBOX_ROOM_TRANSITION,
     CHEATS_MENU_SIMULATE_AMW_MARIO_AIRWALK,
-    CHEATS_MENU_GLITZ_PIT_MANAGER,
-    CHEATS_MENU_BOBBERY_EARLY,
+    // CHEATS_MENU_GLITZ_PIT_MANAGER,
+    // CHEATS_MENU_BOBBERY_EARLY,
     CHEATS_MENU_DISABLE_MENU_SOUNDS,
     CHEATS_MENU_FORCE_NPC_ITEM_DROP,
     CHEATS_MENU_RESOLVE_FADES,
     CHEATS_MENU_LOCK_FLAGS,
     CHEATS_MENU_MANAGE_FLAGS,
-    CHEATS_MENU_CLEAR_AREA_FLAGS,
+    // CHEATS_MENU_CLEAR_AREA_FLAGS,
 };
 
+/*
 enum CheatsMenuFrameAdvanceOptions
 {
     CHEATS_MENU_FRAME_ADVANCE_TURN_ON_OFF = 0,
     CHEATS_MENU_FRAME_ADVANCE_CHANGE_FRAME_ADVANCE_COMBO,
     CHEATS_MENU_FRAME_ADVANCE_CHANGE_PAUSE_RESUME_COMBO,
 };
+*/
 
 enum LockFlagsOptions
 {
@@ -89,10 +91,12 @@ enum CheatsMenuGenericFlags
     CHEATS_GENERIC_FLAG_CHEAT_HAS_BUTTON_COMBO = 0,
 };
 
+/*
 enum CheatsMenuClearAreaFlags
 {
     CHEATS_CLEAR_AREA_FLAGS_FLAG_CURRENTLY_SELECTING_AREA = 0,
 };
+*/
 
 enum class ResolveFadeReturnValue
 {
@@ -102,6 +106,7 @@ enum class ResolveFadeReturnValue
     RESOLVE_FADE_RETURN_TYPE_SUCCESS,
 };
 
+/*
 enum ClearAreaFlagsIndex
 {
     CLEAR_AREA_FLAGS_GOR = 0,
@@ -127,6 +132,7 @@ enum ClearAreaFlagsIndex
     CLEAR_AREA_FLAGS_LAS,
     CLEAR_AREA_FLAGS_JON,
 };
+*/
 
 class CheatsMenu
 {
@@ -218,20 +224,28 @@ bool getStageString(char *stageNameBuffer, uint32_t stageNameSize, uint32_t sequ
 
 void drawStageAndEvent(uint32_t sequencePosition, float posX, float posY);
 
+/*
 // cheatsModifyMariosCoordinates
 void cheatsMenuModifyMariosCoordinatesInit(Menu *menuPtr);
+*/
 
+/*
 // cheatsFrameAdvance
 void cheatsMenuFrameAdvanceInit(Menu *menuPtr);
+*/
 
+/*
 // cheatsGenerateLagSpike
 void cheatsMenuGenerateLagSpikeInit(Menu *menuPtr);
+*/
 
 // cheatsSimulateArbitraryMemoryWrite
 void cheatsMenuSimulateArbitraryMemoryWriteInit(Menu *menuPtr);
 
+/*
 // cheatsGlitzPitManager
 void cheatsMenuGlitzPitManagerInit(Menu *menuPtr);
+*/
 
 // cheatsDisableCertainSounds
 void cheatsMenuDisableCertainSoundsInit(Menu *menuPtr);
@@ -258,9 +272,11 @@ void toggleGSWF(uint32_t gswf);
 void toggleLSWF(uint32_t lswf);
 uint32_t getGlobalVariableFlagValue(uint32_t selectedOption, uint32_t variableFlag);
 
+/*
 // cheatsClearAreaFlags
 void cheatsMenuClearAreaFlagsInit(Menu *menuPtr);
 
 void clearAreaFlags(uint32_t index);
+*/
 
 #endif
