@@ -54,6 +54,7 @@ enum DisplaysMenuHitCheckVisualizationOptions
 enum DisplaysMenuGenericFlags
 {
     DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO = 0,
+    DISPLAYS_GENERIC_FLAG_SHOW_AS_HEX,
 };
 
 enum DisplaysMenuGenericSelectionFlags
@@ -61,6 +62,7 @@ enum DisplaysMenuGenericSelectionFlags
     DISPLAYS_GENERIC_OPTION_FLAG_HAS_BUTTON_COMBO = 0,
     DISPLAYS_GENERIC_OPTION_FLAG_NO_BUTTON_COMBO,
     DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION,
+    DISPLAYS_GENERIC_OPTION_SHOW_AS_HEX,
 };
 
 // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
@@ -128,21 +130,20 @@ void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc);
 uint32_t indexToDisplayEnabledFlag(uint32_t index);
 uint32_t indexToDisplayManuallyPositionFlag(uint32_t index);
 uint32_t indexToDisplayButtonComboFlag(uint32_t index);
+uint32_t indexToDisplayShowAsHexFlag(uint32_t index);
 
 // displaysGeneric
 void displaysMenuGenericNoButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboInit(Menu *menuPtr);
 void displaysMenuGenericHasButtonComboNoManualPositionInit(Menu *menuPtr);
 void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr);
+void displaysMenuGenericShowAsHex(Menu *menuPtr);
 void drawGenericDisplayInfo();
 void displaysGenericChangeButtonCombo(Menu *menuPtr);
 
 // displaysOnScreenTimer
 // The Frame Founter display is also handled by these
 void displaysMenuOnScreenTimerInit(Menu *menuPtr);
-
-// displaysMariosCoordinates
-void displaysMenuMariosCoordinatesInit(Menu *menuPtr);
 
 // displaysMemoryUsage
 void displaysMenuMemoryUsageInit(Menu *menuPtr);
