@@ -559,7 +559,7 @@ static_assert(sizeof(MiscSettingsData) == 0x8);
 static_assert(sizeof(CheatsSettingsHeader) == 0x8);
 static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
-static_assert(sizeof(DisplaysSettingsData) == 0x114);
+static_assert(sizeof(DisplaysSettingsData) == 0x120);
 static_assert(sizeof(MemoryWatchesSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryWatchesSettingsData) == 0x24); // Excludes addressOffsets
 static_assert(sizeof(MemoryEditorSettingsHeader) == 0x8);

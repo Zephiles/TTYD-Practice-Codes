@@ -78,6 +78,8 @@ static_assert(sizeof(EvtWork) == 0xA0);
 
 extern "C"
 {
+    extern int32_t evtID;
+
     void evtmgrInit();
     void evtmgrReInit();
     void evtmgrMain();
