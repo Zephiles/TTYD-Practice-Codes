@@ -56,6 +56,9 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Evts Active",
     displaysMenuGenericNoButtonComboInit,
 
+    "evtID Variable",
+    displaysMenuGenericShowAsHex,
+
     "Enemy Encounter Notifier",
     displaysMenuGenericNoButtonComboInit,
 
@@ -241,6 +244,10 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE;
         }
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
+        {
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE;
+        }
         case DisplaysMenuOptions::DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
@@ -343,6 +350,10 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         case DisplaysMenuOptions::DISPLAYS_MENU_EVTS_ACTIVE:
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVTS_ACTIVE;
+        }
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
+        {
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE;
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER:
         {
@@ -458,6 +469,10 @@ uint32_t indexToDisplayShowAsHexFlag(uint32_t index)
         case DisplaysMenuOptions::DISPLAYS_MENU_MARIO_COORDINATES:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX;
+        }
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
+        {
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX;
         }
         default:
         {

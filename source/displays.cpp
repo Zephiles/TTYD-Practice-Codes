@@ -344,6 +344,8 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ART_ATTACK_HITBOXES);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EFFS_ACTIVE);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION);
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS);
@@ -467,6 +469,16 @@ Displays::Displays()
     // Memory Usage
     posY = DISPLAYS_DEFAULT_POS_Y_TOP;
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_MEMORY_USAGE];
+    manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
+    manuallyPositionPtr->setPosY(posY);
+    manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+
+    // evtID Variable
+    posY -= lineDecrement;
+
+    manuallyPositionPtr =
+        &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE];
+
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
@@ -1695,6 +1707,47 @@ static void handleEvtsActive(Displays *displaysPtr)
     }
 
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVTS_ACTIVE);
+}
+
+static void drawEvtIdVariable(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    // Set up the text
+    char buf[32];
+    constexpr uint32_t bufSize = sizeof(buf);
+    const uint32_t tempEvtID = static_cast<uint32_t>(evtID);
+
+    const bool showAsHex = gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX);
+    if (showAsHex)
+    {
+        snprintf(buf, bufSize, "evtID: 0x%08" PRIX32, tempEvtID);
+    }
+    else
+    {
+        snprintf(buf, bufSize, "evtID: %u", tempEvtID);
+    }
+
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+
+    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT,
+                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE,
+                          &data);
+
+    // Draw the text
+    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+}
+
+static void handleEvtIdVariable(Displays *displaysPtr)
+{
+    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE))
+    {
+        return;
+    }
+
+    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVT_ID_VARIABLE);
 }
 
 static void drawEnemyEncounterNotifier(CameraId cameraId, void *user)
@@ -4198,6 +4251,7 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
 
     // Top-left positioning
     drawMemoryUsage,
+    drawEvtIdVariable,
     drawEffsActive,
     drawEvtsActive,
     drawEnemyEncounterNotifier,
@@ -4245,6 +4299,7 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleStickAngle,
     handleEffsActive,
     handleEvtsActive,
+    handleEvtIdVariable,
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
     handleMemoryUsage,
