@@ -21,7 +21,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     displaysMenuOnScreenTimerInit,
 
     "Mario's Coordinates",
-    displaysMenuMariosCoordinatesInit,
+    displaysMenuGenericShowAsHex,
 
     "Mario's Speed XZ",
     displaysMenuGenericNoButtonComboInit,
@@ -408,6 +408,22 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
         case DisplaysMenuOptions::DISPLAYS_MENU_BLIMP_TICKET_SKIP:
         {
             return DisplaysWithButtonCombo::DISPLAYS_BUTTON_COMBO_BLIMP_TICKET_SKIP;
+        }
+        default:
+        {
+            // Return an arbitrary invalid flag
+            return static_cast<uint32_t>(-1);
+        }
+    }
+}
+
+uint32_t indexToDisplayShowAsHexFlag(uint32_t index)
+{
+    switch (index)
+    {
+        case DisplaysMenuOptions::DISPLAYS_MENU_MARIO_COORDINATES:
+        {
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MARIO_COORDINATES_SHOW_AS_HEX;
         }
         default:
         {
