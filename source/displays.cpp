@@ -2498,14 +2498,14 @@ static void drawEvtViewer(CameraId cameraId, void *user)
 
     const char *textToDraw;
     Displays *displaysPtr = gDisplays;
-    const EvtEntry *evtEntry = displaysPtr->getEvtViewerPtr()->getViewedEvtPtr(displaysPtr);
+    const EvtEntry *entryPtr = displaysPtr->getEvtViewerPtr()->getViewedEvtPtr(displaysPtr);
 
     // Make sure the index being used ends up pointing to a valid memory region
-    if (ptrIsValid(evtEntry))
+    if (ptrIsValid(entryPtr))
     {
         // Get the bits of the flags in string format
         constexpr uint32_t totalFlags = sizeof(uint8_t) * 8;
-        const uint32_t tempFlags = evtEntry->flags;
+        const uint32_t tempFlags = entryPtr->flags;
 
         char flagsBits[totalFlags + 1];
         flagsBits[totalFlags] = '\0';
@@ -2541,14 +2541,14 @@ static void drawEvtViewer(CameraId cameraId, void *user)
             }
 
             // Get the color to use for the `opcode`, in which it should be green if it is 0
-            if (evtEntry->opcode == 0)
+            if (entryPtr->opcode == 0)
             {
                 opcodeColor = getColorGreen(0xFF);
             }
 
             // Get the color to use for `nextCommandPtr`, which should be green if the value is any value between
             // 0xC0B11806-0xC0B11956 such that it is 4 byte-aligned (0xC0B11806 + 4*n)
-            const uint32_t nextCommandPtrRaw = reinterpret_cast<uint32_t>(evtEntry->nextCommandPtr);
+            const uint32_t nextCommandPtrRaw = reinterpret_cast<uint32_t>(entryPtr->nextCommandPtr);
             constexpr uint32_t startAddressRaw = 0xC0B11806;
             constexpr uint32_t endAddressRaw = 0xC0B11956;
 
@@ -2559,14 +2559,14 @@ static void drawEvtViewer(CameraId cameraId, void *user)
             }
 
             // Get the color to use for the `thread id`, in which it should be green if it is 0x000000FF
-            if (evtEntry->threadId == 0xFF)
+            if (entryPtr->threadId == 0xFF)
             {
                 threadIdColor = getColorGreen(0xFF);
             }
 
             // Get the colors to use for `timescale` and `timeScheduledToRun`, in which they should be green if the sum of them
             // are at least 1.000000
-            if (evtEntry->timescale + evtEntry->timeScheduledToRun >= 1.0f)
+            if (entryPtr->timescale + entryPtr->timeScheduledToRun >= 1.0f)
             {
                 timesColor = getColorGreen(0xFF);
             }
@@ -2587,15 +2587,15 @@ static void drawEvtViewer(CameraId cameraId, void *user)
                  flagsColor,
                  flagsBits,
                  opcodeColor,
-                 evtEntry->opcode,
+                 entryPtr->opcode,
                  nextCommandPtrColor,
-                 reinterpret_cast<uint32_t>(evtEntry->nextCommandPtr),
+                 reinterpret_cast<uint32_t>(entryPtr->nextCommandPtr),
                  threadIdColor,
-                 evtEntry->threadId,
+                 entryPtr->threadId,
                  timesColor,
-                 evtEntry->timescale,
+                 entryPtr->timescale,
                  timesColor,
-                 evtEntry->timeScheduledToRun);
+                 entryPtr->timeScheduledToRun);
 
         textToDraw = buf;
     }
