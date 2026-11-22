@@ -1003,6 +1003,19 @@ void applyCheatAndDisplayInjects()
 
     writeBranchBL(tubeModeStorageAddress, asmHandleTubeModeStorage);
 
+#ifdef TTYD_JP
+    // Arbitrary Script Execution Trigger Checker
+#ifdef TTYD_US
+    constexpr uint32_t aseEvtDoorParamAddress = 0x80330930;
+#elif defined TTYD_JP
+    constexpr uint32_t aseEvtDoorParamAddress = 0x8032EDD0;
+#elif defined TTYD_EU
+    constexpr uint32_t aseEvtDoorParamAddress = 0x8033C6E8;
+#endif
+
+    applyAssemblyPatch(aseEvtDoorParamAddress, reinterpret_cast<uint32_t>(aseTriggerChecker));
+#endif
+
 #ifdef TTYD_EU
     // Allow jumping on water when the Bridge Skip display is enabled
     constexpr uint32_t jumpOnWaterAddress = 0x80093CF0;

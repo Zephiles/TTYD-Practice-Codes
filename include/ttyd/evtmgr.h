@@ -78,6 +78,8 @@ static_assert(sizeof(EvtWork) == 0xA0);
 
 extern "C"
 {
+    extern int32_t priIDTbl[256];
+    extern int32_t priTbl[256];
     extern EvtWork evtmgr_work[2]; // One for the field and one for battles
     extern int32_t evtID;
 

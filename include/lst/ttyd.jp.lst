@@ -481,6 +481,8 @@
 // 80037298:make_pri_table
 800373C4:evtGetWork
 // data
+803D49B0:priIDTbl
+803D4DB0:priTbl
 803D51B0:evtmgr_work
 8040F510:evtID
 
@@ -1660,6 +1662,32 @@
 // 800E309C:evt_mario_dokan_end
 // 800E3104:evt_mario_paper_pose_dokan
 // 800E36A4:evt_mario_dokan_prepare
+
+// evt_door.o
+// 800E3810:evt_door_end_wait
+// 800E382C:evt_door_set_param
+// 800E38A4:evt_door_data_copy
+// 800E392C:npc_hide_onoff
+// 800E39D0:evt_door_load_mapflag
+// 800E3A30:evt_door_save_mapflag
+800E3A90:evt_door_param
+// 800E3E30:door_dark_flag
+// 800E3E90:door_dark_flag_sub
+// 800E40E8:door_position_sub
+// 800E45A4:get_noclip_map
+// 800E4640:npc_light
+// 800E47BC:npc_dark
+// 800E4938:animation
+// 800E49D4:init_inside_group
+// 800E4A48:inside_group
+// 800E4ABC:door_group
+// 800E4B10:outside_group
+// 800E4B64:in_pos
+// 800E4BE8:out_pos
+// 800E4C6C:inout_hit
+// 800E4D08:door_entry
+// 800E4F78:snd_door_out
+// 800E4FA0:snd_door_in
 
 // event.o
 800E73A8:eventStgNum

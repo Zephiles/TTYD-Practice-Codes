@@ -483,6 +483,8 @@
 // 80037934:make_pri_table
 80037A60:evtGetWork
 // data
+803D8530:priIDTbl
+803D8930:priTbl
 803D8D30:evtmgr_work
 804151E8:evtID
 
@@ -1661,6 +1663,32 @@
 // 800E77D8:evt_mario_dokan_end
 // 800E7840:evt_mario_paper_pose_dokan
 // 800E7E04:evt_mario_dokan_prepare
+
+// evt_door.o
+// 800E7F70:evt_door_end_wait
+// 800E7F8C:evt_door_set_param
+// 800E8004:evt_door_data_copy
+// 800E8090:npc_hide_onoff
+// 800E8134:evt_door_load_mapflag
+// 800E8194:evt_door_save_mapflag
+800E81F4:evt_door_param
+// 800E8594:door_dark_flag
+// 800E85F4:door_dark_flag_sub
+// 800E884C:door_position_sub
+// 800E8D08:get_noclip_map
+// 800E8DA4:npc_light
+// 800E8F20:npc_dark
+// 800E909C:animation
+// 800E9138:init_inside_group
+// 800E91AC:inside_group
+// 800E9220:door_group
+// 800E9274:outside_group
+// 800E92C8:in_pos
+// 800E934C:out_pos
+// 800E93D0:inout_hit
+// 800E946C:door_entry
+// 800E96E0:snd_door_out
+// 800E9708:snd_door_in
 
 // event.o
 800EBBB8:eventStgNum

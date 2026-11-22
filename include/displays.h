@@ -524,6 +524,33 @@ class AMWCoordinateWriteAddressDisplay
     AMWCoordinateWriteAddressDisplay::FunctionCaller functionCaller;
 };
 
+#ifdef TTYD_JP
+#define ASE_TARGET_EVT_ID 17507
+#define ASE_TARGET_EVT_ID_STRING "17507"
+
+class ASETriggerDisplay
+{
+   public:
+    ASETriggerDisplay() {}
+    ~ASETriggerDisplay() {}
+
+    uint32_t getHouseEvtId() const { return this->houseEvtId; }
+
+    uint32_t getTimer() const { return this->timer; }
+    void setTimer(uint32_t time) { this->timer = static_cast<uint16_t>(time); }
+
+    INLINE_FUNC void init(uint32_t currentEvtId)
+    {
+        this->houseEvtId = currentEvtId;
+        this->setTimer(sysMsec2Frame(5000));
+    }
+
+   private:
+    uint32_t houseEvtId; // id that it was at when the door was opened after unpausing
+    uint16_t timer;
+};
+#endif
+
 class EvtViewer
 {
    public:
@@ -1215,6 +1242,11 @@ class Displays
     GuardSuperguardTimingDisplay *getGuardSuperguardTimingDisplayPtr() { return &this->guardSuperguardTiming; }
     MemoryUsageDisplay *getMemoryUsageDisplayPtr() { return &this->memoryUsage; }
     AMWCoordinateWriteAddressDisplay *getAMWCoordinateWriteAddressDisplayPtr() { return &this->amwCoordinateWriteAddress; }
+
+#ifdef TTYD_JP
+    ASETriggerDisplay *getASETriggerDisplayPtr() { return &this->aseTriggerDisplay; }
+#endif
+
     EvtViewer *getEvtViewerPtr() { return &this->evtViewer; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
@@ -1259,6 +1291,11 @@ class Displays
     JumpStorageDisplay jumpStorage;
     MemoryUsageDisplay memoryUsage;
     AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
+
+#ifdef TTYD_JP
+    ASETriggerDisplay aseTriggerDisplay;
+#endif
+
     GuardSuperguardTimingDisplay guardSuperguardTiming;
     EvtViewer evtViewer;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
@@ -1296,5 +1333,9 @@ uint32_t pauseArtAttackTimer();
 HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFunction);
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index);
 void runDisplayFuncsEveryFrame();
+
+#ifdef TTYD_JP
+EVT_DEFINE_USER_FUNC(aseTriggerChecker);
+#endif
 
 #endif
