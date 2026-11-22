@@ -38,7 +38,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.3.1-dev15 (ASE Edition)"
+#define VERSION_STRING "v4.3.1-dev16 (ASE Edition)"
 
 #define DRAW_ORDER_PROJECT_INFO -1.f
 #define DRAW_ORDER_DISPLAYS 0.f
@@ -83,6 +83,7 @@ enum ModFlag
     MOD_FLAG_MENU_IS_HIDDEN = 0,
     MOD_FLAG_CHANGING_BUTTON_COMBO,
     MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE,
+    MOD_FLAG_CHANGE_EVT_ID_VARIABLE,
     MOD_FLAG_SYSTEM_LEVEL,
     MOD_FLAG_CLEAR_MARIO_STATS,
     MOD_FLAG_CLEAR_PARTNER_STATS,
@@ -200,6 +201,10 @@ class Mod
 
     const uint32_t *getFlagsPtr() const { return this->flags; }
     const uint32_t *getSaveFlagsPtr() const { return this->saveFlags; }
+
+    uint32_t getNewEvtIdValue() const { return this->newEvtIdValue; }
+    void setNewEvtIdValue(uint32_t id) { this->newEvtIdValue = id; }
+
     WarpByIndex *getWarpByIndexPtr() { return &this->warpByIndex; }
     WarpByEvent *getWarpByEventPtr() { return &this->warpByEvent; }
 
@@ -324,6 +329,7 @@ class Mod
    private:
     uint32_t flags[MOD_FLAGS_ARRAY_SIZE];
     uint32_t saveFlags[MOD_SAVE_FLAGS_ARRAY_SIZE];
+    uint32_t newEvtIdValue; // evtID Variable display, value set to be changed on next room transition/reload
     WarpByIndex warpByIndex;
     WarpByEvent warpByEvent;
 };

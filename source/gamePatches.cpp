@@ -30,6 +30,7 @@
 #include "ttyd/swdrv.h"
 #include "ttyd/mariost.h"
 #include "ttyd/battle_event_cmd.h"
+#include "ttyd/evtmgr.h"
 #include "menus/cheatsMenu.h"
 #include "menus/warpsMenu.h"
 #include "menus/battlesMenu.h"
@@ -656,6 +657,21 @@ bool sndRemoveEmitter_Work(void *em)
     return g_sndRemoveEmitter_trampoline(em);
 }
 
+void unloadEvtmgrReInit_Work()
+{
+    // Call the original function immediately
+    evtmgrReInit();
+
+    // If the flag for changing the evtID variable's value is set, then perform the change
+    Mod *modPtr = gMod;
+
+    if (modPtr->flagIsSet(ModFlag::MOD_FLAG_CHANGE_EVT_ID_VARIABLE))
+    {
+        modPtr->clearFlag(ModFlag::MOD_FLAG_CHANGE_EVT_ID_VARIABLE);
+        evtID = static_cast<int32_t>(modPtr->getNewEvtIdValue());
+    }
+}
+
 void applyGameFixes()
 {
     // Fix a memory leak from occuring when starting a new file. The leak is that memory for the inventory is re-allocated
@@ -1008,6 +1024,17 @@ void applyCheatAndDisplayInjects()
 
     writeBranchBL(tubeModeStorageAddress, asmHandleTubeModeStorage);
     */
+
+    // evtID Variable - Hook `_unload` where `evtmgrReInit` is called so that the new `evtID` variable can be set there
+#ifdef TTYD_US
+    constexpr uint32_t unloadEvtmgrReInitAddress = 0x80007B3C;
+#elif defined TTYD_JP
+    constexpr uint32_t unloadEvtmgrReInitAddress = 0x80007AB8;
+#elif defined TTYD_EU
+    constexpr uint32_t unloadEvtmgrReInitAddress = 0x80007D08;
+#endif
+
+    writeBranchBL(unloadEvtmgrReInitAddress, unloadEvtmgrReInit_Work);
 
 #ifdef TTYD_JP
     // Arbitrary Script Execution Trigger Checker

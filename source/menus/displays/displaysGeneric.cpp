@@ -11,7 +11,7 @@
 
 static void draw(CameraId cameraId, void *user);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
-static void selectedOptionToggleShowAsHexFlag(Menu *menuPtr);
+static void selectedOptionToggleHandleAsHexFlag(Menu *menuPtr);
 
 // For all selection types except displaysMenuGenericNoButtonComboNoManualPositionInit
 static const MenuOption gMainOptions[] {
@@ -48,19 +48,19 @@ static const MenuFunctions gHasComboNoPositionFuncs = {
     nullptr, // Exit function not needed
 };
 
-static const MenuOption gShowAsHexOptions[] {
+static const MenuOption gHandleAsHexOptions[] {
     "Turn On/Off",
     selectedOptionTurnOnOff,
 
-    "Show As Hex",
-    selectedOptionToggleShowAsHexFlag,
+    "Handle As Hex",
+    selectedOptionToggleHandleAsHexFlag,
 
     "Adjust Manual Positioning",
     displaysAdjustManualPositionInit,
 };
 
-static const MenuFunctions gShowAsHexFuncs = {
-    gShowAsHexOptions,
+static const MenuFunctions gHandleAsHexFuncs = {
+    gHandleAsHexOptions,
     basicMenuLayoutControls,
     draw,
     nullptr, // Exit function not needed
@@ -83,18 +83,18 @@ static void enterDisplaysMenuGeneric(Menu *menuPtr, uint32_t flags)
             flags,
             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION);
 
-    const bool showAsHex =
-        displaysMenuGenericSelectionFlagIsSet(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_SHOW_AS_HEX);
+    const bool handleAsHex =
+        displaysMenuGenericSelectionFlagIsSet(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_HANDLE_AS_HEX);
 
     if (hasButtonComboNoPosition)
     {
         funcs = &gHasComboNoPositionFuncs;
         totalOptions = sizeof(gHasComboNoPositionOptions) / sizeof(MenuOption);
     }
-    else if (showAsHex)
+    else if (handleAsHex)
     {
-        funcs = &gShowAsHexFuncs;
-        totalOptions = sizeof(gShowAsHexOptions) / sizeof(MenuOption);
+        funcs = &gHandleAsHexFuncs;
+        totalOptions = sizeof(gHandleAsHexOptions) / sizeof(MenuOption);
     }
     else
     {
@@ -127,9 +127,9 @@ static void enterDisplaysMenuGeneric(Menu *menuPtr, uint32_t flags)
     {
         menuPtr->setFlag(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_DISPLAY_HAS_BUTTON_COMBO);
     }
-    else if (showAsHex)
+    else if (handleAsHex)
     {
-        menuPtr->setFlag(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_SHOW_AS_HEX);
+        menuPtr->setFlag(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_HANDLE_AS_HEX);
     }
 }
 
@@ -185,11 +185,12 @@ void displaysMenuGenericNoButtonComboNoManualPositionInit(Menu *menuPtr)
     enterDisplaysMenuGeneric(menuPtr, flags);
 }
 
-void displaysMenuGenericShowAsHex(Menu *menuPtr)
+void displaysMenuGenericHandleAsHex(Menu *menuPtr)
 {
     uint32_t flags = 0;
 
-    flags = setDisplaysMenuGenericSelectionFlag(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_SHOW_AS_HEX);
+    flags =
+        setDisplaysMenuGenericSelectionFlag(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_HANDLE_AS_HEX);
 
     enterDisplaysMenuGeneric(menuPtr, flags);
 }
@@ -239,15 +240,15 @@ void drawGenericDisplayInfo()
         ButtonComboEditor::buttonsToString(displaysPtr->getDisplayButtonCombo(displayButtonComboFlag), buf, sizeof(buf));
         drawText(buf, posX, posY, scale, getColorWhite(0xFF));
     }
-    else if (menuPtr->flagIsSet(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_SHOW_AS_HEX))
+    else if (menuPtr->flagIsSet(DisplaysMenuGenericFlags::DISPLAYS_GENERIC_FLAG_HANDLE_AS_HEX))
     {
-        // Draw the Show As Hex text
-        drawText("Show As Hex", posX, posY, scale, getColorWhite(0xFF));
+        // Draw the Handle As Hex text
+        drawText("Handle As Hex", posX, posY, scale, getColorWhite(0xFF));
         posY -= lineDecrement;
 
         // Draw whether the value(s) are shown in hex
-        const uint32_t showAsHexFlag = indexToDisplayShowAsHexFlag(selectedDisplay);
-        getYesNoTextAndColor(displaysPtr->enabledFlagIsSet(showAsHexFlag), &onOffText, &color, 0xFF);
+        const uint32_t handleAsHexFlag = indexToDisplayHandleAsHexFlag(selectedDisplay);
+        getYesNoTextAndColor(displaysPtr->enabledFlagIsSet(handleAsHexFlag), &onOffText, &color, 0xFF);
         drawText(onOffText, posX, posY, scale, color);
     }
 }
@@ -276,11 +277,11 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
     displaysMenuToggleEnabledFlag(displayEnabledFlag);
 }
 
-static void selectedOptionToggleShowAsHexFlag(Menu *menuPtr)
+static void selectedOptionToggleHandleAsHexFlag(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    const uint32_t displayEnabledFlag = indexToDisplayShowAsHexFlag(gDisplaysMenu->getSelectedDisplay());
+    const uint32_t displayEnabledFlag = indexToDisplayHandleAsHexFlag(gDisplaysMenu->getSelectedDisplay());
     displaysMenuToggleEnabledFlag(displayEnabledFlag);
 }
 

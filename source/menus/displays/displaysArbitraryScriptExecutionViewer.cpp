@@ -63,7 +63,7 @@ void displaysArbitraryScriptExecutionViewerInit(Menu *menuPtr)
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
 
     constexpr uint32_t totalOptions = sizeof(gOptions) / sizeof(MenuOption);
-    menuPtr = enterNextMenu(&gFuncs, totalOptions);
+    enterNextMenu(&gFuncs, totalOptions);
 }
 
 static void controls(Menu *menuPtr, MenuButtonInput button)
@@ -117,13 +117,11 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
     }
 
     char format[64];
-    constexpr uint32_t formatSize = sizeof(format);
-    snprintf(format, formatSize, "Array Index %s (Address 0x%%08" PRIX32 ")", valueFormat);
+    snprintf(format, sizeof(format), "Array Index %s (Address 0x%%08" PRIX32 ")", valueFormat);
 
     char buf[64];
-    constexpr uint32_t bufSize = sizeof(buf);
     const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr(displaysPtr);
-    snprintf(buf, bufSize, format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
+    snprintf(buf, sizeof(buf), format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;

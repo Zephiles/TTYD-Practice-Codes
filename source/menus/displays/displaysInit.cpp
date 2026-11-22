@@ -21,7 +21,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     displaysMenuOnScreenTimerInit,
 
     "Mario's Coordinates",
-    displaysMenuGenericShowAsHex,
+    displaysMenuGenericHandleAsHex,
 
     "Mario's Speed XZ",
     displaysMenuGenericNoButtonComboInit,
@@ -63,7 +63,7 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     // displaysMenuHitCheckVisualizationInit,
 
     "evtID Variable",
-    displaysMenuGenericShowAsHex,
+    displaysEvtIdVariableInit,
 
     "Arbitrary Script Execution Viewer",
     displaysArbitraryScriptExecutionViewerInit,
@@ -490,7 +490,7 @@ uint32_t indexToDisplayButtonComboFlag(uint32_t index)
     }
 }
 
-uint32_t indexToDisplayShowAsHexFlag(uint32_t index)
+uint32_t indexToDisplayHandleAsHexFlag(uint32_t index)
 {
     switch (index)
     {
@@ -500,7 +500,7 @@ uint32_t indexToDisplayShowAsHexFlag(uint32_t index)
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
         {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX;
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX;
         }
         default:
         {
