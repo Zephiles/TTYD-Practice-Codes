@@ -57,7 +57,7 @@ static const MenuFunctions gFuncs = {
     nullptr, // Exit function not needed
 };
 
-void displaysEvtViewerInit(Menu *menuPtr)
+void displaysArbitraryScriptExecutionViewerInit(Menu *menuPtr)
 {
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
@@ -90,7 +90,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-static void drawEvtViewerExtraInfo()
+static void drawArbitraryScriptExecutionViewerExtraInfo()
 {
     // Get the text position for the top-left of the window five lines under the main text to account for the main info already
     // drawn
@@ -103,11 +103,11 @@ static void drawEvtViewerExtraInfo()
 
     // Get the current array index
     Displays *displaysPtr = gDisplays;
-    const EvtViewer *evtViewerPtr = displaysPtr->getEvtViewerPtr();
-    const uint32_t arrayIndex = evtViewerPtr->getIndex();
+    const ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
+    const uint32_t arrayIndex = aseViewerPtr->getIndex();
     const char *valueFormat;
 
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX))
+    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
     {
         valueFormat = "0x%" PRIX32;
     }
@@ -122,7 +122,7 @@ static void drawEvtViewerExtraInfo()
 
     char buf[64];
     constexpr uint32_t bufSize = sizeof(buf);
-    const EvtEntry *entryPtr = evtViewerPtr->getViewedEvtPtr(displaysPtr);
+    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr(displaysPtr);
     snprintf(buf, bufSize, format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
@@ -143,7 +143,7 @@ static void drawEvtViewerExtraInfo()
 
     // Draw whether the array index will be handled as hex
     const bool handleIndexAsHex =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
 
     const char *onOffText;
     uint32_t color;
@@ -157,7 +157,7 @@ static void drawEvtViewerExtraInfo()
 
     // Draw whether the values colors will be adjusted
     const bool adjustValuesColors =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
 
     getYesNoTextAndColor(adjustValuesColors, &onOffText, &color, 0xFF);
     drawText(onOffText, valuesPosX, posY, scale, color);
@@ -168,7 +168,7 @@ static void drawEvtViewerExtraInfo()
 
     // Draw whether the Battles array is being used
     const bool usingBattlesArray =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
 
     getYesNoTextAndColor(usingBattlesArray, &onOffText, &color, 0xFF);
     drawText(onOffText, valuesPosX, posY, scale, color);
@@ -179,11 +179,11 @@ static void draw(CameraId cameraId, void *user)
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
 
-    // Draw the main info for the Evt Viewer display
+    // Draw the main info for the Arbitrary Script Execution Viewer display
     drawGenericDisplayInfo();
 
-    // Draw the extra info for the Evt Viewer display
-    drawEvtViewerExtraInfo();
+    // Draw the extra info for the Arbitrary Script Execution Viewer display
+    drawArbitraryScriptExecutionViewerExtraInfo();
 
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
@@ -213,13 +213,13 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER);
 }
 
 static void setArrayIndex(const ValueType *valuePtr)
 {
     // Set the new index
-    gDisplays->getEvtViewerPtr()->setIndex(valuePtr->u32);
+    gDisplays->getArbitraryScriptExecutionViewerPtr()->setIndex(valuePtr->u32);
 
     // Close the value editor
     displaysMenuStopDrawingValueEditor();
@@ -237,7 +237,7 @@ static void selectedOptionSetArrayIndex(Menu *menuPtr)
     flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX))
+    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
     {
         flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
     }
@@ -245,7 +245,7 @@ static void selectedOptionSetArrayIndex(Menu *menuPtr)
     uint32_t minValue = 0;
     uint32_t maxValue = 0xFFFFFFFF;
     const Window *rootWindowPtr = gRootWindow;
-    uint32_t currentValue = displaysPtr->getEvtViewerPtr()->getIndex();
+    uint32_t currentValue = displaysPtr->getArbitraryScriptExecutionViewerPtr()->getIndex();
     ValueEditor *valueEditorPtr = gDisplaysMenu->getValueEditorPtr();
 
     valueEditorPtr
@@ -258,14 +258,14 @@ static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
 }
 
 static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
 }
 
 static void closeConfirmationWindow()
@@ -291,7 +291,7 @@ static void handleConfirmationWindowSelection(bool storeValues)
     const char *errorText;
 
     const bool valuesAreCurrentlyStored =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
 
     if (!storeValues && !valuesAreCurrentlyStored)
     {
@@ -301,18 +301,18 @@ static void handleConfirmationWindowSelection(bool storeValues)
     }
 
     // Do not store/apply the values if the index being used ends up pointing to an invalid memory region
-    EvtViewer *evtViewerPtr = displaysPtr->getEvtViewerPtr();
-    const EvtEntry *entryPtr = evtViewerPtr->getViewedEvtPtr(displaysPtr);
+    ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
+    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr(displaysPtr);
 
     if (ptrIsValid(entryPtr))
     {
         if (storeValues)
         {
-            evtViewerPtr->storeCurrentValues(displaysPtr, entryPtr);
+            aseViewerPtr->storeCurrentValues(displaysPtr, entryPtr);
         }
         else
         {
-            evtViewerPtr->applyStoredValues();
+            aseViewerPtr->applyStoredValues();
         }
     }
     else
@@ -380,5 +380,5 @@ static void selectedOptionToggleBattleFlag(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
 }

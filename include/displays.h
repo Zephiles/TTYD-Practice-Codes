@@ -114,11 +114,11 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,             // evtID variable
     DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX, // evtID variable
 
-    DISPLAYS_ENABLED_FLAG_EVT_VIEWER,                      // Evt Viewer
-    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX,  // Evt Viewer
-    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS, // Evt Viewer
-    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY,    // Evt Viewer
-    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED,        // Evt Viewer
+    DISPLAYS_ENABLED_FLAG_ASE_VIEWER,                      // Arbitrary Script Execution Viewer
+    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX,  // Arbitrary Script Execution Viewer
+    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS, // Arbitrary Script Execution Viewer
+    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY,    // Arbitrary Script Execution Viewer
+    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED,        // Arbitrary Script Execution Viewer
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -167,7 +167,7 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -244,7 +244,7 @@ enum DisplaysShouldDrawFlag
     DISPLAYS_SHOULD_DRAW_FLAG_JUMP_STORAGE,
 
     // All of the tricks should be handled last, as they may clear other draw flags
-    DISPLAYS_SHOULD_DRAW_FLAG_EVT_VIEWER,
+    DISPLAYS_SHOULD_DRAW_FLAG_ASE_VIEWER,
     DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
     DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
@@ -551,11 +551,11 @@ class ASETriggerDisplay
 };
 #endif
 
-class EvtViewer
+class ArbitraryScriptExecutionViewer
 {
    public:
-    EvtViewer() {}
-    ~EvtViewer() {}
+    ArbitraryScriptExecutionViewer() {}
+    ~ArbitraryScriptExecutionViewer() {}
 
     uint32_t getIndex() const { return this->index; }
     void setIndex(uint32_t newIndex) { this->index = newIndex; }
@@ -1247,7 +1247,7 @@ class Displays
     ASETriggerDisplay *getASETriggerDisplayPtr() { return &this->aseTriggerDisplay; }
 #endif
 
-    EvtViewer *getEvtViewerPtr() { return &this->evtViewer; }
+    ArbitraryScriptExecutionViewer *getArbitraryScriptExecutionViewerPtr() { return &this->aseViewer; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
@@ -1297,7 +1297,7 @@ class Displays
 #endif
 
     GuardSuperguardTimingDisplay guardSuperguardTiming;
-    EvtViewer evtViewer;
+    ArbitraryScriptExecutionViewer aseViewer;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;

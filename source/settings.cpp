@@ -275,37 +275,37 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
     const uint32_t *missesColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
     hitCheckVisualizationPtr->setMissesColor(*missesColorPtr);
 
-    if (version >= SETTINGS_ADDED_EVT_VIEWER)
+    if (version >= SETTINGS_ADDED_ASE_VIEWER)
     {
-        // Get the Evt Viewer variables
-        EvtViewer *evtViewerPtr = displaysPtr->getEvtViewerPtr();
+        // Get the Arbitrary Script Execution Viewer variables
+        ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
 
         const uint32_t *indexPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
-        evtViewerPtr->setIndex(*indexPtr);
+        aseViewerPtr->setIndex(*indexPtr);
         offset += sizeof(uint32_t);
 
         int32_t **tempNextCommandPtr = PTR_CAST_TYPE_ADD_OFFSET(int32_t **, this, offset);
-        evtViewerPtr->setNextCommandPtr(*tempNextCommandPtr);
+        aseViewerPtr->setNextCommandPtr(*tempNextCommandPtr);
         offset += sizeof(int32_t *);
 
         const int32_t *threadIdPtr = PTR_CAST_TYPE_ADD_OFFSET(const int32_t *, this, offset);
-        evtViewerPtr->setThreadId(*threadIdPtr);
+        aseViewerPtr->setThreadId(*threadIdPtr);
         offset += sizeof(int32_t);
 
         const float *timescalePtr = PTR_CAST_TYPE_ADD_OFFSET(const float *, this, offset);
-        evtViewerPtr->setTimescale(*timescalePtr);
+        aseViewerPtr->setTimescale(*timescalePtr);
         offset += sizeof(float);
 
         const float *timeScheduledToRunPtr = PTR_CAST_TYPE_ADD_OFFSET(const float *, this, offset);
-        evtViewerPtr->setTimeScheduledToRun(*timeScheduledToRunPtr);
+        aseViewerPtr->setTimeScheduledToRun(*timeScheduledToRunPtr);
         offset += sizeof(float);
 
         const uint8_t *flagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint8_t *, this, offset);
-        evtViewerPtr->setFlags(*flagsPtr);
+        aseViewerPtr->setFlags(*flagsPtr);
         offset += sizeof(uint8_t);
 
         const uint8_t *opcodePtr = PTR_CAST_TYPE_ADD_OFFSET(const uint8_t *, this, offset);
-        evtViewerPtr->setOpcode(*opcodePtr);
+        aseViewerPtr->setOpcode(*opcodePtr);
         offset += sizeof(uint8_t);
 
         // Make sure offset is aligned to 4 bytes, since the class is aligned to 4 bytes
