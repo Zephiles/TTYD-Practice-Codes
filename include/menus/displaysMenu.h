@@ -33,7 +33,7 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER,
     // DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
     DISPLAYS_MENU_EVT_ID_VARIABLE,
-    DISPLAYS_MENU_EVT_VIEWER,
+    DISPLAYS_MENU_ASE_VIEWER,
     // DISPLAYS_MENU_YOSHI_SKIP,
     DISPLAYS_MENU_PALACE_SKIP,
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
@@ -53,18 +53,6 @@ enum DisplaysMenuHitCheckVisualizationOptions
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_MISSES_COLOR,
 };
 */
-
-enum DisplaysMenuEvtViewerOptions
-{
-    DISPLAYS_MENU_EVT_VIEWER_TURN_ON_OFF = 0,
-    DISPLAYS_MENU_EVT_VIEWER_SET_ARRAY_INDEX,
-    DISPLAYS_MENU_EVT_VIEWER_STORE_CURRENT_VALUES,
-    DISPLAYS_MENU_EVT_VIEWER_APPLY_STORED_VALUES,
-    DISPLAYS_MENU_EVT_VIEWER_USE_FOR_BATTLE_ARRAY,
-    DISPLAYS_MENU_EVT_VIEWER_ADJUST_VALUES_COLORS,
-    DISPLAYS_MENU_EVT_VIEWER_HANDLE_ARRAY_INDEX_AS_HEX,
-    DISPLAYS_MENU_HIT_EVT_VIEWER_ADJUST_MANUAL_POSITIONING,
-};
 
 enum DisplaysMenuGenericFlags
 {
@@ -179,7 +167,7 @@ void displaysAdjustManualPositionInit(Menu *menuPtr);
 // displaysArbitraryMemoryWrite
 void displaysArbitraryMemoryWriteInit(Menu *menuPtr);
 
-// displaysEvtViewer
-void displaysEvtViewerInit(Menu *menuPtr);
+// displaysArbitraryScriptExecutionViewer
+void displaysArbitraryScriptExecutionViewerInit(Menu *menuPtr);
 
 #endif

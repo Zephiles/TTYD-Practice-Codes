@@ -65,8 +65,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "evtID Variable",
     displaysMenuGenericShowAsHex,
 
-    "Evt Viewer",
-    displaysEvtViewerInit,
+    "Arbitrary Script Execution Viewer",
+    displaysArbitraryScriptExecutionViewerInit,
 
     // "Yoshi Skip",
     // displaysMenuGenericHasButtonComboInit,
@@ -279,9 +279,9 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_VIEWER:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ASE_VIEWER:
         {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER;
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER;
         }
 
             /*
@@ -383,9 +383,9 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_VIEWER:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ASE_VIEWER:
         {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER;
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER;
         }
 
             /*
