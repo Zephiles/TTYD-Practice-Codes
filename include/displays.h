@@ -111,8 +111,8 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE,
 #endif
 
-    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,             // evtID variable
-    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX, // evtID variable
+    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,               // evtID variable
+    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX, // evtID variable
 
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER,                      // Arbitrary Script Execution Viewer
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX,  // Arbitrary Script Execution Viewer
