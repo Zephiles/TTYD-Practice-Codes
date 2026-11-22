@@ -122,8 +122,8 @@ static void drawEvtViewerExtraInfo()
 
     char buf[64];
     constexpr uint32_t bufSize = sizeof(buf);
-    const EvtEntry *evtEntry = evtViewerPtr->getViewedEvtPtr(displaysPtr);
-    snprintf(buf, bufSize, format, arrayIndex, reinterpret_cast<uint32_t>(evtEntry));
+    const EvtEntry *entryPtr = evtViewerPtr->getViewedEvtPtr(displaysPtr);
+    snprintf(buf, bufSize, format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
     constexpr float lineDecrement = LINE_HEIGHT_FLOAT * scale;
