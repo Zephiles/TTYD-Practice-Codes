@@ -481,6 +481,7 @@
 // 80037298:make_pri_table
 800373C4:evtGetWork
 // data
+803D51B0:evtmgr_work
 8040F510:evtID
 
 // evt_map.o

@@ -18,6 +18,7 @@
 #include "ttyd/mobjdrv.h"
 #include "ttyd/mario.h"
 #include "ttyd/system.h"
+#include "ttyd/evtmgr.h"
 
 #include <cstdint>
 #include <cstring>
@@ -110,8 +111,14 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE,
 #endif
 
-    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,
-    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX,
+    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,             // evtID variable
+    DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX, // evtID variable
+
+    DISPLAYS_ENABLED_FLAG_EVT_VIEWER,                      // Evt Viewer
+    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX,  // Evt Viewer
+    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS, // Evt Viewer
+    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY,    // Evt Viewer
+    DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED,        // Evt Viewer
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -160,6 +167,7 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE,
+    DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -236,6 +244,7 @@ enum DisplaysShouldDrawFlag
     DISPLAYS_SHOULD_DRAW_FLAG_JUMP_STORAGE,
 
     // All of the tricks should be handled last, as they may clear other draw flags
+    DISPLAYS_SHOULD_DRAW_FLAG_EVT_VIEWER,
     // DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
     DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
@@ -513,6 +522,50 @@ class AMWCoordinateWriteAddressDisplay
     uint32_t addressWrittenToRaw;
     uint16_t timer;
     AMWCoordinateWriteAddressDisplay::FunctionCaller functionCaller;
+};
+
+class EvtViewer
+{
+   public:
+    EvtViewer() {}
+    ~EvtViewer() {}
+
+    uint32_t getIndex() const { return this->index; }
+    void setIndex(uint32_t newIndex) { this->index = newIndex; }
+
+    int32_t *getNextCommandPtr() const { return this->nextCommandPtr; }
+    void setNextCommandPtr(int32_t *ptr) { this->nextCommandPtr = ptr; }
+
+    int32_t getThreadId() const { return this->threadId; }
+    void setThreadId(int32_t id) { this->threadId = id; }
+
+    float getTimescale() const { return this->timescale; }
+    void setTimescale(float value) { this->timescale = value; }
+
+    float getTimeScheduledToRun() const { return this->timeScheduledToRun; }
+    void setTimeScheduledToRun(float value) { this->timeScheduledToRun = value; }
+
+    uint32_t getFlags() const { return this->flags; }
+    void setFlags(uint32_t newFlags) { this->flags = static_cast<uint8_t>(newFlags); }
+
+    uint32_t getOpcode() const { return this->opcode; }
+    void setOpcode(uint32_t newOpcode) { this->opcode = static_cast<uint8_t>(newOpcode); }
+
+    bool applyStoredValues() const;
+
+    // Cannot inline the following two functions due to needing to use functions from the `Displays` class, as this would create
+    // a circular dependency
+    void storeCurrentValues(Displays *displaysPtr, const EvtEntry *entryPtr);
+    EvtEntry *getViewedEvtPtr(const Displays *displaysPtr) const;
+
+   private:
+    uint32_t index; // Index for which evt is being viewed
+    int32_t *nextCommandPtr;
+    int32_t threadId;
+    float timescale;
+    float timeScheduledToRun;
+    uint8_t flags;
+    uint8_t opcode;
 };
 
 class EnemyEncounterNotifierDisplay
@@ -1162,6 +1215,7 @@ class Displays
     GuardSuperguardTimingDisplay *getGuardSuperguardTimingDisplayPtr() { return &this->guardSuperguardTiming; }
     MemoryUsageDisplay *getMemoryUsageDisplayPtr() { return &this->memoryUsage; }
     AMWCoordinateWriteAddressDisplay *getAMWCoordinateWriteAddressDisplayPtr() { return &this->amwCoordinateWriteAddress; }
+    EvtViewer *getEvtViewerPtr() { return &this->evtViewer; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     // HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
@@ -1206,6 +1260,7 @@ class Displays
     MemoryUsageDisplay memoryUsage;
     AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
     GuardSuperguardTimingDisplay guardSuperguardTiming;
+    EvtViewer evtViewer;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     // YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;

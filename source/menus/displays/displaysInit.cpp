@@ -56,14 +56,17 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "Evts Active",
     displaysMenuGenericNoButtonComboInit,
 
-    "evtID Variable",
-    displaysMenuGenericShowAsHex,
-
     "Enemy Encounter Notifier",
     displaysMenuGenericNoButtonComboInit,
 
     // "Hit Check Visualization",
     // displaysMenuHitCheckVisualizationInit,
+
+    "evtID Variable",
+    displaysMenuGenericShowAsHex,
+
+    "Evt Viewer",
+    displaysEvtViewerInit,
 
     // "Yoshi Skip",
     // displaysMenuGenericHasButtonComboInit,
@@ -116,6 +119,11 @@ static void exit()
 {
     delete gDisplaysMenu;
     gDisplaysMenu = nullptr;
+}
+
+void displaysMenuStopDrawingValueEditor()
+{
+    gDisplaysMenu->getValueEditorPtr()->stopDrawing();
 }
 
 void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button)
@@ -176,6 +184,17 @@ void displaysMenuChangeButtonCombo(ButtonComboEditorSetComboFunc setComboFunc)
     const Window *rootWindowPtr = gRootWindow;
     buttonComboEditorPtr->init(rootWindowPtr, rootWindowPtr->getAlpha());
     buttonComboEditorPtr->startDrawing(setComboFunc, cancelSetButtonCombo);
+}
+
+void DisplaysMenu::initErrorWindow(const char *text)
+{
+    ErrorWindow *errorWindowPtr = &this->errorWindow;
+    const Window *rootWindowPtr = gRootWindow;
+
+    errorWindowPtr->setAlpha(rootWindowPtr->getAlpha());
+    errorWindowPtr->setText(text);
+    errorWindowPtr->setTimer(7000);
+    errorWindowPtr->placeInWindow(rootWindowPtr, WindowAlignment::MIDDLE_CENTER);
 }
 
 uint32_t indexToDisplayEnabledFlag(uint32_t index)
@@ -244,10 +263,6 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
-        {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE;
-        }
         case DisplaysMenuOptions::DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER:
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
@@ -259,6 +274,15 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
                 return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION;
             }
             */
+
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
+        {
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE;
+        }
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_VIEWER:
+        {
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER;
+        }
 
             /*
             case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
@@ -351,13 +375,17 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVTS_ACTIVE;
         }
+        case DisplaysMenuOptions::DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER:
+        {
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
+        }
         case DisplaysMenuOptions::DISPLAYS_MENU_EVT_ID_VARIABLE:
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER:
+        case DisplaysMenuOptions::DISPLAYS_MENU_EVT_VIEWER:
         {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ENEMY_ENCOUNTER_NOTIFIER;
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER;
         }
 
             /*

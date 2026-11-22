@@ -142,7 +142,8 @@ void CheatsSettingsData::getData(uint32_t totalCheats, uint32_t totalButtonCombo
 
 void DisplaysSettingsData::getData(uint32_t totalDisplays,
                                    uint32_t totalManuallyPositionEntries,
-                                   uint32_t totalButtonCombos) const
+                                   uint32_t totalButtonCombos,
+                                   uint32_t version) const
 {
     // Get all of the enabled flags
     const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
@@ -279,6 +280,43 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
     const uint32_t *missesColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
     hitCheckVisualizationPtr->setMissesColor(*missesColorPtr);
     */
+
+    if (version >= SETTINGS_ADDED_EVT_VIEWER)
+    {
+        // Get the Evt Viewer variables
+        EvtViewer *evtViewerPtr = displaysPtr->getEvtViewerPtr();
+
+        const uint32_t *indexPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
+        evtViewerPtr->setIndex(*indexPtr);
+        offset += sizeof(uint32_t);
+
+        int32_t **tempNextCommandPtr = PTR_CAST_TYPE_ADD_OFFSET(int32_t **, this, offset);
+        evtViewerPtr->setNextCommandPtr(*tempNextCommandPtr);
+        offset += sizeof(int32_t *);
+
+        const int32_t *threadIdPtr = PTR_CAST_TYPE_ADD_OFFSET(const int32_t *, this, offset);
+        evtViewerPtr->setThreadId(*threadIdPtr);
+        offset += sizeof(int32_t);
+
+        const float *timescalePtr = PTR_CAST_TYPE_ADD_OFFSET(const float *, this, offset);
+        evtViewerPtr->setTimescale(*timescalePtr);
+        offset += sizeof(float);
+
+        const float *timeScheduledToRunPtr = PTR_CAST_TYPE_ADD_OFFSET(const float *, this, offset);
+        evtViewerPtr->setTimeScheduledToRun(*timeScheduledToRunPtr);
+        offset += sizeof(float);
+
+        const uint8_t *flagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint8_t *, this, offset);
+        evtViewerPtr->setFlags(*flagsPtr);
+        offset += sizeof(uint8_t);
+
+        const uint8_t *opcodePtr = PTR_CAST_TYPE_ADD_OFFSET(const uint8_t *, this, offset);
+        evtViewerPtr->setOpcode(*opcodePtr);
+        offset += sizeof(uint8_t);
+
+        // Make sure offset is aligned to 4 bytes, since the class is aligned to 4 bytes
+        offset = roundUp(offset, sizeof(uint32_t));
+    }
 }
 
 uint32_t MemoryWatchesSettingsData::getData(uint32_t totalWatches, uint32_t watchNameLength) const
@@ -919,7 +957,8 @@ int32_t loadSettings(int32_t channel)
 
             displaysSettingsDataPtr->getData(displaysSettingsHeaderPtr->getTotalDisplays(),
                                              displaysSettingsHeaderPtr->getTotalManuallyPositionEntries(),
-                                             displaysSettingsHeaderPtr->getTotalButtonCombos());
+                                             displaysSettingsHeaderPtr->getTotalButtonCombos(),
+                                             version);
         }
     }
 
