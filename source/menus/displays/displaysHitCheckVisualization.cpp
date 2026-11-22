@@ -188,11 +188,6 @@ static void selectedOptionToggleHitOrMissFlags(Menu *menuPtr)
     }
 }
 
-static void cancelChangeColor()
-{
-    gDisplaysMenu->getValueEditorPtr()->stopDrawing();
-}
-
 static void changeColor(const ValueType *valuePtr)
 {
     // Only set the color if the alpha is not 0
@@ -217,7 +212,7 @@ static void changeColor(const ValueType *valuePtr)
     }
 
     // Close the value editor
-    cancelChangeColor();
+    displaysMenuStopDrawingValueEditor();
 }
 
 static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
@@ -244,5 +239,5 @@ static void selectedOptionChangeHitOrMissColors(Menu *menuPtr)
     ValueEditor *valueEditorPtr = gDisplaysMenu->getValueEditorPtr();
 
     valueEditorPtr->init(&currentColor, nullptr, nullptr, rootWindowPtr, flags, VariableType::u32, rootWindowPtr->getAlpha());
-    valueEditorPtr->startDrawing(changeColor, cancelChangeColor);
+    valueEditorPtr->startDrawing(changeColor, displaysMenuStopDrawingValueEditor);
 }

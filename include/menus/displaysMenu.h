@@ -7,6 +7,7 @@
 #include "classes/buttonComboEditor.h"
 #include "classes/positionEditor.h"
 #include "classes/confirmationWindow.h"
+#include "classes/errorWindow.h"
 #include "classes/menu.h"
 
 #include <cstdint>
@@ -29,9 +30,10 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_MEMORY_USAGE,
     DISPLAYS_MENU_EFFS_ACTIVE,
     DISPLAYS_MENU_EVTS_ACTIVE,
-    DISPLAYS_MENU_EVT_ID_VARIABLE,
     DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER,
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
+    DISPLAYS_MENU_EVT_ID_VARIABLE,
+    DISPLAYS_MENU_EVT_VIEWER,
     DISPLAYS_MENU_YOSHI_SKIP,
     DISPLAYS_MENU_PALACE_SKIP,
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
@@ -48,6 +50,18 @@ enum DisplaysMenuHitCheckVisualizationOptions
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_DRAW_MISSES,
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_HITS_COLOR,
     DISPLAYS_MENU_HIT_CHECK_VISUALIZATION_CHANGE_MISSES_COLOR,
+};
+
+enum DisplaysMenuEvtViewerOptions
+{
+    DISPLAYS_MENU_EVT_VIEWER_TURN_ON_OFF = 0,
+    DISPLAYS_MENU_EVT_VIEWER_SET_ARRAY_INDEX,
+    DISPLAYS_MENU_EVT_VIEWER_STORE_CURRENT_VALUES,
+    DISPLAYS_MENU_EVT_VIEWER_APPLY_STORED_VALUES,
+    DISPLAYS_MENU_EVT_VIEWER_USE_FOR_BATTLE_ARRAY,
+    DISPLAYS_MENU_EVT_VIEWER_ADJUST_VALUES_COLORS,
+    DISPLAYS_MENU_EVT_VIEWER_HANDLE_ARRAY_INDEX_AS_HEX,
+    DISPLAYS_MENU_HIT_EVT_VIEWER_ADJUST_MANUAL_POSITIONING,
 };
 
 enum DisplaysMenuGenericFlags
@@ -102,15 +116,19 @@ class DisplaysMenu
     ButtonComboEditor *getButtonComboEditorPtr() { return &this->buttonComboEditor; }
     PositionEditor *getPositionEditorPtr() { return &this->positionEditor; }
     ConfirmationWindow *getConfirmationWindowPtr() { return &this->confirmationWindow; }
+    ErrorWindow *getErrorWindowPtr() { return &this->errorWindow; }
 
     uint32_t getSelectedDisplay() const { return this->selectedDisplay; }
     void setSelectedDisplay(uint32_t selectedDisplay) { this->selectedDisplay = static_cast<uint8_t>(selectedDisplay); }
+
+    void initErrorWindow(const char *text);
 
    private:
     ValueEditor valueEditor;
     ButtonComboEditor buttonComboEditor;
     PositionEditor positionEditor;
     ConfirmationWindow confirmationWindow;
+    ErrorWindow errorWindow;
 
     uint8_t selectedDisplay;
 };
@@ -121,6 +139,7 @@ extern const MenuOption gDisplaysMenuInitOptions[];
 // displaysInit
 void displaysMenuInit(Menu *menuPtr);
 
+void displaysMenuStopDrawingValueEditor();
 void displaysMenuDefaultControlsWithButtonComboEditor(Menu *menuPtr, MenuButtonInput button);
 bool displaysMenuToggleEnabledFlag(uint32_t displayEnabledFlag);
 void displaysMenuSetNewButtonCombo(uint32_t displayButtonComboFlag, uint32_t buttonCombo);
@@ -155,5 +174,8 @@ void displaysAdjustManualPositionInit(Menu *menuPtr);
 
 // displaysArbitraryMemoryWrite
 void displaysArbitraryMemoryWriteInit(Menu *menuPtr);
+
+// displaysEvtViewer
+void displaysEvtViewerInit(Menu *menuPtr);
 
 #endif

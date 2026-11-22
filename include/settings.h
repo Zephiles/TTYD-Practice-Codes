@@ -17,11 +17,12 @@
 #include <cstdint>
 #include <cstring>
 
-#define SETTINGS_VERSION 5
+#define SETTINGS_VERSION 6
 
 // Based on SETTINGS_VERSION
 #define SETTINGS_ADDED_AMW_GLITCH_VALUES 4
 #define SETTINGS_MOVED_MISC_SAVED_FLAGS 5
+#define SETTINGS_ADDED_EVT_VIEWER 6
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -243,13 +244,25 @@ class DisplaysSettingsData
     DisplaysSettingsData() {}
     ~DisplaysSettingsData() {}
 
-    void getData(uint32_t totalDisplays, uint32_t totalManuallyPositionEntries, uint32_t totalButtonCombos) const;
+    void getData(uint32_t totalDisplays,
+                 uint32_t totalManuallyPositionEntries,
+                 uint32_t totalButtonCombos,
+                 uint32_t version) const;
 
     INLINE_FUNC uint32_t setData(Displays *displaysPtr)
     {
         const HitCheckVisualizationDisplay *hitCheckVisualizationPtr = displaysPtr->getHitCheckVisualizationDisplayPtr();
         this->hitsColor = hitCheckVisualizationPtr->getHitsColor();
         this->missesColor = hitCheckVisualizationPtr->getMissesColor();
+
+        EvtViewer *evtViewerPtr = displaysPtr->getEvtViewerPtr();
+        this->index = evtViewerPtr->getIndex();
+        this->nextCommandPtr = evtViewerPtr->getNextCommandPtr();
+        this->threadId = evtViewerPtr->getThreadId();
+        this->timescale = evtViewerPtr->getTimescale();
+        this->timeScheduledToRun = evtViewerPtr->getTimeScheduledToRun();
+        this->flags = static_cast<uint8_t>(evtViewerPtr->getFlags());
+        this->opcode = static_cast<uint8_t>(evtViewerPtr->getOpcode());
 
         memcpy(this->enabledFlags, displaysPtr->getEnabledFlagsPtr(), DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
@@ -272,8 +285,18 @@ class DisplaysSettingsData
     DisplayManuallyPosition manuallyPosition[TOTAL_DISPLAYS_MANUALLY_POSITION_FLAGS];
     uint16_t buttonCombos[roundUp(TOTAL_DISPLAYS_BUTTON_COMBOS, sizeof(uint16_t))];
 
-    uint32_t hitsColor;   // Hit Check Visualization
-    uint32_t missesColor; // Hit Check Visualization
+    // Hit Check Visualization data
+    uint32_t hitsColor;
+    uint32_t missesColor;
+
+    // Evt Viewer data
+    uint32_t index; // Index for which evt is being viewed
+    int32_t *nextCommandPtr;
+    int32_t threadId;
+    float timescale;
+    float timeScheduledToRun;
+    uint8_t flags;
+    uint8_t opcode;
 } __attribute__((aligned(sizeof(uint32_t)), packed));
 
 class MemoryWatchesSettingsHeader
@@ -559,7 +582,7 @@ static_assert(sizeof(MiscSettingsData) == 0x8);
 static_assert(sizeof(CheatsSettingsHeader) == 0x8);
 static_assert(sizeof(CheatsSettingsData) == 0x28);
 static_assert(sizeof(DisplaysSettingsHeader) == 0xC);
-static_assert(sizeof(DisplaysSettingsData) == 0x120);
+static_assert(sizeof(DisplaysSettingsData) == 0x144);
 static_assert(sizeof(MemoryWatchesSettingsHeader) == 0x8);
 static_assert(sizeof(MemoryWatchesSettingsData) == 0x24); // Excludes addressOffsets
 static_assert(sizeof(MemoryEditorSettingsHeader) == 0x8);

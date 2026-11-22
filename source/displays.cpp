@@ -7,6 +7,8 @@
 #include "classes/positionEditor.h"
 #include "classes/valueEditor.h"
 #include "classes/window.h"
+#include "gc/OSInterrupt.h"
+#include "gc/OSCache.h"
 #include "gc/pad.h"
 #include "gc/types.h"
 #include "gc/OSAlloc.h"
@@ -146,6 +148,64 @@ uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWrit
 }
 #endif
 
+bool EvtViewer::applyStoredValues() const
+{
+    // Only apply if values were previously stored
+    Displays *displaysPtr = gDisplays;
+
+    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED))
+    {
+        return false;
+    }
+
+    // Get the pointer to the evt that is being viewed
+    // Make sure the index being used ends up pointing to a valid memory region
+    EvtEntry *entryPtr = this->getViewedEvtPtr(displaysPtr);
+    if (!ptrIsValid(entryPtr))
+    {
+        return false;
+    }
+
+    // Make sure the evt doesn't somehow get used in another thread while being modified
+    const bool enable = OSDisableInterrupts();
+
+    // Apply the stored values
+    entryPtr->flags = this->flags;
+    entryPtr->opcode = this->opcode;
+    entryPtr->nextCommandPtr = this->nextCommandPtr;
+    entryPtr->threadId = this->threadId;
+    entryPtr->timescale = this->timescale;
+    entryPtr->timeScheduledToRun = this->timeScheduledToRun;
+
+    DCStoreRange(entryPtr, sizeof(EvtEntry)); // Just to be safe
+
+    // Restore interrupts
+    OSRestoreInterrupts(enable);
+
+    return true;
+}
+
+void EvtViewer::storeCurrentValues(Displays *displaysPtr, const EvtEntry *entryPtr)
+{
+    this->nextCommandPtr = entryPtr->nextCommandPtr;
+    this->threadId = entryPtr->threadId;
+    this->timescale = entryPtr->timescale;
+    this->timeScheduledToRun = entryPtr->timeScheduledToRun;
+    this->flags = entryPtr->flags;
+    this->opcode = entryPtr->opcode;
+    displaysPtr->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED);
+}
+
+EvtEntry *EvtViewer::getViewedEvtPtr(const Displays *displaysPtr) const
+{
+    // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
+    const bool usingBattlesArray =
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
+
+    EvtWork *workPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
+    return &workPtr->entries[this->index];
+}
+
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
 {
     // Make sure displayWithCombo is valid
@@ -196,6 +256,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
     // Make sure the enabled flag is for one of the tricks
     switch (enabledFlag)
     {
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
@@ -205,6 +266,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
         {
             // Disable all of the trick display flags
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
@@ -344,12 +406,17 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ART_ATTACK_HITBOXES);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EFFS_ACTIVE);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVTS_ACTIVE);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ENEMY_ENCOUNTER_NOTIFIER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_HIT_CHECK_VISUALIZATION);
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_HITS);
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_HANDLE_INDEX_AS_HEX);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_VALUES_STORED);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
@@ -521,8 +588,14 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(-134.f);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE + 0.05f);
 
-    // Yoshi Skip
+    // Evt Viewer
     posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
+    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER];
+    manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
+    manuallyPositionPtr->setPosY(posY);
+    manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+
+    // Yoshi Skip
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP];
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
@@ -1705,25 +1778,34 @@ static void handleEvtsActive(Displays *displaysPtr)
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVTS_ACTIVE);
 }
 
-static void drawEvtIdVariable(CameraId cameraId, void *user)
+static void drawEvtIdVariable(float posX, float posY, float scale)
 {
-    (void)cameraId;
-    (void)user;
-
     // Set up the text
-    char buf[32];
-    constexpr uint32_t bufSize = sizeof(buf);
-    const uint32_t tempEvtID = static_cast<uint32_t>(evtID);
+    const char *format;
 
-    const bool showAsHex = gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX);
-    if (showAsHex)
+    if (gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_SHOW_AS_HEX))
     {
-        snprintf(buf, bufSize, "evtID: 0x%08" PRIX32, tempEvtID);
+        format = "evtID: 0x%" PRIX32;
     }
     else
     {
-        snprintf(buf, bufSize, "evtID: %u", tempEvtID);
+        format = "evtID: %u";
     }
+
+    char buf[32];
+    constexpr uint32_t bufSize = sizeof(buf);
+
+    const uint32_t tempEvtID = static_cast<uint32_t>(evtID);
+    snprintf(buf, bufSize, format, tempEvtID);
+
+    // Draw the text
+    drawText(buf, posX, posY, scale, getColorWhite(0xFF));
+}
+
+static void drawEvtIdVariableMain(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
 
     // Get the position and scale for the text
     DisplayManuallyPosition data;
@@ -1733,7 +1815,7 @@ static void drawEvtIdVariable(CameraId cameraId, void *user)
                           &data);
 
     // Draw the text
-    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+    drawEvtIdVariable(data.getPosX(), data.getPosY(), data.getScale());
 }
 
 static void handleEvtIdVariable(Displays *displaysPtr)
@@ -2403,6 +2485,166 @@ void handleHitCheckVisualization()
               1.f,
               drawHitCheckVisualization,
               nullptr);
+}
+
+static void drawEvtViewer(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    // Set up the text
+    char buf[192];
+    constexpr uint32_t bufSize = sizeof(buf);
+
+    const char *textToDraw;
+    Displays *displaysPtr = gDisplays;
+    const EvtEntry *evtEntry = displaysPtr->getEvtViewerPtr()->getViewedEvtPtr(displaysPtr);
+
+    // Make sure the index being used ends up pointing to a valid memory region
+    if (ptrIsValid(evtEntry))
+    {
+        // Get the bits of the flags in string format
+        constexpr uint32_t totalFlags = sizeof(uint8_t) * 8;
+        const uint32_t tempFlags = evtEntry->flags;
+
+        char flagsBits[totalFlags + 1];
+        flagsBits[totalFlags] = '\0';
+
+        for (uint32_t i = 0; i < totalFlags; i++)
+        {
+            const bool bitIsSet = (tempFlags >> ((totalFlags - 1) - i)) & 1U;
+            if (bitIsSet)
+            {
+                flagsBits[i] = '1';
+            }
+            else
+            {
+                flagsBits[i] = '0';
+            }
+        }
+
+        // Set up the colors to use for the evt values
+        uint32_t flagsColor = getColorWhite(0xFF);
+        uint32_t opcodeColor = getColorWhite(0xFF);
+        uint32_t nextCommandPtrColor = getColorWhite(0xFF);
+        uint32_t threadIdColor = getColorWhite(0xFF);
+        uint32_t timesColor = getColorWhite(0xFF);
+
+#ifdef TTYD_JP
+        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_ADJUST_VALUES_COLORS))
+        {
+            // Get the color to use for the `flags`, in which it should be green if the bits in the flags are 0--0--01 (dashes
+            // can be 0 or 1)
+            if ((tempFlags & 0b10010011) == 0b00000001)
+            {
+                flagsColor = getColorGreen(0xFF);
+            }
+
+            // Get the color to use for the `opcode`, in which it should be green if it is 0
+            if (evtEntry->opcode == 0)
+            {
+                opcodeColor = getColorGreen(0xFF);
+            }
+
+            // Get the color to use for `nextCommandPtr`, which should be green if the value is any value between
+            // 0xC0B11806-0xC0B11956 such that it is 4 byte-aligned (0xC0B11806 + 4*n)
+            const uint32_t nextCommandPtrRaw = reinterpret_cast<uint32_t>(evtEntry->nextCommandPtr);
+            constexpr uint32_t startAddressRaw = 0xC0B11806;
+            constexpr uint32_t endAddressRaw = 0xC0B11956;
+
+            if ((nextCommandPtrRaw >= startAddressRaw) && (nextCommandPtrRaw <= endAddressRaw) &&
+                (((nextCommandPtrRaw - startAddressRaw) & 0x3) == 0))
+            {
+                nextCommandPtrColor = getColorGreen(0xFF);
+            }
+
+            // Get the color to use for the `thread id`, in which it should be green if it is 0x000000FF
+            if (evtEntry->threadId == 0xFF)
+            {
+                threadIdColor = getColorGreen(0xFF);
+            }
+
+            // Get the colors to use for `timescale` and `timeScheduledToRun`, in which they should be green if the sum of them
+            // are at least 1.000000
+            if (evtEntry->timescale + evtEntry->timeScheduledToRun >= 1.0f)
+            {
+                timesColor = getColorGreen(0xFF);
+            }
+        }
+#endif
+        // clang-format off
+        const char *format = "Flags: <col %x>%s\n"
+                             "Opcode: <col %" PRIx32 ">0x%02" PRIX8 "\n"
+                             "CmdPtr: <col %" PRIx32 ">0x%08" PRIX32 "\n"
+                             "Thread: <col %" PRIx32 ">0x%08" PRIX32 "\n"
+                             "TS: <col %" PRIx32 ">%.6f\n"
+                             "TSTR: <col %" PRIx32 ">%.6f";
+        // clang-format on
+
+        snprintf(buf,
+                 bufSize,
+                 format,
+                 flagsColor,
+                 flagsBits,
+                 opcodeColor,
+                 evtEntry->opcode,
+                 nextCommandPtrColor,
+                 reinterpret_cast<uint32_t>(evtEntry->nextCommandPtr),
+                 threadIdColor,
+                 evtEntry->threadId,
+                 timesColor,
+                 evtEntry->timescale,
+                 timesColor,
+                 evtEntry->timeScheduledToRun);
+
+        textToDraw = buf;
+    }
+    else
+    {
+        // Use question marks for the values
+        textToDraw =
+            "Flags: ????????\n"
+            "Opcode: 0x??\n"
+            "CmdPtr: 0x????????\n"
+            "Thread: 0x????????\n"
+            "TS: ?.??????\n"
+            "TSTR: ?.??????";
+    }
+
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+
+    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_BOTTOM_LEFT,
+                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_VIEWER,
+                          &data);
+
+    // Properly position the text
+    const float posX = data.getPosX();
+    float posY = data.getPosY();
+    const float scale = data.getScale();
+    posY += getTextMultilineIncrement(textToDraw, scale, 0);
+
+    // Draw the text
+    drawText(textToDraw, posX, posY, scale, getColorWhite(0xFF));
+    const float lineIncrement = LINE_HEIGHT_FLOAT * scale;
+    posY += lineIncrement;
+
+    // Draw the evtID variable
+    drawEvtIdVariable(posX, posY, scale);
+}
+
+static void handleEvtViewer(Displays *displaysPtr)
+{
+    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER))
+    {
+        return;
+    }
+
+    // This display draws the evtID variable, so clear the draw flag for that to avoid duplicate draws
+    displaysPtr->clearShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVT_ID_VARIABLE);
+
+    // Set this display to be drawn
+    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVT_VIEWER);
 }
 
 static void drawYoshiSkip(CameraId cameraId, void *user)
@@ -4239,15 +4481,16 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
 
     // Top-left positioning
     drawMemoryUsage,
-    drawEvtIdVariable,
     drawEffsActive,
     drawEvtsActive,
+    drawEvtIdVariableMain,
     drawEnemyEncounterNotifier,
 
     // Top-right positioning
     drawJumpStorage,
 
     // Trick displays
+    drawEvtViewer,
     drawYoshiSkip,
     drawPalaceSkip,
     drawArbitraryMemoryWrite,
@@ -4290,6 +4533,7 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEvtIdVariable,
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
+    handleEvtViewer,
     handleMemoryUsage,
     handleAMWCoordinateWriteAddress,
     handleNpcNameToPtrError,

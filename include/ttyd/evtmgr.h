@@ -16,7 +16,7 @@ struct EvtEntry
     uint8_t switchStackIndex;
     int8_t wNpcEventType;
     uint8_t pad_10[3];
-    int32_t nextCommandPtr;
+    int32_t *nextCommandPtr;
     int32_t *currentCommandArguments;
     int8_t labelIdTable[16];
     void *labelAddressTable[16];
@@ -44,7 +44,7 @@ struct EvtEntry
     int32_t threadId;
     void *wActorThisPtr;
     float timescale;
-    int32_t timeScheduledToRun;
+    float timeScheduledToRun;
     int32_t unk_16c;
     void *wThisPtr;
     void *wThisObjPtr;
@@ -78,6 +78,7 @@ static_assert(sizeof(EvtWork) == 0xA0);
 
 extern "C"
 {
+    extern EvtWork evtmgr_work[2]; // One for the field and one for battles
     extern int32_t evtID;
 
     void evtmgrInit();
