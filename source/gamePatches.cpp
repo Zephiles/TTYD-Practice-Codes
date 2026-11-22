@@ -655,7 +655,7 @@ bool sndRemoveEmitter_Work(void *em)
     return g_sndRemoveEmitter_trampoline(em);
 }
 
-void unloadEvtmgrReInit_Work()
+static void unloadEvtmgrReInit_Work()
 {
     // Call the original function immediately
     evtmgrReInit();
