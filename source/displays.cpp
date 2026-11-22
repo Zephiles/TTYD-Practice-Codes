@@ -43,6 +43,7 @@
 #include "ttyd/icondrv.h"
 #include "ttyd/battle_disp.h"
 #include "ttyd/sac_scissor.h"
+#include "ttyd/evt_door.h"
 
 #ifdef TTYD_EU
 #include "gc/OSReset.h"
@@ -202,8 +203,8 @@ EvtEntry *EvtViewer::getViewedEvtPtr(const Displays *displaysPtr) const
     const bool usingBattlesArray =
         displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
 
-    EvtWork *workPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
-    return &workPtr->entries[this->index];
+    EvtWork *evtWorkPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
+    return &evtWorkPtr->entries[this->index];
 }
 
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
@@ -2493,13 +2494,98 @@ void handleHitCheckVisualization()
 }
 */
 
+#ifdef TTYD_JP
+static void drawASETrigger(CameraId cameraId, void *user)
+{
+    (void)cameraId;
+    (void)user;
+
+    // Initialize text drawing
+    drawTextInit(true);
+
+    // Check if the player unpaused at the correct time
+    const uint32_t doorEvtId = gDisplays->getASETriggerDisplayPtr()->getHouseEvtId();
+    const char *textToDraw;
+    char buf[64];
+
+    if (doorEvtId == ASE_TARGET_EVT_ID)
+    {
+        textToDraw = "Unpaused at the correct time";
+    }
+    else
+    {
+        snprintf(buf, sizeof(buf), "Unpaused at %" PRIu32 ", need " ASE_TARGET_EVT_ID_STRING, doorEvtId);
+        textToDraw = buf;
+    }
+
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
+
+    // Draw the text
+    drawText(textToDraw, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+}
+
+static void handleASETrigger(Displays *displaysPtr)
+{
+    ASETriggerDisplay *aseTriggerDisplayPtr = displaysPtr->getASETriggerDisplayPtr();
+    uint32_t timer = aseTriggerDisplayPtr->getTimer();
+
+    if (timer > 0)
+    {
+        aseTriggerDisplayPtr->setTimer(--timer);
+        drawOnDebugLayer(drawASETrigger, displaysPtr->getErrorTextOrder());
+    }
+}
+
+EVT_DEFINE_USER_FUNC(aseTriggerChecker)
+{
+    // This user func runs in place of `evt_door_param`, so call that right away to restore original functionality
+    const int32_t ret = evt_door_param(evtPtr, isFirstCall);
+
+    // Check if all of the evt slots are currently in use
+    Displays *displaysPtr = gDisplays;
+
+    // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
+    const bool usingBattlesArray =
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_VIEWER_USE_BATTLES_ARRAY);
+
+    const EvtWork *evtWorkPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
+    const uint32_t maxEntries = evtWorkPtr->entryCount;
+    const EvtEntry *entry = &evtWorkPtr->entries[0];
+
+    uint32_t count = 0;
+    for (uint32_t i = 0; i < maxEntries; i++, entry++)
+    {
+        if (entry->flags & 0x1)
+        {
+            count++;
+        }
+        else
+        {
+            // No need to continue if even one is not active
+            break;
+        }
+    }
+
+    if (count >= maxEntries)
+    {
+        // All of the evts are in use at the time of the door being opened, so assume an ASE is occuring
+        // This is also assuming that priTbl[3] should have the id that needs to be checked
+        displaysPtr->getASETriggerDisplayPtr()->init(static_cast<uint32_t>(priTbl[3]));
+    }
+
+    return ret;
+}
+#endif
+
 static void drawEvtViewer(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
 
     // Set up the text
-    char buf[192];
+    char buf[224];
     constexpr uint32_t bufSize = sizeof(buf);
 
     const char *textToDraw;
@@ -3919,8 +4005,7 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
     drawTextInit(true);
 
     // Get the text for which function was called to trigger this display
-    Displays *displaysPtr = gDisplays;
-    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
+    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = gDisplays->getAMWCoordinateWriteAddressDisplayPtr();
 
     const char *funcCaller;
     switch (amwCoordinateWriteAddressPtr->getFunctionCaller())
@@ -3958,12 +4043,12 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
              amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
              amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
 
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
+
     // Draw the text
-    drawText(buf,
-             DISPLAYS_DEFAULT_POS_X_LEFT,
-             displaysPtr->getErrorTextPosYDecrement(),
-             DISPLAYS_DEFAULT_SCALE_ERRORS,
-             getColorWhite(0xFF));
+    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
 }
 
 static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
@@ -4032,12 +4117,12 @@ static void drawErrorTextDisplay(uint32_t errorTextDisplayIndex)
     // Initialize text drawing
     drawTextInit(true);
 
+    // Get the position and scale for the text
+    DisplayManuallyPosition data;
+    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
+
     // Draw the text
-    drawText(buf,
-             DISPLAYS_DEFAULT_POS_X_LEFT,
-             displaysPtr->getErrorTextPosYDecrement(),
-             DISPLAYS_DEFAULT_SCALE_ERRORS,
-             getColorWhite(0xFF));
+    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
 }
 
 static void drawNpcNameToPtrError(CameraId cameraId, void *user)
@@ -4548,6 +4633,11 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEvtViewer,
     handleMemoryUsage,
     handleAMWCoordinateWriteAddress,
+
+#ifdef TTYD_JP
+    handleASETrigger,
+#endif
+
     handleNpcNameToPtrError,
     handleMobjNameToPtrError,
     handleAnimPoseMainError,
