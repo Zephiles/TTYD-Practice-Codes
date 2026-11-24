@@ -4542,8 +4542,6 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     // Get the position of the current menu
     const uint32_t currentMenuPtrRaw = reinterpret_cast<uint32_t>(winWorkPtr) + (index * 0x14);
     const float *winPos = reinterpret_cast<float *>(currentMenuPtrRaw + 0xC4);
-
-    // Draw the sequence text
     const float posX = winPos[0];
     float posY = winPos[1] + 50.f;
     float scale = 0.8f;
