@@ -33,7 +33,7 @@ enum DisplaysMenuOptions
     DISPLAYS_MENU_ENEMY_ENCOUNTER_NOTIFIER,
     // DISPLAYS_MENU_HIT_CHECK_VISUALIZATION,
     DISPLAYS_MENU_EVT_ID_VARIABLE,
-    DISPLAYS_MENU_ASE_VIEWER,
+    DISPLAYS_MENU_ARBITRARY_SCRIPT_EXECUTION,
     // DISPLAYS_MENU_YOSHI_SKIP,
     DISPLAYS_MENU_PALACE_SKIP,
     DISPLAYS_MENU_PALACE_SKIP_MINIMAL,
@@ -170,7 +170,7 @@ void displaysArbitraryMemoryWriteInit(Menu *menuPtr);
 // displaysEvtIdVariable
 void displaysEvtIdVariableInit(Menu *menuPtr);
 
-// displaysArbitraryScriptExecutionViewer
-void displaysArbitraryScriptExecutionViewerInit(Menu *menuPtr);
+// displaysArbitraryScriptExecution
+void displaysArbitraryScriptExecutionInit(Menu *menuPtr);
 
 #endif
