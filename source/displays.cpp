@@ -149,10 +149,10 @@ uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWrit
 }
 #endif
 
-bool ArbitraryScriptExecutionViewer::applyStoredValues() const
+bool ArbitraryScriptExecution::applyStoredValues() const
 {
     // Only apply if values were previously stored
-    if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED))
+    if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED))
     {
         return false;
     }
@@ -184,7 +184,7 @@ bool ArbitraryScriptExecutionViewer::applyStoredValues() const
     return true;
 }
 
-void ArbitraryScriptExecutionViewer::storeCurrentValues(Displays *displaysPtr, const EvtEntry *entryPtr)
+void ArbitraryScriptExecution::storeCurrentValues(Displays *displaysPtr, const EvtEntry *entryPtr)
 {
     this->nextCommandPtr = entryPtr->nextCommandPtr;
     this->threadId = entryPtr->threadId;
@@ -192,10 +192,10 @@ void ArbitraryScriptExecutionViewer::storeCurrentValues(Displays *displaysPtr, c
     this->timeScheduledToRun = entryPtr->timeScheduledToRun;
     this->flags = entryPtr->flags;
     this->opcode = entryPtr->opcode;
-    displaysPtr->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
+    displaysPtr->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED);
 }
 
-EvtEntry *ArbitraryScriptExecutionViewer::getViewedEvtPtr() const
+EvtEntry *ArbitraryScriptExecution::getViewedEvtPtr() const
 {
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
     return &evtmgr_work[0].entries[this->index];
@@ -251,7 +251,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
     // Make sure the enabled flag is for one of the tricks
     switch (enabledFlag)
     {
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER:
+        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
@@ -261,7 +261,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
         {
             // Disable all of the trick display flags
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER);
+            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
@@ -407,10 +407,10 @@ Displays::Displays()
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_SHOULD_DRAW_MISSES);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
-    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX);
+    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
@@ -582,9 +582,12 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(-134.f);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE + 0.05f);
 
-    // Arbitrary Script Execution Viewer
+    // Arbitrary Script Execution
     posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
-    manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER];
+
+    manuallyPositionPtr =
+        &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_SCRIPT_EXECUTION];
+
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
@@ -2503,7 +2506,8 @@ static void drawASETrigger(CameraId cameraId, void *user)
         const char *format;
 
         if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX) &&
-            displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
+            displaysPtr->enabledFlagIsSet(
+                DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX))
         {
             format = "Unpaused at 0x%" PRIX32 ", need 0x%" PRIX32;
         }
@@ -2577,7 +2581,7 @@ EVT_DEFINE_USER_FUNC(aseTriggerChecker)
 }
 #endif
 
-static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
+static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
 {
     (void)cameraId;
     (void)user;
@@ -2588,7 +2592,7 @@ static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
 
     const char *textToDraw;
     Displays *displaysPtr = gDisplays;
-    const EvtEntry *entryPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr()->getViewedEvtPtr();
+    const EvtEntry *entryPtr = displaysPtr->getArbitraryScriptExecutionPtr()->getViewedEvtPtr();
 
     // Make sure the index being used ends up pointing to a valid memory region
     if (ptrIsValid(entryPtr))
@@ -2621,7 +2625,8 @@ static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
         uint32_t timesColor = getColorWhite(0xFF);
 
 #ifdef TTYD_JP
-        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS))
+        if (displaysPtr->enabledFlagIsSet(
+                DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS))
         {
             // Get the color to use for the `flags`, in which it should be green if the bits in the flags are 0--0--01 (dashes
             // can be 0 or 1)
@@ -2705,7 +2710,7 @@ static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
     DisplayManuallyPosition data;
 
     getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_BOTTOM_LEFT,
-                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER,
+                          DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_SCRIPT_EXECUTION,
                           &data);
 
     // Properly position the text
@@ -2723,9 +2728,9 @@ static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
     drawEvtIdVariable(posX, posY, scale);
 }
 
-static void handleArbitraryScriptExecutionViewer(Displays *displaysPtr)
+static void handleArbitraryScriptExecution(Displays *displaysPtr)
 {
-    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER))
+    if (!displaysPtr->displayShouldBeHandled(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION))
     {
         return;
     }
@@ -2734,7 +2739,7 @@ static void handleArbitraryScriptExecutionViewer(Displays *displaysPtr)
     displaysPtr->clearShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_EVT_ID_VARIABLE);
 
     // Set this display to be drawn
-    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_ASE_VIEWER);
+    displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_SCRIPT_EXECUTION);
 }
 
 static void drawYoshiSkip(CameraId cameraId, void *user)
@@ -4581,7 +4586,7 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
     drawJumpStorage,
 
     // Trick displays
-    drawArbitraryScriptExecutionViewer,
+    drawArbitraryScriptExecution,
     drawYoshiSkip,
     drawPalaceSkip,
     drawArbitraryMemoryWrite,
@@ -4635,7 +4640,7 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEvtIdVariable,
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
-    handleArbitraryScriptExecutionViewer,
+    handleArbitraryScriptExecution,
     handleMemoryUsage,
     handleAMWCoordinateWriteAddress,
 

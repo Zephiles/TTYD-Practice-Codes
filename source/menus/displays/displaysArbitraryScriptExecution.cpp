@@ -53,7 +53,7 @@ static const MenuFunctions gFuncs = {
     nullptr, // Exit function not needed
 };
 
-void displaysArbitraryScriptExecutionViewerInit(Menu *menuPtr)
+void displaysArbitraryScriptExecutionInit(Menu *menuPtr)
 {
     // Backup the selected display
     gDisplaysMenu->setSelectedDisplay(menuPtr->getCurrentIndex());
@@ -86,7 +86,7 @@ static void controls(Menu *menuPtr, MenuButtonInput button)
     basicMenuLayoutControls(menuPtr, button);
 }
 
-static void drawArbitraryScriptExecutionViewerExtraInfo()
+static void drawArbitraryScriptExecutionExtraInfo()
 {
     // Get the text position for the top-left of the window five lines under the main text to account for the main info already
     // drawn
@@ -99,11 +99,12 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
 
     // Get the current array index
     Displays *displaysPtr = gDisplays;
-    const ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
-    const uint32_t arrayIndex = aseViewerPtr->getIndex();
+    const ArbitraryScriptExecution *asePtr = displaysPtr->getArbitraryScriptExecutionPtr();
+    const uint32_t arrayIndex = asePtr->getIndex();
     const char *valueFormat;
 
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
+    if (displaysPtr->enabledFlagIsSet(
+            DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX))
     {
         valueFormat = "0x%" PRIX32;
     }
@@ -116,7 +117,7 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
     snprintf(format, sizeof(format), "Array Index %s (Address 0x%%08" PRIX32 ")", valueFormat);
 
     char buf[64];
-    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr();
+    const EvtEntry *entryPtr = asePtr->getViewedEvtPtr();
     snprintf(buf, sizeof(buf), format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
@@ -136,8 +137,8 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
     float valuesPosX = tempPosX + width + (20.f * scale);
 
     // Draw whether the array index will be handled as hex
-    const bool handleIndexAsHex =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
+    const bool handleIndexAsHex = displaysPtr->enabledFlagIsSet(
+        DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX);
 
     const char *onOffText;
     uint32_t color;
@@ -150,8 +151,8 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
     drawText("Adjust Values Colors", posX, posY, scale, getColorWhite(0xFF));
 
     // Draw whether the values colors will be adjusted
-    const bool adjustValuesColors =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
+    const bool adjustValuesColors = displaysPtr->enabledFlagIsSet(
+        DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS);
 
     getYesNoTextAndColor(adjustValuesColors, &onOffText, &color, 0xFF);
     drawText(onOffText, valuesPosX, posY, scale, color);
@@ -162,11 +163,11 @@ static void draw(CameraId cameraId, void *user)
     // Draw the main window and text
     basicMenuLayoutDraw(cameraId, user);
 
-    // Draw the main info for the Arbitrary Script Execution Viewer display
+    // Draw the main info for the Arbitrary Script Execution display
     drawGenericDisplayInfo();
 
-    // Draw the extra info for the Arbitrary Script Execution Viewer display
-    drawArbitraryScriptExecutionViewerExtraInfo();
+    // Draw the extra info for the Arbitrary Script Execution display
+    drawArbitraryScriptExecutionExtraInfo();
 
     DisplaysMenu *displaysMenuPtr = gDisplaysMenu;
 
@@ -196,13 +197,13 @@ static void selectedOptionTurnOnOff(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
 }
 
 static void setArrayIndex(const ValueType *valuePtr)
 {
     // Set the new index
-    gDisplays->getArbitraryScriptExecutionViewerPtr()->setIndex(valuePtr->u32);
+    gDisplays->getArbitraryScriptExecutionPtr()->setIndex(valuePtr->u32);
 
     // Close the value editor
     displaysMenuStopDrawingValueEditor();
@@ -220,7 +221,8 @@ static void selectedOptionSetArrayIndex(Menu *menuPtr)
     flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Y_SET_MAX);
     flags = ValueEditor::setFlag(flags, ValueEditorFlag::DRAW_BUTTON_Z_SET_MIN);
 
-    if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
+    if (displaysPtr->enabledFlagIsSet(
+            DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX))
     {
         flags = ValueEditor::setFlag(flags, ValueEditorFlag::HANDLE_AS_HEX);
     }
@@ -228,7 +230,7 @@ static void selectedOptionSetArrayIndex(Menu *menuPtr)
     uint32_t minValue = 0;
     uint32_t maxValue = 0xFFFFFFFF;
     const Window *rootWindowPtr = gRootWindow;
-    uint32_t currentValue = displaysPtr->getArbitraryScriptExecutionViewerPtr()->getIndex();
+    uint32_t currentValue = displaysPtr->getArbitraryScriptExecutionPtr()->getIndex();
     ValueEditor *valueEditorPtr = gDisplaysMenu->getValueEditorPtr();
 
     valueEditorPtr
@@ -260,7 +262,7 @@ static void handleConfirmationWindowSelection(bool storeValues)
     const char *errorText;
 
     const bool valuesAreCurrentlyStored =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
+        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED);
 
     if (!storeValues && !valuesAreCurrentlyStored)
     {
@@ -270,18 +272,18 @@ static void handleConfirmationWindowSelection(bool storeValues)
     }
 
     // Do not store/apply the values if the index being used ends up pointing to an invalid memory region
-    ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
-    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr();
+    ArbitraryScriptExecution *asePtr = displaysPtr->getArbitraryScriptExecutionPtr();
+    const EvtEntry *entryPtr = asePtr->getViewedEvtPtr();
 
     if (ptrIsValid(entryPtr))
     {
         if (storeValues)
         {
-            aseViewerPtr->storeCurrentValues(displaysPtr, entryPtr);
+            asePtr->storeCurrentValues(displaysPtr, entryPtr);
         }
         else
         {
-            aseViewerPtr->applyStoredValues();
+            asePtr->applyStoredValues();
         }
     }
     else
@@ -349,12 +351,12 @@ static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS);
 }
 
 static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX);
 }

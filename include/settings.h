@@ -22,7 +22,7 @@
 // Based on SETTINGS_VERSION
 #define SETTINGS_ADDED_AMW_GLITCH_VALUES 4
 #define SETTINGS_MOVED_MISC_SAVED_FLAGS 5
-#define SETTINGS_ADDED_ASE_VIEWER 6
+#define SETTINGS_ADDED_ARBITRARY_SCRIPT_EXECUTION 6
 
 #define CARD_RESULT_CARD_IN_USE -200
 #define CARD_RESULT_INVALID_SETTNGS_VERSION -201
@@ -255,14 +255,14 @@ class DisplaysSettingsData
         this->hitsColor = hitCheckVisualizationPtr->getHitsColor();
         this->missesColor = hitCheckVisualizationPtr->getMissesColor();
 
-        ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
-        this->index = aseViewerPtr->getIndex();
-        this->nextCommandPtr = aseViewerPtr->getNextCommandPtr();
-        this->threadId = aseViewerPtr->getThreadId();
-        this->timescale = aseViewerPtr->getTimescale();
-        this->timeScheduledToRun = aseViewerPtr->getTimeScheduledToRun();
-        this->flags = static_cast<uint8_t>(aseViewerPtr->getFlags());
-        this->opcode = static_cast<uint8_t>(aseViewerPtr->getOpcode());
+        ArbitraryScriptExecution *asePtr = displaysPtr->getArbitraryScriptExecutionPtr();
+        this->index = asePtr->getIndex();
+        this->nextCommandPtr = asePtr->getNextCommandPtr();
+        this->threadId = asePtr->getThreadId();
+        this->timescale = asePtr->getTimescale();
+        this->timeScheduledToRun = asePtr->getTimeScheduledToRun();
+        this->flags = static_cast<uint8_t>(asePtr->getFlags());
+        this->opcode = static_cast<uint8_t>(asePtr->getOpcode());
 
         memcpy(this->enabledFlags, displaysPtr->getEnabledFlagsPtr(), DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 
@@ -289,7 +289,7 @@ class DisplaysSettingsData
     uint32_t hitsColor;
     uint32_t missesColor;
 
-    // Arbitrary Script Execution Viewer data
+    // Arbitrary Script Execution data
     uint32_t index; // Index for which evt is being viewed
     int32_t *nextCommandPtr;
     int32_t threadId;

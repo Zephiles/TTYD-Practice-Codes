@@ -114,10 +114,10 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE,               // evtID variable
     DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX, // evtID variable
 
-    DISPLAYS_ENABLED_FLAG_ASE_VIEWER,                      // Arbitrary Script Execution Viewer
-    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX,  // Arbitrary Script Execution Viewer
-    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS, // Arbitrary Script Execution Viewer
-    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED,        // Arbitrary Script Execution Viewer
+    DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION,                      // Arbitrary Script Execution
+    DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX,  // Arbitrary Script Execution
+    DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS, // Arbitrary Script Execution
+    DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED,        // Arbitrary Script Execution
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -166,7 +166,7 @@ enum DisplaysManuallyPositionFlag
     DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_MEMORY_WRITE,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE,
-    DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER,
+    DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_SCRIPT_EXECUTION,
 
     DISPLAYS_MANUALLY_POSITION_FLAG_MAX_VALUE, // Don't use this directly other than for defines
 };
@@ -243,7 +243,7 @@ enum DisplaysShouldDrawFlag
     DISPLAYS_SHOULD_DRAW_FLAG_JUMP_STORAGE,
 
     // All of the tricks should be handled last, as they may clear other draw flags
-    DISPLAYS_SHOULD_DRAW_FLAG_ASE_VIEWER,
+    DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_SCRIPT_EXECUTION,
     DISPLAYS_SHOULD_DRAW_FLAG_YOSHI_SKIP,
     DISPLAYS_SHOULD_DRAW_FLAG_PALACE_SKIP, // Minimal also uses this
     DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_MEMORY_WRITE,
@@ -549,11 +549,11 @@ class ASETriggerDisplay
 };
 #endif
 
-class ArbitraryScriptExecutionViewer
+class ArbitraryScriptExecution
 {
    public:
-    ArbitraryScriptExecutionViewer() {}
-    ~ArbitraryScriptExecutionViewer() {}
+    ArbitraryScriptExecution() {}
+    ~ArbitraryScriptExecution() {}
 
     uint32_t getIndex() const { return this->index; }
     void setIndex(uint32_t newIndex) { this->index = newIndex; }
@@ -1245,7 +1245,7 @@ class Displays
     ASETriggerDisplay *getASETriggerDisplayPtr() { return &this->aseTriggerDisplay; }
 #endif
 
-    ArbitraryScriptExecutionViewer *getArbitraryScriptExecutionViewerPtr() { return &this->aseViewer; }
+    ArbitraryScriptExecution *getArbitraryScriptExecutionPtr() { return &this->arbitraryScriptExecution; }
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
@@ -1295,7 +1295,7 @@ class Displays
 #endif
 
     GuardSuperguardTimingDisplay guardSuperguardTiming;
-    ArbitraryScriptExecutionViewer aseViewer;
+    ArbitraryScriptExecution arbitraryScriptExecution;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;

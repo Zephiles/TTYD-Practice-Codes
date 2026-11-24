@@ -65,8 +65,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "evtID Variable",
     displaysEvtIdVariableInit,
 
-    "Arbitrary Script Execution Viewer",
-    displaysArbitraryScriptExecutionViewerInit,
+    "Arbitrary Script Execution",
+    displaysArbitraryScriptExecutionInit,
 
     "Yoshi Skip",
     displaysMenuGenericHasButtonComboInit,
@@ -271,9 +271,9 @@ uint32_t indexToDisplayEnabledFlag(uint32_t index)
         {
             return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_ASE_VIEWER:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_SCRIPT_EXECUTION:
         {
-            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER;
+            return DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION;
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
         {
@@ -367,9 +367,9 @@ uint32_t indexToDisplayManuallyPositionFlag(uint32_t index)
         {
             return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_EVT_ID_VARIABLE;
         }
-        case DisplaysMenuOptions::DISPLAYS_MENU_ASE_VIEWER:
+        case DisplaysMenuOptions::DISPLAYS_MENU_ARBITRARY_SCRIPT_EXECUTION:
         {
-            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ASE_VIEWER;
+            return DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_ARBITRARY_SCRIPT_EXECUTION;
         }
         case DisplaysMenuOptions::DISPLAYS_MENU_YOSHI_SKIP:
         {
