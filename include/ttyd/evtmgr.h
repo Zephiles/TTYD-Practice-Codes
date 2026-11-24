@@ -80,7 +80,7 @@ extern "C"
 {
     extern int32_t priIDTbl[256];
     extern int32_t priTbl[256];
-    extern EvtWork evtmgr_work[2]; // One for the field and one for battles
+    extern EvtWork evtmgr_work[2]; // Index 0 used for field, index 1 used for battles
     extern int32_t evtID;
 
     void evtmgrInit();

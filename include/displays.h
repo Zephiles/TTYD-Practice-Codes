@@ -117,7 +117,6 @@ enum DisplaysEnabledFlag
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER,                      // Arbitrary Script Execution Viewer
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX,  // Arbitrary Script Execution Viewer
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS, // Arbitrary Script Execution Viewer
-    DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY,    // Arbitrary Script Execution Viewer
     DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED,        // Arbitrary Script Execution Viewer
 
     DISPLAYS_ENABLED_FLAG_MAX_VALUE, // Don't use this directly other than for defines
@@ -583,7 +582,7 @@ class ArbitraryScriptExecutionViewer
     // Cannot inline the following two functions due to needing to use functions from the `Displays` class, as this would create
     // a circular dependency
     void storeCurrentValues(Displays *displaysPtr, const EvtEntry *entryPtr);
-    EvtEntry *getViewedEvtPtr(const Displays *displaysPtr) const;
+    EvtEntry *getViewedEvtPtr() const;
 
    private:
     uint32_t index; // Index for which evt is being viewed
