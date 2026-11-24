@@ -541,7 +541,7 @@ class ASETriggerDisplay
     INLINE_FUNC void init(uint32_t currentEvtId)
     {
         this->houseEvtId = currentEvtId;
-        this->setTimer(sysMsec2Frame(5000));
+        this->setTimer(sysMsec2Frame(10000));
     }
 
    private:
