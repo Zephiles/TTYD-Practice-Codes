@@ -38,13 +38,17 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.3.1-dev16 (ASE Edition)"
+#define VERSION_STRING "v4.3.1-dev17 (ASE Edition)"
 
-#define DRAW_ORDER_PROJECT_INFO -1.f
-#define DRAW_ORDER_DISPLAYS 0.f
-#define DRAW_ORDER_DISPLAY_GUARD_SUPERGUARD_TIMINGS 1.f
-#define DRAW_ORDER_CHEAT_SPAWN_ITEM 2.f
-#define DRAW_ORDER_DISPLAY_ERRORS 900.f
+// Order in which things are drawn; drawn from lowest to highest
+
+// `DRAW_ORDER_DISPLAY_ERRORS` needs to be lower than `DRAW_ORDER_DISPLAYS` so that displays on the top-left of the screen can
+// be properly repositioned if errors use multiple lines
+#define DRAW_ORDER_PROJECT_INFO 10.f
+#define DRAW_ORDER_DISPLAY_GUARD_SUPERGUARD_TIMINGS 15.f
+#define DRAW_ORDER_CHEAT_SPAWN_ITEM 20.f
+#define DRAW_ORDER_DISPLAY_ERRORS 25.f
+#define DRAW_ORDER_DISPLAYS 500.f
 #define DRAW_ORDER_MENU 1000.f
 
 enum class VariableType : uint8_t

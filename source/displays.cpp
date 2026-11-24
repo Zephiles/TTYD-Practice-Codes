@@ -2500,11 +2500,9 @@ static void drawASETrigger(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
-    // Initialize text drawing
-    drawTextInit(true);
-
     // Check if the player unpaused at the correct time
-    const uint32_t doorEvtId = gDisplays->getASETriggerDisplayPtr()->getHouseEvtId();
+    Displays *displaysPtr = gDisplays;
+    const uint32_t doorEvtId = displaysPtr->getASETriggerDisplayPtr()->getHouseEvtId();
     const char *textToDraw;
     char buf[64];
 
@@ -2518,12 +2516,15 @@ static void drawASETrigger(CameraId cameraId, void *user)
         textToDraw = buf;
     }
 
-    // Get the position and scale for the text
-    DisplayManuallyPosition data;
-    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
+    // Initialize text drawing
+    drawTextInit(true);
 
     // Draw the text
-    drawText(textToDraw, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+    drawText(textToDraw,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
 }
 
 static void handleASETrigger(Displays *displaysPtr)
@@ -4001,11 +4002,9 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
-    // Initialize text drawing
-    drawTextInit(true);
-
     // Get the text for which function was called to trigger this display
-    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = gDisplays->getAMWCoordinateWriteAddressDisplayPtr();
+    Displays *displaysPtr = gDisplays;
+    AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
 
     const char *funcCaller;
     switch (amwCoordinateWriteAddressPtr->getFunctionCaller())
@@ -4043,12 +4042,15 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
              amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
              amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
 
-    // Get the position and scale for the text
-    DisplayManuallyPosition data;
-    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
+    // Initialize text drawing
+    drawTextInit(true);
 
     // Draw the text
-    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+    drawText(buf,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
 }
 
 static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
@@ -4117,12 +4119,12 @@ static void drawErrorTextDisplay(uint32_t errorTextDisplayIndex)
     // Initialize text drawing
     drawTextInit(true);
 
-    // Get the position and scale for the text
-    DisplayManuallyPosition data;
-    getDisplayPosAndScale(DisplaysScreenPosition::DISPLAYS_POSITION_TOP_LEFT, static_cast<uint32_t>(-1), &data);
-
     // Draw the text
-    drawText(buf, data.getPosX(), data.getPosY(), data.getScale(), getColorWhite(0xFF));
+    drawText(buf,
+             DISPLAYS_DEFAULT_POS_X_LEFT,
+             displaysPtr->getErrorTextPosYDecrement(),
+             DISPLAYS_DEFAULT_SCALE_ERRORS,
+             getColorWhite(0xFF));
 }
 
 static void drawNpcNameToPtrError(CameraId cameraId, void *user)
@@ -4533,9 +4535,6 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     const uint32_t currentMenuPtrRaw = reinterpret_cast<uint32_t>(winWorkPtr) + (index * 0x14);
     const float *winPos = reinterpret_cast<float *>(currentMenuPtrRaw + 0xC4);
 
-    // Initialize text drawing
-    drawTextInit(true);
-
     // Draw the sequence text
     const float posX = winPos[0];
     float posY = winPos[1] + 50.f;
@@ -4546,6 +4545,10 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     scale += 0.1f;
 #endif
 
+    // Initialize text drawing
+    drawTextInit(true);
+
+    // Draw the Sequence text
     drawText("Sequence", posX + 46.f, posY, scale, getColorWhite(0xFF));
 
     // Draw the sequence value, and align it to the right
@@ -4601,11 +4604,22 @@ static void runDisplayDrawFuncs(CameraId cameraId, void *user)
     // Initialize text drawing
     drawTextInit(true);
 
-    constexpr uint32_t loopCount = sizeof(gDisplaysDrawFuncs) / sizeof(DispCallback);
-    const DispCallback *displaysDrawFuncsPtr = gDisplaysDrawFuncs;
-    const Displays *displaysPtr = gDisplays;
+    // If `defaultPosYErrors` is currently below `DISPLAYS_DEFAULT_POS_Y_TOP`, then move `defaultPosYTopLeft` down to prevent
+    // overlapping from occuring between errors and stuff on the top lines. This functionality relies on
+    // `DRAW_ORDER_DISPLAY_ERRORS` to be lower than `DRAW_ORDER_DISPLAYS` in `mod.h`, as lower numbers are drawn first, so the
+    // errors would be drawn before the regular displays here.
+    Displays *displaysPtr = gDisplays;
+    const float errorsPosY = displaysPtr->getErrorTextPosY();
+
+    if (errorsPosY < DISPLAYS_DEFAULT_POS_Y_TOP)
+    {
+        displaysPtr->decrementDefaultPosTopLeft(DISPLAYS_DEFAULT_POS_Y_TOP - errorsPosY);
+    }
 
     // Run each draw func if the draw flag for it is set
+    constexpr uint32_t loopCount = sizeof(gDisplaysDrawFuncs) / sizeof(DispCallback);
+    const DispCallback *displaysDrawFuncsPtr = gDisplaysDrawFuncs;
+
     for (uint32_t i = 0; i < loopCount; i++)
     {
         if (displaysPtr->shouldDrawFlagIsSet(i))
