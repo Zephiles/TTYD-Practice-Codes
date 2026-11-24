@@ -198,8 +198,7 @@ void ArbitraryScriptExecutionViewer::storeCurrentValues(Displays *displaysPtr, c
 EvtEntry *ArbitraryScriptExecutionViewer::getViewedEvtPtr() const
 {
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
-    EvtWork *evtWorkPtr = &evtmgr_work[0];
-    return &evtWorkPtr->entries[this->index];
+    return &evtmgr_work[0].entries[this->index];
 }
 
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
@@ -2500,7 +2499,20 @@ static void drawASETrigger(CameraId cameraId, void *user)
     }
     else
     {
-        snprintf(buf, sizeof(buf), "Unpaused at %" PRIu32 ", need " ASE_TARGET_EVT_ID_STRING, doorEvtId);
+        // If both the evtID variable display and the ASE display are handling their indexes as hex, then draw both as hex here
+        const char *format;
+
+        if (displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX) &&
+            displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX))
+        {
+            format = "Unpaused at 0x%" PRIX32 ", need 0x%" PRIX32;
+        }
+        else
+        {
+            format = "Unpaused at %" PRIu32 ", need %" PRIu32;
+        }
+
+        snprintf(buf, sizeof(buf), format, doorEvtId, ASE_TARGET_EVT_ID);
         textToDraw = buf;
     }
 
@@ -2537,13 +2549,13 @@ EVT_DEFINE_USER_FUNC(aseTriggerChecker)
 
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
     const EvtWork *evtWorkPtr = &evtmgr_work[0];
+    const EvtEntry *entryPtr = &evtWorkPtr->entries[0];
     const uint32_t maxEntries = evtWorkPtr->entryCount;
-    const EvtEntry *entry = &evtWorkPtr->entries[0];
 
     uint32_t count = 0;
-    for (uint32_t i = 0; i < maxEntries; i++, entry++)
+    for (uint32_t i = 0; i < maxEntries; i++, entryPtr++)
     {
-        if (entry->flags & 0x1)
+        if (entryPtr->flags & 0x1)
         {
             count++;
         }
