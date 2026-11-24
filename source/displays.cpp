@@ -152,16 +152,14 @@ uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWrit
 bool ArbitraryScriptExecutionViewer::applyStoredValues() const
 {
     // Only apply if values were previously stored
-    Displays *displaysPtr = gDisplays;
-
-    if (!displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED))
+    if (!gDisplays->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED))
     {
         return false;
     }
 
     // Get the pointer to the evt that is being viewed
     // Make sure the index being used ends up pointing to a valid memory region
-    EvtEntry *entryPtr = this->getViewedEvtPtr(displaysPtr);
+    EvtEntry *entryPtr = this->getViewedEvtPtr();
     if (!ptrIsValid(entryPtr))
     {
         return false;
@@ -197,13 +195,10 @@ void ArbitraryScriptExecutionViewer::storeCurrentValues(Displays *displaysPtr, c
     displaysPtr->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
 }
 
-EvtEntry *ArbitraryScriptExecutionViewer::getViewedEvtPtr(const Displays *displaysPtr) const
+EvtEntry *ArbitraryScriptExecutionViewer::getViewedEvtPtr() const
 {
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
-    const bool usingBattlesArray =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
-
-    EvtWork *evtWorkPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
+    EvtWork *evtWorkPtr = &evtmgr_work[0];
     return &evtWorkPtr->entries[this->index];
 }
 
@@ -416,7 +411,6 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
     this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
-    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_VALUES_STORED);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
@@ -2548,10 +2542,7 @@ EVT_DEFINE_USER_FUNC(aseTriggerChecker)
     Displays *displaysPtr = gDisplays;
 
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
-    const bool usingBattlesArray =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
-
-    const EvtWork *evtWorkPtr = &evtmgr_work[static_cast<uint32_t>(usingBattlesArray)];
+    const EvtWork *evtWorkPtr = &evtmgr_work[0];
     const uint32_t maxEntries = evtWorkPtr->entryCount;
     const EvtEntry *entry = &evtWorkPtr->entries[0];
 
@@ -2591,7 +2582,7 @@ static void drawArbitraryScriptExecutionViewer(CameraId cameraId, void *user)
 
     const char *textToDraw;
     Displays *displaysPtr = gDisplays;
-    const EvtEntry *entryPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr()->getViewedEvtPtr(displaysPtr);
+    const EvtEntry *entryPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr()->getViewedEvtPtr();
 
     // Make sure the index being used ends up pointing to a valid memory region
     if (ptrIsValid(entryPtr))

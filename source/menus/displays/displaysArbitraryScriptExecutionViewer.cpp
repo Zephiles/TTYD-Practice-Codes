@@ -18,11 +18,10 @@ static void draw(CameraId cameraId, void *user);
 static void controls(Menu *menuPtr, MenuButtonInput button);
 static void selectedOptionTurnOnOff(Menu *menuPtr);
 static void selectedOptionSetArrayIndex(Menu *menuPtr);
-static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr);
-static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr);
 static void selectedOptionStoreCurrentValues(Menu *menuPtr);
 static void selectedOptionApplyStoredValues(Menu *menuPtr);
-static void selectedOptionToggleBattleFlag(Menu *menuPtr);
+static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr);
+static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr);
 
 static const MenuOption gOptions[] {
     "Turn On/Off",
@@ -36,9 +35,6 @@ static const MenuOption gOptions[] {
 
     "Apply Stored Values",
     selectedOptionApplyStoredValues,
-
-    "Use For Battles Array",
-    selectedOptionToggleBattleFlag,
 
     "Adjust Values Colors",
     selectedOptionToggleAdjustValuesColors,
@@ -120,7 +116,7 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
     snprintf(format, sizeof(format), "Array Index %s (Address 0x%%08" PRIX32 ")", valueFormat);
 
     char buf[64];
-    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr(displaysPtr);
+    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr();
     snprintf(buf, sizeof(buf), format, arrayIndex, reinterpret_cast<uint32_t>(entryPtr));
 
     // Retrieve posX and posY as separate variables to avoid repeatedly loading them from the stack when using them
@@ -158,17 +154,6 @@ static void drawArbitraryScriptExecutionViewerExtraInfo()
         displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
 
     getYesNoTextAndColor(adjustValuesColors, &onOffText, &color, 0xFF);
-    drawText(onOffText, valuesPosX, posY, scale, color);
-    posY -= lineDecrement;
-
-    // Draw the Use For Battles Array text
-    drawText("Use For Battles Array", posX, posY, scale, getColorWhite(0xFF));
-
-    // Draw whether the Battles array is being used
-    const bool usingBattlesArray =
-        displaysPtr->enabledFlagIsSet(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
-
-    getYesNoTextAndColor(usingBattlesArray, &onOffText, &color, 0xFF);
     drawText(onOffText, valuesPosX, posY, scale, color);
 }
 
@@ -252,20 +237,6 @@ static void selectedOptionSetArrayIndex(Menu *menuPtr)
     valueEditorPtr->startDrawing(setArrayIndex, displaysMenuStopDrawingValueEditor);
 }
 
-static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr)
-{
-    (void)menuPtr;
-
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
-}
-
-static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr)
-{
-    (void)menuPtr;
-
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
-}
-
 static void closeConfirmationWindow()
 {
     gDisplaysMenu->getConfirmationWindowPtr()->stopDrawing();
@@ -300,7 +271,7 @@ static void handleConfirmationWindowSelection(bool storeValues)
 
     // Do not store/apply the values if the index being used ends up pointing to an invalid memory region
     ArbitraryScriptExecutionViewer *aseViewerPtr = displaysPtr->getArbitraryScriptExecutionViewerPtr();
-    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr(displaysPtr);
+    const EvtEntry *entryPtr = aseViewerPtr->getViewedEvtPtr();
 
     if (ptrIsValid(entryPtr))
     {
@@ -374,9 +345,16 @@ static void selectedOptionApplyStoredValues(Menu *menuPtr)
     initConfirmationWindow(helpText, applyStoredValues);
 }
 
-static void selectedOptionToggleBattleFlag(Menu *menuPtr)
+static void selectedOptionToggleAdjustValuesColors(Menu *menuPtr)
 {
     (void)menuPtr;
 
-    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_USE_BATTLES_ARRAY);
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_ADJUST_VALUES_COLORS);
+}
+
+static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr)
+{
+    (void)menuPtr;
+
+    displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ASE_VIEWER_HANDLE_INDEX_AS_HEX);
 }
