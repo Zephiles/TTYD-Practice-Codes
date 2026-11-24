@@ -525,7 +525,6 @@ class AMWCoordinateWriteAddressDisplay
 
 #ifdef TTYD_JP
 #define ASE_TARGET_EVT_ID 17507
-#define ASE_TARGET_EVT_ID_STRING "17507"
 
 class ASETriggerDisplay
 {
