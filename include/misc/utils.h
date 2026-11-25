@@ -321,6 +321,13 @@ INLINE_FUNC bool pauseMenuIsOpen()
 }
 
 /**
+ * Checks if the `Practice Codes` menu (or anything else using it, such as the `Spawn Item` cheat) is currently open.
+ *
+ * @returns `true` if the `Practice Codes` menu is currently open, otherwise `false`.
+ */
+bool menuIsOpen();
+
+/**
  * Reinitializes the item menu in the pause menu.
  *
  * @note The item menu will only be reinitialized if the pause menu is currently open.

@@ -46,6 +46,7 @@
 #include "ttyd/fontmgr.h"
 #include "ttyd/windowdrv.h"
 #include "ttyd/memory.h"
+#include "ttyd/mario_motion.h"
 
 #include <cstdint>
 
@@ -174,6 +175,11 @@ void init()
 
     // For handling the Disable Certain Sounds cheat, specifically for disabling environment sounds
     g_psndENVOn_f_d_trampoline = hookFunction(psndENVOn_f_d, disableEnvSounds);
+
+    // For preventing being able to hammer and jump while the menu is open, as these can interfere with Arbitrary Script
+    // Execution due to being able to create evts using each
+    g_marioChkItemMotion_trampoline = hookFunction(marioChkItemMotion, marioChkItemMotion_Work);
+    g_marioChkJump_trampoline = hookFunction(marioChkJump, marioChkJump_Work);
 
     // Load the settings file and initialize text and window stuff
     initAfterHeapsCreated();

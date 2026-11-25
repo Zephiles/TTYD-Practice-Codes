@@ -672,6 +672,30 @@ static void unloadEvtmgrReInit_Work()
     }
 }
 
+bool marioChkItemMotion_Work()
+{
+    // Prevent hammering if the menu is currently open
+    if (menuIsOpen())
+    {
+        return false;
+    }
+
+    // Call the original function
+    return g_marioChkItemMotion_trampoline();
+}
+
+bool marioChkJump_Work()
+{
+    // Prevent jumping if the menu is currently open
+    if (menuIsOpen())
+    {
+        return false;
+    }
+
+    // Call the original function
+    return g_marioChkJump_trampoline();
+}
+
 void applyGameFixes()
 {
     // Fix a memory leak from occuring when starting a new file. The leak is that memory for the inventory is re-allocated

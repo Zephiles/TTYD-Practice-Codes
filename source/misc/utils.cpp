@@ -1,4 +1,7 @@
 #include "mod.h"
+#include "menuUtils.h"
+#include "cheats.h"
+#include "memoryEditor.h"
 #include "gc/pad.h"
 #include "gc/OSModule.h"
 #include "gc/types.h"
@@ -368,6 +371,29 @@ WinMgrEntry *getWinMgrEntryPtr(const WinMgrDesc *desc)
 
     // Didn't find the desired entry
     return nullptr;
+}
+
+bool menuIsOpen()
+{
+    // Check if the main menu is open
+    if (gMenu)
+    {
+        return true;
+    }
+
+    // Check if the menu for spawning an item is open
+    if (gCheats->getSpawnItemCheatPtr()->getValueEditorPtr())
+    {
+        return true;
+    }
+
+    // Check if the memory editor is open
+    if (memoryEditorIsOpen())
+    {
+        return true;
+    }
+
+    return false;
 }
 
 bool pauseMenuItemWindowExists()

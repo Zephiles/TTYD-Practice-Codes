@@ -49,3 +49,5 @@ bool (*g_psndBGMOn_f_d_trampoline)(int32_t flags, const char *bgmName, uint16_t 
     nullptr;
 
 bool (*g_psndENVOn_f_d_trampoline)(int32_t flags, const char *envName, int32_t wFadeTime, bool unused) = nullptr;
+bool (*g_marioChkItemMotion_trampoline)() = nullptr;
+bool (*g_marioChkJump_trampoline)() = nullptr;
