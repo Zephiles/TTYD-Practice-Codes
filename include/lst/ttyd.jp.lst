@@ -1170,9 +1170,9 @@
 // 80090C38:marioChgMotJump2
 80090D10:marioRollChgChk
 // 80090E9C:L_marioChkRub
-// 80090EA4:marioChkItemMotion
+80090EA4:marioChkItemMotion
 // 80091070:marioChkTransform
-// 80091260:marioChkJump
+80091260:marioChkJump
 // 80091488:mot_getItem
 // 800914E0:mot_talk
 // 800916E0:marioLandOn

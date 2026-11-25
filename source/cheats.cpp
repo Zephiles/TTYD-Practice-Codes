@@ -754,8 +754,7 @@ static void reloadRoom(Cheats *cheatsPtr, Mod *modPtr)
     {
         // Prevent being able to reload the room if the menu is open, if currently in the spawn item menu, if the memory editor
         // is open, or if vanilla memory card stuff is currently happening
-        if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM) && !gMenu &&
-            !cheatsPtr->getSpawnItemCheatPtr()->getValueEditorPtr() && !memoryEditorIsOpen() && !cardIsExec())
+        if (cheatsPtr->enabledFlagIsSet(CheatsEnabledFlag::CHEATS_ENABLED_FLAG_RELOAD_ROOM) && !menuIsOpen() && !cardIsExec())
         {
             reloadRoomMain();
         }

@@ -15,6 +15,8 @@ void performBattleChecks();
 NpcEntry *fbatHitCheck_Work(uint32_t flags, void *unk);
 void psndSFXOff_Work(int32_t flags);
 bool sndRemoveEmitter_Work(void *em);
+bool marioChkJump_Work();
+bool marioChkItemMotion_Work();
 
 void applyGameFixes();
 void applyVariousGamePatches();

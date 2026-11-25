@@ -51,6 +51,8 @@ extern bool (
     *g_psndBGMOn_f_d_trampoline)(int32_t flags, const char *bgmName, uint16_t wFadeTime, uint16_t wFadeTime2, bool unused);
 
 extern bool (*g_psndENVOn_f_d_trampoline)(int32_t flags, const char *envName, int32_t wFadeTime, bool unused);
+extern bool (*g_marioChkItemMotion_trampoline)();
+extern bool (*g_marioChkJump_trampoline)();
 
 // Functions used for hooks
 uint32_t initAfterHeapsCreated();

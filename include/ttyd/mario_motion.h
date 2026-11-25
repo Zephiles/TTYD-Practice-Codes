@@ -59,9 +59,9 @@ extern "C"
     // marioChgMotJump2
     int32_t marioRollChgChk();
     // L_marioChkRub
-    // marioChkItemMotion
+    bool marioChkItemMotion();
     // marioChkTransform
-    // marioChkJump
+    bool marioChkJump();
     // mot_getItem
     // mot_talk
     // marioLandOn
