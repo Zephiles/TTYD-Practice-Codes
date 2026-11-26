@@ -170,6 +170,9 @@ uint32_t cArbitraryMemoryWriteGetProperPointer(uint32_t pointerRaw,
                                                uint32_t multipliedIndex,
                                                AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
 {
+    // Assume the original functionality is to add the pointer and offset together
+    // pointerRaw += multipliedIndex;
+
     if (gMod->flagIsSet(ModFlag::MOD_FLAG_PERFORMING_ARBITRARY_MEMORY_WRITE))
     {
         // Use the pointer value that would be used under vanilla scenarios

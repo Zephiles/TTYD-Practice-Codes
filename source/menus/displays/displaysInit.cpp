@@ -65,10 +65,8 @@ const MenuOption gDisplaysMenuInitOptions[] = {
     "evtID Variable",
     displaysEvtIdVariableInit,
 
-    /*
-    "Arbitrary Script Execution",
-    displaysArbitraryScriptExecutionInit,
-    */
+    // "Arbitrary Script Execution",
+    // displaysArbitraryScriptExecutionInit,
 
     "Yoshi Skip",
     displaysMenuGenericHasButtonComboInit,
