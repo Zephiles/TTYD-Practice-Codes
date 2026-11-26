@@ -84,7 +84,8 @@ static void enterDisplaysMenuGeneric(Menu *menuPtr, uint32_t flags)
             DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION);
 
     const bool handleAsHex =
-        displaysMenuGenericSelectionFlagIsSet(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_HANDLE_AS_HEX);
+        displaysMenuGenericSelectionFlagIsSet(flags,
+                                              DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_HANDLE_AS_HEX);
 
     if (hasButtonComboNoPosition)
     {
@@ -189,8 +190,8 @@ void displaysMenuGenericHandleAsHex(Menu *menuPtr)
 {
     uint32_t flags = 0;
 
-    flags =
-        setDisplaysMenuGenericSelectionFlag(flags, DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_HANDLE_AS_HEX);
+    flags = setDisplaysMenuGenericSelectionFlag(flags,
+                                                DisplaysMenuGenericSelectionFlags::DISPLAYS_GENERIC_OPTION_FLAG_HANDLE_AS_HEX);
 
     enterDisplaysMenuGeneric(menuPtr, flags);
 }
