@@ -65,7 +65,7 @@ enum DisplaysMenuGenericSelectionFlags
     DISPLAYS_GENERIC_OPTION_FLAG_HAS_BUTTON_COMBO = 0,
     DISPLAYS_GENERIC_OPTION_FLAG_NO_BUTTON_COMBO,
     DISPLAYS_GENERIC_OPTION_FLAG_NO_MANUAL_POSITION,
-    DISPLAYS_GENERIC_OPTION_HANDLE_AS_HEX,
+    DISPLAYS_GENERIC_OPTION_FLAG_HANDLE_AS_HEX,
 };
 
 // Flag functions take values 0-31. The functions return if the flag parameter has a higher value than 31.
