@@ -2504,6 +2504,9 @@ static void drawASETrigger(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
+    // Initialize text drawing
+    drawTextInit(true);
+
     // Check if the player unpaused at the correct time
     Displays *displaysPtr = gDisplays;
     const uint32_t doorEvtId = displaysPtr->getASETriggerDisplayPtr()->getHouseEvtId();
@@ -2533,9 +2536,6 @@ static void drawASETrigger(CameraId cameraId, void *user)
         snprintf(buf, sizeof(buf), format, doorEvtId, ASE_TARGET_EVT_ID);
         textToDraw = buf;
     }
-
-    // Initialize text drawing
-    drawTextInit(true);
 
     // Draw the text
     drawText(textToDraw,
@@ -4089,6 +4089,9 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
     (void)cameraId;
     (void)user;
 
+    // Initialize text drawing
+    drawTextInit(true);
+
     // Get the text for which function was called to trigger this display
     Displays *displaysPtr = gDisplays;
     AMWCoordinateWriteAddressDisplay *amwCoordinateWriteAddressPtr = displaysPtr->getAMWCoordinateWriteAddressDisplayPtr();
@@ -4129,9 +4132,6 @@ static void drawAMWCoordinateWriteAddress(CameraId cameraId, void *user)
              amwCoordinateWriteAddressPtr->getCoordinateZRaw(),
              amwCoordinateWriteAddressPtr->getAddressWrittenToRaw());
 
-    // Initialize text drawing
-    drawTextInit(true);
-
     // Draw the text
     drawText(buf,
              DISPLAYS_DEFAULT_POS_X_LEFT,
@@ -4154,6 +4154,9 @@ static void handleAMWCoordinateWriteAddress(Displays *displaysPtr)
 
 static void drawErrorTextDisplay(uint32_t errorTextDisplayIndex)
 {
+    // Initialize text drawing
+    drawTextInit(true);
+
     // Get the pointer to the current error text display, which will also verify that `errorTextDisplayIndex` is valid
     Displays *displaysPtr = gDisplays;
     ErrorTextDisplay *errorTextDisplayPtr = displaysPtr->getErrorTextDisplayPtr(errorTextDisplayIndex);
@@ -4202,9 +4205,6 @@ static void drawErrorTextDisplay(uint32_t errorTextDisplayIndex)
     // Get the text
     char buf[64];
     snprintf(buf, sizeof(buf), "%s error occured x%" PRIu32, funcName, counter);
-
-    // Initialize text drawing
-    drawTextInit(true);
 
     // Draw the text
     drawText(buf,
@@ -4619,6 +4619,11 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     // Get the position of the current menu
     const uint32_t currentMenuPtrRaw = reinterpret_cast<uint32_t>(winWorkPtr) + (index * 0x14);
     const float *winPos = reinterpret_cast<float *>(currentMenuPtrRaw + 0xC4);
+
+    // Initialize text drawing
+    drawTextInit(true);
+
+    // Draw the sequence text
     const float posX = winPos[0];
     float posY = winPos[1] + 50.f;
     float scale = 0.8f;
@@ -4628,10 +4633,6 @@ void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index)
     scale += 0.1f;
 #endif
 
-    // Initialize text drawing
-    drawTextInit(true);
-
-    // Draw the Sequence text
     drawText("Sequence", posX + 46.f, posY, scale, getColorWhite(0xFF));
 
     // Draw the sequence value, and align it to the right
