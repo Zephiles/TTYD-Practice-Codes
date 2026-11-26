@@ -261,7 +261,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
     // Make sure the enabled flag is for one of the tricks
     switch (enabledFlag)
     {
-        case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION:
+        // case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP:
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL:
@@ -271,7 +271,7 @@ void Displays::handleEnablingTrickDisplayFlag(uint32_t enabledFlag)
         case DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ABITRARY_MEMORY_WRITE:
         {
             // Disable all of the trick display flags
-            this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
+            // this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
             this->clearEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP_MINIMAL);
@@ -419,7 +419,7 @@ Displays::Displays()
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_EVT_ID_VARIABLE_HANDLE_AS_HEX);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX);
-    this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS);
+    // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_VALUES_STORED);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_YOSHI_SKIP);
     // this->setEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_PALACE_SKIP);
@@ -592,6 +592,7 @@ Displays::Displays()
     manuallyPositionPtr->setPosY(-134.f);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE + 0.05f);
 
+    /*
     // Arbitrary Script Execution
     posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
 
@@ -601,8 +602,10 @@ Displays::Displays()
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
     manuallyPositionPtr->setScale(DISPLAYS_DEFAULT_SCALE);
+    */
 
     // Yoshi Skip
+    posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP];
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
