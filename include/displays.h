@@ -503,7 +503,7 @@ class AMWCoordinateWriteAddressDisplay
         this->addressWrittenToRaw = addressRaw;
         this->functionCaller = funcCaller;
         this->coordinateZ = marioGetPtr()->playerPosition.z;
-        this->setTimer(sysMsec2Frame(5000));
+        this->setTimer(sysMsec2Frame(10000));
     }
 
     float getCoordinateZ() const { return this->coordinateZ; }

@@ -38,7 +38,7 @@
         ((flagsPtr)[(flag) / bitsPerWord] ^= (1UL << ((flag) % bitsPerWord))); \
     } while (0)
 
-#define VERSION_STRING "v4.3.1-dev23 (ASE Edition)"
+#define VERSION_STRING "v4.3.1-dev24 (ASE Edition)"
 
 // Order in which things are drawn; drawn from lowest to highest
 
