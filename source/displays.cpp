@@ -600,6 +600,7 @@ Displays::Displays()
 
     /*
     // Yoshi Skip
+    posY = DISPLAYS_DEFAULT_POS_Y_BOTTOM + lineDecrement;
     manuallyPositionPtr = &manuallyPositionPtrBase[DisplaysManuallyPositionFlag::DISPLAYS_MANUALLY_POSITION_FLAG_YOSHI_SKIP];
     manuallyPositionPtr->setPosX(DISPLAYS_DEFAULT_POS_X_LEFT);
     manuallyPositionPtr->setPosY(posY);
