@@ -50,6 +50,7 @@
 #endif
 
 #include <cstdint>
+#include <cstring>
 #include <cstdio>
 #include <cinttypes>
 #include <bit>
@@ -75,6 +76,11 @@ const uint8_t gMemoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
     DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_MEMORY_USAGE_BATTLE_MAP_HEAP,
 #endif
 };
+
+#ifdef TTYD_JP
+// To be used in `getASEPayloadReqsMessage` and `drawArbitraryScriptExecution`
+static const char *gAseAllOtherReqsMet = "All other reqs met";
+#endif
 
 #ifdef TTYD_EU
 uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
@@ -2579,6 +2585,50 @@ EVT_DEFINE_USER_FUNC(aseTriggerChecker)
 
     return ret;
 }
+
+static const char *getASEPayloadReqsMessage()
+{
+    // Check if bytes `0x80B118C6` to `0x80B11955` (inclusive) are all `zero`, which should be the case if no extra `Shine
+    // Sprites` were obtained
+    for (const uint8_t *ptr = reinterpret_cast<const uint8_t *>(0x80B118C6);
+         ptr <= reinterpret_cast<const uint8_t *>(0x80B11955);
+         ptr++)
+    {
+        if (*ptr != 0)
+        {
+            return "Extra bad data set";
+        }
+    }
+
+    // Check if the player has stayed at an Inn exactly `two` times, which is kept track of by `GSW(1)` in the save, which is at
+    // `0x80B11AA1`. Also check if the previous bytes are all 0, as combining all of these makes the `RETURN()` script value.
+    const uint8_t *scriptReturnAddress = reinterpret_cast<const uint8_t *>(0x80B11AA1);
+    constexpr int32_t scriptReturnValue = 0x00000002; // RETURN()
+
+    if (memcmp(scriptReturnAddress, &scriptReturnValue, sizeof(int32_t)) != 0)
+    {
+        return "Need to stay at Inn";
+    }
+
+    // Check if all of the required star pieces and shine sprites have been collected. This should cause bytes `0x80B11956` to
+    // `0x80B11961` (inclusive) to have the values `00 04 00 35 F5 DE 01 80 00 00 01 83`.
+    static constexpr const uint8_t neededValues[] = {0x00, 0x04, 0x00, 0x35, 0xF5, 0xDE, 0x01, 0x80, 0x00, 0x00, 0x01, 0x83};
+    const uint8_t *piecesShinesDataPtr = reinterpret_cast<const uint8_t *>(0x80B11956);
+
+    if (memcmp(piecesShinesDataPtr, neededValues, sizeof(neededValues)) != 0)
+    {
+        return "Need Star Pieces/Shines";
+    }
+
+    // Check if `priIDTbl[3]` is `0xFF`, which should be set upon doing the pause for ASE in Merlon's house
+    if (priIDTbl[3] != 0xFF)
+    {
+        return "priIDTbl[3] is not 0xFF";
+    }
+
+    // All reqs met
+    return gAseAllOtherReqsMet;
+}
 #endif
 
 static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
@@ -2587,7 +2637,7 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
     (void)user;
 
     // Set up the text
-    char buf[224];
+    char buf[256];
     constexpr uint32_t bufSize = sizeof(buf);
 
     const char *textToDraw;
@@ -2617,7 +2667,12 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
             }
         }
 
-        // Set up the colors to use for the evt values
+#ifdef TTYD_JP
+        // Get the text for checking if the other requirements for ASE have been met
+        const char *otherReqsMessage = getASEPayloadReqsMessage();
+#endif
+
+        // Set up the colors to use for the values
         uint32_t flagsColor = getColorWhite(0xFF);
         uint32_t opcodeColor = getColorWhite(0xFF);
         uint32_t nextCommandPtrColor = getColorWhite(0xFF);
@@ -2625,6 +2680,8 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
         uint32_t timesColor = getColorWhite(0xFF);
 
 #ifdef TTYD_JP
+        uint32_t otherReqsColor = getColorWhite(0xFF);
+
         if (displaysPtr->enabledFlagIsSet(
                 DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_ADJUST_VALUES_COLORS))
         {
@@ -2665,6 +2722,13 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
             {
                 timesColor = getColorGreen(0xFF);
             }
+
+            // Get the color to use for the other reqs text, in which it should be green if the text of `gAseAllOtherReqsMet` is
+            // returned
+            if (strcmp(otherReqsMessage, gAseAllOtherReqsMet) == 0)
+            {
+                otherReqsColor = getColorGreen(0xFF);
+            }
         }
 #endif
         // clang-format off
@@ -2673,7 +2737,12 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
                              "CmdPtr: <col %" PRIx32 ">0x%08" PRIX32 "\n"
                              "Thread: <col %" PRIx32 ">0x%08" PRIX32 "\n"
                              "TS: <col %" PRIx32 ">%.6f\n"
-                             "TSTR: <col %" PRIx32 ">%.6f";
+                             "TSTR: <col %" PRIx32 ">%.6f"
+#ifdef TTYD_JP
+                             "\n<col %" PRIx32 ">%s";
+#else
+                             ;
+#endif
         // clang-format on
 
         snprintf(buf,
@@ -2690,7 +2759,13 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
                  timesColor,
                  entryPtr->timescale,
                  timesColor,
-                 entryPtr->timeScheduledToRun);
+                 entryPtr->timeScheduledToRun
+#ifdef TTYD_JP
+                 ,
+                 otherReqsColor,
+                 otherReqsMessage
+#endif
+        );
 
         textToDraw = buf;
     }
@@ -2703,7 +2778,12 @@ static void drawArbitraryScriptExecution(CameraId cameraId, void *user)
             "CmdPtr: 0x????????\n"
             "Thread: 0x????????\n"
             "TS: ?.??????\n"
-            "TSTR: ?.??????";
+            "TSTR: ?.??????"
+#ifdef TTYD_JP
+            "\n???????????????????";
+#else
+            ;
+#endif
     }
 
     // Get the position and scale for the text
