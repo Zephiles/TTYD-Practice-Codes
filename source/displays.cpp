@@ -77,10 +77,12 @@ const uint8_t gMemoryUsageFlagsArray[DISPLAYS_TOTAL_HEAPS] = {
 #endif
 };
 
+/*
 #ifdef TTYD_JP
 // To be used in `getASEPayloadReqsMessage` and `drawArbitraryScriptExecution`
 static const char *gAseAllOtherReqsMet = "All other reqs met";
 #endif
+*/
 
 #ifdef TTYD_EU
 uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWriteAddressDisplay::FunctionCaller funcCaller)
@@ -155,6 +157,7 @@ uint32_t AMWCoordinateWriteAddressDisplay::getAMWVanillaPtrRaw(AMWCoordinateWrit
 }
 #endif
 
+/*
 bool ArbitraryScriptExecution::applyStoredValues() const
 {
     // Only apply if values were previously stored
@@ -206,6 +209,7 @@ EvtEntry *ArbitraryScriptExecution::getViewedEvtPtr() const
     // Cannot use `evtGetPtr` since that always uses the battles array if currently in a battle
     return &evtmgr_work[0].entries[this->index];
 }
+*/
 
 bool Displays::checkDisplayButtonCombo(uint32_t displayWithCombo) const
 {
@@ -2490,6 +2494,7 @@ void handleHitCheckVisualization()
               nullptr);
 }
 
+/*
 #ifdef TTYD_JP
 static void drawASETrigger(CameraId cameraId, void *user)
 {
@@ -2821,6 +2826,7 @@ static void handleArbitraryScriptExecution(Displays *displaysPtr)
     // Set this display to be drawn
     displaysPtr->setShouldDrawFlag(DisplaysShouldDrawFlag::DISPLAYS_SHOULD_DRAW_FLAG_ARBITRARY_SCRIPT_EXECUTION);
 }
+*/
 
 static void drawYoshiSkip(CameraId cameraId, void *user)
 {
@@ -4664,7 +4670,7 @@ static const DispCallback gDisplaysDrawFuncs[TOTAL_DISPLAYS_SHOULD_DRAW_FLAGS] =
     drawJumpStorage,
 
     // Trick displays
-    drawArbitraryScriptExecution,
+    // drawArbitraryScriptExecution,
     drawYoshiSkip,
     drawPalaceSkip,
     drawArbitraryMemoryWrite,
@@ -4718,13 +4724,15 @@ static const DisplaysArrayFunc gDisplaysNoButtonCombos[] = {
     handleEvtIdVariable,
     handleEnemyEncounterNotifier,
     handleGuardSuperguardTimings,
-    handleArbitraryScriptExecution,
+    // handleArbitraryScriptExecution,
     handleMemoryUsage,
     handleAMWCoordinateWriteAddress,
 
+    /*
 #ifdef TTYD_JP
     handleASETrigger,
 #endif
+    */
 
     handleNpcNameToPtrError,
     handleMobjNameToPtrError,

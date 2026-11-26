@@ -1054,6 +1054,7 @@ void applyCheatAndDisplayInjects()
 
     writeBranchBL(unloadEvtmgrReInitAddress, unloadEvtmgrReInit_Work);
 
+    /*
 #ifdef TTYD_JP
     // Arbitrary Script Execution Trigger Checker
 #ifdef TTYD_US
@@ -1066,6 +1067,7 @@ void applyCheatAndDisplayInjects()
 
     applyAssemblyPatch(aseEvtDoorParamAddress, reinterpret_cast<uint32_t>(aseTriggerChecker));
 #endif
+    */
 
 #ifdef TTYD_EU
     // Allow jumping on water when the Bridge Skip display is enabled

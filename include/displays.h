@@ -523,6 +523,7 @@ class AMWCoordinateWriteAddressDisplay
     AMWCoordinateWriteAddressDisplay::FunctionCaller functionCaller;
 };
 
+/*
 #ifdef TTYD_JP
 #define ASE_TARGET_EVT_ID 17507
 
@@ -592,6 +593,7 @@ class ArbitraryScriptExecution
     uint8_t flags;
     uint8_t opcode;
 };
+*/
 
 class EnemyEncounterNotifierDisplay
 {
@@ -1241,11 +1243,14 @@ class Displays
     MemoryUsageDisplay *getMemoryUsageDisplayPtr() { return &this->memoryUsage; }
     AMWCoordinateWriteAddressDisplay *getAMWCoordinateWriteAddressDisplayPtr() { return &this->amwCoordinateWriteAddress; }
 
+    /*
 #ifdef TTYD_JP
     ASETriggerDisplay *getASETriggerDisplayPtr() { return &this->aseTriggerDisplay; }
 #endif
 
     ArbitraryScriptExecution *getArbitraryScriptExecutionPtr() { return &this->arbitraryScriptExecution; }
+    */
+
     EnemyEncounterNotifierDisplay *getEnemyEncounterNotifierDisplayPtr() { return &this->enemyEncounterNotifier; }
     HitCheckVisualizationDisplay *getHitCheckVisualizationDisplayPtr() { return &this->hitCheckVisualization; }
     JumpStorageDisplay *getJumpStorageDisplayPtr() { return &this->jumpStorage; }
@@ -1290,12 +1295,14 @@ class Displays
     MemoryUsageDisplay memoryUsage;
     AMWCoordinateWriteAddressDisplay amwCoordinateWriteAddress;
 
+    /*
 #ifdef TTYD_JP
     ASETriggerDisplay aseTriggerDisplay;
 #endif
+    */
 
     GuardSuperguardTimingDisplay guardSuperguardTiming;
-    ArbitraryScriptExecution arbitraryScriptExecution;
+    // ArbitraryScriptExecution arbitraryScriptExecution;
     EnemyEncounterNotifierDisplay enemyEncounterNotifier;
     YoshiSkipDisplay yoshiSkip;
     PalaceSkipDisplay palaceSkip;
@@ -1332,8 +1339,10 @@ HitEntry *checkForVecHits(HitCheckQuery *pQuery, PFN_HitFilterFunction filterFun
 void drawSequenceInPauseMenu(CameraId cameraId, void *winWorkPtr, int32_t index);
 void runDisplayFuncsEveryFrame();
 
+/*
 #ifdef TTYD_JP
 EVT_DEFINE_USER_FUNC(aseTriggerChecker);
 #endif
+*/
 
 #endif

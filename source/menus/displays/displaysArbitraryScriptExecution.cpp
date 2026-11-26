@@ -1,3 +1,5 @@
+#if 0
+
 #include "menuUtils.h"
 #include "drawText.h"
 #include "displays.h"
@@ -360,3 +362,5 @@ static void selectedOptionToggleArrayIndexAsHex(Menu *menuPtr)
 
     displaysMenuToggleEnabledFlag(DisplaysEnabledFlag::DISPLAYS_ENABLED_FLAG_ARBITRARY_SCRIPT_EXECUTION_HANDLE_INDEX_AS_HEX);
 }
+
+#endif

@@ -255,6 +255,7 @@ class DisplaysSettingsData
         this->hitsColor = hitCheckVisualizationPtr->getHitsColor();
         this->missesColor = hitCheckVisualizationPtr->getMissesColor();
 
+        /*
         ArbitraryScriptExecution *asePtr = displaysPtr->getArbitraryScriptExecutionPtr();
         this->index = asePtr->getIndex();
         this->nextCommandPtr = asePtr->getNextCommandPtr();
@@ -263,6 +264,7 @@ class DisplaysSettingsData
         this->timeScheduledToRun = asePtr->getTimeScheduledToRun();
         this->flags = static_cast<uint8_t>(asePtr->getFlags());
         this->opcode = static_cast<uint8_t>(asePtr->getOpcode());
+        */
 
         memcpy(this->enabledFlags, displaysPtr->getEnabledFlagsPtr(), DISPLAYS_ENABLED_FLAGS_ARRAY_SIZE * sizeof(uint32_t));
 

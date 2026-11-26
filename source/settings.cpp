@@ -143,6 +143,8 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
                                    uint32_t totalButtonCombos,
                                    uint32_t version) const
 {
+    (void)version;
+
     // Get all of the enabled flags
     const uint32_t *enabledFlagsPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, 0);
     Displays *displaysPtr = gDisplays;
@@ -275,6 +277,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
     const uint32_t *missesColorPtr = PTR_CAST_TYPE_ADD_OFFSET(const uint32_t *, this, offset);
     hitCheckVisualizationPtr->setMissesColor(*missesColorPtr);
 
+    /*
     if (version >= SETTINGS_ADDED_ARBITRARY_SCRIPT_EXECUTION)
     {
         // Get the Arbitrary Script Execution variables
@@ -311,6 +314,7 @@ void DisplaysSettingsData::getData(uint32_t totalDisplays,
         // Make sure offset is aligned to 4 bytes, since the class is aligned to 4 bytes
         offset = roundUp(offset, sizeof(uint32_t));
     }
+    */
 }
 
 uint32_t MemoryWatchesSettingsData::getData(uint32_t totalWatches, uint32_t watchNameLength) const
