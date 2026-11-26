@@ -84,13 +84,13 @@ const MenuOption gCheatsMenuInitOptions[] = {
     "Allow Running From Any Battle",
     cheatsMenuGenericNoButtonComboInit,
 
-    "Simulate AMW - Mario Zero Hitbox - Paper Mode",
+    "Simulate AMW - Zero Hitbox - Paper Mode",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate AMW - Mario Zero Hitbox - Room Transition",
+    "Simulate AMW - Zero Hitbox - Room Transition",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
-    "Simulate AMW - Mario Airwalk",
+    "Simulate AMW - Airwalk",
     cheatsMenuSimulateArbitraryMemoryWriteInit,
 
     "Glitz Pit Manager",
