@@ -1,28 +1,30 @@
 # Code created by PistonMiner and Zephiles
 
-# 8006EBD8 - Address to hook for this code
+# 8006FE38 - Address to hook for this code
 
 # Set global function/variable/offset locations/values
-.set CARDMGR_WORK_PTR_OFFSET,0x1638
+.set CARDMGR_WORK_PTR_OFFSET,0x1B98
 .set INTERNAL_FILENAME_LOCATION,0x800040DC
-.set __memFree,0x8002FA60
-.set __memAlloc,0x8002FA8C
-.set OSLink,0x80294AE0
-.set OSUnlink,0x80294D3C
-.set CARDGetResultCode,0x802A6940
-.set CARDCheckAsync,0x802A9664
-.set CARDProbeEx,0x802A9790
-.set CARDMountAsync,0x802A9E98
-.set CARDUnmount,0x802AA0D4
-.set CARDOpen,0x802AADD8
-.set CARDClose,0x802AAEF4
-.set CARDReadAsync,0x802AB588
+.set __memFree,0x800300C4
+.set __memAlloc,0x800300F0
+.set DLInsert,0x80296400
+.set Link,0x8029A604
+.set OSUnlink,0x8029AB40
+.set CARDCheckAsync,0x802AF468
+.set CARDProbeEx,0x802AF594
+.set CARDMountAsync,0x802AFC9C
+.set CARDUnmount,0x802AFED8
+.set CARDOpen,0x802B0BDC
+.set CARDClose,0x802B0CF8
+.set CARDReadAsync,0x802B138C
+.set __CARDBlock,0x80413B80
+.set HeapArray,0x8041F070
 
 # Initialize static values used for addresses
 lis r31,0x8000
-lis r30,0x8002
+lis r30,0x8003
 lis r29,0x8029
-lis r28,0x802A
+lis r28,0x802B
 
 li r27,0 # Used to check if a REL file is loaded or not
 
@@ -30,7 +32,7 @@ li r27,0 # Used to check if a REL file is loaded or not
 # To avoid an infinite loop, only check for a memory card a set amount of times
 lis r26,0x000F
 ori r26,r26,0x4240 # Check 1,000,000 times
-ori r25,r28,CARDProbeEx@l
+addi r25,r28,CARDProbeEx@l
 
 checkForMemoryCardLoop:
 mtlr r25 # CARDProbeEx
@@ -50,7 +52,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- exit
 
 # Mount the Memory Card
-ori r3,r28,CARDMountAsync@l
+addi r3,r28,CARDMountAsync@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 lwz r4,CARDMGR_WORK_PTR_OFFSET(r13)
@@ -67,7 +69,7 @@ b exit
 
 checkForErrors:
 # Check for and attempt to repair memory card errors
-ori r3,r28,CARDCheckAsync@l
+addi r3,r28,CARDCheckAsync@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 li r4,0 # Callback function (Want to avoid using, so NULL)
@@ -93,8 +95,10 @@ blrl
 cmpwi r3,0 # Check if something went wrong
 bne- freeCardFileInfo
 
-# Allocate 0x200 bytes of memory, as the read size must be in multiples of 0x200 bytes
-li r4,0x200 # Bytes to allocate
+# Allocate 0x400 bytes of memory, as the read size must be in multiples of 0x200 bytes, 
+# and the BSS Area size, the fixed REL size, and the BSS Align are needed later
+
+li r4,0x400 # Bytes to allocate
 bl allocateMemory
 
 # Backup the returned address to be used for later
@@ -105,7 +109,7 @@ ori r3,r28,CARDReadAsync@l
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
 mr r4,r24 # Pointer to the File Buffer
-li r5,0x200 # Amount of bytes to read
+li r5,0x400 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
 li r7,0 # Read Callback function (Want to avoid using, so NULL)
 blrl
@@ -113,17 +117,51 @@ bl finishAsyncMemoryCardFunc
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
 
-# Get the file size and adjust it to be in multiples of 0x200 bytes
-lwz r25,0x40(r24) # File Size
-addi r25,r25,511
+# Get the File Size, as it will be used later
+lwz r6,0x40(r24) # File Size
+
+# Adjust the File Size to be in multiples of 0x200 bytes
+addi r25,r6,511
 rlwinm r25,r25,0,0,22
 
-# Free the 0x200 bytes from earlier
+# Increase the fixed REL size to account for the BSS's alignment requirement
+lwz r23,0x248(r24) # fixSize; 0x200 + 0x48
+lwz r3,0x244(r24) # bssAlign; 0x200 + 0x44
+divwu r0,r23,r3
+mullw r0,r0,r3
+sub. r0,r23,r0
+beq+ fixedRelSizeAligned
+
+# Align the fixed REL size
+mr r4,r23
+neg r5,r3
+and r5,r23,r5
+add r23,r5,r3 # fixSize
+
+# Get the difference between the new size and the old size
+sub r4,r23,r4
+
+# Add the difference to the File Size to account for the increased size
+add r6,r6,r4
+
+fixedRelSizeAligned:
+# Add the BSS Area size to the File Size
+lwz r22,0x220(r24) # BSS Area size; 0x200 + 0x20
+add r21,r6,r22
+
+# If the File Size + the BSS Area Size is less than the adjusted File Size, 
+# then use the adjusted File Size as the size for the allocated memory
+cmplw r21,r25
+bge+ fileSizeIsValid
+mr r21,r25
+
+fileSizeIsValid:
+# Free the 0x400 bytes from earlier
 mr r4,r24
 bl freeMemory
 
-# Allocate more bytes based on the adjusted file size
-mr r4,r25
+# Allocate memory for the File and BSS
+mr r4,r21 # File Size + BSS Area Size
 bl allocateMemory
 
 # Backup the returned address to be used for later
@@ -142,22 +180,54 @@ bl finishAsyncMemoryCardFunc
 cmpwi r3,0 # Check if something went wrong
 bne- freeCurrentMemoryArea
 
-# Get the BSS Area size and allocate memory for it
-lwz r4,0x20(r24)
-bl allocateMemory
-
-# Backup the returned address to be used for later
-mr r25,r3
+# Get the address of the BSS Area
+add r25,r24,r23
 
 # Link the functions in the REL
-ori r3,r29,OSLink@l
+ori r3,r29,Link@l
 mtlr r3
 mr r3,r24 # Pointer to the Module
 mr r4,r25 # Pointer to the BSS Area
+li r5,1 # True
 blrl
 cmpwi r3,1 # Check if something went wrong
-bne- freeRemainingMemory
+bne- unlinkRel
 
+# Resize the allocated memory to remove the space used by the unnecessary relocation data
+# Get the size of the REL + the BSS Area Size
+add r3,r23,r22
+
+# Adjust the size to be in multiples of 0x20 bytes
+addi r3,r3,31
+rlwinm r3,r3,0,0,26
+
+# Make sure the current chunk of memory can be split into two parts
+lwz r4,-0x18(r24) # Current chunk size
+subi r4,r4,32 # Current chunk size - HEAP_ALIGNMENT
+addi r5,r3,64 # size + MIN_CHUNK_SIZE
+cmpw r5,r4
+bgt- doneResizingChunk
+
+# Set the new size of the current chunk of memory
+addi r5,r3,32 # Size + HEAP_ALIGNMENT
+stw r5,-0x18(r24)
+
+# Set up the new chunk of memory
+sub r6,r4,r3 # (Current chunk size - HEAP_ALIGNMENT) - size
+add r4,r24,r3
+stw r6,0x8(r4) # New chunk size
+
+# Insert the new chunk into the free space of the heap
+ori r3,r29,DLInsert@l
+mtlr r3
+lis r23,HeapArray@ha
+lwz r23,HeapArray@l(r23)
+lwz r3,0x4(r23) # firstFree
+# r4 already contains the pointer to the new chunk of memory
+blrl
+stw r3,0x4(r23) # firstFree
+
+doneResizingChunk:
 # Store the BSS Area and the Module
 stw r25,0x414C(r31) # Pointer to the BSS Area
 stw r24,0x4150(r31) # Pointer to the Module
@@ -184,30 +254,24 @@ bctr
 finishAsyncMemoryCardFunc:
 cmpwi r3,0 # Check if something went wrong
 bnelr-
-mflr r14
-ori r15,r28,CARDGetResultCode@l
+
+# Assume we're using Memory Card Slot A
+lis r4,__CARDBlock@ha
 
 finishAsyncMemoryCardFuncLoop:
-mtlr r15 # CARDGetResultCode
-li r3,0 # Memory Card Slot A
-blrl
+lwz r3,__CARDBlock@l + 0x4(r4)
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncMemoryCardFuncLoop
-mtlr r14
 blr
 
-freeRemainingMemory:
+unlinkRel:
 ori r3,r29,OSUnlink@l
 mtlr r3
 mr r3,r24 # Pointer to the Module
 blrl
 
-# Free the BSS Area and the File Buffer
-mr r4,r25 # Pointer to the BSS Area
-bl freeMemory
-
 freeCurrentMemoryArea:
-mr r4,r24 # Pointer to the File Buffer or the 0x200 Bytes Buffer
+mr r4,r24 # Pointer to the File Buffer or the 0x400 Bytes Buffer
 bl freeMemory
 
 closeCard:
@@ -221,7 +285,7 @@ mr r4,r26
 bl freeMemory
 
 # Unmount the Memory Card
-ori r3,r28,CARDUnmount@l
+addi r3,r28,CARDUnmount@l
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
